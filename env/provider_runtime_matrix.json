@@ -24,14 +24,14 @@
     },
     {
       "provider": "sam3_1",
-      "status": "checkpoint_installed_smoke_pending",
-      "isolation_boundary": "wsl_venv_sam31_5dd401d1",
+      "status": "discovery_smoke_passed_refinement_pending",
+      "isolation_boundary": "runpod_venv_sam31_5dd401d1",
       "checkpoint_status": "installed",
-      "smoke_status": "not_run_wsl_filesystem_io_error",
+      "smoke_status": "text_discovery_pass_point_refinement_empty_output",
       "may_author_gold": false,
       "artifacts": [
-        {"kind": "lock", "path": "env/sam31_runtime.lock.json", "sha256": "9d4a93f622a216389f419bd9e81a52dec4d948d97e4c8c5a9683721e7ac506e9"},
-        {"kind": "evidence", "path": "qa/live_verification/sam31_checkpoint_install_20260717.json", "sha256": "e47340df7ff945d3b584c065c7054718c76449bbe113e23bada67490eb380dc8"}
+        {"kind": "lock", "path": "env/sam31_runtime.lock.json", "sha256": "734f8017db6cd51c5093b23f3ef4f4c49861e41a39de60453d37fc006f03bee6"},
+        {"kind": "evidence", "path": "qa/live_verification/sam31_runpod_runtime_smoke_20260722.json", "sha256": "8cf2a320dd80b5a4f05fc71a78e29d6a613e19e1f1c2d099e721dcde81ac647e"}
       ]
     },
     {
@@ -96,16 +96,16 @@
     },
     {
       "provider": "sam3d_body",
-      "status": "checkpoint_installed_runtime_pending",
-      "isolation_boundary": "planned_isolated_wsl_runtime",
+      "status": "live_geometry_repeatability_blocked",
+      "isolation_boundary": "runpod_venv_sam3d_body_b5c765a",
       "checkpoint_status": "installed",
-      "smoke_status": "not_run_wsl_filesystem_io_error",
+      "smoke_status": "fail_exact_repeat_hash",
       "may_author_gold": false,
       "artifacts": [
-        {"kind": "lock", "path": "env/sam3d_body_runtime.lock.json", "sha256": "5a68c555fe3fdc184d07551591f1a55fb921c206246f52ef3861cfdad36c3c39"},
-        {"kind": "evidence", "path": "qa/live_verification/sam3d_body_checkpoint_install_20260717.json", "sha256": "c407e3e837f9609e1d4d11687f92bf3bea8a0d7016056a7254ff4838cdda861f"}
+        {"kind": "lock", "path": "env/sam3d_body_runtime.lock.json", "sha256": "61a8d53e5a08309ca5cf2c879a7bed509ff81422283b5ea31133d6859e4987a3"},
+        {"kind": "evidence", "path": "qa/live_verification/sam3d_body_runpod_runtime_smoke_20260722.json", "sha256": "cce59137fde35dd0ef8ae25813ce56807c4f1f9a748659d29338691397cc8a26"}
       ]
     }
   ],
-  "manifest_sha256": "9dbd1b41b7452d8180dd0dc5803bab5a5bf46bb1cb0b19bd77f3baa93ab7356a"
+  "manifest_sha256": "618ed1c39f962276182d9a8885baa78efcd6cb5ac71449695ca11fac3eb96e45"
 }

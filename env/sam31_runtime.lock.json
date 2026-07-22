@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "provider": "sam3_1",
-  "status": "checkpoint_installed_runtime_smoke_pending",
+  "status": "checkpoint_installed_discovery_smoke_passed_refinement_pending",
   "source": {
     "repository": "https://github.com/facebookresearch/sam3.git",
     "commit": "5dd401d1c5c1d5c3eedff06d41b77af824517619",
@@ -36,9 +36,9 @@
     "checkpoint_terms_status": "accepted_access_verified"
   },
   "runtime": {
-    "platform": "WSL Ubuntu-22.04 linux-64",
-    "environment_path": "/home/kevin/mfenvs/sam31-5dd401d1",
-    "python": "3.12.13",
+    "platform": "RunPod Linux-64 persistent volume",
+    "environment_path": "/workspace/maskfactory/runtime_artifacts/sam31_runpod_env",
+    "python": "3.11.10",
     "torch": "2.10.0+cu128",
     "torchvision": "0.25.0+cu128",
     "cuda": "12.8",
@@ -53,33 +53,35 @@
     }
   },
   "live_smoke": {
-    "verified_at": "2026-07-14T18:58:17Z",
-    "device": "NVIDIA GeForce RTX 5060 Laptop GPU",
-    "compute_capability": [12, 0],
+    "verified_at": "2026-07-22T01:32:08Z",
+    "device": "NVIDIA RTX 6000 Ada Generation",
+    "compute_capability": [8, 9],
     "cuda_available": true,
     "cuda_tensor_sum": 523776.0,
     "image_builder_import": true,
     "multiplex_builder_import": true,
     "pip_check": "pass",
-    "checkpoint_inference": "not_run_wsl_filesystem_io_error",
+    "checkpoint_inference": "text_discovery_pass_point_refinement_empty_output",
     "subprocess_contract": {
-      "status": "offline_verified_live_pending",
+      "status": "runtime_pass_bounded_text_discovery",
       "host_verifier": "src/maskfactory/providers/sam31_multiplex.py",
-      "host_verifier_sha256": "dfd377d2bf840681e76f0321befaa044222049cc39f9ac17e7c7eae0c3144da8",
+      "host_verifier_sha256": "01a44dd9cfec9a50f0859113cdf2b95eee0ad6df45a1f5b622e765a7832e60ec",
       "isolated_runner": "tools/smoke_sam31_multiplex_wsl.py",
-      "isolated_runner_sha256": "e4b3a43f1daf2f920b75fe139e2e7add689c78bed05751b97b3a6d7d96a85224",
+      "isolated_runner_sha256": "ba205656b1c07752c99482418f2795322d2073298945e0d323023b5ccdbf3383",
+      "session_compat": "tools/sam31_session_compat.py",
+      "session_compat_sha256": "9f250ce9f968dd834067f20bf308c602a3453f7185a08052b85500dc38147f5b",
       "correct_builder": "build_sam3_predictor(checkpoint_path=..., version='sam3.1')",
       "forbidden_checkpoint_builder": "build_sam3_image_model; it targets the older sam3.pt image checkpoint",
       "adaptation": "single_frame_directory_via_object_multiplex",
       "fixture": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
       "fixture_sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63",
-      "prompt": "one positive point at relative [0.5,0.5] for object 1",
+      "prompt": "exact text concept 'person' on the governed multi-person JPEG",
       "determinism_repeats": 2,
       "artifact": "closed NPZ loaded with allow_pickle=false",
       "evidence": "clean source/runtime/requirements/checkpoint/image/payload/artifact hashes, shapes, model-load/cold/warm latency, model/peak VRAM, runtime-only non-gold authority"
     },
     "production_contract": {
-      "status": "offline_verified_live_pending",
+      "status": "discovery_runtime_pass_bounded_refinement_blocked_empty_output",
       "host_runtime": "src/maskfactory/providers/sam31_runtime.py",
       "host_runtime_sha256": "75b4462adc9b897bb91ff745c11239838bb68e0aff1e160b1d81f0de904fc3b6",
       "visual_exemplar_contract": "src/maskfactory/providers/sam31_exemplars.py",
@@ -87,7 +89,9 @@
       "visual_exemplar_schema": "src/maskfactory/schemas/sam31_visual_exemplar.schema.json",
       "visual_exemplar_schema_sha256": "b1a26125fb56d6f0d0464049072265bee0c3c46282b4bbf68019a2ed4f6eacf3",
       "isolated_runner": "tools/run_sam31_runtime.py",
-      "isolated_runner_sha256": "73ddb399e920350535d7ca87c5a9638aac855bc38ea6209006dd7eaf36eedb41",
+      "isolated_runner_sha256": "2fa8491b34cb896389d9ab5596aabf4381c4c93d866f65d4c604450d8cca1d91",
+      "session_compat": "tools/sam31_session_compat.py",
+      "session_compat_sha256": "9f250ce9f968dd834067f20bf308c602a3453f7185a08052b85500dc38147f5b",
       "roles": ["concept_detector", "interactive_segmenter"],
       "builder": "build_sam3_predictor(checkpoint_path=..., version='sam3.1')",
       "text_discovery": "exact public multiplex text prompt with exhaustive instance masks",
@@ -99,6 +103,6 @@
       "production_loading": "default lazy loaders are bound to official shadow S06/S11 and become executable only at a governed runnable lifecycle",
       "authority": "draft shadow candidates only; no active-map, production-mask, semantic-truth, certification, or gold authority"
     },
-    "evidence": "qa/live_verification/sam31_checkpoint_install_20260717.json"
+    "evidence": "qa/live_verification/sam31_runpod_runtime_smoke_20260722.json"
   }
 }

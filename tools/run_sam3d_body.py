@@ -47,6 +47,39 @@ def _geometry_sha256(output: Mapping[str, Any]) -> str:
     return digest.hexdigest()
 
 
+def _repeat_diagnostics(first: Mapping[str, Any], second: Mapping[str, Any]) -> dict[str, Any]:
+    """Describe an exact-repeat mismatch without relaxing the determinism gate."""
+
+    arrays: dict[str, dict[str, Any]] = {}
+    all_shapes_match = True
+    all_exact = True
+    for name in ("bbox", "focal_length", *REQUIRED_ARRAYS):
+        first_array = np.ascontiguousarray(first[name], dtype=np.float64)
+        second_array = np.ascontiguousarray(second[name], dtype=np.float64)
+        shapes_match = first_array.shape == second_array.shape
+        exact = shapes_match and np.array_equal(first_array, second_array)
+        all_shapes_match = all_shapes_match and shapes_match
+        all_exact = all_exact and exact
+        entry: dict[str, Any] = {
+            "first_sha256": hashlib.sha256(first_array.tobytes()).hexdigest(),
+            "second_sha256": hashlib.sha256(second_array.tobytes()).hexdigest(),
+            "first_shape": list(first_array.shape),
+            "second_shape": list(second_array.shape),
+            "exact": exact,
+        }
+        if shapes_match:
+            absolute_difference = np.abs(first_array - second_array)
+            entry["changed_elements"] = int(np.count_nonzero(absolute_difference))
+            entry["max_abs_difference"] = float(absolute_difference.max(initial=0.0))
+            entry["mean_abs_difference"] = float(absolute_difference.mean())
+        arrays[name] = entry
+    return {
+        "all_shapes_match": all_shapes_match,
+        "all_arrays_exact": all_exact,
+        "arrays": arrays,
+    }
+
+
 def _extract_one(outputs: Any, requested_bbox: np.ndarray) -> dict[str, np.ndarray]:
     if not isinstance(outputs, (list, tuple)) or len(outputs) != 1:
         raise RuntimeError("SAM 3D Body exact-box inference must return exactly one person")
@@ -122,6 +155,7 @@ def main() -> int:
         raise RuntimeError("SAM 3D Body tracked source tree is dirty")
 
     os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
+    os.environ.setdefault("NVIDIA_TF32_OVERRIDE", "0")
     random.seed(0)
     np.random.seed(0)
     sys.path.insert(0, str(args.source_root))
@@ -135,6 +169,13 @@ def main() -> int:
     torch.cuda.manual_seed_all(0)
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.allow_tf32 = False
+    torch.backends.cuda.matmul.allow_tf32 = False
+    torch.backends.cuda.enable_flash_sdp(False)
+    torch.backends.cuda.enable_mem_efficient_sdp(False)
+    if hasattr(torch.backends.cuda, "enable_cudnn_sdp"):
+        torch.backends.cuda.enable_cudnn_sdp(False)
+    torch.backends.cuda.enable_math_sdp(True)
     torch.use_deterministic_algorithms(True)
 
     load_started = time.perf_counter()
@@ -177,7 +218,12 @@ def main() -> int:
         output_hashes.append(_geometry_sha256(output))
     deterministic = len(set(output_hashes)) == 1
     if not deterministic:
-        raise RuntimeError("SAM 3D Body two-run geometry output is not deterministic")
+        diagnostics = {
+            "error": "SAM 3D Body two-run geometry output is not deterministic",
+            "geometry_output_sha256_by_repeat": output_hashes,
+            "repeat_comparison": _repeat_diagnostics(outputs[0], outputs[1]),
+        }
+        raise RuntimeError(json.dumps(diagnostics, sort_keys=True, separators=(",", ":")))
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(args.output, **outputs[0])

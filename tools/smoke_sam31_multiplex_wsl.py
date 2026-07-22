@@ -18,6 +18,11 @@ from typing import Any
 
 import numpy as np
 
+if __package__:
+    from tools.sam31_session_compat import start_sam31_session
+else:
+    from sam31_session_compat import start_sam31_session
+
 ARTIFACT_FIELDS = ("masks", "object_ids", "probabilities", "boxes_xywh")
 
 
@@ -52,19 +57,32 @@ def _extract(outputs: Any) -> dict[str, np.ndarray]:
         }
     except KeyError as exc:
         raise RuntimeError("SAM 3.1 multiplex output fields are incomplete") from exc
-    if (
+    count = arrays["masks"].shape[0] if arrays["masks"].ndim == 3 else -1
+    invalid = (
         arrays["masks"].dtype != np.bool_
-        or arrays["masks"].ndim != 3
-        or arrays["masks"].shape[0] != 1
-        or not arrays["masks"].any()
-        or arrays["object_ids"].shape != (1,)
-        or int(arrays["object_ids"][0]) != 1
-        or arrays["probabilities"].shape != (1,)
-        or arrays["boxes_xywh"].shape != (1, 4)
+        or count < 1
+        or not arrays["masks"].any(axis=(1, 2)).all()
+        or arrays["object_ids"].shape != (count,)
+        or len(np.unique(arrays["object_ids"])) != count
+        or arrays["probabilities"].shape != (count,)
+        or arrays["boxes_xywh"].shape != (count, 4)
         or not np.isfinite(arrays["probabilities"]).all()
         or not np.isfinite(arrays["boxes_xywh"]).all()
-    ):
-        raise RuntimeError("SAM 3.1 multiplex output geometry is invalid")
+    )
+    if invalid:
+        observed = {
+            name: {
+                "dtype": str(value.dtype),
+                "shape": list(value.shape),
+                "nonzero": int(np.count_nonzero(value)),
+                "finite": bool(np.isfinite(value).all()),
+            }
+            for name, value in arrays.items()
+        }
+        raise RuntimeError(
+            "SAM 3.1 multiplex output geometry is invalid: "
+            + json.dumps(observed, sort_keys=True, separators=(",", ":"))
+        )
     return arrays
 
 
@@ -156,9 +174,10 @@ def main() -> int:
         for _ in range(args.repeats):
             session_id = None
             try:
-                session_id = predictor.handle_request(
-                    {"type": "start_session", "resource_path": str(frame_dir)}
-                )["session_id"]
+                session_id = start_sam31_session(
+                    predictor,
+                    resource_path=str(frame_dir),
+                )
                 torch.cuda.reset_peak_memory_stats()
                 torch.cuda.synchronize()
                 started = time.perf_counter()
@@ -167,9 +186,7 @@ def main() -> int:
                         "type": "add_prompt",
                         "session_id": session_id,
                         "frame_index": 0,
-                        "points": [[0.5, 0.5]],
-                        "point_labels": [1],
-                        "obj_id": 1,
+                        "text": "person",
                     }
                 )
                 torch.cuda.synchronize()
@@ -197,7 +214,7 @@ def main() -> int:
         "builder": "build_sam3_predictor",
         "version": "sam3.1",
         "adaptation": "single_frame_directory_via_object_multiplex",
-        "prompt": {"type": "positive_point", "relative_xy": [0.5, 0.5], "obj_id": 1},
+        "prompt": {"type": "text", "concept": "person"},
         "repeats": 2,
         "deterministic": True,
         "mask_payload_sha256": hashes[0],

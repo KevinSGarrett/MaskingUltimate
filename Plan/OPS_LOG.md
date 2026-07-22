@@ -11536,3 +11536,30 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   `qa/live_verification/qwen3_6_27b_visual_calibration_20260722.json`,
   `qa/live_verification/qwen3_6_27b_visual_calibration_v2_20260722.json`, and
   `qa/live_verification/visual_critic_metric_reconciliation_20260722.json`.
+
+## 2026-07-22 - Official SAM 3.1 live discovery pass and SAM 3D Body repeatability finding
+
+- The exact official SAM 3.1 source commit, 3,502,755,717-byte multiplex
+  checkpoint, and isolated Python 3.11/cu128 runtime are persistent and
+  hash-verified on RunPod. A governed two-session text-discovery smoke returned
+  four person masks with an identical payload hash, 111,488 mask pixels,
+  11.076-second cold inference, 0.150-second warm inference, and
+  6,119,682,560-byte peak VRAM. The closed NPZ and report passed independent
+  Windows-host verification. Point refinement remains separately pending
+  because the exact public route returned structurally valid empty arrays.
+- The exact SAM 3D Body checkpoint, model configuration, MHR asset, source,
+  Detectron2 commit, and resolved isolated runtime are also persistent and
+  verified. One explicit person box produced finite geometry with stable
+  shapes and ownership, but raw geometry hashes differed on both required
+  repeats. Disabling TF32 and fused SDP kernels and forcing math SDP did not
+  make the bytes exact. The largest observed difference was 0.0001832 image
+  pixel and 5.44e-7 mesh unit; exact repeatability therefore remains failed.
+- The exact-hash gate was not weakened. DensePose remains active and rollback;
+  SAM 3D Body remains installed but unqualified with no benchmark, promotion,
+  mask, certificate, or gold authority. Two attempts exhaust this failure
+  class under the anti-spin rule. The provider runtime matrix is resealed at
+  `618ed1c39f962276182d9a8885baa78efcd6cb5ac71449695ca11fac3eb96e45`.
+- Focused runner, provider-matrix, multi-person availability, and tournament
+  tests pass; Ruff, Black, tracker validation, and diff integrity pass.
+  Evidence: `qa/live_verification/sam31_runpod_runtime_smoke_20260722.json` and
+  `qa/live_verification/sam3d_body_runpod_runtime_smoke_20260722.json`.

@@ -20,13 +20,14 @@ IMAGE = ROOT / "qa/fixtures/smoke/ultralytics_bus_adults.jpg"
 
 
 def _arrays() -> dict[str, np.ndarray]:
-    masks = np.zeros((1, 8, 12), dtype=bool)
+    masks = np.zeros((2, 8, 12), dtype=bool)
     masks[0, 2:7, 3:10] = True
+    masks[1, 0:3, 0:3] = True
     return {
         "masks": masks,
-        "object_ids": np.asarray([1], dtype=np.int64),
-        "probabilities": np.asarray([0.95], dtype=np.float32),
-        "boxes_xywh": np.asarray([[3.0, 2.0, 7.0, 5.0]], dtype=np.float32),
+        "object_ids": np.asarray([1, 2], dtype=np.int64),
+        "probabilities": np.asarray([0.95, 0.90], dtype=np.float32),
+        "boxes_xywh": np.asarray([[3.0, 2.0, 7.0, 5.0], [0.0, 0.0, 3.0, 3.0]], dtype=np.float32),
     }
 
 
@@ -58,7 +59,7 @@ def _executor(runner, *, mutate=None, returncode=0):
             "builder": "build_sam3_predictor",
             "version": "sam3.1",
             "adaptation": "single_frame_directory_via_object_multiplex",
-            "prompt": {"type": "positive_point", "relative_xy": [0.5, 0.5], "obj_id": 1},
+            "prompt": {"type": "text", "concept": "person"},
             "repeats": 2,
             "deterministic": True,
             "mask_payload_sha256": multiplex_payload_sha256(arrays),
@@ -104,8 +105,8 @@ def test_multiplex_smoke_contract_accepts_exact_artifact_and_report() -> None:
     report = runner.run(IMAGE)
     assert report["builder"] == "build_sam3_predictor"
     assert report["version"] == "sam3.1"
-    assert report["object_count"] == 1
-    assert report["mask_pixel_count"] == 35
+    assert report["object_count"] == 2
+    assert report["mask_pixel_count"] == 44
     assert report["may_author_gold"] is False
 
 

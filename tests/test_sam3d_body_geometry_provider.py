@@ -210,10 +210,24 @@ def _subprocess_executor(backend, image: Path, *, mutate=None, returncode: int =
     return executor
 
 
+def _isolated_backend(tmp_path: Path) -> Sam3dBodySubprocessBackend:
+    source_root = tmp_path / "source"
+    checkpoint_root = tmp_path / "checkpoint"
+    source_root.mkdir()
+    (checkpoint_root / "assets").mkdir(parents=True)
+    (checkpoint_root / "model.ckpt").write_bytes(b"test-checkpoint-placeholder")
+    (checkpoint_root / "assets" / "mhr_model.pt").write_bytes(b"test-mhr-placeholder")
+    return Sam3dBodySubprocessBackend(
+        path_mapper=lambda path: str(path),
+        source_root=source_root,
+        checkpoint_root=checkpoint_root,
+    )
+
+
 def test_isolated_subprocess_backend_binds_exact_report_and_artifact(tmp_path: Path) -> None:
     image = tmp_path / "person.png"
     image.write_bytes(b"governed-person-fixture")
-    backend = Sam3dBodySubprocessBackend(path_mapper=lambda path: str(path))
+    backend = _isolated_backend(tmp_path)
     backend._executor = _subprocess_executor(backend, image)
     provider = Sam3dBodyGeometryProvider(backend)
     result = provider.infer_geometry(image, person_box=_box())
@@ -241,7 +255,7 @@ def test_isolated_subprocess_backend_rejects_evidence_drift(
 ) -> None:
     image = tmp_path / "person.png"
     image.write_bytes(b"governed-person-fixture")
-    backend = Sam3dBodySubprocessBackend(path_mapper=lambda path: str(path))
+    backend = _isolated_backend(tmp_path)
     backend._executor = _subprocess_executor(backend, image, mutate=mutate)
     with pytest.raises(Sam3dBodyProcessError, match=message):
         backend(image, bboxes=np.asarray([_box().bbox_xyxy], dtype=np.float32))
@@ -250,7 +264,7 @@ def test_isolated_subprocess_backend_rejects_evidence_drift(
 def test_isolated_cuda_oom_is_visible_to_densepose_router(tmp_path: Path) -> None:
     image = tmp_path / "person.png"
     image.write_bytes(b"governed-person-fixture")
-    backend = Sam3dBodySubprocessBackend(path_mapper=lambda path: str(path))
+    backend = _isolated_backend(tmp_path)
     backend._executor = _subprocess_executor(backend, image, returncode=1)
     challenger = Sam3dBodyGeometryProvider(backend)
     fallback = GeometryProviderAdapter(

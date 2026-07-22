@@ -205,7 +205,7 @@ class Sam31MultiplexSmokeRunner:
             "builder": "build_sam3_predictor",
             "version": "sam3.1",
             "adaptation": "single_frame_directory_via_object_multiplex",
-            "prompt": {"type": "positive_point", "relative_xy": [0.5, 0.5], "obj_id": 1},
+            "prompt": {"type": "text", "concept": "person"},
             "repeats": 2,
             "deterministic": True,
             "authority": "runtime_smoke_only_no_candidate_serving_or_gold_authority",
@@ -239,12 +239,12 @@ class Sam31MultiplexSmokeRunner:
         if (
             masks.dtype != np.bool_
             or masks.ndim != 3
-            or masks.shape[0] != 1
-            or not masks.any()
-            or object_ids.shape != (1,)
-            or int(object_ids[0]) != 1
-            or probabilities.shape != (1,)
-            or boxes.shape != (1, 4)
+            or masks.shape[0] < 1
+            or not masks.any(axis=(1, 2)).all()
+            or object_ids.shape != (masks.shape[0],)
+            or len(np.unique(object_ids)) != masks.shape[0]
+            or probabilities.shape != (masks.shape[0],)
+            or boxes.shape != (masks.shape[0], 4)
             or not np.isfinite(probabilities).all()
             or not np.isfinite(boxes).all()
         ):
@@ -256,7 +256,7 @@ class Sam31MultiplexSmokeRunner:
             raise Sam31MultiplexError("SAM 3.1 smoke payload SHA-256 mismatch")
         return {
             **dict(report),
-            "object_count": 1,
+            "object_count": int(masks.shape[0]),
             "mask_pixel_count": int(masks.sum()),
         }
 

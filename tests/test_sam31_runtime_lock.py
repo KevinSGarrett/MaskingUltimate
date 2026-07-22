@@ -78,21 +78,24 @@ def test_sam31_lock_binds_correct_multiplex_checkpoint_smoke_contract() -> None:
     lock = json.loads((ROOT / "env/sam31_runtime.lock.json").read_text(encoding="utf-8"))
     contract = lock["live_smoke"]["subprocess_contract"]
     assert lock["source"]["local_path"] == "models/runtime_cache/sam3_source_5dd401d1"
-    assert contract["status"] == "offline_verified_live_pending"
+    assert contract["status"] == "runtime_pass_bounded_text_discovery"
     assert contract["correct_builder"].startswith("build_sam3_predictor")
     assert contract["forbidden_checkpoint_builder"].startswith("build_sam3_image_model")
     assert contract["adaptation"] == "single_frame_directory_via_object_multiplex"
     assert contract["determinism_repeats"] == 2
     assert _sha256(ROOT / contract["host_verifier"]) == contract["host_verifier_sha256"]
     assert _sha256(ROOT / contract["isolated_runner"]) == contract["isolated_runner_sha256"]
+    assert _sha256(ROOT / contract["session_compat"]) == contract["session_compat_sha256"]
     assert _sha256(ROOT / contract["fixture"]) == contract["fixture_sha256"]
-    assert lock["live_smoke"]["checkpoint_inference"] == ("not_run_wsl_filesystem_io_error")
+    assert lock["live_smoke"]["checkpoint_inference"] == (
+        "text_discovery_pass_point_refinement_empty_output"
+    )
 
 
 def test_sam31_lock_binds_official_production_discovery_and_refinement_contract() -> None:
     lock = json.loads((ROOT / "env/sam31_runtime.lock.json").read_text(encoding="utf-8"))
     contract = lock["live_smoke"]["production_contract"]
-    assert contract["status"] == "offline_verified_live_pending"
+    assert contract["status"] == ("discovery_runtime_pass_bounded_refinement_blocked_empty_output")
     assert contract["roles"] == ["concept_detector", "interactive_segmenter"]
     assert contract["builder"].startswith("build_sam3_predictor")
     assert "positive/negative box prompts" in contract["visual_exemplars"]
@@ -109,3 +112,4 @@ def test_sam31_lock_binds_official_production_discovery_and_refinement_contract(
         == contract["visual_exemplar_schema_sha256"]
     )
     assert _sha256(ROOT / contract["isolated_runner"]) == contract["isolated_runner_sha256"]
+    assert _sha256(ROOT / contract["session_compat"]) == contract["session_compat_sha256"]

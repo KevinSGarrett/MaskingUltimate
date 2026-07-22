@@ -28,9 +28,16 @@ def test_sam3d_body_lock_freezes_exact_official_assets_and_source() -> None:
         "assets/mhr_model.pt",
     }
     assert all(len(asset["sha256"]) == 64 for asset in lock["checkpoint"]["assets"])
+    assert lock["source"]["install_guide_sha256"] == (
+        "5b85f64e085a2f180e1852163f8c7ab019f6deccce5e9c981625eb6efb7bda22"
+    )
+    assert lock["source"]["readme_sha256"] == (
+        "5df8c7ac86a89e4146307765d3c504dcdc4166db8c6254e3879bb4df07ca3522"
+    )
     source = ROOT / lock["source"]["local_path"]
-    assert _sha256(source / "INSTALL.md") == lock["source"]["install_guide_sha256"]
-    assert _sha256(source / "README.md") == lock["source"]["readme_sha256"]
+    if source.is_dir():
+        assert _sha256(source / "INSTALL.md") == lock["source"]["install_guide_sha256"]
+        assert _sha256(source / "README.md") == lock["source"]["readme_sha256"]
 
 
 def test_sam3d_body_install_evidence_and_registry_remain_non_authoritative() -> None:
@@ -39,11 +46,17 @@ def test_sam3d_body_install_evidence_and_registry_remain_non_authoritative() -> 
     registry = yaml.safe_load((ROOT / "configs/external_sources.yaml").read_text(encoding="utf-8"))[
         "providers"
     ]["sam3d_body"]
-    assert evidence["result"] == "CHECKPOINT_INSTALL_PASS_RUNTIME_PENDING"
-    assert evidence["checkpoint"]["total_size_bytes"] == lock["checkpoint"]["total_size_bytes"]
+    assert evidence["result"] == "fail_repeatability"
+    assert (
+        sum(asset["size_bytes"] for asset in evidence["checkpoint_assets"].values())
+        == lock["checkpoint"]["total_size_bytes"]
+    )
     assert lock["checkpoint"]["downloaded"] is True
-    assert evidence["authority"]["checkpoint_installed"] is True
-    assert evidence["authority"]["live_smoke_passed"] is False
+    assert evidence["qualification"]["live_smoke_passed"] is False
+    assert evidence["qualification"]["benchmark_passed"] is False
+    assert evidence["qualification"]["may_author_gold"] is False
+    assert evidence["observations"]["all_required_geometry_arrays_nonempty_and_finite"] is True
+    assert evidence["observations"]["exact_geometry_hash_repeatable"] is False
     assert lock["authority"]["may_author_gold"] is False
     assert registry["lifecycle_state"] == "planned"
     assert registry["checkpoint_gate"] == "accepted_access_verified"
@@ -53,10 +66,11 @@ def test_sam3d_body_install_evidence_and_registry_remain_non_authoritative() -> 
 def test_sam3d_body_lock_binds_offline_verified_subprocess_contract() -> None:
     lock = json.loads(LOCK.read_text(encoding="utf-8"))
     contract = lock["runtime"]["subprocess_contract"]
-    assert contract["status"] == "offline_verified_live_pending"
+    assert contract["status"] == "live_geometry_observed_repeatability_blocked"
     assert contract["invocation"] == "wsl.exe argv only; shell disabled"
     assert contract["person_selection"].startswith("exactly one explicit")
     assert contract["determinism_repeats"] == 2
+    assert contract["determinism_result"].startswith("fail_exact_hash")
     assert contract["densepose_fallback"] == "only explicit CUDA/GPU out-of-memory"
     assert _sha256(ROOT / contract["host_adapter"]) == contract["host_adapter_sha256"]
     assert _sha256(ROOT / contract["isolated_runner"]) == contract["isolated_runner_sha256"]

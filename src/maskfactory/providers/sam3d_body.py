@@ -118,14 +118,24 @@ class Sam3dBodySubprocessBackend:
         timeout_seconds: int = 600,
         executor: CommandExecutor = _run_command,
         path_mapper: PathMapper = windows_to_wsl_path,
+        source_root: Path | None = None,
+        checkpoint_root: Path | None = None,
     ) -> None:
         if timeout_seconds < 1:
             raise ValueError("SAM 3D Body timeout must be positive")
         self.lock_path = Path(lock_path)
         self.lock = json.loads(self.lock_path.read_text(encoding="utf-8"))
         self.identity = sam3d_body_identity(self.lock_path)
-        self.source_root = ROOT / self.lock["source"]["local_path"]
-        self.checkpoint_root = ROOT / self.lock["checkpoint"]["local_root"]
+        self.source_root = (
+            Path(source_root)
+            if source_root is not None
+            else ROOT / self.lock["source"]["local_path"]
+        )
+        self.checkpoint_root = (
+            Path(checkpoint_root)
+            if checkpoint_root is not None
+            else ROOT / self.lock["checkpoint"]["local_root"]
+        )
         self.runtime_python = runtime_python
         self.distro = distro
         self.timeout_seconds = timeout_seconds

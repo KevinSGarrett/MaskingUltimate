@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 DEFAULT_MATRIX = Path("env/provider_runtime_matrix.json")
-LOCKED_MATRIX_SHA256 = "9dbd1b41b7452d8180dd0dc5803bab5a5bf46bb1cb0b19bd77f3baa93ab7356a"
+LOCKED_MATRIX_SHA256 = "618ed1c39f962276182d9a8885baa78efcd6cb5ac71449695ca11fac3eb96e45"
 EXPECTED_PROVIDERS = {
     "maskfactory_core",
     "sam3_1",
@@ -22,14 +22,14 @@ EXPECTED_PROVIDERS = {
 CURRENT_HUMAN_GATES: set[str] = set()
 CURRENT_PENDING = {
     "sam3_1": (
-        "checkpoint_installed_smoke_pending",
+        "discovery_smoke_passed_refinement_pending",
         "installed",
-        "not_run_wsl_filesystem_io_error",
+        "text_discovery_pass_point_refinement_empty_output",
     ),
     "sam3d_body": (
-        "checkpoint_installed_runtime_pending",
+        "live_geometry_repeatability_blocked",
         "installed",
-        "not_run_wsl_filesystem_io_error",
+        "fail_exact_repeat_hash",
     ),
 }
 QUALIFIED = "live_smoke_passed"

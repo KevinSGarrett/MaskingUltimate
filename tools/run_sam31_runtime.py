@@ -15,6 +15,11 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+
+if __package__:
+    from tools.sam31_session_compat import start_sam31_session
+else:
+    from sam31_session_compat import start_sam31_session
 from PIL import Image
 
 ARTIFACT_FIELDS = (
@@ -258,9 +263,10 @@ def main() -> int:
     prompt_translation = "text_prompt_exact"
     session_id = None
     try:
-        session_id = predictor.handle_request(
-            {"type": "start_session", "resource_path": str(args.frame_dir)}
-        )["session_id"]
+        session_id = start_sam31_session(
+            predictor,
+            resource_path=str(args.frame_dir),
+        )
         if request["operation"] == "discover":
             concepts = request["concepts"]
             visual_exemplars = request["visual_exemplars"]

@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "provider": "sam3d_body",
-  "status": "checkpoint_installed_runtime_pending",
+  "status": "checkpoint_installed_live_inference_repeatability_blocked",
   "source": {
     "repository": "https://github.com/facebookresearch/sam-3d-body",
     "commit": "b5c765a0d89d789985e186d396315e7590887b94",
@@ -46,21 +46,29 @@
     "project_profile": "private-personal-noncommercial"
   },
   "runtime": {
-    "platform": "planned isolated WSL Ubuntu-22.04 linux-64",
-    "python": "3.11 required by upstream INSTALL.md",
-    "requirements_lock": "not_created_wsl_filesystem_io_error",
-    "checkpoint_inference": "not_run_wsl_filesystem_io_error",
+    "platform": "RunPod Linux-64 persistent volume",
+    "environment_path": "/workspace/maskfactory/runtime_artifacts/sam3d_body_runpod_env",
+    "python": "3.11.10",
+    "torch": "2.10.0+cu128",
+    "torchvision": "0.25.0+cu128",
+    "cuda": "12.8",
+    "detectron2": "0.6@a1ce2f956a1d2212ad672e3c47d53405c2fe4312",
+    "requirements_lock": "env/sam3d_body_runtime.requirements.lock.txt",
+    "requirements_lock_sha256": "bbe25357f69aa7b93fcee2fbb0289469ee8e294433b39e0cbcb3c926bd20b667",
+    "checkpoint_inference": "valid_single_person_geometry_observed_exact_repeat_hash_failed",
     "subprocess_contract": {
-      "status": "offline_verified_live_pending",
+      "status": "live_geometry_observed_repeatability_blocked",
       "host_adapter": "src/maskfactory/providers/sam3d_body.py",
-      "host_adapter_sha256": "ab8d65a59fdbd306f4a331959e779d86a1fa67aaa24b69d438a7d5b965d079cd",
+      "host_adapter_sha256": "7d934466195b37a4e5adb0e7761ceb37eeb34528ebe18007e1ee860eddcbe214",
       "isolated_runner": "tools/run_sam3d_body.py",
-      "isolated_runner_sha256": "d438f80c60e2b8c08202f55aae4b1e1dc6c5f9a7c43091afe8cd48ca3941edd3",
+      "isolated_runner_sha256": "782511650206497f55c6f2f1204337f7aba764ae4e7a93e9884935176cd59b32",
       "runtime_python": "/home/kevin/mfenvs/sam3d-body-b5c765a/bin/python",
+      "runpod_runtime_python": "/workspace/maskfactory/runtime_artifacts/sam3d_body_runpod_env/bin/python",
       "invocation": "wsl.exe argv only; shell disabled",
       "person_selection": "exactly one explicit full-image xyxy person box",
       "inference_type": "full",
       "determinism_repeats": 2,
+      "determinism_result": "fail_exact_hash_after_baseline_and_deterministic_math_sdp_attempts",
       "artifact_format": "NPZ with allow_pickle=false",
       "evidence_fields": [
         "exact source/runtime/checkpoint/image hashes",
@@ -76,7 +84,7 @@
     }
   },
   "authority": {
-    "lifecycle_state": "planned",
+    "lifecycle_state": "installed_unqualified",
     "active_provider": "densepose_r50_fpn_s1x",
     "rollback_provider": "densepose_r50_fpn_s1x",
     "live_smoke_passed": false,
@@ -84,5 +92,5 @@
     "promoted": false,
     "may_author_gold": false
   },
-  "evidence": "qa/live_verification/sam3d_body_checkpoint_install_20260717.json"
+  "evidence": "qa/live_verification/sam3d_body_runpod_runtime_smoke_20260722.json"
 }

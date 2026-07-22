@@ -1,10 +1,10 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-22T17:41:50+00:00",
+    "generated_at": "2026-07-22T17:56:19+00:00",
     "generator": "tracker.py rebuild",
-    "total_items": 856,
-    "total_tracked_including_orphaned": 856
+    "total_items": 857,
+    "total_tracked_including_orphaned": 857
   },
   "phase_meta": {
     "P0": {
@@ -23615,6 +23615,38 @@
       "updated_at": "2026-07-22T16:49:57+00:00",
       "orphaned": false
     },
+    "MF-P4-12.11": {
+      "id": "MF-P4-12.11",
+      "phase": "P4",
+      "cluster_id": null,
+      "cluster_title": null,
+      "spec_ref": null,
+      "description": "Define, calibrate, freeze, and hash-bind the quantitative per-label/per-context QA registry covering presence, area references, components/holes, ownership/containment, protected/exclusive/cross-person overlap, laterality/front-back, parent-child and atomic-map rules, boundary metrics, fill/leakage/unsupported pixels, thin structures, topology, transforms, perturbations, duplicates, and complete-map recomposition · Verify: every enabled ontology label resolves exactly; unknown/missing contexts, incomplete metrics, global-rule collapse, threshold drift, or absent calibration fail closed; only a new immutable empirically qualified registry version can authorize `autonomous_certified_gold` · Blocked by: MF-P2-11.21 · HARD BLOCKER",
+      "source_file": "22_ITEMS_P0_ADULT_CORPUS_AUTONOMY.md",
+      "source_line": 24,
+      "is_exit_gate": false,
+      "hard_blocker": true,
+      "conditional": false,
+      "status": "partially_complete",
+      "percent_complete": 55,
+      "notes": [
+        {
+          "ts": "2026-07-22T17:57:03+00:00",
+          "actor": "ai_agent",
+          "text": "Implemented the closed, versioned 0.1.0 per-label/per-context registry candidate and resolver across all 146 enabled v2 labels. It covers all required metric families, distinct mask-type/context profiles, strict cross-person bleed zero, thin structures, exact hashes, and negative fail-closed cases. The registry deliberately remains uncalibrated_no_gold_authority; empirical calibration, immutable qualified v1 publication, runtime QA binding, and real canaries remain open."
+        },
+        {
+          "ts": "2026-07-22T17:58:11+00:00",
+          "actor": "ai_agent",
+          "text": "Added ontology-bound validation for every declared thin-structure label; unknown, disabled, or duplicated thin-structure declarations now fail closed. Focused and adjacent validation is 51 passing tests."
+        }
+      ],
+      "evidence": "qa/live_verification/autonomous_gold_qa_threshold_registry_candidate_20260722.json SHA-256 a91653bceb542d2a38b2cbeedbda1b9624f326b44815ff75ec0ab169f955311f; 51 focused/adjacent tests pass; Ruff, Black, JSON, tracker validation pass; no gold authority claimed.",
+      "blocked_reason": null,
+      "created_at": "2026-07-22T17:56:19+00:00",
+      "updated_at": "2026-07-22T17:58:11+00:00",
+      "orphaned": false
+    },
     "MF-P5-11.01": {
       "id": "MF-P5-11.01",
       "phase": "P5",
@@ -23623,7 +23655,7 @@
       "spec_ref": null,
       "description": "Export qualified polygons and machine-verified candidates into immutable weighted training datasets with exact source/remap/group seals · Verify: unqualified, coarse-as-fine, reference, quarantined, and holdout records are rejected · Blocked by: MF-P0-18.06, MF-P4-12.08 · HARD BLOCKER",
       "source_file": "22_ITEMS_P0_ADULT_CORPUS_AUTONOMY.md",
-      "source_line": 25,
+      "source_line": 27,
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
@@ -23644,7 +23676,7 @@
       "spec_ref": null,
       "description": "Freeze the original holdout policy and prove zero exact/near/source-family overlap with training/calibration · Verify: immutable holdout seal and leakage test pass before first evaluation · Blocked by: MF-P0-18.06 · HARD BLOCKER",
       "source_file": "22_ITEMS_P0_ADULT_CORPUS_AUTONOMY.md",
-      "source_line": 26,
+      "source_line": 28,
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
@@ -23681,7 +23713,7 @@
       "spec_ref": null,
       "description": "Train and benchmark anatomy-aware challengers, then promote only measured winners through existing champion policy · Verify: per-class/boundary/false-positive/hard-bucket results bind exact corpus and checkpoint seals · Blocked by: MF-P5-11.01, MF-P5-11.02",
       "source_file": "22_ITEMS_P0_ADULT_CORPUS_AUTONOMY.md",
-      "source_line": 27,
+      "source_line": 29,
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
@@ -23702,7 +23734,7 @@
       "spec_ref": null,
       "description": "Probe `/workspace/assets/MaskedWarehouse/Nude`, source `paths.env`, and synchronize only missing/hash-drifted allowlisted paths while retaining `Nude/CivitAI_Top_NSFW_Images` as reference-only input · Verify: local/pod counts and registry/index seals match, exact CivitAI relative paths and roles remain unchanged, and ZIP/cache duplicates are excluded · Blocked by: MF-P0-18.01",
       "source_file": "22_ITEMS_P0_ADULT_CORPUS_AUTONOMY.md",
-      "source_line": 30,
+      "source_line": 32,
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
@@ -23729,7 +23761,7 @@
       "spec_ref": null,
       "description": "Prove durable RunPod queue, checkpoint, crash recovery, and capacity-coordinated provider/VLM bursts · Verify: restart resumes by sample ID and incompatible large models serialize without OOM · Blocked by: MF-P4-12.01, MF-P7-08.01",
       "source_file": "22_ITEMS_P0_ADULT_CORPUS_AUTONOMY.md",
-      "source_line": 31,
+      "source_line": 33,
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
@@ -23750,7 +23782,7 @@
       "spec_ref": null,
       "description": "Account all 81,910 adopted records as qualified input, candidate, repaired, abstained/rejected, quarantined, or holdout and bind accepted outputs into training/release/recovery evidence · Verify: signed reconciliation has zero unknown records and the frozen ComfyUI release path consumes the qualified result · Blocked by: MF-P4-12.08, MF-P5-11.03, MF-P7-08.02 · HARD BLOCKER",
       "source_file": "22_ITEMS_P0_ADULT_CORPUS_AUTONOMY.md",
-      "source_line": 32,
+      "source_line": 34,
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,

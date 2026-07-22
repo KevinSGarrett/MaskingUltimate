@@ -356,3 +356,27 @@ recorded lifecycle byte hash. Therefore all 641—not only the isolated 220—ar
 quarantined from every authority-bearing use. Relative `package_truth` paths
 are interpreted only beneath their declared primary package root; existence in
 that context never repairs a stale lineage or missing semantic/quorum binding.
+
+## 15. Per-label and per-context quantitative QA registry
+
+`configs/autonomous_gold_qa_thresholds.yaml` is the single versioned registry
+for deterministic quantitative QA. It resolves every enabled ontology label
+through its mask type and explicit ontology metadata, then applies only named
+context modifiers. It covers expected presence; area relative to image,
+person, parent, and proposal; components and holes; owner containment;
+protected, mutually exclusive, and cross-person overlap; laterality and
+front/back consistency; parent/child coverage and atomic-map exclusivity;
+boundary alignment, precision, recall, F-score, symmetric distance, and p95
+edge error; underfill, overfill, leakage, missing visible area, unsupported
+pixels; thin structures; topology; transform round-trip; perturbation
+stability; duplicate person/mask detection; and exact complete-map
+recomposition.
+
+The initial `0.1.0` registry is a frozen engineering-prior candidate only. It
+is explicitly `uncalibrated_no_gold_authority` and cannot authorize gold.
+Every enabled label must resolve exactly, unknown or duplicated contexts fail
+closed, and cross-person bleed remains zero. Qualification must bind frozen
+positive/negative calibration evidence by label, context, domain, size,
+occlusion/contact, and multi-person risk. Promotion creates a new immutable
+registry version; observed qualification results may never rewrite this
+candidate in place or lower thresholds to manufacture passes.

@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_id": "autonomous_gold_qa_threshold_registry_candidate_20260722",
+  "tracker_item": "MF-P4-12.11",
+  "status": "STATIC_CANDIDATE_PASS_LIVE_CALIBRATION_OPEN",
+  "registry": {
+    "registry_id": "autonomous_gold_per_label_context_qa_candidate_v1",
+    "schema_version": "0.1.0",
+    "registry_file_sha256": "91d73bcadbcc5517cfbd0e69ba01902aec5662663f11d9e1dfe126fe88bb6d8f",
+    "ontology_sha256": "e4bea7663ad4f72c5550fbf93efafb506eca8593ad227f338620d6d5137ed2c4",
+    "enabled_label_count": 146,
+    "resolved_registry_sha256": "9cf6da93257725484271adc94c329b715ac84612fb314eb8db8c7c09835fb377",
+    "qualification_status": "uncalibrated_no_gold_authority",
+    "authority_eligible": false
+  },
+  "implementation_sha256": "2a330c31c6f5f1cd9766e9318e21c88edbf38525efc270baa6b49178920b0ed3",
+  "closed_resolution_schema_sha256": "f83170ed0b6f6fccf8bf346d0c4733a3feabbbd7ccd2b535215c40e5fbdc2323",
+  "coverage": {
+    "metric_family_count": 33,
+    "mask_type_profile_count": 6,
+    "context_count": 6,
+    "thin_structure_label_count": 18,
+    "cross_person_bleed_ceiling": 0.0
+  },
+  "validation": {
+    "focused_and_adjacent_tests_passed": 51,
+    "ruff": "PASS",
+    "black": "PASS",
+    "tracker_items": 857,
+    "tracker_validation": "PASS",
+    "negative_fixtures": [
+      "unknown_missing_and_duplicate_context",
+      "incomplete_metric_coverage",
+      "incomplete_mask_type_coverage",
+      "unknown_or_disabled_thin_structure_label",
+      "nonzero_cross_person_bleed",
+      "uncalibrated_gold_authority_attempt"
+    ]
+  },
+  "open_requirements": [
+    "freeze_label_context_domain_risk_calibration_corpus",
+    "measure_and_justify_thresholds_against_qualified_evidence",
+    "publish_new_immutable_qualified_registry_version",
+    "bind_qualified_registry_into_per_record_QA_and_certificate_admission",
+    "run_real_single_and_multi_person_source_to_certificate_canaries"
+  ],
+  "claim_limits": [
+    "no_runtime_candidate_was_scored",
+    "no_visual_critic_was_qualified",
+    "no_operational_certificate_was_issued",
+    "no_autonomous_certified_gold_was_created",
+    "engineering_prior_thresholds_are_not_empirically_qualified"
+  ]
+}

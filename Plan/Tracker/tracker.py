@@ -3,7 +3,7 @@
 MaskFactory Project Tracker
 ===========================
 Canonical, machine-readable status tracker for the Ultimate Masking System
-build-out: 856 action items across phases P0-P9, three independently scoped
+build-out: 857 action items across phases P0-P9, three independently scoped
 completion profiles, Definition-of-Done (D1-D11) and Goals (G1-G9) rollups,
 plus free-form project metrics.
 
@@ -95,7 +95,7 @@ STATUS_GLYPH = {
     "not_applicable": "\u2796",  # ➖
 }
 
-EXPECTED_ITEM_COUNT = 856
+EXPECTED_ITEM_COUNT = 857
 
 CORE_EXCLUDED_DEPENDENCIES = (
     "human_anchor_masks",

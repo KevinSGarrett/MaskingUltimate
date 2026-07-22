@@ -783,8 +783,17 @@ class AutonomousWorkCell:
                     "SELECT COUNT(*) FROM stage_receipts WHERE mission_id=?", (mission_id,)
                 ).fetchone()[0]
             )
+            receipt_rows = connection.execute(
+                "SELECT stage,status,COUNT(*) AS count FROM stage_receipts WHERE mission_id=? "
+                "GROUP BY stage,status ORDER BY stage,status",
+                (mission_id,),
+            ).fetchall()
         stage_counts = Counter(str(row["stage"]) for row in rows)
         outcome_counts = Counter(str(row["outcome"]) for row in rows if row["outcome"])
+        last_error_counts = Counter(str(row["last_error"]) for row in rows if row["last_error"])
+        stage_status_counts = {
+            f"{row['stage']}:{row['status']}": int(row["count"]) for row in receipt_rows
+        }
         terminal_count = sum(stage_counts[stage] for stage in TERMINAL_STAGES)
         errors: list[str] = []
         if len(rows) > int(mission_row["expected_records"]):
@@ -827,6 +836,9 @@ class AutonomousWorkCell:
             "remaining_record_count": len(rows) - terminal_count,
             "stage_counts": dict(sorted(stage_counts.items())),
             "outcome_counts": dict(sorted(outcome_counts.items())),
+            "stage_status_counts": stage_status_counts,
+            "last_error_counts": dict(sorted(last_error_counts.items())),
+            "stage_receipt_count": receipt_count,
             "repair_attempt_count": sum(int(row["repair_attempt_count"]) for row in rows),
             "bulk_policy_sha256": canonical_sha256(manifest["bulk_policy"]),
             "reporting_mode": manifest["bulk_policy"]["reporting_mode"],

@@ -284,6 +284,9 @@ def test_complete_mission_advances_all_authority_stages(tmp_path: Path) -> None:
     report = cell.report(document["mission_id"])
     assert report["mission_state"] == "complete"
     assert report["outcome_counts"] == {"accepted": 1}
+    assert report["stage_receipt_count"] == 8
+    assert report["stage_status_counts"]["certification:pass"] == 1
+    assert report["last_error_counts"] == {}
     assert report["milestones"][0]["terminal_record_count"] == 1
     assert report["reporting_mode"] == "milestone_only"
     assert report["bulk_policy_sha256"]
@@ -539,6 +542,8 @@ def test_runner_isolates_stage_failure_and_continues_other_records(tmp_path: Pat
     report = runner.run(document["mission_id"])
     assert report["mission_state"] == "complete"
     assert report["outcome_counts"] == {"abstained": 2}
+    assert report["stage_receipt_count"] == 0
+    assert report["last_error_counts"] == {"stage_executor_failure:source_decode:RuntimeError": 2}
     assert report["material_incidents"] == [
         {
             "incident_type": "stage_executor_failure_rate",
@@ -689,6 +694,7 @@ def test_cli_run_loads_hash_bound_handlers_and_writes_milestones(tmp_path: Path)
     )
     assert report["mission_state"] == "complete"
     assert report["outcome_counts"] == {"accepted": 1}
+    assert report["stage_status_counts"]["provider_tournament:pass"] == 1
     snapshots = list((tmp_path / "milestones").glob("mission-cli-0001_terminal_*.json"))
     assert len(snapshots) == 1
 

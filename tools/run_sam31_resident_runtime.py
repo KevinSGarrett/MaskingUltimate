@@ -153,6 +153,8 @@ def main() -> int:
                         command.get("request_id") if isinstance(command, dict) else None
                     ),
                     "process_id": os.getpid(),
+                    "request_sequence": request_count or None,
+                    "model_load_count": resident_cache_stats()["model_load_count"],
                     "error_type": type(exc).__name__,
                     "error": str(exc),
                 }

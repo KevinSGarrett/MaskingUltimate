@@ -361,16 +361,45 @@ class ResidentSam31CommandExecutor:
         return self.evidence()
 
     def evidence(self) -> dict[str, Any]:
+        response_summaries = []
+        report_fields = (
+            "operation",
+            "request_sha256",
+            "encoded_frame_sha256",
+            "prompt_npz_sha256",
+            "result_count",
+            "payload_sha256",
+            "output_npz_sha256",
+            "model_load_latency_ms",
+            "inference_latency_ms",
+            "model_vram_bytes",
+            "peak_inference_vram_bytes",
+            "prompt_translation",
+            "authority",
+            "may_author_gold",
+        )
+        for response in self._responses:
+            row = {
+                "status": response.get("status"),
+                "request_sequence": response.get("request_sequence"),
+                "model_load_count": response.get("model_load_count"),
+            }
+            report = response.get("report")
+            if isinstance(report, Mapping):
+                row["report"] = {field: report.get(field) for field in report_fields}
+            else:
+                row["error_type"] = response.get("error_type")
+                row["error"] = response.get("error")
+            response_summaries.append(row)
         body = {
             "schema_version": "maskfactory.sam31_resident_evidence.v1",
             "ready": self._ready,
             "summary": self._summary,
             "response_count": len(self._responses),
             "response_sequences": [
-                response.get("request_sequence")
-                for response in self._responses
-                if response.get("status") == "complete"
+                response.get("request_sequence") for response in self._responses
             ],
+            "responses": response_summaries,
             "stderr_tail": "\n".join(self._stderr)[-2000:],
             "authority": AUTHORITY,
             "production_mask_authority": False,

@@ -1,0 +1,80 @@
+{
+  "schema_version": "1.0.0",
+  "item_ids": ["MF-P4-12.01", "MF-P4-12.04"],
+  "recorded_at": "2026-07-23T02:12:30Z",
+  "operation": "runpod_sam31_reference_person_provider_canary",
+  "pod_id": "1q4ji0gg1fkhvt",
+  "production_platform": "runpod",
+  "local_inference_used": false,
+  "source_worktree": "C:/w/maskfactory-plan-modernization",
+  "deployed_archive": {
+    "path": "runtime_artifacts/runpod_deploy_25e6cfdc1558fb7fb9a2b145085037fbd998c7ef.tar",
+    "sha256": "89a403189aabe27b4e63e8ffa0e14e367a0bd44986924647146260606fa2880c",
+    "size_bytes": 64716800
+  },
+  "remote_deployed_files": {
+    "tools/run_nude_box_prompt_masks.py": "2599fa6d9c9b04c421de1099441c46ba7b77acc6a3bcb505c480c1b2671bd89d",
+    "src/maskfactory/providers/sam31_runtime.py": "7bb1c9a39c15b0bcf6ea08745a5db4b608b4b28c99424e32251673178d58422b",
+    "configs/production_runpod_routing.yaml": "926a66145758b614fa1bd98832ecfe77d5e79d187f14d05621aa7bfba8d8ec9f"
+  },
+  "incident_containment": {
+    "gpu_sequencer_patch_reapplied": true,
+    "gpu_sequencer_patch_result_sha256": "c8bf598889e8da47dab6df104a63de8832a856f5f1fdade7b049e6243b97f7f0",
+    "policy_guard_after_patch": "PASS",
+    "process_termination": false,
+    "remote_pod_lifecycle_mutation": false
+  },
+  "sam31_path_binding": {
+    "source_root": "/workspace/maskfactory/models/runtime_cache/sam3_source_5dd401d1",
+    "source_root_bound_to": "/workspace/models/runtime_cache/sam3_source_5dd401d1",
+    "checkpoint": "/workspace/maskfactory/models/runtime_cache/sam31_checkpoint_daa63191/sam3.1_multiplex.pt",
+    "checkpoint_sha256": "0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6",
+    "binding_repaired": true,
+    "model_download_performed": false
+  },
+  "coordinator": {
+    "first_lease_id": "lease_5abc5bb22c1f4e37a720c8a0c6c80b29",
+    "first_lease_counted_as_capacity_proof": false,
+    "first_lease_limitation": "ownerless_grant_auto_reclaimed_before_release; token not retained in process for release",
+    "subsequent_ownerless_lease_observed": "lease_2b40d3f8dbdb4b33bff78adb540fadfc",
+    "external_active_recovery_lease": "lease_3a68c97ac2d746dbbccebb542671e152",
+    "external_active_recovery_release_result": "remote_exit_",
+    "external_active_recovery_counted_as_capacity_proof": false,
+    "duplicate_side_request_auto_granted_ownerless": "lease_8ead1c6aa94646a1a340a6a47cc71c02",
+    "capacity_coordinated_completion_claimed": false
+  },
+  "canary_input": {
+    "catalog_batch": "/workspace/maskfactory/runtime_artifacts/nude_reference_person_catalog_comparison_20260722_v4/comparison_raised_040.json",
+    "catalog_batch_sha256": "77f97391760d1edf64072200a45c7671162137e5598b2ddc0d548b939831b75c",
+    "source_shard": "/workspace/assets/MaskedWarehouse/Nude/_MASKFACTORY_INTAKE/batch_shards/runpod/reference_and_tournament_input.0001.json",
+    "source_shard_sha256": "1cf9572717f3f3f89d20cf1832dadd5a825e0407d06537f3578c72cac1c0fee2",
+    "sample_ids": [
+      "nude_7b75809e7490eab8a72eeaff",
+      "nude_9dd1d60c1632b8566b42dd84"
+    ]
+  },
+  "canary_output": {
+    "remote_root": "/workspace/maskfactory/runtime_artifacts/nude_sam31_provider_canary_20260723_side",
+    "local_copy_root": "runtime_artifacts/nude_sam31_provider_canary_20260723_side",
+    "provider_output_sha256": "590618cf3ac5775ed5d13ce8712932123364e19ce524387c59cb602d37502b07",
+    "provider_output_self_sha256": "8c28d233587123dc77f0f3bc12e304c83d106ede0408f3450c82441ae76351cd",
+    "hard_qc_sha256": "530182eb9fc74fc200483824f1d63e30e664efa6093502e003e338057df01bd2",
+    "hard_qc_self_sha256": "22e3ddeb7e4351ead656c3d7559b02bd2852603c2d7d97724dffc31cec44e994",
+    "record_count": 2,
+    "candidate_count": 0,
+    "provider_status_counts": {"provider_abstain": 2},
+    "hard_qc_status_counts": {"upstream_abstain": 2},
+    "first_abstain_reason": "Sam31RuntimeError:one or more governed SAM 3.1 runtime inputs are missing"
+  },
+  "authority": {
+    "mask_candidates_created": false,
+    "hard_qc_pass_claimed": false,
+    "strict_visual_review_claimed": false,
+    "repair_claimed": false,
+    "operational_certificate_issued": false,
+    "autonomous_gold_claimed": false,
+    "training_truth_claimed": false
+  },
+  "result": "FAIL_CLOSED_PROVIDER_ABSTAIN",
+  "next_required_action": "rerun the same bounded SAM3.1 provider canary after the ownerless coordinator lease clears, using an in-process captured token and the repaired SAM3.1 persistent path binding"
+}

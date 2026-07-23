@@ -23223,12 +23223,17 @@
           "ts": "2026-07-23T01:18:09+00:00",
           "actor": "ai_agent",
           "text": "STATIC_PASS_BOUNDED: adopted RunPod autonomous work-cell implementation into codex/maskfactory-plan-modernization at merge fb38ef0900b2db27aaf1b6f48d0c560d76b99ef3. It adds durable mission controller, hash-bound stage handlers, compact stage-command builder, self-hosted development patch bundles, and Nude qualified-record bridge. Validated 75 adjacent tests, Ruff, Black, direct CLI help, and diff-check. Completion remains open for live provider crash/restart and observed 1000-record production milestone."
+        },
+        {
+          "ts": "2026-07-23T02:17:11+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-23 side recovery: RunPod source archive 89a403... deployed to /workspace/maskfactory, shared 48GB gpu_sequencer policy guard was repaired after deployment drift and verified PASS, SAM3.1 persistent source/checkpoint path bindings were restored without model download, and a two-record CivitAI reference SAM3.1 provider canary executed on RunPod. It failed closed with provider_abstain=2/upstream_abstain=2 and zero candidates; first reason was missing governed SAM3.1 runtime inputs before path repair. No local inference, masks, strict visual pass, certificates, gold, or training truth claimed. Capacity-coordinated completion remains open because the recorded canary lease lineage included ownerless/ambiguous lease handling and no 1,000-record milestone."
         }
       ],
-      "evidence": "qa/live_verification/runpod_autonomous_work_cell_adoption_20260723.json",
+      "evidence": "qa/live_verification/runpod_sam31_provider_canary_failclosed_20260723.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-23T01:18:09+00:00",
+      "updated_at": "2026-07-23T02:17:11+00:00",
       "orphaned": false
     },
     "MF-P4-12.02": {
@@ -23388,7 +23393,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 52,
+      "percent_complete": 53,
       "notes": [
         {
           "ts": "2026-07-22T11:53:28+00:00",
@@ -23424,12 +23429,17 @@
           "ts": "2026-07-22T16:57:03+00:00",
           "actor": "ai_agent",
           "text": "2026-07-22: executable strict per-record visual batch integration now follows generation and hard QC with v2 target and qualified independent-role bindings, exact evidence/response hashes, and resumable nonterminal receipts. No live masks or qualified visual verdicts exist yet; repair and certification remain open."
+        },
+        {
+          "ts": "2026-07-23T02:17:24+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-23 side recovery: production reference-lane provider canary was corrected back to RunPod/SAM3.1-first routing. The two-record SAM3.1 canary used the selected CivitAI reference person catalog and reference-only shard on /workspace, produced provider_abstain=2/upstream_abstain=2 with zero mask candidates, and issued no mask/gold/certificate/training authority. Local SAM2/CVAT/Ollama evidence is not credited as production progress; SAM2 remains only bounded fallback/benchmark/optional assistance per configs/production_runpod_routing.yaml. Full CivitAI mask generation, hard-QC pass counts, strict visual review, repair, terminal outcomes, and certification remain open."
         }
       ],
-      "evidence": "qa/live_verification/nude_civitai_reference_person_catalog_canary_20260722.json; selected comparison 9aa78ea1a4a9d06ae19fd05e5e866bad5c7a79e78d47ee8a580b6c7d4e626472; GroundingDINO output 2bd5bcab025ebbc6453d55ad8dcc34ac12767343c6adc1de5955d73a197a46fb; YOLO output ceb0f17ef6526e51dbe0d47329000dffd55a0cf50f6e4790a13af950aae9eca9; 239 focused/adjacent tests, Ruff, Black, tracker validation PASS.",
+      "evidence": "qa/live_verification/runpod_sam31_provider_canary_failclosed_20260723.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T16:57:03+00:00",
+      "updated_at": "2026-07-23T02:17:24+00:00",
       "orphaned": false
     },
     "MF-P4-12.05": {

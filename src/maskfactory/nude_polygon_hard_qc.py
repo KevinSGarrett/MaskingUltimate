@@ -172,11 +172,15 @@ def run_full_polygon_hard_qc(
     *,
     split_summary: Path,
     split_mapping: Path,
+    platform: str = "local",
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    intake = load_adopted_intake(intake_root, platform="local")
+    intake = load_adopted_intake(intake_root, platform=platform)
     records = load_records(intake)
     split_groups = load_group_evidence(split_summary, split_mapping)
-    source_root = Path(intake["registry"]["root"])
+    # The intake directory is stored directly below the governed Nude corpus
+    # on both Windows and RunPod.  The registry's root remains Windows
+    # provenance and must not be interpreted as the active platform path.
+    source_root = Path(intake["intake_root"]).parent.resolve(strict=True)
     selected = [
         record
         for record in records.values()
@@ -305,6 +309,10 @@ def run_full_polygon_hard_qc(
         "segmentation_encoding_counts": dict(sorted(encodings.items())),
         "advisory_counts": dict(sorted(advisories.items())),
         "hard_qc": {
+            "mask_hash_contract": "MASKFACTORY_BOOL_MASK_V1_shape_packbits_big",
+            "mask_hash_implementation_sha256": hashlib.sha256(
+                Path(__file__).read_bytes()
+            ).hexdigest(),
             "binary_materialization_required": True,
             "decoded_mask_area_recomputed_from_pixels": True,
             "source_annotation_area_is_advisory": True,

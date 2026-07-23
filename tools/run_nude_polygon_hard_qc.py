@@ -20,11 +20,13 @@ def main() -> int:
     parser.add_argument("--split-summary", type=Path, required=True)
     parser.add_argument("--split-mapping", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--platform", choices=("local", "runpod"), default="local")
     args = parser.parse_args()
     records, summary = run_full_polygon_hard_qc(
         args.intake,
         split_summary=args.split_summary,
         split_mapping=args.split_mapping,
+        platform=args.platform,
     )
     result = write_polygon_qc_evidence(records, summary, args.output_dir)
     print(json.dumps(result, indent=2, sort_keys=True))

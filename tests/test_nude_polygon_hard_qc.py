@@ -148,3 +148,19 @@ def test_every_pixel_label_requires_explicit_scale_policy() -> None:
             height=64,
             crosswalk=_crosswalk(),
         )
+
+
+def test_mask_hash_contract_is_current_shape_bound_boolean_identity() -> None:
+    result = evaluate_polygon_annotation(
+        {
+            "segmentation": [[1, 1, 5, 1, 5, 5, 1, 5]],
+            "bbox": [1, 1, 5, 5],
+        },
+        raw_label="breast",
+        width=8,
+        height=8,
+        crosswalk=_crosswalk(),
+    )
+    expected = np.zeros((8, 8), dtype=bool)
+    expected[1:6, 1:6] = True
+    assert result["mask_sha256"] == binary_mask_sha256(expected)

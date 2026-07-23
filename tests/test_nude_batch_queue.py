@@ -358,6 +358,84 @@ def test_retry_cap_turns_expired_work_terminal(
     assert queue.summary(platform="runpod")["states"] == {"failed": 1}
 
 
+def test_exact_shard_claim_supports_lane_canaries_and_expiry_recovery(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    now = [1_000.0]
+    monkeypatch.setattr("maskfactory.nude_batch_queue.time.time", lambda: now[0])
+    queue = NudeBatchQueue(tmp_path / "queue.sqlite", max_attempts=3)
+    descriptors = [
+        {
+            "platform": "runpod",
+            "path": "runpod/bbox_evaluation_only.0001.json",
+            "lane": "bbox_evaluation_only",
+            "self_sha256": "a" * 64,
+            "sample_count": 2,
+        },
+        {
+            "platform": "runpod",
+            "path": "runpod/reference_and_tournament_input.0001.json",
+            "lane": "reference_and_tournament_input",
+            "self_sha256": "b" * 64,
+            "sample_count": 2,
+        },
+    ]
+    queue.seed(descriptors, platform="runpod")
+
+    exact = queue.claim(
+        platform="runpod",
+        owner="reference-canary",
+        lease_seconds=1,
+        shard_path=descriptors[1]["path"],
+    )
+    assert exact is not None
+    assert exact["shard_path"] == descriptors[1]["path"]
+    assert exact["lane"] == "reference_and_tournament_input"
+    assert exact["attempt_count"] == 1
+    assert (
+        queue.claim(
+            platform="runpod",
+            owner="duplicate",
+            shard_path=descriptors[1]["path"],
+        )
+        is None
+    )
+    with pytest.raises(NudeBatchQueueError, match="seeded exact shard required"):
+        queue.claim(
+            platform="runpod",
+            owner="missing",
+            shard_path="runpod/missing.json",
+        )
+
+    now[0] += 2
+    resumed = queue.claim(
+        platform="runpod",
+        owner="reference-resume",
+        shard_path=descriptors[1]["path"],
+    )
+    assert resumed is not None
+    assert resumed["shard_path"] == descriptors[1]["path"]
+    assert resumed["attempt_count"] == 2
+
+    ordinary = queue.claim(platform="runpod", owner="ordinary")
+    assert ordinary is not None
+    assert ordinary["shard_path"] == descriptors[0]["path"]
+    queue.release(
+        platform="runpod",
+        shard_path=descriptors[1]["path"],
+        lease_token=resumed["lease_token"],
+        reason="crash_resume_canary_complete",
+    )
+    assert queue.summary(platform="runpod")["states"] == {"leased": 1, "queued": 1}
+    exact_again = queue.claim(
+        platform="runpod",
+        owner="reference-next",
+        shard_path=descriptors[1]["path"],
+    )
+    assert exact_again is not None
+    assert exact_again["attempt_count"] == 3
+
+
 def test_qualified_checkpoint_revalidates_receipt_before_mutation(tmp_path: Path) -> None:
     queue = NudeBatchQueue(tmp_path / "queue.sqlite")
     queue.seed(_descriptors()[:1], platform="runpod")

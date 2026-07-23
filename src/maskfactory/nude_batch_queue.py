@@ -190,10 +190,17 @@ class NudeBatchQueue:
         return {"inserted": inserted, "retained": retained, "selected": len(selected)}
 
     def claim(
-        self, *, platform: str, owner: str, lease_seconds: int = 900
+        self,
+        *,
+        platform: str,
+        owner: str,
+        lease_seconds: int = 900,
+        shard_path: str | None = None,
     ) -> dict[str, Any] | None:
         if not owner or lease_seconds < 1:
             raise ValueError("owner and positive lease_seconds are required")
+        if shard_path is not None and not shard_path.strip():
+            raise ValueError("exact shard path must be nonempty")
         now = time.time()
         with self._transaction() as connection:
             exhausted = connection.execute(
@@ -208,16 +215,32 @@ class NudeBatchQueue:
                     "WHERE platform=? AND shard_path=?",
                     (now, platform, row["shard_path"]),
                 )
-            row = connection.execute(
-                "SELECT * FROM shards WHERE platform=? AND "
-                "(state='queued' OR (state='leased' AND lease_expires_at<=? AND attempt_count<?)) "
-                "ORDER BY CASE lane "
-                "WHEN 'bbox_evaluation_only' THEN 0 "
-                "WHEN 'bbox_prompt_and_action_tag_supervision' THEN 1 "
-                "WHEN 'bbox_prompt_supervision' THEN 2 "
-                "WHEN 'polygon_external_supervision' THEN 3 ELSE 4 END, shard_path LIMIT 1",
-                (platform, now, self.max_attempts),
-            ).fetchone()
+            if shard_path is None:
+                row = connection.execute(
+                    "SELECT * FROM shards WHERE platform=? AND "
+                    "(state='queued' OR "
+                    "(state='leased' AND lease_expires_at<=? AND attempt_count<?)) "
+                    "ORDER BY CASE lane "
+                    "WHEN 'bbox_evaluation_only' THEN 0 "
+                    "WHEN 'bbox_prompt_and_action_tag_supervision' THEN 1 "
+                    "WHEN 'bbox_prompt_supervision' THEN 2 "
+                    "WHEN 'polygon_external_supervision' THEN 3 ELSE 4 END, "
+                    "shard_path LIMIT 1",
+                    (platform, now, self.max_attempts),
+                ).fetchone()
+            else:
+                seeded = connection.execute(
+                    "SELECT 1 FROM shards WHERE platform=? AND shard_path=?",
+                    (platform, shard_path),
+                ).fetchone()
+                if seeded is None:
+                    raise NudeBatchQueueError("seeded exact shard required")
+                row = connection.execute(
+                    "SELECT * FROM shards WHERE platform=? AND shard_path=? AND "
+                    "(state='queued' OR "
+                    "(state='leased' AND lease_expires_at<=? AND attempt_count<?))",
+                    (platform, shard_path, now, self.max_attempts),
+                ).fetchone()
             if row is None:
                 return None
             token = uuid.uuid4().hex
@@ -271,6 +294,36 @@ class NudeBatchQueue:
             connection.execute(
                 "UPDATE shards SET lease_expires_at=?,updated_at=? WHERE platform=? AND shard_path=?",
                 (now + lease_seconds, now, platform, shard_path),
+            )
+
+    def release(
+        self,
+        *,
+        platform: str,
+        shard_path: str,
+        lease_token: str,
+        reason: str,
+    ) -> None:
+        """Return owned nonterminal work to the queue without erasing its attempt."""
+
+        if not reason.strip():
+            raise ValueError("release reason required")
+        now = time.time()
+        with self._transaction() as connection:
+            self._owned_lease(connection, platform, shard_path, lease_token)
+            connection.execute(
+                "UPDATE shards SET state='queued',lease_owner=NULL,lease_token=NULL,"
+                "lease_expires_at=NULL,submission_id=NULL,last_error=?,updated_at=? "
+                "WHERE platform=? AND shard_path=?",
+                (reason, now, platform, shard_path),
+            )
+            self._event(
+                connection,
+                platform=platform,
+                shard_path=shard_path,
+                event="released",
+                detail={"reason": reason},
+                now=now,
             )
 
     def checkpoint(

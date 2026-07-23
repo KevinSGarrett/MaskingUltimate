@@ -92,10 +92,8 @@ def _candidate(
         "raw_label": raw_label,
         "assigned_partition": _partition(f"celebamask_{int(stem):05d}"),
         "source_relative_path": source_path.relative_to(root).as_posix(),
-        "source_sha256": sha256_file(source_path),
         "source_dimensions": source_size,
         "mask_relative_path": mask_path.relative_to(root).as_posix(),
-        "mask_sha256": sha256_file(mask_path),
         "mask_dimensions": [int(mask.shape[1]), int(mask.shape[0])],
         "mask_pixel_count": int(np.count_nonzero(mask == 255)),
         "mask_values": sorted(values),
@@ -126,25 +124,21 @@ def build_celebamask_control_candidates(
     annotation_root = root / "CelebAMask-HQ-mask-anno"
     selected: list[dict[str, Any]] = []
     for raw_label, canonical_label in LABELS.items():
-        pool: dict[str, list[dict[str, Any]]] = {name: [] for name in PARTITIONS}
+        pool: dict[str, list[Path]] = {name: [] for name in PARTITIONS}
         paths = sorted(annotation_root.rglob(f"*_{raw_label}.png"))
         for mask_path in paths:
-            record = _candidate(
-                root=root,
-                mask_path=mask_path,
-                raw_label=raw_label,
-                canonical_label=canonical_label,
-            )
-            if record is not None:
-                pool[record["assigned_partition"]].append(record)
+            stem = mask_path.name.removesuffix(f"_{raw_label}.png")
+            source_image_id = f"celebamask_{int(stem):05d}"
+            pool[_partition(source_image_id)].append(mask_path)
         for partition in PARTITIONS:
             ranked = sorted(
                 pool[partition],
-                key=lambda item: canonical_sha256(
+                key=lambda path: canonical_sha256(
                     {
-                        "sample_id": item["sample_id"],
-                        "source_sha256": item["source_sha256"],
-                        "mask_sha256": item["mask_sha256"],
+                        "source_image_id": (
+                            f"celebamask_{int(path.name.removesuffix(f'_{raw_label}.png')):05d}"
+                        ),
+                        "mask_relative_path": path.relative_to(root).as_posix(),
                     }
                 ),
             )
@@ -152,7 +146,26 @@ def build_celebamask_control_candidates(
                 raise CelebAMaskControlCandidateError(
                     f"insufficient candidates:{canonical_label}:{partition}"
                 )
-            selected.extend(ranked[:per_label_partition])
+            accepted = 0
+            for mask_path in ranked:
+                record = _candidate(
+                    root=root,
+                    mask_path=mask_path,
+                    raw_label=raw_label,
+                    canonical_label=canonical_label,
+                )
+                if record is None:
+                    continue
+                record["source_sha256"] = sha256_file(root / record["source_relative_path"])
+                record["mask_sha256"] = sha256_file(root / record["mask_relative_path"])
+                selected.append(record)
+                accepted += 1
+                if accepted == per_label_partition:
+                    break
+            if accepted != per_label_partition:
+                raise CelebAMaskControlCandidateError(
+                    f"insufficient valid candidates:{canonical_label}:{partition}"
+                )
     selected.sort(
         key=lambda item: (
             item["assigned_partition"],

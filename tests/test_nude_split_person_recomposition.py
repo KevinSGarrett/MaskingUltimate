@@ -69,6 +69,7 @@ def test_split_person_union_is_draft_hash_bound_and_revalidates(tmp_path: Path) 
     assert report["strict_visual_review_complete"] is False
     assert report["autonomous_certified_gold_created"] is False
     assert report["training_truth_created"] is False
+    assert batch["records"][0]["candidates"][0]["prompt"]["box_xyxy"] == [10, 10, 90, 70]
     assert [_sha(path) for path in parents] == parent_hashes
 
     validated_batch, validated_report = validate_split_person_recomposition(

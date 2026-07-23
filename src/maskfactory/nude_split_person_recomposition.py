@@ -36,6 +36,7 @@ DEFAULT_POLICY: dict[str, Any] = {
     "minimum_union_to_detector_box_ratio": 0.35,
     "maximum_union_to_detector_box_ratio": 0.95,
     "maximum_changed_pixel_fraction": 0.45,
+    "maximum_prompt_box_expansion_fraction": 0.02,
     "maximum_attempts": 1,
 }
 
@@ -61,6 +62,7 @@ def _policy(value: Mapping[str, Any] | None) -> dict[str, Any]:
         "minimum_union_to_detector_box_ratio",
         "maximum_union_to_detector_box_ratio",
         "maximum_changed_pixel_fraction",
+        "maximum_prompt_box_expansion_fraction",
     )
     if any(
         isinstance(policy[key], bool)
@@ -85,6 +87,8 @@ def _policy(value: Mapping[str, Any] | None) -> dict[str, Any]:
         > DEFAULT_POLICY["maximum_union_to_detector_box_ratio"]
         or policy["maximum_changed_pixel_fraction"]
         > DEFAULT_POLICY["maximum_changed_pixel_fraction"]
+        or policy["maximum_prompt_box_expansion_fraction"]
+        > DEFAULT_POLICY["maximum_prompt_box_expansion_fraction"]
         or policy["maximum_attempts"] != 1
     ):
         raise SplitPersonRecompositionError("split_person_policy_weakened")
@@ -263,6 +267,16 @@ def build_split_person_recomposition(
     changed_pixel_fraction = (union_pixels - largest_parent) / (width * height)
     if changed_pixel_fraction > float(policy["maximum_changed_pixel_fraction"]):
         raise SplitPersonRecompositionError("split_person_changed_pixel_cap_exceeded")
+    prompt_box = (
+        min(detector_box[0], union_bbox[0]),
+        min(detector_box[1], union_bbox[1]),
+        max(detector_box[2], union_bbox[2]),
+        max(detector_box[3], union_bbox[3]),
+    )
+    prompt_box_area = (prompt_box[2] - prompt_box[0]) * (prompt_box[3] - prompt_box[1])
+    prompt_expansion_fraction = (prompt_box_area - detector_area) / (width * height)
+    if prompt_expansion_fraction > float(policy["maximum_prompt_box_expansion_fraction"]):
+        raise SplitPersonRecompositionError("split_person_prompt_box_expansion_cap_exceeded")
 
     output_root = Path(output_root).resolve()
     relative = Path(output_relative_path)
@@ -292,7 +306,7 @@ def build_split_person_recomposition(
     prompt_body = {
         "positive_points": [[int(prompt_point_cols[nearest]), int(prompt_point_rows[nearest])]],
         "negative_points": [],
-        "box_xyxy": list(detector_box),
+        "box_xyxy": list(prompt_box),
         "mask_prompt": None,
     }
     prompt = {**prompt_body, "prompt_sha256": _canonical_sha256(prompt_body)}
@@ -371,6 +385,8 @@ def build_split_person_recomposition(
             "bbox_iou_with_detector": union_bbox_iou,
             "mask_to_detector_box_ratio": union_ratio,
             "changed_pixel_fraction_from_largest_parent": changed_pixel_fraction,
+            "prompt_box_xyxy": list(prompt_box),
+            "prompt_box_expansion_fraction": prompt_expansion_fraction,
         },
         "plan_sha256": plan_sha256,
         "provider_batch_sha256": batch["self_sha256"],

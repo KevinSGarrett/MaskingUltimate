@@ -260,6 +260,78 @@ def test_record_failure_abstains_without_stopping_batch(tmp_path: Path):
     assert "RuntimeError:bounded provider failure" in result["records"][0]["reason"]
 
 
+def test_later_person_failure_does_not_publish_partial_record_artifacts(tmp_path: Path):
+    source = tmp_path / "multi.png"
+    Image.new("RGB", (40, 20), (20, 30, 40)).save(source)
+    source_sha = hashlib.sha256(source.read_bytes()).hexdigest()
+    provider_records = []
+    for provider_id, family_id, offset in (
+        ("detector-a", "detector-family-a", 0),
+        ("detector-b", "detector-family-b", 1),
+    ):
+        provider_records.append(
+            {
+                "provider_id": provider_id,
+                "family_id": family_id,
+                "revision": "r1",
+                "artifact_sha256": str(offset + 1) * 64,
+                "source_sha256": source_sha,
+                "proposals": [
+                    {
+                        "bbox_xyxy": [2 + offset, 2, 18, 18],
+                        "confidence": 0.9,
+                        "label": "person",
+                        "authority": "proposal_only",
+                    },
+                    {
+                        "bbox_xyxy": [22 + offset, 2, 38, 18],
+                        "confidence": 0.9,
+                        "label": "person",
+                        "authority": "proposal_only",
+                    },
+                ],
+            }
+        )
+    record = compare_person_proposal_catalogs(
+        sample_id="sample-multi",
+        source_sha256=source_sha,
+        image_size=[40, 20],
+        provider_records=provider_records,
+    )
+    body = {
+        "schema_version": "maskfactory.nude_person_catalog_batch.v1",
+        "record_count": 1,
+        "records": [record],
+    }
+    catalog = {**body, "self_sha256": _sha(body)}
+
+    class FailSecondPerson(_Provider):
+        def __init__(self):
+            super().__init__("provider-a", "family-a")
+            self.refine_count = 0
+
+        def refine(self, embedding, *, prompt):
+            self.refine_count += 1
+            if self.refine_count == 2:
+                raise RuntimeError("second person failed")
+            return super().refine(embedding, prompt=prompt)
+
+    root = tmp_path / "atomic-record-output"
+    result = generate_box_prompt_provider_batch(
+        catalog_batch=catalog,
+        source_paths={"sample-multi": source},
+        provider=FailSecondPerson(),
+        output_root=root,
+    )
+
+    assert result["status_counts"] == {"provider_abstain": 1}
+    assert result["candidate_count"] == 0
+    assert result["records"][0]["candidates"] == []
+    assert "RuntimeError:second person failed" in result["records"][0]["reason"]
+    assert not list(root.rglob("*.png"))
+    assert not (root / "sample-multi").exists()
+
+
 def test_provider_output_must_be_prompt_compliant(tmp_path: Path):
     catalog, paths = _fixture(tmp_path)
 

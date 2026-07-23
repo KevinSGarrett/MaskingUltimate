@@ -10,7 +10,9 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import os
 import re
+import tempfile
 from collections import Counter
 from collections.abc import Mapping, Sequence
 from pathlib import Path
@@ -353,6 +355,67 @@ def _write_candidate(path: Path, mask: np.ndarray, *, width: int, height: int) -
     return _file_sha256(path)
 
 
+def _commit_record_candidates(
+    *,
+    output_root: Path,
+    sample_id: str,
+    pending: Sequence[tuple[Path, np.ndarray, dict[str, Any]]],
+    width: int,
+    height: int,
+) -> list[dict[str, Any]]:
+    """Publish one record's candidates only after every person succeeded."""
+
+    if not pending:
+        raise NudeBoxMaskGenerationError("candidate_record_empty")
+    output_root = Path(output_root)
+    final_root = output_root / sample_id
+    expected = {relative.as_posix() for relative, _, _ in pending}
+    if len(expected) != len(pending):
+        raise NudeBoxMaskGenerationError("candidate_record_path_duplicate")
+    if any(
+        relative.is_absolute()
+        or not relative.parts
+        or relative.parts[0] != sample_id
+        or ".." in relative.parts
+        for relative, _, _ in pending
+    ):
+        raise NudeBoxMaskGenerationError("candidate_record_path_invalid")
+
+    if final_root.exists():
+        actual = {
+            path.relative_to(output_root).as_posix()
+            for path in final_root.rglob("*")
+            if path.is_file()
+        }
+        if actual != expected:
+            raise NudeBoxMaskGenerationError("candidate_record_output_set_conflict")
+        candidates = []
+        for relative, mask, metadata in pending:
+            artifact_sha256 = _write_candidate(
+                output_root / relative,
+                mask,
+                width=width,
+                height=height,
+            )
+            candidates.append({**metadata, "artifact_sha256": artifact_sha256})
+        return candidates
+
+    output_root.mkdir(parents=True, exist_ok=True)
+    candidates = []
+    with tempfile.TemporaryDirectory(prefix=f".{sample_id}.", dir=output_root) as directory:
+        stage_root = Path(directory)
+        for relative, mask, metadata in pending:
+            artifact_sha256 = _write_candidate(
+                stage_root / relative,
+                mask,
+                width=width,
+                height=height,
+            )
+            candidates.append({**metadata, "artifact_sha256": artifact_sha256})
+        os.replace(stage_root / sample_id, final_root)
+    return candidates
+
+
 def generate_box_prompt_provider_batch(
     *,
     catalog_batch: Mapping[str, Any],
@@ -406,7 +469,7 @@ def generate_box_prompt_provider_batch(
             if source.dtype != np.uint8 or source.shape != (height, width, 3):
                 raise NudeBoxMaskGenerationError("source_decoded_geometry_mismatch")
             embedding = provider.embed(source)
-            candidates = []
+            pending_candidates = []
             for person in record["catalog"]:
                 person_index = person.get("person_index")
                 if not isinstance(person_index, int) or isinstance(person_index, bool):
@@ -437,27 +500,33 @@ def generate_box_prompt_provider_batch(
                     / f"person_{person_index:03d}"
                     / (f"{identity.provider_key}.png")
                 )
-                output_path = output_root / relative_path
-                artifact_sha256 = _write_candidate(
-                    output_path, candidate_mask, width=width, height=height
+                pending_candidates.append(
+                    (
+                        relative_path,
+                        candidate_mask,
+                        {
+                            "person_index": person_index,
+                            "candidate_label": "person",
+                            "prompt": prompt,
+                            "prompt_fingerprint": proposal.prompt_fingerprint,
+                            "postprocess": postprocess,
+                            "confidence": proposal.confidence,
+                            "mask_sha256": mask_sha256,
+                            "artifact_relative_path": relative_path.as_posix(),
+                            "pixel_count": int(np.count_nonzero(candidate_mask)),
+                            "authority": "draft_machine_candidate_only",
+                            "production_mask_authority": False,
+                            "operational_certificate_eligible": False,
+                        },
+                    )
                 )
-                candidates.append(
-                    {
-                        "person_index": person_index,
-                        "candidate_label": "person",
-                        "prompt": prompt,
-                        "prompt_fingerprint": proposal.prompt_fingerprint,
-                        "postprocess": postprocess,
-                        "confidence": proposal.confidence,
-                        "mask_sha256": mask_sha256,
-                        "artifact_relative_path": relative_path.as_posix(),
-                        "artifact_sha256": artifact_sha256,
-                        "pixel_count": int(np.count_nonzero(candidate_mask)),
-                        "authority": "draft_machine_candidate_only",
-                        "production_mask_authority": False,
-                        "operational_certificate_eligible": False,
-                    }
-                )
+            candidates = _commit_record_candidates(
+                output_root=output_root,
+                sample_id=sample_id,
+                pending=pending_candidates,
+                width=width,
+                height=height,
+            )
             output_records.append(
                 {
                     "sample_id": sample_id,

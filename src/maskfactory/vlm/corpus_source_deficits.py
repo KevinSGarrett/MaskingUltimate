@@ -20,7 +20,7 @@ from .critic_catalog import canonical_sha256
 from .real_corpus_policy import ALLOWED_AUTHORITIES
 from .regression_suite import required_canonical_v2_labels, validate_regression_suite
 
-SCHEMA_VERSION = "maskfactory.visual_corpus_source_deficits.v1"
+SCHEMA_VERSION = "maskfactory.visual_corpus_source_deficits.v2"
 ELIGIBLE = "eligible_exact_real_positive"
 NONCANONICAL = "noncanonical_or_coarse_diagnostic"
 UNQUALIFIED = "exact_label_unqualified_diagnostic"
@@ -58,11 +58,62 @@ def _classify_regression_case(
     return label, UNQUALIFIED
 
 
+def _eligible_control_cases(document: Mapping[str, Any]) -> dict[str, set[str]]:
+    if document.get(
+        "artifact_type"
+    ) != "runpod_celebamask_exact_control_admission_evidence" or document.get(
+        "self_sha256"
+    ) != _self_sha256(
+        document
+    ):
+        raise VisualCorpusSourceDeficitError("control admission evidence is invalid")
+    authority = document.get("authority")
+    results = document.get("results")
+    if not isinstance(authority, Mapping) or not isinstance(results, Mapping):
+        raise VisualCorpusSourceDeficitError("control admission evidence is incomplete")
+    if (
+        authority.get("critic_corpus_controls_frozen") is not True
+        or authority.get("critic_role_authority_granted") is not False
+        or authority.get("strict_visual_authority_granted") is not False
+        or authority.get("autonomous_gold_granted") is not False
+        or authority.get("training_truth_granted") is not False
+        or authority.get("production_authority_granted") is not False
+    ):
+        raise VisualCorpusSourceDeficitError("control admission authority drifted")
+    raw_ids = results.get("valid_mask_sample_ids")
+    defect_ids = results.get("known_defect_sample_ids")
+    excluded_ids = results.get("excluded_sample_ids")
+    if any(
+        not isinstance(values, list)
+        or not values
+        or any(not isinstance(value, str) or not value for value in values)
+        for values in (raw_ids, defect_ids, excluded_ids)
+    ):
+        raise VisualCorpusSourceDeficitError("control admission identities are invalid")
+    if (
+        len(set(raw_ids)) != len(raw_ids)
+        or set(raw_ids) & set(defect_ids)
+        or set(raw_ids) & set(excluded_ids)
+        or len(raw_ids) != results.get("valid_mask_controls")
+        or len(defect_ids) != results.get("known_defect_controls")
+        or len(excluded_ids) != results.get("excluded_ambiguous_controls")
+    ):
+        raise VisualCorpusSourceDeficitError("control admission counts or dispositions drifted")
+    admitted: dict[str, set[str]] = defaultdict(set)
+    for sample_id in raw_ids:
+        label = sample_id.rsplit("_", 1)[-1]
+        if label not in {"hair", "neck"}:
+            raise VisualCorpusSourceDeficitError("control admission label is not exact")
+        admitted[label].add(sample_id)
+    return admitted
+
+
 def build_visual_corpus_source_deficits(
     *,
     regression_manifest: Mapping[str, Any],
     authority_pilot: Mapping[str, Any],
     historical_caa_evidence: Mapping[str, Any],
+    control_admission_evidence: Mapping[str, Any],
     input_file_sha256s: Mapping[str, str],
 ) -> dict[str, Any]:
     """Build a closed, hash-bound 66-label source-authority deficit report."""
@@ -78,6 +129,7 @@ def build_visual_corpus_source_deficits(
         "regression_manifest",
         "authority_pilot",
         "historical_caa_evidence",
+        "control_admission_evidence",
     } or any(
         not isinstance(value, str) or len(value) != 64 for value in input_file_sha256s.values()
     ):
@@ -87,6 +139,9 @@ def build_visual_corpus_source_deficits(
     diagnostic: dict[str, set[str]] = defaultdict(set)
     noncanonical_counts: Counter[str] = Counter()
     regression_classifications: Counter[str] = Counter()
+    control_cases = _eligible_control_cases(control_admission_evidence)
+    for label, case_ids in control_cases.items():
+        eligible[label].update(case_ids)
     for case in regression_manifest["cases"]:
         label, classification = _classify_regression_case(case, canonical)
         case_id = str(case["case_id"])
@@ -187,6 +242,7 @@ def build_visual_corpus_source_deficits(
             "historical_caa_classification_sha256": historical_caa_evidence[
                 "classification_report_sha256"
             ],
+            "control_admission_evidence_sha256": control_admission_evidence["self_sha256"],
         },
         "required_canonical_label_count": len(canonical_labels),
         "eligible_canonical_label_count": len(eligible_labels),
@@ -207,6 +263,8 @@ def build_visual_corpus_source_deficits(
             ),
             "quarantined_historical_package_count": quarantined_count,
             "quarantined_historical_authority_eligible_count": 0,
+            "admitted_real_control_count": sum(len(values) for values in control_cases.values()),
+            "admitted_real_control_labels": sorted(control_cases),
         },
         "authority_classes": {
             ELIGIBLE: ("may supply a positive-control source only after exact case construction"),

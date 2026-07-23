@@ -1,0 +1,809 @@
+{
+  "artifact_type": "visual_critic_canonical_source_coverage_and_deficits",
+  "authority_claimed": false,
+  "authority_classes": {
+    "eligible_exact_real_positive": "may supply a positive-control source only after exact case construction",
+    "exact_label_unqualified_diagnostic": "diagnostic only until source qualification is current",
+    "fine_or_laterality_ambiguous": "cannot invent fine anatomy or laterality",
+    "noncanonical_or_coarse_diagnostic": "diagnostic only; never canonical-label coverage",
+    "quarantined_historical": "historical bytes only; no current authority",
+    "reference_only_no_mask_truth": "retrieval and risk coverage only; no pixel truth"
+  },
+  "claim_limits": [
+    "This artifact inventories source eligibility; it is not a critic corpus.",
+    "An eligible source does not become a positive control until its exact target contract, panels, split, and qualification bindings are frozen.",
+    "External aliases, coarse or unsided labels, reference-only images, and quarantined historical packages never count as canonical positive coverage.",
+    "Visual-role qualification and promotion remain blocked until every required canonical label and risk/domain stratum has valid and serious real-image controls."
+  ],
+  "eligible_canonical_label_count": 2,
+  "eligible_canonical_labels": [
+    "hair",
+    "neck"
+  ],
+  "input_artifact_sha256s": {
+    "authority_pilot_sha256": "380745f9ce2f53a3b2741f9ff95b04d18b4897665157b2598df8828181c84628",
+    "control_admission_evidence_sha256": "3c225fd8dc53b856c5ac0299838d760cac9f3d7d636e41999934b355b2995c9d",
+    "historical_caa_classification_sha256": "30c701d4a3e5e812b430c8d908dfbba2ecff0fba9dded1a6bd2b0e27ce539479",
+    "regression_suite_sha256": "653c8973857ce419a021f4d7ec3d4a58a89d757d9da7bb18321c80b7e1b6466a"
+  },
+  "input_file_sha256s": {
+    "authority_pilot": "f6d8e4220922d81083c61950facfdaed5eeae9a297e49c028eec0dbb39e18f82",
+    "control_admission_evidence": "67cca7c5e05b2723fe3288a6ad70dd2c83006b23746314a7a5bccd2737dbaecc",
+    "historical_caa_evidence": "1fd8fa31cf329a7186b0ccf07338c661610779281066cdbdbf1329da596042f6",
+    "ontology": "e4bea7663ad4f72c5550fbf93efafb506eca8593ad227f338620d6d5137ed2c4",
+    "regression_manifest": "ba2b756ef5e6f8b90b4762f671f576c4bbacb0d99adab96727380296990e6c82"
+  },
+  "labels": [
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "background",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "hair",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [
+        "celebamask_02162_hair",
+        "celebamask_02729_hair",
+        "celebamask_04491_hair",
+        "celebamask_07268_hair",
+        "celebamask_07885_hair",
+        "celebamask_15216_hair",
+        "celebamask_17124_hair",
+        "celebamask_19094_hair",
+        "celebamask_22343_hair",
+        "celebamask_23407_hair",
+        "celebamask_27537_hair",
+        "celebamask_28553_hair",
+        "celebamask_28790_hair"
+      ],
+      "next_action": "materialize_frozen_positive_and_seeded_negative_controls",
+      "source_status": "eligible_real_positive_present"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "head_face",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "neck",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [
+        "celebamask_01420_neck",
+        "celebamask_02154_neck",
+        "celebamask_06878_neck",
+        "celebamask_09075_neck",
+        "celebamask_11127_neck",
+        "celebamask_13850_neck",
+        "celebamask_14622_neck",
+        "celebamask_21363_neck",
+        "celebamask_21690_neck",
+        "celebamask_22526_neck",
+        "celebamask_23368_neck",
+        "celebamask_24779_neck"
+      ],
+      "next_action": "materialize_frozen_positive_and_seeded_negative_controls",
+      "source_status": "eligible_real_positive_present"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "chest_upper_torso",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "left_breast",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "right_breast",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "abdomen_stomach",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "belly_button",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "pelvic_region",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "left_hip",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "right_hip",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "left_shoulder",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "right_shoulder",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "left_upper_arm",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "right_upper_arm",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "left_elbow",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "right_elbow",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "left_forearm",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "right_forearm",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "left_wrist",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "right_wrist",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "left_hand_base",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "right_hand_base",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "left_thumb",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "right_thumb",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "left_index_finger",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "right_index_finger",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "left_middle_finger",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "right_middle_finger",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "left_ring_finger",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "right_ring_finger",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "left_pinky",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "right_pinky",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "left_glute",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "right_glute",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "left_thigh",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "right_thigh",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "left_knee",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "right_knee",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "left_calf",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "right_calf",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "left_ankle",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "right_ankle",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "left_foot_base",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "right_foot_base",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "left_toes",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "right_toes",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "back_upper_torso",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "back_lower_torso",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "other_person",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "occluding_object",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "support_surface",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "accessory_or_prop",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "left_ear",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "right_ear",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_real_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [
+        "pilot_009c0787ece4012a52cb7569",
+        "pilot_0cdf223a0c05b97655aa0be0",
+        "pilot_1096584129e3547f79664b66",
+        "pilot_116d2959f4c0db4f3fcb2852",
+        "pilot_18f4a50783cdcb90f123c9fc",
+        "pilot_1925650521381fb1a55a3d95",
+        "pilot_56a7fab623ff7baaa423c286"
+      ],
+      "canonical_label": "left_areola",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_fine_or_laterality_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [
+        "pilot_009c0787ece4012a52cb7569",
+        "pilot_0cdf223a0c05b97655aa0be0",
+        "pilot_1096584129e3547f79664b66",
+        "pilot_116d2959f4c0db4f3fcb2852",
+        "pilot_18f4a50783cdcb90f123c9fc",
+        "pilot_1925650521381fb1a55a3d95",
+        "pilot_56a7fab623ff7baaa423c286"
+      ],
+      "canonical_label": "right_areola",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_fine_or_laterality_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [
+        "pilot_002ecf54c0f1dc24e17a8027",
+        "pilot_00488c4c64077691ee54afdf",
+        "pilot_00bc9973de076d57ed61bb47",
+        "pilot_00f088ea158e79defb94e0e3",
+        "pilot_01e1b30947582bd814703e50",
+        "pilot_0367973fd14f50074a7ffe7f",
+        "pilot_048944333321f631b3df20ae",
+        "pilot_05e50529b9b9c34e095eb35b",
+        "pilot_073128d65126eda0ca8da1f0",
+        "pilot_235a016f8edddd58c40051df",
+        "pilot_29aa1b87f21e61a6828af8e7",
+        "pilot_2c0189418cc243182703bd6f"
+      ],
+      "canonical_label": "left_nipple",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_fine_or_laterality_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [
+        "pilot_002ecf54c0f1dc24e17a8027",
+        "pilot_00488c4c64077691ee54afdf",
+        "pilot_00bc9973de076d57ed61bb47",
+        "pilot_00f088ea158e79defb94e0e3",
+        "pilot_01e1b30947582bd814703e50",
+        "pilot_0367973fd14f50074a7ffe7f",
+        "pilot_048944333321f631b3df20ae",
+        "pilot_05e50529b9b9c34e095eb35b",
+        "pilot_073128d65126eda0ca8da1f0",
+        "pilot_235a016f8edddd58c40051df",
+        "pilot_29aa1b87f21e61a6828af8e7",
+        "pilot_2c0189418cc243182703bd6f"
+      ],
+      "canonical_label": "right_nipple",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_fine_or_laterality_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "vulva",
+      "diagnostic_exact_unqualified_ids": [
+        "pilot_002ecf54c0f1dc24e17a8027",
+        "pilot_00488c4c64077691ee54afdf",
+        "pilot_00bc9973de076d57ed61bb47",
+        "pilot_00f088ea158e79defb94e0e3",
+        "pilot_01e1b30947582bd814703e50",
+        "pilot_0367973fd14f50074a7ffe7f",
+        "pilot_048944333321f631b3df20ae",
+        "pilot_05e50529b9b9c34e095eb35b",
+        "pilot_073128d65126eda0ca8da1f0",
+        "pilot_235a016f8edddd58c40051df",
+        "pilot_29aa1b87f21e61a6828af8e7",
+        "pilot_2c0189418cc243182703bd6f"
+      ],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "qualify_exact_external_annotation_then_materialize_controls",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [
+        "pilot_002ecf54c0f1dc24e17a8027",
+        "pilot_00488c4c64077691ee54afdf",
+        "pilot_009c0787ece4012a52cb7569",
+        "pilot_00bc9973de076d57ed61bb47",
+        "pilot_00f088ea158e79defb94e0e3",
+        "pilot_01e1b30947582bd814703e50",
+        "pilot_02e69d18badc795d18256a7f",
+        "pilot_0367973fd14f50074a7ffe7f",
+        "pilot_048944333321f631b3df20ae",
+        "pilot_05e50529b9b9c34e095eb35b",
+        "pilot_073128d65126eda0ca8da1f0",
+        "pilot_1096584129e3547f79664b66",
+        "pilot_116d2959f4c0db4f3fcb2852",
+        "pilot_235a016f8edddd58c40051df",
+        "pilot_29aa1b87f21e61a6828af8e7",
+        "pilot_2c0189418cc243182703bd6f",
+        "pilot_56a7fab623ff7baaa423c286"
+      ],
+      "canonical_label": "penis_shaft",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_fine_or_laterality_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [
+        "pilot_002ecf54c0f1dc24e17a8027",
+        "pilot_00488c4c64077691ee54afdf",
+        "pilot_009c0787ece4012a52cb7569",
+        "pilot_00bc9973de076d57ed61bb47",
+        "pilot_00f088ea158e79defb94e0e3",
+        "pilot_01e1b30947582bd814703e50",
+        "pilot_02e69d18badc795d18256a7f",
+        "pilot_0367973fd14f50074a7ffe7f",
+        "pilot_048944333321f631b3df20ae",
+        "pilot_05e50529b9b9c34e095eb35b",
+        "pilot_073128d65126eda0ca8da1f0",
+        "pilot_1096584129e3547f79664b66",
+        "pilot_116d2959f4c0db4f3fcb2852",
+        "pilot_235a016f8edddd58c40051df",
+        "pilot_29aa1b87f21e61a6828af8e7",
+        "pilot_2c0189418cc243182703bd6f",
+        "pilot_56a7fab623ff7baaa423c286"
+      ],
+      "canonical_label": "glans_penis",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_fine_or_laterality_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [
+        "pilot_009c0787ece4012a52cb7569",
+        "pilot_02e69d18badc795d18256a7f",
+        "pilot_1096584129e3547f79664b66",
+        "pilot_116d2959f4c0db4f3fcb2852",
+        "pilot_56a7fab623ff7baaa423c286"
+      ],
+      "canonical_label": "left_scrotal_region",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_fine_or_laterality_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [
+        "pilot_009c0787ece4012a52cb7569",
+        "pilot_02e69d18badc795d18256a7f",
+        "pilot_1096584129e3547f79664b66",
+        "pilot_116d2959f4c0db4f3fcb2852",
+        "pilot_56a7fab623ff7baaa423c286"
+      ],
+      "canonical_label": "right_scrotal_region",
+      "diagnostic_exact_unqualified_ids": [],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "acquire_exact_fine_or_laterality_pixel_annotation",
+      "source_status": "missing_qualified_real_positive"
+    },
+    {
+      "ambiguous_fine_or_laterality_ids": [],
+      "canonical_label": "anus",
+      "diagnostic_exact_unqualified_ids": [
+        "pilot_002ecf54c0f1dc24e17a8027",
+        "pilot_00488c4c64077691ee54afdf",
+        "pilot_00bc9973de076d57ed61bb47",
+        "pilot_00f088ea158e79defb94e0e3",
+        "pilot_01e1b30947582bd814703e50",
+        "pilot_0367973fd14f50074a7ffe7f",
+        "pilot_048944333321f631b3df20ae",
+        "pilot_05e50529b9b9c34e095eb35b",
+        "pilot_073128d65126eda0ca8da1f0",
+        "pilot_1096584129e3547f79664b66",
+        "pilot_116d2959f4c0db4f3fcb2852",
+        "pilot_235a016f8edddd58c40051df",
+        "pilot_29aa1b87f21e61a6828af8e7",
+        "pilot_2c0189418cc243182703bd6f",
+        "pilot_56a7fab623ff7baaa423c286"
+      ],
+      "eligible_exact_real_positive_case_ids": [],
+      "next_action": "qualify_exact_external_annotation_then_materialize_controls",
+      "source_status": "missing_qualified_real_positive"
+    }
+  ],
+  "missing_canonical_label_count": 64,
+  "missing_canonical_labels": [
+    "background",
+    "head_face",
+    "chest_upper_torso",
+    "left_breast",
+    "right_breast",
+    "abdomen_stomach",
+    "belly_button",
+    "pelvic_region",
+    "left_hip",
+    "right_hip",
+    "left_shoulder",
+    "right_shoulder",
+    "left_upper_arm",
+    "right_upper_arm",
+    "left_elbow",
+    "right_elbow",
+    "left_forearm",
+    "right_forearm",
+    "left_wrist",
+    "right_wrist",
+    "left_hand_base",
+    "right_hand_base",
+    "left_thumb",
+    "right_thumb",
+    "left_index_finger",
+    "right_index_finger",
+    "left_middle_finger",
+    "right_middle_finger",
+    "left_ring_finger",
+    "right_ring_finger",
+    "left_pinky",
+    "right_pinky",
+    "left_glute",
+    "right_glute",
+    "left_thigh",
+    "right_thigh",
+    "left_knee",
+    "right_knee",
+    "left_calf",
+    "right_calf",
+    "left_ankle",
+    "right_ankle",
+    "left_foot_base",
+    "right_foot_base",
+    "left_toes",
+    "right_toes",
+    "back_upper_torso",
+    "back_lower_torso",
+    "other_person",
+    "occluding_object",
+    "support_surface",
+    "accessory_or_prop",
+    "left_ear",
+    "right_ear",
+    "left_areola",
+    "right_areola",
+    "left_nipple",
+    "right_nipple",
+    "vulva",
+    "penis_shaft",
+    "glans_penis",
+    "left_scrotal_region",
+    "right_scrotal_region",
+    "anus"
+  ],
+  "promotion_allowed": false,
+  "qualification_corpus_ready": false,
+  "required_canonical_label_count": 66,
+  "schema_version": "maskfactory.visual_corpus_source_deficits.v2",
+  "self_sha256": "34fd8c93d9cd4825879753d4dcaa62c70afbb2ee3fa33a1b1cb31f942a340980",
+  "source_population": {
+    "admitted_real_control_count": 25,
+    "admitted_real_control_labels": [
+      "hair",
+      "neck"
+    ],
+    "noncanonical_target_label_counts": {
+      "face_external_reference": 2,
+      "hair_external_reference": 2,
+      "left_foot_external_reference": 2,
+      "left_hand_region_external_reference": 2,
+      "right_arm_external_reference": 4,
+      "torso_skin_external_reference": 2
+    },
+    "pilot_ambiguous_observation_count": 82,
+    "pilot_exact_but_unqualified_observation_count": 27,
+    "pilot_image_count": 24,
+    "pilot_reference_only_count": 4,
+    "quarantined_historical_authority_eligible_count": 0,
+    "quarantined_historical_package_count": 641,
+    "real_regression_case_count": 14,
+    "regression_case_classifications": {
+      "noncanonical_or_coarse_diagnostic": 14
+    }
+  }
+}

@@ -22,13 +22,16 @@ def test_repository_sources_fail_closed_without_inventing_66_label_coverage(
     report = build(tmp_path / "deficits.json")
     verify_visual_corpus_source_deficits(report)
     assert report["required_canonical_label_count"] == 66
-    assert report["eligible_canonical_label_count"] == 0
-    assert report["missing_canonical_label_count"] == 66
+    assert report["eligible_canonical_label_count"] == 2
+    assert report["eligible_canonical_labels"] == ["hair", "neck"]
+    assert report["missing_canonical_label_count"] == 64
     assert report["promotion_allowed"] is False
     assert report["qualification_corpus_ready"] is False
     assert report["source_population"]["real_regression_case_count"] == 14
     assert report["source_population"]["pilot_reference_only_count"] == 4
     assert report["source_population"]["quarantined_historical_package_count"] == 641
+    assert report["source_population"]["admitted_real_control_count"] == 25
+    assert report["source_population"]["admitted_real_control_labels"] == ["hair", "neck"]
 
 
 def test_coarse_external_aliases_are_diagnostic_not_canonical_coverage(
@@ -94,15 +97,55 @@ def test_reference_and_quarantine_authority_drift_fails_closed() -> None:
         history_raw = (
             ROOT / "qa/live_verification/historical_caa_641_to_220_reconciliation_20260722.json"
         ).read_bytes()
+        control_raw = (
+            ROOT / "qa/live_verification/runpod_celebamask_control_admission_20260723.json"
+        ).read_bytes()
         build_visual_corpus_source_deficits(
             regression_manifest=json.loads(regression_raw),
             authority_pilot=pilot,
             historical_caa_evidence=json.loads(history_raw),
+            control_admission_evidence=json.loads(control_raw),
             input_file_sha256s={
                 "ontology": sha256_bytes((ROOT / "configs/ontology_v2.yaml").read_bytes()),
                 "regression_manifest": sha256_bytes(regression_raw),
                 "authority_pilot": "a" * 64,
                 "historical_caa_evidence": sha256_bytes(history_raw),
+                "control_admission_evidence": sha256_bytes(control_raw),
+            },
+        )
+
+
+def test_control_admission_authority_upgrade_fails_closed(tmp_path: Path) -> None:
+    path = ROOT / "qa/live_verification/runpod_celebamask_control_admission_20260723.json"
+    control = json.loads(path.read_text(encoding="utf-8"))
+    control["authority"]["critic_role_authority_granted"] = True
+    from maskfactory.vlm.critic_catalog import canonical_sha256
+
+    control["self_sha256"] = canonical_sha256(
+        {key: value for key, value in control.items() if key != "self_sha256"}
+    )
+    from maskfactory.vlm.corpus_source_deficits import (
+        build_visual_corpus_source_deficits,
+        sha256_bytes,
+    )
+
+    regression_raw = (ROOT / "qa/vlm_eval/visual_regression_v2_real/manifest.json").read_bytes()
+    pilot_raw = (ROOT / "configs/ontology_v2_authority_pilot.generated.json").read_bytes()
+    history_raw = (
+        ROOT / "qa/live_verification/historical_caa_641_to_220_reconciliation_20260722.json"
+    ).read_bytes()
+    with pytest.raises(VisualCorpusSourceDeficitError, match="authority drifted"):
+        build_visual_corpus_source_deficits(
+            regression_manifest=json.loads(regression_raw),
+            authority_pilot=json.loads(pilot_raw),
+            historical_caa_evidence=json.loads(history_raw),
+            control_admission_evidence=control,
+            input_file_sha256s={
+                "ontology": sha256_bytes((ROOT / "configs/ontology_v2.yaml").read_bytes()),
+                "regression_manifest": sha256_bytes(regression_raw),
+                "authority_pilot": sha256_bytes(pilot_raw),
+                "historical_caa_evidence": sha256_bytes(history_raw),
+                "control_admission_evidence": "a" * 64,
             },
         )
 

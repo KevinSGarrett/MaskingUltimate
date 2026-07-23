@@ -39,6 +39,40 @@
       "missing_area": 1,
       "protected_region": 2
     },
+    "valid_mask_sample_ids": [
+      "celebamask_07268_hair",
+      "celebamask_19094_hair",
+      "celebamask_22343_hair",
+      "celebamask_23407_hair",
+      "celebamask_27537_hair",
+      "celebamask_28553_hair",
+      "celebamask_28790_hair",
+      "celebamask_02154_neck",
+      "celebamask_09075_neck",
+      "celebamask_11127_neck",
+      "celebamask_13850_neck",
+      "celebamask_21363_neck",
+      "celebamask_23368_neck",
+      "celebamask_24779_neck",
+      "celebamask_02162_hair",
+      "celebamask_02729_hair",
+      "celebamask_04491_hair",
+      "celebamask_07885_hair",
+      "celebamask_15216_hair",
+      "celebamask_17124_hair",
+      "celebamask_01420_neck",
+      "celebamask_06878_neck",
+      "celebamask_14622_neck",
+      "celebamask_21690_neck",
+      "celebamask_22526_neck"
+    ],
+    "known_defect_sample_ids": [
+      "celebamask_12659_neck",
+      "celebamask_05072_hair",
+      "celebamask_05259_neck",
+      "celebamask_21545_neck",
+      "celebamask_28742_neck"
+    ],
     "partitions": {
       "calibration": {
         "records": 15,
@@ -79,5 +113,5 @@
     "These controls do not qualify a visual model or authorize certification.",
     "The complete 66-label and risk/domain corpus remains open."
   ],
-  "self_sha256": "9b9ca502ecf8e092791e1f3d3a34104ddc74008971c1d6385e51a032815d90c6"
+  "self_sha256": "3c225fd8dc53b856c5ac0299838d760cac9f3d7d636e41999934b355b2995c9d"
 }

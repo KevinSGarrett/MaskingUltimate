@@ -30,18 +30,24 @@ def build(output: Path) -> dict[str, Any]:
     historical_path = (
         ROOT / "qa" / "live_verification" / "historical_caa_641_to_220_reconciliation_20260722.json"
     )
+    control_admission_path = (
+        ROOT / "qa" / "live_verification" / "runpod_celebamask_control_admission_20260723.json"
+    )
     regression, regression_sha = _load(regression_path)
     pilot, pilot_sha = _load(pilot_path)
     historical, historical_sha = _load(historical_path)
+    control_admission, control_admission_sha = _load(control_admission_path)
     document = build_visual_corpus_source_deficits(
         regression_manifest=regression,
         authority_pilot=pilot,
         historical_caa_evidence=historical,
+        control_admission_evidence=control_admission,
         input_file_sha256s={
             "ontology": sha256_bytes(ontology.read_bytes()),
             "regression_manifest": regression_sha,
             "authority_pilot": pilot_sha,
             "historical_caa_evidence": historical_sha,
+            "control_admission_evidence": control_admission_sha,
         },
     )
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -54,7 +60,9 @@ def main() -> int:
     parser.add_argument(
         "--output",
         type=Path,
-        default=(ROOT / "qa" / "live_verification" / "visual_corpus_source_deficits_20260723.json"),
+        default=(
+            ROOT / "qa" / "live_verification" / "visual_corpus_source_deficits_v2_20260723.json"
+        ),
     )
     args = parser.parse_args()
     document = build(args.output)

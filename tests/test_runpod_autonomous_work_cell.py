@@ -13,8 +13,10 @@ from jsonschema import Draft202012Validator
 from maskfactory.autonomy.work_cell import (
     AutonomousWorkCell,
     WorkCellError,
+    canonical_sha256,
     seal_manifest,
     validate_mission_manifest,
+    visual_unavailability_abstention,
 )
 from maskfactory.autonomy.work_cell_command_handlers import (
     CommandStageHandler,
@@ -355,6 +357,109 @@ def test_visual_critic_cannot_execute_repairs_or_clear_unqualified_role(tmp_path
             "r1",
             work["lease_token"],
             receipt("primary_visual_review", "visual_critic"),
+        )
+
+
+def test_unavailable_visual_role_abstains_without_invoking_a_critic(tmp_path: Path) -> None:
+    cell = AutonomousWorkCell(tmp_path)
+    document = manifest(authority="machine_verified_candidate")
+    unavailable = {
+        "status": "unavailable",
+        "model_id": None,
+        "family": None,
+        "revision_sha256": None,
+        "role_certificate_sha256": None,
+        "revoked": False,
+    }
+    document["role_bindings"]["primary_visual_critic"] = unavailable
+    document["role_bindings"]["independent_juror"] = unavailable
+    document = seal_manifest(document)
+    cell.admit(document)
+    cell.seed_records(
+        document["mission_id"],
+        [{"record_id": "r1", "source_sha256": HEX, "input_payload_sha256": HEX}],
+    )
+    for expected, actor in (
+        ("source_decode", "deterministic_qa"),
+        ("detection_ownership", "deterministic_qa"),
+        ("provider_tournament", "segmentation_provider"),
+        ("hard_qc", "deterministic_qa"),
+    ):
+        work = cell.claim(document["mission_id"], owner="worker")
+        assert work["stage"] == expected
+        cell.apply_result(
+            document["mission_id"],
+            "r1",
+            work["lease_token"],
+            receipt(expected, actor),
+        )
+    work = cell.claim(document["mission_id"], owner="worker")
+    result = visual_unavailability_abstention(
+        document,
+        stage="primary_visual_review",
+        panel_sha256="c" * 64,
+    )
+    applied = cell.apply_result(
+        document["mission_id"],
+        "r1",
+        work["lease_token"],
+        result,
+    )
+    assert applied["stage"] == "abstained"
+    report = cell.report(document["mission_id"])
+    assert report["mission_state"] == "complete"
+    assert report["outcome_counts"] == {"abstained": 1}
+    assert report["stage_status_counts"]["primary_visual_review:abstain"] == 1
+    assert report["last_error_counts"] == {}
+    assert not list((tmp_path / "executor_failures").rglob("*.json"))
+
+
+def test_visual_authority_gate_rejects_forged_or_stale_role_binding(tmp_path: Path) -> None:
+    cell = AutonomousWorkCell(tmp_path)
+    document = manifest(authority="machine_verified_candidate")
+    unavailable = {
+        "status": "unavailable",
+        "model_id": None,
+        "family": None,
+        "revision_sha256": None,
+        "role_certificate_sha256": None,
+        "revoked": False,
+    }
+    document["role_bindings"]["primary_visual_critic"] = unavailable
+    document["role_bindings"]["independent_juror"] = unavailable
+    document = seal_manifest(document)
+    cell.admit(document)
+    cell.seed_records(
+        document["mission_id"],
+        [{"record_id": "r1", "source_sha256": HEX, "input_payload_sha256": HEX}],
+    )
+    for expected, actor in (
+        ("source_decode", "deterministic_qa"),
+        ("detection_ownership", "deterministic_qa"),
+        ("provider_tournament", "segmentation_provider"),
+        ("hard_qc", "deterministic_qa"),
+    ):
+        work = cell.claim(document["mission_id"], owner="worker")
+        cell.apply_result(
+            document["mission_id"],
+            "r1",
+            work["lease_token"],
+            receipt(expected, actor),
+        )
+    work = cell.claim(document["mission_id"], owner="worker")
+    result = visual_unavailability_abstention(
+        document,
+        stage="primary_visual_review",
+        panel_sha256="c" * 64,
+    )
+    result["detail"]["role_binding_sha256"] = "d" * 64
+    result["evidence_sha256"] = canonical_sha256(result["detail"])
+    with pytest.raises(WorkCellError, match="role binding drift"):
+        cell.apply_result(
+            document["mission_id"],
+            "r1",
+            work["lease_token"],
+            result,
         )
 
 

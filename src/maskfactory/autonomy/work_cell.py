@@ -74,13 +74,51 @@ ALLOWED_ACTORS = {
     "detection_ownership": frozenset({"deterministic_qa", "segmentation_provider"}),
     "provider_tournament": frozenset({"segmentation_provider"}),
     "hard_qc": frozenset({"deterministic_qa"}),
-    "primary_visual_review": frozenset({"visual_critic"}),
-    "independent_visual_review": frozenset({"visual_critic"}),
+    "primary_visual_review": frozenset({"visual_critic", "visual_authority_gate"}),
+    "independent_visual_review": frozenset({"visual_critic", "visual_authority_gate"}),
     "repair_planning": frozenset({"visual_critic", "deterministic_qa"}),
     "repair_execution": frozenset({"segmentation_provider"}),
     "package_freeze": frozenset({"deterministic_qa"}),
     "certification": frozenset({"certificate_service"}),
 }
+
+
+def visual_unavailability_abstention(
+    manifest: Mapping[str, Any],
+    *,
+    stage: str,
+    panel_sha256: str,
+) -> dict[str, Any]:
+    """Build a typed abstention without pretending an unavailable critic ran.
+
+    Provider generation and deterministic hard QA may continue while either
+    visual role is unavailable, but the exact record must stop before package
+    freeze/certification.  This receipt is authored by the deterministic
+    authority gate, not by a visual model.
+    """
+
+    if stage not in VISUAL_STAGES:
+        raise WorkCellError("visual unavailability receipt requires a visual stage")
+    if not isinstance(panel_sha256, str) or len(panel_sha256) != 64:
+        raise WorkCellError("visual unavailability receipt requires panel sha256")
+    role_name = "primary_visual_critic" if stage == "primary_visual_review" else "independent_juror"
+    role = manifest["role_bindings"][role_name]
+    if role["status"] != "unavailable" or role["revoked"]:
+        raise WorkCellError("visual unavailability receipt requires an unavailable role")
+    detail = {
+        "panel_sha256": panel_sha256,
+        "verdict": "abstain",
+        "reason": "visual_role_unavailable",
+        "role_name": role_name,
+        "role_binding_sha256": canonical_sha256(dict(role)),
+    }
+    return {
+        "stage": stage,
+        "status": "abstain",
+        "actor_kind": "visual_authority_gate",
+        "evidence_sha256": canonical_sha256(detail),
+        "detail": detail,
+    }
 
 
 def canonical_sha256(value: Mapping[str, Any]) -> str:
@@ -583,7 +621,14 @@ class AutonomousWorkCell:
                 }
 
             self._validate_authority_for_result(manifest, stage, status, actor)
-            self._validate_stage_detail(manifest, stage, status, payload.get("detail"))
+            self._validate_stage_detail(
+                manifest,
+                stage,
+                status,
+                actor,
+                evidence_sha,
+                payload.get("detail"),
+            )
             next_stage, outcome, next_cycle = self._transition(manifest, stage, status, cycle)
             connection.execute(
                 "INSERT INTO stage_receipts(mission_id,record_id,stage,repair_cycle,status,"
@@ -650,6 +695,19 @@ class AutonomousWorkCell:
             role = manifest["role_bindings"][role_name]
             if role["status"] != "qualified" or role["revoked"]:
                 raise WorkCellError(f"unqualified visual role cannot pass: {role_name}")
+        if actor == "visual_authority_gate":
+            if stage not in VISUAL_STAGES or status != "abstain":
+                raise WorkCellError(
+                    "visual authority gate may only abstain an unavailable visual stage"
+                )
+            role_name = (
+                "primary_visual_critic" if stage == "primary_visual_review" else "independent_juror"
+            )
+            role = manifest["role_bindings"][role_name]
+            if role["status"] != "unavailable" or role["revoked"]:
+                raise WorkCellError(
+                    "visual authority gate requires a current unavailable role binding"
+                )
         if actor == "visual_critic" and stage in {"repair_execution", "certification"}:
             raise WorkCellError("visual critic cannot author pixels or certificates")
         if stage == "certification" and status == "pass":
@@ -658,7 +716,12 @@ class AutonomousWorkCell:
 
     @staticmethod
     def _validate_stage_detail(
-        manifest: Mapping[str, Any], stage: str, status: str, detail: Any
+        manifest: Mapping[str, Any],
+        stage: str,
+        status: str,
+        actor: str,
+        evidence_sha256: str,
+        detail: Any,
     ) -> None:
         if not isinstance(detail, dict):
             raise WorkCellError("stage detail object required")
@@ -688,10 +751,34 @@ class AutonomousWorkCell:
                 raise WorkCellError("hard QA pass cannot retain hard vetoes")
         elif stage in VISUAL_STAGES:
             _require_sha(detail, "panel_sha256")
-            _require_sha(detail, "critic_report_sha256")
             verdict = _require_enum(detail, "verdict", {"pass", "repairable", "abstain", "reject"})
             if status == "pass" and verdict != "pass":
                 raise WorkCellError("visual pass requires pass verdict")
+            if actor == "visual_authority_gate":
+                _require_enum(detail, "reason", {"visual_role_unavailable"})
+                role_name = _require_enum(
+                    detail,
+                    "role_name",
+                    {"primary_visual_critic", "independent_juror"},
+                )
+                expected_role = (
+                    "primary_visual_critic"
+                    if stage == "primary_visual_review"
+                    else "independent_juror"
+                )
+                if role_name != expected_role:
+                    raise WorkCellError("visual authority gate role does not match stage")
+                role_binding_sha256 = _require_sha(detail, "role_binding_sha256")
+                if role_binding_sha256 != canonical_sha256(
+                    dict(manifest["role_bindings"][role_name])
+                ):
+                    raise WorkCellError("visual authority gate role binding drift")
+                if verdict != "abstain":
+                    raise WorkCellError("visual authority gate must abstain")
+                if evidence_sha256 != canonical_sha256(detail):
+                    raise WorkCellError("visual authority gate evidence seal mismatch")
+            else:
+                _require_sha(detail, "critic_report_sha256")
         elif stage == "repair_planning":
             _require_sha(detail, "defect_hypothesis_sha256")
             _require_sha(detail, "roi_sha256")

@@ -23243,12 +23243,17 @@
           "ts": "2026-07-23T02:21:42+00:00",
           "actor": "ai_agent",
           "text": "2026-07-23 post-repair coordinated canary: after restoring SAM3.1 source/checkpoint path bindings and repo sequencer shared-48GB guard, a fresh captured-token RunPod lease lease_09f184992fab4eb6b79aeb9eb97d997e ran one CivitAI reference record and released cleanly. SAM3.1 loaded and reached official add_prompt, but native box refinement returned no result, so the provider stage failed closed with provider_abstain=1/upstream_abstain=1 and zero candidates. Remaining MF-P4-12.01 work is SAM3.1 native box/refinement repair plus live provider crash/restart and 1,000-record milestone."
+        },
+        {
+          "ts": "2026-07-23T03:17:20+00:00",
+          "actor": "codex",
+          "text": "2026-07-23 batch-continuation correction: unavailable primary/juror roles now produce a typed, hash-bound visual_authority_gate abstention after exact panel generation instead of a generic executor failure. The gate cannot invoke a critic, pass a visual stage, freeze a package, or certify. This keeps unrelated records moving while visual authority remains unavailable. Live provider crash/restart and the observed 1,000-record milestone remain open."
         }
       ],
-      "evidence": "qa/live_verification/runpod_sam31_provider_canary_failclosed_20260723.json",
+      "evidence": "qa/live_verification/runpod_sam31_provider_canary_failclosed_20260723.json; qa/live_verification/runpod_visual_unavailability_batch_abstention_20260723.json self SHA-256 3b53eaf5821e7dc7356e2a6882ed878fa8bf02d22ce69f9249ecf333b93983b5; qa/live_verification/runpod_persistence_refresh_20260723.json; qa/live_verification/runpod_corpus_mirrors_refresh_20260723.json",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-23T02:21:42+00:00",
+      "updated_at": "2026-07-23T03:20:14+00:00",
       "orphaned": false
     },
     "MF-P4-12.02": {
@@ -23495,7 +23500,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 89,
+      "percent_complete": 90,
       "notes": [
         {
           "ts": "2026-07-22T11:12:15+00:00",
@@ -23556,12 +23561,17 @@
           "ts": "2026-07-22T17:03:47+00:00",
           "actor": "ai_agent",
           "text": "2026-07-22: strict per-record outputs now require eleven target-aware finding dimensions, one cited normalized evidence region for every dimension, all six independently hashed views, and a closed verdict contract. Rubber-stamp passes, incomplete evidence localization, malformed responses, pass-with-repair, or inconsistent findings block after one retry. 90 adjacent tests pass; live qualified reviews remain zero."
+        },
+        {
+          "ts": "2026-07-23T03:17:22+00:00",
+          "actor": "codex",
+          "text": "2026-07-23 strict-review unavailable path is now an explicit non-authority outcome: a deterministic visual_authority_gate may only abstain the exact visual stage when the bound role is unavailable, with exact panel and role-binding hashes. Forged/stale roles, wrong stage, pass/repair claims, or evidence-seal drift fail closed. This does not qualify a critic or create a visual pass."
         }
       ],
-      "evidence": "qa/live_verification/nude_civitai_reference_strict_visual_batch_implementation_20260722.json; qa/live_verification/nude_civitai_strict_visual_structured_repair_intent_20260722.json; 90 focused/adjacent tests, Ruff, Black, diff integrity PASS.",
+      "evidence": "qa/live_verification/nude_civitai_reference_strict_visual_batch_implementation_20260722.json; qa/live_verification/nude_civitai_strict_visual_structured_repair_intent_20260722.json; qa/live_verification/runpod_visual_unavailability_batch_abstention_20260723.json self SHA-256 3b53eaf5821e7dc7356e2a6882ed878fa8bf02d22ce69f9249ecf333b93983b5; 30 focused work-cell tests PASS; Ruff/Black/diff integrity PASS",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T17:03:47+00:00",
+      "updated_at": "2026-07-23T03:20:16+00:00",
       "orphaned": false
     },
     "MF-P4-12.06": {

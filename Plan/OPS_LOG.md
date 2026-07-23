@@ -12238,3 +12238,22 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   `qa/live_verification/runpod_sam31_visual_text_box_hard_qc_pass_20260723.json`.
   Fifty-three focused tests, Ruff, Black, tracker validation, and the RunPod
   coordinator lease/release evidence pass.
+
+## 2026-07-23 - Typed visual-authority abstention for continuous batches
+
+- Refreshed the current production preflight against pod `1q4ji0gg1fkhvt`:
+  persistent-volume binding passed 13/13 checks and the MaskedWarehouse plus
+  Ultimate Reference Images mirrors passed 13/13 hash-bound checks.
+- Corrected the autonomous work-cell path for the current unqualified visual
+  roles. A deterministic `visual_authority_gate` can now emit only a sealed
+  `abstain` at the exact primary/juror stage, bound to the rendered panel and
+  current unavailable-role bytes. It cannot impersonate a critic, pass visual
+  review, request repair, freeze a package, or certify.
+- Forged/stale role bindings, mismatched stages, non-abstain outcomes, and
+  evidence-seal drift fail closed. Thirty focused work-cell tests plus Ruff,
+  Black, tracker validation, and diff integrity pass.
+- Evidence:
+  `qa/live_verification/runpod_visual_unavailability_batch_abstention_20260723.json`
+  (self-seal `3b53eaf5...`). This is `STATIC_PASS` batch-continuation evidence;
+  strict visual authority remains `VISUAL_CRITIC_BLOCKED` and no certificate,
+  autonomous gold, or training truth was created.

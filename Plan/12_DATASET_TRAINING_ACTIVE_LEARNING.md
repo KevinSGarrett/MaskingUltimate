@@ -104,21 +104,13 @@ datasets\bodyparts@vN\
 Ignore index = 255 everywhere (uncertainty zones from `ambiguous_do_not_use` parts are burned to
 255 in training maps so the model is never penalized on honest unknowns).
 
-## 5. Training Infrastructure (8 GB Local + Governed RunPod Scale)
+## 5. Training Infrastructure (RunPod production)
 
-- Local: WSL2 conda env `maskfactory`, PyTorch ≥ 2.7 cu128 (sm_120), MMSegmentation. AMP (bf16)
-  mandatory; crop 512; per-GPU batch 2 + gradient accumulation 8 (effective 16); checkpointing
-  (activation ckpt) on for Swin backbones. The training slot **claims the whole GPU** — the
-  internal orchestrator lock (`runs\gpu.lock`, doc 05 §5) refuses conflicting
-  MaskFactory pipeline/serving runs. It is not a cross-project ComfyUI veto.
-- Thermals: laptop cooldown policy (doc 06 pitfall 6) — trainer sleeps 60 s every 30 min if GPU
-  temp > 87 °C (nvidia-smi poll); expect ~1.5–3 h per 10k iters locally.
-- RunPod scale: before new GPU work, obtain and validate a
-  SharedRunPodCoordinator v2 lease for the measured peak, maintain its heartbeat,
-  use only hash-verified persistent inputs and output paths, and release the
-  lease after the owned process is contained. CPU-only preparation needs no
-  lease. Never kill or preempt another project's process; yield cooperatively
-  when the qualified reservations do not fit. AWS is never a compute target.
+- Production training runs directly on the selected RunPod with persistent,
+  hash-verified inputs and outputs. GPU/VRAM admission, reservation, checkout,
+  capacity scheduling, and `runs\gpu.lock` refusal are retired.
+- GPU utilization and memory may be recorded as diagnostics, but cannot
+  authorize, queue, delay, or block a run. AWS is never a compute target.
 - Determinism: seed 1337, `cudnn.deterministic=true` for release runs (speed runs may relax; the
   leaderboard entry records which).
 - Every run: `runs\<run_id>\{run.json, config.yaml, git_sha, dataset_ref, ckpts\, tb\, eval\}`;

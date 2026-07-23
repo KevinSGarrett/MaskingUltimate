@@ -62,7 +62,6 @@ def test_default_doctor_battery_covers_every_p0_requirement() -> None:
         "check_wsl_roundtrip",
         "check_png_strict",
         "check_sqlite",
-        "check_gpu_lock",
     ]
 
 
@@ -236,14 +235,14 @@ def test_gpu_lock_distinguishes_absent_active_and_stale(tmp_path: Path) -> None:
 
     lock.write_text(json.dumps({"pid": 1234}), encoding="utf-8")
     with patch("maskfactory.gpu.pid_exists", return_value=True):
-        assert check_gpu_lock(lock).status == "WARN"
+        assert check_gpu_lock(lock).status == "PASS"
 
     old = time.time() - 8000
     os.utime(lock, (old, old))
     with patch("maskfactory.gpu.pid_exists", return_value=False):
         result = check_gpu_lock(lock)
-    assert result.status == "FAIL"
-    assert "remove runs/gpu.lock" in result.hint
+    assert result.status == "PASS"
+    assert "never an execution gate" in result.detail
 
 
 def test_cvat_project_skip_is_only_allowed_before_p1() -> None:

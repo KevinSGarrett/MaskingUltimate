@@ -493,7 +493,8 @@ time, detect forks/deletion/reordering, and fail closed when they cannot establi
 - Restart reconstructs state from receipts/events rather than guessing from output filenames.
 - Retries are bounded and only for typed transient failures; semantic/authority failures are not retried.
 - A circuit breaker prevents repeated calls to an unhealthy Mode B service.
-- GPU lease and VRAM envelopes are declared; resource refusal is typed and recoverable.
+- GPU/VRAM admission, reservation, checkout, capacity-lease, and scheduler
+  governance are absent. Runtime memory observations are diagnostic only.
 - The adapter records health/capability snapshots at decision time so later debugging sees what was true.
 - A stale installed node pack fails compatibility rather than loading with missing/changed nodes.
 - Service downtime never causes automatic fallback to an unverified mask source.

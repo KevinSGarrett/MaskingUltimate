@@ -141,7 +141,7 @@ Foundation invariants:
 - one hidden process-per-job generation worker initially;
 - generation default-disabled until activation passes;
 - no automatic purchase or account login;
-- a machine-level GPU lease shared with MaskFactory;
+- direct selected-RunPod execution with no GPU/VRAM admission lease;
 - atomic recipe/result protocol, job-private partial output, heartbeat/watchdog/quarantine, and
   `worker_result.json` written last; and
 - one-command stop/rollback with unchanged normal behavior while disabled.
@@ -214,7 +214,8 @@ One source image, perceptual duplicate group, every person instance, DAZ scene f
 derived package stay in one split group. Only real human-anchor truth may populate calibration, test/
 hard holdout, threshold tuning, certificate fitting, and final promotion authority.
 
-Reference indexing, DAZ rendering, inference, and training share one 8 GiB GPU lease. CPU inventory,
+Reference indexing, DAZ rendering, inference, and training use no GPU/VRAM
+admission, reservation, checkout, or file-lock gate. CPU inventory,
 planning, validation, and status may continue in parallel. DAZ rendering does not start while reference
 classification or training owns the GPU.
 

@@ -62,8 +62,8 @@ def validate_production_routing(document: Mapping[str, Any]) -> None:
             raise ProductionRoutingError(f"production_workload_not_runpod:{workload}")
     if platform.get("persistent_root") != "/workspace":
         raise ProductionRoutingError("persistent_runpod_root_invalid")
-    if platform.get("shared_gpu_coordinator_required") is not True:
-        raise ProductionRoutingError("shared_gpu_coordinator_not_required")
+    if platform.get("gpu_resource_governance") != "disabled":
+        raise ProductionRoutingError("gpu_resource_governance_must_be_disabled")
 
     local = _mapping(document.get("local_scope"), "local_scope")
     forbidden = set(_strings(local.get("forbidden_as_production_progress"), "local_forbidden"))
@@ -160,7 +160,6 @@ def validate_production_routing(document: Mapping[str, Any]) -> None:
         "required_platform": "runpod",
         "required_first_interactive_provider": "sam3_1",
         "require_distinct_provider_families": True,
-        "require_shared_coordinator_lease": True,
         "require_persistent_outputs": True,
         "require_hard_qc": True,
         "require_qualified_independent_visual_quorum": True,

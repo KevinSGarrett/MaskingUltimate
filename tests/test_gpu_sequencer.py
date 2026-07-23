@@ -6,6 +6,8 @@ import json
 import sys
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / "tools") not in sys.path:
     sys.path.insert(0, str(ROOT / "tools"))
@@ -36,13 +38,7 @@ def test_parse_smi_apps_flags_foreign_comfyui_holder() -> None:
     assert cursor.used_mib is None
 
 
-def test_classify_headroom_thresholds() -> None:
-    assert seq.classify_headroom(8000, 6144, 512) == "fits"
-    assert seq.classify_headroom(6200, 6144, 512) == "tight"
-    assert seq.classify_headroom(1644, 6144, 512) == "insufficient"
-
-
-def test_decide_sequences_after_foreign_when_vram_short(tmp_path: Path) -> None:
+def test_decide_does_not_gate_on_foreign_process_or_vram_shortage(tmp_path: Path) -> None:
     snapshot = {
         "nvidia_smi_available": True,
         "gpus": [
@@ -58,7 +54,7 @@ def test_decide_sequences_after_foreign_when_vram_short(tmp_path: Path) -> None:
         ],
     }
     decision = seq.decide("ollama-vlm", snapshot, lock_path=tmp_path / "gpu.lock")
-    assert decision.decision == "sequence_after_foreign"
+    assert decision.decision == "run_now"
     assert decision.foreign_holders
 
 
@@ -74,7 +70,7 @@ def test_decide_run_now_when_headroom_and_lock_absent(tmp_path: Path) -> None:
     assert decision.decision == "run_now"
 
 
-def test_decide_waits_behind_other_lock_owner(tmp_path: Path) -> None:
+def test_decide_ignores_other_lock_owner(tmp_path: Path) -> None:
     lock_path = tmp_path / "gpu.lock"
     import os
 
@@ -89,20 +85,19 @@ def test_decide_waits_behind_other_lock_owner(tmp_path: Path) -> None:
         "compute_apps": [],
     }
     decision = seq.decide("ollama-vlm", snapshot, lock_path=lock_path)
-    assert decision.decision == "wait_lock"
+    assert decision.decision == "run_now"
 
 
-def test_decide_no_gpu_when_smi_unavailable(tmp_path: Path) -> None:
+def test_decide_missing_telemetry_does_not_create_admission_gate(tmp_path: Path) -> None:
     snapshot = {"nvidia_smi_available": False, "gpus": [], "compute_apps": []}
     decision = seq.decide("pipeline", snapshot, lock_path=tmp_path / "gpu.lock")
-    assert decision.decision == "no_gpu"
+    assert decision.decision == "run_now"
 
 
 def test_reclaim_method_maps_consumers_to_recipes() -> None:
-    assert seq.reclaim_method("ollama-vlm") == "ollama_unload"
-    assert seq.reclaim_method("ollama-text") == "ollama_unload"
-    assert seq.reclaim_method("nuclio-sam2") == "docker_restart"
-    # Our own pipeline and the foreign ComfyUI sibling are never force-freed.
+    assert seq.reclaim_method("ollama-vlm") == "none"
+    assert seq.reclaim_method("ollama-text") == "none"
+    assert seq.reclaim_method("nuclio-sam2") == "none"
     assert seq.reclaim_method("pipeline") == "none"
     assert seq.reclaim_method("comfyui") == "none"
     assert seq.reclaim_method("unknown") == "none"
@@ -110,31 +105,27 @@ def test_reclaim_method_maps_consumers_to_recipes() -> None:
 
 def test_release_consumer_without_mechanism_is_no_mechanism() -> None:
     result = seq.release_consumer("comfyui")
-    assert result.status == "no_mechanism"
+    assert result.status == "disabled"
     assert result.freed_mib is None
 
 
-def test_release_consumer_measures_freed_delta(monkeypatch) -> None:
-    frees = iter([500, 5900])  # before, after
-    monkeypatch.setattr(seq, "_free_mib", lambda consumer="": next(frees))
-    monkeypatch.setattr(seq, "unload_ollama_model", lambda *a, **k: (True, "unloaded"))
+def test_release_consumer_never_calls_reclaim_helpers(monkeypatch) -> None:
+    monkeypatch.setattr(
+        seq,
+        "unload_ollama_model",
+        lambda *a, **k: pytest.fail("must not unload a model"),
+    )
+    monkeypatch.setattr(
+        seq,
+        "restart_docker_container",
+        lambda *a, **k: pytest.fail("must not restart a container"),
+    )
     result = seq.release_consumer("ollama-vlm", settle_s=0)
-    assert result.status == "ok"
-    assert result.method == "ollama_unload"
-    assert result.free_before_mib == 500
-    assert result.free_after_mib == 5900
-    assert result.freed_mib == 5400
+    assert result.status == "disabled"
+    assert result.method == "none"
 
 
-def test_release_consumer_reports_error_on_failed_unload(monkeypatch) -> None:
-    monkeypatch.setattr(seq, "_free_mib", lambda consumer="": 500)
-    monkeypatch.setattr(seq, "unload_ollama_model", lambda *a, **k: (False, "boom"))
-    result = seq.release_consumer("ollama-vlm", settle_s=0)
-    assert result.status == "error"
-    assert result.detail == "boom"
-
-
-def test_sequence_handoff_frees_others_then_decides(monkeypatch, tmp_path: Path) -> None:
+def test_sequence_handoff_never_reclaims_or_waits(monkeypatch, tmp_path: Path) -> None:
     released: list[str] = []
 
     def fake_release(consumer, **kwargs):
@@ -154,8 +145,6 @@ def test_sequence_handoff_frees_others_then_decides(monkeypatch, tmp_path: Path)
 
     payload = seq.sequence_handoff("nuclio-sam2", lock_path=tmp_path / "gpu.lock", timeout_s=1)
 
-    # SAM2 requested -> only the reclaimable Ollama consumers are released, never SAM2 itself.
-    assert "nuclio-sam2" not in released
-    assert set(released) == {"ollama-vlm", "ollama-text"}
+    assert released == []
     assert payload["decision"]["decision"] == "run_now"
     assert payload["consumer"] == "nuclio-sam2"

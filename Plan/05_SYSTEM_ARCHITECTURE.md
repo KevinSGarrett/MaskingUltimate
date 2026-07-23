@@ -67,7 +67,7 @@ multi-instance architecture; nothing else in this diagram changes.
 | Docker Desktop (WSL2 backend) | CVAT + Postgres/Redis + nuclio serverless SAM2 interactor + Ollama container | Isolated services, one `docker compose up` |
 | Native Windows | ComfyUI + MaskFactory node pack; File Explorer access to `C:\Comfy_UI_Main_Masking\` | Kevin's existing ComfyUI stays untouched |
 
-Shared filesystem: `C:\Comfy_UI_Main_Masking\` ≡ `/mnt/c/Comfy_UI_Main_Masking/` (WSL2) ≡ bind-mounts into containers. One tree, three views. GPU is shared; §5 defines the VRAM schedule.
+Shared filesystem: `C:\Comfy_UI_Main_Masking\` ≡ `/mnt/c/Comfy_UI_Main_Masking/` (WSL2) ≡ bind-mounts into containers. One tree, three views. Production GPU work executes directly on the selected RunPod.
 
 ## 3. Module Boundaries (`src\maskfactory\`)
 
@@ -110,16 +110,16 @@ surface patch, (hands) landmark polygons, (clothing lanes) material parse. Metho
 4. Per-pixel fusion for the map = weighted vote with z-order arbitration (S09), never averaging
    (no soft edges enter the map).
 
-## 5. GPU / VRAM Schedule (8 GB discipline)
+## 5. RunPod GPU execution
 
-- Exactly one heavyweight model resident at a time; orchestrator runs stages **model-major**
-  (batch all images through S03, then all through S04, …) to avoid reload thrash.
-- Budgets (fp16/bf16): RT-DETR 1.2 GB · BiRefNet 2.5 GB · Sapiens-0.6B-seg 3.5 GB ·
-  DWPose(onnxruntime-gpu) 1.5 GB · SAM2.1-hiera-large 4.5 GB (base-plus 2.8 GB fallback auto-selected
-  if OOM) · DensePose R50 2.2 GB · Qwen2.5-VL-7B-Q4 ≈ 6 GB (runs alone in its slot).
-- Global guard: torch `set_per_process_memory_fraction(0.9)`, OOM → auto-retry at tile/half-size →
-  fallback checkpoint → hard fail into failure queue. Long-image tiling at 1536 px tiles, 128 px overlap.
-- Training slot (doc 12) claims the whole GPU; orchestrator refuses concurrent pipeline runs.
+- The intended RunPod executes directly. There is no GPU/VRAM admission,
+  reservation, checkout, capacity lease, scheduler veto, or file-lock gate.
+- Model residency, batching, and unload behavior are workload implementation
+  details, not resource-governance prerequisites.
+- GPU utilization and peak memory may be measured as diagnostic evidence, but
+  observations never authorize, queue, delay, or refuse a workload.
+- A real OOM or runtime failure is recorded as that workload's typed failure;
+  it does not create a global capacity policy or lower quality thresholds.
 
 ## 6. Concurrency, Logging, Errors
 

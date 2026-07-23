@@ -135,8 +135,8 @@ The remote CivitAI files retain the exact relative
 `Nude/CivitAI_Top_NSFW_Images` path and reference-only role; synchronization
 must not relabel or relocate them into a mask, annotation, or gold directory.
 
-CPU/network transfer needs no GPU lease. Provider inference and strict-VLM
-bursts use SharedRunPodCoordinator v2, auto-tuned microbatches, 64-record panel
+Provider inference and strict-VLM bursts use direct selected-pod execution,
+auto-tuned microbatches, 64-record panel
 jobs, 16-record review bursts with per-record verdicts, and serialized
 incompatible large models.
 

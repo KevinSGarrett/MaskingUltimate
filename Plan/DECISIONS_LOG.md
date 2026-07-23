@@ -1372,3 +1372,27 @@ stale metadata to become stronger than the actual COCO segmentation.
 
 **Approved by:** Kevin's adult-corpus intake directive; AI-autonomous implementation and canonical
 COCO API verification.
+
+## 2026-07-23 - Selected RunPod has no GPU/VRAM resource-governance layer
+
+**Item(s) affected:** MF-P1-02.05, MF-P4-01.01, MF-P5-03.02, MF-P6-02.04,
+MF-P9-03.08, production RunPod routing, visual qualification, provider
+benchmarking, training, serving, and DAZ execution
+
+**Previous value:** Several compatibility paths could consult `gpu.lock`, VRAM
+headroom, a coordinator lease, a capacity reservation, a checkout, a slot, or a
+peak-VRAM threshold before allowing work or accepting a runtime/provider result.
+
+**New value:** The directly selected RunPod executes without GPU/VRAM admission,
+reservation, checkout, capacity lease, scheduler veto, file-lock veto, automatic
+reclamation, or peak-VRAM qualification gate. GPU utilization and peak-memory
+measurements may be retained only as non-authoritative telemetry. Missing, high,
+or drifted GPU/VRAM telemetry cannot delay, refuse, disqualify, or promote work.
+
+**Important distinction:** Durable mission, shard, and record ownership leases
+remain mandatory because they protect queue truth, idempotency, checkpoints, and
+crash recovery. They do not allocate, reserve, check out, or govern the GPU.
+OOM remains a typed runtime outcome with bounded retry/abstention behavior; it
+does not authorize a pre-execution VRAM gate or threshold weakening.
+
+**Approved by:** Kevin, explicit owner directive on 2026-07-23

@@ -17,13 +17,14 @@ because the work is done or because context/time is running out.
    portfolio blockers include independent-accuracy and scale/DAZ work and
    cannot redefine core completion.
 3. **RunPod production awareness (mandatory for production work).** Verify the
-   current pod, persistent-volume paths, corpus mirrors, and shared coordinator.
+   selected pod, persistent-volume paths, and corpus mirrors.
    Do **not** invoke `docker`, Docker Desktop, `wsl`, local CVAT/Nuclio/SAM2,
    local Ollama, a local runtime doctor, or local GPU probes during bootstrap.
    Never start, restart, repair, update, pull, build, or execute those local
    components unless Kevin explicitly requests that exact operation in the
-   current turn. If RunPod admission is unavailable, continue CPU-only work;
-   do not substitute the laptop and do not globally block the project.
+   current turn. GPU/VRAM admission, reservation, checkout, capacity scheduling,
+   and file-lock governance are disabled; do not consult them before executing
+   on the selected pod.
 4. **Proof-tier honesty.** Before marking bridge/core items complete, re-read
    `02` §11. P6-11/12 producer fixture work is `STATIC_PASS` +
    `AWAITING_MAIN` until real Main adoption/runtime evidence exists. Record

@@ -8,7 +8,7 @@ runtime:
   # Mirrors configs/cloud_teacher.yaml. Exact-image transmission is still
   # default-deny and separately hash/rights/provider authorized.
   cloud_enabled: true
-  gpu_slot: exclusive
+  gpu_resource_governance: disabled
   generation_options:
     temperature: 0
     seed: 1337
@@ -28,7 +28,7 @@ production_runtime:
   catalog: configs/visual_critic_catalog.yaml
   catalog_sha256: 322d47c2aa48d05162186d0f616d6de4218d8cb952359d118218c25e21da828a
   catalog_file_sha256: a17797b7a1ac33f2dd2ba6fb774a366f9e728c21b72f8a3742c860d22a00fee9
-  shared_gpu_coordinator_required: true
+  gpu_resource_governance: disabled
   private_loopback_endpoints_only: true
   primary_visual_critic: null
   independent_family_juror: null

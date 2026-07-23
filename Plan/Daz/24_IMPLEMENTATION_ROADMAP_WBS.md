@@ -61,7 +61,7 @@ Rollback: delete only newly created DAZ-local configuration and leave MaskFactor
 | D2-05 | Build/deploy versioned DAZ Script bundle | D2-01 | bundle hash |
 | D2-06 | Implement atomic recipe/result file protocol | D1-04,D2-05 | interrupted-write tests |
 | D2-07 | Implement process launcher, log capture, timeout, watchdog | D2-06 | failure injection |
-| D2-08 | Implement machine-level GPU lease | D1-04,D2-07 | contention tests |
+| D2-08 | Retire machine-level GPU/VRAM admission and lease gates | D1-04,D2-07 | legacy lock cannot block launch |
 | D2-09 | Render/decode procedural primitive without DAZ assets | D2-05..08 | golden output |
 | D2-10 | Decide headless versus hidden-GUI worker from evidence | D2-09 | mode benchmark |
 | D2-11 | Prove clean restart and no dirty-scene reuse | D2-09 | repeated-job fixture |

@@ -122,7 +122,7 @@ Bad evidence is “implemented,” “looks good,” “test passed,” or an ou
 
 Before ending a session:
 
-- release or expire worker/GPU leases;
+- release or expire worker leases; GPU/VRAM leases do not exist;
 - stop scheduled jobs you started unless the work item authorizes continued operation;
 - leave no `.partial` directory presented as accepted;
 - save logs/evidence in the defined project locations;

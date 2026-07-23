@@ -29,7 +29,7 @@
       "additionalProperties": false,
       "required": ["scenario", "passed", "expected", "observed", "evidence"],
       "properties": {
-        "scenario": {"enum": ["disk_full", "drive_loss", "gpu_contention", "db_corruption", "crash", "popup", "oom"]},
+        "scenario": {"enum": ["disk_full", "drive_loss", "gpu_governance_absence", "db_corruption", "crash", "popup", "oom"]},
         "passed": {"type": "boolean"},
         "expected": {"type": "object"},
         "observed": {"type": "object"},

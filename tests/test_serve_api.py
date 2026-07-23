@@ -16,7 +16,6 @@ from click.testing import CliRunner
 from PIL import Image
 
 from maskfactory.cli import main
-from maskfactory.gpu import GpuLock, GpuLockBusyError
 from maskfactory.models.ontology_contract import (
     V1_ONTOLOGY_VERSION,
     V1_PART_CLASS_NAMES,
@@ -644,7 +643,9 @@ def test_runtime_serializes_concurrent_heavy_requests(tmp_path: Path) -> None:
     assert state["maximum"] == 1
 
 
-def test_runtime_holds_gpu_lease_and_returns_read_only_draft_contract(tmp_path: Path) -> None:
+def test_runtime_has_no_gpu_resource_governance_and_returns_read_only_draft_contract(
+    tmp_path: Path,
+) -> None:
     lock = tmp_path / "gpu.lock"
 
     def predict(image: np.ndarray, labels: tuple[str, ...]):
@@ -667,15 +668,14 @@ def test_runtime_holds_gpu_lease_and_returns_read_only_draft_contract(tmp_path: 
             "gpus": [{"index": 0, "total_mib": 8192, "used_mib": 1024, "free_mib": 7168}],
         },
     )
-    with pytest.raises(ServingError, match="hold runs/gpu.lock"):
+    with pytest.raises(ServingError, match="must be started"):
         runtime.predict(_png(), ("left_forearm",))
     runtime.start()
     health = runtime.health()
     assert health["status"] == "ok"
     assert health["versions"] == {"pipeline": "0.0.1", "mode_b_api": "1.0.0"}
     assert health["vram"]["gpus"][0]["free_mib"] == 7168
-    with pytest.raises(GpuLockBusyError, match="serve_mode_b"):
-        GpuLock(lock, purpose="pipeline").acquire()
+    assert not lock.exists()
     model_status = runtime.models()
     assert model_status["models"][0]["role"] == "champion_bodypart"
     assert model_status["champions"]["champion_bodypart"]["key"] == "champion"
@@ -711,9 +711,10 @@ def test_runtime_holds_gpu_lease_and_returns_read_only_draft_contract(tmp_path: 
     assert refined["status"] == "draft_model_generated" and refined["area_px"] == 24 * 16
     runtime.stop()
     assert not lock.exists()
-    with GpuLock(lock, purpose="pipeline", image_id="img_a3f9c2e17b04"):
-        with pytest.raises(GpuLockBusyError, match="pipeline"):
-            runtime.start()
+    lock.write_text("legacy marker must be ignored\n", encoding="utf-8")
+    runtime.start()
+    runtime.stop()
+    assert lock.read_text(encoding="utf-8") == "legacy marker must be ignored\n"
 
 
 def test_vram_probe_parses_nvidia_smi_and_degrades_without_failing_health(monkeypatch) -> None:

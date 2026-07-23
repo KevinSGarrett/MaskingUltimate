@@ -318,20 +318,20 @@ def test_stale_node_pack_without_closed_manifest_refuses() -> None:
     assert evidence["transaction"]["commit_ready"] is False
 
 
-def test_gpu_lock_contention_and_foreign_cleanup() -> None:
+def test_legacy_gpu_lease_observations_never_govern_recovery() -> None:
     observation = _healthy_observation()
     observation["gpu_lease"] = _lease(state="contended")
     evidence = build_recovery_evidence(observation, decided_at="2026-07-19T12:01:00Z")
     assert evidence["status"] == "accepted"
-    assert "gpu_lease_contention" in evidence["refusal_reasons"]
-    assert evidence["gpu_lease"]["held"] is False
-    assert evidence["transaction"]["commit_ready"] is False
+    assert "gpu_lease_contention" not in evidence["refusal_reasons"]
+    assert evidence["gpu_lease"]["held"] is True
+    assert evidence["transaction"]["commit_ready"] is True
 
     observation["gpu_lease"] = _lease(state="held", cleanup=True)
     evidence = build_recovery_evidence(observation, decided_at="2026-07-19T12:01:00Z")
-    assert evidence["status"] == "rejected"
-    assert "gpu_lease_unowned_cleanup" in evidence["rejection_reasons"]
-    assert evidence["gpu_lease"]["foreign_token_cleanup_refused"] is False
+    assert evidence["status"] == "accepted"
+    assert "gpu_lease_unowned_cleanup" not in evidence["rejection_reasons"]
+    assert evidence["gpu_lease"]["foreign_token_cleanup_refused"] is True
 
 
 def test_stale_cache_refuses_freshness() -> None:

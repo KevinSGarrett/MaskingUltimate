@@ -81,7 +81,7 @@ def test_failure_campaign_schemas_and_policy_are_closed(tmp_path: Path) -> None:
     assert policy.document["required_scenarios"] == [
         "disk_full",
         "drive_loss",
-        "gpu_contention",
+        "gpu_governance_absence",
         "db_corruption",
         "crash",
         "popup",
@@ -175,7 +175,7 @@ def test_full_isolated_campaign_passes_all_seven_scenarios_without_live_mutation
     assert [row["scenario"] for row in report["scenarios"]] == [
         "disk_full",
         "drive_loss",
-        "gpu_contention",
+        "gpu_governance_absence",
         "db_corruption",
         "crash",
         "popup",
@@ -194,10 +194,13 @@ def test_full_isolated_campaign_passes_all_seven_scenarios_without_live_mutation
     disk_full = report["scenarios"][0]
     assert disk_full["observed"]["real_disk_filled"] is False
     assert disk_full["observed"]["new_work_allowed"] is False
-    contention = report["scenarios"][2]
-    assert contention["observed"]["contention_refused"] is True
-    assert contention["observed"]["real_gpu_work_started"] is False
-    assert contention["observed"]["concurrent_gpu_work_started"] is False
+    gpu_policy = report["scenarios"][2]
+    assert gpu_policy["observed"]["operation_completed"] is True
+    assert gpu_policy["observed"]["legacy_marker_blocked"] is False
+    assert gpu_policy["observed"]["legacy_marker_reclaimed"] is False
+    assert gpu_policy["observed"]["legacy_marker_preserved"] is True
+    assert gpu_policy["observed"]["gpu_admission_checked"] is False
+    assert gpu_policy["observed"]["real_gpu_work_started"] is False
 
 
 def test_failure_campaign_cli_is_dry_run_default_and_apply_is_explicit(tmp_path: Path) -> None:

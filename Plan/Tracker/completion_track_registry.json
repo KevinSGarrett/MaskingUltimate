@@ -3,7 +3,7 @@
   "registry_id": "maskfactory_completion_tracks",
   "policy_version": "2026-07-17",
   "authoritative_spec": "Plan/24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md",
-  "authoritative_spec_sha256": "e57e9892c18cc2a43440691d508daba44bc00413f063dfdad40861e2a654e90d",
+  "authoritative_spec_sha256": "7fe3b3642ce1a49bfcdc12bbe06018784a3649dc4fb8855722fc8f8e7de813ba",
   "profiles": [
     {
       "profile_id": "core_autonomous_runtime",
@@ -136,5 +136,5 @@
       "excluded_core_dependencies": []
     }
   ],
-  "sha256": "b6ba57e71e238cc30b71f8d1af20b49e2802cbbb7119bcf0c7d90475b82054b4"
+  "sha256": "f2676e6a903a359a22a1a28b3ec1c32b4a426282c2c88597669b464a5e96690e"
 }

@@ -16,7 +16,7 @@ from typing import Any, Mapping
 import yaml
 from jsonschema import Draft202012Validator
 
-from ..gpu import GpuLock, GpuLockBusyError, read_lock
+from ..gpu import GpuLock
 from .control import DazControlError, DazErrorCode
 from .protocol import prepare_job_files
 from .runtime import DazRuntimeProfile
@@ -25,7 +25,7 @@ from .worker import WindowObservation, _watch_process
 SCENARIOS = (
     "disk_full",
     "drive_loss",
-    "gpu_contention",
+    "gpu_governance_absence",
     "db_corruption",
     "crash",
     "popup",
@@ -140,7 +140,7 @@ def run_failure_campaign(
     scenarios = [
         _exercise_disk_full(workspace, policy),
         _exercise_drive_loss(workspace),
-        _exercise_gpu_contention(workspace),
+        _exercise_gpu_governance_absence(workspace),
         _exercise_db_corruption(workspace),
         _exercise_crash(workspace, runtime_profile),
         _exercise_popup(workspace, runtime_profile),
@@ -314,34 +314,28 @@ def _exercise_drive_loss(workspace: Path) -> dict[str, Any]:
     }
 
 
-def _exercise_gpu_contention(workspace: Path) -> dict[str, Any]:
-    root = workspace / "gpu_contention"
+def _exercise_gpu_governance_absence(workspace: Path) -> dict[str, Any]:
+    """Prove legacy GPU marker bytes neither gate nor get mutated by DAZ."""
+    root = workspace / "gpu_governance_absence"
     root.mkdir(parents=True)
     lock_path = root / "gpu.lock"
-    evidence_path = root / "contention_decision.json"
-    refused = False
-    reason = ""
-    owner: Mapping[str, Any] | None = None
-    with GpuLock(lock_path, purpose="fixture_existing_owner", image_id="fixture_owner"):
-        owner = read_lock(lock_path)
-        try:
-            GpuLock(lock_path, purpose="daz_fixture_render", image_id="fixture_waiter").acquire()
-        except GpuLockBusyError as exc:
-            refused = True
-            reason = str(exc)
-        lock_preserved = lock_path.is_file()
-    released_after_owner = not lock_path.exists()
+    marker = b'{"historical_marker":true,"authority":"none"}\n'
+    lock_path.write_bytes(marker)
+    evidence_path = root / "gpu_governance_absence.json"
+    operation_completed = False
+    with GpuLock(lock_path, purpose="daz_fixture_render", image_id="fixture_record"):
+        operation_completed = True
+    marker_preserved = lock_path.read_bytes() == marker
     evidence_path.write_text(
         json.dumps(
             {
-                "action": "wait_then_timeout",
-                "contention_refused": refused,
-                "existing_owner": dict(owner or {}),
-                "lock_preserved_until_owner_release": lock_preserved,
-                "released_by_owner": released_after_owner,
-                "concurrent_gpu_work_started": False,
+                "action": "proceed_without_gpu_admission",
+                "operation_completed": operation_completed,
+                "legacy_marker_blocked": False,
+                "legacy_marker_reclaimed": False,
+                "legacy_marker_preserved": marker_preserved,
+                "gpu_admission_checked": False,
                 "real_gpu_work_started": False,
-                "reason": reason,
             },
             indent=2,
             sort_keys=True,
@@ -349,22 +343,21 @@ def _exercise_gpu_contention(workspace: Path) -> dict[str, Any]:
         + "\n",
         encoding="utf-8",
     )
-    passed = refused and lock_preserved and released_after_owner and owner is not None
+    passed = operation_completed and marker_preserved
     return {
-        "scenario": "gpu_contention",
+        "scenario": "gpu_governance_absence",
         "passed": passed,
         "expected": {
-            "action": "wait_then_timeout",
-            "concurrent_gpu_work_started": False,
-            "existing_lock_preserved": True,
+            "action": "proceed_without_gpu_admission",
+            "legacy_marker_blocked": False,
+            "gpu_admission_checked": False,
         },
         "observed": {
-            "contention_refused": refused,
-            "reason": reason,
-            "owner_purpose": owner.get("purpose") if owner else None,
-            "lock_preserved_until_owner_release": lock_preserved,
-            "released_by_owner": released_after_owner,
-            "concurrent_gpu_work_started": False,
+            "operation_completed": operation_completed,
+            "legacy_marker_blocked": False,
+            "legacy_marker_reclaimed": False,
+            "legacy_marker_preserved": marker_preserved,
+            "gpu_admission_checked": False,
             "real_gpu_work_started": False,
         },
         "evidence": [str(evidence_path)],

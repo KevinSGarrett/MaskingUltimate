@@ -81,7 +81,7 @@ dashboard separates core from optional blockers and prioritizes unfinished
 core items. Trust it over any assumption about "where the project probably is."
 
 For production work, first verify the current RunPod pod, persistent-volume
-paths, corpus mirrors, and SharedRunPodCoordinator lease state. Do **not** run
+paths, corpus mirrors, and the selected pod's local runtime state. Do **not** run
 `docker`, `wsl`, local CVAT/Nuclio/SAM2/Ollama probes, a local runtime doctor,
 or local GPU commands during session bootstrap. Do not start, restart, repair,
 update, pull, or build any local runtime component unless Kevin explicitly

@@ -401,7 +401,6 @@ def test_per_label_regression_and_reviewer_time_regression_block_candidate(tmp_p
 @pytest.mark.parametrize(
     ("field", "value", "finding"),
     [
-        ("peak_vram_bytes", 8_589_934_593, "peak_vram_exceeds_8gb"),
         ("warm_latency_ms", 2000.0, "warm_latency_regression"),
         ("oom_count", 1, "runtime_oom_or_crash"),
         ("crash_count", 1, "runtime_oom_or_crash"),

@@ -122,7 +122,7 @@ full-library, DAZ, or soak prerequisite.
 | ID | Task | Deliverable | Acceptance | Spec |
 |----|------|-------------|-----------|------|
 | MF-P6-01 | Node pack Mode A | `maskfactory comfy install`; all §2 nodes | wf_inpaint_gold_hand.json runs end-to-end in ComfyUI | 13 §1–2 |
-| MF-P6-02 | `serve\api.py` | /health /models /predict /refine + gpu.lock | latency targets met warm; lock mutual-exclusion demonstrated | 13 §3 |
+| MF-P6-02 | `serve\api.py` | /health /models /predict /refine without GPU/VRAM admission locks | latency targets met warm; direct selected-pod execution demonstrated | 13 §3 |
 | MF-P6-03 | Mode B node + workflows | MF Predict Masks + 3 shipped workflows | wf_live_predict_inpaint.json works on a never-seen image (**D8**) | 13 §2, §4 |
 | MF-P6-04 | Read-only enforcement audit | test that no Comfy path writes packages | mutation attempt fixture errors (QC-030 parity) | 13 §5 |
 | MF-P6-07 | Completion taxonomy and core DoD | closed registry + independent tracker profiles | required core cannot inherit optional human/accuracy/scale/DAZ blockers | 24 §§1–3 |

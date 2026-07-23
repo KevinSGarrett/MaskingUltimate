@@ -46,7 +46,7 @@ promoted.
 5. Create an isolated application instance named `MaskFactoryDAZ` with no default scene, no prompts,
    fixed render directories, fixed content roots, and offline generation defaults.
 6. Deploy the script bundle by hash and run a no-content hello-world job.
-7. Implement a machine GPU lease shared with MaskFactory. DAZ must wait rather than compete with
+7. Do not implement GPU/VRAM admission or reservation. DAZ launches directly rather than waiting on
    training or inference.
 8. Measure F-drive throughput/free space and configure soft/hard capacity thresholds.
 9. Run backup and restore of configuration, registry, mappings, and one synthetic fixture.

@@ -5,7 +5,7 @@ files named by `_MASKFACTORY_INTAKE/README_START_HERE.md` before operating this
 corpus. Adopt the recorded seals before rebuilding. Run the intake validator
 with `--rehash sample`. Local canary tooling is limited to CPU decode/schema/
 queue preflight; provider inference, strict review, repair, and qualification
-canaries run on persistent RunPod storage under the shared coordinator.
+canaries run directly on persistent RunPod storage.
 
 Operating memory for every fresh session:
 
@@ -34,7 +34,8 @@ Operating memory for every fresh session:
   hard-QC failure or approves from contact-sheet gestalt;
 - routine manual CVAT/Kevin review is optional exception handling;
 - RunPod transfer probes first and copies only allowlisted missing/drifted paths;
-- GPU work requires the shared coordinator; transfers do not.
+- GPU/VRAM admission, reservation, checkout, capacity scheduling, and file-lock
+  governance are disabled.
 - the production provider order begins with governed SAM 3.1 and SAM 3D Body
   where applicable, followed by hypothesis-distinct modern providers; SAM2.1
   is benchmark/rollback or a typed bounded fallback only, and local `pth-sam2`

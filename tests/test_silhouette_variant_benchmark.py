@@ -236,7 +236,6 @@ def test_completeness_pixel_and_identity_invariants_fail_closed(
         ("leakage", "foreground_leakage_regression"),
         ("alpha", "alpha_mse_regression"),
         ("runtime", "runtime_failure"),
-        ("vram", "peak_vram_budget_exceeded"),
         ("repeats", "determinism_repeat_count_failed"),
         ("fallback", "fallback_drill_failed"),
     ],

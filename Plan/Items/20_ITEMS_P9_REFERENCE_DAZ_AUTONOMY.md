@@ -37,7 +37,7 @@ Goal: use qualified existing labels, the governed 83k reference corpus, and exac
 - [ ] MF-P9-03.05 Build/deploy versioned DAZ Script bundle · Verify: bundle hash · Blocked by: D2-01
 - [ ] MF-P9-03.06 Implement atomic recipe/result file protocol · Verify: interrupted-write tests · Blocked by: D1-04,D2-05
 - [ ] MF-P9-03.07 Implement process launcher, log capture, timeout, watchdog · Verify: failure injection · Blocked by: D2-06
-- [ ] MF-P9-03.08 Implement machine-level GPU lease · Verify: contention tests · Blocked by: D1-04,D2-07
+- [ ] MF-P9-03.08 Retire machine-level GPU leases and prove DAZ launch is not gated by GPU/VRAM reservation, checkout, or file-lock state · Verify: legacy lock presence does not block launch · Blocked by: D1-04,D2-07
 - [ ] MF-P9-03.09 Render/decode procedural primitive without DAZ assets · Verify: golden output · Blocked by: D2-05..08
 - [ ] MF-P9-03.10 Decide headless versus hidden-GUI worker from evidence · Verify: mode benchmark · Blocked by: D2-09
 - [ ] MF-P9-03.11 Prove clean restart and no dirty-scene reuse · Verify: repeated-job fixture · Blocked by: D2-09

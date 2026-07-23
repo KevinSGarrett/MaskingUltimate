@@ -91,13 +91,9 @@ assets from AWS to RunPod.
    partial download, interrupted transfer, or root-overlay file as durable.
 5. A multi-GPU critic role requires a separately measured deployment; it does
    not become available merely because the model is cataloged.
-6. SharedRunPodCoordinator v2 is the exclusive cross-project GPU admission
-   authority. Before any new GPU work, request and validate a capacity lease,
-   heartbeat it while the owned workload runs, and release it afterward.
-   CPU-only work needs no lease. `runs/gpu.lock` remains internal to
-   MaskFactory and cannot veto unrelated ComfyUI work. Never remove another
-   project's lock, kill its process, steal its lease, or exceed the granted
-   reservation; use cooperative yield when qualified peaks do not fit.
+6. Select the intended RunPod directly. GPU/VRAM admission, reservation,
+   checkout, capacity leases, schedulers, preflights, and file-lock gates are
+   disabled. Runtime memory and utilization observations are telemetry only.
 
 ## 4. Read-only AWS inventory and governed migration
 

@@ -59,10 +59,9 @@ match the source dims or the node errors (Global Convention 2 survives into Comf
   guess, areas, model provenance);
   `POST /refine` (image + label + clicks[]) → SAM2 single-part interactive refine (powers
   click-fix inside future ComfyUI UIs).
-- Model residency: loads champion body-part + hand specialist + clothing parser under the doc 05
-  §5 VRAM schedule (sequential slots; SAM2 loaded on demand for /refine). The service takes the
-  `runs\gpu.lock` — pipeline/training runs are refused while serving, and vice versa; error
-  message names the lock holder.
+- Model residency loads champion body-part, hand-specialist, and clothing
+  providers directly on the selected RunPod. No GPU/VRAM scheduler, reservation,
+  checkout, or `runs\gpu.lock` refusal governs service execution.
 - Latency targets (1024 px): /predict warm ≤ 4 s all-labels, ≤ 2 s single-label; /refine ≤ 1.2 s
   per click. Cold start ≤ 60 s.
 - Predictions are drafts by definition: `status: draft_model_generated` in the returned JSON;

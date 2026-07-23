@@ -1,14 +1,18 @@
-"""Atomic ownership lease for MaskFactory's single shared GPU slot."""
+"""Retired GPU-lock compatibility API.
+
+MaskFactory no longer performs GPU/VRAM admission, reservation, checkout, or
+file-lock governance. ``GpuLock`` remains as a no-op context manager so older
+callers and frozen bridge surfaces continue without creating a lock or blocking
+selected-pod execution.
+"""
 
 from __future__ import annotations
 
 import json
 import os
-import socket
 import time
 import uuid
 from dataclasses import dataclass
-from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -18,19 +22,19 @@ DEFAULT_STALE_SECONDS = 7200
 
 
 class GpuLockError(RuntimeError):
-    """Base GPU lease error."""
+    """Legacy compatibility base; runtime acquisition no longer raises it."""
 
 
 class GpuLockBusyError(GpuLockError):
-    """A live or unrecognized owner already holds the GPU slot."""
+    """Legacy compatibility exception; never raised by ``GpuLock``."""
 
 
 class GpuLockStaleError(GpuLockError):
-    """A dead owner left a lock that requires operator-confirmed removal."""
+    """Legacy compatibility exception; never raised by ``GpuLock``."""
 
 
 class GpuLockOwnershipError(GpuLockError):
-    """The lock changed owners before release; never delete it blindly."""
+    """Legacy compatibility exception; never raised by ``GpuLock``."""
 
 
 def pid_exists(pid: int) -> bool:
@@ -93,7 +97,7 @@ def lock_state(
 
 @dataclass
 class GpuLock:
-    """Exclusive context manager with token-checked release semantics."""
+    """No-op compatibility context; never creates or inspects a lock file."""
 
     path: Path = DEFAULT_GPU_LOCK_PATH
     purpose: str = "pipeline"
@@ -102,51 +106,11 @@ class GpuLock:
 
     def acquire(self) -> None:
         if self._token is not None:
-            raise GpuLockBusyError("this GPU lock object already owns a lease")
+            return
         self.path = Path(self.path)
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        token = uuid.uuid4().hex
-        owner = {
-            "pid": os.getpid(),
-            "host": socket.gethostname(),
-            "acquired_at": datetime.now(UTC).isoformat(),
-            "purpose": self.purpose,
-            "image_id": self.image_id,
-            "token": token,
-        }
-        try:
-            descriptor = os.open(self.path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
-        except FileExistsError as exc:
-            state, existing, age = lock_state(self.path)
-            detail = json.dumps(existing, sort_keys=True) if existing else "metadata unavailable"
-            if state == "stale":
-                raise GpuLockStaleError(
-                    f"stale GPU lock age={age:.0f}s; confirm no GPU process, then remove "
-                    f"{self.path}: {detail}"
-                ) from exc
-            raise GpuLockBusyError(
-                f"GPU slot unavailable ({state}, age={age:.0f}s): {detail}"
-            ) from exc
-        try:
-            with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
-                json.dump(owner, handle, sort_keys=True)
-                handle.write("\n")
-                handle.flush()
-                os.fsync(handle.fileno())
-        except Exception:
-            self.path.unlink(missing_ok=True)
-            raise
-        self._token = token
+        self._token = uuid.uuid4().hex
 
     def release(self) -> None:
-        if self._token is None:
-            return
-        owner = read_lock(self.path)
-        if not owner or owner.get("token") != self._token:
-            raise GpuLockOwnershipError(
-                f"GPU lock ownership changed; refusing to remove {self.path}"
-            )
-        self.path.unlink()
         self._token = None
 
     def __enter__(self) -> GpuLock:

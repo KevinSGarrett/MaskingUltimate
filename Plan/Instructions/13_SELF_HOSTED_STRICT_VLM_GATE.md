@@ -76,10 +76,13 @@ Any dimension `fail` ⇒ overall fail ⇒ abstain/reject/repair — **not gold**
 
 1. Live-probe the governed self-hosted endpoint and confirm the exact registry-selected role models,
    artifact hashes, runtime, and lifecycle state. Model presence alone is not qualification.
-2. Check GPU: `nvidia-smi`. If hand/clothing tournament workers own VRAM, **wait or serialize** — do not kill healthy hand PIDs unless brief serialize is required; then resume.
+2. GPU/VRAM telemetry may be sampled for diagnostics, but it does not admit,
+   delay, serialize, reserve, check out, or refuse the visual wave. Do not kill
+   unrelated healthy processes.
 3. Render panels (source/mask/overlay). Do not claim visual QA from mask PNG decode alone.
 4. Run STRICT critic burst; seal evidence under `qa/live_verification/` with model id, prompt hash, response, panel hashes.
-5. Unload VLMs after burst (`strict_visual_gate.unload_after_burst` / `unload_model`).
+5. Apply only the mission's model-lifecycle policy; never unload a model as
+   GPU/VRAM governance or as a prerequisite for another workload.
 6. Update tracker via `tracker.py` only; append OPS_LOG + DECISIONS_LOG.
 
 ### Example commands

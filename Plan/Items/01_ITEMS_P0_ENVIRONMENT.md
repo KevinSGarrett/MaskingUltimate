@@ -69,7 +69,7 @@ Every atomic item to complete P0. Check `[x]` only when the verify clause passes
 - [ ] MF-P0-06.15 Verify idempotency: rerun `models fetch --all` → no-op, all hashes match
 
 ## MF-P0-07 — `maskfactory doctor` (spec: 06 §9)
-- [ ] MF-P0-07.01 Implement doctor checks: torch cu128 + sm_120 · every registered model loads + smoke output hash matches reference · CVAT API reachable (+ project-exists check, skippable pre-P1) · nuclio interactor answers · Ollama answers an image test · disk free ≥ 200 GB (warn <150 / block-ingest <75 per 15 §4) · WSL↔C:\ round-trip write · png_strict self-test · SQLite writable · stale `runs\gpu.lock` detection
+- [ ] MF-P0-07.01 Implement doctor checks: torch cu128 + sm_120 · every registered model loads + smoke output hash matches reference · CVAT API reachable (+ project-exists check, skippable pre-P1) · nuclio interactor answers · Ollama answers an image test · disk free ≥ 200 GB (warn <150 / block-ingest <75 per 15 §4) · WSL↔C:\ round-trip write · png_strict self-test · SQLite writable
 - [ ] MF-P0-07.02 Create smoke fixtures `qa\fixtures\smoke\` (1 image per model + expected output hashes)
 - [ ] MF-P0-07.03 Doctor exits non-zero on any FAIL, printing a fix hint per check
 - [ ] MF-P0-07.04 Run doctor on this machine → ALL GREEN · paste output into OPS_LOG

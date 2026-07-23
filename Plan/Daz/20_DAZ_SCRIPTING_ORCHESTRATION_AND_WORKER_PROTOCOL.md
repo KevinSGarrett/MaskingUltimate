@@ -72,7 +72,7 @@ Within one SQLite transaction:
 3. mark `leased` with worker ID, PID placeholder, acquired/expires timestamps, attempt number;
 4. create atomic lease JSON;
 5. reserve expected disk bytes;
-6. acquire global GPU lease before launching the render phase.
+6. launch the render phase directly; no GPU/VRAM lease or checkout exists.
 
 ### Heartbeat
 
@@ -100,7 +100,7 @@ After no heartbeat beyond the stage-specific threshold:
 - inspect process tree;
 - terminate if still hung;
 - move partial output to quarantine;
-- release GPU/disk reservation;
+- release the job's durable disk reservation; no GPU/VRAM reservation exists;
 - classify failure;
 - retry only according to bounded policy.
 
@@ -309,16 +309,12 @@ Unexpected dialog behavior:
 5. preserve partial recipe/log;
 6. retry only after a known technical suppression or asset change.
 
-## 19. GPU lease
+## 19. GPU/VRAM governance retirement
 
-DAZ RGB/ID rendering shares the existing machine GPU with MaskFactory. The lease record includes owner,
-purpose, PID, scene/image ID, acquired/expires/heartbeat, and expected VRAM profile. Rules:
-
-- no DAZ render while training/inference holds the exclusive lease;
-- CPU-only planning/validation may continue;
-- a dead owner lease is reclaimed only after process verification;
-- OOM triggers clean process restart and at most one lower-cost retry profile;
-- an automatic lower profile cannot change annotation resolution or semantics silently.
+DAZ RGB/ID rendering uses no GPU/VRAM admission, reservation, checkout,
+scheduler, capacity lease, or file-lock gate. Runtime utilization and memory
+measurements are diagnostic only. A real OOM becomes a typed workload failure;
+it cannot weaken annotation resolution, semantics, or quality requirements.
 
 ## 20. Persistent worker acceptance
 

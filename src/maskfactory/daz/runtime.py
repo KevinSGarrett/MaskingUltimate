@@ -39,7 +39,6 @@ class DazRuntimeProfile:
     runtime_paths: DazRuntimePaths
     timeouts_seconds: Mapping[str, int]
     watchdog: Mapping[str, Any]
-    gpu_lease: Mapping[str, Any]
     safety: Mapping[str, Any]
     document: Mapping[str, Any]
 
@@ -78,7 +77,6 @@ def load_daz_runtime_profile(path: Path) -> DazRuntimeProfile:
         runtime_paths=runtime_paths,
         timeouts_seconds=document["timeouts_seconds"],
         watchdog=document["watchdog"],
-        gpu_lease=document["gpu_lease"],
         safety=document["safety"],
         document=document,
     )

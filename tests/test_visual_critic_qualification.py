@@ -131,7 +131,6 @@ def test_hallucinated_context_fails_role_qualification() -> None:
         ("schema_valid", False, "schema_compliance_rate_below_minimum"),
         ("deterministic_replay", False, "deterministic_replay_rate_below_minimum"),
         ("latency_ms", 6001, "p95_latency_ms_above_maximum"),
-        ("peak_vram_bytes", 51_000_000_000, "peak_vram_fraction_above_maximum"),
     ],
 )
 def test_schema_replay_latency_and_resource_thresholds_fail(

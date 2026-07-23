@@ -206,7 +206,7 @@ local overrides or environment variables.
 - write/read/atomic-rename test;
 - primitive DAZ script execution;
 - primitive render/decode;
-- GPU lease interoperability;
+- direct execution without GPU/VRAM lease interoperability;
 - active ontology loader and mapping availability;
 - package schema and adapter availability;
 - DAZ enabled/disabled state.

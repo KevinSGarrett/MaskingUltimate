@@ -14,7 +14,6 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Callable, Mapping, Protocol
 
-from ..gpu import GpuLock
 from .policy import DazPolicyError
 from .protocol import DazJobFiles, read_terminal_result, stage_recipe, write_watchdog_evidence
 from .runtime import DazRuntimeProfile
@@ -133,7 +132,7 @@ def run_daz_job(
     if recipe.get("operation") == "runtime_probe" and requires_gpu:
         raise DazPolicyError("runtime probe must not acquire the render GPU")
     if recipe.get("operation") != "runtime_probe" and not requires_gpu:
-        raise DazPolicyError("DAZ render operation cannot bypass the GPU lease")
+        raise DazPolicyError("DAZ render operation must declare requires_gpu=true")
     stage_recipe(files, recipe)
     running = (process_inventory or running_daz_processes)()
     if running:
@@ -151,14 +150,6 @@ def run_daz_job(
     start = time.monotonic()
 
     with contextlib.ExitStack() as stack:
-        if requires_gpu:
-            stack.enter_context(
-                GpuLock(
-                    Path(profile.gpu_lease["path"]),
-                    purpose=str(profile.gpu_lease["purpose"]),
-                    image_id=str(recipe["job_id"]),
-                )
-            )
         log = stack.enter_context(files.worker_log.open("ab", buffering=0))
         process = subprocess.Popen(
             command,

@@ -18,7 +18,7 @@
 | D-012 | Anatomy configuration and presentation are separate | avoids identity inference and invalid applicability | ontology redesign |
 | D-013 | Python controls planning; DAZ Script executes scenes | testability and a clean API boundary | plugin architecture proves necessary |
 | D-014 | File protocol is authoritative | no fragile routine UI automation | future supported remote API |
-| D-015 | One GPU lease serializes heavy work | 8 GiB VRAM and reliability | new GPU capacity and proven scheduler |
+| D-015 | GPU/VRAM admission and lease governance are disabled | user-selected direct RunPod execution | user policy change |
 | D-016 | Visible and amodal channels are physically separate | protects visible truth constitution | never merge |
 | D-017 | Clothing pixels receive body territory in PART and clothing in MATERIAL | matches MaskFactory's orthogonal map model | ontology/material redesign |
 | D-018 | Exact label passes are separate from beauty features | blur/DOF/denoise cannot corrupt IDs | never combine |
@@ -55,7 +55,7 @@
 | R-011 | Hidden popup stalls worker | H initially | Medium | no-prompt, watchdog, timeout, quarantine | kill tree, quarantine asset/combination |
 | R-012 | DAZ crash/corrupt partial accepted | M | High | terminal-result-last and atomic promotion | quarantine partial; replay from recipe |
 | R-013 | Disk exhaustion corrupts state | M | High | soft/hard floors, reservation, retention | drain queue, preserve metadata, recover storage |
-| R-014 | 8 GiB GPU OOM/contention | M | High | global GPU lease and render profiles | lower profile/retry once; quarantine persistent asset |
+| R-014 | Runtime OOM | M | High | typed workload failure and durable retry/abstain | do not create resource governance or weaken quality |
 | R-015 | Asset update invalidates reproducibility | H | High | exact hashes/snapshots and certificate revocation | pin old asset or rebuild affected corpus version |
 | R-016 | Driver/renderer drift changes RGB | M | Medium | runtime snapshot and tolerance classification | benchmark; new runtime version, never silent |
 | R-017 | Synthetic enters holdout/gold count | L | Critical | independent builder and launcher guards | invalidate dataset/run and audit |
@@ -78,7 +78,7 @@
 | DEP-005 | MaskFactory manifest schema migration | package ingestion | not implemented |
 | DEP-006 | MaskFactory real-image holdout | model promotion | required evaluation input |
 | DEP-007 | Active ontology loader v1/v2 | map generation | exists |
-| DEP-008 | GPU lease integration | stable rendering | design required |
+| DEP-008 | Direct selected-pod execution | stable rendering | no GPU/VRAM governance |
 | DEP-009 | F-drive capacity/backup | corpus scale | pilot capacity exists |
 
 ## 5. Open-question register

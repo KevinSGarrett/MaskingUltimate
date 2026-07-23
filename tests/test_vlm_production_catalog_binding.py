@@ -26,7 +26,7 @@ def test_unavailable_runpod_visual_authority_abstains_without_assigned_roles() -
     )
     catalog = _load(production["catalog"])
     assert catalog["sha256"] == production["catalog_sha256"]
-    assert production["shared_gpu_coordinator_required"] is True
+    assert production["gpu_resource_governance"] == "disabled"
     assert production["primary_visual_critic"] is None
     assert production["independent_family_juror"] is None
     assert production["authority_status"] == (

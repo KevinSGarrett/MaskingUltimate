@@ -9,7 +9,6 @@ recipe:
     "3": [separated, overlap, contact]
     "4": [separated, overlap, contact]
   maximum_storage_gib: 4.0
-  maximum_gpu_vram_gib: 24.0
   cost_warning_fraction: 0.85
 assembly:
   accepted_runtime_warning_codes: [AUTO_FOLLOW_APPLIED, SUBDIVISION_APPLIED]

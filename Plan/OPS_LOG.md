@@ -12296,3 +12296,21 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   single/multi-person QA-vector bindings remain open.
 - Validation: 26 focused threshold/calibration/per-record-QA tests pass; Ruff,
   Black, JSON Schema validation, and diff integrity pass.
+
+## 2026-07-23 - GPU/VRAM resource-governance retirement
+
+- Removed the selected-pod coordinator-lease requirement from production
+  routing and the adult-corpus provider canary.
+- Retired `runs/gpu.lock` as an execution or doctor gate. Its compatibility
+  context creates no bytes, acquires no ownership, and never refuses work.
+- Retired GPU planning, waiting, sequencing, and automatic model/container
+  reclamation behavior. Compatibility entry points return direct/no-action
+  results and cannot delay or mutate a workload.
+- Removed peak-VRAM and hardware-VRAM values from active provider, visual-role,
+  receipt-arbitration, and DAZ-scene pass/fail decisions. Measurements remain
+  telemetry only.
+- Replaced the DAZ GPU-contention fixture with a no-governance fixture proving
+  that a legacy marker cannot block or be reclaimed.
+- Preserved mission/shard/record leases because they govern durable queue
+  ownership and crash recovery, not GPU capacity.
+- No local or RunPod GPU workload was launched by this policy migration.

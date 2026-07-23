@@ -20,7 +20,6 @@ from maskfactory.daz import (
     read_terminal_result,
     stage_recipe,
 )
-from maskfactory.gpu import GpuLock, GpuLockBusyError
 from maskfactory.validation import validate_document
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -269,33 +268,28 @@ def test_worker_refuses_unpinned_executable_or_entrypoint_before_launch(
         )
 
 
-def test_shared_gpu_lease_blocks_second_daz_owner_without_deleting_lock(tmp_path: Path):
-    path = tmp_path / "gpu.lock"
-    with GpuLock(path, purpose="pipeline"):
-        with pytest.raises(GpuLockBusyError):
-            GpuLock(path, purpose="daz_render", image_id="job_0001").acquire()
-        assert path.is_file()
-
-
-def test_run_daz_job_acquires_shared_gpu_lease_before_process_launch(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-):
+def test_daz_runtime_profile_has_no_gpu_resource_governance() -> None:
     profile = load_daz_runtime_profile(RUNTIME_CONFIG)
-    lock_path = tmp_path / "gpu.lock"
+    assert "gpu_lease" not in profile.document
+    assert not hasattr(profile, "gpu_lease")
+
+
+def test_preexisting_legacy_gpu_marker_cannot_block_daz_launch(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    profile = load_daz_runtime_profile(RUNTIME_CONFIG)
     control_state = tmp_path / "runtime_state.json"
     control_state.write_text(
         json.dumps({"enabled": True, "paused": False, "drain": False, "stop_requested": False}),
         encoding="utf-8",
     )
-    runtime_paths = replace(
-        profile.runtime_paths,
-        control_state=control_state,
-        job_partial_root=tmp_path,
-    )
     profile = replace(
         profile,
-        runtime_paths=runtime_paths,
-        gpu_lease={**profile.gpu_lease, "path": str(lock_path)},
+        runtime_paths=replace(
+            profile.runtime_paths,
+            control_state=control_state,
+            job_partial_root=tmp_path,
+        ),
         safety={**profile.safety, "minimum_render_free_gib": 0},
     )
     executable = tmp_path / "DAZStudio.exe"
@@ -304,28 +298,30 @@ def test_run_daz_job_acquires_shared_gpu_lease_before_process_launch(
     entrypoint.write_text("// fixture", encoding="utf-8")
     recipe = _recipe(operation="render_scene")
     files = prepare_job_files(tmp_path / "jobs", recipe["job_id"])
-    launched = False
+    marker = tmp_path / "gpu.lock"
+    marker.write_text("legacy marker\n", encoding="utf-8")
+    process = object()
+    monkeypatch.setattr(daz_worker.subprocess, "Popen", lambda *_args, **_kwargs: process)
+    monkeypatch.setattr(
+        daz_worker,
+        "_watch_process",
+        lambda observed, **_kwargs: ("launched", observed),
+    )
 
-    def forbidden_popen(*_args, **_kwargs):
-        nonlocal launched
-        launched = True
-        raise AssertionError("process must not launch while GPU is leased")
+    outcome = daz_worker.run_daz_job(
+        executable=executable,
+        profile=profile,
+        files=files,
+        recipe=recipe,
+        entrypoint=entrypoint,
+        expected_executable_sha256=_sha256(executable),
+        expected_entrypoint_sha256=_sha256(entrypoint),
+        allowed_artifact_roots=(tmp_path,),
+        process_inventory=lambda: (),
+    )
 
-    monkeypatch.setattr(daz_worker.subprocess, "Popen", forbidden_popen)
-    with GpuLock(lock_path, purpose="pipeline"):
-        with pytest.raises(GpuLockBusyError):
-            daz_worker.run_daz_job(
-                executable=executable,
-                profile=profile,
-                files=files,
-                recipe=recipe,
-                entrypoint=entrypoint,
-                expected_executable_sha256=_sha256(executable),
-                expected_entrypoint_sha256=_sha256(entrypoint),
-                allowed_artifact_roots=(tmp_path,),
-                process_inventory=lambda: (),
-            )
-    assert launched is False
+    assert outcome == ("launched", process)
+    assert marker.read_text(encoding="utf-8") == "legacy marker\n"
 
 
 def test_worker_refuses_unmanaged_daz_before_any_probe_launch(

@@ -45,7 +45,7 @@ All DAZ content, generated scenes, caches, renders, annotations, and DAZ-specifi
   `weighted_pseudo_label`, and `machine_candidate`.
 - Only human-anchor holdouts may be final evaluation authority. Synthetic data cannot replace them.
 - The local hardware profile includes an 8 GiB NVIDIA GPU, so DAZ rendering and MaskFactory model work
-  must be serialized through one machine-level GPU lease.
+  execute without GPU/VRAM admission, reservation, checkout, or file-lock governance.
 - `F:\DAZ` currently exists and is empty. At blueprint time, drive F has approximately 361.6 GiB free.
 - The current manifest schemas do not yet have a dedicated `source_origin: synthetic` contract. This
   requires an explicit schema migration and regression tests before DAZ package intake.

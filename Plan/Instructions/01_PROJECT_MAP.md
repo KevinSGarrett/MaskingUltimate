@@ -38,7 +38,7 @@ gold." Both matter; they answer different questions.
 | 02 | `02_MASK_ONTOLOGY_SPEC.md` | Every label, ID, mask-type taxonomy, L/R rules, visibility states, z-order |
 | 03 | `03_GOLD_MASK_FORMAT_SPEC.md` | Binary PNG spec, package layout, naming, gold-vs-inpaint separation |
 | 04 | `04_DATA_SCHEMAS_AND_MANIFESTS.md` | Full JSON schemas: manifest, qa_report, model registry, failure queue, coverage matrix, state DB |
-| 05 | `05_SYSTEM_ARCHITECTURE.md` | Component architecture, module boundaries, consensus engine, VRAM schedule |
+| 05 | `05_SYSTEM_ARCHITECTURE.md` | Component architecture, module boundaries, consensus engine, direct RunPod GPU execution |
 | 06 | `06_ENVIRONMENT_AND_INSTALLATION.md` | Hardware plan, exact env builds, every model checkpoint, CVAT deployment |
 | — | `DOCKER_RUNTIME_AND_SESSION_USE.md` | Day-to-day Docker Desktop / CVAT / Nuclio / Ollama operating manual for agents (live-probe + use freely) |
 | — | `MASKEDWAREHOUSE_SOURCE_REGISTRY.md` | Eligible MaskedWarehouse sources; never-gold admission rules |

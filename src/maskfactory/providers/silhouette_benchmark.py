@@ -473,8 +473,7 @@ def build_report(
                 requirements["max_oom_or_crash_count"]
             ):
                 row_findings.append("runtime_failure")
-            if runtime["peak_vram_bytes"] > int(requirements["max_peak_vram_bytes"]):
-                row_findings.append("peak_vram_budget_exceeded")
+            # Peak VRAM is diagnostic only and is not a provider-selection gate.
             if runtime["repeat_count"] != int(requirements["require_deterministic_repeats"]):
                 row_findings.append("determinism_repeat_count_failed")
             fallback = next(

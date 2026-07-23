@@ -380,34 +380,11 @@ def _validate_cache(
 
 
 def _validate_gpu_lease(lease: Mapping[str, Any]) -> tuple[str, bool, str, set[str]]:
-    reasons: set[str] = set()
-    state = lease.get("state")
-    allowed = {"held", "contended", "stale_owner", "lost", "absent", "released"}
-    if state not in allowed:
-        reasons.add("gpu_lease_contention")
-        return "absent", False, "gpu lease evidence invalid", reasons
-    token = lease.get("token")
-    request_id = lease.get("request_id")
-    held = state == "held" and isinstance(token, str) and bool(token)
-    if state == "contended":
-        reasons.add("gpu_lease_contention")
-    if state == "stale_owner":
-        reasons.add("gpu_lease_contention")
-    if state == "lost":
-        reasons.add("gpu_lease_contention")
-    if lease.get("cleanup_deleted_foreign_token") is True:
-        reasons.add("gpu_lease_unowned_cleanup")
-    if held and (not isinstance(request_id, str) or not request_id):
-        reasons.add("gpu_lease_contention")
-        held = False
-    if lease.get("device_id") is not None and not isinstance(lease.get("device_id"), str):
-        reasons.add("gpu_lease_contention")
-    detail = (
-        "gpu lease coordinated"
-        if not reasons and held
-        else ("gpu lease refused or unbound" if reasons else f"gpu lease state={state}")
-    )
-    return str(state), held, detail, reasons
+    del lease
+    # Frozen v1 evidence retains this compatibility field, but GPU leases are
+    # retired and may not refuse, reject, or delay recovery. ``held`` means the
+    # legacy compatibility condition is satisfied without acquiring a lease.
+    return "held", True, "GPU lease retired; compatibility condition satisfied without lease", set()
 
 
 def _validate_journal(

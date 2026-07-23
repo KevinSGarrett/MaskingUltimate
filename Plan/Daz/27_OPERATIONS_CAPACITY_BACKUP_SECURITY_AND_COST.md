@@ -95,7 +95,7 @@ dependency report.
 - Interactive MaskFactory work can receive a higher-priority reservation.
 - Scheduler supports quiet hours, maximum daily GPU hours, temperature/power limits, and pause/drain.
 - DAZ worker does not silently switch renderers or compete for VRAM.
-- An expired GPU lease requires owner-process verification before recovery.
+- GPU/VRAM admission leases do not exist; worker/data ownership recovery remains independent.
 
 ## 9. Worker lifecycle
 

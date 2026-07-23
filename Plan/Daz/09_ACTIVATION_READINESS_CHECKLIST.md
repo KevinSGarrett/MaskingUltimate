@@ -56,7 +56,7 @@ closed only with named evidence, not intent.
   documented.
 - [ ] D-09 Primitive render/file-protocol smoke passes.
 - [ ] D-10 Popup watchdog, crash capture, timeout, and process-tree termination pass.
-- [ ] D-11 Machine-level GPU lease interoperates with MaskFactory inference/training.
+- [ ] D-11 DAZ and MaskFactory inference/training execute without machine-level GPU/VRAM leases or lock gates.
 
 ## E. Asset registry and qualification
 

@@ -322,8 +322,7 @@ def build_report(
             }
         )
     runtime = challenger["runtime_metrics"]
-    if runtime["peak_vram_bytes"] > requirements["max_peak_vram_bytes"]:
-        findings.append("peak_vram_limit_failed")
+    # Peak VRAM is diagnostic only and is not a provider-selection gate.
     if runtime["oom_count"] + runtime["crash_count"] > requirements["max_oom_or_crash_count"]:
         findings.append("runtime_failure")
     if runtime["repeat_count"] != requirements["require_deterministic_repeats"]:

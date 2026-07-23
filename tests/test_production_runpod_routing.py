@@ -19,6 +19,7 @@ from maskfactory.production_runpod_routing import (
 def test_active_policy_is_runpod_first_and_sam31_first() -> None:
     policy = load_production_routing()
     assert policy["production_platform"]["provider_inference"] == "runpod"
+    assert policy["production_platform"]["gpu_resource_governance"] == "disabled"
     assert policy["provider_priorities"]["concept_and_interactive_segmentation"][0] == "sam3_1"
     for route in PROVIDER_ROUTES.values():
         assert validate_canary_provider_route(route)[0] == "sam3_1"
@@ -71,6 +72,10 @@ def test_local_or_sam2_first_production_routes_fail_closed() -> None:
     drifted["production_platform"]["provider_inference"] = "local"
     with pytest.raises(ProductionRoutingError, match="not_runpod"):
         validate_production_routing(drifted)
+    governed = deepcopy(policy)
+    governed["production_platform"]["gpu_resource_governance"] = "capacity_lease"
+    with pytest.raises(ProductionRoutingError, match="must_be_disabled"):
+        validate_production_routing(governed)
     with pytest.raises(ProductionRoutingError, match="sam3_1"):
         validate_canary_provider_route(("sam2_1", "sam3_1"))
 

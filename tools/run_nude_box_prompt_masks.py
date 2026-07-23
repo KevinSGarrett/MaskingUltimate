@@ -152,7 +152,6 @@ def main() -> None:
     parser.add_argument("--source-shard", type=Path, required=True)
     parser.add_argument("--provider", choices=("sam2_1", "sam3_1"), required=True)
     parser.add_argument("--execution-platform", choices=("runpod",), required=True)
-    parser.add_argument("--coordinator-lease-id", required=True)
     parser.add_argument("--allow-bounded-sam21-fallback", action="store_true")
     parser.add_argument("--sam21-fallback-reason")
     parser.add_argument("--output-dir", type=Path, required=True)
@@ -167,8 +166,6 @@ def main() -> None:
     parser.add_argument("--sam2-dependency-site", type=Path)
     args = parser.parse_args()
 
-    if not args.coordinator_lease_id.startswith("lease_"):
-        raise ValueError("a valid shared RunPod coordinator lease ID is required")
     if args.provider == "sam2_1":
         require_bounded_sam21_fallback(
             enabled=args.allow_bounded_sam21_fallback,

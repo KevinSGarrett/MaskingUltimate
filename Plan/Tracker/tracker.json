@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-23T00:14:25+00:00",
+    "generated_at": "2026-07-23T06:19:55+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 858,
     "total_tracked_including_orphaned": 858
@@ -1387,7 +1387,7 @@
       "cluster_id": "MF-P0-07",
       "cluster_title": "`maskfactory doctor`",
       "spec_ref": "06 §9",
-      "description": "Implement doctor checks: torch cu128 + sm_120 · every registered model loads + smoke output hash matches reference · CVAT API reachable (+ project-exists check, skippable pre-P1) · nuclio interactor answers · Ollama answers an image test · disk free ≥ 200 GB (warn <150 / block-ingest <75 per 15 §4) · WSL↔C:\\ round-trip write · png_strict self-test · SQLite writable · stale `runs\\gpu.lock` detection",
+      "description": "Implement doctor checks: torch cu128 + sm_120 · every registered model loads + smoke output hash matches reference · CVAT API reachable (+ project-exists check, skippable pre-P1) · nuclio interactor answers · Ollama answers an image test · disk free ≥ 200 GB (warn <150 / block-ingest <75 per 15 §4) · WSL↔C:\\ round-trip write · png_strict self-test · SQLite writable",
       "source_file": "01_ITEMS_P0_ENVIRONMENT.md",
       "source_line": 72,
       "is_exit_gate": false,
@@ -2104,7 +2104,7 @@
       "cluster_id": "MF-P1-02",
       "cluster_title": "SQLite state + orchestrator",
       "spec_ref": "04 §6, 05 §3/§6",
-      "description": "`runs\\gpu.lock` acquire/release + stale-lock detection (doctor reports it)",
+      "description": "Retire `runs\\gpu.lock` as an admission/refusal mechanism; compatibility contexts create no file and never block selected-pod execution",
       "source_file": "02_ITEMS_P1_GOLD_FACTORY_MVP.md",
       "source_line": 22,
       "is_exit_gate": false,
@@ -2113,10 +2113,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "Implemented src/maskfactory/gpu.py atomic runs/gpu.lock lease with PID/host/time/purpose/image/token metadata, live-owner refusal, stale-owner detection without auto-delete, token-checked release, and exception cleanup. maskfactory run holds the lease; doctor uses the same absent/active/stale/unrecognized classifier. 24 focused GPU/doctor/orchestrator tests and full pytest 124 passed; Ruff clean; Black 25.1/Python 3.11 profile clean; git diff --check clean; OPS_LOG 2026-07-11 00:54 UTC.",
+      "evidence": "2026-07-23 retirement proof: src/maskfactory/gpu.py is a no-op compatibility context that creates no file, acquires no ownership, and never blocks; doctor treats legacy markers as PASS/non-authoritative; serving/training/orchestrator regression tests prove no lock bytes or refusal. GPU/VRAM telemetry has no admission authority.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T01:42:23+00:00",
+      "updated_at": "2026-07-23T06:19:56+00:00",
       "orphaned": false
     },
     "MF-P1-02.06": {
@@ -5687,7 +5687,7 @@
       "cluster_id": "MF-P4-01",
       "cluster_title": "S11 VLM QA runner",
       "spec_ref": "10 §1–4",
-      "description": "`vlm\\client.py`: Ollama API client (127.0.0.1:11434) · S11 runs in its exclusive GPU slot — orchestrator stops other GPU stages during the batch",
+      "description": "`vlm\\client.py`: Ollama API client (127.0.0.1:11434) · production review runs directly on selected RunPod with no GPU/VRAM admission or exclusive-slot governance",
       "source_file": "05_ITEMS_P4_VLM_QA_ACTIVE_LEARNING.md",
       "source_line": 11,
       "is_exit_gate": false,
@@ -5700,12 +5700,17 @@
           "ts": "2026-07-12T11:07:47+00:00",
           "actor": "ai_agent",
           "text": "Activated a dedicated production entry: maskfactory vlmqa run <image_id> forces S10+S11 across every promoted instance, revalidates reports, summarizes gate/route/P-IMAGE state, and exits nonzero when the calibrated production gate is unavailable or auto-QA remains blocked. Live disabled-gate execution produced zero verdicts and no CVAT task."
+        },
+        {
+          "ts": "2026-07-23T06:19:57+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-23: production visual review is direct RunPod execution. Coordinator leases, exclusive GPU slots, gpu.lock, VRAM headroom, and peak-VRAM thresholds have no admission or role-qualification authority; utilization/peak memory remain telemetry only."
         }
       ],
       "evidence": "Existing Ollama/exclusive-slot implementation remains covered. qa/live_verification/vlmqa_run_cli_20260712.json adds live command proof: 13 careful routes, zero fabricated verdicts, exit 1, CVAT tasks stable 9->9; 55 focused and 640 full tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-12T11:07:47+00:00",
+      "updated_at": "2026-07-23T06:19:57+00:00",
       "orphaned": false
     },
     "MF-P4-01.02": {
@@ -7048,7 +7053,7 @@
       "cluster_id": "MF-P5-03",
       "cluster_title": "Train 6.1 body-part segmenter",
       "spec_ref": "12 §5/§6.1",
-      "description": "Train SegFormer-B3 under `runs\\gpu.lock` · eval per-part IoU + boundary-F on val every 4k · thermal cooldown (sleep 60 s @ >87 °C) verified during a long run",
+      "description": "Train SegFormer-B3 directly on RunPod · eval per-part IoU + boundary-F on val every 4k",
       "source_file": "06_ITEMS_P5_TRAINING.md",
       "source_line": 28,
       "is_exit_gate": false,
@@ -7076,12 +7081,17 @@
           "ts": "2026-07-13T01:23:04+00:00",
           "actor": "ai_agent",
           "text": "The pinned full-MMCV CUDA runtime blocker is closed by qa/live_verification/openmmlab_cuda_runtime_20260712.json. Real SegFormer training remains blocked only on the >=200 human-approved bodyparts dataset and its frozen split/DVC identity."
+        },
+        {
+          "ts": "2026-07-23T06:19:57+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-23: all GPU/VRAM admission and qualification gates are retired. Training executes directly on selected RunPod when its data/authority prerequisites exist; OOM is a typed runtime outcome, and GPU/VRAM telemetry cannot block or promote the run."
         }
       ],
       "evidence": null,
       "blocked_reason": "The real SegFormer-B3 run requires bodyparts@v1 with at least 200 certified training packages; CUDA and OpenMMLab are ready, but certified count is 0 and initial human-anchor calibration still needs Kevin.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-14T07:54:36+00:00",
+      "updated_at": "2026-07-23T06:19:57+00:00",
       "orphaned": false
     },
     "MF-P5-03.03": {
@@ -7705,7 +7715,7 @@
       "cluster_id": "MF-P5-08",
       "cluster_title": "Conditional / optional models",
       "spec_ref": "12 §6.4–6.5/§5",
-      "description": "(Optional) governed RunPod scale runbook executed once: validate persistent inputs · acquire/heartbeat SharedRunPodCoordinator v2 lease · train · persist/hash outputs and evidence · contain owned process · release lease",
+      "description": "(Optional) RunPod scale runbook executed once: validate persistent inputs · train directly on the selected pod · persist/hash outputs and evidence",
       "source_file": "06_ITEMS_P5_TRAINING.md",
       "source_line": 61,
       "is_exit_gate": false,
@@ -8145,7 +8155,7 @@
       "cluster_id": "MF-P6-02",
       "cluster_title": "FastAPI inference service",
       "spec_ref": "13 §3",
-      "description": "`runs\\gpu.lock` mutual exclusion with pipeline/training · refusal error names the lock holder · demonstrated both directions",
+      "description": "Serving, pipeline, and training paths do not use `runs\\gpu.lock` or any GPU/VRAM admission/refusal mechanism",
       "source_file": "07_ITEMS_P6_COMFYUI_SERVING.md",
       "source_line": 22,
       "is_exit_gate": false,
@@ -8154,10 +8164,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "InferenceRuntime holds purpose=serve_mode_b GpuLock for its lifetime; test proves pipeline acquisition is refused with named serving owner, and a live pipeline lock refuses service startup with named pipeline owner; token-safe release passes.",
+      "evidence": "2026-07-23 direct-pod proof: InferenceRuntime start/stop/predict/refine use process lifecycle only; no gpu.lock is acquired or required. Focused serve, pipeline, training, orchestrator, doctor, and GPU tests pass with pre-existing legacy markers unable to refuse execution.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-11T08:03:30+00:00",
+      "updated_at": "2026-07-23T06:19:56+00:00",
       "orphaned": false
     },
     "MF-P6-02.05": {
@@ -14834,12 +14844,17 @@
           "ts": "2026-07-23T01:55:28+00:00",
           "actor": "ai_agent",
           "text": "2026-07-23 RunPod current-protocol canary completed under exact shared-coordinator leases with persistent model/runtime bindings. Qwen3-VL 30B primary FAIL: valid-mask pass 0%, ownership 0%, label 50%, replay 83.3%; InternVL3.5 8B independent juror FAIL: 100% abstention, schema/recall/valid-mask pass 0%. Both remain unavailable/unpromoted; zero role certificates; strict visual authority remains VISUAL_CRITIC_BLOCKED while segmentation and deterministic QA may continue. Exact immutable evidence qa/live_verification/runpod_current_visual_critic_protocol_canary_20260723.json self_sha256=b0cbd3e5573bd18752a0790956ef2f464ac5b92b2fd710671dd52bc337ca7e65."
+        },
+        {
+          "ts": "2026-07-23T05:29:36+00:00",
+          "actor": "codex",
+          "text": "2026-07-23 RunPod runtime availability only: policy-primary llava:13b completed a deterministic temperature=0/seed=1337 bounded smoke; post-probe GPU sample was 46% / 14.9 GiB. This has no panels, frozen role corpus, metrics, independent juror, or certificate, so strict visual role and all mask/certification authority remain unavailable. qa/live_verification/runpod_llava13b_strict_visual_runtime_smoke_20260723.json"
         }
       ],
       "evidence": "qa/live_verification/runpod_current_visual_critic_failclosed_20260723.json",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-23T01:55:28+00:00",
+      "updated_at": "2026-07-23T05:29:36+00:00",
       "orphaned": false
     },
     "MF-P4-11.19": {
@@ -17377,7 +17392,7 @@
       "cluster_id": "MF-P9-03",
       "cluster_title": "DAZ runtime and worker",
       "spec_ref": "Daz 24 D2; Daz 00–32",
-      "description": "Implement machine-level GPU lease · Verify: contention tests · Blocked by: D1-04,D2-07",
+      "description": "Retire machine-level GPU leases and prove DAZ launch is not gated by GPU/VRAM reservation, checkout, or file-lock state · Verify: legacy lock presence does not block launch · Blocked by: D1-04,D2-07",
       "source_file": "20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md",
       "source_line": 40,
       "is_exit_gate": false,
@@ -17386,10 +17401,10 @@
       "status": "complete",
       "percent_complete": 100,
       "notes": [],
-      "evidence": "DAZ render launcher reuses MaskFactory runs/gpu.lock via GpuLock; contention test proves the DAZ process is never launched while another owner holds the lease; disabled control state and 150 GiB floor also fail closed.",
+      "evidence": "2026-07-23 DAZ retirement proof: runtime/worker schemas contain no GPU lease requirement; launch does not enter GpuLock; fixture and launch tests prove a pre-existing legacy gpu.lock marker is preserved but cannot block, delay, reserve, check out, reclaim, or start real GPU work.",
       "blocked_reason": null,
       "created_at": "2026-07-16T02:34:41+00:00",
-      "updated_at": "2026-07-16T04:08:01+00:00",
+      "updated_at": "2026-07-23T06:19:56+00:00",
       "orphaned": false
     },
     "MF-P9-03.09": {
@@ -23253,12 +23268,32 @@
           "ts": "2026-07-23T03:29:55+00:00",
           "actor": "codex",
           "text": "2026-07-23 live RunPod queue crash/resume canary: the exact persistent 256-record reference shard was claimed by a separate process that exited 17 without persisting its lease token. After expiry, a fresh process reclaimed the same shard at attempt 2, with next_sample_index=0, no accepted-output duplication, and no terminal progress; it then released the shard cleanly back to queued. This proves the real persistent queue lease/recovery boundary. Provider inference was deliberately not executed, so live provider-process crash/restart and the 1,000-record milestone remain open."
+        },
+        {
+          "ts": "2026-07-23T04:16:56+00:00",
+          "actor": "codex",
+          "text": "2026-07-23 direct single-RTX-6000 RunPod SAM3.1 reference wave: eight catalog-selected records executed against the repaired visual-text native-box path. Provider report file SHA-256 2e1431aefba68cc276e36d4d3e94c9c0e781ebc0639d89c9a86a6e71c354f410; hard-QC report file SHA-256 4612e674509c4fb36107102a8f27fedc93fed4271d633ff063dd205b5fb27324. Outcome: generated=7, provider_abstain=1 (official native box refinement returned no result); deterministic hard-QC pass=6, fail=1 (NREF-QC-006 component_count=103 > 16), upstream_abstain=1. All generated artifacts remain draft_machine_candidate_only; strict_visual_review_complete=false; production authority/certificates/gold/training truth remain absent. Non-overlapping 16-record RunPod wave launched as lease_direct_sam31_wave16_20260723; pending evidence."
+        },
+        {
+          "ts": "2026-07-23T04:28:16+00:00",
+          "actor": "codex",
+          "text": "2026-07-23 direct single-RTX-6000 RunPod SAM3.1 non-overlapping 16-record reference wave completed. Provider report file SHA-256 f406b819fef51f3fc593430aa2fc4f14e4e6c270116a03d2f6c25ae5ecd7d116; hard-QC report file SHA-256 38ab4181ceec1444d0125c09cc595ce174dc2c4277c4cb1ae8d442ab7e35056c. Outcome: generated=13/provider_abstain=3 (each SAM3.1 refinement violates prompt polarity); deterministic hard-QC pass=12/fail=1 (NREF-QC-006)/upstream_abstain=3. Cumulative bounded waves: 24 submitted, 20 generated, 18 deterministic hard-QC pass, 2 NREF-QC-006 hard failures, 4 contained provider abstentions. All artifacts remain draft-only; strict visual review=false, certificates/production authority/gold/training truth absent. A 32-record non-overlapping evidence wave is the next bounded execution."
+        },
+        {
+          "ts": "2026-07-23T04:54:01+00:00",
+          "actor": "codex",
+          "text": "2026-07-23 direct single-RTX-6000 RunPod SAM3.1 32-record reference wave completed. Provider report file SHA-256 be709ef961ecab535700b9bc8181d45164890c4e9161883c7cd532a4b25bff6f; hard-QC report file SHA-256 41b6ed11652ec3a1ef8804731bf0826c92f84c01fd2adfe1709bfdaeddb24eb1. Outcome: generated=30/provider_abstain=2 (one empty postprocessed mask, one prompt-polarity violation); deterministic hard-QC pass=25/fail=5 (all NREF-QC-006)/upstream_abstain=2. Cumulative bounded reference waves: 56 submitted, 50 generated, 43 deterministic hard-QC passes, 7 NREF-QC-006 hard failures, 6 provider abstentions. All candidates remain draft-only; strict_visual_review_complete=false; no certificate/production/gold/training authority. Next execution will be owned by the exact durable RunPod reference shard lease with heartbeats; no terminal checkpoint or milestone is claimed before a validated bridge receipt."
+        },
+        {
+          "ts": "2026-07-23T04:55:51+00:00",
+          "actor": "codex",
+          "text": "2026-07-23 shard-scale lease-governed transition: exact durable queue shard runpod/reference_and_tournament_input.0001.json (256 records) is live-leased to sam31-reference-wave64-20260723 at attempt 3. Lease token cc3d74eac1fa41eea9973a93fab9d2cc is owned and a RunPod-resident 120-second heartbeat loop has already succeeded; current next_sample_index=0 and no terminal outcomes or checkpoint were written. A non-overlapping 64-record SAM3.1 subset is running under this lease. This proves active lease governance only; it does not claim a queue completion, accepted outputs, certificates, visual approval, gold, or training truth."
         }
       ],
       "evidence": "qa/live_verification/runpod_sam31_provider_canary_failclosed_20260723.json; qa/live_verification/runpod_visual_unavailability_batch_abstention_20260723.json self SHA-256 3b53eaf5821e7dc7356e2a6882ed878fa8bf02d22ce69f9249ecf333b93983b5; qa/live_verification/runpod_persistence_refresh_20260723.json; qa/live_verification/runpod_corpus_mirrors_refresh_20260723.json; qa/live_verification/runpod_nude_queue_crash_resume_20260723.json file SHA-256 1b79b623d368cac039f4ffd077ebfbcbadb927363449ced91644ca6a0158463c self SHA-256 c20abf5fba44cffdd1655ae7ffd4fc7febf7478a34f4d38ec3714952623e6faf",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-23T03:29:55+00:00",
+      "updated_at": "2026-07-23T04:55:51+00:00",
       "orphaned": false
     },
     "MF-P4-12.02": {
@@ -23489,12 +23524,17 @@
           "ts": "2026-07-23T03:31:11+00:00",
           "actor": "codex",
           "text": "2026-07-23 coordinator recovery: restored the documented read-only telemetry agent at /workspace/tools/shared_runpod_gpu_telemetry_agent.py (SHA-256 713b8e619c7d42dfe17c26c277942a93fc6e1a69b50e974b01684d5130a264d8). The configured endpoint 69.30.85.41:22120 is reachable but inventories two idle NVIDIA A40 devices (each 46,068 MiB); the shared coordinator is explicitly approved for one 48-GiB resource and the agent fails closed on two GPUs. No lease or shard inference was issued. RUNTIME_BLOCKED until an explicit resource inventory/coordinator qualification authorizes this topology; strict visual authority remains unavailable and certification/gold/training claims remain zero."
+        },
+        {
+          "ts": "2026-07-23T03:48:32+00:00",
+          "actor": "codex",
+          "text": "2026-07-23 correction: the prior dual-A40 topology note targeted a stale coordinator endpoint and is superseded. The coordinator now targets the active single RTX 6000 Ada pod 1q4ji0gg1fkhvt at 195.26.233.100:52077; telemetry is fresh (49,140 MiB total, 47,993 MiB free) and the policy guard passes. No MaskFactory lease or inference was started because ComfyUI holds the current exclusive 40-GiB lease lease_124686849b2743f7a909f466ee1c985e. Reference-lane execution is capacity-queued only; the existing SAM3.1 hard-QC claim and strict-visual/certification/gold/training abstentions are unchanged."
         }
       ],
       "evidence": "qa/live_verification/runpod_sam31_discovery_ownership_abstain_20260723.json; qa/live_verification/runpod_persistence_current_20260723.json; qa/live_verification/runpod_matanyone2_sam31_split_person_recomposition_20260723.json file SHA-256 0e6b98c9eef7a9d31caab76b146d1ef3127b476273529a7ac3bdc1042dd59db1 self SHA-256 3acf2bea4326b8cd851e42b6806f481ff2c3dabccb4e18234e54a3e662e08ff4; qa/live_verification/runpod_split_person_recomposition_hard_qa_20260723.json file SHA-256 ff33339afcf250cc4f443cd0959cdde893ae53f1139137945509deaebc9e7ec8 self SHA-256 d75cccf0766c203930b46988c849f92e3a13bb1885fba7ff7faed4aff57a2a0e; qa/live_verification/runpod_sam31_visual_text_box_hard_qc_pass_20260723.json file SHA-256 08ce61e2678479e8d1a62e44548e2dff336c34de4d5dab1a8ac4d7f713f18979",
-      "blocked_reason": "RUNTIME_BLOCKED: configured RunPod endpoint is a dual-A40 topology, not the coordinator-approved single 48-GiB resource; telemetry and lease admission fail closed pending explicit resource inventory/qualification.",
+      "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-23T03:31:11+00:00",
+      "updated_at": "2026-07-23T03:48:32+00:00",
       "orphaned": false
     },
     "MF-P4-12.05": {
@@ -23876,7 +23916,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 65,
+      "percent_complete": 72,
       "notes": [
         {
           "ts": "2026-07-22T17:57:03+00:00",
@@ -23897,12 +23937,17 @@
           "ts": "2026-07-22T18:23:19+00:00",
           "actor": "codex",
           "text": "STATIC_PASS: closed 33-metric per-record QA vector implemented with per-label target/threshold/mask bindings, mandatory non-N/A safety metrics, exact final-mask-set and owner/package identity binding. Current registry remains explicitly unqualified, so autonomous-gold authority remains unavailable until empirical calibration."
+        },
+        {
+          "ts": "2026-07-23T03:39:25+00:00",
+          "actor": "codex",
+          "text": "Implemented a closed empirical-calibration evidence compiler and frozen project policy. It binds the exact candidate registry, resolved 146-label ontology surface, per-record calibration/qualification-holdout evidence, positive/negative minima, domain/risk/size/context coverage, and canonical hashes. Source/package leakage, after-the-fact policy freeze, unknown labels/contexts, unqualified reference authority, duplicate IDs, and forged policy bytes fail closed. Even complete evidence is calibration_candidate_only_not_gold_authority; real RunPod population, holdout execution, immutable qualified v1 publication, and live single/multi-person QA bindings remain open."
         }
       ],
-      "evidence": "qa/live_verification/autonomous_gold_per_record_qa_admission_20260722.json SHA256 50a284c6306f8b8b60565b090be73ffa4bb1bdb6f2327b1c6df153f56c43c3e9; schema/module/package admission negative fixtures and post-DVC authority-byte drift fixtures PASS.",
+      "evidence": "qa/live_verification/autonomous_gold_per_record_qa_admission_20260722.json SHA256 50a284c6306f8b8b60565b090be73ffa4bb1bdb6f2327b1c6df153f56c43c3e9; autonomous_gold_qa_threshold_calibration closed schema/compiler/frozen-policy fixtures: 26 focused tests PASS; Ruff, Black, schema validation, and diff integrity PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-22T17:56:19+00:00",
-      "updated_at": "2026-07-22T18:23:19+00:00",
+      "updated_at": "2026-07-23T03:39:25+00:00",
       "orphaned": false
     },
     "MF-P5-11.01": {

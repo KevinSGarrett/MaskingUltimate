@@ -15,7 +15,7 @@ import numpy as np
 from PIL import Image
 
 from .. import __version__
-from ..gpu import DEFAULT_GPU_LOCK_PATH, GpuLock
+from ..gpu import DEFAULT_GPU_LOCK_PATH
 from ..inpaint import feathered_dilation
 from ..models.ontology_contract import (
     V1_ONTOLOGY_VERSION,
@@ -161,7 +161,7 @@ class InferenceRuntime:
     configured_models: list[str] = field(default_factory=list)
     model_contracts: dict[str, dict[str, Any]] = field(default_factory=dict)
     vram_probe: Callable[[], dict[str, Any]] = probe_vram
-    _lease: GpuLock | None = None
+    _started: bool = False
     _request_lock: threading.Lock = field(default_factory=threading.Lock, init=False, repr=False)
 
     def configure_champion_predictor(
@@ -171,7 +171,7 @@ class InferenceRuntime:
         roles: tuple[str, ...] = ("champion_bodypart",),
     ) -> None:
         """Resolve verified champion roles and build the only production predictor path."""
-        if self._lease is not None:
+        if self._started:
             raise ServingError("cannot reconfigure champion models while serving")
         if not roles or len(set(roles)) != len(roles):
             raise ServingError("champion role list must be non-empty and unique")
@@ -199,7 +199,7 @@ class InferenceRuntime:
 
     def configure_sequential_champions(self, loader: SlotPredictorLoader) -> None:
         """Resolve the required serving champions without co-residency."""
-        if self._lease is not None:
+        if self._started:
             raise ServingError("cannot reconfigure champion models while serving")
         roles = SequentialChampionPredictor.ROLE_ORDER
         try:
@@ -224,24 +224,21 @@ class InferenceRuntime:
         self.model_contracts = contracts
 
     def configure_on_demand_refiner(self, loader: RefinerLoader) -> None:
-        if self._lease is not None:
+        if self._started:
             raise ServingError("cannot reconfigure SAM2 while serving")
         self.refiner = OnDemandRefiner(loader)
 
     def start(self) -> None:
-        if self._lease is not None:
+        if self._started:
             raise ServingError("MaskFactory serving runtime is already started")
-        lease = GpuLock(self.gpu_lock_path, purpose="serve_mode_b")
-        lease.acquire()
-        self._lease = lease
+        self._started = True
 
     def stop(self) -> None:
-        if self._lease is not None:
+        if self._started:
             close = getattr(self.refiner, "close", None)
             if callable(close):
                 close()
-            self._lease.release()
-            self._lease = None
+            self._started = False
 
     def ontology_version(self) -> str:
         return str(
@@ -251,13 +248,12 @@ class InferenceRuntime:
 
     def health(self) -> dict[str, Any]:
         return {
-            "status": "ok" if self._lease is not None else "not_started",
+            "status": "ok" if self._started else "not_started",
             "pipeline_version": __version__,
             "versions": {"pipeline": __version__, "mode_b_api": "1.0.0"},
             "ontology_version": self.ontology_version(),
             "loaded_models": list(self.loaded_models),
             "configured_models": list(self.configured_models),
-            "gpu_lock": str(self.gpu_lock_path),
             "vram": self.vram_probe(),
         }
 
@@ -320,8 +316,8 @@ class InferenceRuntime:
         return_mode: str = "binaries",
         inpaint: Mapping[str, int] | None = None,
     ) -> dict[str, Any]:
-        if self._lease is None:
-            raise ServingError("serving runtime must hold runs/gpu.lock before inference")
+        if not self._started:
+            raise ServingError("serving runtime must be started before inference")
         if self.predictor is None:
             raise ServingError("champion prediction provider is not configured")
         if return_mode not in {"binaries", "label_maps", "both"}:
@@ -411,8 +407,8 @@ class InferenceRuntime:
     def refine(
         self, image_bytes: bytes, label: str, clicks: tuple[dict[str, Any], ...]
     ) -> dict[str, Any]:
-        if self._lease is None:
-            raise ServingError("serving runtime must hold runs/gpu.lock before refinement")
+        if not self._started:
+            raise ServingError("serving runtime must be started before refinement")
         if self.refiner is None:
             raise ServingError("interactive refinement provider is not configured")
         image = _decode_rgb(image_bytes)

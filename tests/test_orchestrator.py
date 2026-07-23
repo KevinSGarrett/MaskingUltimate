@@ -286,11 +286,11 @@ def test_transient_failure_retries_exactly_twice_with_backoff(tmp_path: Path) ->
     assert delays == [1.0, 2.0]
 
 
-def test_pipeline_holds_and_releases_configured_gpu_lock(tmp_path: Path) -> None:
+def test_pipeline_ignores_legacy_gpu_lock_path(tmp_path: Path) -> None:
     lock_path = tmp_path / "runs" / "gpu.lock"
 
     def runner(context):
-        assert lock_path.is_file()
+        assert not lock_path.exists()
         return {"ok": True}
 
     run_pipeline(

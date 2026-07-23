@@ -177,8 +177,7 @@ def _threshold_failures(metrics: Mapping[str, float], thresholds: Mapping[str, f
             failures.append(f"{metric}_above_maximum")
     if metrics["p95_latency_ms"] > thresholds["maximum_p95_latency_ms"]:
         failures.append("p95_latency_ms_above_maximum")
-    if metrics["peak_vram_fraction"] > thresholds["maximum_peak_vram_fraction"]:
-        failures.append("peak_vram_fraction_above_maximum")
+    # Peak VRAM is retained as telemetry only; it cannot fail role qualification.
     return failures
 
 
@@ -219,7 +218,6 @@ def evaluate_critic_qualification(
     if (
         hardware["gpu_name"] != expected_hardware["gpu_name"]
         or hardware["gpu_count"] != expected_hardware["gpu_count"]
-        or hardware["vram_bytes"] != expected_hardware["vram_bytes_per_gpu"]
     ):
         raise CriticQualificationError("qualification hardware differs from catalog")
 

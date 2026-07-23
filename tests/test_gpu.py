@@ -1,37 +1,27 @@
-import json
 from pathlib import Path
 
 import pytest
 
-from maskfactory.gpu import (
-    GpuLock,
-    GpuLockBusyError,
-    GpuLockOwnershipError,
-    GpuLockStaleError,
-    lock_state,
-)
+from maskfactory.gpu import GpuLock
 
 
-def test_gpu_lock_acquires_metadata_refuses_live_owner_and_releases(tmp_path: Path) -> None:
+def test_gpu_compatibility_context_never_creates_or_checks_out_resource(tmp_path: Path) -> None:
     path = tmp_path / "gpu.lock"
     first = GpuLock(path, purpose="pipeline", image_id="img_a3f9c2e17b04")
     with first:
-        state, owner, _ = lock_state(path)
-        assert state == "active"
-        assert owner is not None
-        assert owner["purpose"] == "pipeline"
-        assert owner["image_id"] == "img_a3f9c2e17b04"
-        assert len(owner["token"]) == 32
-        with pytest.raises(GpuLockBusyError, match="GPU slot unavailable"):
-            GpuLock(path).acquire()
-    assert lock_state(path)[0] == "absent"
+        assert not path.exists()
+        second = GpuLock(path)
+        second.acquire()
+        second.release()
+    assert not path.exists()
 
 
-def test_gpu_lock_reports_dead_owner_as_stale_and_never_auto_deletes(tmp_path: Path) -> None:
+def test_preexisting_legacy_marker_is_ignored_and_preserved(tmp_path: Path) -> None:
     path = tmp_path / "gpu.lock"
-    path.write_text(json.dumps({"pid": 99999999, "token": "old"}), encoding="utf-8")
-    with pytest.raises(GpuLockStaleError, match="confirm no GPU process"):
-        GpuLock(path).acquire()
+    path.write_text('{"pid":99999999,"token":"old"}\n', encoding="utf-8")
+    lock = GpuLock(path)
+    lock.acquire()
+    lock.release()
     assert path.is_file()
 
 
@@ -43,11 +33,10 @@ def test_gpu_lock_releases_when_protected_work_raises(tmp_path: Path) -> None:
     assert not path.exists()
 
 
-def test_gpu_lock_refuses_to_delete_replaced_owner(tmp_path: Path) -> None:
+def test_gpu_compatibility_context_does_not_mutate_replaced_legacy_marker(tmp_path: Path) -> None:
     path = tmp_path / "gpu.lock"
     lock = GpuLock(path)
     lock.acquire()
-    path.write_text(json.dumps({"pid": 99999999, "token": "replacement"}), encoding="utf-8")
-    with pytest.raises(GpuLockOwnershipError, match="ownership changed"):
-        lock.release()
-    assert path.is_file()
+    path.write_text('{"pid":99999999,"token":"replacement"}\n', encoding="utf-8")
+    lock.release()
+    assert "replacement" in path.read_text(encoding="utf-8")

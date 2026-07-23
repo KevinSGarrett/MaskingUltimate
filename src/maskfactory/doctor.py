@@ -25,7 +25,6 @@ import numpy as np
 import yaml
 
 from .governance import provider_activation_issues, validate_external_source_registry
-from .gpu import lock_state
 from .io import png_strict
 from .models import verify_registered_model_smokes
 
@@ -636,23 +635,13 @@ def check_sqlite(path: Path = ROOT / "data" / "maskfactory.sqlite") -> CheckResu
 def check_gpu_lock(
     path: Path = ROOT / "runs" / "gpu.lock", stale_seconds: int = 7200
 ) -> CheckResult:
-    state, document, age = lock_state(path, stale_seconds=stale_seconds)
-    if state == "absent":
-        return _result("gpu_lock", "PASS", "no gpu.lock present")
-    try:
-        pid = int(document.get("pid", -1)) if document else -1
-    except (ValueError, TypeError):
-        pid = -1
-    if state == "active":
-        return _result("gpu_lock", "WARN", f"active lock pid={pid}; age={age:.0f}s")
-    if state == "stale":
-        return _result(
-            "gpu_lock",
-            "FAIL",
-            f"stale lock pid={pid}; age={age:.0f}s",
-            "Confirm no GPU process is active, then remove runs/gpu.lock.",
-        )
-    return _result("gpu_lock", "WARN", f"unrecognized recent lock; age={age:.0f}s")
+    del stale_seconds
+    present = Path(path).is_file()
+    return _result(
+        "gpu_lock",
+        "PASS",
+        f"retired compatibility marker; present={str(present).lower()}; never an execution gate",
+    )
 
 
 DEFAULT_CHECKS: tuple[Callable[[], CheckResult], ...] = (
@@ -668,7 +657,6 @@ DEFAULT_CHECKS: tuple[Callable[[], CheckResult], ...] = (
     check_wsl_roundtrip,
     check_png_strict,
     check_sqlite,
-    check_gpu_lock,
 )
 
 _WSL_DEPENDENT_CHECKS = frozenset(

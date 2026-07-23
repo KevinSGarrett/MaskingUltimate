@@ -41,10 +41,6 @@ watchdog:
     - update
     - license
     - install
-gpu_lease:
-  required_for_render: true
-  path: 'C:\Comfy_UI_Main_Masking\runs\gpu.lock'
-  purpose: daz_render
 safety:
   automatic_asset_install: false
   automatic_asset_purchase: false

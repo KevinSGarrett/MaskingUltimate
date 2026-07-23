@@ -19,7 +19,7 @@ the required human-free `core_autonomous_runtime` profile. Parent IDs from doc 1
 - [ ] MF-P1-02.02 Enforce status transitions: ingested→drafted→auto_qa→vlm_qa→in_review→corrected→approved_gold→exported, plus rejected / quarantined / deprecated branches
 - [ ] MF-P1-02.03 Orchestrator: stage graph · per-stage config-hash stamping · `--stage` force/skip flags · stages communicate via files + manifest deltas only · idempotent re-runs overwrite own `work\`
 - [ ] MF-P1-02.04 Error policy: transient (OOM/IO) 2 retries with backoff · semantic → review queues · fatal → image `quarantined`, batch continues
-- [ ] MF-P1-02.05 `runs\gpu.lock` acquire/release + stale-lock detection (doctor reports it)
+- [ ] MF-P1-02.05 Retire `runs\gpu.lock` as an admission/refusal mechanism; compatibility contexts create no file and never block selected-pod execution
 - [ ] MF-P1-02.06 Implement `maskfactory reindex` (rebuild DB from manifests) + `--dry-run` diff mode
 - [ ] MF-P1-02.07 Logging: loguru → `logs\maskfactory_<date>.log` + per-run `runs\<run_id>\run.json` (config hash, model keys, durations, VRAM peak)
 - [ ] MF-P1-02.08 Crash test: kill −9 mid-run → resume completes · `reindex --dry-run` diff == 0

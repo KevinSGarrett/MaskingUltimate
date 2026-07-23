@@ -10,7 +10,7 @@ production_platform:
   qualification: runpod
   corpus_processing: runpod
   persistent_root: /workspace
-  shared_gpu_coordinator_required: true
+  gpu_resource_governance: disabled
 
 local_scope:
   allowed:
@@ -93,7 +93,6 @@ canary_requirements:
   required_platform: runpod
   required_first_interactive_provider: sam3_1
   require_distinct_provider_families: true
-  require_shared_coordinator_lease: true
   require_persistent_outputs: true
   require_hard_qc: true
   require_qualified_independent_visual_quorum: true
@@ -105,7 +104,6 @@ reporting:
   required_runtime_fields:
     - pod_id
     - persistent_volume_binding
-    - coordinator_lease_id
     - provider_and_runtime_hashes
     - source_and_output_hashes
     - hard_qc_counts

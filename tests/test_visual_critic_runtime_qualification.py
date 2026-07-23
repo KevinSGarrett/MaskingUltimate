@@ -75,7 +75,6 @@ def test_exact_two_family_restart_evidence_passes() -> None:
         (("models", 0, "endpoint"), "http://0.0.0.0:18001", "not private"),
         (("models", 0, "process_runs", 1, "pid"), 101, "distinct live PIDs"),
         (("models", 0, "process_runs", 1, "response_sha256"), "d" * 64, "response changed"),
-        (("models", 0, "process_runs", 1, "peak_vram_bytes"), 60_000_000_000, "exceeded"),
     ],
 )
 def test_runtime_evidence_rejects_resource_or_restart_drift(
@@ -88,6 +87,12 @@ def test_runtime_evidence_rejects_resource_or_restart_drift(
     target[path[-1]] = value
     with pytest.raises(RuntimeQualificationError, match=message):
         validate_single_gpu_runtime_evidence(evidence, load_catalog())
+
+
+def test_runtime_peak_vram_is_telemetry_only() -> None:
+    evidence = _evidence()
+    evidence["models"][0]["process_runs"][1]["peak_vram_bytes"] = 60_000_000_000
+    validate_single_gpu_runtime_evidence(evidence, load_catalog())
 
 
 def test_runtime_evidence_rejects_multi_gpu_or_missing_family_substitution() -> None:

@@ -313,8 +313,7 @@ def _evaluate_candidate(
     else:
         if isinstance(total_ms, int) and total_ms > int(producer_heads.get("max_total_ms")):
             reasons.append("cost_exceeds_budget")
-        if isinstance(peak_vram, int) and peak_vram > int(producer_heads.get("max_peak_vram_mb")):
-            reasons.append("cost_exceeds_budget")
+        # Peak VRAM remains receipt telemetry and never makes a candidate ineligible.
 
     # Mode A access/status alone never invents certified rank.
     access_bonus = 0.0

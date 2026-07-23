@@ -8,7 +8,7 @@ P4 evidence cannot block or redefine its completion.
 Goal: D4 — VLM review + routing correct on the 20-image validation set; mining loop producing the weekly plan. Parent IDs from doc 14 §5.
 
 ## MF-P4-01 — S11 VLM QA runner (spec: 10 §1–4)
-- [ ] MF-P4-01.01 `vlm\client.py`: Ollama API client (127.0.0.1:11434) · S11 runs in its exclusive GPU slot — orchestrator stops other GPU stages during the batch
+- [ ] MF-P4-01.01 `vlm\client.py`: Ollama API client (127.0.0.1:11434) · production review runs directly on selected RunPod with no GPU/VRAM admission or exclusive-slot governance
 - [ ] MF-P4-01.02 Author versioned prompt files `vlm\prompts\{p_part,p_image,p_manifest}.txt` exactly per doc 10 §3 (strict-JSON verdict contracts) · author `configs\vlm.yaml` (model slots, prompt_version, routing thresholds, cloud-teacher enablement reconciled with exact-image default-deny governance)
 - [ ] MF-P4-01.03 Panel input prep: 5-tile panels downscaled to 1024 long side · whole-image overlay + compact manifest digest (label:state:area% table) · relevant qa_report excerpts
 - [ ] MF-P4-01.04 Strict-JSON parse · one "JSON only" retry · still bad → verdict `uncertain` (never guess)

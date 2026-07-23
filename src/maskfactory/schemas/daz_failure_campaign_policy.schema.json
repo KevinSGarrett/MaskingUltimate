@@ -3,11 +3,11 @@
   "$id": "https://maskfactory.local/schemas/daz_failure_campaign_policy.schema.json",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "fixture_only", "required_scenarios", "disk_full", "drive_loss", "gpu_contention", "db_corruption", "crash", "popup", "oom"],
+  "required": ["schema_version", "fixture_only", "required_scenarios", "disk_full", "drive_loss", "gpu_governance_absence", "db_corruption", "crash", "popup", "oom"],
   "properties": {
-    "schema_version": {"const": "1.0.0"},
+    "schema_version": {"const": "1.1.0"},
     "fixture_only": {"const": true},
-    "required_scenarios": {"const": ["disk_full", "drive_loss", "gpu_contention", "db_corruption", "crash", "popup", "oom"]},
+    "required_scenarios": {"const": ["disk_full", "drive_loss", "gpu_governance_absence", "db_corruption", "crash", "popup", "oom"]},
     "disk_full": {
       "type": "object",
       "additionalProperties": false,
@@ -58,14 +58,14 @@
         "ui_input_allowed": {"const": false}
       }
     },
-    "gpu_contention": {
+    "gpu_governance_absence": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["action", "concurrent_gpu_work_allowed", "automatic_stale_lock_reclamation_allowed"],
+      "required": ["action", "legacy_marker_may_block", "legacy_marker_may_be_reclaimed"],
       "properties": {
-        "action": {"const": "wait_then_timeout"},
-        "concurrent_gpu_work_allowed": {"const": false},
-        "automatic_stale_lock_reclamation_allowed": {"const": false}
+        "action": {"const": "proceed_without_gpu_admission"},
+        "legacy_marker_may_block": {"const": false},
+        "legacy_marker_may_be_reclaimed": {"const": false}
       }
     },
     "oom": {

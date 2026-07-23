@@ -193,7 +193,8 @@ scene, pass, and semantic mapping. It never means human-anchor truth for real im
 
 ## 8. Resource and concurrency architecture
 
-- One global GPU lease coordinates DAZ rendering, MaskFactory inference, and training.
+- DAZ rendering, MaskFactory inference, and training use no global GPU/VRAM
+  lease, reservation, checkout, scheduler, or file-lock gate.
 - Asset scanning, hashing, recipe generation, pass decoding, and most QA can run CPU-side while the GPU
   is idle or leased elsewhere.
 - Initial deployment runs one DAZ worker. Horizontal multi-worker support is designed but disabled until

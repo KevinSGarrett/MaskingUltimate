@@ -29,7 +29,7 @@ probe, start, restart, repair, update, pull, build, or execute MaskFactory work
 through local Docker Desktop, WSL, CVAT, Nuclio/SAM2, Ollama, or the local GPU
 unless Kevin explicitly requests that exact local operation in the current
 turn. Production execution belongs on persistent RunPod storage under the
-shared coordinator. If RunPod is unavailable, continue CPU-only implementation
+the selected RunPod directly without GPU/VRAM governance. If RunPod is unavailable, continue CPU-only implementation
 and block only the affected runtime item; never substitute the laptop.
 
 ## 2. Spec Fidelity — Build To The Document, Not To Memory
@@ -159,12 +159,12 @@ doctor-green, or mark production complete on weaker proof.
 | Tier vocabulary | Meaning |
 |---|---|
 | `STATIC_PASS` | Schemas, fixtures, sealed producers, host-side contracts, unit/integration tests without live GPU/Main/production authority |
-| `RUNTIME_PASS_BOUNDED` | Live production proof on persistent RunPod under a valid shared-coordinator lease, bound to exact runtime and artifact hashes; an explicitly requested local integration smoke proves only that optional local integration |
+| `RUNTIME_PASS_BOUNDED` | Live production proof on a selected persistent RunPod, bound to exact runtime and artifact hashes; an explicitly requested local integration smoke proves only that optional local integration |
 | `VISUAL_QA_PASS_BOUNDED` | Human/agent pixel review pass on named artifacts; defects veto gold |
 | `PRODUCTION_EVIDENCE_PASS` | Real adopted Main/ComfyUI/production receipts bound by commit/hash |
 | `AWAITING_MAIN` | Producer STATIC credit retained; blocked until KevinSGarrett/Comfy_UI_Main supplies real artifacts |
 | `RUNTIME_BLOCKED` | Explicit non-pass state; never relabel as pass |
-| `RUNPOD_SCALE_PASS` | Remote GPU execution proven on persistent RunPod storage under a valid SharedRunPodCoordinator v2 lease |
+| `RUNPOD_SCALE_PASS` | Remote GPU execution proven on persistent RunPod storage with exact runtime and artifact evidence |
 
 Rules:
 - Fixture Main / `fixture_authority` / producer_partial = **`STATIC_PASS` only**. Never `complete` P6-11/12 on that alone.

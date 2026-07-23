@@ -289,12 +289,12 @@ def test_launcher_enforces_external_batch_cap_and_ungated_refuse(tmp_path: Path)
         validate_training_dataset_authority(root)
 
 
-def test_launcher_holds_gpu_runs_compiled_config_and_requires_checkpoint(tmp_path: Path) -> None:
+def test_launcher_runs_without_gpu_lock_and_requires_checkpoint(tmp_path: Path) -> None:
     runs_root = tmp_path / "runs"
 
     class Process:
         def __init__(self, command, **kwargs):
-            assert (runs_root / "gpu.lock").is_file()
+            assert not (runs_root / "gpu.lock").exists()
             assert "Runner.from_cfg" in command[-1]
             run_root = next(runs_root.glob("r_*"))
             (run_root / "ckpts/iter_40000.pth").write_bytes(b"checkpoint")

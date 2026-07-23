@@ -331,7 +331,7 @@ def test_recipe_seeded_defects_fail(defect: str, reason: str) -> None:
     elif defect == "numeric_range":
         authority["numeric_ranges"][0]["maximum"] = 0.0
     else:
-        authority["resource_estimate"]["gpu_vram_gib"] = 25.0
+        authority["resource_estimate"]["storage_gib"] = 5.0
     result = _v2(recipe, authority)
     assert result["status"] == "fail"
     assert result["reason_code"] == reason
@@ -340,9 +340,17 @@ def test_recipe_seeded_defects_fail(defect: str, reason: str) -> None:
 def test_recipe_near_resource_limit_is_warning_not_pass() -> None:
     recipe = _recipe()
     authority = _authority(recipe)
-    authority["resource_estimate"]["gpu_vram_gib"] = 21.0
+    authority["resource_estimate"]["storage_gib"] = 3.5
     result = _v2(recipe, authority)
     assert (result["status"], result["reason_code"]) == ("warn", "RECIPE_COST_WARNING")
+
+
+def test_recipe_vram_observation_never_gates_scene_validation() -> None:
+    recipe = _recipe()
+    authority = _authority(recipe)
+    authority["resource_estimate"]["gpu_vram_gib"] = 1_000_000.0
+    result = _v2(recipe, authority)
+    assert (result["status"], result["reason_code"]) == ("pass", "RECIPE_VALID")
 
 
 @pytest.mark.parametrize(
@@ -579,7 +587,7 @@ def test_cli_runs_v2_v4_and_publishes_idempotent_normalized_set(tmp_path: Path) 
 def test_cli_warning_cannot_satisfy_required_layer(tmp_path: Path) -> None:
     recipe = _recipe()
     authority = _authority(recipe)
-    authority["resource_estimate"]["gpu_vram_gib"] = 21.0
+    authority["resource_estimate"]["storage_gib"] = 3.5
     documents = {
         "recipe": recipe,
         "authority": authority,

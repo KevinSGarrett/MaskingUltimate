@@ -233,7 +233,7 @@ Do not fill `reviewer: kevin` or `human_edit: true` for synthetic data.
 3. Operating-profile configuration and path controls.
 4. DIM/filesystem catalog and registry snapshot.
 5. Worker protocol using independent primitive fixtures.
-6. GPU lease and watchdog.
+6. Direct execution with GPU/VRAM admission and lease governance disabled.
 7. Asset smoke tests.
 8. Genesis 9 topology fingerprint and mapping bundle format.
 9. Solo scene recipes and render passes.

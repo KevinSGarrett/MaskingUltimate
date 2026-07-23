@@ -78,13 +78,13 @@ REAL WORK SELECTION (EVERY WAVE)
 
 MANDATORY PROOF LADDER (RUNPOD-FIRST FOR PRODUCTION)
 Declare target tier before edits. Never report a lower tier as a higher tier.
-- Tier 0 RECONSTRUCTED: branch/HEAD/dirty ownership; item+blockers; current RunPod pod, persistent-volume, corpus-mirror, and coordinator state when production work is in scope; prior highest tier
+- Tier 0 RECONSTRUCTED: branch/HEAD/dirty ownership; item+blockers; selected RunPod pod, persistent-volume, corpus-mirror, and local runtime state when production work is in scope; prior highest tier
 - Tier 1 STATIC_PASS: schemas fail-closed; focused pytest; ruff; tracker deps; evidence paths/hashes
 - Tier 2 HARD_QA_PASS_BOUNDED: real QC battery / seeded defects when masks/packages/certification in scope (pytest JSON shape ≠ HARD_QA)
-- Tier 3 RUNTIME_PASS_BOUNDED: exact RunPod provider/runtime hashes, valid coordinator lease, persistent output, and real bounded package run. Local Docker/CVAT/SAM2/Ollama smokes prove only their named optional integration.
+- Tier 3 RUNTIME_PASS_BOUNDED: exact RunPod provider/runtime hashes, persistent output, and real bounded package run. Local Docker/CVAT/SAM2/Ollama smokes prove only their named optional integration.
 - Tier 4 VISUAL_QA_PASS_BOUNDED: render real panels (source/mask/overlay/contour/ownership) and run the currently qualified RunPod primary plus independent-family juror; bind panel, response, model, runtime, and role-certificate hashes. Decoding a PNG, a local VLM smoke, or a contact sheet alone is not visual QA.
 - Tier 5 PRODUCTION_EVIDENCE_PASS: verify clause satisfied; `tracker.py set … --evidence` with real commands/paths/hashes before `complete`
-- Tier 6 RUNPOD_SCALE_PASS: remote GPU execution is proven on persistent RunPod storage under a valid SharedRunPodCoordinator v2 capacity lease
+- Tier 6 RUNPOD_SCALE_PASS: remote GPU execution is proven on persistent RunPod storage with exact runtime and artifact evidence
 - AUDIO: N/A for MaskFactory core — do not invent audio gates; Main-owned if bridge touches audio
 
 Claim vocabulary ONLY: PLANNED, IN_PROGRESS, RECONSTRUCTED, STATIC_PASS, HARD_QA_PASS_BOUNDED, RUNTIME_PASS_BOUNDED, RUNTIME_BLOCKED, VISUAL_QA_PASS_BOUNDED, VISUAL_CRITIC_BLOCKED, PRODUCTION_EVIDENCE_PASS, RUNPOD_SCALE_PASS, AWAITING_MAIN, HOLD, BLOCKED, COMPLETE, AUDIO_QA_N_A_CORE.
@@ -170,7 +170,7 @@ Reconstruct → select unblocked highest-value item → declare target tier → 
 See `Plan/Instructions/00_START_HERE.md`, `02_AUTONOMOUS_OPERATING_RULES.md`, and `03_SESSION_PLAYBOOK.md` for the full procedure. Binding loop: reconstruct → select → climb → evidence → tracker → **immediate next wave** → repeat until E2E complete or only true `NEEDS KEVIN` remain (with other lanes still running).
 
 FIRST ACTIONS NOW
-1) For production work, verify the current RunPod pod, persistent-volume paths, corpus mirrors, and SharedRunPodCoordinator state. Do not probe local Docker/Ollama/doctor without Kevin's exact current-turn request.
+1) For production work, verify the selected RunPod pod, persistent-volume paths, corpus mirrors, and local runtime state. Do not probe local Docker/Ollama/doctor without Kevin's exact current-turn request.
 2) `tracker.py next` / hard-blockers for `core_autonomous_runtime`.
 3) Pick the highest-value climbable wave (prefer RUNTIME/VISUAL/HARD_QA-ready over more STATIC-only).
 4) Execute without waiting for Kevin — and do not stop until E2E complete.
@@ -181,7 +181,7 @@ FIRST ACTIONS NOW
 
 These facts supplement the standing orders for the RunPod GPU/runtime climb. They do **not** weaken proof tiers, autonomy, tracker hygiene, the local-runtime prohibition, or the NEVER-EC2 rule.
 
-1. **Production masking, strict review, repair, training, benchmarking, qualification, and corpus processing run on persistent RunPod storage under the shared coordinator.** Local GPU capacity is not a production fallback.
+1. **Production masking, strict review, repair, training, benchmarking, qualification, and corpus processing run on persistent RunPod storage.** Select the intended pod directly. GPU/VRAM admission, reservation, checkout, capacity leases, scheduler vetoes, and file-lock gates are disabled. Telemetry is diagnostic only. Local GPU capacity is not a production fallback.
 2. **Authoritative catch-up archives on pod** (sealed via `paths.env`; do not treat as a separate product/dataset):
    - Ultimate reference library: `/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images` (from `F:\Reference_Images\Ultimate_Masking_Reference_Images`)
    - MaskedWarehouse: `/workspace/assets/MaskedWarehouse` (`MASKED_WAREHOUSE`; matches local inventory when sealed)
@@ -244,31 +244,13 @@ STRICT gate is mandatory before accepting / promoting when masks/panels exist fo
 
 Evidence must log: **model id, prompt hash, response, panel hashes**.
 
-### GPU coordination (RunPod)
+### GPU execution (RunPod)
 
-SharedRunPodCoordinator v2 is the exclusive cross-project admission authority
-for the current 48 GB RunPod. Follow
-`C:\Users\kevin\.codex\shared_runpod_coordinator\README.md`: request and
-validate a lease before new GPU work, heartbeat it while the work runs, and
-release it on completion or containment. Its fresh telemetry, qualified peak
-reservations, and workload-compatibility rules supersede the former
-single-workload assumption. `runs/gpu.lock` may serialize MaskFactory's own
-critical sections, but it cannot block unrelated ComfyUI work.
-`/workspace/tmp/gpu.lock` and mere foreign-process presence are not capacity
-vetoes. CPU-only work never needs a lease. Never remove an active internal
-lock, kill another project's process, steal a lease, or exceed a granted
-reservation; use cooperative yield when capacity truly does not fit.
-
-Lease scheduling is automatic infrastructure, not a reason to pause or ask who
-owns the GPU. Submit eligible work continuously. Compatible qualified work may
-share the card; incompatible heavy work serializes automatically. Launchers must
-bind their exact RunPod PID promptly. Never-started ownerless grants are reclaimed
-after the configured short grace when telemetry is fresh; stale or expired work
-is reclaimed only when its exact recorded PID is absent. Missing PID identity or
-stale telemetry fails closed. Routine lease transitions stay out of progress
-reports; report only material scheduler failures and workload outcomes.
-
-Serialize with hand/clothing tournament workers: run critic **bursts when VRAM free**, unload large VLMs after (`unload_after_burst`), do not OOM hand workers. Do not kill healthy hand tournament PIDs unless VRAM forces brief serialize — then resume.
+Select the intended RunPod directly. GPU/VRAM admission, reservation, checkout,
+capacity leases, schedulers, workload preflights, and file-lock gates are not
+execution authority and must never delay or block work. GPU/VRAM observations
+may be retained as telemetry only. Durable mission/shard/record ownership leases
+remain mandatory because they protect data integrity, not GPU resources.
 
 ### Proof vocabulary
 Use `VISUAL_QA_PASS_BOUNDED` / `VISUAL_HARD_QA_PASS_BOUNDED` / `STRICT_VISUAL_QA_PASS_BOUNDED` only with panel+STRICT-VLM evidence. Use `VISUAL_CRITIC_BLOCKED` when the critic cannot run. Forbidden: blind “approved”, doctor-green inflation, gold claims without admission certificate + STRICT visual coverage.
@@ -281,6 +263,6 @@ See `Plan/Instructions/13_SELF_HOSTED_STRICT_VLM_GATE.md` and updates in `00_STA
 ## Agent bootstrap (every new session)
 
 1. Read **this entire file** (including **CONTINUOUS UNTIL E2E COMPLETE (NO STOP)** and **SELF-HOSTED STRICT VLM GATE**).
-2. Do **not** probe or start local Docker, WSL, CVAT, Nuclio, SAM2, Ollama, or the local GPU. For production work, verify the RunPod pod, persistent paths, corpus mirrors, and shared-coordinator state.
+2. Do **not** probe or start local Docker, WSL, CVAT, Nuclio, SAM2, Ollama, or the local GPU. For production work, verify the selected RunPod, persistent paths, and corpus mirrors; do not consult GPU/VRAM governance.
 3. `cd Plan/Tracker` → `python tracker.py report` + `python tracker.py next -n 10`.
 4. Execute the continuous loop — no Kevin permission asks; **do not stop** until E2E complete; stop only for true `NEEDS KEVIN`, then switch to all other unblocked lanes. Ensure durable `nohup` pod/host jobs so agent death ≠ climb death.

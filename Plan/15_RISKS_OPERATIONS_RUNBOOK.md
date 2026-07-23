@@ -111,14 +111,13 @@ leaderboard artifacts. Post-gc: `verify-package --sample 10` + reindex must be c
 | `RuntimeError: no kernel image ... sm_120` | wrong torch wheel | reinstall pinned cu128 wheels from `env\` lock (doc 06 pitfall 1); doctor confirms capability (12,0) |
 | CVAT 502 / login loop | containers half-up after reboot | `docker compose -f cvat\docker-compose.yml down && up -d`; wait for `cvat_server` healthy; check Docker Desktop WSL integration on |
 | SAM2 interactor spinner forever in CVAT | nuclio function crashed/cold | `nuctl get functions` → redeploy `pth-sam2`; CPU function cold start up to ~60 s is normal |
-| Ollama OOM / VLM slow | model too big for free VRAM slot | ensure pipeline released GPU (gpu.lock free); Q4 model only; fallback llama3.2-vision; batch S11 model-major |
+| RunPod model OOM | workload allocation failed | record the exact runtime failure and let the mission's typed retry/abstain path handle the record; do not create a GPU/VRAM admission gate or weaken quality |
 | QC-002 "mask not binary" BLOCK | some writer bypassed png_strict | find writer via stack in qa_report; only `png_strict.py` may write masks (QC-030 / CI lint) |
 | QC-005 dims mismatch | resize snuck into a stage | stage must operate at native dims or record transform; check crop paste-back transform |
 | QC-014 L/R flag storm on one image | subject in mirror pose / DensePose confused | trust the 2-of-3 vote; review with SOP-2 trace-the-chain; if human confirms correct, log override reason (vote stays advisory only for `uncertain`, never for BLOCK) |
 | Fusion disagreement > 40% pixels (QC-031 storm) | one source degraded (e.g., parsing ckpt wrong) | check `model_registry` hashes; re-run stage solo; compare source overlays in panel |
 | `dvc push` fails | governed local/persistent remote unavailable or full | verify the configured remote path, mount identity, free space, and write permissions; artifacts remain safe locally + B1 |
 | WSL clock skew breaks TLS/downloads | Windows sleep drift | `sudo hwclock -s` (or `wsl --shutdown` + restart) |
-| Pipeline "GPU busy" refusal | stale `runs\gpu.lock` after crash | confirm no python/uvicorn holds GPU (`nvidia-smi`), then delete lock; doctor reports stale locks |
 | ComfyUI node "package not found" | wrong `packages_root` or status filter | check `maskfactory_nodes\config.json`; browser node lists nearest ids + statuses |
 | Everything slow on `/mnt/c` | hot work not on ext4 | verify `~/mfwork` in use (doc 06 §1); doctor prints the IO check |
 | Training loss NaN | fp16 overflow w/ Swin | switch AMP to bf16 (default), lower lr 2×, resume from last ckpt |

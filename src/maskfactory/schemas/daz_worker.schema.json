@@ -14,7 +14,6 @@
     "atomic_file_protocol",
     "job_private_partial_directory",
     "worker_result_written_last",
-    "gpu_lease_required_for_render",
     "automatic_purchase",
     "automatic_account_login"
   ],
@@ -28,7 +27,6 @@
     "atomic_file_protocol": {"const": true},
     "job_private_partial_directory": {"const": true},
     "worker_result_written_last": {"const": true},
-    "gpu_lease_required_for_render": {"const": true},
     "automatic_purchase": {"const": false},
     "automatic_account_login": {"const": false}
   }

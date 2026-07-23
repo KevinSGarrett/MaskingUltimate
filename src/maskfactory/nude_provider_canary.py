@@ -313,7 +313,7 @@ def build_provider_canary_manifest(
     manifest = {
         "schema_version": "maskfactory.nude_provider_canary_manifest.v1",
         "artifact_type": "adult_corpus_provider_canary_execution_manifest",
-        "status": "READY_PENDING_SHARED_GPU_COORDINATOR",
+        "status": "READY_FOR_DIRECT_RUNPOD_EXECUTION",
         "registry_sha256": intake["registry"]["self_sha256"],
         "shard_index_sha256": intake["index"]["self_sha256"],
         "split_mapping_sha256": _sha256(split_mapping_path),
@@ -324,7 +324,6 @@ def build_provider_canary_manifest(
         },
         "lanes": lane_rows,
         "execution_policy": {
-            "shared_runpod_coordinator_required": True,
             "provider_microbatch_autotune_required": True,
             "hard_qc_before_strict_vlm": True,
             "strict_vlm_per_record_required": True,

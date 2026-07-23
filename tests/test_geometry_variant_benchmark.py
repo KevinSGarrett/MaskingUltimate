@@ -209,7 +209,6 @@ def test_completeness_identity_and_denominator_invariants_fail_closed(
         ("front_back", "contact:front_back_error_rate_regression"),
         ("identity", "contact:identity_assignment_error_rate_regression"),
         ("hard_qa", "contact:hard_qa_failure_rate_regression"),
-        ("vram", "peak_vram_limit_failed"),
         ("runtime", "runtime_failure"),
         ("repeats", "determinism_repeat_count_failed"),
         ("fallback", "fallback_drill_failed"),

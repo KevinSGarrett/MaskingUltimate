@@ -1,6 +1,6 @@
-schema_version: 1.0.0
+schema_version: 1.1.0
 fixture_only: true
-required_scenarios: [disk_full, drive_loss, gpu_contention, db_corruption, crash, popup, oom]
+required_scenarios: [disk_full, drive_loss, gpu_governance_absence, db_corruption, crash, popup, oom]
 disk_full:
   fixture_capacity_bytes: 4096
   simulated_free_bytes: 1024
@@ -21,10 +21,10 @@ popup:
   action: quarantine
   process_tree_termination_required: true
   ui_input_allowed: false
-gpu_contention:
-  action: wait_then_timeout
-  concurrent_gpu_work_allowed: false
-  automatic_stale_lock_reclamation_allowed: false
+gpu_governance_absence:
+  action: proceed_without_gpu_admission
+  legacy_marker_may_block: false
+  legacy_marker_may_be_reclaimed: false
 oom:
   maximum_lower_cost_retries: 1
   persistent_failure_action: quarantine

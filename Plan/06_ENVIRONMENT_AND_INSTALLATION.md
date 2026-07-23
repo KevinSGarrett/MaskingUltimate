@@ -91,7 +91,7 @@ then `docker exec ollama ollama pull qwen2.5vl:7b`. Pipeline talks to `http://12
 source if wheel missing, §8) — OR detectron2 Mask2Former project (already built for M9).
 Decision: **primary trainer = MMSegmentation** (Mask2Former & SegFormer configs both available),
 detectron2 kept for DensePose only. Swin-L or other high-memory runs use a
-qualified RunPod tier under a valid SharedRunPodCoordinator v2 lease, with all
+selected RunPod tier, with all
 inputs, checkpoints, and evidence on persistent storage. AWS is read-only
 inventory only and is never a training or artifact-publish target.
 
@@ -108,7 +108,8 @@ No changes to Kevin's existing install; the node pack (doc 13) is a folder copie
    pin commit hashes into `env/source_builds.lock`.
 3. WSL2 I/O on `/mnt/c` is slow for many small files → pipeline writes hot intermediates to
    `~/mfwork` (ext4) and syncs packages to `/mnt/c/...` at stage end (`io.workdir` config).
-4. Docker Desktop + WSL GPU: only one CUDA context heavy at a time — respect the VRAM schedule.
+4. Docker Desktop + WSL GPU is legacy local integration only. Production GPU
+   work runs directly on the selected RunPod without GPU/VRAM governance.
 5. PNG strictness: Pillow must save mode `L`, `optimize=False`; `png_strict.py` is the single
    writer used by all code — direct `cv2.imwrite` for masks is banned by lint rule.
 6. Laptop thermals: long batches at 100% GPU → set `pipeline.yaml: gpu_cooldown_sec: 3` between

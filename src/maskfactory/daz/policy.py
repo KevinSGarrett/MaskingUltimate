@@ -69,7 +69,6 @@ class DazWorkerConfig:
     atomic_file_protocol: bool
     job_private_partial_directory: bool
     worker_result_written_last: bool
-    gpu_lease_required_for_render: bool
     automatic_purchase: bool
     automatic_account_login: bool
 

@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0.0",
+  "executed_at_utc": "2026-07-23T05:28:00Z",
+  "execution_platform": "runpod",
+  "pod_gpu": "NVIDIA RTX 6000 Ada Generation",
+  "model": "llava:13b",
+  "endpoint": "http://127.0.0.1:11434/api/generate",
+  "determinism": {
+    "temperature": 0,
+    "seed": 1337
+  },
+  "probe": {
+    "kind": "bounded_text_runtime_availability_only",
+    "response": "```json\n{\n    \"strict_visual_smoke\": \"available\",\n    \"authority\": \"none\"\n}\n```",
+    "done_reason": "stop",
+    "eval_count": 32,
+    "total_duration_ns": 23039910646
+  },
+  "gpu_sample_after_probe": {
+    "utilization_percent": 46,
+    "memory_used_mib": 14900
+  },
+  "qualification": {
+    "strict_visual_role_qualified": false,
+    "mask_approval_authority": false,
+    "certification_authority": false,
+    "reason": "This smoke has no real-mask panels, frozen positive/negative corpus, role metrics, independent juror, or role certificate."
+  }
+}

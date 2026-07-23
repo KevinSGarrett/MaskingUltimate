@@ -44,7 +44,6 @@ def validate_strict_scene_validation_policy(policy: Mapping[str, Any]) -> None:
         "allowed_render_profile_ids",
         "configuration_matrix",
         "maximum_storage_gib",
-        "maximum_gpu_vram_gib",
         "cost_warning_fraction",
     }:
         raise StrictSceneValidationError("strict_validator_recipe_policy_invalid", str(recipe))
@@ -59,7 +58,6 @@ def validate_strict_scene_validation_policy(policy: Mapping[str, Any]) -> None:
             "4": ["separated", "overlap", "contact"],
         }
         or not _finite_positive(recipe["maximum_storage_gib"])
-        or not _finite_positive(recipe["maximum_gpu_vram_gib"])
         or not _finite(recipe["cost_warning_fraction"])
         or not 0 < recipe["cost_warning_fraction"] < 1
     ):
@@ -192,10 +190,7 @@ def validate_recipe_layer(
             )
         _check_recipe_references(recipe, authority, findings)
         estimate = authority["resource_estimate"]
-        if (
-            estimate["storage_gib"] > recipe_policy["maximum_storage_gib"]
-            or estimate["gpu_vram_gib"] > recipe_policy["maximum_gpu_vram_gib"]
-        ):
+        if estimate["storage_gib"] > recipe_policy["maximum_storage_gib"]:
             findings.append(
                 _finding("RECIPE_RANGE_INVALID", "/resource_estimate", "limit_exceeded")
             )
@@ -206,8 +201,6 @@ def validate_recipe_layer(
     cost_warning = not hard_findings and (
         estimate["storage_gib"]
         >= recipe_policy["maximum_storage_gib"] * recipe_policy["cost_warning_fraction"]
-        or estimate["gpu_vram_gib"]
-        >= recipe_policy["maximum_gpu_vram_gib"] * recipe_policy["cost_warning_fraction"]
     )
     if cost_warning:
         findings.append(_finding("RECIPE_COST_WARNING", "/resource_estimate", "near_limit"))

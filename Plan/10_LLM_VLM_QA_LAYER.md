@@ -32,7 +32,8 @@ verdict alone can never make that change.
 | Text LLM (local) | qwen2.5:7b-instruct | Ollama | Manifest lint, correction-instruction drafting |
 | Cloud teachers (optional) | Gemini / OpenAI / Anthropic | Provider APIs, disabled by default | Per-image-opt-in shadow review and bounded correction proposals under doc 19. They never approve gold or overwrite a mask. |
 
-VRAM: VLM runs in its own exclusive GPU slot (doc 05 §5). Batch S11 model-major.
+GPU/VRAM resource governance is disabled. VLM execution targets the selected
+RunPod directly; utilization and memory are telemetry only.
 
 ## 2. Inputs Per Review
 

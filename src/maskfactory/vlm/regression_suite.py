@@ -9,10 +9,14 @@ from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
+import yaml
+
 from .critic_catalog import MODEL_ROLES, canonical_sha256
 from .target_contract import validate_target_contract
 
 SHA256 = re.compile(r"^[a-f0-9]{64}$")
+ROOT = Path(__file__).resolve().parents[3]
+CANONICAL_V2_ONTOLOGY_PATH = ROOT / "configs" / "ontology_v2.yaml"
 REQUIRED_DOMAINS = (
     "clothing_skin_boundary",
     "feet",
@@ -110,6 +114,52 @@ RESULT_KEYS = frozenset(
 
 class VisualRegressionError(ValueError):
     """Regression evidence is incomplete, drifted, or unsafe for promotion."""
+
+
+def required_canonical_v2_labels(
+    ontology_path: Path = CANONICAL_V2_ONTOLOGY_PATH,
+) -> tuple[str, ...]:
+    """Load the exact 66-class part-map contract used by promotion coverage."""
+
+    document = yaml.safe_load(Path(ontology_path).read_text(encoding="utf-8"))
+    labels = document.get("labels") if isinstance(document, Mapping) else None
+    if not isinstance(labels, Sequence) or isinstance(labels, (str, bytes)):
+        raise VisualRegressionError("canonical v2 ontology labels are invalid")
+    rows = [row for row in labels if isinstance(row, Mapping) and row.get("map") == "part"]
+    ids = [row.get("id") for row in rows]
+    names = [row.get("name") for row in rows]
+    if (
+        ids != list(range(66))
+        or len(set(names)) != 66
+        or any(not isinstance(name, str) or not name for name in names)
+    ):
+        raise VisualRegressionError("canonical v2 ontology is not exact IDs 0..65")
+    return tuple(names)
+
+
+def evaluate_canonical_label_coverage(manifest: Mapping[str, Any]) -> dict[str, Any]:
+    """Report exact canonical-label gaps without treating external aliases as coverage."""
+
+    validate_regression_suite(manifest)
+    required = required_canonical_v2_labels()
+    observed = sorted(
+        {str(case["target_contract"]["target"]["label_id"]) for case in manifest["cases"]}
+    )
+    covered = sorted(set(observed).intersection(required))
+    missing = sorted(set(required) - set(covered))
+    report: dict[str, Any] = {
+        "schema_version": "1.0.0",
+        "status": "pass" if not missing else "fail",
+        "suite_sha256": manifest["suite_sha256"],
+        "required_label_count": len(required),
+        "covered_label_count": len(covered),
+        "required_label_ids": list(required),
+        "covered_label_ids": covered,
+        "missing_label_ids": missing,
+        "noncanonical_target_labels": sorted(set(observed) - set(required)),
+    }
+    report["coverage_sha256"] = canonical_sha256(report)
+    return report
 
 
 def _sha(value: Any, field: str) -> str:
@@ -331,6 +381,9 @@ def evaluate_visual_regression(
         failures.append("serious_visual_regression")
     if replay_failures:
         failures.append("deterministic_replay_failure")
+    label_coverage = evaluate_canonical_label_coverage(manifest)
+    if label_coverage["status"] != "pass":
+        failures.append("canonical_ontology_coverage_incomplete")
     report: dict[str, Any] = {
         "schema_version": "1.0.0",
         "status": "pass" if not failures else "fail",
@@ -341,6 +394,7 @@ def evaluate_visual_regression(
         "case_count": len(cases),
         "regression_case_ids": regressions,
         "replay_failure_case_ids": replay_failures,
+        "canonical_label_coverage": label_coverage,
         "failures": failures,
     }
     report["report_sha256"] = canonical_sha256(report)

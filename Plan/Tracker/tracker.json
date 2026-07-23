@@ -14948,7 +14948,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 65,
+      "percent_complete": 67,
       "notes": [
         {
           "ts": "2026-07-21T23:46:02+00:00",
@@ -14969,12 +14969,17 @@
           "ts": "2026-07-22T07:49:24+00:00",
           "actor": "codex",
           "text": "Regenerated the frozen v2 panels at deterministic maximum 1280-pixel review resolution so every committed artifact passes the repository 2 MiB gate; original source-file hashes remain bound. Final suite and source-binding seals supersede the pre-resize probe seals."
+        },
+        {
+          "ts": "2026-07-23T01:19:15+00:00",
+          "actor": "codex",
+          "text": "2026-07-23 fail-closed promotion correction: the regression evaluator now loads exact canonical v2 part IDs 0..65, reports covered/missing/noncanonical targets, and forces promotion_allowed=false on incomplete coverage. The current 14-case real suite has six external-reference label aliases and zero canonical target IDs, so it remains valid diagnostic evidence but cannot promote a critic. Building the missing 66-class/risk/domain real corpus and rerunning passing candidates remain open."
         }
       ],
-      "evidence": "qa/live_verification/frozen_visual_regression_suite_20260721.json (synthetic plumbing only, superseded for promotion); qa/live_verification/frozen_real_visual_regression_suite_20260722.json; real suite 653c8973857ce419a021f4d7ec3d4a58a89d757d9da7bb18321c80b7e1b6466a; source-binding seal 98fdee21f6415e3eb94c1462f6f0373539f44aaa0c9cd5f5b294fed2902a0ce1; 44 focused/adjacent tests PASS; Ruff, Black, JSON, tracker validation, artifact-size gate, and diff integrity PASS",
+      "evidence": "qa/live_verification/frozen_visual_regression_suite_20260721.json (synthetic plumbing only, superseded for promotion); qa/live_verification/frozen_real_visual_regression_suite_20260722.json; real suite 653c8973857ce419a021f4d7ec3d4a58a89d757d9da7bb18321c80b7e1b6466a; source-binding seal 98fdee21f6415e3eb94c1462f6f0373539f44aaa0c9cd5f5b294fed2902a0ce1; qa/live_verification/visual_regression_66_class_promotion_gate_20260723.json self_sha256=c47f7a9f117b212d28fe85b4543759156c3d539a76ea36b4a909b4381ac8d442; 29 current focused tests PASS; Ruff, Black, tracker validation, and diff integrity PASS",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-22T07:49:24+00:00",
+      "updated_at": "2026-07-23T01:19:15+00:00",
       "orphaned": false
     },
     "MF-P4-11.24": {

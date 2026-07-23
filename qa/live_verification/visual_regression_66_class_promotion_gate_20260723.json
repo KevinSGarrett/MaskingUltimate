@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "visual_regression_66_class_promotion_gate",
+  "recorded_date": "2026-07-23",
+  "tracker_item": "MF-P4-11.23",
+  "status": "STATIC_PASS_GATE_COVERAGE_REMAINS_OPEN",
+  "repository_head_before_change": "fb38ef0900b2db27aaf1b6f48d0c560d76b99ef3",
+  "bindings": {
+    "implementation_sha256": "3b6d7d021599edfa249fd6102c9a9fa58fb368185921df9ae93d76d2ba3a71fe",
+    "test_sha256": "ae420ebde74b1cad86f9e4667550152e7047efe6be68f80da456207e1185208b",
+    "ontology_v2_sha256": "e4bea7663ad4f72c5550fbf93efafb506eca8593ad227f338620d6d5137ed2c4",
+    "real_suite_manifest_file_sha256": "ba2b756ef5e6f8b90b4762f671f576c4bbacb0d99adab96727380296990e6c82",
+    "real_suite_canonical_sha256": "653c8973857ce419a021f4d7ec3d4a58a89d757d9da7bb18321c80b7e1b6466a"
+  },
+  "observed_coverage": {
+    "required_canonical_part_ids": "0..65",
+    "required_canonical_label_count": 66,
+    "real_suite_case_count": 14,
+    "real_suite_external_reference_label_count": 6,
+    "canonical_label_count": 0,
+    "missing_canonical_label_count": 66,
+    "promotion_allowed": false
+  },
+  "enforcement": {
+    "external_reference_aliases_count_as_canonical_coverage": false,
+    "incomplete_canonical_coverage_failure": "canonical_ontology_coverage_incomplete",
+    "diagnostic_use_retained": true,
+    "full_role_or_catalog_promotion_authority": false
+  },
+  "validation": {
+    "focused_tests_passed": 29,
+    "ruff": "pass",
+    "black": "pass",
+    "diff_integrity": "pass"
+  },
+  "claim_limits": [
+    "This closes a promotion loophole; it does not create the missing 66-class real corpus.",
+    "The 14-case real suite remains valid bounded diagnostic evidence but cannot authorize promotion."
+  ],
+  "self_sha256": "c47f7a9f117b212d28fe85b4543759156c3d539a76ea36b4a909b4381ac8d442"
+}

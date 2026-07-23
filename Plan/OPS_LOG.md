@@ -12196,3 +12196,22 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   `qa/live_verification/runpod_visual_critic_protocol_canary_authority_boundary_20260723.json`
   (self-seal `2f0dc50f...`). Twenty-eight focused tests, Ruff, Black, tracker
   validation, and diff integrity pass.
+
+## 2026-07-23 - Exact 66-class visual-promotion firewall
+
+- Closed a promotion loophole in the real visual-regression evaluator. The
+  existing 14-case suite could previously return `promotion_allowed=true`
+  after covering its seven broad domains even though its six target labels
+  were external-reference aliases rather than the canonical v2 ontology.
+- Promotion evaluation now loads exact canonical v2 part IDs 0 through 65,
+  reports covered, missing, and noncanonical target labels, and adds
+  `canonical_ontology_coverage_incomplete` whenever any canonical class is
+  absent. The current suite honestly reports 0/66 canonical targets and cannot
+  promote a critic; its real image-disjoint controls remain valid diagnostics.
+- This is a gate, not fabricated coverage. Building the missing canonical
+  label and required risk/domain cases on persistent RunPod storage remains
+  open.
+- Evidence:
+  `qa/live_verification/visual_regression_66_class_promotion_gate_20260723.json`
+  (self-seal `c47f7a9f...`). Twenty-nine focused tests, Ruff, Black, tracker
+  validation, and diff integrity pass.

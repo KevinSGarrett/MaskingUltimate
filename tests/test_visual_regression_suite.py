@@ -11,10 +11,12 @@ from maskfactory.vlm.critic_catalog import canonical_sha256
 from maskfactory.vlm.regression_suite import (
     REQUIRED_DOMAINS,
     VisualRegressionError,
+    evaluate_canonical_label_coverage,
     evaluate_visual_regression,
     regression_case_sha256,
     regression_suite_sha256,
     require_current_passing_regression,
+    required_canonical_v2_labels,
     validate_regression_suite_files,
 )
 
@@ -87,6 +89,12 @@ def test_repository_real_frozen_suite_is_complete_and_exact() -> None:
     assert manifest["source_bindings_sha256"] == (
         "98fdee21f6415e3eb94c1462f6f0373539f44aaa0c9cd5f5b294fed2902a0ce1"
     )
+    coverage = evaluate_canonical_label_coverage(manifest)
+    assert len(required_canonical_v2_labels()) == 66
+    assert coverage["status"] == "fail"
+    assert coverage["required_label_count"] == 66
+    assert coverage["covered_label_count"] == 0
+    assert len(coverage["missing_label_ids"]) == 66
 
 
 def _change(manifest: dict) -> dict:
@@ -148,16 +156,18 @@ def test_synthetic_suite_cannot_authorize_promotion(tmp_path: Path) -> None:
         "target_contract_schema_sha256",
     ],
 )
-def test_exact_current_change_passes_and_any_changed_fingerprint_requires_rerun(
+def test_exact_current_change_cannot_promote_without_66_class_coverage(
     tmp_path: Path, field: str
 ) -> None:
     _, synthetic = _built(tmp_path)
     manifest = _real_bound(synthetic)
     change = _change(manifest)
     report = evaluate_visual_regression(change, _results(manifest), manifest)
-    assert report["status"] == "pass"
-    assert report["promotion_allowed"] is True
-    require_current_passing_regression(report, change, manifest)
+    assert report["status"] == "fail"
+    assert report["promotion_allowed"] is False
+    assert "canonical_ontology_coverage_incomplete" in report["failures"]
+    with pytest.raises(VisualRegressionError, match="current promotion fingerprint"):
+        require_current_passing_regression(report, change, manifest)
     changed = deepcopy(change)
     changed[field] = "f" * 64
     with pytest.raises(VisualRegressionError, match="current promotion fingerprint"):
@@ -177,6 +187,7 @@ def test_any_serious_regression_or_replay_drift_blocks_promotion(tmp_path: Path)
     assert set(report["failures"]) == {
         "serious_visual_regression",
         "deterministic_replay_failure",
+        "canonical_ontology_coverage_incomplete",
     }
 
 

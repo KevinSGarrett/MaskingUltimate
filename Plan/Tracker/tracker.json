@@ -14999,7 +14999,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 72,
+      "percent_complete": 74,
       "notes": [
         {
           "ts": "2026-07-21T23:46:02+00:00",
@@ -15035,12 +15035,17 @@
           "ts": "2026-07-23T08:59:00+00:00",
           "actor": "codex",
           "text": "2026-07-23 RunPod exact-polygon source selection: commit dcb4e3e22 executed on active pod 1q4ji0gg1fkhvt and produced 32 split-disjoint raw-anus/canonical-anus source candidates (16 train, 16 test) across five CC BY 4.0 polygon datasets. Deployed code hashes match local; candidate file SHA-256=0902394c8f209e88fd3b4d5bfc27de3a19d8f10fa2e2dcb0c3e87ca32e2ee0bf, self SHA-256=3f779bf91b68b13fac77dcf940d3aea9da12c5d5ade010d6e2f40d656bc82d3d. Raw vagina remains a bounded external alias for canonical vulva and is not counted as an exact positive. Evidence commit 5a8c5e861 and qa/live_verification/runpod_canonical_polygon_source_candidates_20260723.json. Source visual-alignment qualification, panels, frozen cases, and critic authority remain open."
+        },
+        {
+          "ts": "2026-07-23T09:23:46+00:00",
+          "actor": "codex",
+          "text": "2026-07-23 exact-record RunPod semantic screening: all 32 canonical-anus source candidates were reviewed against their own target_zoom evidence, with full_context added for three unclear cases. Result: 31 reject and 1 abstain; 16 wrong-target/label, 15 material overfill/wrong-scale, 1 ambiguous target scope, 0 positive controls. Hash-bound review self_sha256=00c4e38175cdf2e1135182457bb8f860007ebcda997ef29ec8bc77a972593fb9; RunPod file SHA-256=2fc1f1a3c738a7dc4df2aa9a9a0dbb90f8a0d46f7fe523d69293a63b6d4f5636. Evidence qa/live_verification/runpod_canonical_polygon_semantic_review_20260723.json. No critic-control, gold, certificate, training-truth, or production authority granted; full 66-label positive-control sourcing remains open."
         }
       ],
       "evidence": "qa/live_verification/frozen_visual_regression_suite_20260721.json (synthetic plumbing only, superseded for promotion); qa/live_verification/frozen_real_visual_regression_suite_20260722.json; real suite 653c8973857ce419a021f4d7ec3d4a58a89d757d9da7bb18321c80b7e1b6466a; source-binding seal 98fdee21f6415e3eb94c1462f6f0373539f44aaa0c9cd5f5b294fed2902a0ce1; qa/live_verification/visual_regression_66_class_promotion_gate_20260723.json self_sha256=c47f7a9f117b212d28fe85b4543759156c3d539a76ea36b4a909b4381ac8d442; 29 current focused tests PASS; Ruff, Black, tracker validation, and diff integrity PASS",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-23T08:59:00+00:00",
+      "updated_at": "2026-07-23T09:23:46+00:00",
       "orphaned": false
     },
     "MF-P4-11.24": {

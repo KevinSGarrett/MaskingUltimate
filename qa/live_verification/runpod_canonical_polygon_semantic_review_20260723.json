@@ -1,0 +1,61 @@
+{
+  "artifact_type": "runpod_canonical_polygon_semantic_review_evidence",
+  "schema_version": "maskfactory.runpod_canonical_polygon_semantic_review_evidence.v1",
+  "observed_at": "2026-07-23",
+  "execution_location": {
+    "platform": "runpod",
+    "recorded_pod_id": "1q4ji0gg1fkhvt",
+    "gpu_observed": "NVIDIA RTX 6000 Ada Generation",
+    "persistent_project_root": "/workspace/maskfactory"
+  },
+  "input_bindings": {
+    "nude_registry_sha256": "785bfbcca98262a00519b53a360a67d22f23ec9e4b41c9bc38029f402eb9bbcf",
+    "hard_qc_records_file_sha256": "07c5d0a6754064f71165acd71b30240ae1b9181644613f87e51fa0238ab3d5c4",
+    "hard_qc_summary_file_sha256": "be2075af130bfd781ec5cd81d7d39b47aafecbad9aa128bbb0aed6a310d00692",
+    "hard_qc_summary_self_sha256": "9b4ce8d5591bf254bb2be67223afc5a25978a19b0a834dd9a14ee1b23ec0b95d",
+    "hard_qc_mask_hash_contract": "MASKFACTORY_BOOL_MASK_V1_shape_packbits_big",
+    "candidate_file_sha256": "b22be4ebd293765a699fce12ff790295740cb2f02d96f8b6cea6838d13d57607",
+    "candidate_self_sha256": "1f9ed3162763182bcd360ecbd37b958c57d798f66e2aa74c38e0aeb021cc38c2",
+    "panel_report_file_sha256": "349b2028ce44a9c9303422c66c0a0f2b340726de529f12cd82d96250fe845d1d",
+    "panel_report_self_sha256": "c08ca9451538cf0cd62af05921480611f7d04a54e61e31cbc5c7652e69910b71",
+    "contact_sheet_sha256": "53bbf52c92be0762f1c03d6680e7b2c874aeb70342639287fdf2ac90e4410b76",
+    "decision_file_sha256": "99a61041993539bc979b20af0a8998bf783439b196bf67e80906e3536084f0e6"
+  },
+  "deployed_implementation": {
+    "semantic_review_module_sha256": "b1503c38f42b0f12a388c1db921d80f65982c1d73c4332b9253da52f6c5e3dbc",
+    "semantic_review_tool_sha256": "e5b72f3842632f65cfc5e4dfe5d3465c2f0fb585946985ffc5cd5096c7ad1abe"
+  },
+  "runpod_output": {
+    "path": "/workspace/maskfactory/runtime_artifacts/visual_corpus_semantic_review/0de48cc57_current/review.json",
+    "file_sha256": "2fc1f1a3c738a7dc4df2aa9a9a0dbb90f8a0d46f7fe523d69293a63b6d4f5636",
+    "self_sha256": "00c4e38175cdf2e1135182457bb8f860007ebcda997ef29ec8bc77a972593fb9"
+  },
+  "results": {
+    "exact_records_reviewed": 32,
+    "reject_count": 31,
+    "abstain_count": 1,
+    "wrong_target_or_label_count": 16,
+    "material_overfill_or_wrong_scale_count": 15,
+    "ambiguous_target_scope_count": 1,
+    "positive_control_count": 0,
+    "individual_target_zoom_reviewed_count": 32,
+    "additional_full_context_reviewed_count": 3,
+    "contact_sheet_used_for_navigation_only": true
+  },
+  "authority": {
+    "semantic_screening_complete": true,
+    "external_reference_qualification_complete": false,
+    "critic_positive_control_authority_granted": false,
+    "critic_negative_control_authority_granted": false,
+    "strict_visual_role_qualification_complete": false,
+    "gold_or_production_authority_granted": false,
+    "certificates_issued": 0
+  },
+  "claim_limits": [
+    "The exact 32-record source screen is complete.",
+    "No selected external annotation is eligible as a positive critic control.",
+    "Rejected records may become negative-control candidates only after external-reference qualification and frozen control construction.",
+    "No critic role, autonomous gold, training truth, certificate, or production authority is claimed."
+  ],
+  "next_required_stage": "Source exact canonical positive controls outside this mislabeled/coarse anus population, qualify eligible negative controls, and expand the frozen 66-label real-image critic corpus."
+}

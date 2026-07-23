@@ -12314,3 +12314,20 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
 - Preserved mission/shard/record leases because they govern durable queue
   ownership and crash recovery, not GPU capacity.
 - No local or RunPod GPU workload was launched by this policy migration.
+
+## 2026-07-23 - SAM3.1 64-record nonterminal stage checkpoint
+
+- The directly selected RunPod completed the already-owned 64-record SAM3.1
+  reference wave: 51 masks generated and 13 provider abstentions.
+- Deterministic hard QA produced 46 passes, 5 failures, and 13 upstream
+  abstentions. These are stage results only; none is a certificate, autonomous
+  gold, training truth, or terminal accepted record.
+- Wrote 64 idempotent provider receipts and 64 idempotent hard-QA receipts to
+  the persistent queue. Terminal progress remained unchanged.
+- Released the internally owned shard lease cleanly back to `queued` because
+  qualified strict visual authority is unavailable. No lease token is retained
+  in the project evidence.
+- Exact evidence:
+  `qa/live_verification/runpod_sam31_reference_wave64_checkpoint_20260723.json`
+  (self-seal
+  `dbc32f5af91a1d1405ccc93ced2b976458ad17ded5ac79c62abc91fe1bfc19d3`).

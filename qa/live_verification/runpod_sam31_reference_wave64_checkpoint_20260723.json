@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-07-23T06:31:41Z",
+  "scope": "runpod_sam31_reference_wave64_nonterminal_stage_checkpoint",
+  "platform": "RunPod",
+  "pod_id": "1q4ji0gg1fkhvt",
+  "persistent_root": "/workspace/maskfactory/runtime_artifacts/nude_sam31_reference_queuelease_wave64_20260723",
+  "queue_path": "/workspace/maskfactory/runtime_artifacts/nude_batch_queue/runpod.sqlite",
+  "shard_path": "runpod/reference_and_tournament_input.0001.json",
+  "shard_attempt_count": 3,
+  "submitted_record_count": 64,
+  "sample_index_min": 95,
+  "sample_index_max": 198,
+  "provider": "sam3_1",
+  "provider_status_counts": {
+    "generated": 51,
+    "provider_abstain": 13
+  },
+  "hard_qc_status_counts": {
+    "pass": 46,
+    "fail": 5,
+    "upstream_abstain": 13
+  },
+  "provider_report": {
+    "file_sha256": "84bf6cd6bfa8535989414d0d7af18ecdb20e297186477ce3ccbd77713cbbf5ad",
+    "self_sha256": "67fcaf0d30a345c0ccb196b1d38ace8ce965130db36dae7c8c9a6e5cff9cd610"
+  },
+  "hard_qc_report": {
+    "file_sha256": "f01d63e2c57ed194737b609956798bb0333402c70b71146727963d8598595bf2",
+    "self_sha256": "820101aca6c1fed41b359eddb97911f20ae8221511e02740fe4b46f47a8f6a8c"
+  },
+  "exact_runtime_code_sha256": {
+    "src/maskfactory/nude_batch_queue.py": "d6aa0a3bdda5179263e430519587bb7dba5233a85c15a8b133b5c952399c5b16",
+    "src/maskfactory/nude_box_mask_generation.py": "729a63d9c3b5547fac245daad4e535793344e92a5b55a62e92cadf7c94b7c042",
+    "src/maskfactory/nude_reference_mask_hard_qc.py": "769538dd164208105a832fa204151b1aef5e62dcfe09bb60d5dd616d64412d42"
+  },
+  "durable_queue_result": {
+    "box_prompt_mask_generation:sam3_1": 64,
+    "reference_person_mask_hard_qc:sam3_1": 64,
+    "provider_receipts_inserted": 64,
+    "hard_qc_receipts_inserted": 64,
+    "terminal_progress_advanced": false,
+    "next_sample_index": 0,
+    "shard_state": "queued",
+    "lease_owner": null,
+    "lease_token": null,
+    "release_event_sequence": 329,
+    "release_reason": "sam31_wave64_provider_and_hard_qc_checkpointed_visual_authority_unavailable"
+  },
+  "authority": {
+    "source_role": "reference_and_tournament_input",
+    "source_is_pixel_truth": false,
+    "provider_masks_are_draft_candidates": true,
+    "strict_visual_review_complete": false,
+    "operational_certificate_count": 0,
+    "autonomous_certified_gold_count": 0,
+    "training_truth_count": 0
+  },
+  "claim_boundary": "This proves one 64-record RunPod SAM3.1 provider wave, deterministic hard-QC results, exact nonterminal stage receipts, and clean durable lease release. It does not prove strict visual review, repair, terminal record completion, certification, gold, training truth, or shard completion.",
+  "self_sha256": "dbc32f5af91a1d1405ccc93ced2b976458ad17ded5ac79c62abc91fe1bfc19d3"
+}

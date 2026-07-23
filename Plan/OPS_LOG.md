@@ -12315,6 +12315,27 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   ownership and crash recovery, not GPU capacity.
 - No local or RunPod GPU workload was launched by this policy migration.
 
+## 2026-07-23 - Real-data-first learning strategy adoption
+
+- Made doc 26 §§9–15 the canonical execution-order owner for real/external
+  supervision, reference-domain pretraining, hierarchical specialists,
+  proposal expansion, iterative self-training, hard-case mining, temporal
+  video consistency, and targeted DAZ activation.
+- Added eight tracker-backed requirements: MF-P5-11.04 through MF-P5-11.10 and
+  MF-P9-10.11. Updated the 1,000/10,000-scene DAZ items to require the immutable
+  measured-gap admission.
+- Wired the strategy through docs 00, 12, 17, 23, 25, 26; Instructions 00, 02,
+  03, and 15; and Standing Orders.
+- Adopted corpus facts remain unchanged: 16 datasets, 81,910 records, 39,354
+  polygon-supervision records, 26,504 bbox-prompt records, 9,465 bbox/action
+  records, 6,537 reference/tournament records, 50 evaluation records, 322
+  shards per platform, registry seal `785bfbcca98262a00519b53a360a67d22f23ec9e4b41c9bc38029f402eb9bbcf`,
+  and shard-index seal
+  `16a958ffdc6c304174fa8ff5b9b656a607e8e8a9e9610dac9be4a8dbff3c994a`.
+- This adoption changes strategy and traceability only. It does not claim that
+  training, visual qualification, temporal processing, DAZ ablation, or a new
+  champion has run.
+
 ## 2026-07-23 - SAM3.1 64-record nonterminal stage checkpoint
 
 - The directly selected RunPod completed the already-owned 64-record SAM3.1

@@ -226,6 +226,16 @@ throughput dependency. `C:\Comfy_UI_Main\MaskedWarehouse` and
 `F:\Reference_Images` plus their exact RunPod mirrors feed this same bulk lane
 under their distinct truth-authority rules.
 
+Doc 26 §§9–15 also binds these critics into the real-data-first
+teacher-student cycle. The text/planning model may reconcile labels, plan
+batches, cluster failures, select hard cases, and propose bounded repair
+hypotheses. The primary critic and independent juror inspect exact per-record
+evidence and localize defects. Neither role authors mask pixels, assigns
+training authority, clears hard QA, changes frozen thresholds, or issues
+certificates. Large-scale DAZ review is lower priority than ready real-data
+qualification, proposal expansion, and iterative training until the immutable
+residual-gap report exists.
+
 Regression includes the accepted target plus protected invariants: unchanged
 identity/owner, untouched accepted regions, neighboring labels, materials,
 transforms, instance exclusivity, and prior known-good fixtures.

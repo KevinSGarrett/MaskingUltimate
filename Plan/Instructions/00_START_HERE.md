@@ -108,6 +108,10 @@ Proof-tier vocabulary (`STATIC_PASS`, `AWAITING_MAIN`,
 - Persistent RunPod mirrors are `/workspace/assets/MaskedWarehouse` and
   `/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images`.
   Bind every use to exact inventory/source/annotation/mask hashes.
+- Doc 26 §§9–15 is the canonical learning priority: qualify the real/external
+  supervision, train the hierarchical real-data foundation, learn
+  leakage-safe reference representations, expand and qualify candidates,
+  iteratively retrain, and mine hard gaps before large-scale DAZ work.
 - Synthetic geometry may test parsers and contracts only. It cannot be the valid
   semantic control for visual-role qualification. Draft, in-review, rejected,
   or visibly defective historical masks cannot be reused as valid/gold controls.

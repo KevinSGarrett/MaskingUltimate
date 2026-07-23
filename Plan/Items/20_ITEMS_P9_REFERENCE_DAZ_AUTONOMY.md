@@ -124,10 +124,11 @@ Goal: use qualified existing labels, the governed 83k reference corpus, and exac
 - [ ] MF-P9-10.04 Implement utility scoring and feasible selection · Verify: deterministic ranking · Blocked by: D3,D9-03
 - [ ] MF-P9-10.05 Implement dominance/cooldown/near-duplicate limits · Verify: concentration report · Blocked by: D9-04
 - [ ] MF-P9-10.06 Feed validation outcomes back to planner · Verify: adaptive simulation · Blocked by: D7,D9-04
-- [ ] MF-P9-10.07 Generate 1,000-scene pilot · Verify: acceptance/cost report · Blocked by: D8,D9
+- [ ] MF-P9-10.07 Generate a targeted 1,000-scene pilot from the immutable real-data residual-gap report · Verify: acceptance/cost/target-cell report · Blocked by: D8,D9,MF-P9-10.11
 - [ ] MF-P9-10.08 Calibrate storage, retry, timeout, and target sizes · Verify: measured profile · Blocked by: D9-07
-- [ ] MF-P9-10.09 Generate immutable 10,000-scene ablation corpus · Verify: corpus hash/card · Blocked by: D9-08
+- [ ] MF-P9-10.09 Generate immutable targeted 10,000-scene ablation corpus · Verify: corpus hash/card and exact gap-cell bindings · Blocked by: D9-08,MF-P9-10.11
 - [ ] MF-P9-10.10 Verify coverage minima and selected intersections · Verify: coverage report · Blocked by: D9-09
+- [ ] MF-P9-10.11 Admit DAZ scale only from the doc-26 immutable residual real-data gap report; independent foundation/mapping/small renderer canaries may continue earlier · Verify: admission refuses unconditional synthetic-first scale, unknown gap cells, stale corpus/champion hashes, or absent matched real-only ablation design · Blocked by: MF-P5-11.09 · HARD BLOCKER
 
 ## MF-P9-11 — Training mixture and real-image promotion (spec: Daz 24 D10; Daz 00–32)
 - [ ] MF-P9-11.01 Implement builder train-only/weight/share constraints · Verify: adversarial manifests · Blocked by: D7,D9

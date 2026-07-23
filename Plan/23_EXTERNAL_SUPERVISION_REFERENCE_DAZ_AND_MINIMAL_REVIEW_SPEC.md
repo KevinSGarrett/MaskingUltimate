@@ -133,6 +133,16 @@ version. Status probes are read-only and do not walk 83k files.
 `Plan\Daz\00–32` is incorporated by reference in full. Its 120 D0–D11 WBS entries are imported one-for-
 one into P9. The DAZ pack is design/evidence authority; the live tracker remains status authority.
 
+**Execution priority amendment (doc 26 §§9–15):** DAZ remains an optional-scale
+capability, but large-scale rendering is not the current training foundation.
+MaskFactory first qualifies and learns from the registered MaskedWarehouse
+masks/COCO/boxes/points/silhouettes and the leakage-safe reference library, runs
+the hierarchical teacher-student cycle, and publishes an immutable real-data
+gap report. DAZ 1,000/10,000-scene generation and mixture promotion begin only
+for measured residual gap cells. Independent DAZ foundation, mapping, renderer
+correctness, and small deterministic canaries may continue without outranking
+the real-data learning program.
+
 Foundation invariants:
 
 - canonical bulk root `F:\DAZ` with stable root UUID and NTFS volume identity;
@@ -216,8 +226,7 @@ hard holdout, threshold tuning, certificate fitting, and final promotion authori
 
 Reference indexing, DAZ rendering, inference, and training use no GPU/VRAM
 admission, reservation, checkout, or file-lock gate. CPU inventory,
-planning, validation, and status may continue in parallel. DAZ rendering does not start while reference
-classification or training owns the GPU.
+planning, validation, and status may continue in parallel.
 
 DAZ disk thresholds are healthy ≥150 GiB, soft <150 GiB, hard <100 GiB, emergency <60 GiB. Hard floor
 blocks new render leases; emergency stops after a safe checkpoint and protects metadata.
@@ -239,3 +248,8 @@ milestones, real ablations, failure/restore/rollback, and seven-day soak pass; D
 untouched real images; binary decisions preserve authority; selective autonomy meets the declared
 quality/labor targets; and the full MaskFactory suite is green with DAZ disabled and through its guarded
 enabled path.
+
+The preceding exit is dependency-ordered by doc 26 §§9–15: the real-data
+learning cycle and immutable gap report precede DAZ scale generation. The
+100/1,000/10,000-scene milestones are targeted to measured residual gap cells,
+not an unconditional synthetic-first training program.

@@ -51,7 +51,12 @@ because the work is done or because context/time is running out.
 8. Decide the scope for this session: usually a full item cluster (e.g. all
    of `MF-P2-05.*`) rather than a single isolated item, since items within a
    cluster are almost always one coherent implementation task split into
-   checkable sub-steps (see `04` §3).
+   checkable sub-steps (see `04` §3). When adult-corpus learning and DAZ scale
+   are both ready, follow doc 26 §§9–15: select real-data qualification,
+   hierarchical training, reference-domain pretraining, proposal expansion,
+   iterative self-training, and hard-case mining first. Select DAZ scale only
+   from the immutable measured-gap report; independent DAZ foundation canaries
+   may continue in parallel.
 9. **STRICT VLM gate awareness (when visual/MVC/CAA/gold/champion in scope).**
    Re-read Standing Orders § SELF-HOSTED STRICT VLM GATE and
    `13_SELF_HOSTED_STRICT_VLM_GATE.md`. Confirm the RunPod private endpoint plus

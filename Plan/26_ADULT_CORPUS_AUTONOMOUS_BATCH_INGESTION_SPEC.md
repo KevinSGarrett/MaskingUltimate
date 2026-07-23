@@ -158,3 +158,174 @@ Completion requires all 81,910 adopted records to have one durable accounted
 outcome, local/RunPod reconciliation, corpus-scale resume/throughput evidence,
 coverage/failure reports, and measured participation of accepted supervision in
 training, benchmark/champion qualification, and the released bridge path.
+
+## 9. Canonical real-data-first learning priority
+
+This section is the authoritative execution-order amendment for docs 12, 17,
+23, and 25. It does not weaken their truth, leakage, qualification, or release
+requirements.
+
+The first production learning cycle uses the adopted real/external and
+reference populations before large-scale DAZ generation:
+
+1. qualify and normalize existing masks, COCO polygons/RLE, boxes, points,
+   silhouettes, scene/action tags, gold packages, and reference-only images;
+2. train the real-supervision foundation and its ownership, coarse-anatomy,
+   atomic-anatomy, specialist, and boundary components;
+3. use SAM 3.1, SAM 3D Body where applicable, and hypothesis-distinct
+   independent providers to expand bbox/reference records into candidates;
+4. autonomously qualify exact candidates through deterministic QA, qualified
+   independent visual review, bounded repair, and immutable outcomes;
+5. retrain from the enlarged qualified population;
+6. mine remaining label/domain/risk/ownership/boundary deficits; and
+7. activate DAZ scale generation only for measured residual gaps and controlled
+   real-only versus real-plus-DAZ ablations.
+
+Small DAZ foundation, mapping, and deterministic-render tests may continue when
+they are independent and useful. DAZ 1,000/10,000-scene scale, training-mixture
+promotion, and soak work are deferred until the real-data learning cycle emits
+an immutable gap report identifying synthetic-truth targets. DAZ never becomes
+the default training foundation merely because rendering is available.
+
+## 10. Hierarchical model and package architecture
+
+The unified ontology and final package remain authoritative, but internal model
+routing is hierarchical rather than requiring one flat model to solve every
+class:
+
+`source -> person/character discovery -> instance ownership/occlusion order ->
+whole-person silhouette -> coarse anatomy -> atomic anatomy specialists ->
+edge/boundary refinement -> complete-map consistency -> temporal consistency`.
+
+Required independently benchmarked roles include:
+
+- person discovery, p-index/character ownership, and cross-person exclusion;
+- whole-person and coarse anatomical regions;
+- fine face and facial-feature parsing;
+- hands, individual fingers, feet, and toes;
+- hair, flyaways, and other thin structures;
+- breasts, nipples, areolas, penis/shaft/glans, scrotum/testicles,
+  vulva/vaginal region, anus, buttocks, and left/right buttock according to the
+  active ontology and exact source evidence;
+- clothing/skin and adjacent-label boundaries;
+- multi-person contact, occlusion, and ownership;
+- boundary refinement and complete-map recomposition.
+
+Each role publishes exact checkpoint/runtime/input/output hashes and measured
+per-label/per-risk results. A specialist may improve its bound labels but cannot
+silently overwrite another instance, protected label, ontology state, or
+package authority.
+
+## 11. Representation-specific use and source granularity
+
+| Representation | Permitted learning use |
+|---|---|
+| qualified COCO polygons/RLE | weighted segmentation supervision within the exact source label scope |
+| boxes | detection/ownership training and prompts for independent mask generation |
+| masks/silhouettes | boundary, proposal-comparison, calibration, or training use only at earned authority |
+| points | prompt/refinement training and repair-policy evaluation |
+| action/position labels | scene context, retrieval, sampling, and evaluation; never anatomy pixels |
+| reference-only images | self-supervised representation learning, retrieval, hard-case discovery, proposals, and tournaments |
+| prompt text | weak retrieval/context metadata only |
+| current certified packages | highest-authority training/calibration inputs within certificate scope |
+| DAZ synchronized passes | targeted exact synthetic geometry and controlled ablation inputs |
+
+Raw labels remain immutable. A coarse label such as `genitals`, `breast`,
+`buttocks`, or `penis` is not silently decomposed into fine atomic classes.
+Fine supervision requires independent pixel evidence and the normal
+qualification path.
+
+## 12. Staged teacher-student learning program
+
+### 12.1 Real-supervision foundation
+
+Train first from qualified polygons/RLE, certified packages, and other
+pixel-authoritative inputs. Use source-family-balanced sampling, per-source and
+per-label reliability weights, rare-class sampling, and explicit
+coarse-versus-fine losses. No one large dataset or correlated version may
+dominate a batch or cross a split.
+
+### 12.2 Reference-domain representation learning
+
+Use leakage-safe training partitions from `F:\Reference_Images` and
+reference-only MaskedWarehouse sources for self-supervised or masked-image
+representation learning. This may improve photographic anatomy, pose,
+body-shape, lighting, crop, contact, occlusion, small-part, and multi-person
+features without inventing pixel labels. Frozen benchmark, critic
+qualification, calibration, validation, test, and holdout images are excluded.
+
+### 12.3 Proposal expansion
+
+Process bbox and reference records through detection, ownership consensus,
+SAM 3.1-first segmentation, SAM 3D Body when its geometry is applicable,
+independent segmentation families, specialist providers, deterministic hard
+QA, qualified primary criticism, independent-family jury, and bounded repair.
+Unqualified outputs remain candidates or terminal abstentions/quarantines.
+
+### 12.4 Iterative self-training
+
+Every cycle uses an immutable mixture manifest with independently measured
+weights:
+
+- highest: current exact-scope human-anchor or autonomous-certified gold;
+- medium: qualified external polygons/RLE;
+- lower: exact machine-verified candidates eligible for the declared training
+  experiment;
+- zero pixel-loss weight: reference images, prompts, boxes, action tags, and
+  unqualified proposals.
+
+The student is promoted only after leakage-disjoint frozen evaluation and
+per-label/per-domain/per-risk non-regression. Its improved predictions begin a
+new candidate revision; they never retroactively upgrade parent authority.
+
+### 12.5 Hard-case mining
+
+Rank the next records from provider disagreement, small-target scale,
+multi-person contact, cross-person leakage, rare labels, extreme crop,
+occlusion, boundary disagreement, wrong side/front-back/owner, repair
+exhaustion, and weak per-domain certification yield. Easy-case volume cannot
+hide missing hard strata.
+
+## 13. Self-hosted LLM/VLM roles in the learning cycle
+
+The text/planning model performs dataset reconciliation, ontology-mapping
+proposals, batch planning, failure clustering, coverage analysis, hard-case
+selection, bounded repair-hypothesis construction, and milestone/exception
+summaries.
+
+Qualified visual roles inspect each exact record's full source, binary mask,
+overlay, contour, target crop, ownership view, protected neighbors,
+disagreement map, and before/after repair evidence. They diagnose and localize;
+they do not author authoritative pixels, clear hard-QC failures, change frozen
+thresholds, promote truth, or issue certificates. Segmentation/refinement
+providers create new mask revisions, and the deterministic certificate service
+alone evaluates authority. Contact sheets remain navigation and throughput
+evidence, never per-record approval.
+
+## 14. Temporal video extension and audio boundary
+
+After the still-image hierarchy has a qualified champion, the video lane adds
+keyframe segmentation, bidirectional propagation, correspondence/flow
+consistency, persistent character ownership, temporal boundary stability,
+cut/occlusion/re-entry detection, and automatic uncertain-frame
+re-segmentation. Every accepted frame mask retains source-frame and temporal
+lineage.
+
+Audio supplies timing, scene/shot, speaker/performer, and action-context
+metadata only when the consumer workflow needs it. It is not anatomical pixel
+truth and cannot train, validate, or certify a body-part mask by itself.
+
+## 15. DAZ activation and benefit gate
+
+The immutable real-data gap report must identify target labels, viewpoints,
+ownership/contact cases, occlusions, crops, or topology failures before DAZ
+scale work is admitted. DAZ then generates only the declared gap cells, such as
+rare angles, exact laterality, severe foreshortening, cross-person contact,
+out-of-frame anatomy, protected-region interaction, depth/ownership, and
+visible-versus-amodal comparisons.
+
+Matched real-only and real-plus-DAZ challengers use identical splits, seeds,
+configs, and evaluation. DAZ weight is retained only when untouched real
+holdouts improve or remain non-inferior with no label, ownership, boundary, or
+hard-bucket regression. Otherwise the synthetic lane is disabled or narrowed
+without delaying the real-data learning program.

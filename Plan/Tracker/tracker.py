@@ -95,7 +95,7 @@ STATUS_GLYPH = {
     "not_applicable": "\u2796",  # ➖
 }
 
-EXPECTED_ITEM_COUNT = 858
+EXPECTED_ITEM_COUNT = 866
 
 CORE_EXCLUDED_DEPENDENCIES = (
     "human_anchor_masks",

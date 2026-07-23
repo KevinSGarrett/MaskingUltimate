@@ -233,3 +233,38 @@ labels speculatively — every label is a permanent annotation tax.
   differently on crops containing nearby `other_person_protected` regions and contact bands than
   on clean single-person crops. Both views land in `runs\leaderboard.jsonl`; the pooled score
   remains the primary number for D6/G7 comparability against pre-multi-person baselines.
+
+## 11. Real-Data-First Hierarchical Teacher-Student Program (doc 26 §§9–15)
+
+Document 26 owns the canonical execution order. Before large-scale DAZ
+generation, build the first production challengers from qualified
+MaskedWarehouse pixel supervision, certified packages, and leakage-safe
+reference-domain representation learning.
+
+Training is hierarchical: person/character discovery and ownership, silhouette,
+coarse anatomy, atomic anatomy specialists, boundary refinement, complete-map
+consistency, and—after the still-image champion—temporal video consistency.
+The final package and ontology remain unified.
+
+Every batch is source-family balanced and records per-source/per-label
+reliability. Certified exact-scope truth receives the highest weight, qualified
+external polygons/RLE medium weight, and qualified machine-generated candidates
+lower experimental weight. Boxes, points, prompts, action tags, reference-only
+images, and unqualified candidates receive no pixel-loss authority.
+
+`F:\Reference_Images` and reference-only MaskedWarehouse records may train a
+self-supervised or masked-image encoder only after exact/near/source-family
+dedup and exclusion of benchmark, calibration, validation, test, and holdout
+groups. Representation learning never creates a mask label.
+
+The iterative loop is:
+
+`foundation training -> multi-provider proposal expansion -> deterministic and
+qualified visual QA -> bounded repair -> immutable qualified population ->
+student retraining -> frozen holdout evaluation -> hard-case mining`.
+
+Hard-case selection prioritizes disagreement, rare/small anatomy,
+multi-person contact, ownership leakage, occlusion, crop, laterality/front-back,
+boundary failure, repair exhaustion, and weak domain yield. DAZ scale activates
+only after this loop emits an immutable gap report and remains only when matched
+real-only versus real-plus-DAZ ablations improve untouched real evaluation.

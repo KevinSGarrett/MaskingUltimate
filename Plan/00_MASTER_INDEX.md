@@ -22,7 +22,7 @@ boundaries, hair, feet/toes, occlusion, and clothing — and which ultimately tr
 custom fine-tuned segmentation models and integrates directly into ComfyUI.
 
 Every decision has been made. There are no open questions. A developer (or AI coding agent)
-can build the entire system from these 26 documents without asking a single design question.
+can build the entire system from these 27 documents without asking a single design question.
 
 ---
 
@@ -56,7 +56,7 @@ can build the entire system from these 26 documents without asking a single desi
 | 23 | 23_EXTERNAL_SUPERVISION_REFERENCE_DAZ_AND_MINIMAL_REVIEW_SPEC.md | Qualified external-label supervision, the disjoint 83k benchmark/retrieval corpus, exact DAZ synthetic truth, near-perfect selective-autonomy targets, and binary owner decisions |
 | 24 | 24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md | Required human-free completion profile, exact-output operational authority, MaskFactory↔ComfyUI runtime/release bridge, optional claim profiles, and recovery qualification |
 | 25 | 25_SELF_HOSTED_VISUAL_AUTHORITY_AND_RUNPOD_MIGRATION_SPEC.md | Evidence-qualified visual critics, multi-proposal disagreement/repair, positive-control calibration, persistent RunPod execution, and optional read-only legacy-source recovery |
-| 26 | 26_ADULT_CORPUS_AUTONOMOUS_BATCH_INGESTION_SPEC.md | Adopted 16-dataset adult-corpus registry, lane-separated external supervision, resumable 256-record processing, strict per-record QA, RunPod synchronization, training, and release integration |
+| 26 | 26_ADULT_CORPUS_AUTONOMOUS_BATCH_INGESTION_SPEC.md | Adopted 16-dataset adult-corpus registry, lane-separated external supervision, resumable 256-record processing, real-data-first hierarchical teacher-student learning, reference-domain pretraining, hard-case mining, temporal extension, targeted DAZ activation, strict per-record QA, RunPod synchronization, training, and release integration |
 
 ---
 

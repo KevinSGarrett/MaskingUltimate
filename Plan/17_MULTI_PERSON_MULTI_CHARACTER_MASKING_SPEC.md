@@ -300,3 +300,23 @@ repair/abstention, exact-output certification, and adopted bridge demonstrations
 | ID | Risk | L | I | Mitigation | Trigger/Owner |
 |----|------|---|---|------------|---------------|
 | R18 | Instance mis-split (one real person falsely detected as two) or cross-instance mask bleed | M | H | QC-035/036 hard BLOCKs, deterministic ranking/tie-break, S09.5 reconciliation runs before any review time is spent | any QC-035/036 fire on approved gold = incident, doc 15 §8-style |
+
+## 16. Temporal Multi-Person Video Extension — Amends doc 12 and doc 26
+
+The video lane starts only after the still-image hierarchy has a qualified
+champion. It preserves person and `character_instance_id` identity across
+frames and adds:
+
+- deterministic keyframe selection and full keyframe segmentation;
+- bidirectional mask propagation with exact source-frame lineage;
+- optical-flow/correspondence consistency and temporal boundary stability;
+- ownership persistence through contact, occlusion, disappearance, and
+  re-entry;
+- cut/shot detection that invalidates stale propagation;
+- automatic uncertainty selection for full provider re-segmentation; and
+- per-frame immutable revisions plus clip-level completeness and leakage QA.
+
+No temporal smoother may conceal a hard-QC failure, transfer pixels between
+people, or promote a frame beyond its exact evidence. Audio may supply
+timing/scene/speaker/action context to a consuming workflow, but it is never
+body-part pixel truth or mask-certification evidence.

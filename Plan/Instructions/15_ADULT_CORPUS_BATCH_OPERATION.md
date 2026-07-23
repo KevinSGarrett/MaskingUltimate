@@ -7,6 +7,36 @@ with `--rehash sample`. Local canary tooling is limited to CPU decode/schema/
 queue preflight; provider inference, strict review, repair, and qualification
 canaries run directly on persistent RunPod storage.
 
+## Real-data-first execution order
+
+Document 26 §§9–15 is binding. Prioritize the registered real/external and
+reference populations before large-scale DAZ generation:
+
+1. qualify polygons/RLE, boxes, points, masks, silhouettes, action tags,
+   certified packages, and reference-only images under their exact roles;
+2. train the source-family-balanced real-supervision foundation and
+   hierarchical ownership/anatomy/specialist/boundary cascade;
+3. run leakage-safe self-supervised representation learning over eligible
+   reference partitions;
+4. expand bbox/reference records with SAM 3.1, SAM 3D Body when applicable,
+   independent provider families, hard QA, qualified visual review, and
+   bounded repair;
+5. retrain only from immutable weighted mixtures and promote only measured
+   non-regressing challengers;
+6. mine hard cases and publish an immutable residual-gap report; and
+7. activate DAZ scale only for those measured gaps and matched real holdout
+   ablations.
+
+DAZ foundation/mapping canaries may continue independently. Do not select
+1,000/10,000-scene rendering, synthetic-mixture training, or DAZ soak ahead of
+ready real-data qualification, training, proposal-expansion, or hard-case
+work.
+
+The self-hosted text model plans batches, reconciles labels, clusters failures,
+and proposes bounded repairs. Qualified visual models review exact per-record
+panels. Only segmentation/refinement providers change pixels, and only the
+deterministic certificate service evaluates authority.
+
 Operating memory for every fresh session:
 
 - canonical local intake:

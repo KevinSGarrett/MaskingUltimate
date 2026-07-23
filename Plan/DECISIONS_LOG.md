@@ -1396,3 +1396,30 @@ OOM remains a typed runtime outcome with bounded retry/abstention behavior; it
 does not authorize a pre-execution VRAM gate or threshold weakening.
 
 **Approved by:** Kevin, explicit owner directive on 2026-07-23
+
+## 2026-07-23 - Real-data-first learning and targeted DAZ activation
+
+**Item(s) affected:** MF-P0-18.*, MF-P4-12.*, MF-P5-11.01 through
+MF-P5-11.10, MF-P9-10.07/.09/.11, MF-P9-13.*, MF-P9-14.*
+
+**Decision:** The first production learning cycle prioritizes the 81,910-record
+adult intake, qualified MaskedWarehouse masks/COCO/points/silhouettes, and
+leakage-safe partitions of the approximately 83,422-image reference library.
+It trains a hierarchical ownership/anatomy/specialist/boundary cascade, expands
+bbox/reference proposals, iteratively self-trains from immutable weighted
+mixtures, and mines hard cases. Large-scale DAZ generation is deferred until an
+immutable residual real-data gap report names exact target cells.
+
+**DAZ boundary:** Foundation, mapping, renderer-correctness, and small
+deterministic DAZ canaries may continue independently. DAZ 1,000/10,000-scene
+scale and mixture promotion require the gap report plus matched real-only
+versus real-plus-DAZ ablations on untouched real evaluation.
+
+**Authority boundary:** Reference images, boxes, points, prompts, action tags,
+and unqualified candidates do not become pixel truth. Self-supervised
+reference-domain learning creates representations, not masks. Fine anatomy is
+never invented from a coarse source label. Qualified visual models diagnose;
+segmentation providers change pixels; deterministic certification evaluates
+authority.
+
+**Approved by:** Kevin, explicit strategy authorization on 2026-07-23

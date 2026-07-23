@@ -173,6 +173,7 @@ Rules:
 - External MaskedWarehouse masks retain external-labeled-reference authority rather than operational gold. After exact provenance, rights, remap/ontology, integrity, alignment, identity, and leakage qualification, they are required inputs for their permitted training, semantic-calibration, seeded-defect, multi-person, and benchmark scopes. Strategy receipts and sample probes alone are not admission.
 - Semantic visual-role positives must use real pixels and evidence-qualified masks. Synthetic shapes and old draft/in-review/rejected package masks are never valid semantic positive controls.
 - The required real corpus roots are `C:\Comfy_UI_Main\MaskedWarehouse` and `F:\Reference_Images\Ultimate_Masking_Reference_Images`, with persistent RunPod mirrors under `/workspace/assets/MaskedWarehouse` and `/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images`.
+- Select ready real-data qualification, hierarchical training, reference-domain pretraining, proposal expansion, iterative self-training, and hard-case mining ahead of DAZ scale. DAZ 1,000/10,000-scene and synthetic-mixture work requires the immutable doc-26 residual-gap report and matched real-holdout benefit evidence.
 
 ## 12. Self-Hosted STRICT VLM Gate (No Blind Approvals)
 

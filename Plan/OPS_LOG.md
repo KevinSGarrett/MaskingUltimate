@@ -12352,3 +12352,22 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   `qa/live_verification/runpod_sam31_reference_wave64_checkpoint_20260723.json`
   (self-seal
   `dbc32f5af91a1d1405ccc93ced2b976458ad17ded5ac79c62abc91fe1bfc19d3`).
+
+## 2026-07-23 - Persistent SAM3.1 RunPod predictor canary
+
+- The directly selected RunPod processed two reference-only records through one
+  resident official SAM3.1 process with exactly one model load.
+- One request generated a draft person-mask candidate that passed deterministic
+  hard QA. The second request returned a typed provider abstention without
+  aborting the healthy record.
+- Provider, hard-QA, resident-process, request, runtime-lock, deployed-code, and
+  candidate-artifact hashes all validated. The resident process stopped cleanly.
+- GPU and VRAM measurements are retained as telemetry only; no capacity
+  admission, reservation, checkout, sequencer, or execution gate was used.
+- This is a bounded provider/runtime checkpoint only. Strict visual review,
+  certificates, autonomous gold, training truth, terminal queue progress,
+  shard completion, and production promotion remain absent.
+- Exact evidence:
+  `qa/live_verification/runpod_sam31_resident_two_record_canary_20260723.json`
+  (self-seal
+  `ece3d5ba132d964b2a27c8c69109005dd65fe077b64a65c4038ebc80b8de3da2`).

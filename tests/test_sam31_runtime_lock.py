@@ -95,12 +95,19 @@ def test_sam31_lock_binds_correct_multiplex_checkpoint_smoke_contract() -> None:
 def test_sam31_lock_binds_official_production_discovery_and_refinement_contract() -> None:
     lock = json.loads((ROOT / "env/sam31_runtime.lock.json").read_text(encoding="utf-8"))
     contract = lock["live_smoke"]["production_contract"]
-    assert contract["status"] == "discovery_and_native_box_refinement_runtime_pass_bounded"
-    assert contract["verified_at"] == "2026-07-23T02:56:30Z"
+    assert (
+        contract["status"]
+        == "discovery_native_box_refinement_and_resident_batch_runtime_pass_bounded"
+    )
+    assert contract["verified_at"] == "2026-07-23T07:15:06Z"
     assert contract["evidence"] == (
-        "qa/live_verification/runpod_sam31_visual_text_box_hard_qc_pass_20260723.json"
+        "qa/live_verification/runpod_sam31_resident_two_record_canary_20260723.json"
     )
     assert contract["roles"] == ["concept_detector", "interactive_segmenter"]
+    assert (
+        "reused one predictor across two native RunPod requests" in contract["production_loading"]
+    )
+    assert "not shard-scale or authority evidence" in contract["production_loading"]
     assert contract["builder"].startswith("build_sam3_predictor")
     assert "positive/negative box prompts" in contract["visual_exemplars"]
     assert "rejected fail-closed" in contract["external_image_exemplars"]

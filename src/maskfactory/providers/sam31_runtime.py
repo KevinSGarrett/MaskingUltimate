@@ -378,7 +378,12 @@ class ResidentSam31CommandExecutor:
         return {
             **body,
             "self_sha256": hashlib.sha256(
-                json.dumps(body, sort_keys=True, separators=(",", ":")).encode("utf-8")
+                json.dumps(
+                    body,
+                    sort_keys=True,
+                    separators=(",", ":"),
+                    ensure_ascii=False,
+                ).encode("utf-8")
             ).hexdigest(),
         }
 

@@ -107,7 +107,18 @@ for line in sys.stdin:
     assert evidence["summary"]["request_count"] == 2
     assert evidence["summary"]["model_load_count"] == 1
     assert evidence["response_sequences"] == [1, 2]
-    assert len(evidence["self_sha256"]) == 64
+    body = {key: value for key, value in evidence.items() if key != "self_sha256"}
+    assert (
+        evidence["self_sha256"]
+        == hashlib.sha256(
+            json.dumps(
+                body,
+                sort_keys=True,
+                separators=(",", ":"),
+                ensure_ascii=False,
+            ).encode("utf-8")
+        ).hexdigest()
+    )
 
 
 def test_runner_process_cache_loads_predictor_once_for_two_requests(

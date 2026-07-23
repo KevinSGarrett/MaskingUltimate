@@ -1,0 +1,73 @@
+{
+  "schema_version": "maskfactory.runpod_autonomous_work_cell_adoption_evidence.v1",
+  "recorded_at_utc": "2026-07-23T01:00:00Z",
+  "claim": "STATIC_PASS_BOUNDED for durable RunPod autonomous work-cell implementation and Nude qualified-record bridge adoption",
+  "authoritative_branch": "codex/maskfactory-plan-modernization",
+  "merge_commit": "fb38ef0900b2db27aaf1b6f48d0c560d76b99ef3",
+  "merge_parents": [
+    "cf70bb2f0207a70385e1297c92cc6b297a21ea8f",
+    "1e05a624a4de43c758040bb6a1df7f7e27cea4c9"
+  ],
+  "source_branch": "codex/runpod-autonomous-work-cell",
+  "source_head": "1e05a624a4de43c758040bb6a1df7f7e27cea4c9",
+  "scope": [
+    "durable SQLite mission controller",
+    "atomic leases, heartbeats, expired-lease recovery, retry caps, checkpoint and milestone reporting",
+    "hash-bound subprocess stage handlers",
+    "compact stage-command mission builder",
+    "self-hosted development patch bundle contract",
+    "Nude qualified-record to work-cell stage-artifact bridge"
+  ],
+  "validated_commands": [
+    {
+      "command": "python -m pytest -q tests/test_runpod_autonomous_work_cell.py tests/test_runpod_development_bundle.py tests/test_runpod_work_cell_nude_bridge.py tests/test_nude_record_qualification.py tests/test_nude_terminal_queue_bridge.py tests/test_nude_batch_queue.py",
+      "cwd": "C:\\w\\maskfactory-plan-modernization",
+      "result": "PASS",
+      "observed": "75 passed"
+    },
+    {
+      "command": "ruff check src/maskfactory/autonomy/work_cell.py src/maskfactory/autonomy/work_cell_command_handlers.py src/maskfactory/autonomy/work_cell_mission_builder.py src/maskfactory/autonomy/work_cell_nude_bridge.py src/maskfactory/autonomy/work_cell_receipts.py src/maskfactory/autonomy/work_cell_runner.py src/maskfactory/autonomy/development_bundle.py tools/emit_runpod_work_cell_receipt.py tools/manage_runpod_autonomous_work_cell.py tools/prepare_runpod_autonomous_mission.py tools/run_runpod_work_cell_stage.py tests/test_runpod_autonomous_work_cell.py tests/test_runpod_development_bundle.py tests/test_runpod_work_cell_nude_bridge.py",
+      "cwd": "C:\\w\\maskfactory-plan-modernization",
+      "result": "PASS"
+    },
+    {
+      "command": "python -m black --check <same work-cell source/tool/test files>",
+      "cwd": "C:\\w\\maskfactory-plan-modernization",
+      "result": "PASS",
+      "observed": "14 files would be left unchanged"
+    },
+    {
+      "command": "python tools/prepare_runpod_autonomous_mission.py --help; python tools/manage_runpod_autonomous_work_cell.py --help; python tools/run_runpod_work_cell_stage.py --help",
+      "cwd": "C:\\w\\maskfactory-plan-modernization",
+      "result": "PASS",
+      "observed": "all three direct CLI help invocations exited 0"
+    },
+    {
+      "command": "git diff --check",
+      "cwd": "C:\\w\\maskfactory-plan-modernization",
+      "result": "PASS"
+    }
+  ],
+  "key_file_sha256": {
+    "src/maskfactory/autonomy/work_cell.py": "ba26d9e999cf656454479d431f6708b7f4fcd5938571d5dc95b9aa20684c7197",
+    "src/maskfactory/autonomy/work_cell_runner.py": "eacf533cb09b11cbc6b505aaa2f117d53841a5c4dc3d267a8299743e6b309eaf",
+    "src/maskfactory/autonomy/work_cell_mission_builder.py": "b1cd01ff7c1f9670564b1dc4d637e7851923a977e89f8bdf59912cb8c0f33798",
+    "src/maskfactory/autonomy/work_cell_nude_bridge.py": "9f8d1b9e11d6a8e2ddd54c7e01a54d160387a1350e1aab2f72e503b47fa09302",
+    "tools/prepare_runpod_autonomous_mission.py": "facf7904f3fd337023362fd3c10caaf1bb564bd8475b5df3bc05e18c57d4234b",
+    "tools/manage_runpod_autonomous_work_cell.py": "576fb16a7b3922a100a720cce0948de8581be66d9b10caebb0dfab8c5877f70f",
+    "tools/run_runpod_work_cell_stage.py": "c942950bb8bd665328408f02be297b4f9c30a38d635a8c2b3da2044520f354c2",
+    "tests/test_runpod_autonomous_work_cell.py": "e67cce0d685697f15bd1394f19491f27db4392609e9ef0cb1da55e5ee3076af1",
+    "tests/test_runpod_work_cell_nude_bridge.py": "bd63f7cd56f2613f8208dc0740e81e9071185aa5135ef96ad0a898cb08b53088"
+  },
+  "authority_limits": {
+    "does_not_claim_live_provider_crash_restart_complete": true,
+    "does_not_claim_observed_1000_record_production_milestone": true,
+    "does_not_issue_or_promote_visual_critic_role_certificates": true,
+    "does_not_call_source_reference_images_gold": true,
+    "production_masking_location": "RunPod persistent storage and shared coordinator; local commands here are CPU-only implementation and control validation"
+  },
+  "remaining_for_MF_P4_12_01_completion": [
+    "one live provider crash/restart campaign under production load",
+    "one observed 1000-record milestone on the production RunPod lane"
+  ]
+}

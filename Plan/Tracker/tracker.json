@@ -14999,7 +14999,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 75,
+      "percent_complete": 77,
       "notes": [
         {
           "ts": "2026-07-21T23:46:02+00:00",
@@ -15045,12 +15045,17 @@
           "ts": "2026-07-23T09:39:13+00:00",
           "actor": "codex",
           "text": "2026-07-23 RunPod replacement positive-control sourcing: exact direct CelebAMask-HQ hair and neck mappings produced 32 source-image-partitioned candidates (16 hair, 16 neck; 16 qualification_train, 16 qualification_test) and 192 hash-bound per-record panels on pod 1q4ji0gg1fkhvt. Candidate self_sha256=cd2cf464aa20c7bca8d2b09bca1318c73392dde17f1478afa11e543af3e14757; panel report self_sha256=0ceec7899c60341dac6c543349d25d062b82a1d0dbea959b266527f693ca10a1. Evidence qa/live_verification/runpod_celebamask_control_candidates_panels_20260723.json. Individual exact-record alignment review and identity-disjointness remain open; no critic-control, gold, certificate, or production authority granted."
+        },
+        {
+          "ts": "2026-07-23T10:05:24+00:00",
+          "actor": "codex",
+          "text": "2026-07-23 qualified CelebAMask control admission: exact source qualification, per-record semantic review, official CelebA identity metadata (published MD5 32bd1bd63d3c78cd57e08160ec5ed1e2), and sealed cross-source split/dedup evidence produced 30 identity- and split-group-disjoint real critic controls on active RunPod pod 1q4ji0gg1fkhvt: 25 valid masks, 5 typed known defects, 2 ambiguity exclusions, balanced 15/15 across calibration and qualification_holdout. RunPod admission file SHA-256=fae0f5dd63dfce29db9f5416222409414080c4c07bc68aa281fbc0e40b7e2b0a; self SHA-256=0bf5dff2bb80ce156f4dd5f62d9d6a09e6ce4440ae7ebe3b5a6bd609fce9c7b2. Evidence qa/live_verification/runpod_celebamask_control_admission_20260723.json. No critic role, visual authority, gold, training truth, certificate, or production authority granted; complete 66-label/risk/domain coverage and live qualified critic reruns remain open."
         }
       ],
-      "evidence": "qa/live_verification/frozen_visual_regression_suite_20260721.json (synthetic plumbing only, superseded for promotion); qa/live_verification/frozen_real_visual_regression_suite_20260722.json; real suite 653c8973857ce419a021f4d7ec3d4a58a89d757d9da7bb18321c80b7e1b6466a; source-binding seal 98fdee21f6415e3eb94c1462f6f0373539f44aaa0c9cd5f5b294fed2902a0ce1; qa/live_verification/visual_regression_66_class_promotion_gate_20260723.json self_sha256=c47f7a9f117b212d28fe85b4543759156c3d539a76ea36b4a909b4381ac8d442; 29 current focused tests PASS; Ruff, Black, tracker validation, and diff integrity PASS",
+      "evidence": "qa/live_verification/frozen_real_visual_regression_suite_20260722.json; qa/live_verification/visual_regression_66_class_promotion_gate_20260723.json; qa/live_verification/visual_corpus_source_deficits_20260723.json; qa/live_verification/runpod_canonical_polygon_source_candidates_20260723.json; qa/live_verification/runpod_canonical_polygon_semantic_review_20260723.json; qa/live_verification/runpod_celebamask_control_candidates_panels_20260723.json; qa/live_verification/runpod_celebamask_control_admission_20260723.json self_sha256=9b9ca502ecf8e092791e1f3d3a34104ddc74008971c1d6385e51a032815d90c6; 26 focused tests PASS; Ruff, Black, tracker validation, and diff integrity PASS",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-23T09:39:13+00:00",
+      "updated_at": "2026-07-23T10:05:24+00:00",
       "orphaned": false
     },
     "MF-P4-11.24": {

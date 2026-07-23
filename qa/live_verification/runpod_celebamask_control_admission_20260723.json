@@ -1,0 +1,83 @@
+{
+  "artifact_type": "runpod_celebamask_exact_control_admission_evidence",
+  "schema_version": "maskfactory.runpod_celebamask_exact_control_admission_evidence.v1",
+  "observed_at": "2026-07-23T10:30:00Z",
+  "runpod": {
+    "pod_id": "1q4ji0gg1fkhvt",
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "persistent_output_path": "/workspace/maskfactory/runtime_artifacts/visual_corpus_control_admission/456377576_celebamask/admission.json",
+    "output_file_sha256": "fae0f5dd63dfce29db9f5416222409414080c4c07bc68aa281fbc0e40b7e2b0a",
+    "output_self_sha256": "0bf5dff2bb80ce156f4dd5f62d9d6a09e6ce4440ae7ebe3b5a6bd609fce9c7b2"
+  },
+  "implementation": {
+    "base_commit": "4563775766d2e1f5568716b16a92b3e364100a2e",
+    "module_sha256": "2be913af900a28756f2d80b1499f30fbc5d7ea7ddab24ab5245a82182415c3a6",
+    "tool_sha256": "cec88c031c238fdba042ddaacac2030ff457db08919ff958edf3c3f4aa33e17a"
+  },
+  "input_bindings": {
+    "candidate_set_sha256": "cd2cf464aa20c7bca8d2b09bca1318c73392dde17f1478afa11e543af3e14757",
+    "panel_report_sha256": "0ceec7899c60341dac6c543349d25d062b82a1d0dbea959b266527f693ca10a1",
+    "semantic_review_sha256": "dec640bbd8706f8c4b4d5686f666d8bb9e25ac7916c9420e0d269cf76984fe07",
+    "qualification_bundle_sha256": "6d4d99ddaa2ea3aa0b7c13a1259798b738b6c655aeb983811167e63730612eea",
+    "split_dedup_seal_sha256": "45283eff4341cf58db079f981a95422fef8e97b29fc85b56332f0469edce9ae4",
+    "hq_mapping_sha256": "d8d43deb196384cc086233d133624ce2f55f1c41300e91d865f2aa3c24f3614a",
+    "identity_metadata_sha256": "c6143857c3e2630ac2da9f782e9c1232e5e59be993a9d44e8a7916c78a6158c0",
+    "identity_metadata_md5": "32bd1bd63d3c78cd57e08160ec5ed1e2"
+  },
+  "results": {
+    "reviewed_records": 32,
+    "admitted_controls": 30,
+    "valid_mask_controls": 25,
+    "known_defect_controls": 5,
+    "excluded_ambiguous_controls": 2,
+    "labels": {
+      "hair": 14,
+      "neck": 16
+    },
+    "defects": {
+      "boundary": 2,
+      "missing_area": 1,
+      "protected_region": 2
+    },
+    "partitions": {
+      "calibration": {
+        "records": 15,
+        "valid_mask": 12,
+        "known_defect": 3
+      },
+      "qualification_holdout": {
+        "records": 15,
+        "valid_mask": 13,
+        "known_defect": 2
+      }
+    },
+    "identity_disjoint": true,
+    "split_group_disjoint": true,
+    "excluded_sample_ids": [
+      "celebamask_09676_hair",
+      "celebamask_21069_hair"
+    ]
+  },
+  "validation": {
+    "focused_pytest_passed": 26,
+    "ruff_passed": true,
+    "black_passed": true,
+    "diff_check_passed": true,
+    "runpod_exact_output_verified": true
+  },
+  "authority": {
+    "critic_corpus_controls_frozen": true,
+    "critic_role_authority_granted": false,
+    "strict_visual_authority_granted": false,
+    "autonomous_gold_granted": false,
+    "training_truth_granted": false,
+    "production_authority_granted": false
+  },
+  "claim_limits": [
+    "The 30 records are frozen positive/negative real-image critic controls only.",
+    "External CelebAMask labels remain non-gold.",
+    "These controls do not qualify a visual model or authorize certification.",
+    "The complete 66-label and risk/domain corpus remains open."
+  ],
+  "self_sha256": "9b9ca502ecf8e092791e1f3d3a34104ddc74008971c1d6385e51a032815d90c6"
+}

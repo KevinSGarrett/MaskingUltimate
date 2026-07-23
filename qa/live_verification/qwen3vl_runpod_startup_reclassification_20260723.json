@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-07-23T00:12:00Z",
+  "status": "STARTUP_INCOMPLETE_UNQUALIFIED",
+  "authority_claimed": false,
+  "model": {
+    "model_id": "qwen3_vl_30b_a3b_instruct_fp8",
+    "repository": "Qwen/Qwen3-VL-30B-A3B-Instruct-FP8",
+    "revision": "d9748a51ae66354c4dad665aab2c71f26cf2c8cd",
+    "persistent_path": "/workspace/models/visual_critics/qwen3_vl_30b_a3b_instruct_fp8",
+    "artifact_tree_sha256": "dbb7d33b3ab68a356069bc577692fd347c4103c2c59ead3a65943d664a8c8d4a"
+  },
+  "observed_startup": {
+    "engine": "vllm 0.19.1",
+    "resolved_architecture": "Qwen3VLMoeForConditionalGeneration",
+    "checkpoint_shards_total": 4,
+    "checkpoint_shards_loaded_before_job_end": 2,
+    "model_load_exception_observed": false,
+    "semantic_requests_started": false,
+    "qualification_report_written": false,
+    "job_state_bytes": 0,
+    "server_log_path": "/workspace/maskfactory_runtime/critic_protocol_v2_20260722/qwen3vl_complete_contract_v3_server.log",
+    "server_log_sha256": "9fa6a9a5460432cfc369c821c934b4a373bb4f716bcf80a14af2ea10c1c8cb61"
+  },
+  "classification": {
+    "previous": "downloaded_runtime_load_failed_unqualified",
+    "corrected": "downloaded_runtime_startup_incomplete_unqualified",
+    "reason": "The retained log ends during checkpoint shard loading without a model-load exception; no semantic request or qualification result exists."
+  },
+  "current_protocol": {
+    "version": "maskfactory-live-critic-calibration-v3-single-board-explicit-checks",
+    "prompt_sha256": "cea805d38d18ee96d5c82251a665a8064a947c47e39d47688754e3904e8221a6",
+    "runner_sha256": "d4d2eaa3578ca4e5b31eaad8bfe1b63c0adf5d790be6eab359f4c3dc05f56267",
+    "protocol_module_sha256": "2bc30300e143eb945954c3914a67828eea5c915dcd82e8e0a30e21fb2ec9d91d",
+    "requires_fresh_full_run": true
+  },
+  "role_state": {
+    "primary_visual_critic": null,
+    "independent_family_juror": null,
+    "role_certificates_issued": 0,
+    "certification_behavior": "abstain"
+  },
+  "configs_vlm_sha256": "ac8a3fb086b0fbf43345d70249731f6e15fe25f448a373824aa2d9f0e66db979",
+  "self_sha256": "eb1ec13adfdbf0ee566ee0b8c7dd3b8efd4e0b0ca66ccb132c832a09171143a5"
+}

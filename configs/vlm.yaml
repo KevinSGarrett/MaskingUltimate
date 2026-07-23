@@ -69,9 +69,10 @@ production_runtime:
       report_file_sha256: b181b209679092d22ce94aece1c9043db666552ef7b7e132a6d7a6b1d935d3ee
     qwen3_vl_30b_a3b_instruct_fp8:
       family: qwen
-      lifecycle: downloaded_runtime_load_failed_unqualified
+      lifecycle: downloaded_runtime_startup_incomplete_unqualified
       assigned_roles: []
       artifact_tree_sha256: dbb7d33b3ab68a356069bc577692fd347c4103c2c59ead3a65943d664a8c8d4a
+      startup_evidence: 2_of_4_checkpoint_shards_loaded_before_bounded_job_ended
       qualification_report: null
     minicpm_v_4_5_bf16:
       family: qwen

@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-22T23:34:19+00:00",
+    "generated_at": "2026-07-23T00:14:25+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 858,
     "total_tracked_including_orphaned": 858
@@ -14794,12 +14794,17 @@
           "ts": "2026-07-22T23:34:18+00:00",
           "actor": "codex",
           "text": "2026-07-22 RunPod authority reconciliation: expired coordinator lease safely reconciled; six exact persistent critic artifacts verified; complete-contract real corpus 7064d190... and v3 single-board/per-check protocol deployed. InternVL3.5-8B, Pixtral-12B, MiniCPM-V 4.5, GLM-4.1V-9B, and both Qwen3.6-27B attempts failed frozen positive/negative gates; Qwen3-VL-30B failed model load before semantic review. No role/certificate/approval authority issued. Generation and deterministic QA may continue; certification abstains."
+        },
+        {
+          "ts": "2026-07-23T00:14:25+00:00",
+          "actor": "codex",
+          "text": "2026-07-23 protocol reconciliation: retained Qwen3-VL server log loaded 2/4 checkpoint shards and ended without a load exception, semantic request, or report, so it is startup-incomplete rather than load-failed. Existing InternVL/Qwen complete-contract-v3 result files contain the obsolete three-field/three-composite response protocol and cannot qualify the current single-board ten-check role. Both prior 0% valid-mask results remain failed and unpromoted; a fresh exact current-protocol positive/negative run is required. qa/live_verification/qwen3vl_runpod_startup_reclassification_20260723.json"
         }
       ],
       "evidence": "qa/live_verification/runpod_visual_authority_reconciliation_20260722.json SHA-256 f483d069feb5d84628227363c686626eb19c51229ef3f2d53e8af2eb0c5517c7; catalog 322d47c2aa48d05162186d0f616d6de4218d8cb952359d118218c25e21da828a; 156 focused tests PASS",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-22T23:34:18+00:00",
+      "updated_at": "2026-07-23T00:14:25+00:00",
       "orphaned": false
     },
     "MF-P4-11.19": {

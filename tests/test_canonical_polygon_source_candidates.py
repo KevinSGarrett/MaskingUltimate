@@ -33,6 +33,17 @@ def _registry() -> dict:
     }
 
 
+def _hard_qc_summary() -> dict:
+    return {
+        "records_file_sha256": "2" * 64,
+        "self_sha256": "4" * 64,
+        "hard_qc": {
+            "mask_hash_contract": "MASKFACTORY_BOOL_MASK_V1_shape_packbits_big",
+            "mask_hash_implementation_sha256": "5" * 64,
+        },
+    }
+
+
 def _record(index: int, partition: str, *, raw: str = "anus", dataset: str = "dataset_a") -> dict:
     candidate = "anus" if raw == "anus" else "vulva_external_region"
     kind = "anatomy" if raw == "anus" else "source_alias_for_visible_external_anatomy"
@@ -69,8 +80,10 @@ def test_selects_exact_split_disjoint_anus_sources_without_granting_authority() 
     report = build_canonical_polygon_source_candidates(
         records=records,
         registry=_registry(),
+        hard_qc_summary=_hard_qc_summary(),
         records_file_sha256="2" * 64,
         registry_file_sha256="3" * 64,
+        hard_qc_summary_file_sha256="6" * 64,
         per_partition=1,
     )
     verify_canonical_polygon_source_candidates(report)
@@ -90,8 +103,10 @@ def test_vagina_is_retained_as_bounded_alias_not_exact_vulva_control() -> None:
     report = build_canonical_polygon_source_candidates(
         records=records,
         registry=_registry(),
+        hard_qc_summary=_hard_qc_summary(),
         records_file_sha256="2" * 64,
         registry_file_sha256="3" * 64,
+        hard_qc_summary_file_sha256="6" * 64,
         per_partition=1,
     )
     assert report["bounded_alias_diagnostic_counts"] == {
@@ -115,8 +130,10 @@ def test_ineligible_license_and_duplicate_split_group_fail_closed() -> None:
         build_canonical_polygon_source_candidates(
             records=records,
             registry=_registry(),
+            hard_qc_summary=_hard_qc_summary(),
             records_file_sha256="2" * 64,
             registry_file_sha256="3" * 64,
+            hard_qc_summary_file_sha256="6" * 64,
             per_partition=1,
         )
 
@@ -125,11 +142,31 @@ def test_authority_mutation_breaks_seal_and_verifier() -> None:
     report = build_canonical_polygon_source_candidates(
         records=[_record(1, "train"), _record(2, "test")],
         registry=_registry(),
+        hard_qc_summary=_hard_qc_summary(),
         records_file_sha256="2" * 64,
         registry_file_sha256="3" * 64,
+        hard_qc_summary_file_sha256="6" * 64,
         per_partition=1,
     )
     drifted = deepcopy(report)
     drifted["selected"][0]["critic_positive_control_eligible"] = True
     with pytest.raises(CanonicalPolygonSourceCandidateError, match="self hash mismatch"):
         verify_canonical_polygon_source_candidates(drifted)
+
+
+def test_stale_or_unnamed_mask_hash_contract_is_rejected() -> None:
+    summary = _hard_qc_summary()
+    summary["hard_qc"]["mask_hash_contract"] = "legacy_unknown_hash_domain"
+    with pytest.raises(
+        CanonicalPolygonSourceCandidateError,
+        match="mask-hash contract",
+    ):
+        build_canonical_polygon_source_candidates(
+            records=[_record(1, "train"), _record(2, "test")],
+            registry=_registry(),
+            hard_qc_summary=summary,
+            records_file_sha256="2" * 64,
+            registry_file_sha256="3" * 64,
+            hard_qc_summary_file_sha256="6" * 64,
+            per_partition=1,
+        )

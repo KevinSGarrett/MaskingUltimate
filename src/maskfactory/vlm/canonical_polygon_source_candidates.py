@@ -17,7 +17,7 @@ from typing import Any
 
 from .critic_catalog import canonical_sha256
 
-SCHEMA_VERSION = "maskfactory.canonical_polygon_source_candidates.v1"
+SCHEMA_VERSION = "maskfactory.canonical_polygon_source_candidates.v2"
 EXACT_RAW_TO_CANONICAL = {"anus": "anus"}
 BOUNDED_ALIAS_RAW_TO_CANONICAL = {"vagina": "vulva"}
 REQUIRED_PARTITIONS = ("train", "test")
@@ -53,8 +53,10 @@ def build_canonical_polygon_source_candidates(
     *,
     records: Iterable[Mapping[str, Any]],
     registry: Mapping[str, Any],
+    hard_qc_summary: Mapping[str, Any],
     records_file_sha256: str,
     registry_file_sha256: str,
+    hard_qc_summary_file_sha256: str,
     per_partition: int = 16,
 ) -> dict[str, Any]:
     """Select a split-disjoint, label-exact adult-anatomy source population."""
@@ -63,9 +65,25 @@ def build_canonical_polygon_source_candidates(
         raise CanonicalPolygonSourceCandidateError("per-partition count is out of bounds")
     if any(
         not isinstance(value, str) or len(value) != 64
-        for value in (records_file_sha256, registry_file_sha256)
+        for value in (
+            records_file_sha256,
+            registry_file_sha256,
+            hard_qc_summary_file_sha256,
+        )
     ):
         raise CanonicalPolygonSourceCandidateError("input file hashes are invalid")
+    hard_qc = hard_qc_summary.get("hard_qc")
+    if (
+        not isinstance(hard_qc, Mapping)
+        or hard_qc.get("mask_hash_contract") != "MASKFACTORY_BOOL_MASK_V1_shape_packbits_big"
+        or not isinstance(hard_qc.get("mask_hash_implementation_sha256"), str)
+        or len(str(hard_qc["mask_hash_implementation_sha256"])) != 64
+        or hard_qc_summary.get("records_file_sha256") != records_file_sha256
+        or not isinstance(hard_qc_summary.get("self_sha256"), str)
+    ):
+        raise CanonicalPolygonSourceCandidateError(
+            "hard-QC mask-hash contract or records binding is stale"
+        )
     datasets = _dataset_rows(registry)
     exact_by_partition: dict[str, list[dict[str, Any]]] = defaultdict(list)
     bounded_alias_counts: Counter[tuple[str, str]] = Counter()
@@ -191,6 +209,10 @@ def build_canonical_polygon_source_candidates(
             "registry_self_sha256": registry["self_sha256"],
             "registry_file_sha256": registry_file_sha256,
             "hard_qc_records_file_sha256": records_file_sha256,
+            "hard_qc_summary_file_sha256": hard_qc_summary_file_sha256,
+            "hard_qc_summary_self_sha256": hard_qc_summary["self_sha256"],
+            "mask_hash_contract": hard_qc["mask_hash_contract"],
+            "mask_hash_implementation_sha256": hard_qc["mask_hash_implementation_sha256"],
         },
         "selection_policy": {
             "exact_raw_to_canonical": EXACT_RAW_TO_CANONICAL,

@@ -16,16 +16,20 @@ from maskfactory.vlm.canonical_polygon_source_candidates import (
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--records", type=Path, required=True)
+    parser.add_argument("--hard-qc-summary", type=Path, required=True)
     parser.add_argument("--registry", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--per-partition", type=int, default=16)
     args = parser.parse_args()
     registry = json.loads(args.registry.read_text(encoding="utf-8"))
+    hard_qc_summary = json.loads(args.hard_qc_summary.read_text(encoding="utf-8"))
     document = build_canonical_polygon_source_candidates(
         records=load_jsonl(args.records),
         registry=registry,
+        hard_qc_summary=hard_qc_summary,
         records_file_sha256=sha256_file(args.records),
         registry_file_sha256=sha256_file(args.registry),
+        hard_qc_summary_file_sha256=sha256_file(args.hard_qc_summary),
         per_partition=args.per_partition,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)

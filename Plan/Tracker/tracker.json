@@ -12837,12 +12837,17 @@
           "ts": "2026-07-22T01:39:44+00:00",
           "actor": "codex",
           "text": "2026-07-22 live RunPod diagnosis after MF-P0-17.04: the exact frozen SAM 3.1 point route accepts the session and logs object 1, but returns closed empty arrays for both the original fixture-center point and a corrected point on a visible person torso. The text-discovery route passes with four deterministic person masks, so only point/box/mask refinement remains locally blocked. Evidence: qa/live_verification/sam31_runpod_runtime_smoke_20260722.json failure_behavior.point_refinement; no repair, active-map, benchmark, or authority claim."
+        },
+        {
+          "ts": "2026-07-23T02:27:50+00:00",
+          "actor": "codex",
+          "text": "2026-07-23 RunPod official SAM 3.1 text discovery executed successfully on a real adult/reference source and produced two exact strict-PNG draft masks with bound checkpoint/runtime/output hashes. Native point/box refinement still returns no usable result, and the discovery masks failed exact person ownership because SAM 3.1 count=2 versus detector consensus count=1. This is runtime evidence for discovery only; refinement, repair integration, frozen benchmark, active-map authority, and gold remain open."
         }
       ],
-      "evidence": "qa/live_verification/sam31_repair_orchestration_20260715.json; qa/live_verification/sam31_official_provider_runtime_contract_20260717.json; qa/live_verification/host_side_shadow_tournament_registration_20260719.json SHA-256 1d896f7ea4e37c10a98be4bfbffa2bd3d390a9ac50e04fc648be6436a9829d56. Remaining: live checkpoint refinement evidence and frozen benchmark after MF-P0-17.04.",
+      "evidence": "qa/live_verification/sam31_repair_orchestration_20260715.json; qa/live_verification/sam31_official_provider_runtime_contract_20260717.json; qa/live_verification/host_side_shadow_tournament_registration_20260719.json SHA-256 1d896f7ea4e37c10a98be4bfbffa2bd3d390a9ac50e04fc648be6436a9829d56; qa/live_verification/runpod_sam31_provider_canary_failclosed_20260723.json; qa/live_verification/runpod_sam31_discovery_ownership_abstain_20260723.json file SHA-256 2988ec5993288b64f953c89a107de7d2c458c20397b00660c53a4f50334b4c9d",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-22T01:39:44+00:00",
+      "updated_at": "2026-07-23T02:27:50+00:00",
       "orphaned": false
     },
     "MF-P2-11.05": {
@@ -23398,7 +23403,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 53,
+      "percent_complete": 56,
       "notes": [
         {
           "ts": "2026-07-22T11:53:28+00:00",
@@ -23444,12 +23449,17 @@
           "ts": "2026-07-23T02:21:42+00:00",
           "actor": "ai_agent",
           "text": "2026-07-23 post-repair coordinated canary: RunPod SAM3.1-first reference lane executed one selected CivitAI record under captured coordinator lease lease_09f184992fab4eb6b79aeb9eb97d997e and released cleanly. It produced zero candidates because official SAM3.1 native box refinement returned no result after add_prompt. This confirms the next blocker is SAM3.1 box/refinement translation, not local Docker/CVAT/SAM2. No masks, hard-QC passes, strict visual review, repair, certification, gold, or training truth claimed."
+        },
+        {
+          "ts": "2026-07-23T02:27:50+00:00",
+          "actor": "codex",
+          "text": "2026-07-23 RunPod SAM 3.1 real-reference discovery: exact reference-only sample nude_7b75809e7490eab8a72eeaff produced 2 strict binary mask_candidate artifacts under coordinator lease lease_bffba5ce02b44ca88197f79866d616b3. Detector consensus expected 1 person, so exact ownership failed closed: provider_mask_candidate_count=2, hard_qc_pass_count=0, hard_qc_fail_count=1, terminal_abstain_count=1, strict_visual_pass_count=0, repair_attempt_count=0, operationally_certified_artifact_count=0, autonomous_certified_gold_count=0, training_truth_count=0. This advances live mask generation and terminal accounting only; full shard execution remains open."
         }
       ],
-      "evidence": "qa/live_verification/runpod_sam31_provider_canary_failclosed_20260723.json",
+      "evidence": "qa/live_verification/runpod_sam31_provider_canary_failclosed_20260723.json; qa/live_verification/runpod_sam31_discovery_ownership_abstain_20260723.json file SHA-256 2988ec5993288b64f953c89a107de7d2c458c20397b00660c53a4f50334b4c9d self SHA-256 5d90aada4fd3c0458f5ba791e8e7b2f7fad73e6d1b7fb429360518193ee2762c",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-23T02:21:42+00:00",
+      "updated_at": "2026-07-23T02:27:50+00:00",
       "orphaned": false
     },
     "MF-P4-12.05": {

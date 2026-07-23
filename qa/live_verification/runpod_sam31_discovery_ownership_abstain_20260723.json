@@ -1,0 +1,94 @@
+{
+  "schema_version": "maskfactory.runpod_sam31_discovery_ownership_abstain.v1",
+  "recorded_at": "2026-07-23T02:20:00Z",
+  "item_ids": [
+    "MF-P2-11.04",
+    "MF-P4-12.04"
+  ],
+  "platform": "runpod_persistent_storage",
+  "local_inference_used": false,
+  "source": {
+    "sample_id": "nude_7b75809e7490eab8a72eeaff",
+    "role": "reference_and_tournament_input",
+    "pixel_truth": false,
+    "path": "/workspace/assets/MaskedWarehouse/Nude/CivitAI_Top_NSFW_Images/images/100.jpeg",
+    "encoded_sha256": "79ff7ff15986bb564714c408958a7a6290c7f6171a553d9daae1885554c85b09",
+    "input_manifest_sha256": "7d988d56a4308ebf87d7d60e09e921d70670b2a466e848b6ca02e2d60a03b076",
+    "input_manifest_self_sha256": "dca5357f3d28033fb7fe7b69a254290675c7de114c99733a6af7526742ba4b42",
+    "catalog_person_count": 1,
+    "detector_consensus_box_xyxy": [25, 193, 808, 1215]
+  },
+  "deployment": {
+    "repository_head": "9eaa1b683",
+    "overlay_root": "/workspace/maskfactory_deployment_overlays/9eaa1b683_sam31_canary",
+    "transfer_tar_sha256": "e46596fb6b08799dd66a13d7eb5cb738a5c5cf9799d14824f0cc7cf1e09069cb",
+    "transfer_tar_bytes": 580608,
+    "local_transfer_tar_deleted_after_remote_hash_verification": true,
+    "runner_sha256": "9dd037fc498ad0da9a6a830a856cff769854a417724cb3abb310198a8f869b31",
+    "session_compat_sha256": "9f250ce9f968dd834067f20bf308c602a3453f7185a08052b85500dc38147f5b",
+    "requirements_lock_sha256": "9fbf4fdd79b64d38f7baa58d127d06098859d8408fb84e2592a1dbd862c9c871"
+  },
+  "coordinator": {
+    "request_id": "req_564bc04541744b6485ae4c857973c155",
+    "lease_id": "lease_bffba5ce02b44ca88197f79866d616b3",
+    "owned_remote_pid": 3502059,
+    "lease_released": true,
+    "policy_guard": "PASS",
+    "terminal_gpu_used_memory_mb": 648,
+    "terminal_gpu_free_memory_mb": 47993
+  },
+  "sam31_runtime": {
+    "operation": "discover",
+    "concept": "person",
+    "provider_revision": "daa63191845a41281374e725f4c9e51c7a824460",
+    "source_commit": "5dd401d1c5c1d5c3eedff06d41b77af824517619",
+    "source_tree_clean": true,
+    "checkpoint_sha256": "0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6",
+    "runtime_report_file_sha256": "967e9a71aec371584bc0bebdec34a2e1daacd2d0b851f26e9b6efe7dfb615cd0",
+    "runtime_stderr_file_sha256": "309cb43865fb0f1c1234967012d7977a40846e94754b14e7b1597526d032be87",
+    "output_npz_sha256": "d238e89de089d4da6026506ad97bb7bd32ffb36bb473bca9af5040d6225cf6a4",
+    "payload_sha256": "4ffc1b038c5d5aedaa2d15d5524f05024cd3365e23b9528870c3df10ca931783",
+    "result_count": 2,
+    "model_load_latency_ms": 23139.26389068365,
+    "inference_latency_ms": 914.0204563736916,
+    "model_vram_bytes": 3926040576,
+    "peak_inference_vram_bytes": 6076869632,
+    "authority": "official_sam31_runtime_draft_candidates_only_no_gold_or_active_map_authority"
+  },
+  "raw_mask_candidates": [
+    {
+      "artifact_sha256": "ac4291a4fb5dd322c5a566d4cef1e5312b3ecd5d3e50b849b4b85492f2c913cc",
+      "pixel_count": 173691,
+      "catalog_box_iou": 0.3965679695486025,
+      "authority": "mask_candidate_only"
+    },
+    {
+      "artifact_sha256": "1f5f275238680ce1e57af1c18436c344db1508d08f65d3356c2a0a5a5eb1b69c",
+      "pixel_count": 288812,
+      "catalog_box_iou": 0.595794159081599,
+      "authority": "mask_candidate_only"
+    }
+  ],
+  "hard_qc": {
+    "report_sha256": "f9cd09f603f884f8d461c911385cc5e9094300a2135b957615bc14b90d2966df",
+    "report_self_sha256": "8f1d9b6d831c2c987ac90e04c87c586dbba76560b7cc13e2114373fefbe62066",
+    "strict_png_count": 2,
+    "hard_qc_pass_count": 0,
+    "hard_qc_fail_count": 1,
+    "outcome": "abstained",
+    "reason": "provider_detector_person_count_disagreement",
+    "detector_person_count": 1,
+    "sam31_person_count": 2,
+    "exact_person_ownership_resolved": false
+  },
+  "authority_result": {
+    "provider_mask_candidate_count": 2,
+    "machine_verified_candidate_count": 0,
+    "strict_visual_pass_count": 0,
+    "operationally_certified_artifact_count": 0,
+    "autonomous_certified_gold_count": 0,
+    "training_truth_count": 0,
+    "claim": "HARD_QA_BLOCK_ABSTAIN"
+  },
+  "self_sha256": "5d90aada4fd3c0458f5ba791e8e7b2f7fad73e6d1b7fb429360518193ee2762c"
+}

@@ -11,6 +11,7 @@ from PIL import Image
 from tools.run_sam31_runtime import (
     _box_from_masks,
     _derived_positive,
+    _normalize_refinement_box,
     _normalize_visual_exemplars,
 )
 from tools.run_sam31_runtime import (
@@ -94,12 +95,10 @@ def _executor(runtime: OfficialSam31Runtime, *, mutate=None, returncode: int = 0
             prompt_translation = "text_plus_same_image_visual_box_exemplars_exact"
         elif request["operation"] == "discover":
             prompt_translation = "text_prompt_exact"
-        elif request["prompt"]["positive_points"]:
-            prompt_translation = "point_prompt_exact_with_optional_roi_clip"
+        elif request["prompt"]["box_xyxy"] is not None:
+            prompt_translation = "native_visual_box_prompt_exact_center_point_postcondition_only"
         else:
-            prompt_translation = (
-                "box_or_mask_prior_to_deterministic_positive_point_with_optional_roi_clip"
-            )
+            prompt_translation = "mask_prior_to_native_visual_box_prompt_exact"
         report = {
             "schema_version": "1.0.0",
             "provider": "sam3_1",
@@ -231,6 +230,10 @@ def test_host_and_runner_share_payload_hash_and_deterministic_prompt_geometry() 
     boxes = _box_from_masks(mask[None, :, :], height=12, width=16)
     assert boxes.shape == (1, 4)
     assert np.allclose(boxes[0], [4 / 16, 2 / 12, 6 / 16, 6 / 12])
+    assert np.allclose(
+        _normalize_refinement_box([4, 2, 10, 8], width=16, height=12),
+        [4 / 16, 2 / 12, 6 / 16, 6 / 12],
+    )
 
     normalized, labels = _normalize_visual_exemplars(
         [
@@ -279,7 +282,18 @@ def test_host_and_runner_share_payload_hash_and_deterministic_prompt_geometry() 
     assert '"text": concept' in runner
     assert 'payload["bounding_boxes"] = normalized_boxes' in runner
     assert 'payload["bounding_box_labels"] = box_labels' in runner
-    assert '"point_labels": labels' in runner
+    assert '"bounding_boxes": [normalized_box]' in runner
+    assert '"bounding_box_labels": [1]' in runner
+    assert '"points": relative' not in runner
+
+
+@pytest.mark.parametrize(
+    "box",
+    (None, [0, 0, 0, 1], [-1, 0, 1, 1], [0, 0, 17, 1], [0, 0, float("nan"), 1]),
+)
+def test_native_refinement_box_validation_fails_closed(box) -> None:
+    with pytest.raises(RuntimeError, match="refinement box"):
+        _normalize_refinement_box(box, width=16, height=12)
 
 
 @pytest.mark.parametrize(

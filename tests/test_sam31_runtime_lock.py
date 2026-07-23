@@ -95,12 +95,13 @@ def test_sam31_lock_binds_correct_multiplex_checkpoint_smoke_contract() -> None:
 def test_sam31_lock_binds_official_production_discovery_and_refinement_contract() -> None:
     lock = json.loads((ROOT / "env/sam31_runtime.lock.json").read_text(encoding="utf-8"))
     contract = lock["live_smoke"]["production_contract"]
-    assert contract["status"] == ("discovery_runtime_pass_bounded_refinement_blocked_empty_output")
+    assert contract["status"] == ("discovery_runtime_pass_native_box_refinement_fix_probe_pending")
     assert contract["roles"] == ["concept_detector", "interactive_segmenter"]
     assert contract["builder"].startswith("build_sam3_predictor")
     assert "positive/negative box prompts" in contract["visual_exemplars"]
     assert "rejected fail-closed" in contract["external_image_exemplars"]
-    assert "deterministic positive point" in contract["box_and_mask_prior_translation"]
+    assert "exact native normalized visual box prompt" in contract["box_and_mask_prior_translation"]
+    assert "rejected fail-closed" in contract["point_refinement"]
     assert "no active-map" in contract["authority"]
     assert _sha256(ROOT / contract["host_runtime"]) == contract["host_runtime_sha256"]
     assert (

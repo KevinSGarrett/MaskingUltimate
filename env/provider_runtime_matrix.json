@@ -17,20 +17,20 @@
       "may_author_gold": false,
       "artifacts": [
         {"kind": "lock", "path": "env/maskfactory_env.yml", "sha256": "27e18e50ccfb67be72c9fde0fb15281c5ac824425545396cb107ac11c9d162b5"},
-        {"kind": "lock", "path": "env/requirements.lock.txt", "sha256": "7e2dcd6cef23dab483c6d8a75db7e73015d785c66dffd6f6d0d2885006634e01"},
+        {"kind": "lock", "path": "env/requirements.lock.txt", "sha256": "53fe4170a6e4656b9677f9ba59200559180ce27a14caa7989deba14a086ec305"},
         {"kind": "lock", "path": "env/source_builds.lock", "sha256": "2ac1032a2d40f0adaf028d26ae3a32833cc63e28fb5903f0e5aa301e9c50893c"},
         {"kind": "evidence", "path": "qa/live_verification/sam2_incumbent_rollback_20260715.json", "sha256": "c5561d9deef4bd43334c1af8d988c3dfb8110f3e7d0af2be4b1443d6fdd7cda1"}
       ]
     },
     {
       "provider": "sam3_1",
-      "status": "discovery_smoke_passed_refinement_pending",
+      "status": "discovery_smoke_passed_native_box_refinement_probe_pending",
       "isolation_boundary": "runpod_venv_sam31_5dd401d1",
       "checkpoint_status": "installed",
       "smoke_status": "text_discovery_pass_point_refinement_empty_output",
       "may_author_gold": false,
       "artifacts": [
-        {"kind": "lock", "path": "env/sam31_runtime.lock.json", "sha256": "734f8017db6cd51c5093b23f3ef4f4c49861e41a39de60453d37fc006f03bee6"},
+        {"kind": "lock", "path": "env/sam31_runtime.lock.json", "sha256": "99ec9d708f1a970d969b0b15dad95a1b60efe40be941b4bfbbf6332d6992f11e"},
         {"kind": "evidence", "path": "qa/live_verification/sam31_runpod_runtime_smoke_20260722.json", "sha256": "8cf2a320dd80b5a4f05fc71a78e29d6a613e19e1f1c2d099e721dcde81ac647e"}
       ]
     },
@@ -131,5 +131,5 @@
       ]
     }
   ],
-  "manifest_sha256": "b6cf5e25a5f98dd421b71998c976b7a6a5e8956fa5dbf4dffb6dd8e4287090ef"
+  "manifest_sha256": "ae9e433ebc271c49c1a70a1b7ee21cd5f486fa97c8fd18888d58ff583a728429"
 }

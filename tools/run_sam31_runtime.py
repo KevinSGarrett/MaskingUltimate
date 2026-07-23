@@ -108,6 +108,21 @@ def _derived_positive(mask: np.ndarray) -> tuple[int, int]:
     return int(xs[index]), int(ys[index])
 
 
+def _normalize_refinement_box(box: Any, *, width: int, height: int) -> list[float]:
+    if (
+        not isinstance(box, list)
+        or len(box) != 4
+        or any(isinstance(value, bool) or not isinstance(value, (int, float)) for value in box)
+    ):
+        raise RuntimeError("official SAM 3.1 refinement box is invalid")
+    x1, y1, x2, y2 = (float(value) for value in box)
+    if not all(np.isfinite(value) for value in (x1, y1, x2, y2)) or not (
+        0 <= x1 < x2 <= width and 0 <= y1 < y2 <= height
+    ):
+        raise RuntimeError("official SAM 3.1 refinement box is outside image")
+    return [x1 / width, y1 / height, (x2 - x1) / width, (y2 - y1) / height]
+
+
 def _normalize_visual_exemplars(
     visual_exemplars: Any, *, width: int, height: int
 ) -> tuple[list[list[float]], list[int]]:
@@ -332,35 +347,38 @@ def main() -> int:
             for point in (*positives, *negatives):
                 if not (0 <= point[0] < width and 0 <= point[1] < height):
                     raise RuntimeError("official SAM 3.1 refinement point is outside image")
-            if not positives:
-                if mask_prompt.shape != (0, 0):
-                    positives.append(_derived_positive(mask_prompt))
-                elif box is not None:
-                    x1, y1, x2, y2 = (float(value) for value in box)
-                    positives.append((int((x1 + x2) / 2), int((y1 + y2) / 2)))
-                else:
-                    raise RuntimeError("official SAM 3.1 refinement has no positive prompt")
+            if negatives:
+                raise RuntimeError(
+                    "official SAM 3.1 multiplex refinement does not support negative points"
+                )
+            if box is None and mask_prompt.shape != (0, 0):
+                ys, xs = np.nonzero(mask_prompt)
+                box = [int(xs.min()), int(ys.min()), int(xs.max()) + 1, int(ys.max()) + 1]
+                prompt_translation = "mask_prior_to_native_visual_box_prompt_exact"
+            elif box is not None:
                 prompt_translation = (
-                    "box_or_mask_prior_to_deterministic_positive_point_with_optional_roi_clip"
+                    "native_visual_box_prompt_exact_center_point_postcondition_only"
                 )
             else:
-                prompt_translation = "point_prompt_exact_with_optional_roi_clip"
-            point_values = [*positives, *negatives]
-            labels = [*[1] * len(positives), *[0] * len(negatives)]
-            relative = [[x / width, y / height] for x, y in point_values]
+                raise RuntimeError(
+                    "official SAM 3.1 multiplex refinement requires a native box prompt"
+                )
+            normalized_box = _normalize_refinement_box(box, width=width, height=height)
+            x1, y1, x2, y2 = (float(value) for value in box)
+            if any(not (x1 <= x < x2 and y1 <= y < y2) for x, y in positives):
+                raise RuntimeError("official SAM 3.1 positive point is outside refinement box")
             response = predictor.handle_request(
                 {
                     "type": "add_prompt",
                     "session_id": session_id,
                     "frame_index": 0,
-                    "points": relative,
-                    "point_labels": labels,
-                    "obj_id": 1,
+                    "bounding_boxes": [normalized_box],
+                    "bounding_box_labels": [1],
                 }
             )
             current = _extract(response["outputs"], height=height, width=width)
-            if current["masks"].shape[0] != 1 or int(current["object_ids"][0]) != 1:
-                raise RuntimeError("official SAM 3.1 refinement did not return object 1")
+            if current["masks"].shape[0] < 1:
+                raise RuntimeError("official SAM 3.1 native box refinement returned no result")
             if box is not None:
                 x1, y1, x2, y2 = (
                     int(np.floor(float(box[0]))),
@@ -382,7 +400,7 @@ def main() -> int:
             object_ids.append(current["object_ids"])
             probabilities.append(current["probabilities"])
             boxes.append(current["boxes_xywh"])
-            concept_indices.append(np.full((1,), -1, dtype=np.int64))
+            concept_indices.append(np.full((current["masks"].shape[0],), -1, dtype=np.int64))
     finally:
         if session_id is not None:
             predictor.handle_request({"type": "close_session", "session_id": session_id})

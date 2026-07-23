@@ -408,9 +408,9 @@ class OfficialSam31Runtime:
             expected_translation = "text_plus_same_image_visual_box_exemplars_exact"
         elif request["operation"] == "refine":
             expected_translation = (
-                "point_prompt_exact_with_optional_roi_clip"
-                if request["prompt"]["positive_points"]
-                else "box_or_mask_prior_to_deterministic_positive_point_with_optional_roi_clip"
+                "native_visual_box_prompt_exact_center_point_postcondition_only"
+                if request["prompt"]["box_xyxy"] is not None
+                else "mask_prior_to_native_visual_box_prompt_exact"
             )
         if report["prompt_translation"] != expected_translation:
             raise Sam31RuntimeError("official SAM 3.1 prompt translation is invalid")

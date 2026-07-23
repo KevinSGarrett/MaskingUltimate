@@ -12385,3 +12385,16 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   runtime outcome.
 - Preserved frozen v1 bridge fields as compatibility data without giving them
   execution or recovery authority.
+
+## 2026-07-23 - Visual-critic hardware gate retirement
+
+- Removed `single_gpu_48gb_feasible` and `available_hardware_tier` from visual-
+  critic catalog validation, role routing, runtime-evidence admission, and role
+  qualification decisions.
+- Catalog hardware fields, device identity, and peak-memory values remain
+  telemetry-only compatibility observations. They cannot admit, rank, promote,
+  delay, or reject a critic.
+- Installed/runtime identity, semantic quality, critic-family independence,
+  evidence, lifecycle, and certificate requirements remain unchanged.
+- MF-P4-11.18 remains open because no primary critic and independent-family
+  juror have passed the full frozen real-image qualification suite.

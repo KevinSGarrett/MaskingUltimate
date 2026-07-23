@@ -36,18 +36,16 @@ def resolve_role_route(
     *,
     available_hardware_tier: str = "runpod_single_gpu_48gb",
 ) -> dict[str, Any]:
-    """Select one promoted feasible model or return a bounded abstention."""
+    """Select one promoted model or return a bounded abstention.
+
+    ``available_hardware_tier`` is retained only for API compatibility. GPU and
+    VRAM observations have no routing authority.
+    """
 
     validate_catalog(catalog)
+    del available_hardware_tier
     if role_id not in MODEL_ROLES:
         raise CriticCatalogError(f"unknown or non-model visual critic role: {role_id}")
-    if available_hardware_tier != catalog["current_hardware"]["tier_id"]:
-        return {
-            "status": "abstain",
-            "reason": "hardware_tier_not_qualified",
-            "role_id": role_id,
-            "catalog_sha256": catalog["sha256"],
-        }
 
     matches = []
     for model in catalog["models"]:
@@ -55,7 +53,6 @@ def resolve_role_route(
         if (
             role_id in model["assigned_roles"]
             and model["lifecycle"] == "promoted"
-            and model["hardware"]["single_gpu_48gb_feasible"]
             and calibration is not None
             and calibration["status"] == "pass"
             and model["private_endpoint"] is not None
@@ -64,7 +61,7 @@ def resolve_role_route(
     if len(matches) != 1:
         return {
             "status": "abstain",
-            "reason": "no_unique_promoted_feasible_model",
+            "reason": "no_unique_promoted_model",
             "role_id": role_id,
             "catalog_sha256": catalog["sha256"],
         }

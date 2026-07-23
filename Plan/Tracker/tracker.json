@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-23T07:26:30+00:00",
+    "generated_at": "2026-07-23T07:34:08+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 866,
     "total_tracked_including_orphaned": 866
@@ -14782,7 +14782,7 @@
       "cluster_id": "MF-P4-11",
       "cluster_title": "Selective autonomous tournament, certification, audit, and revocation",
       "spec_ref": "20 §§1–8; 22 §6; SAM handoff Autonomy/Calibration",
-      "description": "Enforce frozen real-image valid-mask pass rate, defect recall/precision, serious false-pass, abstention, hallucinated-context, label-scope, evidence-localization, deterministic replay, malformed/truncated/schema, latency, VRAM, and panel-budget thresholds; rejecting everything or reviewing the wrong target/person/tile is unavailable, never qualified · Verify: all-reject, rubber-stamp, hallucinated-context, wrong-target/person/tile, evidence-free, and nondeterministic critics fail role qualification · Blocked by: MF-P4-11.17 · HARD BLOCKER",
+      "description": "Enforce frozen real-image valid-mask pass rate, defect recall/precision, serious false-pass, abstention, hallucinated-context, label-scope, evidence-localization, deterministic replay, malformed/truncated/schema, latency, and panel-budget thresholds; GPU/VRAM measurements are telemetry only and cannot admit, rank, promote, or reject a role; rejecting everything or reviewing the wrong target/person/tile is unavailable, never qualified · Verify: all-reject, rubber-stamp, hallucinated-context, wrong-target/person/tile, evidence-free, nondeterministic, and hardware-telemetry-gated critics fail role qualification · Blocked by: MF-P4-11.17 · HARD BLOCKER",
       "source_file": "15_ITEMS_P4_AUTONOMY_AND_TEACHERS.md",
       "source_line": 55,
       "is_exit_gate": false,
@@ -14855,12 +14855,17 @@
           "ts": "2026-07-23T05:29:36+00:00",
           "actor": "codex",
           "text": "2026-07-23 RunPod runtime availability only: policy-primary llava:13b completed a deterministic temperature=0/seed=1337 bounded smoke; post-probe GPU sample was 46% / 14.9 GiB. This has no panels, frozen role corpus, metrics, independent juror, or certificate, so strict visual role and all mask/certification authority remain unavailable. qa/live_verification/runpod_llava13b_strict_visual_runtime_smoke_20260723.json"
+        },
+        {
+          "ts": "2026-07-23T07:34:22+00:00",
+          "actor": "codex",
+          "text": "2026-07-23 hardware-authority correction: removed single_gpu_48gb_feasible and available_hardware_tier from critic catalog validation, role routing, runtime evidence admission, and critic qualification decisions. Catalog hardware fields and peak-memory values remain telemetry-only compatibility; they cannot admit, rank, promote, or reject a model. Installed/runtime/semantic quality, independence, evidence, and certificate gates remain unchanged. 49 focused critic tests and 26 tracker tests pass."
         }
       ],
       "evidence": "qa/live_verification/runpod_current_visual_critic_failclosed_20260723.json",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-23T05:29:36+00:00",
+      "updated_at": "2026-07-23T07:34:22+00:00",
       "orphaned": false
     },
     "MF-P4-11.19": {

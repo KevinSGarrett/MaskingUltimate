@@ -17,7 +17,7 @@ def _reseal(catalog: dict) -> None:
 def test_current_multi_gpu_arbiter_route_abstains() -> None:
     result = resolve_role_route(load_catalog(), "senior_arbiter")
     assert result["status"] == "abstain"
-    assert result["reason"] == "no_unique_promoted_feasible_model"
+    assert result["reason"] == "no_unique_promoted_model"
 
 
 @pytest.mark.parametrize("lifecycle", ["downloaded", "smoked"])
@@ -32,7 +32,7 @@ def test_catalog_or_single_gpu_smoke_never_activates_multi_gpu_arbiter(lifecycle
     assert result["status"] == "abstain"
 
 
-def test_even_promoted_multi_gpu_model_is_not_selected_on_single_gpu_tier() -> None:
+def test_hardware_telemetry_cannot_block_promoted_model() -> None:
     catalog = deepcopy(load_catalog())
     model = catalog["models"][1]
     model["lifecycle"] = "promoted"
@@ -42,9 +42,13 @@ def test_even_promoted_multi_gpu_model_is_not_selected_on_single_gpu_tier() -> N
     model["private_endpoint"] = "http://127.0.0.1:8123"
     _reseal(catalog)
 
-    result = resolve_role_route(catalog, "senior_arbiter")
-    assert result["status"] == "abstain"
-    assert result["reason"] == "no_unique_promoted_feasible_model"
+    result = resolve_role_route(
+        catalog,
+        "senior_arbiter",
+        available_hardware_tier="uncataloged_observation",
+    )
+    assert result["status"] == "selected"
+    assert result["model_id"] == model["model_id"]
 
 
 def test_exact_promoted_calibrated_single_gpu_model_is_hash_bound() -> None:

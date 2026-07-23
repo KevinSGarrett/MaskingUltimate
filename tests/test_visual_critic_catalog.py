@@ -109,7 +109,7 @@ def test_catalog_rejects_unknown_roles_and_name_only_selection() -> None:
     catalog = load_catalog()
     with pytest.raises(CriticCatalogError, match="unknown or non-model"):
         select_promoted_model(catalog, "famous_model_name")
-    with pytest.raises(CriticCatalogError, match="0 promoted feasible models"):
+    with pytest.raises(CriticCatalogError, match="0 promoted models"):
         select_promoted_model(catalog, "primary_visual_critic")
 
 
@@ -132,14 +132,23 @@ def test_catalog_rejects_promotion_without_calibration_artifact_or_private_endpo
         validate_catalog(catalog)
 
 
-def test_catalog_rejects_single_gpu_claim_for_multi_gpu_weights() -> None:
+def test_catalog_hardware_telemetry_cannot_block_promoted_selection() -> None:
     catalog = deepcopy(load_catalog())
-    model = catalog["models"][1]
-    model["hardware"]["single_gpu_48gb_feasible"] = True
-    model["hardware"]["tier"] = "single_gpu_candidate"
+    model = catalog["models"][0]
+    model["lifecycle"] = "promoted"
+    model["assigned_roles"] = ["primary_visual_critic"]
+    model["calibration"] = {"status": "pass", "report_sha256": "a" * 64}
+    model["private_endpoint"] = "http://127.0.0.1:9000"
+    model["hardware"]["single_gpu_48gb_feasible"] = False
+    model["hardware"]["tier"] = "multi_gpu_required"
     _reseal(catalog)
-    with pytest.raises(CriticCatalogError, match="hardware tier contradicts"):
-        validate_catalog(catalog)
+    validate_catalog(catalog)
+    selected = select_promoted_model(
+        catalog,
+        "primary_visual_critic",
+        available_hardware_tier="uncataloged_observation",
+    )
+    assert selected["model_id"] == model["model_id"]
 
 
 def test_family_identity_does_not_count_variants_as_independent() -> None:

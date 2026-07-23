@@ -208,18 +208,9 @@ def evaluate_critic_qualification(
     for field in ("family_id", "revision", "quantization"):
         if evidence[field] != model[field]:
             raise CriticQualificationError(f"qualification {field} differs from catalog")
-    if not model["hardware"]["single_gpu_48gb_feasible"]:
-        raise CriticQualificationError("qualification model is infeasible on current hardware")
-
     hardware = evidence["hardware"]
     if not isinstance(hardware, Mapping) or set(hardware) != HARDWARE_KEYS:
         raise CriticQualificationError("qualification hardware fields are invalid")
-    expected_hardware = catalog["current_hardware"]
-    if (
-        hardware["gpu_name"] != expected_hardware["gpu_name"]
-        or hardware["gpu_count"] != expected_hardware["gpu_count"]
-    ):
-        raise CriticQualificationError("qualification hardware differs from catalog")
 
     cases = {str(case["case_id"]): case for case in corpus["cases"]}
     predictions = evidence["predictions"]

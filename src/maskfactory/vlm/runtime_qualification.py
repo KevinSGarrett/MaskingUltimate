@@ -1,4 +1,4 @@
-"""Validation for bounded single-GPU visual-critic runtime evidence."""
+"""Validation for bounded visual-critic runtime evidence."""
 
 from __future__ import annotations
 
@@ -42,7 +42,7 @@ def _models_by_id(rows: Sequence[Mapping[str, Any]]) -> dict[str, Mapping[str, A
 def validate_single_gpu_runtime_evidence(
     evidence: Mapping[str, Any], catalog: Mapping[str, Any]
 ) -> None:
-    """Require exact, reproducible two-process smokes for both feasible families."""
+    """Require exact, reproducible two-process smokes for both model families."""
 
     validate_catalog(catalog)
     if evidence.get("schema_version") != "1.0.0":
@@ -52,25 +52,20 @@ def validate_single_gpu_runtime_evidence(
     hardware = evidence.get("hardware")
     if not isinstance(hardware, Mapping):
         raise RuntimeQualificationError("runtime evidence hardware is missing")
-    expected_hardware = catalog["current_hardware"]
-    if (
-        hardware.get("tier_id") != expected_hardware["tier_id"]
-        or hardware.get("gpu_name") != expected_hardware["gpu_name"]
-        or hardware.get("gpu_count") != 1
-    ):
-        raise RuntimeQualificationError("runtime evidence hardware differs from the catalog")
+    if not isinstance(hardware.get("gpu_name"), str) or not hardware["gpu_name"].strip():
+        raise RuntimeQualificationError("runtime evidence GPU telemetry is malformed")
+    if int(hardware.get("gpu_count", 0)) < 1:
+        raise RuntimeQualificationError("runtime evidence GPU-count telemetry is malformed")
 
     evidence_models = _models_by_id(evidence.get("models") or [])
     if set(evidence_models) != QUALIFIED_MODEL_IDS:
         raise RuntimeQualificationError(
-            "runtime evidence must contain exactly both feasible models"
+            "runtime evidence must contain exactly both governed models"
         )
     catalog_models = {model["model_id"]: model for model in catalog["models"]}
     family_ids = set()
     for model_id, observation in evidence_models.items():
         registered = catalog_models[model_id]
-        if not registered["hardware"]["single_gpu_48gb_feasible"]:
-            raise RuntimeQualificationError(f"{model_id} is not a single-GPU candidate")
         for field in ("repository", "revision", "quantization", "family_id"):
             if observation.get(field) != registered[field]:
                 raise RuntimeQualificationError(f"{model_id} {field} differs from the catalog")

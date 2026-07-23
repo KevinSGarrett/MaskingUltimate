@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import math
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
@@ -80,30 +79,12 @@ def validate_catalog(document: Mapping[str, Any]) -> None:
         if role["requires_positive_and_negative_calibration"] is not is_model_role:
             raise CriticCatalogError(f"{role_id} calibration policy is invalid")
 
-    gpu_bytes = int(document["current_hardware"]["vram_bytes_per_gpu"])
     models = _models_by_id(document)
     for model_id, model in models.items():
         candidate_roles = set(model["candidate_roles"])
         assigned_roles = set(model["assigned_roles"])
         if not candidate_roles <= MODEL_ROLES or not assigned_roles <= candidate_roles:
             raise CriticCatalogError(f"{model_id} role vocabulary or assignment is invalid")
-        minimum_gpu_count = math.ceil(int(model["weight_bytes"]) / gpu_bytes)
-        if model["hardware"]["minimum_gpu_count_by_weight_bytes"] != minimum_gpu_count:
-            raise CriticCatalogError(f"{model_id} weight-only GPU lower bound is wrong")
-        feasible = model["hardware"]["single_gpu_48gb_feasible"]
-        tier = model["hardware"]["tier"]
-        infeasibility_evidence = model["infeasibility_evidence_sha256"]
-        if feasible and (minimum_gpu_count != 1 or tier != "single_gpu_candidate"):
-            raise CriticCatalogError(f"{model_id} hardware tier contradicts exact artifact bytes")
-        if not feasible and tier != "multi_gpu_required":
-            raise CriticCatalogError(f"{model_id} unavailable hardware tier is not fail-closed")
-        if not feasible and minimum_gpu_count == 1 and not infeasibility_evidence:
-            raise CriticCatalogError(f"{model_id} runtime infeasibility lacks exact evidence")
-        if feasible and infeasibility_evidence is not None:
-            raise CriticCatalogError(
-                f"{model_id} feasible route carries contradictory failure evidence"
-            )
-
         lifecycle = model["lifecycle"]
         artifact_sha256 = model["artifact_sha256"]
         calibration = model["calibration"]
@@ -134,23 +115,25 @@ def select_promoted_model(
     *,
     available_hardware_tier: str = "runpod_single_gpu_48gb",
 ) -> Mapping[str, Any]:
-    """Return the uniquely promoted model for a role or fail closed."""
+    """Return the uniquely promoted model for a role or fail closed.
+
+    ``available_hardware_tier`` is retained only for API compatibility. Hardware
+    telemetry cannot admit or reject a promoted model.
+    """
 
     validate_catalog(document)
+    del available_hardware_tier
     if role_id not in MODEL_ROLES:
         raise CriticCatalogError(f"unknown or non-model visual critic role: {role_id}")
-    if available_hardware_tier != document["current_hardware"]["tier_id"]:
-        raise CriticCatalogError("requested visual critic hardware tier is not cataloged")
     matches = [
         model
         for model in document["models"]
         if role_id in model["assigned_roles"]
         and model["lifecycle"] == "promoted"
-        and model["hardware"]["single_gpu_48gb_feasible"]
         and model["calibration"]["status"] == "pass"
     ]
     if len(matches) != 1:
-        raise CriticCatalogError(f"{role_id} has {len(matches)} promoted feasible models")
+        raise CriticCatalogError(f"{role_id} has {len(matches)} promoted models")
     return matches[0]
 
 

@@ -12257,3 +12257,19 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   (self-seal `3b53eaf5...`). This is `STATIC_PASS` batch-continuation evidence;
   strict visual authority remains `VISUAL_CRITIC_BLOCKED` and no certificate,
   autonomous gold, or training truth was created.
+
+## 2026-07-23 - Persistent reference-shard queue crash/resume canary
+
+- Added exact-shard claiming and an owned nonterminal release operation to the
+  durable adult-corpus queue, preserving ordinary lane-priority behavior.
+- Deployed commit `9e46ca517` bytes to RunPod and exercised the real persistent
+  `reference_and_tournament_input.0001.json` queue row. A separate process
+  claimed the 256-record shard and exited with code 17 without persisting its
+  lease token. After expiry, a fresh process reclaimed the same shard at
+  attempt 2, observed checkpoint index zero and no duplicate accepted work,
+  then returned it to `queued`.
+- Evidence:
+  `qa/live_verification/runpod_nude_queue_crash_resume_20260723.json`
+  (file SHA-256 `1b79b623...`, self-seal `c20abf5f...`). This proves the live
+  persistent queue boundary only; no provider inference was executed, so the
+  provider-process crash/restart and 1,000-record milestone remain open.

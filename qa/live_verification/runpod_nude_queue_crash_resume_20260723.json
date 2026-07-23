@@ -1,0 +1,54 @@
+{
+  "claims": {
+    "duplicate_accepted_work": false,
+    "gpu_lease_required": false,
+    "provider_inference_executed": false,
+    "queue_state_restored": true,
+    "terminal_progress_advanced": false
+  },
+  "crash_process": {
+    "attempt_count": 1,
+    "lease_token_persisted": false,
+    "next_sample_index": 0,
+    "returncode": 17,
+    "shard_path": "runpod/reference_and_tournament_input.0001.json",
+    "state": "leased"
+  },
+  "events": [
+    {
+      "count": 2,
+      "event": "claimed"
+    },
+    {
+      "count": 1,
+      "event": "released"
+    },
+    {
+      "count": 1,
+      "event": "seeded"
+    }
+  ],
+  "final": {
+    "attempt_count": 2,
+    "last_error": "live_queue_crash_resume_canary_complete",
+    "lease_expires_at": null,
+    "lease_owner": null,
+    "lease_token": null,
+    "next_sample_index": 0,
+    "state": "queued",
+    "submission_id": null
+  },
+  "implementation_sha256": "d6aa0a3bdda5179263e430519587bb7dba5233a85c15a8b133b5c952399c5b16",
+  "queue_path": "/workspace/maskfactory/runtime_artifacts/nude_batch_queue/runpod.sqlite",
+  "repository_commit": "9e46ca51748cbe1edf2ce3dd48330685b8a03472",
+  "resume_process": {
+    "attempt_count": 2,
+    "next_sample_index": 0,
+    "same_shard": true
+  },
+  "sample_count": 256,
+  "schema_version": "maskfactory.runpod_nude_queue_crash_resume.v1",
+  "self_sha256": "c20abf5fba44cffdd1655ae7ffd4fc7febf7478a34f4d38ec3714952623e6faf",
+  "shard_path": "runpod/reference_and_tournament_input.0001.json",
+  "shard_sha256": "dd61d484ef3e6d357e3c5fdfd4134fb937cfcd2f7217256d4ff3e81e61eac03a"
+}

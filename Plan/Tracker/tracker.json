@@ -23248,12 +23248,17 @@
           "ts": "2026-07-23T03:17:20+00:00",
           "actor": "codex",
           "text": "2026-07-23 batch-continuation correction: unavailable primary/juror roles now produce a typed, hash-bound visual_authority_gate abstention after exact panel generation instead of a generic executor failure. The gate cannot invoke a critic, pass a visual stage, freeze a package, or certify. This keeps unrelated records moving while visual authority remains unavailable. Live provider crash/restart and the observed 1,000-record milestone remain open."
+        },
+        {
+          "ts": "2026-07-23T03:29:55+00:00",
+          "actor": "codex",
+          "text": "2026-07-23 live RunPod queue crash/resume canary: the exact persistent 256-record reference shard was claimed by a separate process that exited 17 without persisting its lease token. After expiry, a fresh process reclaimed the same shard at attempt 2, with next_sample_index=0, no accepted-output duplication, and no terminal progress; it then released the shard cleanly back to queued. This proves the real persistent queue lease/recovery boundary. Provider inference was deliberately not executed, so live provider-process crash/restart and the 1,000-record milestone remain open."
         }
       ],
-      "evidence": "qa/live_verification/runpod_sam31_provider_canary_failclosed_20260723.json; qa/live_verification/runpod_visual_unavailability_batch_abstention_20260723.json self SHA-256 3b53eaf5821e7dc7356e2a6882ed878fa8bf02d22ce69f9249ecf333b93983b5; qa/live_verification/runpod_persistence_refresh_20260723.json; qa/live_verification/runpod_corpus_mirrors_refresh_20260723.json",
+      "evidence": "qa/live_verification/runpod_sam31_provider_canary_failclosed_20260723.json; qa/live_verification/runpod_visual_unavailability_batch_abstention_20260723.json self SHA-256 3b53eaf5821e7dc7356e2a6882ed878fa8bf02d22ce69f9249ecf333b93983b5; qa/live_verification/runpod_persistence_refresh_20260723.json; qa/live_verification/runpod_corpus_mirrors_refresh_20260723.json; qa/live_verification/runpod_nude_queue_crash_resume_20260723.json file SHA-256 1b79b623d368cac039f4ffd077ebfbcbadb927363449ced91644ca6a0158463c self SHA-256 c20abf5fba44cffdd1655ae7ffd4fc7febf7478a34f4d38ec3714952623e6faf",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-23T03:20:14+00:00",
+      "updated_at": "2026-07-23T03:29:55+00:00",
       "orphaned": false
     },
     "MF-P4-12.02": {

@@ -12447,3 +12447,30 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   `qa/live_verification/runpod_sam31_first_shard_provider_hard_qc_coverage_20260723.json`
   (self-seal
   `9300a4fbb43e37f071a1e1f28b6c95a4444c50b64bdb37684525adbd0ab60421`).
+
+## 2026-07-23 - First reference shard resident-runtime consolidation
+
+- Reran the historical first 64 eligible records under the same current
+  official SAM3.1 resident runtime as the later waves. One model load handled
+  65 person requests, produced 51 referenced candidates, recorded four typed
+  request failures, and stopped cleanly.
+- Atomically consolidated all four disjoint provider waves with one exact
+  runtime fingerprint. The immutable package contains all 256 shard records:
+  132 generated, 25 provider abstentions, and 99 catalog abstentions.
+- The package contains 133 hash-verified draft masks. Deterministic hard QA was
+  rerun from the consolidated bytes and produced 119 pass, 13 fail, and 124
+  upstream-abstain dispositions.
+- The one historical unreferenced PNG is excluded from candidates and retained
+  only in the package's incident quarantine manifest.
+- Validation rejects missing or overlapping records, provider-identity drift,
+  source/catalog mismatch, candidate hash mismatch, and non-atomic output
+  publication. Eighty precommit tests and 35 proportional post-run tests pass;
+  Ruff, Black, and diff integrity are clean.
+- This is provider-generation and deterministic-hard-QA stage evidence only.
+  Qualified visual review, independent juror review, bounded repair, terminal
+  receipts, certification, gold, training truth, and shard completion remain
+  open.
+- Exact evidence:
+  `qa/live_verification/runpod_sam31_first_shard_resident_consolidation_20260723.json`
+  (self-seal
+  `47978a9b2076596d3caa3ed7b332ca5f2e09140ac7075cce759003e66a7523d0`).

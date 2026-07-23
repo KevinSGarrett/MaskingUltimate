@@ -1,0 +1,109 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-07-23T00:35:22Z",
+  "project": "maskfactory",
+  "platform": "runpod_persistent_storage",
+  "claim": "RUNTIME_PREFLIGHT_PASS_VISUAL_AUTHORITY_UNAVAILABLE",
+  "production_authority": {
+    "status": "unavailable_pending_positive_and_negative_qualification",
+    "primary_visual_critic": null,
+    "independent_family_juror": null,
+    "certification_behavior": "abstain",
+    "autonomous_approval_enabled": false,
+    "adult_anatomy_batch_canary_complete": false
+  },
+  "coordinator": {
+    "daemon_restored": true,
+    "policy_guard": "PASS",
+    "tokenless_lease_id": "lease_00bb91ac382048b4a759cba8adba73aa",
+    "tokenless_lease_expires_at": "2026-07-23T01:38:19Z",
+    "tokenless_lease_owner_pid": null,
+    "tokenless_lease_heartbeat": null,
+    "tokenless_lease_pod_pid": null,
+    "reconciliation_rule": "reconcile only after exact expiry; never edit coordinator state or bypass admission",
+    "gpu_process_started_by_this_preflight": false
+  },
+  "model_binding_report": {
+    "remote_path": "/workspace/maskfactory_runtime/critic_current_protocol_20260723/visual_critic_model_binding_verification.json",
+    "file_sha256": "f6b892444982c46f4dd9ec845c4e11bc2b2173563e28721b1e7c72a9a06c47ce",
+    "report_sha256": "b4081fb9e1eaf6f3cfb717da70e240f3169ed50bdcee346a7191592ffe1dbea0",
+    "status": "pass",
+    "models": [
+      {
+        "model_id": "qwen3_vl_30b_a3b_instruct_fp8",
+        "family_id": "qwen",
+        "path": "/workspace/models/visual_critics/qwen3_vl_30b_a3b_instruct_fp8",
+        "revision": "d9748a51ae66354c4dad665aab2c71f26cf2c8cd",
+        "file_count": 16,
+        "total_bytes": 32268919202,
+        "artifact_tree_sha256": "dbb7d33b3ab68a356069bc577692fd347c4103c2c59ead3a65943d664a8c8d4a",
+        "revision_match": true,
+        "artifact_tree_match": true,
+        "assigned_roles": []
+      },
+      {
+        "model_id": "internvl3_5_8b_bf16",
+        "family_id": "internvl",
+        "path": "/workspace/models/visual_critics/internvl3_5_8b_bf16",
+        "revision": "9bb6a56ad9cc69db95e2d4eeb15a52bbcac4ef79",
+        "file_count": 24,
+        "total_bytes": 17072800269,
+        "artifact_tree_sha256": "e1a117fa9589a7f7bf67ff0eaf1b0c75dfd6ff24bf99142e48aa5d79897eed65",
+        "revision_match": true,
+        "artifact_tree_match": true,
+        "assigned_roles": []
+      }
+    ]
+  },
+  "protocol_binding": {
+    "version": "maskfactory-live-critic-calibration-v3-single-board-explicit-checks",
+    "prompt_sha256": "cea805d38d18ee96d5c82251a665a8064a947c47e39d47688754e3904e8221a6",
+    "implementation_sha256": "2bc30300e143eb945954c3914a67828eea5c915dcd82e8e0a30e21fb2ec9d91d",
+    "runner_sha256": "d4d2eaa3578ca4e5b31eaad8bfe1b63c0adf5d790be6eab359f4c3dc05f56267",
+    "catalog_sha256": "322d47c2aa48d05162186d0f616d6de4218d8cb952359d118218c25e21da828a",
+    "catalog_file_sha256": "a17797b7a1ac33f2dd2ba6fb774a366f9e728c21b72f8a3742c860d22a00fee9",
+    "corpus_sha256": "7064d190fb6535f09482ef504e18f4b2ff12c7ab5254ae96003e756ffc8cc9d0",
+    "case_count": 12,
+    "valid_mask_case_count": 2,
+    "known_defect_case_count": 10,
+    "one_exact_record_per_verdict": true,
+    "single_evidence_board_per_record": true,
+    "explicit_check_count": 10,
+    "contact_sheet_authority": false,
+    "deployed_source_commit": "8c36d085769152ee2d6a06168a25e305a6b22ac7"
+  },
+  "launch_artifacts": {
+    "remote_root": "/workspace/maskfactory_runtime/critic_current_protocol_20260723",
+    "qwen3vl_primary_script_sha256": "7a93af2284b1ddd4fc9fa3724c4a02f7ca79ae6d32dd6494481d50ccf2c7b244",
+    "internvl_juror_script_sha256": "22aa7f9535106ac5f37cc68b3a62cd42be4bc6d1f6d73db13922d2d076996d5a",
+    "coordinator_wrapper_sha256": "784dbf224fa72b6835014784ac5cb5becac958f57daa64a80220bad4d2a07c15",
+    "model_verifier_sha256": "e71407314b78fa7547fbfc9b25101d2793ad732f614347fbf086e670c53fa453",
+    "local_and_remote_script_hashes_match": true,
+    "remote_bash_syntax": "pass",
+    "queued_request_token_retention_and_cancel_on_timeout": true
+  },
+  "legacy_result_boundary": {
+    "qwen3_6_27b_fp8_valid_mask_pass_rate": 0.0,
+    "internvl3_5_8b_bf16_valid_mask_pass_rate": 0.0,
+    "legacy_results_promoted": false,
+    "fresh_current_protocol_required": true,
+    "fresh_internvl_result_may_replace_legacy_result_only_if_all_current_thresholds_pass": true
+  },
+  "validation": {
+    "pytest_command": "python -m pytest -q tests/test_vlm_production_catalog_binding.py tests/test_live_visual_critic_calibration.py tests/test_visual_critic_qualification.py tests/test_runpod_critic_qualification_launcher.py tests/test_runpod_critic_qualification_recovery.py",
+    "pytest_passed": 37,
+    "ruff": "pass",
+    "black": "pass",
+    "git_diff_check": "pass"
+  },
+  "next_required_actions": [
+    "reconcile lease_00bb91ac382048b4a759cba8adba73aa after exact expiry",
+    "run Qwen3-VL primary qualification under a fresh authenticated exclusive lease",
+    "run InternVL independent-juror requalification under a separate fresh authenticated lease",
+    "promote neither model unless all frozen role thresholds pass",
+    "issue current role certificates only after catalog promotion from live pass evidence",
+    "run one real adult-anatomy batch canary before autonomous approval",
+    "continue provider generation and deterministic hard QA while certification abstains"
+  ],
+  "evidence_sha256": "86959962a5c40e3996e9be992adf33bb6d4d271b1fc0a6769693998ab922b748"
+}

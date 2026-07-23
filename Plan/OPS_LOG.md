@@ -12135,3 +12135,26 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   doctor is 8 PASS / 5 FAIL due Ubuntu WSL timeout, dependent model smokes,
   Ollama image HTTP 500, and 10.8 GiB local free space. These remain local
   runtime constraints and did not weaken the CPU queue/coverage evidence.
+
+## 2026-07-23 - RunPod visual-critic current-protocol preflight
+
+- Restored the SharedRunPodCoordinator daemon without bypassing its active
+  tokenless lease. The lease has no owner PID, heartbeat, pod PID, or model
+  process and remains reserved until its exact expiry; only the formal expired
+  lease reconciliation path may clear it.
+- Rehashed both persistent candidate model trees and verified every Hugging
+  Face metadata revision. Qwen3-VL-30B matches tree `dbb7d33b...` at revision
+  `d9748a51...`; InternVL3.5-8B matches tree `e1a117fa...` at revision
+  `9bb6a56a...`. The RunPod report seal is `b4081fb9...`.
+- `configs/vlm.yaml` now hash-binds the modern catalog plus the exact
+  single-board prompt, implementation, runner, and frozen real-mask corpus.
+  Regression tests prevent the historical 0%-valid-mask Qwen3.6-27B and
+  InternVL3.5-8B results from acquiring roles and require certification to
+  abstain while the primary/juror roles are unavailable.
+- No model was promoted and no GPU inference ran in this preflight. Fresh
+  current-protocol qualification, current role certificates, and a real
+  adult-anatomy batch canary remain mandatory before autonomous approval.
+- Evidence:
+  `qa/live_verification/runpod_visual_critic_current_protocol_preflight_20260723.json`.
+  Thirty-seven focused tests, Ruff, Black, tracker validation, and diff
+  integrity pass.

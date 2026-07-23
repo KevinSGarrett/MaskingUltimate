@@ -12398,3 +12398,27 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   evidence, lifecycle, and certificate requirements remain unchanged.
 - MF-P4-11.18 remains open because no primary critic and independent-family
   juror have passed the full frozen real-image qualification suite.
+
+## 2026-07-23 - Resident SAM3.1 64-record RunPod wave
+
+- Deployed exact commit `8d5b30fd20d4ff3079bc51dfae6e060fbaf4d8f4`
+  to the existing RTX 6000 Ada pod through a binary-safe archive and verified
+  eleven authority-critical source/config files byte-for-byte.
+- Selected 64 new, unique reference-only records with zero overlap against the
+  prior 64-record wave and two-record resident canary.
+- One resident official SAM3.1 model load handled 65 person-refinement
+  requests across the 64 records. Sixty-four requests succeeded and one typed
+  provider failure did not stop the healthy records.
+- Provider outcome: 59 records generated 60 immutable draft candidates and
+  five records abstained. Every candidate file exists and its SHA-256 matches.
+- Deterministic hard-QA outcome: 52 pass, 7 fail, and 5 upstream abstain.
+- The resident process stopped cleanly. No GPU/VRAM admission, reservation,
+  checkout, or scheduling authority was used; memory observations are
+  telemetry only.
+- Strict visual authority remains unavailable. No terminal record, certificate,
+  autonomous gold, training truth, shard completion, or production promotion
+  is claimed.
+- Exact evidence:
+  `qa/live_verification/runpod_sam31_resident_wave64_20260723.json`
+  (self-seal
+  `dd95b29af1a90d69e525b8624ff48124c10427b2017c028822f4bfbc76753b74`).

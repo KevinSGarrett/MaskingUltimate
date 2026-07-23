@@ -15,7 +15,6 @@ from typing import Any
 
 from PIL import Image
 
-from ..gpu import GpuLock
 from ..validation import validate_document
 
 ALLOWED_VERDICTS = {"pass", "fail", "uncertain"}
@@ -195,18 +194,18 @@ def review_part(
     gpu_lock_path: Path,
     generation_options: dict[str, Any] | None = None,
 ) -> VlmVerdict:
+    del gpu_lock_path  # Legacy API compatibility; GPU/VRAM governance is retired.
     prompt = prompt_template.replace("<label>", label)
     started = time.perf_counter()
-    with GpuLock(path=gpu_lock_path, purpose="S11_vlm_qa"):
-        request = {"model": model, "prompt": prompt, "images": (panel_path,)}
-        if generation_options is not None:
-            request["options"] = generation_options
+    request = {"model": model, "prompt": prompt, "images": (panel_path,)}
+    if generation_options is not None:
+        request["options"] = generation_options
+    raw = client.generate(**request)
+    parsed = parse_part_verdict(raw)
+    if parsed is None:
+        request["prompt"] = prompt + "\nYour prior response was invalid. JSON only."
         raw = client.generate(**request)
         parsed = parse_part_verdict(raw)
-        if parsed is None:
-            request["prompt"] = prompt + "\nYour prior response was invalid. JSON only."
-            raw = client.generate(**request)
-            parsed = parse_part_verdict(raw)
     latency = round((time.perf_counter() - started) * 1000)
     if parsed is None:
         parsed = {

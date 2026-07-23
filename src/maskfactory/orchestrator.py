@@ -9,7 +9,6 @@ import shutil
 import time
 import uuid
 from collections.abc import Callable, Mapping, Sequence
-from contextlib import nullcontext
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from types import MappingProxyType
@@ -18,7 +17,6 @@ from typing import Any
 import yaml
 
 from .fs_atomic import replace_with_retry
-from .gpu import GpuLock
 from .state import transition_image_status, writer_connection
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -458,59 +456,54 @@ def run_pipeline(
     force_names = _normalize_stages(force)
     plan = plan_stages(selected=selected, force=force, skip=skip, config=config)
     available = runners if runners is not None else STAGE_RUNNERS
-    lease = (
-        GpuLock(Path(gpu_lock_path), purpose="pipeline", image_id=image_id)
-        if gpu_lock_path is not None
-        else nullcontext()
-    )
+    del gpu_lock_path  # Legacy API compatibility; GPU/VRAM governance is retired.
     results: list[StageExecution] = []
     upstream_changed = False
-    with lease:
-        for stage in plan:
-            runner = available.get(stage.name)
-            if runner is None:
-                raise StageRunnerMissingError(f"no runner registered for {stage.name}")
-            try:
-                effective_forced = stage.name in force_names or upstream_changed
-                execution = _execute_with_policy(
-                    image_id=image_id,
-                    stage=stage,
-                    config=config,
-                    work_root=Path(work_root),
-                    runner=runner,
-                    forced=effective_forced,
-                    retry_delays=retry_delays,
-                    sleeper=sleeper,
-                )
-            except StagePolicyError as exc:
-                if run_log is not None:
-                    run_log.record_failure(
-                        image_id=image_id,
-                        stage=exc.stage,
-                        category=exc.category,
-                        attempts=exc.attempts,
-                        error=str(exc.cause),
-                    )
-                raise
-            results.append(execution)
-            # A freshly produced artifact generation invalidates every later stage in
-            # this selected topological chain, even when its own configuration did
-            # not change.  Reusing a downstream cache in that situation can combine
-            # incompatible geometry from two generations.
-            if execution.status == "complete":
-                upstream_changed = True
+    for stage in plan:
+        runner = available.get(stage.name)
+        if runner is None:
+            raise StageRunnerMissingError(f"no runner registered for {stage.name}")
+        try:
+            effective_forced = stage.name in force_names or upstream_changed
+            execution = _execute_with_policy(
+                image_id=image_id,
+                stage=stage,
+                config=config,
+                work_root=Path(work_root),
+                runner=runner,
+                forced=effective_forced,
+                retry_delays=retry_delays,
+                sleeper=sleeper,
+            )
+        except StagePolicyError as exc:
             if run_log is not None:
-                run_log.record_stage(
+                run_log.record_failure(
                     image_id=image_id,
-                    stage=execution.stage,
-                    status=execution.status,
-                    config_hash=execution.config_hash,
-                    model_keys=execution.model_keys,
-                    duration_sec=execution.duration_sec,
-                    vram_peak_mb=execution.vram_peak_mb,
+                    stage=exc.stage,
+                    category=exc.category,
+                    attempts=exc.attempts,
+                    error=str(exc.cause),
                 )
-            if execution.status == "terminal":
-                break
+            raise
+        results.append(execution)
+        # A freshly produced artifact generation invalidates every later stage in
+        # this selected topological chain, even when its own configuration did
+        # not change.  Reusing a downstream cache in that situation can combine
+        # incompatible geometry from two generations.
+        if execution.status == "complete":
+            upstream_changed = True
+        if run_log is not None:
+            run_log.record_stage(
+                image_id=image_id,
+                stage=execution.stage,
+                status=execution.status,
+                config_hash=execution.config_hash,
+                model_keys=execution.model_keys,
+                duration_sec=execution.duration_sec,
+                vram_peak_mb=execution.vram_peak_mb,
+            )
+        if execution.status == "terminal":
+            break
     return tuple(results)
 
 

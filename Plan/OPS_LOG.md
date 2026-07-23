@@ -12371,3 +12371,17 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   `qa/live_verification/runpod_sam31_resident_two_record_canary_20260723.json`
   (self-seal
   `ece3d5ba132d964b2a27c8c69109005dd65fe077b64a65c4038ebc80b8de3da2`).
+
+## 2026-07-23 - Active GPU/VRAM wrapper retirement follow-up
+
+- Removed every remaining active `GpuLock` wrapper invocation from pipeline
+  orchestration, training launch, VLM part review, workhorse audit/comparison,
+  production image review, and the DAZ no-governance fixture.
+- Legacy path parameters remain parse-only API compatibility. They create no
+  files and cannot wait, own, admit, reserve, check out, sequence, serialize,
+  rank, promote, reclaim, or refuse work.
+- Updated the active RunPod, visual-authority, autonomous-core, DAZ QA/runbook,
+  and bridge-item text. GPU/VRAM measurements are telemetry only; OOM is a typed
+  runtime outcome.
+- Preserved frozen v1 bridge fields as compatibility data without giving them
+  execution or recovery authority.

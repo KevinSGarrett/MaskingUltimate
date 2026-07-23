@@ -15,7 +15,6 @@ from PIL import Image
 from scipy import ndimage
 
 from ..autonomy.repair import evaluate_repair_candidate
-from ..gpu import GpuLock
 from ..io.png_strict import write_binary_mask
 from ..ontology import get_ontology
 from ..qa.panels import WorkhorseEvidence
@@ -98,6 +97,7 @@ def review_part_workhorse(
     qa_findings: tuple[dict[str, Any], ...] = (),
 ) -> WorkhorseAudit:
     """Force observation of each independent image before accepting a verdict or tool plan."""
+    del gpu_lock_path  # Legacy API compatibility; GPU/VRAM governance is retired.
     crop = evidence.crop_xyxy
     width, height = evidence.source_size
     definition = get_ontology().label(label)
@@ -141,31 +141,30 @@ def review_part_workhorse(
     parsed = None
     parse_error = "no response"
     transport_error = None
-    with GpuLock(path=gpu_lock_path, purpose="S11_vlm_workhorse_audit"):
-        try:
-            for attempt in range(2):
-                raw = client.generate(
-                    model=model,
-                    prompt=(
+    try:
+        for attempt in range(2):
+            raw = client.generate(
+                model=model,
+                prompt=(
+                    prompt
+                    if attempt == 0
+                    else (
                         prompt
-                        if attempt == 0
-                        else (
-                            prompt
-                            + "\nPrior output invalid: "
-                            + parse_error
-                            + ". Correct that exact contract violation. Return the required JSON "
-                            + "object only, with no extra or missing keys."
-                        )
-                    ),
-                    images=evidence.images,
-                    options=generation_options,
-                    think=False,
-                )
-                parsed, parse_error = _parse_audit(raw, evidence.source_size)
-                if parsed is not None:
-                    break
-        except VlmClientError as exc:
-            transport_error = f"{type(exc).__name__}:{exc}"
+                        + "\nPrior output invalid: "
+                        + parse_error
+                        + ". Correct that exact contract violation. Return the required JSON "
+                        + "object only, with no extra or missing keys."
+                    )
+                ),
+                images=evidence.images,
+                options=generation_options,
+                think=False,
+            )
+            parsed, parse_error = _parse_audit(raw, evidence.source_size)
+            if parsed is not None:
+                break
+    except VlmClientError as exc:
+        transport_error = f"{type(exc).__name__}:{exc}"
     latency = round((time.perf_counter() - started) * 1000)
     if parsed is None:
         parsed = {
@@ -342,23 +341,23 @@ def verify_correction_candidate(
     generation_options: dict[str, Any],
 ) -> CandidateVerification:
     """Blindly compare complete before/after evidence; uncertainty never promotes a candidate."""
+    del gpu_lock_path  # Legacy API compatibility; GPU/VRAM governance is retired.
     prompt = prompt_template.replace("<label>", label)
     started = time.perf_counter()
     parsed = None
-    with GpuLock(path=gpu_lock_path, purpose="S11_vlm_workhorse_compare"):
-        for attempt in range(2):
-            raw = client.generate(
-                model=model,
-                prompt=(
-                    prompt if attempt == 0 else prompt + "\nPrior output invalid. Exact JSON only."
-                ),
-                images=(*before.images, *after.images),
-                options=generation_options,
-                think=False,
-            )
-            parsed = _parse_verification(raw)
-            if parsed is not None:
-                break
+    for attempt in range(2):
+        raw = client.generate(
+            model=model,
+            prompt=(
+                prompt if attempt == 0 else prompt + "\nPrior output invalid. Exact JSON only."
+            ),
+            images=(*before.images, *after.images),
+            options=generation_options,
+            think=False,
+        )
+        parsed = _parse_verification(raw)
+        if parsed is not None:
+            break
     if parsed is None:
         parsed = {
             "decision": "uncertain",

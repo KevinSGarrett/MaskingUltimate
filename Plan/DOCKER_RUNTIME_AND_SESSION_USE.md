@@ -11,7 +11,9 @@ RunPod is the production location for MaskFactory masking, provider inference,
 strict visual review, repair, training, benchmarking, qualification, corpus
 processing, champion promotion, and runtime verification. Production data,
 models, panels, intermediate results, and released-package staging reside on
-persistent RunPod storage and use the shared GPU coordinator.
+persistent RunPod storage. The selected pod executes directly; GPU/VRAM
+coordinators, admission checks, reservations, checkouts, schedulers, sequencers,
+capacity leases, and file-lock gates have no authority.
 
 The laptop is limited to CPU-only source editing, unit/schema/contract tests,
 tracker and queue bookkeeping, deterministic hash/package verification, and
@@ -38,7 +40,7 @@ that Docker/Ollama is already running is not authorization.
 
 ## 2. RunPod unavailable
 
-RunPod admission or service failure blocks only the affected runtime item.
+RunPod service or workload failure blocks only the affected runtime item.
 Continue CPU-only implementation, schemas, tests, tracker reconciliation,
 package verification, and other independent work. Record the exact remote
 blocker. Never fall back to local inference and never present local service

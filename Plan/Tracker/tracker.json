@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-23T06:43:43+00:00",
+    "generated_at": "2026-07-23T07:26:30+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 866,
     "total_tracked_including_orphaned": 866
@@ -8163,11 +8163,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-23T07:28:44+00:00",
+          "actor": "codex",
+          "text": "2026-07-23 direct-execution follow-up: removed all remaining active GpuLock wrapper calls from pipeline orchestration, training launch, VLM part review, workhorse audit/comparison, production image review, and DAZ failure fixtures. Legacy path arguments remain parse-only compatibility and create no files, waits, ownership, checkout, admission, reservation, sequencing, or refusal. Updated active plans to make memory telemetry non-authoritative and removed stale coordinator/contention instructions. Focused runtime and tracker suites pass."
+        }
+      ],
       "evidence": "2026-07-23 direct-pod proof: InferenceRuntime start/stop/predict/refine use process lifecycle only; no gpu.lock is acquired or required. Focused serve, pipeline, training, orchestrator, doctor, and GPU tests pass with pre-existing legacy markers unable to refuse execution.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-23T06:43:17+00:00",
+      "updated_at": "2026-07-23T07:28:44+00:00",
       "orphaned": false
     },
     "MF-P6-02.05": {
@@ -22610,7 +22616,7 @@
       "cluster_id": "MF-P6-11",
       "cluster_title": "Mode A/Mode B runtime adapter, feedback, and recovery",
       "spec_ref": "24 §§6–10",
-      "description": "Add receipt-last atomic commit, restart recovery with `outcome_unknown` reconciliation before retry, health/capability/revocation-at-decision evidence, GPU-lease coordination, cache freshness, and service/node-pack drift detection · Verify: kill at every durable boundary, submitted-unknown, stale pack, changed capability, lock contention, and rollback drills recover without duplicate execution, orphan promotion, or authority drift · Blocked by: MF-P6-10.07, MF-P6-11.06, MF-P6-11.07",
+      "description": "Add receipt-last atomic commit, restart recovery with `outcome_unknown` reconciliation before retry, health/capability/revocation-at-decision evidence, cache freshness, and service/node-pack drift detection; frozen v1 GPU-lease fields are telemetry-only compatibility and can never gate recovery · Verify: kill at every durable boundary, submitted-unknown, stale pack, changed capability, legacy GPU-lease contention markers, and rollback drills recover without duplicate execution, refusal, orphan promotion, or authority drift · Blocked by: MF-P6-10.07, MF-P6-11.06, MF-P6-11.07",
       "source_file": "21_ITEMS_P6_AUTONOMOUS_CORE_AND_CROSS_PROJECT_BRIDGE.md",
       "source_line": 53,
       "is_exit_gate": false,

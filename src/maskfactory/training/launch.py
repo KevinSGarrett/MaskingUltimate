@@ -1,4 +1,4 @@
-"""Fail-closed MMSeg training launcher with immutable run and GPU ownership."""
+"""Fail-closed MMSeg training launcher with immutable run evidence."""
 
 from __future__ import annotations
 
@@ -20,7 +20,6 @@ from ..external_supervision_packages import (
     assert_launcher_accepts_only_gated_external_rows,
     validate_external_batch_cap,
 )
-from ..gpu import GpuLock
 from ..models.ontology_contract import (
     V1_ONTOLOGY_VERSION,
     V1_PART_CLASS_NAMES,
@@ -290,33 +289,31 @@ def launch_training(
     (run_root / "trainer_command.json").write_text(
         json.dumps(command, indent=2) + "\n", encoding="utf-8"
     )
-    lock = GpuLock(Path(runs_root) / "gpu.lock", purpose="training", image_id=run_root.name)
     try:
-        with lock:
-            transition_training_run(run_root, "running")
-            with (
-                (run_root / "trainer_stdout.log").open("w", encoding="utf-8") as stdout,
-                (run_root / "trainer_stderr.log").open("w", encoding="utf-8") as stderr,
-            ):
-                process = process_factory(
-                    command,
-                    cwd=str(Path.cwd()),
-                    stdout=stdout,
-                    stderr=stderr,
-                    text=True,
-                )
-                returncode = int(process.wait())
-            if returncode:
-                raise TrainingLaunchError(f"MMSeg trainer exited {returncode}")
-            checkpoints = sorted((run_root / "ckpts").glob("*.pth"))
-            if not checkpoints:
-                raise TrainingLaunchError("MMSeg exited zero without a checkpoint")
-            write_candidate_artifact(run_root, checkpoints[-1], compiled)
-            transition_training_run(
-                run_root,
-                "complete",
-                detail=f"checkpoint={checkpoints[-1].name}",
+        transition_training_run(run_root, "running")
+        with (
+            (run_root / "trainer_stdout.log").open("w", encoding="utf-8") as stdout,
+            (run_root / "trainer_stderr.log").open("w", encoding="utf-8") as stderr,
+        ):
+            process = process_factory(
+                command,
+                cwd=str(Path.cwd()),
+                stdout=stdout,
+                stderr=stderr,
+                text=True,
             )
+            returncode = int(process.wait())
+        if returncode:
+            raise TrainingLaunchError(f"MMSeg trainer exited {returncode}")
+        checkpoints = sorted((run_root / "ckpts").glob("*.pth"))
+        if not checkpoints:
+            raise TrainingLaunchError("MMSeg exited zero without a checkpoint")
+        write_candidate_artifact(run_root, checkpoints[-1], compiled)
+        transition_training_run(
+            run_root,
+            "complete",
+            detail=f"checkpoint={checkpoints[-1].name}",
+        )
     except Exception as exc:
         document = json.loads((run_root / "run.json").read_text(encoding="utf-8"))
         if document["status"] in {"initialized", "running"}:

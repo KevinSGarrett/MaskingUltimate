@@ -11,7 +11,8 @@ def test_vlm_config_is_local_private_and_non_authoritative() -> None:
     assert config["runtime"]["provider"] == "ollama"
     assert config["runtime"]["base_url"] == "http://127.0.0.1:11434"
     assert config["runtime"]["cloud_enabled"] is True
-    assert config["runtime"]["gpu_slot"] == "exclusive"
+    assert config["runtime"]["gpu_resource_governance"] == "disabled"
+    assert "gpu_slot" not in config["runtime"]
     assert config["models"]["primary_vlm"] == "qwen2.5vl:7b"
     assert config["models"]["fallback_vlm"] == "llava:13b"
     assert config["models"]["text_llm"] == "qwen2.5:7b-instruct"

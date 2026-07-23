@@ -56,27 +56,28 @@ No weighted score, VLM vote, senior-model answer, or consensus count may clear
 a deterministic hard veto. Missing, malformed, timed-out, truncated,
 hallucinated, or scope-incomplete reviews are abstentions, never passes.
 
-## 4. Hardware-qualified deployment tiers
+## 4. Deployment observations
 
-Model catalog presence and hardware feasibility are separate facts.
+Model catalog presence and live execution are separate facts. GPU/VRAM
+measurements in this section are telemetry only. They do not admit, delay,
+serialize, reserve, check out, rank, promote, or refuse a model or workload.
 
 ### 4.1 Current single-GPU RunPod tier
 
-The current RTX 6000 Ada provides about 48 GiB VRAM. A model may enter this
-tier only after its exact quantization, runtime, context, image budget, peak
-VRAM, latency, and deterministic response hash are measured on that GPU.
-Qwen3.6-35B-A3B and a smaller independent InternVL3.5 checkpoint are
-challengers, not assumed winners.
+The current RTX 6000 Ada reports about 48 GiB VRAM. Exact quantization,
+runtime, context, image budget, latency, response hash, and memory telemetry
+are recorded when a model runs. OOM is a typed runtime outcome, not a
+pre-execution governance decision. Qwen3.6-35B-A3B and a smaller independent
+InternVL3.5 checkpoint are challengers, not assumed winners.
 
 ### 4.2 Multi-GPU arbitration tier
 
-The official Qwen3.5-122B-A10B FP8 repository is about 127 GB and therefore
-does not fit on the current 48 GiB GPU. Qwen3.5-397B-A17B FP8 and
-InternVL3.5-241B-A28B likewise require a qualified multi-GPU RunPod class.
-They remain planned senior/independent challengers until an exact pod class,
-tensor-parallel runtime, cost ceiling, model hash, and live benchmark exist.
-Never substitute CPU offload or a smaller model while retaining the larger
-model's name or authority claim.
+The official Qwen3.5-122B-A10B FP8 repository is about 127 GB. Qwen3.5-
+397B-A17B FP8 and InternVL3.5-241B-A28B are also multi-device deployment
+challengers. They remain planned senior/independent challengers until their
+exact tensor-parallel runtime, model hash, and live benchmark exist. This is a
+deployment fact, not GPU/VRAM governance. Never substitute CPU offload or a
+smaller model while retaining the larger model's name or authority claim.
 
 ### 4.3 Service boundary
 
@@ -141,9 +142,10 @@ frozen, image-disjoint calibration manifest containing:
   and decision hashes.
 
 The gate reports defect recall, precision, false-pass rate, good-mask pass
-rate, abstention rate, per-defect coverage, latency, VRAM, and deterministic
-replay. Passing only negative controls is insufficient. A critic that rejects
-everything is unavailable, not safe. Role thresholds are frozen before the
+rate, abstention rate, per-defect coverage, latency, deterministic replay, and
+memory telemetry. Memory telemetry is never a role threshold or promotion
+input. Passing only negative controls is insufficient. A critic that rejects
+everything is unavailable, not safe. Quality thresholds are frozen before the
 run and cannot be adjusted from the observed answers.
 
 The production semantic corpus must draw its labeled positive controls from

@@ -139,7 +139,8 @@ A pass at a later layer never overrides failure at an earlier layer.
 - Corrupt queue DB and rebuild from job manifests.
 - Corrupt registry snapshot and restore from backup.
 - Update an asset mid-queue and prove pending jobs invalidate.
-- Force GPU contention and prove wait/timeout without OOM competition.
+- Place legacy GPU-lock/lease marker bytes and prove they cause no wait,
+  timeout, refusal, mutation, reclamation, or scheduling decision.
 - Trigger a popup and prove watchdog termination/quarantine.
 - Run a seven-day soak with daily restarts and retained evidence.
 

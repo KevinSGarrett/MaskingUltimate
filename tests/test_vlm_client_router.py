@@ -45,10 +45,14 @@ def test_versioned_prompts_and_config_cover_all_three_contracts() -> None:
         "provider": "ollama",
         "base_url": "http://127.0.0.1:11434",
         "container_name": "ollama",
+        "scope": "local_diagnostic_optional_only",
+        "production_authority": False,
+        "production_progress_credit": False,
         "cloud_enabled": True,
-        "gpu_slot": "exclusive",
+        "gpu_resource_governance": "disabled",
         "generation_options": DETERMINISTIC_GENERATION_OPTIONS,
     }
+    assert "gpu_slot" not in config["runtime"]
     assert set(config["prompts"]) == {
         "p_part",
         "p_image",

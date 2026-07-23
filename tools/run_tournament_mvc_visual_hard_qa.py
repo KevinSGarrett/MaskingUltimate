@@ -14,8 +14,6 @@ Never labels warehouse/DAZ/source masks as gold. Never claims VISUAL_QA_PASS_BOU
 from residual structural defects.
 
 Usage:
-  python tools/gpu_sequencer.py sequence --consumer ollama-vlm \\
-      --json qa/live_verification/gpu_sequence_ollama_mvc_visual.json
   python tools/run_tournament_mvc_visual_hard_qa.py \\
       --machine-root runs/autonomous_gold_tournament_20260720_cbackup \\
       --limit 24 \\
@@ -200,11 +198,7 @@ def _build_source_index(needed_digest12: set[str] | None = None) -> dict[str, st
                 if not isinstance(row, dict):
                     continue
                 sha = str(row.get("source_sha256") or "")
-                path = (
-                    row.get("source_path_readonly")
-                    or row.get("source_path")
-                    or row.get("path")
-                )
+                path = row.get("source_path_readonly") or row.get("source_path") or row.get("path")
                 image_id = str(row.get("image_id") or "")
                 keys: list[str] = []
                 if sha:
@@ -277,7 +271,9 @@ def _defect_classes_from_problems(problems: list[str]) -> list[str]:
     return classes
 
 
-def _demote_lifecycle(lifecycle_path: Path, lifecycle: dict[str, Any], reason: str) -> dict[str, Any]:
+def _demote_lifecycle(
+    lifecycle_path: Path, lifecycle: dict[str, Any], reason: str
+) -> dict[str, Any]:
     updated = dict(lifecycle)
     updated["status"] = "residual_human_queue"
     updated["truth_tier"] = "machine_candidate"
@@ -329,9 +325,7 @@ def _review_one(
             row["outcome"] = "VISUAL_HARD_QA_PASS_BOUNDED"
             row["retained_as"] = "machine_verified_candidate"
             row["skipped_existing_pass_sidecar"] = True
-            row["review_sidecar"] = str(prior_review.relative_to(REPO_ROOT)).replace(
-                "\\", "/"
-            )
+            row["review_sidecar"] = str(prior_review.relative_to(REPO_ROOT)).replace("\\", "/")
             return row
     if not isinstance(mask_rel, str) or not mask_rel:
         row["outcome"] = "ABSTAIN_BOUNDED"
@@ -447,9 +441,7 @@ def _review_one(
 
     if parsed is None or not all(checks.values()):
         row["outcome"] = "ABSTAIN_BOUNDED"
-        row["blocker"] = (
-            "vlm_transport_error" if vlm_transport_error else "vlm_response_invalid"
-        )
+        row["blocker"] = "vlm_transport_error" if vlm_transport_error else "vlm_response_invalid"
         if vlm_transport_error:
             row["vlm_transport_error"] = vlm_transport_error
         row["visual_tier"] = HIGHEST_VISUAL_TIER_WITH_RESIDUALS
@@ -612,7 +604,7 @@ def main() -> int:
         "authority": [
             "configs/vlm.yaml governance (may_author_masks=false, may_approve_gold=false)",
             "src/maskfactory/autonomy/visual_defect_policy.py",
-            "tools/gpu_sequencer.py ollama-vlm consumer",
+            "direct selected-RunPod execution; GPU/VRAM telemetry has no authority",
         ],
         "honesty_rules": [
             "NOT a draft-corpus VISUAL_QA_REVIEWED_WITH_DEFECTS seal",

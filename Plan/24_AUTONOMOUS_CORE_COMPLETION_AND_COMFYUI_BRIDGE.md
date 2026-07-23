@@ -177,11 +177,14 @@ Selection has two stages:
 
 1. **Hard compatibility filter:** remove stacks that are not installed, adopted, lifecycle-active,
    qualified for the exact route key, compatible with ontology/label/mode/dimensions/person count,
-   within VRAM/deadline limits, or current under their benchmark/certificate/revocation scope.
+   within the mission deadline, or current under their benchmark/certificate/revocation scope.
 2. **Contextual evidence rank:** rank the survivors using exact-route hard-veto rate, boundary and
    topology stability, ownership/left-right performance, independent-critic support, repair success
-   and regression rate, protected-region preservation, latency/VRAM, evidence freshness, drift, and
+   and regression rate, protected-region preservation, latency, evidence freshness, drift, and
    uncertainty. Quality and authority constraints are lexicographic; cost cannot buy a waiver.
+
+GPU/VRAM observations are telemetry only and never participate in compatibility,
+ranking, admission, serialization, reservation, checkout, promotion, or refusal.
 
 The evidence store is append-only and separates observation from promotion. Each attempt records the
 selected and alternate stacks, route key, source/output hashes, hypothesis, QA vector, critic-family

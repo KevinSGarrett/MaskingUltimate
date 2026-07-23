@@ -41,7 +41,6 @@ from ..autonomy.review_draft import (
     select_pre_review_candidate,
 )
 from ..autonomy.tournament import run_candidate_tournament
-from ..gpu import GpuLock
 from ..io.png_strict import write_binary_mask, write_label_map
 from ..ontology import get_ontology
 from ..providers.civitai_auxiliary import load_auxiliary_s11_evidence
@@ -2045,24 +2044,23 @@ def _review_whole_image(
         + digest
     )
     started = time.perf_counter()
-    with GpuLock(path=output_dir / ".vlm_gpu.lock", purpose="S11_vlm_image_qa"):
+    raw = client.generate(
+        model=model,
+        prompt=prompt,
+        images=(source_prepared, prepared),
+        options=generation_options,
+        think=False,
+    )
+    parsed = _parse_image_review(raw)
+    if parsed is None:
         raw = client.generate(
             model=model,
-            prompt=prompt,
+            prompt=prompt + "\nYour prior response was invalid. JSON only.",
             images=(source_prepared, prepared),
             options=generation_options,
             think=False,
         )
         parsed = _parse_image_review(raw)
-        if parsed is None:
-            raw = client.generate(
-                model=model,
-                prompt=prompt + "\nYour prior response was invalid. JSON only.",
-                images=(source_prepared, prepared),
-                options=generation_options,
-                think=False,
-            )
-            parsed = _parse_image_review(raw)
     if parsed is None:
         parsed = {
             "missing": [],

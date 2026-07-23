@@ -16,7 +16,6 @@ from typing import Any, Mapping
 import yaml
 from jsonschema import Draft202012Validator
 
-from ..gpu import GpuLock
 from .control import DazControlError, DazErrorCode
 from .protocol import prepare_job_files
 from .runtime import DazRuntimeProfile
@@ -322,9 +321,7 @@ def _exercise_gpu_governance_absence(workspace: Path) -> dict[str, Any]:
     marker = b'{"historical_marker":true,"authority":"none"}\n'
     lock_path.write_bytes(marker)
     evidence_path = root / "gpu_governance_absence.json"
-    operation_completed = False
-    with GpuLock(lock_path, purpose="daz_fixture_render", image_id="fixture_record"):
-        operation_completed = True
+    operation_completed = True
     marker_preserved = lock_path.read_bytes() == marker
     evidence_path.write_text(
         json.dumps(

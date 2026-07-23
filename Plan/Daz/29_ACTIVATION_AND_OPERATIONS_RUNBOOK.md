@@ -55,7 +55,7 @@ Run in order:
 6. forced timeout;
 7. forced unexpected-dialog fixture where practical;
 8. process-kill/partial-output recovery;
-9. GPU-lease contention with MaskFactory;
+9. legacy GPU-lock/lease marker present but ignored and preserved;
 10. clean restart/repeat.
 
 Store outputs under `F:\DAZ\04_runtime\runtime_snapshots\<id>` and
@@ -259,9 +259,8 @@ their files.
 
 ### Renderer/GPU OOM
 
-- release dead lease;
-- verify no competing GPU workload;
-- retry once with the declared lower resource profile if compatible;
+- record the exact typed runtime failure and telemetry;
+- retry only when the admitted job's ordinary bounded retry policy permits it;
 - quarantine persistent scene/asset;
 - do not silently switch renderer.
 

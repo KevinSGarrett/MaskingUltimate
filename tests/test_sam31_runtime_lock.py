@@ -117,4 +117,6 @@ def test_sam31_lock_binds_official_production_discovery_and_refinement_contract(
         == contract["visual_exemplar_schema_sha256"]
     )
     assert _sha256(ROOT / contract["isolated_runner"]) == contract["isolated_runner_sha256"]
+    assert _sha256(ROOT / contract["resident_runner"]) == contract["resident_runner_sha256"]
+    assert _sha256(ROOT / contract["batch_runner"]) == contract["batch_runner_sha256"]
     assert _sha256(ROOT / contract["session_compat"]) == contract["session_compat_sha256"]

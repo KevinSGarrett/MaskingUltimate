@@ -28,7 +28,10 @@ from maskfactory.production_runpod_routing import (  # noqa: E402
     require_bounded_sam21_fallback,
 )
 from maskfactory.providers.contracts import ProviderIdentity  # noqa: E402
-from maskfactory.providers.sam31_runtime import OfficialSam31Runtime  # noqa: E402
+from maskfactory.providers.sam31_runtime import (  # noqa: E402
+    OfficialSam31Runtime,
+    ResidentSam31CommandExecutor,
+)
 from maskfactory.providers.sam31_shadow import Sam31InteractiveSegmenter  # noqa: E402
 from maskfactory.stages.s07_sam2 import WslSam2Provider  # noqa: E402
 
@@ -93,14 +96,16 @@ def _direct_linux_executor(argv: tuple[str, ...], timeout_seconds: int):
 
 
 def _sam31_provider():
+    resident = None
     if os.name == "nt":
         runtime = OfficialSam31Runtime()
     else:
+        resident = ResidentSam31CommandExecutor()
         runtime = OfficialSam31Runtime(
-            executor=_direct_linux_executor,
+            executor=resident,
             path_mapper=lambda path: str(Path(path).resolve()),
         )
-    return Sam31InteractiveSegmenter(runtime.embed, runtime.refine)
+    return Sam31InteractiveSegmenter(runtime.embed, runtime.refine), resident
 
 
 def _sam2_provider(args: argparse.Namespace):
@@ -157,6 +162,7 @@ def main() -> None:
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--output-json", type=Path, required=True)
     parser.add_argument("--hard-qc-json", type=Path)
+    parser.add_argument("--resident-evidence-json", type=Path)
     parser.add_argument("--sample-id", action="append")
     parser.add_argument("--runtime-fingerprint")
     parser.add_argument("--sam2-large-checkpoint", type=Path)
@@ -174,14 +180,26 @@ def main() -> None:
 
     catalog = _load_json(args.catalog_batch)
     source_paths = _source_paths_from_shard(args.source_shard)
-    provider = _sam31_provider() if args.provider == "sam3_1" else _sam2_provider(args)
-    result = generate_box_prompt_provider_batch(
-        catalog_batch=catalog,
-        source_paths=source_paths,
-        provider=provider,
-        output_root=args.output_dir,
-        sample_ids=args.sample_id,
-    )
+    if args.provider == "sam3_1":
+        provider, resident = _sam31_provider()
+    else:
+        provider, resident = _sam2_provider(args), None
+    resident_evidence = None
+    try:
+        result = generate_box_prompt_provider_batch(
+            catalog_batch=catalog,
+            source_paths=source_paths,
+            provider=provider,
+            output_root=args.output_dir,
+            sample_ids=args.sample_id,
+        )
+    finally:
+        if resident is not None:
+            resident_evidence = resident.close()
+            resident_path = args.resident_evidence_json or args.output_json.with_suffix(
+                args.output_json.suffix + ".resident.json"
+            )
+            _write_json_atomic(resident_path, resident_evidence)
     _write_json_atomic(args.output_json, result)
     hard_qc = None
     if args.hard_qc_json is not None:
@@ -205,6 +223,21 @@ def main() -> None:
                 "hard_qc_self_sha256": hard_qc["self_sha256"] if hard_qc else None,
                 "hard_qc_json": (
                     str(args.hard_qc_json.resolve()) if args.hard_qc_json is not None else None
+                ),
+                "resident_evidence_json": (
+                    str(
+                        (
+                            args.resident_evidence_json
+                            or args.output_json.with_suffix(
+                                args.output_json.suffix + ".resident.json"
+                            )
+                        ).resolve()
+                    )
+                    if resident_evidence is not None
+                    else None
+                ),
+                "resident_evidence_self_sha256": (
+                    resident_evidence["self_sha256"] if resident_evidence is not None else None
                 ),
             },
             sort_keys=True,

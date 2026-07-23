@@ -30,6 +30,8 @@ ARTIFACT_FIELDS = (
     "concept_indices",
 )
 AUTHORITY = "official_sam31_runtime_draft_candidates_only_no_gold_or_active_map_authority"
+_PREDICTOR_CACHE: dict[tuple[str, ...], tuple[Any, float, int, Any]] = {}
+_MODEL_LOAD_COUNT = 0
 
 
 def _sha256(path: Path) -> str:
@@ -182,8 +184,19 @@ def _args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def main() -> int:
-    args = _args()
+def resident_cache_stats() -> dict[str, int]:
+    """Return process-local model reuse evidence for the resident wrapper."""
+
+    return {
+        "resident_model_count": len(_PREDICTOR_CACHE),
+        "model_load_count": _MODEL_LOAD_COUNT,
+    }
+
+
+def execute(args: argparse.Namespace) -> dict[str, Any]:
+    """Execute one exact request, reusing a process-local governed predictor."""
+
+    global _MODEL_LOAD_COUNT
     required = (
         args.source_root,
         args.checkpoint,
@@ -253,21 +266,41 @@ def main() -> int:
     torch.cuda.manual_seed_all(0)
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
-    load_started = time.perf_counter()
-    predictor = build_sam3_predictor(
-        checkpoint_path=str(args.checkpoint),
-        version="sam3.1",
-        compile=False,
-        warm_up=False,
-        max_num_objects=16,
-        multiplex_count=16,
-        use_fa3=False,
-        use_rope_real=True,
-        async_loading_frames=False,
+    cache_key = (
+        str(args.source_root.resolve()),
+        source_commit,
+        _sha256(args.checkpoint),
+        _sha256(args.runtime_lock),
+        _sha256(args.requirements_lock),
     )
-    torch.cuda.synchronize()
-    model_load_latency_ms = (time.perf_counter() - load_started) * 1000.0
-    model_vram_bytes = int(torch.cuda.memory_allocated())
+    cached = _PREDICTOR_CACHE.get(cache_key)
+    if cached is None:
+        load_started = time.perf_counter()
+        predictor = build_sam3_predictor(
+            checkpoint_path=str(args.checkpoint),
+            version="sam3.1",
+            compile=False,
+            warm_up=False,
+            max_num_objects=16,
+            multiplex_count=16,
+            use_fa3=False,
+            use_rope_real=True,
+            async_loading_frames=False,
+        )
+        torch.cuda.synchronize()
+        model_load_latency_ms = (time.perf_counter() - load_started) * 1000.0
+        model_vram_bytes = int(torch.cuda.memory_allocated())
+        _PREDICTOR_CACHE[cache_key] = (
+            predictor,
+            model_load_latency_ms,
+            model_vram_bytes,
+            torch,
+        )
+        _MODEL_LOAD_COUNT += 1
+    else:
+        predictor, model_load_latency_ms, model_vram_bytes, cached_torch = cached
+        if cached_torch is not torch:
+            raise RuntimeError("official SAM 3.1 resident torch identity drifted")
     torch.cuda.reset_peak_memory_stats()
     inference_started = time.perf_counter()
     masks: list[np.ndarray] = []
@@ -444,6 +477,11 @@ def main() -> int:
         "authority": AUTHORITY,
         "may_author_gold": False,
     }
+    return report
+
+
+def main() -> int:
+    report = execute(_args())
     print(json.dumps(report, sort_keys=True, separators=(",", ":")))
     return 0
 

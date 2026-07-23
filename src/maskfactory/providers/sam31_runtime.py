@@ -5,8 +5,12 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import queue
 import subprocess
 import tempfile
+import threading
+import time
+import uuid
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -64,6 +68,7 @@ AUTHORITY = "official_sam31_runtime_draft_candidates_only_no_gold_or_active_map_
 
 CommandExecutor = Callable[[Sequence[str], int], subprocess.CompletedProcess[str]]
 PathMapper = Callable[[Path], str]
+RESIDENT_SCHEMA_VERSION = "maskfactory.sam31_resident_protocol.v1"
 
 
 class Sam31RuntimeError(RuntimeError):
@@ -107,6 +112,275 @@ def _run_command(argv: Sequence[str], timeout_seconds: int) -> subprocess.Comple
         errors="replace",
         timeout=timeout_seconds,
     )
+
+
+class ResidentSam31CommandExecutor:
+    """Translate ordinary runtime argv into one persistent native SAM3.1 process."""
+
+    def __init__(self) -> None:
+        self._process: subprocess.Popen[str] | None = None
+        self._common: tuple[str, ...] | None = None
+        self._stdout: queue.Queue[str] = queue.Queue()
+        self._stderr: list[str] = []
+        self._ready: dict[str, Any] | None = None
+        self._summary: dict[str, Any] | None = None
+        self._responses: list[dict[str, Any]] = []
+
+    @staticmethod
+    def _options(argv: Sequence[str]) -> tuple[str, dict[str, str]]:
+        if tuple(argv[:4]) != ("wsl.exe", "-d", "Ubuntu-22.04", "--") or len(argv) < 7:
+            raise Sam31RuntimeError("resident SAM 3.1 launcher prefix is invalid")
+        python_executable = str(argv[4])
+        if Path(str(argv[5])).name != "run_sam31_runtime.py":
+            raise Sam31RuntimeError("resident SAM 3.1 runner identity is invalid")
+        values: dict[str, str] = {}
+        tail = list(argv[6:])
+        if len(tail) % 2:
+            raise Sam31RuntimeError("resident SAM 3.1 argv is malformed")
+        for index in range(0, len(tail), 2):
+            key, value = str(tail[index]), str(tail[index + 1])
+            if not key.startswith("--") or key in values:
+                raise Sam31RuntimeError("resident SAM 3.1 argv options are invalid")
+            values[key] = value
+        expected = {
+            "--source-root",
+            "--checkpoint",
+            "--runtime-lock",
+            "--requirements-lock",
+            "--frame-dir",
+            "--request",
+            "--prompt-npz",
+            "--output",
+            "--expected-source-commit",
+        }
+        if set(values) != expected:
+            raise Sam31RuntimeError("resident SAM 3.1 argv fields drifted")
+        return python_executable, values
+
+    @staticmethod
+    def _reader(stream: Any, sink: Any) -> None:
+        for line in stream:
+            sink(line.rstrip("\r\n"))
+
+    def _wait_message(self, timeout_seconds: int) -> dict[str, Any]:
+        deadline = time.monotonic() + timeout_seconds
+        while True:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise Sam31RuntimeError("resident SAM 3.1 response timed out")
+            try:
+                line = self._stdout.get(timeout=remaining)
+            except queue.Empty as exc:
+                raise Sam31RuntimeError("resident SAM 3.1 response timed out") from exc
+            try:
+                value = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if isinstance(value, dict):
+                return value
+
+    def _start(
+        self,
+        *,
+        python_executable: str,
+        common: tuple[str, ...],
+        timeout_seconds: int,
+    ) -> None:
+        server_path = ROOT / "tools" / "run_sam31_resident_runtime.py"
+        command = (
+            python_executable,
+            str(server_path),
+            "--source-root",
+            common[0],
+            "--checkpoint",
+            common[1],
+            "--runtime-lock",
+            common[2],
+            "--requirements-lock",
+            common[3],
+            "--expected-source-commit",
+            common[4],
+        )
+        self._process = subprocess.Popen(  # noqa: S603 - exact governed argv
+            command,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            bufsize=1,
+        )
+        assert self._process.stdout is not None
+        assert self._process.stderr is not None
+        threading.Thread(
+            target=self._reader,
+            args=(self._process.stdout, self._stdout.put),
+            daemon=True,
+        ).start()
+        threading.Thread(
+            target=self._reader,
+            args=(self._process.stderr, self._stderr.append),
+            daemon=True,
+        ).start()
+        ready = self._wait_message(timeout_seconds)
+        if (
+            ready.get("schema_version") != RESIDENT_SCHEMA_VERSION
+            or ready.get("status") != "ready"
+            or not isinstance(ready.get("process_id"), int)
+            or not isinstance(ready.get("common_identity_sha256"), str)
+        ):
+            self._terminate()
+            raise Sam31RuntimeError("resident SAM 3.1 ready identity is invalid")
+        self._common = common
+        self._ready = ready
+
+    def __call__(
+        self, argv: Sequence[str], timeout_seconds: int
+    ) -> subprocess.CompletedProcess[str]:
+        try:
+            python_executable, values = self._options(argv)
+            common = (
+                values["--source-root"],
+                values["--checkpoint"],
+                values["--runtime-lock"],
+                values["--requirements-lock"],
+                values["--expected-source-commit"],
+            )
+            if self._process is None:
+                self._start(
+                    python_executable=python_executable,
+                    common=common,
+                    timeout_seconds=timeout_seconds,
+                )
+            if self._common != common or self._process is None or self._process.poll() is not None:
+                raise Sam31RuntimeError("resident SAM 3.1 process identity drifted or exited")
+            request_id = uuid.uuid4().hex
+            command = {
+                "schema_version": RESIDENT_SCHEMA_VERSION,
+                "operation": "execute",
+                "request_id": request_id,
+                "frame_dir": values["--frame-dir"],
+                "request": values["--request"],
+                "prompt_npz": values["--prompt-npz"],
+                "output": values["--output"],
+            }
+            assert self._process.stdin is not None
+            self._process.stdin.write(
+                json.dumps(command, sort_keys=True, separators=(",", ":")) + "\n"
+            )
+            self._process.stdin.flush()
+            response = self._wait_message(timeout_seconds)
+            if (
+                response.get("schema_version") != RESIDENT_SCHEMA_VERSION
+                or response.get("request_id") != request_id
+                or response.get("process_id") != self._ready["process_id"]
+            ):
+                raise Sam31RuntimeError("resident SAM 3.1 response identity drifted")
+            self._responses.append(response)
+            if response.get("status") != "complete" or not isinstance(response.get("report"), dict):
+                detail = f"{response.get('error_type', 'RuntimeError')}:{response.get('error', '')}"
+                return subprocess.CompletedProcess(list(argv), 1, "", detail)
+            return subprocess.CompletedProcess(
+                list(argv),
+                0,
+                json.dumps(response["report"], sort_keys=True, separators=(",", ":")),
+                "\n".join(self._stderr),
+            )
+        except Exception as exc:
+            return subprocess.CompletedProcess(list(argv), 1, "", f"{type(exc).__name__}:{exc}")
+
+    def _terminate(self) -> None:
+        if self._process is None:
+            return
+        if self._process.poll() is None:
+            self._process.terminate()
+            try:
+                self._process.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                self._process.kill()
+                self._process.wait(timeout=10)
+
+    def close(self, *, timeout_seconds: int = 60) -> dict[str, Any]:
+        if self._summary is not None:
+            return self.evidence()
+        if self._process is None:
+            self._summary = {
+                "schema_version": RESIDENT_SCHEMA_VERSION,
+                "status": "not_started",
+                "request_count": 0,
+                "successful_request_count": 0,
+                "failed_request_count": 0,
+                "model_load_count": 0,
+                "resident_model_count": 0,
+            }
+            return self.evidence()
+        if self._process.poll() is None:
+            request_id = uuid.uuid4().hex
+            command = {
+                "schema_version": RESIDENT_SCHEMA_VERSION,
+                "operation": "shutdown",
+                "request_id": request_id,
+                "frame_dir": None,
+                "request": None,
+                "prompt_npz": None,
+                "output": None,
+            }
+            assert self._process.stdin is not None
+            self._process.stdin.write(
+                json.dumps(command, sort_keys=True, separators=(",", ":")) + "\n"
+            )
+            self._process.stdin.flush()
+            summary = self._wait_message(timeout_seconds)
+            summary_body = {key: value for key, value in summary.items() if key != "self_sha256"}
+            expected_summary_sha256 = hashlib.sha256(
+                json.dumps(summary_body, sort_keys=True, separators=(",", ":")).encode("utf-8")
+            ).hexdigest()
+            if (
+                summary.get("schema_version") != RESIDENT_SCHEMA_VERSION
+                or summary.get("status") != "stopped"
+                or summary.get("request_id") != request_id
+                or summary.get("process_id") != self._ready["process_id"]
+                or summary.get("request_count") != len(self._responses)
+                or summary.get("successful_request_count")
+                != sum(response.get("status") == "complete" for response in self._responses)
+                or summary.get("failed_request_count")
+                != sum(response.get("status") == "error" for response in self._responses)
+                or (
+                    summary.get("successful_request_count", 0) > 0
+                    and summary.get("model_load_count") != 1
+                )
+                or summary.get("self_sha256") != expected_summary_sha256
+            ):
+                self._terminate()
+                raise Sam31RuntimeError("resident SAM 3.1 shutdown evidence is invalid")
+            self._summary = summary
+            self._process.wait(timeout=timeout_seconds)
+        else:
+            raise Sam31RuntimeError("resident SAM 3.1 process exited before shutdown")
+        return self.evidence()
+
+    def evidence(self) -> dict[str, Any]:
+        body = {
+            "schema_version": "maskfactory.sam31_resident_evidence.v1",
+            "ready": self._ready,
+            "summary": self._summary,
+            "response_count": len(self._responses),
+            "response_sequences": [
+                response.get("request_sequence")
+                for response in self._responses
+                if response.get("status") == "complete"
+            ],
+            "stderr_tail": "\n".join(self._stderr)[-2000:],
+            "authority": AUTHORITY,
+            "production_mask_authority": False,
+        }
+        return {
+            **body,
+            "self_sha256": hashlib.sha256(
+                json.dumps(body, sort_keys=True, separators=(",", ":")).encode("utf-8")
+            ).hexdigest(),
+        }
 
 
 def _last_json(stdout: str) -> Mapping[str, Any]:
@@ -287,6 +561,7 @@ class OfficialSam31Runtime:
             self.requirements_lock,
             self.lock_path,
             ROOT / "tools/run_sam31_runtime.py",
+            ROOT / "tools/run_sam31_resident_runtime.py",
         )
         if not all(path.exists() for path in required):
             raise Sam31RuntimeError("one or more governed SAM 3.1 runtime inputs are missing")
@@ -476,6 +751,7 @@ __all__ = [
     "AUTHORITY",
     "ARTIFACT_FIELDS",
     "OfficialSam31Runtime",
+    "ResidentSam31CommandExecutor",
     "Sam31RuntimeError",
     "Sam31RuntimeImage",
     "load_official_sam31_concept_detector",

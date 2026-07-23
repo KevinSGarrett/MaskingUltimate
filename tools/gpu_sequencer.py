@@ -1,7 +1,11 @@
-"""Autonomous VRAM-aware GPU sequencing for MaskFactory's single 8 GiB slot.
+"""Autonomous VRAM-aware GPU sequencing for MaskFactory internal consumers.
 
-The MaskFactory host shares one RTX 5060 Laptop GPU (8151 MiB) between several
-serialized consumers that must never run concurrently on this card:
+The original implementation targeted one RTX 5060 Laptop GPU (8151 MiB). On the
+shared 48 GB RunPod, this file remains MaskFactory-internal critical-section
+advice only. Cross-project admission is owned by SharedRunPodCoordinator v2;
+MaskFactory lock presence alone cannot veto unrelated ComfyUI work.
+
+Legacy internal consumer classes:
 
   * ``nuclio-sam2``  - CVAT Nuclio SAM2 interactor (loads on demand).
   * ``ollama-vlm``   - Ollama VLM/LLM QA runner (qwen2.5vl:7b ~5.7 GiB weights).
@@ -314,6 +318,10 @@ def decide(
     apps = snapshot.get("compute_apps") or []
     foreign = [app for app in apps if app.get("foreign")]
 
+    if consumer == "comfyui" and gpus and int(gpus[0]["total_mib"]) >= 45000:
+        # Match SharedRunPodCoordinator v2's mandatory 8 GB transient reserve.
+        safety_mib = max(safety_mib, 8192)
+
     decision = SequenceDecision(
         consumer=consumer,
         required_mib=required,
@@ -339,11 +347,18 @@ def decide(
         owner_purpose = owner.get("purpose") if owner else None
         if owner_purpose == consumer:
             decision.reasons.append(f"gpu.lock already held for '{consumer}' (pid={owner_pid})")
+        elif consumer == "comfyui" and gpus and int(gpus[0]["total_mib"]) >= 45000:
+            # On the shared 48 GB RunPod this lock protects MaskFactory's own
+            # critical section. It is not cross-project exclusion authority.
+            decision.reasons.append(
+                f"MaskFactory-internal gpu.lock purpose='{owner_purpose}' pid={owner_pid}; "
+                "not a ComfyUI capacity veto on the 48 GB pod"
+            )
         else:
             decision.decision = "wait_lock"
             decision.reasons.append(
                 f"gpu.lock held by purpose='{owner_purpose}' pid={owner_pid} age={age:.0f}s; "
-                "serialize behind current owner"
+                "serialize behind current MaskFactory owner"
             )
             return decision
     elif state == "stale":

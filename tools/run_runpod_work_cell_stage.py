@@ -20,7 +20,12 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from maskfactory.autonomy.work_cell_receipts import (
+ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT / "src"
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
+
+from maskfactory.autonomy.work_cell_receipts import (  # noqa: E402
     WorkCellReceiptError,
     load_json_artifact,
     receipt_from_stage_artifact,

@@ -13,9 +13,14 @@ from typing import Any
 
 from jsonschema import Draft202012Validator
 
-from maskfactory.autonomy.work_cell import AutonomousWorkCell
-from maskfactory.autonomy.work_cell_command_handlers import CommandStageHandler
-from maskfactory.autonomy.work_cell_runner import WorkCellRunner
+ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT / "src"
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
+
+from maskfactory.autonomy.work_cell import AutonomousWorkCell  # noqa: E402
+from maskfactory.autonomy.work_cell_command_handlers import CommandStageHandler  # noqa: E402
+from maskfactory.autonomy.work_cell_runner import WorkCellRunner  # noqa: E402
 
 
 def _read(path: Path) -> Any:

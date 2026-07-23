@@ -24,12 +24,13 @@ already decided. A small number of actions genuinely need Kevin — see
 `06_BLOCKERS_AMBIGUITY_AND_ESCALATION.md` for the exact list. Everything
 else is yours to execute.
 
-**Docker Desktop is in that autonomous scope.** When the engine is up, you
-start/repair/smoke CVAT, Nuclio/SAM2, Ollama, and GPU containers yourself
-per `Plan\DOCKER_RUNTIME_AND_SESSION_USE.md`. Do not pause to ask whether
-you may use Docker, and do not treat a stale “Docker was off” memory as
-current state — live-probe first, then operate the stack for every in-scope
-verify clause.
+**Local GPU/runtime operation is outside routine autonomous scope.** Never
+probe, start, restart, repair, update, pull, build, or execute MaskFactory work
+through local Docker Desktop, WSL, CVAT, Nuclio/SAM2, Ollama, or the local GPU
+unless Kevin explicitly requests that exact local operation in the current
+turn. Production execution belongs on persistent RunPod storage under the
+shared coordinator. If RunPod is unavailable, continue CPU-only implementation
+and block only the affected runtime item; never substitute the laptop.
 
 ## 2. Spec Fidelity — Build To The Document, Not To Memory
 
@@ -158,7 +159,7 @@ doctor-green, or mark production complete on weaker proof.
 | Tier vocabulary | Meaning |
 |---|---|
 | `STATIC_PASS` | Schemas, fixtures, sealed producers, host-side contracts, unit/integration tests without live GPU/Main/production authority |
-| `RUNTIME_PASS_BOUNDED` | Live local runtime proof inside an explicit bound (service smoke, package hard QA on a named artifact) |
+| `RUNTIME_PASS_BOUNDED` | Live production proof on persistent RunPod under a valid shared-coordinator lease, bound to exact runtime and artifact hashes; an explicitly requested local integration smoke proves only that optional local integration |
 | `VISUAL_QA_PASS_BOUNDED` | Human/agent pixel review pass on named artifacts; defects veto gold |
 | `PRODUCTION_EVIDENCE_PASS` | Real adopted Main/ComfyUI/production receipts bound by commit/hash |
 | `AWAITING_MAIN` | Producer STATIC credit retained; blocked until KevinSGarrett/Comfy_UI_Main supplies real artifacts |
@@ -168,7 +169,7 @@ doctor-green, or mark production complete on weaker proof.
 Rules:
 - Fixture Main / `fixture_authority` / producer_partial = **`STATIC_PASS` only**. Never `complete` P6-11/12 on that alone.
 - Tracker notes and blocked reasons for those items must use `STATIC_PASS` / `AWAITING_MAIN` vocabulary via `tracker.py` only.
-- Docker Desktop is autonomous when up (`Plan\DOCKER_RUNTIME_AND_SESSION_USE.md`), but a past green doctor or smoke does **not** remain current — re-probe. Do not claim doctor-green while disk/WSL/preflight fails.
+- Local Docker/WSL/CVAT/Nuclio/SAM2/Ollama availability is not a session preflight, next-action input, or production progress signal. Do not probe or operate it without Kevin's exact current-turn request.
 - External MaskedWarehouse masks retain external-labeled-reference authority rather than operational gold. After exact provenance, rights, remap/ontology, integrity, alignment, identity, and leakage qualification, they are required inputs for their permitted training, semantic-calibration, seeded-defect, multi-person, and benchmark scopes. Strategy receipts and sample probes alone are not admission.
 - Semantic visual-role positives must use real pixels and evidence-qualified masks. Synthetic shapes and old draft/in-review/rejected package masks are never valid semantic positive controls.
 - The required real corpus roots are `C:\Comfy_UI_Main\MaskedWarehouse` and `F:\Reference_Images\Ultimate_Masking_Reference_Images`, with persistent RunPod mirrors under `/workspace/assets/MaskedWarehouse` and `/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images`.
@@ -180,7 +181,7 @@ package-freeze panels, and hand/clothing climbs: the **STRICT self-hosted VLM
 gate** is mandatory whenever masks/panels exist. Use the exact evidence-qualified primary and
 independent-family juror selected under doc 25; temperature=0 /
 seed=1337; source+mask+overlay panels; fail-closed as `VISUAL_CRITIC_BLOCKED`
-if Ollama/models unavailable or `--skip-vlm` is attempted. VLM never clears
+if the qualified RunPod critics/models are unavailable or `--skip-vlm` is attempted. VLM never clears
 hard QC BLOCK and never alone mints gold. qwen-only rubber stamps are
 forbidden. Follow `13_SELF_HOSTED_STRICT_VLM_GATE.md` and Standing Orders
 § SELF-HOSTED STRICT VLM GATE. NEVER EC2; no cloud LLMs for MF VLM QA.

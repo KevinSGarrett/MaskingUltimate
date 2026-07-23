@@ -1,6 +1,11 @@
 # Autonomous Session Handoff — 2026-07-19 (rev: disk relocation + doctor climb)
 
 > **Binding standing orders (canonical):** [`Plan/STANDING_ORDERS_AUTONOMOUS_BUILD.md`](STANDING_ORDERS_AUTONOMOUS_BUILD.md) — read before continuing. This handoff is situational state only; standing orders win on conflict.
+>
+> **Superseded local-runtime directions:** This historical handoff does not
+> authorize Docker, WSL, CVAT, Nuclio, SAM2, Ollama, local-GPU probes, startup,
+> repair, or workload execution. Follow the current RunPod-only execution
+> invariant and `Plan/DOCKER_RUNTIME_AND_SESSION_USE.md`.
 
 Fully autonomous continuation. **No Kevin/human blockers.** Every former "Kevin action" is
 reclassified into an agent-executable path in `qa/live_verification/needs_agent_actions_20260719.json`.
@@ -314,11 +319,13 @@ production CVAT v2.24, and branch history. **No `docker system prune` / volume w
 ## How to resume
 
 1. `cd C:\Comfy_UI_Main_Masking` && `git checkout codex/maskfactory-runtime-implementation` && `git pull`.
-2. Re-read `Plan/DOCKER_RUNTIME_AND_SESSION_USE.md`; live-probe Docker/CVAT/Ollama.
-3. Confirm `data/` junction resolves (`cmd /c dir data` → ~251 GiB free) and `doctor` disk_free PASS.
-4. Work the agent queue: `qa/live_verification/needs_agent_actions_20260719.json` — no human items.
-5. If an elevated agent shell is available, run `tools/Repair-MaskFactoryWslVhd.ps1 -ConfirmRepair` to clear
-   the last 3 doctor FAILs; otherwise continue all non-WSL lanes (GPU via container).
+2. Re-read `Plan/DOCKER_RUNTIME_AND_SESSION_USE.md`; do not probe or start local Docker/CVAT/Ollama without Kevin's exact current-turn request.
+3. Work from the current tracker and current standing orders; this historical
+   handoff's local disk/doctor/WSL recovery steps are superseded.
+4. Do not execute the historical local agent queue as a current next-action
+   source; select current RunPod or CPU-only work from `tracker.py next`.
+5. Never repair WSL or substitute local/container GPU execution without Kevin's
+   exact current-turn request.
 6. Champions>0 only via the legitimate measured path (certified gold → P5 entry → training → measured win →
    promotion); **never** force-register a draft/challenger.
 7. Main adoption continues in the Main repo with real artifacts pinned back here — fixture/producer STATIC

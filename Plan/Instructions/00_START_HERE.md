@@ -81,21 +81,15 @@ dashboard separates core from optional blockers and prioritizes unfinished
 core items. Trust it over any assumption about "where the project probably is."
 
 For production work, first verify the current RunPod pod, persistent-volume
-paths, corpus mirrors, and SharedRunPodCoordinator lease state. Re-read
-`Plan\DOCKER_RUNTIME_AND_SESSION_USE.md` and probe local Docker only when an
-explicitly selected local integration item requires CVAT/Nuclio/Ollama:
+paths, corpus mirrors, and SharedRunPodCoordinator lease state. Do **not** run
+`docker`, `wsl`, local CVAT/Nuclio/SAM2/Ollama probes, a local runtime doctor,
+or local GPU commands during session bootstrap. Do not start, restart, repair,
+update, pull, or build any local runtime component unless Kevin explicitly
+requests that exact local operation in the current turn. RunPod unavailability
+does not authorize local inference; continue CPU-only work and leave only the
+affected runtime item blocked. See `Plan\DOCKER_RUNTIME_AND_SESSION_USE.md`.
 
-```
-docker info
-docker ps
-curl.exe -s http://localhost:8080/api/server/about
-curl.exe -s http://127.0.0.1:11434/api/version
-```
-
-Those local probes are diagnostics/optional integration evidence only; they
-must not be reported as production masking or visual-authority progress.
-Do not claim doctor-green from chat memory; re-run `maskfactory doctor` only
-when its local verify clause matters. Proof-tier vocabulary (`STATIC_PASS`, `AWAITING_MAIN`,
+Proof-tier vocabulary (`STATIC_PASS`, `AWAITING_MAIN`,
 `RUNTIME_PASS_BOUNDED`, etc.) is defined in `02_AUTONOMOUS_OPERATING_RULES.md`
 §11 — fixture/Main-simulator credit never closes P6-11/12 production.
 

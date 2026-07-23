@@ -18,14 +18,12 @@ because the work is done or because context/time is running out.
    cannot redefine core completion.
 3. **RunPod production awareness (mandatory for production work).** Verify the
    current pod, persistent-volume paths, corpus mirrors, and shared coordinator.
-   Re-read `Plan\DOCKER_RUNTIME_AND_SESSION_USE.md` and probe Docker Desktop
-   (`docker info`, `docker ps`, CVAT `localhost:8080/api/server/about`,
-   Ollama `127.0.0.1:11434/api/version`, `wsl -l -v`) before any
-   only before an explicitly selected local CVAT/Nuclio/Ollama integration item. Do not trust a prior chat memory
-   that Docker was off. When the engine is up, start/repair/smoke services
-   yourself (`python tools/bootstrap_cvat.py`, smokes, `maskfactory doctor`)
-   for every in-scope need — do not wait for Kevin to operate containers.
-   Never treat local doctor-green as production progress or authority.
+   Do **not** invoke `docker`, Docker Desktop, `wsl`, local CVAT/Nuclio/SAM2,
+   local Ollama, a local runtime doctor, or local GPU probes during bootstrap.
+   Never start, restart, repair, update, pull, build, or execute those local
+   components unless Kevin explicitly requests that exact operation in the
+   current turn. If RunPod admission is unavailable, continue CPU-only work;
+   do not substitute the laptop and do not globally block the project.
 4. **Proof-tier honesty.** Before marking bridge/core items complete, re-read
    `02` §11. P6-11/12 producer fixture work is `STATIC_PASS` +
    `AWAITING_MAIN` until real Main adoption/runtime evidence exists. Record

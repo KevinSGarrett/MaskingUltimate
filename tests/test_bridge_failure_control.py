@@ -111,6 +111,19 @@ def test_healthy_admission_permits_provider_without_fallback() -> None:
     assert validate_failure_control_evidence(evidence) == ()
 
 
+def test_vram_fields_are_telemetry_and_cannot_refuse_provider() -> None:
+    observation = _healthy_observation()
+    observation["request"] = _request(vram_mb=1)
+    observation["route_requirements"] = _route(vram_mb=999_999_999)
+
+    evidence = build_failure_control_evidence(observation, decided_at="2026-07-19T12:05:00Z")
+
+    assert evidence["status"] == "accepted"
+    assert evidence["admission"]["resource_feasible"] is True
+    assert evidence["admission"]["provider_invocation_permitted"] is True
+    assert validate_failure_control_evidence(evidence) == ()
+
+
 @pytest.mark.parametrize(
     ("fault_kind", "domain", "retryable"),
     [
@@ -194,7 +207,8 @@ def test_silent_fallback_artifact_is_rejected() -> None:
 def test_deadline_and_resource_envelope_refuse_provider() -> None:
     observation = _healthy_observation()
     observation["at_time"] = "2026-07-19T14:00:00Z"  # after deadline
-    observation["route_requirements"] = _route(vram_mb=99999)
+    observation["route_requirements"] = _route()
+    observation["route_requirements"]["required_ram_mb"] = 99999
     evidence = build_failure_control_evidence(observation, decided_at="2026-07-19T14:00:00Z")
     assert evidence["status"] == "accepted"
     assert evidence["admission"]["deadline_met"] is False

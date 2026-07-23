@@ -94,6 +94,17 @@ def test_accepts_required_capabilities_while_optional_stays_distinct() -> None:
     )
 
 
+def test_vram_fields_are_telemetry_and_cannot_refuse_admission() -> None:
+    offer = _offer()
+    offer["runtime"]["maximum_vram_mb"] = 999_999_999
+
+    decision, issues = _evaluate(_admission(offers=[offer]), {})
+
+    assert not issues
+    assert decision["status"] == "accepted"
+    assert "__global__.latency_resources" not in decision["rejection_reasons"]
+
+
 def test_rejects_wrong_role_or_revoked_signer() -> None:
     requirements = _requirements()
     wrong_role_keys = copy.deepcopy(BUILDER["TRUSTED_KEYS"])

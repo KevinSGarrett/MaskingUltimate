@@ -10,8 +10,8 @@ require Kevin versus which are yours to handle autonomously.
 
 1. Check `Plan\15_RISKS_OPERATIONS_RUNBOOK.md` §7 first — it's an
    extensive troubleshooting table (sm_120 kernel errors, CVAT 502s, SAM2
-   interactor stalls, Ollama OOM, DVC push failures, stale GPU locks, and
-   more) built specifically for this project's known failure modes. Most
+   interactor stalls, Ollama OOM, DVC push failures, and more) built
+   specifically for this project's known failure modes. Most
    technical blockers are already answered there.
 2. If the runbook resolves it: fix it, verify the fix actually worked, and
    proceed — no need to log this as a blocker if it was transient and

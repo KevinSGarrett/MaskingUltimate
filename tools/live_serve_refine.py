@@ -127,7 +127,6 @@ def main() -> None:
             except subprocess.TimeoutExpired:
                 server.kill()
                 server.wait(timeout=10)
-            _remove_owned_stale_lock(server.pid)
 
 
 def _wait_for_health(server: subprocess.Popen, port: int, stderr_path: Path) -> dict:
@@ -144,19 +143,6 @@ def _wait_for_health(server: subprocess.Popen, port: int, stderr_path: Path) -> 
         except (OSError, json.JSONDecodeError):
             time.sleep(0.5)
     raise TimeoutError("serving health endpoint did not become ready")
-
-
-def _remove_owned_stale_lock(server_pid: int) -> None:
-    lock_path = ROOT / "runs/gpu.lock"
-    if not lock_path.is_file():
-        return
-    try:
-        document = json.loads(lock_path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
-        raise RuntimeError("serving probe left an unreadable GPU lock") from exc
-    if document.get("pid") != server_pid or document.get("purpose") != "serve_mode_b":
-        raise RuntimeError("refusing to remove a GPU lock not owned by the bounded serving probe")
-    lock_path.unlink()
 
 
 if __name__ == "__main__":

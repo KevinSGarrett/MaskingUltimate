@@ -172,7 +172,6 @@ def _global_outcomes(
             <= runtime.get("maximum_p50_latency_ms", -1)
             and row.get("maximum_p95_latency_ms", float("inf"))
             <= runtime.get("maximum_p95_latency_ms", -1)
-            and row.get("maximum_vram_mb", float("inf")) <= runtime.get("maximum_vram_mb", -1)
             and row.get("maximum_ram_mb", float("inf")) <= runtime.get("maximum_ram_mb", -1)
             and row.get("maximum_output_bytes", float("inf"))
             <= runtime.get("maximum_output_bytes", -1)

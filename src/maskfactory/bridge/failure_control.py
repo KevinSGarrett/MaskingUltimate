@@ -90,7 +90,6 @@ def _deadline_met(request: Mapping[str, Any], at_time: str) -> bool:
 def _resource_feasible(request: Mapping[str, Any], route: Mapping[str, Any]) -> bool:
     envelope = _mapping(request.get("resource_envelope"))
     required = (
-        ("maximum_vram_mb", "required_vram_mb"),
         ("maximum_ram_mb", "required_ram_mb"),
         ("maximum_runtime_ms", "required_runtime_ms"),
         ("maximum_queue_ms", "observed_queue_ms"),

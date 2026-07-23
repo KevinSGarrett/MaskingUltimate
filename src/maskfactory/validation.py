@@ -5952,7 +5952,6 @@ def validate_bridge_exchange(
                 )
         if isinstance(resources, Mapping):
             for observed_field, max_field in (
-                ("peak_vram_mb", "maximum_vram_mb"),
                 ("peak_ram_mb", "maximum_ram_mb"),
                 ("output_bytes", "maximum_output_bytes"),
             ):

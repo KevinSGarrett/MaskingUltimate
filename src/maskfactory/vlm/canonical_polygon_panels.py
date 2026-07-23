@@ -220,6 +220,29 @@ def materialize_candidate_panels(
                     "gold_or_production_authority": False,
                 }
             )
+        tile_width, tile_height, columns = 720, 260, 4
+        contact = Image.new(
+            "RGB",
+            (tile_width * columns, tile_height * ((len(rows) + columns - 1) // columns)),
+            color=(18, 18, 18),
+        )
+        contact_draw = ImageDraw.Draw(contact)
+        for index, row in enumerate(rows):
+            zoom_path = stage / row["sample_id"] / row["panel_files"]["target_zoom"]
+            with Image.open(zoom_path) as opened:
+                tile = opened.convert("RGB")
+                tile.thumbnail((tile_width, tile_height - 24), Image.Resampling.LANCZOS)
+                tile = tile.copy()
+            x = (index % columns) * tile_width
+            y = (index // columns) * tile_height
+            contact.paste(tile, (x, y + 24))
+            contact_draw.text(
+                (x + 4, y + 4),
+                f"{index + 1:02d} {row['sample_id']}",
+                fill=(255, 255, 255),
+            )
+        contact_path = stage / "contact_sheet.png"
+        contact.save(contact_path, format="PNG", optimize=False, compress_level=9)
         report: dict[str, Any] = {
             "schema_version": SCHEMA_VERSION,
             "artifact_type": "canonical_polygon_source_visual_evidence",
@@ -231,6 +254,12 @@ def materialize_candidate_panels(
             "record_count": len(rows),
             "panel_count": len(rows) * len(PANEL_NAMES),
             "panels_per_record": list(PANEL_NAMES),
+            "contact_sheet": {
+                "path": "contact_sheet.png",
+                "sha256": sha256_file(contact_path),
+                "scheduling_and_navigation_aid_only": True,
+                "per_record_evidence_required": True,
+            },
             "records": rows,
             "next_required_stage": (
                 "per_record_visual_alignment_review_and_immutable_"
@@ -253,8 +282,58 @@ def materialize_candidate_panels(
         raise
 
 
+def verify_candidate_panel_report(document: Mapping[str, Any], root: Path) -> None:
+    """Verify the immutable output without upgrading its visual authority."""
+
+    if (
+        document.get("schema_version") != SCHEMA_VERSION
+        or document.get("authority_claimed") is not False
+        or document.get("visual_alignment_qualification_complete") is not False
+        or document.get("critic_positive_control_authority_granted") is not False
+    ):
+        raise CanonicalPolygonPanelError("panel report authority drift")
+    payload = {key: value for key, value in document.items() if key != "self_sha256"}
+    if document.get("self_sha256") != canonical_sha256(payload):
+        raise CanonicalPolygonPanelError("panel report self hash mismatch")
+    rows = document.get("records")
+    if (
+        not isinstance(rows, list)
+        or len(rows) != document.get("record_count")
+        or document.get("panel_count") != len(rows) * len(PANEL_NAMES)
+    ):
+        raise CanonicalPolygonPanelError("panel report counts drift")
+    root = Path(root).resolve(strict=True)
+    for row in rows:
+        if (
+            row.get("visual_alignment_reviewed") is not False
+            or row.get("critic_positive_control_eligible") is not False
+            or row.get("gold_or_production_authority") is not False
+        ):
+            raise CanonicalPolygonPanelError("panel row authority drift")
+        for name in PANEL_NAMES:
+            relative = Path(str(row["sample_id"])) / str(row["panel_files"][name])
+            path = (root / relative).resolve(strict=True)
+            try:
+                path.relative_to(root)
+            except ValueError as exc:
+                raise CanonicalPolygonPanelError("panel path escapes output root") from exc
+            if sha256_file(path) != row["panel_sha256s"][name]:
+                raise CanonicalPolygonPanelError(f"panel file hash drift:{row['sample_id']}:{name}")
+    contact = document.get("contact_sheet")
+    if not isinstance(contact, Mapping):
+        raise CanonicalPolygonPanelError("contact sheet binding missing")
+    contact_path = (root / str(contact.get("path"))).resolve(strict=True)
+    if (
+        contact.get("scheduling_and_navigation_aid_only") is not True
+        or contact.get("per_record_evidence_required") is not True
+        or sha256_file(contact_path) != contact.get("sha256")
+    ):
+        raise CanonicalPolygonPanelError("contact sheet authority or hash drift")
+
+
 __all__ = [
     "CanonicalPolygonPanelError",
     "materialize_candidate_panels",
     "render_candidate_panels",
+    "verify_candidate_panel_report",
 ]

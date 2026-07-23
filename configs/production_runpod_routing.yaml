@@ -32,6 +32,30 @@ local_scope:
     - local_nuclio
     - local_ollama
     - local_sam2_smoke
+  artifact_boundary:
+    compact_evidence_only: true
+    runtime_artifact_budget_bytes: 67108864
+    large_artifact_threshold_bytes: 16777216
+    large_artifact_destination: /workspace
+    transfer_staging_root: system_temp
+    delete_transfer_staging_after_remote_hash_verification: true
+    forbidden_local_artifact_kinds:
+      - model_weights
+      - dataset_copies
+      - generated_mask_batches
+      - visual_panel_batches
+      - training_checkpoints
+      - container_images
+  docker_mutation:
+    default: forbidden
+    requires_explicit_user_authorization: true
+    requires_selected_local_integration_item: true
+    forbidden_without_both_requirements:
+      - pull
+      - build
+      - update
+      - volume_creation
+      - cache_growth
 
 provider_priorities:
   concept_and_interactive_segmentation:

@@ -24,6 +24,37 @@ def test_active_policy_is_runpod_first_and_sam31_first() -> None:
         assert validate_canary_provider_route(route)[0] == "sam3_1"
 
 
+def test_local_artifacts_are_compact_and_docker_mutation_is_deny_by_default() -> None:
+    policy = load_production_routing()
+    local = policy["local_scope"]
+    artifacts = local["artifact_boundary"]
+    assert artifacts["compact_evidence_only"] is True
+    assert artifacts["runtime_artifact_budget_bytes"] == 64 * 1024 * 1024
+    assert artifacts["large_artifact_threshold_bytes"] == 16 * 1024 * 1024
+    assert artifacts["large_artifact_destination"] == "/workspace"
+    assert artifacts["delete_transfer_staging_after_remote_hash_verification"] is True
+    assert "model_weights" in artifacts["forbidden_local_artifact_kinds"]
+    assert "visual_panel_batches" in artifacts["forbidden_local_artifact_kinds"]
+    docker = local["docker_mutation"]
+    assert docker["default"] == "forbidden"
+    assert docker["requires_explicit_user_authorization"] is True
+    assert docker["requires_selected_local_integration_item"] is True
+
+
+def test_local_artifact_or_docker_boundary_drift_fails_closed() -> None:
+    policy = load_production_routing()
+    artifact_drift = deepcopy(policy)
+    artifact_drift["local_scope"]["artifact_boundary"][
+        "large_artifact_destination"
+    ] = "C:/Comfy_UI_Main_Masking/runtime_artifacts"
+    with pytest.raises(ProductionRoutingError, match="local_artifact_boundary"):
+        validate_production_routing(artifact_drift)
+    docker_drift = deepcopy(policy)
+    docker_drift["local_scope"]["docker_mutation"]["default"] = "allowed"
+    with pytest.raises(ProductionRoutingError, match="local_docker_mutation_boundary"):
+        validate_production_routing(docker_drift)
+
+
 def test_legacy_pipeline_sam2_route_cannot_be_mistaken_for_production() -> None:
     pipeline = yaml.safe_load(Path("configs/pipeline.yaml").read_text(encoding="utf-8"))
     assert pipeline["execution_scope"] == "legacy_local_integration_only_no_production_authority"

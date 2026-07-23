@@ -77,6 +77,46 @@ def validate_production_routing(document: Mapping[str, Any]) -> None:
         "local_sam2_smoke",
     }.issubset(forbidden):
         raise ProductionRoutingError("local_health_progress_firewall_incomplete")
+    artifact_boundary = _mapping(local.get("artifact_boundary"), "local_artifact_boundary")
+    if (
+        artifact_boundary.get("compact_evidence_only") is not True
+        or artifact_boundary.get("runtime_artifact_budget_bytes") != 67_108_864
+        or artifact_boundary.get("large_artifact_threshold_bytes") != 16_777_216
+        or artifact_boundary.get("large_artifact_destination") != "/workspace"
+        or artifact_boundary.get("transfer_staging_root") != "system_temp"
+        or artifact_boundary.get("delete_transfer_staging_after_remote_hash_verification")
+        is not True
+    ):
+        raise ProductionRoutingError("local_artifact_boundary_invalid")
+    forbidden_artifacts = set(
+        _strings(
+            artifact_boundary.get("forbidden_local_artifact_kinds"),
+            "forbidden_local_artifact_kinds",
+        )
+    )
+    if forbidden_artifacts != {
+        "model_weights",
+        "dataset_copies",
+        "generated_mask_batches",
+        "visual_panel_batches",
+        "training_checkpoints",
+        "container_images",
+    }:
+        raise ProductionRoutingError("forbidden_local_artifact_kinds_invalid")
+    docker = _mapping(local.get("docker_mutation"), "local_docker_mutation")
+    if (
+        docker.get("default") != "forbidden"
+        or docker.get("requires_explicit_user_authorization") is not True
+        or docker.get("requires_selected_local_integration_item") is not True
+        or set(
+            _strings(
+                docker.get("forbidden_without_both_requirements"),
+                "local_docker_forbidden_actions",
+            )
+        )
+        != {"pull", "build", "update", "volume_creation", "cache_growth"}
+    ):
+        raise ProductionRoutingError("local_docker_mutation_boundary_invalid")
 
     priorities = _mapping(document.get("provider_priorities"), "provider_priorities")
     interactive = _strings(

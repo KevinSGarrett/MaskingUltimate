@@ -12158,3 +12158,21 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   `qa/live_verification/runpod_visual_critic_current_protocol_preflight_20260723.json`.
   Thirty-seven focused tests, Ruff, Black, tracker validation, and diff
   integrity pass.
+
+## 2026-07-23 - Fail-closed local storage and Docker boundary
+
+- Hardened the active RunPod production-routing policy after a local-storage
+  audit found that historical runtime artifacts and Docker state had grown
+  independently of the current RunPod qualification work.
+- Local runtime output is now limited to compact control/evidence material
+  with a 64 MiB aggregate budget and a 16 MiB large-file threshold. Model
+  weights, dataset copies, generated mask or visual-panel batches, training
+  checkpoints, and container images belong on persistent `/workspace` storage.
+  Transfer staging must use the system temporary directory and be deleted
+  after exact remote hash verification.
+- Docker pull, build, update, volume creation, and cache growth now fail the
+  active policy unless both explicit Kevin authorization and a selected local
+  integration item are present. Existing Docker bytes were not changed or
+  deleted.
+- Six focused tests, Ruff, Black, and diff integrity pass. This policy change
+  grants no model, visual-review, mask, package, or certificate authority.

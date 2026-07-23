@@ -14804,12 +14804,22 @@
           "ts": "2026-07-23T00:37:44+00:00",
           "actor": "codex",
           "text": "2026-07-23 RunPod current-protocol preflight: persistent Qwen3-VL-30B and InternVL3.5-8B model trees and Hugging Face revisions exactly match the modern catalog (sealed report b4081fb9...). configs/vlm.yaml now hash-binds the catalog, single-board prompt, implementation, runner, and frozen corpus; 37 focused tests pass. No role is assigned: both historical 0%-valid-mask results remain failed, certification abstains, and fresh current-protocol runs plus current role certificates and a real adult-anatomy batch canary remain required. Tokenless lease lease_00bb91ac... has no owner/heartbeat/pod PID and will be formally reconciled only after its exact 2026-07-23T01:38:19Z expiry."
+        },
+        {
+          "ts": "2026-07-23T01:11:25+00:00",
+          "actor": "codex",
+          "text": "2026-07-23 authority correction: the scheduled 12-case current-protocol corpus contains 2 valid and 10 seeded-defect real cases but only one label (right_arm_external_reference). Fresh Qwen/InternVL results may prove bounded protocol behavior only. Full role qualification, catalog promotion, and role-certificate issuance remain forbidden until the frozen 66-class/risk/domain suite, complete positive/negative coverage, adult-anatomy and multi-person ownership strata, and current independent-family passes exist; certification continues to abstain."
+        },
+        {
+          "ts": "2026-07-23T01:12:46+00:00",
+          "actor": "codex",
+          "text": "Evidence-field consolidation only: preserve the prior RunPod visual-authority reconciliation and catalog/test binding alongside the newer single-label protocol-canary authority limit; no status, percent, or runtime claim changed."
         }
       ],
-      "evidence": "qa/live_verification/runpod_visual_authority_reconciliation_20260722.json SHA-256 f483d069feb5d84628227363c686626eb19c51229ef3f2d53e8af2eb0c5517c7; catalog 322d47c2aa48d05162186d0f616d6de4218d8cb952359d118218c25e21da828a; 156 focused tests PASS",
+      "evidence": "qa/live_verification/runpod_visual_authority_reconciliation_20260722.json SHA-256 f483d069feb5d84628227363c686626eb19c51229ef3f2d53e8af2eb0c5517c7; catalog 322d47c2aa48d05162186d0f616d6de4218d8cb952359d118218c25e21da828a; prior 156 focused tests PASS; qa/live_verification/runpod_visual_critic_protocol_canary_authority_boundary_20260723.json self_sha256=2f0dc50fd3b65815bb8ebf5d4267bfdec488fcfbacf99362eac330160a667d90; current 28 focused tests plus Ruff/Black pass",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-23T00:37:44+00:00",
+      "updated_at": "2026-07-23T01:12:46+00:00",
       "orphaned": false
     },
     "MF-P4-11.19": {

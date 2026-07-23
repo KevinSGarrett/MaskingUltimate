@@ -53,6 +53,21 @@ def test_current_single_board_protocol_is_exactly_hash_bound() -> None:
     assert PROMPT_SHA256 == protocol["prompt_sha256"]
 
 
+def test_narrow_right_arm_protocol_canary_cannot_issue_role_authority() -> None:
+    protocol = _load("configs/vlm.yaml")["production_runtime"]["qualification_protocol"]
+
+    assert protocol["qualification_scope"] == "protocol_behavior_canary_only"
+    assert protocol["covered_label_ids"] == ["right_arm_external_reference"]
+    assert protocol["full_role_qualification"] is False
+    assert protocol["role_certificate_issuance_allowed"] is False
+    assert set(protocol["promotion_requires"]) == {
+        "frozen_66_class_and_required_risk_domain_regression",
+        "complete_positive_and_negative_real_mask_coverage",
+        "adult_anatomy_and_multi_person_ownership_strata",
+        "current_independent_family_passes",
+    }
+
+
 def test_zero_valid_mask_candidates_remain_failed_and_unassigned() -> None:
     config = _load("configs/vlm.yaml")
     catalog = _load("configs/visual_critic_catalog.yaml")

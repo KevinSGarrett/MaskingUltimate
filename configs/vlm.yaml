@@ -40,8 +40,18 @@ production_runtime:
     implementation_sha256: 2bc30300e143eb945954c3914a67828eea5c915dcd82e8e0a30e21fb2ec9d91d
     runner_sha256: d4d2eaa3578ca4e5b31eaad8bfe1b63c0adf5d790be6eab359f4c3dc05f56267
     frozen_corpus_sha256: 7064d190fb6535f09482ef504e18f4b2ff12c7ab5254ae96003e756ffc8cc9d0
+    qualification_scope: protocol_behavior_canary_only
+    covered_label_ids:
+      - right_arm_external_reference
+    full_role_qualification: false
+    role_certificate_issuance_allowed: false
     one_exact_record_per_verdict: true
     contact_sheet_authority: false
+    promotion_requires:
+      - frozen_66_class_and_required_risk_domain_regression
+      - complete_positive_and_negative_real_mask_coverage
+      - adult_anatomy_and_multi_person_ownership_strata
+      - current_independent_family_passes
   failed_candidates:
     qwen3_6_27b_fp8:
       role: independent_juror

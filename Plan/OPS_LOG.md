@@ -12176,3 +12176,23 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   deleted.
 - Six focused tests, Ruff, Black, and diff integrity pass. This policy change
   grants no model, visual-review, mask, package, or certificate authority.
+
+## 2026-07-23 - Visual protocol canary authority correction
+
+- Audited the exact frozen corpus scheduled for the current Qwen3-VL and
+  InternVL runs. It contains twelve real cases (two valid and ten seeded
+  defects), but every target is `right_arm_external_reference`.
+- The run is now explicitly classified as a protocol-behavior canary. Even a
+  perfect result cannot promote a full visual-critic role or issue a role
+  certificate from one label. `configs/vlm.yaml` fail-closes role issuance and
+  catalog promotion until the frozen 66-class/risk/domain regression,
+  complete positive/negative real-mask coverage, adult-anatomy and
+  multi-person ownership strata, and current independent-family passes exist.
+- Existing current-protocol execution remains useful and will proceed on
+  RunPod after the exact orphan lease expiry. Its outcome can select whether a
+  model merits the expanded qualification workload, but certification remains
+  abstained.
+- Evidence:
+  `qa/live_verification/runpod_visual_critic_protocol_canary_authority_boundary_20260723.json`
+  (self-seal `2f0dc50f...`). Twenty-eight focused tests, Ruff, Black, tracker
+  validation, and diff integrity pass.

@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "runpod_visual_critic_protocol_canary_authority_boundary",
+  "recorded_date": "2026-07-23",
+  "tracker_item": "MF-P4-11.18",
+  "status": "STATIC_PASS_PROTOCOL_CANARY_ROLE_AUTHORITY_OPEN",
+  "repository_head_before_change": "987efd826608b48ff9977671abe0cc659ceb3b6f",
+  "bindings": {
+    "vlm_config_sha256": "7ece3b7a678cea9425159506714a3fb281b23cc61b8e7a4d0e0595dfe30b95dd",
+    "corpus_manifest_file_sha256": "efb4abc4f73f0300d96f8f61abaaa79d96184811b6dc441660b28c3eb7f753c6",
+    "corpus_canonical_sha256": "7064d190fb6535f09482ef504e18f4b2ff12c7ab5254ae96003e756ffc8cc9d0",
+    "binding_test_sha256": "45c9cace9e511d6c27e848a159ac412598134d1aafc1788b504da1496812eed5"
+  },
+  "observed_corpus": {
+    "record_count": 12,
+    "valid_mask_count": 2,
+    "known_defect_count": 10,
+    "distinct_label_ids": [
+      "right_arm_external_reference"
+    ],
+    "scope": "protocol_behavior_canary_only"
+  },
+  "authority": {
+    "full_role_qualification": false,
+    "role_certificate_issuance_allowed": false,
+    "catalog_promotion_allowed": false,
+    "autonomous_approval_allowed": false,
+    "certification_behavior": "abstain"
+  },
+  "remaining_requirements": [
+    "frozen_66_class_and_required_risk_domain_regression",
+    "complete_positive_and_negative_real_mask_coverage",
+    "adult_anatomy_and_multi_person_ownership_strata",
+    "current_independent_family_passes"
+  ],
+  "validation": {
+    "focused_tests_passed": 28,
+    "ruff": "pass",
+    "black": "pass"
+  },
+  "claim_limits": [
+    "A passing scheduled Qwen or InternVL result on this corpus proves only bounded protocol behavior for the exact right-arm cases.",
+    "No full visual-critic role, role certificate, catalog promotion, mask approval, gold, or production authority may be issued from this corpus alone."
+  ],
+  "self_sha256": "2f0dc50fd3b65815bb8ebf5d4267bfdec488fcfbacf99362eac330160a667d90"
+}

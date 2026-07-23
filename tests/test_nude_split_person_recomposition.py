@@ -9,6 +9,7 @@ import pytest
 from PIL import Image
 
 from maskfactory.io.png_strict import write_binary_mask
+from maskfactory.nude_box_mask_generation import validate_box_prompt_provider_batch
 from maskfactory.nude_split_person_recomposition import (
     SplitPersonRecompositionError,
     build_split_person_recomposition,
@@ -71,6 +72,7 @@ def test_split_person_union_is_draft_hash_bound_and_revalidates(tmp_path: Path) 
     assert report["training_truth_created"] is False
     assert batch["records"][0]["candidates"][0]["prompt"]["box_xyxy"] == [10, 10, 90, 70]
     assert [_sha(path) for path in parents] == parent_hashes
+    assert validate_box_prompt_provider_batch(batch, output_root=kwargs["output_root"]) == batch
 
     validated_batch, validated_report = validate_split_person_recomposition(
         provider_batch=batch,

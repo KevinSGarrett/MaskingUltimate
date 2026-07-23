@@ -21,11 +21,9 @@ from PIL import Image, UnidentifiedImageError
 
 from .io.hashing import sha256_file
 from .io.png_strict import write_binary_mask
-from .nude_box_mask_generation import validate_box_prompt_provider_batch
-from .providers.contracts import PROVIDER_CONTRACT_VERSION
-from .providers.disagreement import binary_mask_sha256
 
 SHA256 = re.compile(r"^[a-f0-9]{64}$")
+PROVIDER_CONTRACT_VERSION = "1.0.0"
 OPERATION = "union_disjoint_same_owner_proposals_v1"
 DEFAULT_POLICY: dict[str, Any] = {
     "minimum_parent_count": 2,
@@ -43,6 +41,19 @@ DEFAULT_POLICY: dict[str, Any] = {
 
 class SplitPersonRecompositionError(ValueError):
     """A split-person repair precondition or retained artifact failed closed."""
+
+
+def _binary_mask_sha256(mask: np.ndarray) -> str:
+    array = np.asarray(mask)
+    if array.ndim != 2 or array.dtype != np.bool_:
+        raise SplitPersonRecompositionError("split_person_mask_not_normalized")
+    height, width = array.shape
+    digest = hashlib.sha256()
+    digest.update(b"MASKFACTORY_BOOL_MASK_V1\0")
+    digest.update(height.to_bytes(8, "big"))
+    digest.update(width.to_bytes(8, "big"))
+    digest.update(np.packbits(array, bitorder="big").tobytes())
+    return digest.hexdigest()
 
 
 def _canonical_sha256(value: Any) -> str:
@@ -153,7 +164,85 @@ def _load_parent(path: Path, *, width: int, height: int) -> tuple[np.ndarray, st
     mask = pixels == 255
     if not mask.any() or mask.all():
         raise SplitPersonRecompositionError("split_person_parent_degenerate")
-    return mask, encoded_sha256, binary_mask_sha256(mask)
+    return mask, encoded_sha256, _binary_mask_sha256(mask)
+
+
+def _validate_provider_batch(document: Mapping[str, Any], *, output_root: Path) -> dict[str, Any]:
+    if not isinstance(document, Mapping):
+        raise SplitPersonRecompositionError("split_person_batch_invalid")
+    body = {key: value for key, value in document.items() if key != "self_sha256"}
+    if (
+        document.get("schema_version") != "maskfactory.nude_box_prompt_provider_batch.v1"
+        or document.get("self_sha256") != _canonical_sha256(body)
+        or document.get("authority") != "draft_provider_masks_only"
+        or document.get("source_images_are_pixel_truth") is not False
+        or document.get("boxes_are_pixel_truth") is not False
+        or document.get("production_mask_authority") is not False
+        or document.get("operational_certificates_issued") is not False
+        or document.get("record_count") != 1
+        or document.get("candidate_count") != 1
+        or document.get("status_counts") != {"generated": 1}
+    ):
+        raise SplitPersonRecompositionError("split_person_batch_contract_invalid")
+    provider = document.get("provider")
+    if (
+        not isinstance(provider, Mapping)
+        or provider.get("provider_key") != "split_person_recomposition_v1"
+        or provider.get("role") != "interactive_segmenter"
+        or provider.get("model_family") != "deterministic_proposal_composition"
+        or provider.get("contract_version") != PROVIDER_CONTRACT_VERSION
+    ):
+        raise SplitPersonRecompositionError("split_person_batch_provider_invalid")
+    records = document.get("records")
+    if not isinstance(records, list) or len(records) != 1:
+        raise SplitPersonRecompositionError("split_person_batch_records_invalid")
+    record = records[0]
+    candidates = record.get("candidates") if isinstance(record, Mapping) else None
+    if (
+        record.get("status") != "generated"
+        or record.get("reason") != []
+        or not isinstance(record.get("sample_id"), str)
+        or not record["sample_id"]
+        or not isinstance(candidates, list)
+        or len(candidates) != 1
+    ):
+        raise SplitPersonRecompositionError("split_person_batch_record_invalid")
+    candidate = candidates[0]
+    if (
+        candidate.get("person_index") != 0
+        or candidate.get("candidate_label") != "person"
+        or candidate.get("authority") != "draft_machine_candidate_only"
+        or candidate.get("production_mask_authority") is not False
+        or candidate.get("operational_certificate_eligible") is not False
+    ):
+        raise SplitPersonRecompositionError("split_person_batch_candidate_authority_invalid")
+    relative = Path(str(candidate.get("artifact_relative_path") or ""))
+    root = Path(output_root).resolve()
+    path = (root / relative).resolve()
+    if (
+        relative.is_absolute()
+        or not relative.parts
+        or ".." in relative.parts
+        or path == root
+        or root not in path.parents
+        or not path.is_file()
+        or sha256_file(path) != candidate.get("artifact_sha256")
+    ):
+        raise SplitPersonRecompositionError("split_person_batch_artifact_invalid")
+    try:
+        with Image.open(path) as image:
+            pixels = np.asarray(image)
+            mode = image.mode
+    except (OSError, UnidentifiedImageError) as exc:
+        raise SplitPersonRecompositionError("split_person_batch_artifact_invalid") from exc
+    if mode != "L" or pixels.ndim != 2 or set(np.unique(pixels).tolist()) - {0, 255}:
+        raise SplitPersonRecompositionError("split_person_batch_artifact_not_strict_png")
+    mask = pixels == 255
+    if _binary_mask_sha256(mask) != candidate.get("mask_sha256") or int(
+        np.count_nonzero(mask)
+    ) != candidate.get("pixel_count"):
+        raise SplitPersonRecompositionError("split_person_batch_pixel_identity_invalid")
+    return dict(document)
 
 
 def _provider_identity(*, source_commit: str, runtime_fingerprint: str) -> dict[str, Any]:
@@ -314,7 +403,7 @@ def build_split_person_recomposition(
         source_commit=source_commit, runtime_fingerprint=runtime_fingerprint
     )
     artifact_sha256 = sha256_file(output_path)
-    mask_sha256 = binary_mask_sha256(union)
+    mask_sha256 = _binary_mask_sha256(union)
     plan_body = {
         "operation": OPERATION,
         "source_sha256": source_sha256,
@@ -362,7 +451,7 @@ def build_split_person_recomposition(
         "operational_certificates_issued": False,
     }
     batch = {**batch_body, "self_sha256": _canonical_sha256(batch_body)}
-    validate_box_prompt_provider_batch(batch, output_root=output_root)
+    _validate_provider_batch(batch, output_root=output_root)
     report_body = {
         "schema_version": "maskfactory.split_person_recomposition_report.v1",
         "sample_id": sample_id,
@@ -412,7 +501,7 @@ def validate_split_person_recomposition(
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """Revalidate seals, immutable parents, exact union pixels, and claim firewall."""
 
-    batch = validate_box_prompt_provider_batch(provider_batch, output_root=output_root)
+    batch = _validate_provider_batch(provider_batch, output_root=output_root)
     if not isinstance(report, Mapping):
         raise SplitPersonRecompositionError("split_person_report_invalid")
     body = {key: value for key, value in report.items() if key != "self_sha256"}

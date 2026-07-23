@@ -1,0 +1,130 @@
+{
+  "schema_version": "maskfactory.runpod_current_visual_critic_failclosed_evidence.v1",
+  "recorded_at_utc": "2026-07-23T01:55:00Z",
+  "scope": "MF-P4-11.18/MF-P4-11.19 current-protocol self-hosted visual critic qualification",
+  "platform": "runpod_persistent_storage",
+  "coordinator": {
+    "name": "SharedRunPodCoordinator",
+    "policy_guard": "PASS",
+    "qwen3vl_primary_request_id": "req_438aea8d01824df187117c6852f12eaf",
+    "qwen3vl_primary_lease_id": "lease_beefe878bf3f495fadafe291d7037572",
+    "internvl_juror_lease_id": "lease_d98e22efc7224c278f526d8b1762444f"
+  },
+  "remote_root": "/workspace/maskfactory_runtime/critic_current_protocol_20260723",
+  "model_binding_verification": {
+    "path": "/workspace/maskfactory_runtime/critic_current_protocol_20260723/visual_critic_model_binding_verification.json",
+    "sha256": "f6b892444982c46f4dd9ec845c4e11bc2b2173563e28721b1e7c72a9a06c47ce",
+    "report_sha256": "b4081fb9e1eaf6f3cfb717da70e240f3169ed50bdcee346a7191592ffe1dbea0",
+    "status": "pass",
+    "models": [
+      {
+        "model_id": "qwen3_vl_30b_a3b_instruct_fp8",
+        "artifact_tree_sha256": "dbb7d33b3ab68a356069bc577692fd347c4103c2c59ead3a65943d664a8c8d4a",
+        "revision": "d9748a51ae66354c4dad665aab2c71f26cf2c8cd"
+      },
+      {
+        "model_id": "internvl3_5_8b_bf16",
+        "artifact_tree_sha256": "e1a117fa9589a7f7bf67ff0eaf1b0c75dfd6ff24bf99142e48aa5d79897eed65",
+        "revision": "9bb6a56ad9cc69db95e2d4eeb15a52bbcac4ef79"
+      }
+    ]
+  },
+  "qualification_runs": [
+    {
+      "role_id": "primary_visual_critic",
+      "model_id": "qwen3_vl_30b_a3b_instruct_fp8",
+      "family_id": "qwen",
+      "status": "fail",
+      "authority_claimed": false,
+      "remote_exit_code": 2,
+      "qualification_path": "/workspace/maskfactory_runtime/critic_current_protocol_20260723/qwen3vl_primary_qualification.json",
+      "qualification_sha256": "997fa9ac8f081f3126b53ce4e9d8cb4d986c36ceef8c3a2952f7a8243908120a",
+      "runtime_fingerprint_path": "/workspace/maskfactory_runtime/critic_current_protocol_20260723/qwen3vl_primary_runtime_fingerprint.json",
+      "runtime_fingerprint_sha256": "724d78445b999d54ed2620e58b2f386384e6a428772061ee619846e503af401f",
+      "state_path": "/workspace/maskfactory_runtime/critic_current_protocol_20260723/qwen3vl_primary_state.json",
+      "state_sha256": "1ca96cb2ab81d13a2f497ed8b21ae0a79103ceb9ba4e976a4a8dd82341a9212b",
+      "report_sha256": "3bf1a61ba2fe0589f763b6d3991387dc2300ec2e5b20aa9f30f61d9056e11621",
+      "corpus_sha256": "7064d190fb6535f09482ef504e18f4b2ff12c7ab5254ae96003e756ffc8cc9d0",
+      "catalog_sha256": "322d47c2aa48d05162186d0f616d6de4218d8cb952359d118218c25e21da828a",
+      "thresholds_sha256": "f5bc8cb4b217a4ee5572df11c97a71677b3f742f336d661a3990bf89890cdfb5",
+      "failures": [
+        "valid_mask_pass_rate_below_minimum",
+        "ownership_accuracy_below_minimum",
+        "label_accuracy_below_minimum",
+        "deterministic_replay_rate_below_minimum"
+      ],
+      "metrics": {
+        "valid_mask_pass_rate": 0.0,
+        "defect_recall": 1.0,
+        "precision": 0.8333333333333334,
+        "serious_false_pass_rate": 0.0,
+        "schema_compliance_rate": 1.0,
+        "context_binding_rate": 1.0,
+        "evidence_localization_rate": 1.0,
+        "ownership_accuracy": 0.0,
+        "label_accuracy": 0.5,
+        "deterministic_replay_rate": 0.8333333333333334,
+        "abstention_rate": 0.0,
+        "p95_latency_ms": 2381.786420941353,
+        "peak_vram_fraction": 0.8884818884818885
+      }
+    },
+    {
+      "role_id": "independent_juror",
+      "model_id": "internvl3_5_8b_bf16",
+      "family_id": "internvl",
+      "status": "fail",
+      "authority_claimed": false,
+      "remote_exit_code": 2,
+      "qualification_path": "/workspace/maskfactory_runtime/critic_current_protocol_20260723/internvl_juror_qualification.json",
+      "qualification_sha256": "8b695eb08c834eb333cf35a743be30db476bf9169cb64b0b371e9600f3380c88",
+      "runtime_fingerprint_path": "/workspace/maskfactory_runtime/critic_current_protocol_20260723/internvl_juror_runtime_fingerprint.json",
+      "runtime_fingerprint_sha256": "6434ef28bd337ef7c81b5f62c2036e7edce14cdf91c5455fcc7b3adfd16e2b41",
+      "state_path": "/workspace/maskfactory_runtime/critic_current_protocol_20260723/internvl_juror_state.json",
+      "state_sha256": "95f8bb92bc5c57e2b7ae5286e2afbd99e1b1c71834ccd2665fbfb22a15592321",
+      "report_sha256": "e28abb2bff1792f3bb0798e0dd0c67a0d9783a7e262ba44645eae61eb2d70e47",
+      "corpus_sha256": "7064d190fb6535f09482ef504e18f4b2ff12c7ab5254ae96003e756ffc8cc9d0",
+      "catalog_sha256": "322d47c2aa48d05162186d0f616d6de4218d8cb952359d118218c25e21da828a",
+      "thresholds_sha256": "eeae5e763cdf53ba52f48cff611c6f3b13d88b4a8c25bd4c2cc22b6b11d1b4e5",
+      "failures": [
+        "valid_mask_pass_rate_below_minimum",
+        "defect_recall_below_minimum",
+        "precision_below_minimum",
+        "schema_compliance_rate_below_minimum",
+        "context_binding_rate_below_minimum",
+        "evidence_localization_rate_below_minimum",
+        "ownership_accuracy_below_minimum",
+        "label_accuracy_below_minimum",
+        "abstention_rate_above_maximum"
+      ],
+      "metrics": {
+        "valid_mask_pass_rate": 0.0,
+        "defect_recall": 0.0,
+        "precision": 0.0,
+        "serious_false_pass_rate": 0.0,
+        "schema_compliance_rate": 0.0,
+        "context_binding_rate": 0.0,
+        "evidence_localization_rate": 0.0,
+        "ownership_accuracy": 0.0,
+        "label_accuracy": 0.0,
+        "deterministic_replay_rate": 1.0,
+        "abstention_rate": 1.0,
+        "p95_latency_ms": 6359.673760831356,
+        "peak_vram_fraction": 0.4142043142043142
+      }
+    }
+  ],
+  "authority_result": {
+    "primary_visual_critic_promoted": false,
+    "independent_juror_promoted": false,
+    "role_certificate_issued": false,
+    "strict_visual_approval_enabled": false,
+    "autonomous_certification_enabled": false,
+    "continue_generation_and_deterministic_qa_only": true,
+    "reason": "Both current-protocol self-hosted visual critic candidates failed frozen positive/negative qualification thresholds on RunPod. No critic role or approval authority is available."
+  },
+  "local_validation": {
+    "work_cell_nude_queue_slice": "75 passed",
+    "visual_critic_authority_slice": "39 passed"
+  }
+}

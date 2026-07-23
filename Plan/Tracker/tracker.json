@@ -14763,7 +14763,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "in_progress",
-      "percent_complete": 85,
+      "percent_complete": 86,
       "notes": [
         {
           "ts": "2026-07-21T23:31:42+00:00",
@@ -14814,12 +14814,22 @@
           "ts": "2026-07-23T01:12:46+00:00",
           "actor": "codex",
           "text": "Evidence-field consolidation only: preserve the prior RunPod visual-authority reconciliation and catalog/test binding alongside the newer single-label protocol-canary authority limit; no status, percent, or runtime claim changed."
+        },
+        {
+          "ts": "2026-07-23T01:55:15+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-23 RunPod current-protocol execution: persistent Qwen3-VL-30B and InternVL3.5-8B model bindings passed exact path/revision/tree verification, then both live self-hosted visual critic candidates failed frozen positive/negative qualification under the shared RunPod coordinator. Qwen primary failed valid-mask pass, ownership, label accuracy, and deterministic replay gates; InternVL juror failed valid-mask, defect recall, precision, schema, context, evidence localization, ownership, label, and abstention gates. No role, certificate, visual approval, or autonomous certification authority issued; generation/deterministic QA may continue only."
+        },
+        {
+          "ts": "2026-07-23T01:55:28+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-23 RunPod current-protocol canary completed under exact shared-coordinator leases with persistent model/runtime bindings. Qwen3-VL 30B primary FAIL: valid-mask pass 0%, ownership 0%, label 50%, replay 83.3%; InternVL3.5 8B independent juror FAIL: 100% abstention, schema/recall/valid-mask pass 0%. Both remain unavailable/unpromoted; zero role certificates; strict visual authority remains VISUAL_CRITIC_BLOCKED while segmentation and deterministic QA may continue. Exact immutable evidence qa/live_verification/runpod_current_visual_critic_protocol_canary_20260723.json self_sha256=b0cbd3e5573bd18752a0790956ef2f464ac5b92b2fd710671dd52bc337ca7e65."
         }
       ],
-      "evidence": "qa/live_verification/runpod_visual_authority_reconciliation_20260722.json SHA-256 f483d069feb5d84628227363c686626eb19c51229ef3f2d53e8af2eb0c5517c7; catalog 322d47c2aa48d05162186d0f616d6de4218d8cb952359d118218c25e21da828a; prior 156 focused tests PASS; qa/live_verification/runpod_visual_critic_protocol_canary_authority_boundary_20260723.json self_sha256=2f0dc50fd3b65815bb8ebf5d4267bfdec488fcfbacf99362eac330160a667d90; current 28 focused tests plus Ruff/Black pass",
+      "evidence": "qa/live_verification/runpod_current_visual_critic_failclosed_20260723.json",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-23T01:12:46+00:00",
+      "updated_at": "2026-07-23T01:55:28+00:00",
       "orphaned": false
     },
     "MF-P4-11.19": {
@@ -14835,7 +14845,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "in_progress",
-      "percent_complete": 75,
+      "percent_complete": 76,
       "notes": [
         {
           "ts": "2026-07-21T23:36:46+00:00",
@@ -14846,12 +14856,17 @@
           "ts": "2026-07-22T23:34:19+00:00",
           "actor": "codex",
           "text": "Reopened from STATIC_PASS to required live state: same-family rejection logic remains verified, but no qualified independent-family juror role certificate exists. Qwen3.6-27B juror requalification failed valid-mask, ownership, and label gates; InternVL3.5-8B also remains failed. Item cannot complete until an exact current juror certificate exists."
+        },
+        {
+          "ts": "2026-07-23T01:55:15+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-23 independent-juror current-protocol RunPod requalification failed: InternVL3.5-8B remains unavailable as an independent-family juror (valid-mask pass 0.0, defect recall 0.0, precision 0.0, schema/context/evidence/ownership/label 0.0, abstention 1.0). Same-family quorum rejection remains static-valid, but no exact current independent-family role certificate exists."
         }
       ],
-      "evidence": "qa/live_verification/runpod_visual_authority_reconciliation_20260722.json SHA-256 f483d069feb5d84628227363c686626eb19c51229ef3f2d53e8af2eb0c5517c7; Qwen juror report 899613635fbfec84dfea2060a659204c2e85eed39cddd5f3fa9f6136873d2051",
+      "evidence": "qa/live_verification/runpod_current_visual_critic_failclosed_20260723.json",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-22T23:34:19+00:00",
+      "updated_at": "2026-07-23T01:55:15+00:00",
       "orphaned": false
     },
     "MF-P4-11.20": {

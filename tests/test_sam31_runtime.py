@@ -96,7 +96,9 @@ def _executor(runtime: OfficialSam31Runtime, *, mutate=None, returncode: int = 0
         elif request["operation"] == "discover":
             prompt_translation = "text_prompt_exact"
         elif request["prompt"]["box_xyxy"] is not None:
-            prompt_translation = "native_visual_box_prompt_exact_center_point_postcondition_only"
+            prompt_translation = (
+                "native_visual_box_prompt_exact_visual_text_center_point_postcondition_only"
+            )
         else:
             prompt_translation = "mask_prior_to_native_visual_box_prompt_exact"
         report = {
@@ -282,6 +284,7 @@ def test_host_and_runner_share_payload_hash_and_deterministic_prompt_geometry() 
     assert '"text": concept' in runner
     assert 'payload["bounding_boxes"] = normalized_boxes' in runner
     assert 'payload["bounding_box_labels"] = box_labels' in runner
+    assert '"text": "visual"' in runner
     assert '"bounding_boxes": [normalized_box]' in runner
     assert '"bounding_box_labels": [1]' in runner
     assert '"points": relative' not in runner

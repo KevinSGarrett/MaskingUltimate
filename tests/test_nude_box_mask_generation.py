@@ -166,6 +166,87 @@ def test_generates_strict_hash_bound_draft_and_skips_catalog_abstain(tmp_path: P
     assert replay == result
 
 
+def test_box_prompt_generation_removes_tiny_provider_islands_without_qc_weakening(
+    tmp_path: Path,
+):
+    source = tmp_path / "source.png"
+    Image.new("RGB", (120, 120), (20, 30, 40)).save(source)
+    source_sha = hashlib.sha256(source.read_bytes()).hexdigest()
+    record = compare_person_proposal_catalogs(
+        sample_id="sample-speckled",
+        source_sha256=source_sha,
+        image_size=[120, 120],
+        provider_records=[
+            {
+                "provider_id": "detector-a",
+                "family_id": "detector-family-a",
+                "revision": "r1",
+                "artifact_sha256": "1" * 64,
+                "source_sha256": source_sha,
+                "proposals": [
+                    {
+                        "bbox_xyxy": [5, 5, 115, 115],
+                        "confidence": 0.9,
+                        "label": "person",
+                        "authority": "proposal_only",
+                    }
+                ],
+            },
+            {
+                "provider_id": "detector-b",
+                "family_id": "detector-family-b",
+                "revision": "r2",
+                "artifact_sha256": "2" * 64,
+                "source_sha256": source_sha,
+                "proposals": [
+                    {
+                        "bbox_xyxy": [6, 6, 114, 114],
+                        "confidence": 0.8,
+                        "label": "person",
+                        "authority": "proposal_only",
+                    }
+                ],
+            },
+        ],
+    )
+    body = {
+        "schema_version": "maskfactory.nude_person_catalog_batch.v1",
+        "record_count": 1,
+        "records": [record],
+    }
+    catalog = {**body, "self_sha256": _sha(body)}
+
+    class Speckled(_Provider):
+        def refine(self, embedding, *, prompt):
+            mask = np.zeros(embedding, dtype=bool)
+            mask[30:100, 30:100] = True
+            for offset in range(24):
+                mask[8 + (offset % 4) * 4, 10 + offset * 4] = True
+            point_x, point_y = prompt["positive_points"][0]
+            mask[point_y, point_x] = True
+            return (MaskProposal(mask, 0.9, self.identity, "speckled"),)
+
+    root = tmp_path / "speckled"
+    result = generate_box_prompt_provider_batch(
+        catalog_batch=catalog,
+        source_paths={"sample-speckled": source},
+        provider=Speckled("sam3_1", "sam3"),
+        output_root=root,
+    )
+
+    candidate = result["records"][0]["candidates"][0]
+    assert candidate["postprocess"]["operation"] == "strict_box_clip_component_cleanup_v1"
+    assert candidate["postprocess"]["applied"] is True
+    assert candidate["postprocess"]["input_component_count"] > 16
+    assert candidate["postprocess"]["output_component_count"] == 1
+    with Image.open(root / candidate["artifact_relative_path"]) as image:
+        mask = np.asarray(image) == 255
+    assert int(mask.sum()) == candidate["pixel_count"]
+    assert not mask[8, 10]
+    assert mask[60, 60]
+    assert validate_box_prompt_provider_batch(result, output_root=root) == result
+
+
 def test_record_failure_abstains_without_stopping_batch(tmp_path: Path):
     catalog, paths = _fixture(tmp_path)
     result = generate_box_prompt_provider_batch(

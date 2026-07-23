@@ -18,6 +18,7 @@ from typing import Any
 
 import numpy as np
 from PIL import Image
+from scipy import ndimage
 
 from .io.png_strict import read_mask, write_binary_mask
 from .nude_person_catalog import validate_person_proposal_catalog_report
@@ -260,6 +261,87 @@ def _select_proposal(
     return selected[3], selected[4]
 
 
+def _component_cleanup(
+    mask: np.ndarray,
+    *,
+    prompt: Mapping[str, Any],
+    maximum_components: int = 16,
+    minimum_largest_fraction: float = 0.98,
+    maximum_removed_fraction: float = 0.02,
+) -> tuple[np.ndarray, dict[str, Any]]:
+    """Remove tiny disconnected provider speckles without weakening hard-QC thresholds.
+
+    This cleanup is intentionally narrow.  It only fires when one component already
+    dominates the candidate and contains the positive prompt point; otherwise the
+    raw provider mask is preserved and hard QC remains responsible for rejection.
+    """
+
+    source = np.asarray(mask, dtype=bool)
+    labels, component_count = ndimage.label(source, structure=np.ones((3, 3), dtype=np.uint8))
+    component_count = int(component_count)
+    if component_count <= maximum_components:
+        return source.copy(), {
+            "operation": "strict_box_clip_component_cleanup_v1",
+            "applied": False,
+            "input_component_count": component_count,
+            "output_component_count": component_count,
+            "removed_pixel_count": 0,
+            "largest_component_fraction": 1.0 if component_count == 1 else None,
+        }
+    counts = np.bincount(labels.ravel())
+    if counts.shape[0] <= 1:
+        return source.copy(), {
+            "operation": "strict_box_clip_component_cleanup_v1",
+            "applied": False,
+            "input_component_count": component_count,
+            "output_component_count": component_count,
+            "removed_pixel_count": 0,
+            "largest_component_fraction": None,
+        }
+    foreground = int(source.sum())
+    largest_label = int(np.argmax(counts[1:]) + 1)
+    largest_count = int(counts[largest_label])
+    largest_fraction = largest_count / foreground if foreground else 0.0
+    point_x, point_y = prompt["positive_points"][0]
+    if (
+        largest_fraction < minimum_largest_fraction
+        or labels[int(point_y), int(point_x)] != largest_label
+    ):
+        return source.copy(), {
+            "operation": "strict_box_clip_component_cleanup_v1",
+            "applied": False,
+            "input_component_count": component_count,
+            "output_component_count": component_count,
+            "removed_pixel_count": 0,
+            "largest_component_fraction": largest_fraction,
+        }
+    cleaned = labels == largest_label
+    removed = foreground - int(cleaned.sum())
+    removed_fraction = removed / foreground if foreground else 1.0
+    if removed_fraction > maximum_removed_fraction:
+        return source.copy(), {
+            "operation": "strict_box_clip_component_cleanup_v1",
+            "applied": False,
+            "input_component_count": component_count,
+            "output_component_count": component_count,
+            "removed_pixel_count": 0,
+            "largest_component_fraction": largest_fraction,
+            "rejected_reason": "removed_fraction_exceeds_limit",
+        }
+    return cleaned, {
+        "operation": "strict_box_clip_component_cleanup_v1",
+        "applied": True,
+        "input_component_count": component_count,
+        "output_component_count": 1,
+        "removed_pixel_count": removed,
+        "removed_fraction": removed_fraction,
+        "largest_component_fraction": largest_fraction,
+        "maximum_components": maximum_components,
+        "minimum_largest_fraction": minimum_largest_fraction,
+        "maximum_removed_fraction": maximum_removed_fraction,
+    }
+
+
 def _write_candidate(path: Path, mask: np.ndarray, *, width: int, height: int) -> str:
     if path.exists():
         existing = read_mask(path)
@@ -348,6 +430,8 @@ def generate_box_prompt_provider_batch(
                     prompt=prompt,
                     shape=(height, width),
                 )
+                candidate_mask, postprocess = _component_cleanup(proposal.mask, prompt=prompt)
+                mask_sha256 = binary_mask_sha256(candidate_mask)
                 relative_path = (
                     Path(sample_id)
                     / f"person_{person_index:03d}"
@@ -355,7 +439,7 @@ def generate_box_prompt_provider_batch(
                 )
                 output_path = output_root / relative_path
                 artifact_sha256 = _write_candidate(
-                    output_path, proposal.mask, width=width, height=height
+                    output_path, candidate_mask, width=width, height=height
                 )
                 candidates.append(
                     {
@@ -363,11 +447,12 @@ def generate_box_prompt_provider_batch(
                         "candidate_label": "person",
                         "prompt": prompt,
                         "prompt_fingerprint": proposal.prompt_fingerprint,
+                        "postprocess": postprocess,
                         "confidence": proposal.confidence,
                         "mask_sha256": mask_sha256,
                         "artifact_relative_path": relative_path.as_posix(),
                         "artifact_sha256": artifact_sha256,
-                        "pixel_count": int(np.count_nonzero(proposal.mask)),
+                        "pixel_count": int(np.count_nonzero(candidate_mask)),
                         "authority": "draft_machine_candidate_only",
                         "production_mask_authority": False,
                         "operational_certificate_eligible": False,

@@ -12215,3 +12215,26 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   `qa/live_verification/visual_regression_66_class_promotion_gate_20260723.json`
   (self-seal `c47f7a9f...`). Twenty-nine focused tests, Ruff, Black, tracker
   validation, and diff integrity pass.
+
+## 2026-07-23 - RunPod SAM3.1 box-refinement hard-QC canary
+
+- Recovered the side-chat pasted-text work-cell thread and verified its durable
+  implementation/adoption already exists on `codex/maskfactory-plan-modernization`.
+- Diagnosed the current SAM3.1 reference-lane failure on RunPod: the official
+  API returns zero masks for box-only prompts, but returns one nonempty mask for
+  the same normalized box when the public `text="visual"` sentinel is supplied.
+- Patched the official SAM3.1 runtime translator to bind that visual-text
+  sentinel, resealed `env/sam31_runtime.lock.json`, and added regression
+  coverage so the exact prompt translation cannot silently drift back.
+- Added bounded deterministic tiny-island cleanup for draft provider candidates.
+  The hard-QC component threshold was not weakened; the one-record canary
+  changed from provider abstain / hard-QC fail to generated=1 and hard-QC
+  pass=1 after removing 0.64% tiny disconnected pixels from a 53-component
+  SAM3.1 candidate.
+- Authority boundary: this is draft candidate + deterministic hard-QC evidence
+  only. Strict visual authority remains unavailable, and no certificate,
+  autonomous gold, training truth, or source-image pixel truth was claimed.
+- Evidence:
+  `qa/live_verification/runpod_sam31_visual_text_box_hard_qc_pass_20260723.json`.
+  Fifty-three focused tests, Ruff, Black, tracker validation, and the RunPod
+  coordinator lease/release evidence pass.

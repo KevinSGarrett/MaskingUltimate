@@ -408,7 +408,7 @@ class OfficialSam31Runtime:
             expected_translation = "text_plus_same_image_visual_box_exemplars_exact"
         elif request["operation"] == "refine":
             expected_translation = (
-                "native_visual_box_prompt_exact_center_point_postcondition_only"
+                "native_visual_box_prompt_exact_visual_text_center_point_postcondition_only"
                 if request["prompt"]["box_xyxy"] is not None
                 else "mask_prior_to_native_visual_box_prompt_exact"
             )

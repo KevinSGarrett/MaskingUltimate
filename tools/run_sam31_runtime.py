@@ -357,7 +357,7 @@ def main() -> int:
                 prompt_translation = "mask_prior_to_native_visual_box_prompt_exact"
             elif box is not None:
                 prompt_translation = (
-                    "native_visual_box_prompt_exact_center_point_postcondition_only"
+                    "native_visual_box_prompt_exact_visual_text_center_point_postcondition_only"
                 )
             else:
                 raise RuntimeError(
@@ -372,6 +372,7 @@ def main() -> int:
                     "type": "add_prompt",
                     "session_id": session_id,
                     "frame_index": 0,
+                    "text": "visual",
                     "bounding_boxes": [normalized_box],
                     "bounding_box_labels": [1],
                 }

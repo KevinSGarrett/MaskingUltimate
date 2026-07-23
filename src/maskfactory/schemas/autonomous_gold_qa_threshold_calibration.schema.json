@@ -1,0 +1,218 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/autonomous_gold_qa_threshold_calibration.schema.json",
+  "title": "MaskFactory autonomous-gold QA threshold calibration evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "calibration_run_id",
+    "registry_binding",
+    "policy",
+    "records",
+    "report"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "calibration_run_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+    },
+    "registry_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "registry_id",
+        "registry_file_sha256",
+        "resolved_registry_sha256",
+        "ontology_sha256",
+        "qualification_status",
+        "authority_eligible"
+      ],
+      "properties": {
+        "registry_id": {"type": "string", "minLength": 1},
+        "registry_file_sha256": {"$ref": "#/$defs/sha256"},
+        "resolved_registry_sha256": {"$ref": "#/$defs/sha256"},
+        "ontology_sha256": {"$ref": "#/$defs/sha256"},
+        "qualification_status": {"const": "uncalibrated_no_gold_authority"},
+        "authority_eligible": {"const": false}
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_id",
+        "policy_sha256",
+        "frozen_at",
+        "minimum_calibration_positive_per_label",
+        "minimum_calibration_negative_per_label",
+        "minimum_holdout_positive_per_label",
+        "minimum_holdout_negative_per_label",
+        "required_domains",
+        "required_risks",
+        "required_size_buckets"
+      ],
+      "properties": {
+        "policy_id": {"type": "string", "minLength": 1},
+        "policy_sha256": {"$ref": "#/$defs/sha256"},
+        "frozen_at": {"type": "string", "format": "date-time"},
+        "minimum_calibration_positive_per_label": {"type": "integer", "minimum": 1},
+        "minimum_calibration_negative_per_label": {"type": "integer", "minimum": 1},
+        "minimum_holdout_positive_per_label": {"type": "integer", "minimum": 1},
+        "minimum_holdout_negative_per_label": {"type": "integer", "minimum": 1},
+        "required_domains": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "required_risks": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "required_size_buckets": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"enum": ["tiny", "small", "medium", "large"]}
+        }
+      }
+    },
+    "records": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/record"}
+    },
+    "report": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "authority_claim",
+        "record_count",
+        "calibration_record_count",
+        "holdout_record_count",
+        "coverage",
+        "missing",
+        "leakage_count",
+        "after_freeze_violation_count",
+        "records_sha256",
+        "report_sha256"
+      ],
+      "properties": {
+        "status": {"enum": ["insufficient_evidence", "ready_for_qualification_holdout"]},
+        "authority_claim": {"const": "calibration_candidate_only_not_gold_authority"},
+        "record_count": {"type": "integer", "minimum": 0},
+        "calibration_record_count": {"type": "integer", "minimum": 0},
+        "holdout_record_count": {"type": "integer", "minimum": 0},
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["labels", "contexts", "domains", "risks", "size_buckets"],
+          "properties": {
+            "labels": {"type": "object", "additionalProperties": {"$ref": "#/$defs/counts"}},
+            "contexts": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+            "domains": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+            "risks": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+            "size_buckets": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}}
+          }
+        },
+        "missing": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "labels",
+            "contexts",
+            "domains",
+            "risks",
+            "size_buckets",
+            "label_partition_counts"
+          ],
+          "properties": {
+            "labels": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+            "contexts": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+            "domains": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+            "risks": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+            "size_buckets": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+            "label_partition_counts": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {"type": "string", "minLength": 1}
+            }
+          }
+        },
+        "leakage_count": {"const": 0},
+        "after_freeze_violation_count": {"const": 0},
+        "records_sha256": {"$ref": "#/$defs/sha256"},
+        "report_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "calibration_positive",
+        "calibration_negative",
+        "holdout_positive",
+        "holdout_negative"
+      ],
+      "properties": {
+        "calibration_positive": {"type": "integer", "minimum": 0},
+        "calibration_negative": {"type": "integer", "minimum": 0},
+        "holdout_positive": {"type": "integer", "minimum": 0},
+        "holdout_negative": {"type": "integer", "minimum": 0}
+      }
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_id",
+        "partition",
+        "source_sha256",
+        "package_sha256",
+        "label",
+        "contexts",
+        "domain",
+        "risks",
+        "size_bucket",
+        "expected_outcome",
+        "reference_authority",
+        "measured_at",
+        "qa_vector_sha256"
+      ],
+      "properties": {
+        "record_id": {"type": "string", "minLength": 1},
+        "partition": {"enum": ["calibration", "qualification_holdout"]},
+        "source_sha256": {"$ref": "#/$defs/sha256"},
+        "package_sha256": {"$ref": "#/$defs/sha256"},
+        "label": {"type": "string", "minLength": 1},
+        "contexts": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "domain": {"type": "string", "minLength": 1},
+        "risks": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "size_bucket": {"enum": ["tiny", "small", "medium", "large"]},
+        "expected_outcome": {"enum": ["positive", "negative"]},
+        "reference_authority": {
+          "enum": ["human_anchor_gold", "qualified_external_supervision"]
+        },
+        "measured_at": {"type": "string", "format": "date-time"},
+        "qa_vector_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

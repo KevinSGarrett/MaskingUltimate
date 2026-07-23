@@ -12273,3 +12273,26 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   (file SHA-256 `1b79b623...`, self-seal `c20abf5f...`). This proves the live
   persistent queue boundary only; no provider inference was executed, so the
   provider-process crash/restart and 1,000-record milestone remain open.
+
+## 2026-07-23 - QA-threshold empirical-calibration compiler
+
+- Added a closed, schema-validated calibration evidence compiler for the
+  candidate per-label/per-context autonomous-gold QA registry. It binds the
+  exact registry, resolved 146-label expansion, ontology, frozen policy,
+  calibration records, qualification-holdout records, and canonical report
+  hashes.
+- The compiler rejects source/package split leakage, duplicate record IDs,
+  unknown labels or contexts, unqualified reference authority, forged policy
+  hashes, and holdout measurement performed before policy freeze. It reports
+  missing positive/negative counts for every enabled label plus missing
+  context, domain, risk, and size strata.
+- The frozen project policy requires at least 20 positive and 20 negative
+  calibration cases and 10 positive and 10 negative qualification-holdout
+  cases per enabled label, with photographic/generated/illustrated domains,
+  the five current risk strata, and all four size buckets.
+- Authority boundary: even complete evidence emits only
+  `calibration_candidate_only_not_gold_authority`. Empirical RunPod population,
+  qualification-holdout execution, immutable v1 publication, and real
+  single/multi-person QA-vector bindings remain open.
+- Validation: 26 focused threshold/calibration/per-record-QA tests pass; Ruff,
+  Black, JSON Schema validation, and diff integrity pass.

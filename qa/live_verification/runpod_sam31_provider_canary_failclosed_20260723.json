@@ -66,6 +66,22 @@
     "hard_qc_status_counts": {"upstream_abstain": 2},
     "first_abstain_reason": "Sam31RuntimeError:one or more governed SAM 3.1 runtime inputs are missing"
   },
+  "post_path_repair_canary": {
+    "coordinator_lease_id": "lease_09f184992fab4eb6b79aeb9eb97d997e",
+    "coordinator_request_id": "req_0beaaf903dec4ca6b190b15db8b196cb",
+    "coordinator_released": true,
+    "remote_root": "/workspace/maskfactory/runtime_artifacts/nude_sam31_provider_canary_20260723_after_path_repair",
+    "local_copy_root": "runtime_artifacts/nude_sam31_provider_canary_20260723_after_path_repair",
+    "provider_output_sha256": "53cf251c83c2f4e6a96bb5516637eca049a1aad17d7eed275e820c6655760047",
+    "provider_output_self_sha256": "56cc480cec3847080b0910b97a65dae68740eb545b582c314d8a1051366dbfa3",
+    "hard_qc_sha256": "b7fd6df246cfff2c5e960ff5a05f3abf3bf8eda14e3c45b919d52ea6137f419d",
+    "hard_qc_self_sha256": "bc6d0e4d92c3f15afdd38f8974077f00fe0350345dc9a28f0f646976a1e75843",
+    "record_count": 1,
+    "candidate_count": 0,
+    "provider_status_counts": {"provider_abstain": 1},
+    "hard_qc_status_counts": {"upstream_abstain": 1},
+    "abstain_reason": "RuntimeError: official SAM 3.1 native box refinement returned no result"
+  },
   "authority": {
     "mask_candidates_created": false,
     "hard_qc_pass_claimed": false,
@@ -76,5 +92,5 @@
     "training_truth_claimed": false
   },
   "result": "FAIL_CLOSED_PROVIDER_ABSTAIN",
-  "next_required_action": "rerun the same bounded SAM3.1 provider canary after the ownerless coordinator lease clears, using an in-process captured token and the repaired SAM3.1 persistent path binding"
+  "next_required_action": "repair SAM3.1 native box prompt/refinement translation so official multiplex add_prompt returns a candidate mask; rerun the same bounded RunPod canary under a captured coordinator token before expanding batches"
 }

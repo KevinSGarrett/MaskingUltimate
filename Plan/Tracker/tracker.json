@@ -23458,7 +23458,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 55,
+      "percent_complete": 70,
       "notes": [
         {
           "ts": "2026-07-22T11:53:27+00:00",
@@ -23484,12 +23484,17 @@
           "ts": "2026-07-22T20:02:43+00:00",
           "actor": "codex",
           "text": "2026-07-22 terminal executor is now connected to the durable shard queue: every prepared record is processed, exact input/artifact hashes are revalidated, only the valid contiguous prefix is transactionally checkpointed, and later valid artifacts survive a middle error. Queue milestone and optional coverage snapshots are immutable. Live provider masks and downstream outcomes remain open."
+        },
+        {
+          "ts": "2026-07-23T08:15:15+00:00",
+          "actor": "codex",
+          "text": "2026-07-23 live RunPod SAM3.1 provider/hard-QA stage coverage: all 157 detector-consensus records in reference shard 0001 now have provider and deterministic hard-QA outcomes. Atomic per-record publication was added after one historical multi-person partial-write leak; the affected record rerun retained its abstention and published zero partial PNGs. Multi-provider comparison, qualified visual review, repair, and terminal outcomes remain open."
         }
       ],
-      "evidence": "STATIC_PASS queue bridge: qa/live_verification/nude_terminal_queue_and_coverage_bridge_20260722.json; 49 focused/adjacent tests, Ruff, Black, and CLI help pass. No live provider mask, critic verdict, repair, certificate, gold, or production authority claimed.",
+      "evidence": "STATIC_PASS queue bridge: qa/live_verification/nude_terminal_queue_and_coverage_bridge_20260722.json; 49 focused/adjacent tests, Ruff, Black, and CLI help pass. No live provider mask, critic verdict, repair, certificate, gold, or production authority claimed.; qa/live_verification/runpod_sam31_first_shard_provider_hard_qc_coverage_20260723.json self SHA-256 9300a4fbb43e37f071a1e1f28b6c95a4444c50b64bdb37684525adbd0ab60421",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-22T20:02:43+00:00",
+      "updated_at": "2026-07-23T08:15:15+00:00",
       "orphaned": false
     },
     "MF-P4-12.04": {
@@ -23505,7 +23510,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 62,
+      "percent_complete": 65,
       "notes": [
         {
           "ts": "2026-07-22T11:53:28+00:00",
@@ -23591,12 +23596,17 @@
           "ts": "2026-07-23T07:59:28+00:00",
           "actor": "codex",
           "text": "Evidence consolidation only: preserve the earlier reference-lane generation, repair, persistence, and authority-boundary proofs alongside the new resident 64-record wave; status and completion boundary are unchanged."
+        },
+        {
+          "ts": "2026-07-23T08:15:16+00:00",
+          "actor": "codex",
+          "text": "2026-07-23 first reference shard stage coverage: provider outcomes now cover all 256 records (132 generated, 25 provider abstain, 99 catalog abstain) with 133 draft candidates; deterministic hard QA is 119 pass, 13 fail, 124 upstream abstain. One historical orphan is quarantined and excluded. Visual review, repair, terminal receipts, certification, remaining shards, gold, and training truth remain open."
         }
       ],
-      "evidence": "qa/live_verification/runpod_sam31_discovery_ownership_abstain_20260723.json; qa/live_verification/runpod_persistence_current_20260723.json; qa/live_verification/runpod_matanyone2_sam31_split_person_recomposition_20260723.json file SHA-256 0e6b98c9eef7a9d31caab76b146d1ef3127b476273529a7ac3bdc1042dd59db1 self SHA-256 3acf2bea4326b8cd851e42b6806f481ff2c3dabccb4e18234e54a3e662e08ff4; qa/live_verification/runpod_split_person_recomposition_hard_qa_20260723.json file SHA-256 ff33339afcf250cc4f443cd0959cdde893ae53f1139137945509deaebc9e7ec8 self SHA-256 d75cccf0766c203930b46988c849f92e3a13bb1885fba7ff7faed4aff57a2a0e; qa/live_verification/runpod_sam31_visual_text_box_hard_qc_pass_20260723.json file SHA-256 08ce61e2678479e8d1a62e44548e2dff336c34de4d5dab1a8ac4d7f713f18979; qa/live_verification/runpod_sam31_resident_wave64_20260723.json self SHA-256 dd95b29af1a90d69e525b8624ff48124c10427b2017c028822f4bfbc76753b74",
+      "evidence": "qa/live_verification/runpod_sam31_discovery_ownership_abstain_20260723.json; qa/live_verification/runpod_persistence_current_20260723.json; qa/live_verification/runpod_matanyone2_sam31_split_person_recomposition_20260723.json file SHA-256 0e6b98c9eef7a9d31caab76b146d1ef3127b476273529a7ac3bdc1042dd59db1 self SHA-256 3acf2bea4326b8cd851e42b6806f481ff2c3dabccb4e18234e54a3e662e08ff4; qa/live_verification/runpod_split_person_recomposition_hard_qa_20260723.json file SHA-256 ff33339afcf250cc4f443cd0959cdde893ae53f1139137945509deaebc9e7ec8 self SHA-256 d75cccf0766c203930b46988c849f92e3a13bb1885fba7ff7faed4aff57a2a0e; qa/live_verification/runpod_sam31_visual_text_box_hard_qc_pass_20260723.json file SHA-256 08ce61e2678479e8d1a62e44548e2dff336c34de4d5dab1a8ac4d7f713f18979; qa/live_verification/runpod_sam31_resident_wave64_20260723.json self SHA-256 dd95b29af1a90d69e525b8624ff48124c10427b2017c028822f4bfbc76753b74; qa/live_verification/runpod_sam31_first_shard_provider_hard_qc_coverage_20260723.json self SHA-256 9300a4fbb43e37f071a1e1f28b6c95a4444c50b64bdb37684525adbd0ab60421",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-23T07:59:28+00:00",
+      "updated_at": "2026-07-23T08:15:16+00:00",
       "orphaned": false
     },
     "MF-P4-12.05": {

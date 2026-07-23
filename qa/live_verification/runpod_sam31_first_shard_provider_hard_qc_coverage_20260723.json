@@ -1,0 +1,114 @@
+{
+  "schema_version": "maskfactory.runpod_sam31_first_shard_stage_coverage.v1",
+  "recorded_at": "2026-07-23T08:05:31.045894+00:00",
+  "status": "FULL_SHARD_PROVIDER_AND_HARD_QC_COVERAGE_NONTERMINAL",
+  "repository": {
+    "branch": "codex/maskfactory-plan-modernization",
+    "atomic_publication_commit": "302ffc2d6",
+    "atomic_publication_source_sha256": "d23f6e68008e70158c82aaec4454bf5e4f06bd3ca27d732bd178ec9d37e4df19"
+  },
+  "execution": {
+    "platform": "directly_selected_runpod",
+    "pod_id": "1q4ji0gg1fkhvt",
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "source_shard": "/workspace/assets/MaskedWarehouse/Nude/_MASKFACTORY_INTAKE/batch_shards/runpod/reference_and_tournament_input.0001.json",
+    "source_role": "reference_and_tournament_input",
+    "source_is_pixel_truth": false,
+    "gpu_or_vram_governance_used": false
+  },
+  "provider_inputs": [
+    {
+      "record_count": 64,
+      "provider_json_sha256": "84bf6cd6bfa8535989414d0d7af18ecdb20e297186477ce3ccbd77713cbbf5ad",
+      "hard_qc_json_sha256": "f01d63e2c57ed194737b609956798bb0333402c70b71146727963d8598595bf2"
+    },
+    {
+      "record_count": 2,
+      "provider_json_sha256": "a075828d3a02a7bc20f7425d47134d233df8edc2338edfe0cded8598595bf375",
+      "hard_qc_json_sha256": "64a65382b5d24c64e2e35d73b40cebfa299e853697df26285f42cf8a173176e8"
+    },
+    {
+      "record_count": 64,
+      "provider_json_sha256": "abb1aafcf7a023cdc1c690a28f2e33e5cbea50d59a11659d53cc5ef86147d1f0",
+      "hard_qc_json_sha256": "b9cdaf4ea6234490399ccc4be8b8af31a01348768073266d8e5b6bf91820397b"
+    },
+    {
+      "record_count": 27,
+      "provider_json_sha256": "44b976a1787e9ef5365c80d1764f5a8f35772fa47bf39e4eb6dc640780493939",
+      "hard_qc_json_sha256": "917b0c4c3a2d1662112865a50352000a99f2f2204d7e20871b44313fd0f4d834"
+    }
+  ],
+  "coverage": {
+    "shard_record_count": 256,
+    "catalog_eligible_record_count": 157,
+    "catalog_abstain_record_count": 99,
+    "provider_attempt_record_count": 157,
+    "provider_attempt_unique_record_count": 157,
+    "eligible_missing_count": 0,
+    "eligible_extra_count": 0,
+    "candidate_count": 133,
+    "provider_status_counts": {
+      "catalog_abstain": 99,
+      "generated": 132,
+      "provider_abstain": 25
+    },
+    "hard_qc_status_counts": {
+      "pass": 119,
+      "fail": 13,
+      "upstream_abstain": 124
+    }
+  },
+  "atomic_publication_incident": {
+    "affected_sample_id": "nude_c20a6b2bd387833ba87359fc",
+    "cause": "a later person failed after an earlier person's candidate had already been written",
+    "historical_unreferenced_artifact_path": "nude_c20a6b2bd387833ba87359fc/person_000/sam3_1.png",
+    "historical_unreferenced_artifact_sha256": "a96387004e73519ebf2f34b614ca293a731ae1138ebaf3734f5472823d56001a",
+    "historical_artifact_authority": "quarantined_unreferenced_incident_evidence_only",
+    "historical_bytes_preserved": true,
+    "eligible_for_provider_report": false,
+    "eligible_for_hard_qc_pass": false,
+    "eligible_for_visual_review": false,
+    "eligible_for_certificate": false,
+    "eligible_for_training": false
+  },
+  "atomic_rerun": {
+    "persistent_root": "/workspace/maskfactory/runtime_artifacts/nude_sam31_atomic_rerun_302ffc2d6_v1",
+    "provider_status_counts": {
+      "provider_abstain": 1
+    },
+    "hard_qc_status_counts": {
+      "upstream_abstain": 1
+    },
+    "candidate_count": 0,
+    "published_png_count": 0,
+    "stderr_bytes": 0,
+    "provider_json_sha256": "7a0deb6cc079144139b340e31c1f2991391e6417703d5c6099836baaaf42b164",
+    "provider_self_sha256": "9e38cf133dad2bded40d679177d44228a0400138e5f553e3414c1a10eb8f3f1f",
+    "hard_qc_json_sha256": "7b207c03b1669ea12edc176d98d80bda290af53999324d08bac61c27c47a0481",
+    "hard_qc_self_sha256": "0d2def62c00085cfd77999982c41c3b1b0888bd3d0a32f1908ee7dbb2368d5d2",
+    "resident_json_sha256": "c06a80d4f9455e372b8b4bfc3b0398218e80463edcc1210012b0ecd3f5e6ce96",
+    "resident_self_sha256": "13475dd7bb454469f06fa8c58d8268db2225d0483a42b5a1dbae46b5e84320e0"
+  },
+  "validation": {
+    "focused_test_count": 77,
+    "focused_tests": "PASS",
+    "ruff": "PASS",
+    "black": "PASS",
+    "diff_integrity": "PASS",
+    "all_eligible_records_have_provider_and_hard_qc_stage_outcomes": true,
+    "atomic_rerun_has_no_partial_artifact": true
+  },
+  "authority_boundary": {
+    "provider_generation_stage_coverage_complete": true,
+    "deterministic_hard_qc_stage_coverage_complete": true,
+    "strict_visual_review_complete": false,
+    "repair_stage_complete": false,
+    "terminal_record_count": 0,
+    "certificate_count": 0,
+    "autonomous_certified_gold_count": 0,
+    "training_truth_count": 0,
+    "shard_complete": false,
+    "claim": "All 256 records in reference shard 0001 now have provider-stage and deterministic hard-QC dispositions, including 99 catalog abstentions. Generated masks remain non-authoritative drafts. Visual review, repair, terminal receipts, certification, gold, and shard completion remain open."
+  },
+  "self_sha256": "9300a4fbb43e37f071a1e1f28b6c95a4444c50b64bdb37684525adbd0ab60421"
+}

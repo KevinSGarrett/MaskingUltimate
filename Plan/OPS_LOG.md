@@ -12422,3 +12422,28 @@ EoMT test separately reports local snapshot drift. Neither boundary is relabeled
   `qa/live_verification/runpod_sam31_resident_wave64_20260723.json`
   (self-seal
   `dd95b29af1a90d69e525b8624ff48124c10427b2017c028822f4bfbc76753b74`).
+
+## 2026-07-23 - First reference shard provider/hard-QA coverage
+
+- Completed official SAM3.1 provider attempts for all 157 detector-consensus
+  records in the 256-record reference shard. The other 99 records retain their
+  catalog abstentions.
+- Full provider-stage counts are 132 generated, 25 provider abstentions, and
+  99 catalog abstentions. The 132 generated records contain 133 draft masks.
+- Full deterministic hard-QA counts are 119 pass, 13 fail, and 124 upstream
+  abstentions.
+- Validation found one historical orphan PNG from a multi-person record where
+  person 0 wrote successfully and person 1 later failed. The orphan is
+  quarantined as incident evidence and has no report, QA, visual, certificate,
+  or training authority.
+- Commit `302ffc2d6` now stages every candidate for a record and atomically
+  publishes the record directory only after every person succeeds.
+- The affected record was rerun in a new persistent RunPod root. It retained
+  the correct provider abstention and published zero PNGs.
+- Provider generation and deterministic hard-QA stage coverage are complete
+  for shard 0001. Visual review, repair, terminal receipts, certification,
+  gold, training truth, and shard completion remain open.
+- Exact evidence:
+  `qa/live_verification/runpod_sam31_first_shard_provider_hard_qc_coverage_20260723.json`
+  (self-seal
+  `9300a4fbb43e37f071a1e1f28b6c95a4444c50b64bdb37684525adbd0ab60421`).

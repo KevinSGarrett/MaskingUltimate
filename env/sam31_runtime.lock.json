@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "provider": "sam3_1",
-  "status": "checkpoint_installed_discovery_smoke_passed_native_box_refinement_probe_pending",
+  "status": "checkpoint_installed_discovery_and_native_box_refinement_smoke_passed",
   "source": {
     "repository": "https://github.com/facebookresearch/sam3.git",
     "commit": "5dd401d1c5c1d5c3eedff06d41b77af824517619",
@@ -61,7 +61,7 @@
     "image_builder_import": true,
     "multiplex_builder_import": true,
     "pip_check": "pass",
-    "checkpoint_inference": "text_discovery_pass_point_refinement_empty_output",
+    "checkpoint_inference": "text_discovery_and_native_box_refinement_pass_point_only_unsupported",
     "subprocess_contract": {
       "status": "runtime_pass_bounded_text_discovery",
       "host_verifier": "src/maskfactory/providers/sam31_multiplex.py",
@@ -81,7 +81,9 @@
       "evidence": "clean source/runtime/requirements/checkpoint/image/payload/artifact hashes, shapes, model-load/cold/warm latency, model/peak VRAM, runtime-only non-gold authority"
     },
     "production_contract": {
-      "status": "discovery_runtime_pass_native_box_refinement_fix_probe_pending",
+      "status": "discovery_and_native_box_refinement_runtime_pass_bounded",
+      "verified_at": "2026-07-23T02:56:30Z",
+      "evidence": "qa/live_verification/runpod_sam31_visual_text_box_hard_qc_pass_20260723.json",
       "host_runtime": "src/maskfactory/providers/sam31_runtime.py",
       "host_runtime_sha256": "3ba4b385f4e957777a1bc88173cd5c0ac7703be267e354f97962486a78a61abc",
       "visual_exemplar_contract": "src/maskfactory/providers/sam31_exemplars.py",

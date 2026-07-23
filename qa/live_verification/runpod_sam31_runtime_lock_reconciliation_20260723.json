@@ -1,0 +1,32 @@
+{
+  "schema_version": "maskfactory.runpod_sam31_runtime_lock_reconciliation.v1",
+  "recorded_at_utc": "2026-07-23T03:03:27Z",
+  "pod_id": "1q4ji0gg1fkhvt",
+  "platform": "RunPod persistent storage",
+  "local_inference_used": false,
+  "canary_evidence": {
+    "path": "qa/live_verification/runpod_sam31_visual_text_box_hard_qc_pass_20260723.json",
+    "file_sha256": "08ce61e2678479e8d1a62e44548e2dff336c34de4d5dab1a8ac4d7f713f18979",
+    "executed_lock_sha256": "52e78d858cdd40f244b4b4e07e366bc19a66ee64c392a0cb6cc70cfec9a5db48",
+    "result": "native_visual_text_box_candidate_and_hard_qc_pass_bounded"
+  },
+  "reconciled_lock": {
+    "local_path": "env/sam31_runtime.lock.json",
+    "remote_path": "/workspace/maskfactory/env/sam31_runtime.lock.json",
+    "local_sha256": "2818871ee53b75c9725a400c0297b748b33ad4f830a21266187d7be6eb8a468e",
+    "remote_sha256": "2818871ee53b75c9725a400c0297b748b33ad4f830a21266187d7be6eb8a468e",
+    "byte_identical": true,
+    "status": "checkpoint_installed_discovery_and_native_box_refinement_smoke_passed",
+    "production_contract_status": "discovery_and_native_box_refinement_runtime_pass_bounded"
+  },
+  "authority_limits": {
+    "point_only_refinement_supported": false,
+    "draft_candidate_authority_only": true,
+    "production_mask_authority": false,
+    "strict_visual_authority": false,
+    "operational_certificate_issued": false,
+    "autonomous_certified_gold": false,
+    "training_truth": false
+  },
+  "self_sha256": "d5fbc1db6d5ff7c507ec5c5edb1f19366d2e3ef64373fde2fb9d26f905fc02cb"
+}

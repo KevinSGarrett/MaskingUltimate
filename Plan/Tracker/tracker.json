@@ -84,11 +84,11 @@
     "weighted_pseudo_label_count": 0,
     "machine_candidate_count": 0,
     "detection_proposal_count": 693,
-    "provider_mask_candidate_count": 2,
-    "hard_qc_pass_count": 1,
+    "provider_mask_candidate_count": 3,
+    "hard_qc_pass_count": 2,
     "hard_qc_fail_count": 1,
     "strict_visual_pass_count": 0,
-    "strict_visual_abstain_count": 1,
+    "strict_visual_abstain_count": 2,
     "repair_attempt_count": 1,
     "repair_success_count": 1,
     "semantic_alignment_pass_count": 0,
@@ -12849,10 +12849,10 @@
           "text": "2026-07-23: fixed official SAM3.1 native box refinement translation by sending the public visual-text sentinel with the exact normalized box; RunPod diagnostic proved box-only returns zero masks while text='visual' returns one. The same reference canary now generates one strict draft candidate and passes hard QC after bounded tiny-island cleanup without threshold weakening. Point prompts remain unsupported/fail-closed and full benchmark/repair authority remain open."
         }
       ],
-      "evidence": "qa/live_verification/runpod_sam31_visual_text_box_hard_qc_pass_20260723.json file SHA-256 08ce61e2678479e8d1a62e44548e2dff336c34de4d5dab1a8ac4d7f713f18979; provider_output self SHA-256 76cc9f277ec77e0020aa31c089fb38d341df703b7edb281d82503e195db6ad33; hard_qc self SHA-256 099c25e0c030dbffb5869dd6a5758f32816be6ff0c841d6a72bcb7759490cac4; 53 focused tests pass; Ruff and Black clean.",
+      "evidence": "qa/live_verification/sam31_repair_orchestration_20260715.json; qa/live_verification/sam31_official_provider_runtime_contract_20260717.json; qa/live_verification/host_side_shadow_tournament_registration_20260719.json SHA-256 1d896f7ea4e37c10a98be4bfbffa2bd3d390a9ac50e04fc648be6436a9829d56; qa/live_verification/runpod_sam31_provider_canary_failclosed_20260723.json; qa/live_verification/runpod_sam31_discovery_ownership_abstain_20260723.json file SHA-256 2988ec5993288b64f953c89a107de7d2c458c20397b00660c53a4f50334b4c9d; qa/live_verification/runpod_sam31_visual_text_box_hard_qc_pass_20260723.json file SHA-256 08ce61e2678479e8d1a62e44548e2dff336c34de4d5dab1a8ac4d7f713f18979; qa/live_verification/runpod_sam31_runtime_lock_reconciliation_20260723.json self SHA-256 d5fbc1db6d5ff7c507ec5c5edb1f19366d2e3ef64373fde2fb9d26f905fc02cb",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-23T02:57:53+00:00",
+      "updated_at": "2026-07-23T03:04:15+00:00",
       "orphaned": false
     },
     "MF-P2-11.05": {
@@ -23476,10 +23476,10 @@
           "text": "2026-07-23: SAM3.1-first reference lane advanced from provider_abstain to one generated candidate and deterministic hard-QC pass on sample nude_7b75809e7490eab8a72eeaff under RunPod coordinator lease lease_6aeb69b6a70149df858138de212fbc19. Source remains reference-only/no pixel truth. Strict visual authority is unavailable, so strict_visual_pass=0, certification=0, autonomous_gold=0, training_truth=0; full 26-shard processing remains open."
         }
       ],
-      "evidence": "qa/live_verification/runpod_sam31_visual_text_box_hard_qc_pass_20260723.json file SHA-256 08ce61e2678479e8d1a62e44548e2dff336c34de4d5dab1a8ac4d7f713f18979; provider_output self SHA-256 76cc9f277ec77e0020aa31c089fb38d341df703b7edb281d82503e195db6ad33; hard_qc self SHA-256 099c25e0c030dbffb5869dd6a5758f32816be6ff0c841d6a72bcb7759490cac4; 53 focused tests pass; Ruff and Black clean.",
+      "evidence": "qa/live_verification/runpod_sam31_discovery_ownership_abstain_20260723.json; qa/live_verification/runpod_persistence_current_20260723.json; qa/live_verification/runpod_matanyone2_sam31_split_person_recomposition_20260723.json file SHA-256 0e6b98c9eef7a9d31caab76b146d1ef3127b476273529a7ac3bdc1042dd59db1 self SHA-256 3acf2bea4326b8cd851e42b6806f481ff2c3dabccb4e18234e54a3e662e08ff4; qa/live_verification/runpod_split_person_recomposition_hard_qa_20260723.json file SHA-256 ff33339afcf250cc4f443cd0959cdde893ae53f1139137945509deaebc9e7ec8 self SHA-256 d75cccf0766c203930b46988c849f92e3a13bb1885fba7ff7faed4aff57a2a0e; qa/live_verification/runpod_sam31_visual_text_box_hard_qc_pass_20260723.json file SHA-256 08ce61e2678479e8d1a62e44548e2dff336c34de4d5dab1a8ac4d7f713f18979",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-23T02:57:53+00:00",
+      "updated_at": "2026-07-23T03:04:16+00:00",
       "orphaned": false
     },
     "MF-P4-12.05": {

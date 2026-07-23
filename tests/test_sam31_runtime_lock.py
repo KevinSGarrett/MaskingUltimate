@@ -88,14 +88,18 @@ def test_sam31_lock_binds_correct_multiplex_checkpoint_smoke_contract() -> None:
     assert _sha256(ROOT / contract["session_compat"]) == contract["session_compat_sha256"]
     assert _sha256(ROOT / contract["fixture"]) == contract["fixture_sha256"]
     assert lock["live_smoke"]["checkpoint_inference"] == (
-        "text_discovery_pass_point_refinement_empty_output"
+        "text_discovery_and_native_box_refinement_pass_point_only_unsupported"
     )
 
 
 def test_sam31_lock_binds_official_production_discovery_and_refinement_contract() -> None:
     lock = json.loads((ROOT / "env/sam31_runtime.lock.json").read_text(encoding="utf-8"))
     contract = lock["live_smoke"]["production_contract"]
-    assert contract["status"] == ("discovery_runtime_pass_native_box_refinement_fix_probe_pending")
+    assert contract["status"] == "discovery_and_native_box_refinement_runtime_pass_bounded"
+    assert contract["verified_at"] == "2026-07-23T02:56:30Z"
+    assert contract["evidence"] == (
+        "qa/live_verification/runpod_sam31_visual_text_box_hard_qc_pass_20260723.json"
+    )
     assert contract["roles"] == ["concept_detector", "interactive_segmenter"]
     assert contract["builder"].startswith("build_sam3_predictor")
     assert "positive/negative box prompts" in contract["visual_exemplars"]

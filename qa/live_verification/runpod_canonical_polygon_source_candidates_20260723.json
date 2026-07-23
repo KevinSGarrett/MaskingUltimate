@@ -1,0 +1,70 @@
+{
+  "schema_version": "maskfactory.live_verification.runpod_canonical_polygon_source_candidates.v1",
+  "recorded_date": "2026-07-23",
+  "tracker_item": "MF-P4-11.23",
+  "status": "RUNPOD_SOURCE_SELECTION_PASS_QUALIFICATION_OPEN",
+  "runpod": {
+    "pod_id": "1q4ji0gg1fkhvt",
+    "gpu_observed": "NVIDIA RTX 6000 Ada Generation",
+    "remote_output": "/workspace/maskfactory/runtime_artifacts/visual_corpus_source_candidates/dcb4e3e22/candidates.json",
+    "new_2xa40_pod_accessed": false
+  },
+  "implementation": {
+    "repository_commit": "dcb4e3e22",
+    "module_sha256": "4ea86251b14565b5fae97971d1cddb444e9848b1f4dce0a1b160c07bd0298eb2",
+    "tool_sha256": "e861f0b302ed1ee5ad2b9bd4d2c082cb49a8ffb4e1f6fd5ca106b9c8d9d95e4d",
+    "deployed_bytes_match_local": true
+  },
+  "inputs": {
+    "nude_registry_self_sha256": "785bfbcca98262a00519b53a360a67d22f23ec9e4b41c9bc38029f402eb9bbcf",
+    "nude_registry_file_sha256": "aa26f99ef765581eb7526838203f8a2ef36f0c3b71c21da37df213a957d6fbd7",
+    "polygon_hard_qc_records_file_sha256": "685d72ecd2bf2d825787b9ef2c8f63df0161e3d19ed6fb71304b827fee96f489"
+  },
+  "output": {
+    "candidate_file_sha256": "0902394c8f209e88fd3b4d5bfc27de3a19d8f10fa2e2dcb0c3e87ca32e2ee0bf",
+    "candidate_self_sha256": "3f779bf91b68b13fac77dcf940d3aea9da12c5d5ade010d6e2f40d656bc82d3d",
+    "selected_count": 32,
+    "selected_by_partition": {
+      "test": 16,
+      "train": 16
+    },
+    "selected_by_dataset": {
+      "roboflow_doujin_nsfw_detector_v8": 7,
+      "roboflow_mange_v2": 7,
+      "roboflow_mange_v3": 6,
+      "roboflow_nsegnu_v1": 6,
+      "roboflow_nweud_v1": 6
+    },
+    "exact_raw_label": "anus",
+    "canonical_label": "anus",
+    "bounded_alias_diagnostic_counts": {
+      "test:vagina": 749,
+      "train:vagina": 5480
+    },
+    "unique_split_groups": 32
+  },
+  "validation": {
+    "remote_builder": "PASS",
+    "local_download_hash_match": true,
+    "local_closed_contract_verification": "PASS",
+    "focused_tests_passed": 20,
+    "ruff": "PASS",
+    "black": "PASS"
+  },
+  "authority": {
+    "source_selection_complete": true,
+    "external_reference_qualification_complete": false,
+    "critic_positive_control_authority_granted": false,
+    "strict_visual_authority_granted": false,
+    "operational_certificate_issued": false,
+    "autonomous_certified_gold_granted": false,
+    "training_truth_granted": false
+  },
+  "next_required_stage": "RunPod exact re-rasterization, per-record source/mask/overlay/contour evidence, visual-alignment qualification, and immutable positive/seeded-negative case construction",
+  "claim_limits": [
+    "The 32 rows are deterministic source candidates, not qualified critic controls.",
+    "Only raw anus polygons are treated as exact canonical-label candidates.",
+    "Raw vagina polygons remain bounded external aliases for canonical vulva and do not count as exact positive controls.",
+    "No result in this evidence is gold, production authority, a certificate, or training truth."
+  ]
+}

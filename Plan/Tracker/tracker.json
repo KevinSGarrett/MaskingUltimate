@@ -15008,8 +15008,8 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "partially_complete",
-      "percent_complete": 77,
+      "status": "in_progress",
+      "percent_complete": 79,
       "notes": [
         {
           "ts": "2026-07-21T23:46:02+00:00",
@@ -15065,12 +15065,22 @@
           "ts": "2026-07-23T18:26:20+00:00",
           "actor": "codex",
           "text": "2026-07-23 source-deficit planner v2 now consumes the sealed exact-control admission and reports the current truth: hair and neck have 25 eligible real positive controls; 64/66 canonical labels remain missing. The admission evidence was append-expanded with the exact 25 positive and 5 negative sample IDs and resealed to self_sha256=3c225fd8dc53b856c5ac0299838d760cac9f3d7d636e41999934b355b2995c9d. Deficit report qa/live_verification/visual_corpus_source_deficits_v2_20260723.json self_sha256=34fd8c93d9cd4825879753d4dcaa62c70afbb2ee3fa33a1b1cb31f942a340980. Promotion remains false."
+        },
+        {
+          "ts": "2026-07-24T02:09:58+00:00",
+          "actor": "codex",
+          "text": "2026-07-23R product wave opened: extend the sealed 66-label source-deficit inventory into a hash-bound candidate-batch planner. The planner will prefer qualified polygon/RLE evidence, permit parsing-family sources only with exact canonical semantics, and allow shard-0001 drafts only under adopted Amendment-3 hard-QC, consensus, and per-record non-certifying screening constraints. It will emit empty typed deficits rather than invent candidates. Target proof tier: STATIC_PASS; no source, control, role, certificate, or promotion claim."
+        },
+        {
+          "ts": "2026-07-24T02:13:21+00:00",
+          "actor": "codex",
+          "text": "STATIC_PASS bounded 66-label candidate-batch planner sealed: every current canonical deficit emits one deterministic batch; empty batches remain typed acquisition deficits. Candidate source priority is qualified polygon/RLE, then exact parsing semantics, then shard-0001 draft-machine candidates. Every emitted row is calibration-only and requires exact-panel, non-certifying session-agent screening, identity/split disjointness, and seeded-negative generation. Amendment-3 drafts are rejected unless exact semantics, deterministic hard-QC pass, and multi-provider pixel consensus are already bound. Focused pytest (17), Ruff, and Black pass. No candidate was screened/admitted and no critic role, certificate, gold, or training-truth authority is claimed."
         }
       ],
       "evidence": "qa/live_verification/frozen_real_visual_regression_suite_20260722.json; qa/live_verification/visual_regression_66_class_promotion_gate_20260723.json; qa/live_verification/visual_corpus_source_deficits_v2_20260723.json self_sha256=34fd8c93d9cd4825879753d4dcaa62c70afbb2ee3fa33a1b1cb31f942a340980; qa/live_verification/runpod_canonical_polygon_semantic_review_20260723.json; qa/live_verification/runpod_celebamask_control_admission_20260723.json self_sha256=3c225fd8dc53b856c5ac0299838d760cac9f3d7d636e41999934b355b2995c9d; focused tests PASS; Ruff, Black, tracker validation, and diff integrity PASS",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-23T18:26:20+00:00",
+      "updated_at": "2026-07-24T02:13:21+00:00",
       "orphaned": false
     },
     "MF-P4-11.24": {

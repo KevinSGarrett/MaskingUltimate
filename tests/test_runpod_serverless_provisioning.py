@@ -36,6 +36,13 @@ def test_resource_specs_are_zero_idle_single_worker_and_us_wa_only(tmp_path: Pat
     assert endpoint["executionTimeoutMs"] == 634_000
 
 
+def test_maskfactory_image_fails_build_without_blackwell_torch_support() -> None:
+    dockerfile = Path("deploy/runpod_serverless/maskfactory/Dockerfile").read_text(encoding="utf-8")
+    assert "pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime@sha256:" in dockerfile
+    assert "_cuda_getArchFlags" in dockerfile
+    assert "'sm_120' in flags" in dockerfile
+
+
 def test_provision_is_idempotent_for_exact_existing_resources(tmp_path: Path) -> None:
     cfg = config(tmp_path)
     images = {"comfyui": "image-comfy", "maskfactory": "image-mask"}

@@ -15024,7 +15024,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "in_progress",
-      "percent_complete": 80,
+      "percent_complete": 82,
       "notes": [
         {
           "ts": "2026-07-21T23:46:02+00:00",
@@ -15105,12 +15105,17 @@
           "ts": "2026-07-24T16:26:56+00:00",
           "actor": "codex_runpod",
           "text": "Sealed qualified LV-MHP source-hash and instance-identity gates; materialized and visually screened 16 direct label-2 hair calibration candidates (8 qualification_train, 8 qualification_test), each with exact source/per-person annotation panels. Calibration-only; no critic, gold, training-truth, production, or certificate authority."
+        },
+        {
+          "ts": "2026-07-24T16:49:40+00:00",
+          "actor": "codex",
+          "text": "CPU-safe LV-MHP hair auxiliary resources sealed: 16 exact selected records, each with hash-bound neighbor/other-owner hair plus direct face wrong-label/protected-region rasters. Evidence: runtime_artifacts/visual_control_sweep_20260724/lv_mhp_v1_hair_auxiliary_resources_20260724/report.json (file sha256 fc6a543a63a797ae4e24bf66ca47d76869886d30f77011a6e361d15f02f7a8e6; self sha256 7eabe385848d94e2e42d6b8b4face203df78ba44303c7adf4721d852dc0f3450). Hair laterality/opposite_side_mask remains source-semantics deferred; no seeded taxonomy, control admission, critic role, gold, training truth, package, production, or certificate authority."
         }
       ],
       "evidence": "runtime_artifacts/external_supervision/lv_mhp_v1/qualification_evidence_bundle.json; runtime_artifacts/visual_control_sweep_20260724/lv_mhp_v1_hair_candidates_20260724.json; runtime_artifacts/visual_control_sweep_20260724/lv_mhp_v1_hair_panels_20260724/report.json; runtime_artifacts/visual_control_sweep_20260724/lv_mhp_v1_hair_amendment2_screening_20260724.json",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-24T16:26:56+00:00",
+      "updated_at": "2026-07-24T16:49:40+00:00",
       "orphaned": false
     },
     "MF-P4-11.24": {

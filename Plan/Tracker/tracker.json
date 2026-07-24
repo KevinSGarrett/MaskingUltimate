@@ -23334,7 +23334,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 98,
+      "percent_complete": 99,
       "notes": [
         {
           "ts": "2026-07-22T08:52:16+00:00",
@@ -23430,12 +23430,17 @@
           "ts": "2026-07-24T17:03:25+00:00",
           "actor": "codex",
           "text": "CPU-safe mission-review bundle capability added to the durable RunPod workcell: immutable status rollup, typed top-K exception queue with receipt hashes, metric deltas against a sealed prior report, and material-incident carry-through. Bounded runtime canary evidence: runtime_artifacts/mission_review_bundle_canary_20260724/proof.json (file sha256 fdd707f3aa507afceb92d8a743f0f70fbd2c6e40a4c68db7a160645e553b8cc0; self sha256 e437f7f501beebbab5a16725bc05d60a9ed9d82b7d1efcd75e559929c826e53e); bundle self sha256 670623298cbefbda9ee12655c098f3322dfaf55a5bd1ad664c9e486d3b87a065. Canopy is CPU-only with one typed abstention and panel paths explicitly incomplete; no provider, critic, package, certificate, gold, or training-truth authority."
+        },
+        {
+          "ts": "2026-07-24T17:27:02+00:00",
+          "actor": "codex",
+          "text": "2026-07-24: Added v2 mission-review panel evidence bindings: visual receipts may carry a safe path under the manifest output prefix; admission and review-bundle emission re-hash exact panel bytes; missing or drifted files leave panel completeness false. CPU-only typed visual-role-unavailable canary sealed at runtime_artifacts/mission_review_panel_binding_canary_20260724/proof.json (file sha256 74f13f18d6701d5681a09d8a7ef3bccc773762a9d80989920e604f9ea82778c7; self sha256 f4bfe19d583aa9601b517d66004e423228d6fb7eae8ea9cde9666e43fbb3ec4a). Targeted binding plus regression tests passed; no visual authority, certification, gold, or training truth claimed."
         }
       ],
       "evidence": "qa/live_verification/runpod_sam31_provider_canary_failclosed_20260723.json; qa/live_verification/runpod_visual_unavailability_batch_abstention_20260723.json self SHA-256 3b53eaf5821e7dc7356e2a6882ed878fa8bf02d22ce69f9249ecf333b93983b5; qa/live_verification/runpod_persistence_refresh_20260723.json; qa/live_verification/runpod_corpus_mirrors_refresh_20260723.json; qa/live_verification/runpod_nude_queue_crash_resume_20260723.json file SHA-256 1b79b623d368cac039f4ffd077ebfbcbadb927363449ced91644ca6a0158463c self SHA-256 c20abf5fba44cffdd1655ae7ffd4fc7febf7478a34f4d38ec3714952623e6faf; qa/live_verification/runpod_sam31_reference_wave64_checkpoint_20260723.json self SHA-256 dbc32f5af91a1d1405ccc93ced2b976458ad17ded5ac79c62abc91fe1bfc19d3; qa/live_verification/runpod_sam31_resident_wave64_20260723.json self SHA-256 dd95b29af1a90d69e525b8624ff48124c10427b2017c028822f4bfbc76753b74",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-24T17:03:25+00:00",
+      "updated_at": "2026-07-24T17:27:02+00:00",
       "orphaned": false
     },
     "MF-P4-12.02": {

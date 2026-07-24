@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any, Mapping
 
 from .work_cell import ALLOWED_ACTORS, STAGES
@@ -151,6 +151,21 @@ def _artifact_detail(artifact: Mapping[str, Any]) -> Mapping[str, Any]:
     return detail
 
 
+def _relative_panel_path(value: Any) -> str:
+    if not isinstance(value, str) or not value:
+        raise WorkCellReceiptError("panel_path string required")
+    if "\\" in value:
+        raise WorkCellReceiptError("panel_path must use posix separators")
+    path = PurePosixPath(value)
+    if (
+        path.is_absolute()
+        or not path.parts
+        or any(part in {".", ".."} for part in path.parts)
+    ):
+        raise WorkCellReceiptError("panel_path must be a safe relative path")
+    return path.as_posix()
+
+
 def _extract_detail(stage: str, artifact: Mapping[str, Any]) -> dict[str, Any]:
     source = _artifact_detail(artifact)
     missing = REQUIRED_DETAIL_FIELDS[stage] - set(source)
@@ -191,11 +206,14 @@ def _extract_detail(stage: str, artifact: Mapping[str, Any]) -> dict[str, Any]:
             "hard_veto_count": _int(source["hard_veto_count"], "hard_veto_count"),
         }
     if stage in {"primary_visual_review", "independent_visual_review"}:
-        return {
+        detail = {
             "panel_sha256": _sha(source["panel_sha256"], "panel_sha256"),
             "critic_report_sha256": _sha(source["critic_report_sha256"], "critic_report_sha256"),
             "verdict": _string(source["verdict"], "verdict"),
         }
+        if "panel_path" in source:
+            detail["panel_path"] = _relative_panel_path(source["panel_path"])
+        return detail
     if stage == "repair_planning":
         return {
             "defect_hypothesis_sha256": _sha(

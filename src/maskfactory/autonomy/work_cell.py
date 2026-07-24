@@ -15,7 +15,7 @@ import time
 import uuid
 from collections import Counter
 from contextlib import contextmanager
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any, Callable, Iterator, Mapping, Sequence
 
 from jsonschema import Draft202012Validator
@@ -124,6 +124,14 @@ def visual_unavailability_abstention(
 def canonical_sha256(value: Mapping[str, Any]) -> str:
     body = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
     return hashlib.sha256(body.encode("utf-8")).hexdigest()
+
+
+def _file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def _require_sha(detail: Mapping[str, Any], field: str) -> str:
@@ -629,6 +637,8 @@ class AutonomousWorkCell:
                 evidence_sha,
                 payload.get("detail"),
             )
+            if stage in VISUAL_STAGES:
+                self._validate_panel_evidence(manifest, payload["detail"])
             next_stage, outcome, next_cycle = self._transition(manifest, stage, status, cycle)
             connection.execute(
                 "INSERT INTO stage_receipts(mission_id,record_id,stage,repair_cycle,status,"
@@ -713,6 +723,54 @@ class AutonomousWorkCell:
         if stage == "certification" and status == "pass":
             if manifest["authority_ceiling"] == "machine_verified_candidate":
                 raise WorkCellError("mission authority ceiling forbids certification")
+
+    def _resolve_panel_evidence(
+        self,
+        manifest: Mapping[str, Any],
+        detail: Mapping[str, Any],
+    ) -> tuple[str, Path, str] | None:
+        panel_path = detail.get("panel_path")
+        if panel_path is None:
+            return None
+        if not isinstance(panel_path, str) or not panel_path:
+            raise WorkCellError("visual panel_path must be a non-empty relative path")
+        if "\\" in panel_path:
+            raise WorkCellError("visual panel_path must use posix separators")
+        relative = PurePosixPath(panel_path)
+        if (
+            relative.is_absolute()
+            or not relative.parts
+            or any(part in {".", ".."} for part in relative.parts)
+        ):
+            raise WorkCellError("visual panel_path must be a safe relative path")
+        prefix = PurePosixPath(str(manifest["allowed_output_prefix"]))
+        if (
+            not prefix.parts
+            or prefix.is_absolute()
+            or any(part in {".", ".."} for part in prefix.parts)
+        ):
+            raise WorkCellError("mission allowed_output_prefix invalid")
+        if relative.parts[: len(prefix.parts)] != prefix.parts:
+            raise WorkCellError("visual panel_path must stay within manifest allowed_output_prefix")
+        root = self.root.resolve()
+        panel_file = (root.joinpath(*relative.parts)).resolve()
+        try:
+            panel_file.relative_to(root)
+        except ValueError as exc:
+            raise WorkCellError("visual panel_path escapes work-cell root") from exc
+        return relative.as_posix(), panel_file, _require_sha(detail, "panel_sha256")
+
+    def _validate_panel_evidence(
+        self, manifest: Mapping[str, Any], detail: Mapping[str, Any]
+    ) -> None:
+        binding = self._resolve_panel_evidence(manifest, detail)
+        if binding is None:
+            return
+        _, panel_file, expected_sha256 = binding
+        if not panel_file.is_file():
+            raise WorkCellError("visual panel_path does not reference a file")
+        if _file_sha256(panel_file) != expected_sha256:
+            raise WorkCellError("visual panel_path sha256 does not match panel_sha256")
 
     @staticmethod
     def _validate_stage_detail(
@@ -985,6 +1043,7 @@ class AutonomousWorkCell:
             previous = prior_report
 
         with self._connect() as connection:
+            manifest = self._mission(connection, mission_id)
             record_rows = connection.execute(
                 "SELECT record_id,source_sha256,input_payload_sha256,stage,outcome,"
                 "repair_attempt_count,processing_attempt_count,last_error "
@@ -992,20 +1051,62 @@ class AutonomousWorkCell:
                 (mission_id,),
             ).fetchall()
             receipt_rows = connection.execute(
-                "SELECT record_id,stage,status,evidence_sha256,payload_sha256 "
+                "SELECT record_id,stage,status,actor_kind,evidence_sha256,payload_sha256,payload_json "
                 "FROM stage_receipts WHERE mission_id=? "
                 "ORDER BY record_id,stage,repair_cycle",
                 (mission_id,),
             ).fetchall()
 
         receipt_evidence: dict[str, list[dict[str, str]]] = {}
+        panel_evidence: dict[str, list[dict[str, str]]] = {}
         for row in receipt_rows:
-            receipt_evidence.setdefault(str(row["record_id"]), []).append(
+            try:
+                payload = json.loads(str(row["payload_json"]))
+            except json.JSONDecodeError as exc:
+                raise WorkCellError("stage receipt payload is not json") from exc
+            if not isinstance(payload, dict) or canonical_sha256(payload) != str(
+                row["payload_sha256"]
+            ):
+                raise WorkCellError("stage receipt payload seal drift")
+            if (
+                payload.get("stage") != str(row["stage"])
+                or payload.get("status") != str(row["status"])
+                or payload.get("actor_kind") != str(row["actor_kind"])
+                or payload.get("evidence_sha256") != str(row["evidence_sha256"])
+            ):
+                raise WorkCellError("stage receipt row/payload drift")
+            record_id = str(row["record_id"])
+            receipt_evidence.setdefault(record_id, []).append(
                 {
                     "stage": str(row["stage"]),
                     "status": str(row["status"]),
+                    "actor_kind": str(row["actor_kind"]),
                     "evidence_sha256": str(row["evidence_sha256"]),
                     "payload_sha256": str(row["payload_sha256"]),
+                }
+            )
+            if str(row["stage"]) not in VISUAL_STAGES:
+                continue
+            detail = payload.get("detail")
+            if not isinstance(detail, dict):
+                raise WorkCellError("visual stage receipt detail is invalid")
+            binding = self._resolve_panel_evidence(manifest, detail)
+            if binding is None:
+                continue
+            panel_path, panel_file, panel_sha256 = binding
+            if not panel_file.is_file():
+                binding_status = "missing"
+            elif _file_sha256(panel_file) != panel_sha256:
+                binding_status = "sha256_mismatch"
+            else:
+                binding_status = "verified"
+            panel_evidence.setdefault(record_id, []).append(
+                {
+                    "stage": str(row["stage"]),
+                    "status": str(row["status"]),
+                    "panel_path": panel_path,
+                    "panel_sha256": panel_sha256,
+                    "binding_status": binding_status,
                 }
             )
         priority = {"quarantined": 0, "abstained": 1, "rejected": 2}
@@ -1016,6 +1117,10 @@ class AutonomousWorkCell:
             if outcome not in priority and not last_error:
                 continue
             record_id = str(row["record_id"])
+            panels = panel_evidence.get(record_id, [])
+            panels_verified = bool(panels) and all(
+                panel["binding_status"] == "verified" for panel in panels
+            )
             exceptions.append(
                 {
                     "record_id": record_id,
@@ -1031,7 +1136,9 @@ class AutonomousWorkCell:
                     "repair_attempt_count": int(row["repair_attempt_count"]),
                     "processing_attempt_count": int(row["processing_attempt_count"]),
                     "receipt_evidence": receipt_evidence.get(record_id, []),
-                    "panel_paths_declared": False,
+                    "panel_evidence": panels,
+                    "panel_paths_declared": bool(panels),
+                    "panel_paths_verified": panels_verified,
                 }
             )
         exceptions.sort(
@@ -1098,7 +1205,7 @@ class AutonomousWorkCell:
             )
         }
         bundle: dict[str, Any] = {
-            "schema_version": "maskfactory.runpod_autonomous_mission_review_bundle.v1",
+            "schema_version": "maskfactory.runpod_autonomous_mission_review_bundle.v2",
             "mission_id": mission_id,
             "manifest_sha256": current["manifest_sha256"],
             "mission_report_self_sha256": current["self_sha256"],
@@ -1108,13 +1215,17 @@ class AutonomousWorkCell:
             "exception_queue_total_count": len(exceptions),
             "material_incidents": current["material_incidents"],
             "threshold_breach_candidates": [],
-            "panel_paths_complete": False,
+            "panel_paths_complete": bool(exceptions) and all(
+                bool(row["panel_paths_verified"]) for row in exceptions
+            ),
             "authority_claimed": False,
             "role_certificate_issuance_allowed": False,
             "gold_or_training_truth_allowed": False,
             "claim_limits": [
                 "This compacts durable queue state and receipt hashes only.",
-                "Panel paths are not inferred from receipt hashes.",
+                "Panel paths are copied only from sealed visual-stage receipts.",
+                "Declared panel paths are re-hashed from permitted pod-local mission storage.",
+                "Missing or hash-drifted panel evidence makes panel_paths_complete false.",
                 "No visual approval, role qualification, certificate, gold, or training authority.",
             ],
         }

@@ -24,7 +24,11 @@ from maskfactory.autonomy.work_cell_command_handlers import (
     command_binding_sha256,
 )
 from maskfactory.autonomy.work_cell_mission_builder import build_mission_artifacts
-from maskfactory.autonomy.work_cell_receipts import file_sha256
+from maskfactory.autonomy.work_cell_receipts import (
+    WorkCellReceiptError,
+    file_sha256,
+    receipt_from_stage_artifact,
+)
 from maskfactory.autonomy.work_cell_runner import WorkCellRunner
 
 HEX = "a" * 64
@@ -649,6 +653,109 @@ def test_mission_review_bundle_is_sealed_and_compacts_typed_exceptions(
         cell.mission_review_bundle(document["mission_id"], prior_report=forged)
 
 
+
+def test_visual_receipt_adapter_preserves_only_safe_optional_panel_path() -> None:
+    artifact = {
+        "panel_sha256": HEX,
+        "critic_report_sha256": HEX,
+        "verdict": "abstain",
+        "panel_path": "missions/mission-test-0001/panels/r1.primary.json",
+    }
+    converted = receipt_from_stage_artifact(
+        stage="primary_visual_review",
+        status="abstain",
+        artifact=artifact,
+        evidence_sha256=HEX,
+    )
+    assert converted["detail"]["panel_path"] == artifact["panel_path"]
+    artifact["panel_path"] = "../outside.panel"
+    with pytest.raises(WorkCellReceiptError, match="safe relative"):
+        receipt_from_stage_artifact(
+            stage="primary_visual_review",
+            status="abstain",
+            artifact=artifact,
+            evidence_sha256=HEX,
+        )
+
+
+def test_mission_review_bundle_rehashes_declared_panel_evidence(tmp_path: Path) -> None:
+    cell = AutonomousWorkCell(tmp_path)
+    document = manifest()
+    cell.admit(document)
+    cell.seed_records(
+        document["mission_id"],
+        [{"record_id": "r1", "source_sha256": HEX, "input_payload_sha256": HEX}],
+    )
+    panel_path = "missions/mission-test-0001/panels/r1.primary_visual_review.panel"
+    panel_file = tmp_path / panel_path
+    panel_file.parent.mkdir(parents=True)
+    panel_file.write_bytes(b"panel-byte-proof-v1")
+    panel_sha256 = file_sha256(panel_file)
+    for stage, actor in (
+        ("source_decode", "deterministic_qa"),
+        ("detection_ownership", "deterministic_qa"),
+        ("provider_tournament", "segmentation_provider"),
+        ("hard_qc", "deterministic_qa"),
+    ):
+        work = cell.claim(document["mission_id"], owner="worker")
+        assert work is not None and work["stage"] == stage
+        cell.apply_result(
+            document["mission_id"], "r1", work["lease_token"], receipt(stage, actor)
+        )
+    work = cell.claim(document["mission_id"], owner="worker")
+    assert work is not None and work["stage"] == "primary_visual_review"
+    visual = receipt("primary_visual_review", "visual_critic", "abstain")
+    visual["detail"]["panel_sha256"] = panel_sha256
+    visual["detail"]["panel_path"] = panel_path
+    visual["detail"]["verdict"] = "abstain"
+    cell.apply_result(document["mission_id"], "r1", work["lease_token"], visual)
+    bundle = cell.mission_review_bundle(document["mission_id"])
+    exception = bundle["exception_queue"][0]
+    assert exception["panel_paths_declared"] is True
+    assert exception["panel_paths_verified"] is True
+    assert exception["panel_evidence"] == [
+        {
+            "stage": "primary_visual_review",
+            "status": "abstain",
+            "panel_path": panel_path,
+            "panel_sha256": panel_sha256,
+            "binding_status": "verified",
+        }
+    ]
+    assert bundle["panel_paths_complete"] is True
+    panel_file.write_bytes(b"panel-byte-proof-v1-tampered")
+    drifted = cell.mission_review_bundle(document["mission_id"])
+    assert drifted["exception_queue"][0]["panel_paths_verified"] is False
+    assert drifted["exception_queue"][0]["panel_evidence"][0]["binding_status"] == "sha256_mismatch"
+    assert drifted["panel_paths_complete"] is False
+
+
+def test_visual_panel_path_must_stay_within_mission_output_prefix(tmp_path: Path) -> None:
+    cell = AutonomousWorkCell(tmp_path)
+    document = manifest()
+    cell.admit(document)
+    cell.seed_records(
+        document["mission_id"],
+        [{"record_id": "r1", "source_sha256": HEX, "input_payload_sha256": HEX}],
+    )
+    for stage, actor in (
+        ("source_decode", "deterministic_qa"),
+        ("detection_ownership", "deterministic_qa"),
+        ("provider_tournament", "segmentation_provider"),
+        ("hard_qc", "deterministic_qa"),
+    ):
+        work = cell.claim(document["mission_id"], owner="worker")
+        assert work is not None and work["stage"] == stage
+        cell.apply_result(
+            document["mission_id"], "r1", work["lease_token"], receipt(stage, actor)
+        )
+    work = cell.claim(document["mission_id"], owner="worker")
+    assert work is not None and work["stage"] == "primary_visual_review"
+    visual = receipt("primary_visual_review", "visual_critic", "abstain")
+    visual["detail"]["panel_path"] = "outside/r1.primary_visual_review.panel"
+    visual["detail"]["verdict"] = "abstain"
+    with pytest.raises(WorkCellError, match="allowed_output_prefix"):
+        cell.apply_result(document["mission_id"], "r1", work["lease_token"], visual)
 
 class _Handler:
     implementation_sha256 = HEX

@@ -956,6 +956,198 @@ class AutonomousWorkCell:
         temporary.replace(output_path)
         return report
 
+    def mission_review_bundle(
+        self,
+        mission_id: str,
+        *,
+        prior_report: Mapping[str, Any] | None = None,
+        exception_limit: int = 10,
+    ) -> dict[str, Any]:
+        """Build a non-authoritative, hash-bound milestone handoff from durable state."""
+        if isinstance(exception_limit, bool) or not isinstance(exception_limit, int):
+            raise WorkCellError("exception limit must be an integer")
+        if not 1 <= exception_limit <= 100:
+            raise WorkCellError("exception limit must be between 1 and 100")
+        current = self.report(mission_id)
+        previous: Mapping[str, Any] | None = None
+        if prior_report is not None:
+            if not isinstance(prior_report, Mapping):
+                raise WorkCellError("prior report must be a mapping")
+            expected = canonical_sha256(
+                {key: value for key, value in prior_report.items() if key != "self_sha256"}
+            )
+            if (
+                prior_report.get("self_sha256") != expected
+                or prior_report.get("mission_id") != current["mission_id"]
+                or prior_report.get("manifest_sha256") != current["manifest_sha256"]
+            ):
+                raise WorkCellError("prior report binding drift")
+            previous = prior_report
+
+        with self._connect() as connection:
+            record_rows = connection.execute(
+                "SELECT record_id,source_sha256,input_payload_sha256,stage,outcome,"
+                "repair_attempt_count,processing_attempt_count,last_error "
+                "FROM records WHERE mission_id=? ORDER BY record_id",
+                (mission_id,),
+            ).fetchall()
+            receipt_rows = connection.execute(
+                "SELECT record_id,stage,status,evidence_sha256,payload_sha256 "
+                "FROM stage_receipts WHERE mission_id=? "
+                "ORDER BY record_id,stage,repair_cycle",
+                (mission_id,),
+            ).fetchall()
+
+        receipt_evidence: dict[str, list[dict[str, str]]] = {}
+        for row in receipt_rows:
+            receipt_evidence.setdefault(str(row["record_id"]), []).append(
+                {
+                    "stage": str(row["stage"]),
+                    "status": str(row["status"]),
+                    "evidence_sha256": str(row["evidence_sha256"]),
+                    "payload_sha256": str(row["payload_sha256"]),
+                }
+            )
+        priority = {"quarantined": 0, "abstained": 1, "rejected": 2}
+        exceptions: list[dict[str, Any]] = []
+        for row in record_rows:
+            outcome = row["outcome"]
+            last_error = row["last_error"]
+            if outcome not in priority and not last_error:
+                continue
+            record_id = str(row["record_id"])
+            exceptions.append(
+                {
+                    "record_id": record_id,
+                    "source_sha256": str(row["source_sha256"]),
+                    "input_payload_sha256": str(row["input_payload_sha256"]),
+                    "stage": str(row["stage"]),
+                    "outcome": None if outcome is None else str(outcome),
+                    "reason_code": (
+                        str(last_error)
+                        if last_error
+                        else f"terminal_outcome:{outcome}"
+                    ),
+                    "repair_attempt_count": int(row["repair_attempt_count"]),
+                    "processing_attempt_count": int(row["processing_attempt_count"]),
+                    "receipt_evidence": receipt_evidence.get(record_id, []),
+                    "panel_paths_declared": False,
+                }
+            )
+        exceptions.sort(
+            key=lambda row: (
+                priority.get(row["outcome"], 3),
+                -int(row["repair_attempt_count"]),
+                -int(row["processing_attempt_count"]),
+                row["record_id"],
+            )
+        )
+
+        previous_counts = {} if previous is None else previous.get("outcome_counts", {})
+        current_counts = current["outcome_counts"]
+        outcome_deltas = {
+            outcome: int(current_counts.get(outcome, 0))
+            - int(previous_counts.get(outcome, 0))
+            for outcome in sorted(set(current_counts) | set(previous_counts))
+        }
+        metric_deltas = {
+            "baseline_available": previous is not None,
+            "prior_report_self_sha256": None if previous is None else previous["self_sha256"],
+            "terminal_record_count_delta": (
+                None
+                if previous is None
+                else int(current["terminal_record_count"])
+                - int(previous["terminal_record_count"])
+            ),
+            "remaining_record_count_delta": (
+                None
+                if previous is None
+                else int(current["remaining_record_count"])
+                - int(previous["remaining_record_count"])
+            ),
+            "stage_receipt_count_delta": (
+                None
+                if previous is None
+                else int(current["stage_receipt_count"])
+                - int(previous["stage_receipt_count"])
+            ),
+            "repair_attempt_count_delta": (
+                None
+                if previous is None
+                else int(current["repair_attempt_count"])
+                - int(previous["repair_attempt_count"])
+            ),
+            "outcome_count_deltas": outcome_deltas if previous is not None else {},
+        }
+        status = {
+            key: current[key]
+            for key in (
+                "mission_id",
+                "manifest_sha256",
+                "mission_state",
+                "record_count",
+                "terminal_record_count",
+                "remaining_record_count",
+                "stage_counts",
+                "outcome_counts",
+                "stage_status_counts",
+                "last_error_counts",
+                "stage_receipt_count",
+                "repair_attempt_count",
+                "queue_state_sha256",
+            )
+        }
+        bundle: dict[str, Any] = {
+            "schema_version": "maskfactory.runpod_autonomous_mission_review_bundle.v1",
+            "mission_id": mission_id,
+            "manifest_sha256": current["manifest_sha256"],
+            "mission_report_self_sha256": current["self_sha256"],
+            "mission_status": status,
+            "metric_deltas": metric_deltas,
+            "exception_queue": exceptions[:exception_limit],
+            "exception_queue_total_count": len(exceptions),
+            "material_incidents": current["material_incidents"],
+            "threshold_breach_candidates": [],
+            "panel_paths_complete": False,
+            "authority_claimed": False,
+            "role_certificate_issuance_allowed": False,
+            "gold_or_training_truth_allowed": False,
+            "claim_limits": [
+                "This compacts durable queue state and receipt hashes only.",
+                "Panel paths are not inferred from receipt hashes.",
+                "No visual approval, role qualification, certificate, gold, or training authority.",
+            ],
+        }
+        bundle["self_sha256"] = canonical_sha256(bundle)
+        return bundle
+
+    def write_mission_review_bundle(
+        self,
+        mission_id: str,
+        output_path: Path,
+        *,
+        prior_report: Mapping[str, Any] | None = None,
+        exception_limit: int = 10,
+    ) -> dict[str, Any]:
+        """Atomically write one immutable milestone review bundle."""
+        output_path = Path(output_path)
+        if output_path.exists():
+            raise WorkCellError("review bundle already exists")
+        bundle = self.mission_review_bundle(
+            mission_id,
+            prior_report=prior_report,
+            exception_limit=exception_limit,
+        )
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        temporary = output_path.with_suffix(output_path.suffix + ".tmp")
+        temporary.write_text(
+            json.dumps(bundle, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        temporary.replace(output_path)
+        return bundle
+
+
     @staticmethod
     def _owned_record(
         connection: sqlite3.Connection,

@@ -600,6 +600,56 @@ def test_record_seed_drift_fails_closed(tmp_path: Path) -> None:
         cell.seed_records(document["mission_id"], [changed])
 
 
+def test_mission_review_bundle_is_sealed_and_compacts_typed_exceptions(
+    tmp_path: Path,
+) -> None:
+    cell = AutonomousWorkCell(tmp_path)
+    document = manifest(record_count=2)
+    cell.admit(document)
+    cell.seed_records(
+        document["mission_id"],
+        [
+            {"record_id": "r1", "source_sha256": HEX, "input_payload_sha256": HEX},
+            {"record_id": "r2", "source_sha256": HEX, "input_payload_sha256": HEX},
+        ],
+    )
+    prior = cell.report(document["mission_id"])
+    work = cell.claim(document["mission_id"], owner="worker")
+    assert work is not None and work["record_id"] == "r1"
+    cell.terminalize_system_failure(
+        document["mission_id"],
+        "r1",
+        work["lease_token"],
+        reason="typed_provider_failure",
+        evidence_sha256=HEX,
+    )
+    output = tmp_path / "reports" / "review_bundle.json"
+    bundle = cell.write_mission_review_bundle(
+        document["mission_id"],
+        output,
+        prior_report=prior,
+        exception_limit=1,
+    )
+    assert bundle["mission_status"]["terminal_record_count"] == 1
+    assert bundle["metric_deltas"]["terminal_record_count_delta"] == 1
+    assert bundle["metric_deltas"]["outcome_count_deltas"] == {"abstained": 1}
+    assert bundle["exception_queue_total_count"] == 1
+    assert bundle["exception_queue"][0]["record_id"] == "r1"
+    assert bundle["exception_queue"][0]["reason_code"] == "typed_provider_failure"
+    assert bundle["panel_paths_complete"] is False
+    assert bundle["authority_claimed"] is False
+    assert bundle["self_sha256"] == canonical_sha256(
+        {key: value for key, value in bundle.items() if key != "self_sha256"}
+    )
+    with pytest.raises(WorkCellError, match="already exists"):
+        cell.write_mission_review_bundle(document["mission_id"], output)
+    forged = dict(prior)
+    forged["self_sha256"] = "b" * 64
+    with pytest.raises(WorkCellError, match="prior report binding drift"):
+        cell.mission_review_bundle(document["mission_id"], prior_report=forged)
+
+
+
 class _Handler:
     implementation_sha256 = HEX
 

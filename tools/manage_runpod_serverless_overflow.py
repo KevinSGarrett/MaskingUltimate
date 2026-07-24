@@ -62,6 +62,9 @@ def main() -> None:
     reconcile = commands.add_parser("reconcile")
     reconcile.add_argument("--job-id", required=True)
 
+    cancel = commands.add_parser("cancel")
+    cancel.add_argument("--job-id", required=True)
+
     report = commands.add_parser("report")
     report.add_argument("--billing-day")
 
@@ -103,6 +106,8 @@ def main() -> None:
         output = broker.submit_reserved(args.job_id, _read(args.payload), _client())
     elif args.command == "reconcile":
         output = broker.reconcile(args.job_id, _client())
+    elif args.command == "cancel":
+        output = broker.cancel(args.job_id, _client())
     else:
         output = broker.report(billing_day=args.billing_day)
     print(json.dumps(output, indent=2, sort_keys=True))

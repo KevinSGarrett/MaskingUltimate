@@ -64,6 +64,7 @@ def test_shared_global_inflight_lock_applies_across_profiles(tmp_path: Path) -> 
         requested_seconds=60,
     )
     assert first["state"] == "reserved"
+    assert first["reserved_usd"] == pytest.approx((634 + 300 + 5) * 0.00053)
     with pytest.raises(OverflowError, match="already has an in-flight job"):
         broker.reserve(
             session_id=MASK_SESSION,
@@ -91,8 +92,8 @@ def test_budget_reservation_fails_before_daily_limit(tmp_path: Path) -> None:
             session_id=COMFY_SESSION,
             profile="comfyui",
             payload={"workflow": {"test": True}},
-            requested_seconds=1800,
-            observed_provider_spend_usd=11.0,
+            requested_seconds=634,
+            observed_provider_spend_usd=11.1,
         )
 
 
@@ -151,6 +152,48 @@ def test_successful_submission_and_reconciliation_release_global_slot(tmp_path: 
     assert submitted["state"] == "submitted"
     completed = broker.reconcile(row["job_id"], Client())
     assert completed["state"] == "completed"
+    assert completed["actual_usd"] == pytest.approx((1 + 300 + 5) * 0.00053)
     report = broker.report()
     assert report["active_jobs"] == 0
     assert json.loads(completed["provider_status_json"])["status"] == "COMPLETED"
+
+
+def test_maskfactory_reservation_uses_handler_enforced_request_timeout(tmp_path: Path) -> None:
+    broker = OverflowBroker(config(tmp_path), root=tmp_path)
+    row = broker.reserve(
+        session_id=MASK_SESSION,
+        profile="maskfactory",
+        payload={"argv": ["/workspace/maskfactory/tools/example.py"]},
+        requested_seconds=60,
+    )
+    assert row["reserved_usd"] == pytest.approx((60 + 300 + 5) * 0.00053)
+
+
+def test_cancelled_job_releases_global_and_budget_reservations(tmp_path: Path) -> None:
+    broker = OverflowBroker(config(tmp_path), root=tmp_path)
+    payload = {"workflow": {"test": True}}
+    row = broker.reserve(
+        session_id=COMFY_SESSION,
+        profile="comfyui",
+        payload=payload,
+        requested_seconds=60,
+    )
+
+    class Client:
+        def submit(self, endpoint_id, value):
+            return {"id": "provider-job-cancel", "status": "IN_QUEUE"}
+
+        def cancel(self, endpoint_id, provider_job_id):
+            return {"id": provider_job_id, "status": "CANCELLED"}
+
+    broker.submit_reserved(row["job_id"], payload, Client())
+    cancelled = broker.cancel(row["job_id"], Client())
+    assert cancelled["state"] == "cancelled"
+    assert broker.report()["active_jobs"] == 0
+    replacement = broker.reserve(
+        session_id=MASK_SESSION,
+        profile="maskfactory",
+        payload={"argv": ["/workspace/maskfactory/tools/example.py"]},
+        requested_seconds=60,
+    )
+    assert replacement["state"] == "reserved"

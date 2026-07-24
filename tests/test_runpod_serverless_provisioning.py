@@ -29,8 +29,8 @@ def test_resource_specs_are_zero_idle_single_worker_and_us_wa_only(tmp_path: Pat
     assert endpoint["workersMin"] == 0
     assert endpoint["workersMax"] == 1
     assert endpoint["gpuCount"] == 1
-    assert endpoint["gpuTypeIds"] == ["NVIDIA A40", "NVIDIA RTX A6000"]
-    assert endpoint["executionTimeoutMs"] == 1_800_000
+    assert endpoint["gpuTypeIds"] == ["NVIDIA RTX 6000 Ada Generation"]
+    assert endpoint["executionTimeoutMs"] == 634_000
 
 
 def test_provision_is_idempotent_for_exact_existing_resources(tmp_path: Path) -> None:

@@ -1,6 +1,6 @@
 # ADR: Shared RunPod Serverless overflow for ComfyUI and MaskFactory
 
-- Status: implementation in progress
+- Status: accepted for live smoke validation
 - Date: 2026-07-24
 - Decision owner: Codex, retaining RunPod and final acceptance authority
 
@@ -31,7 +31,11 @@ Use one durable broker and two workload-specific, scale-to-zero endpoints:
    RunPod manifests remain path-compatible.
 3. Both endpoints attach only network volume `o9qv2ld91c` in US-WA-1, set
    `workersMin=0`, `workersMax=1`, one GPU per worker, a five-second idle timeout,
-   and a 30-minute execution timeout.
+   and a 634-second execution timeout. The only admitted GPU is RTX 6000 Ada,
+   matching the GPU supply available beside the US-WA-1 network volume. The
+   timeout is the largest conservative value that fits the
+   rolling-hour admission band at the highest allowed GPU rate after cold-start
+   and idle reserves.
 4. A SQLite WAL ledger lives at
    `/workspace/.maskfactory/serverless_overflow/overflow.sqlite`. It permits one
    global in-flight overflow job across both endpoints and binds each session ID
@@ -41,7 +45,9 @@ Use one durable broker and two workload-specific, scale-to-zero endpoints:
    rolling 60-minute hard authority is $0.54 and hourly submissions stop at
    $0.50, retaining $0.04 for provider variance. Every request must fit both
    windows and reserves its requested runtime plus 300 cold-start seconds and
-   five idle seconds at the configured maximum rate.
+   five idle seconds at the configured maximum rate. Because the stock ComfyUI
+   handler does not enforce a broker-supplied per-job timeout, every ComfyUI
+   admission reserves the endpoint's full 634-second execution timeout.
 6. Local GPU probing is read-only. Any compute process or queued ComfyUI work
    makes the local lane busy. The broker never kills, pauses, reprioritizes, or
    claims ownership of a process.

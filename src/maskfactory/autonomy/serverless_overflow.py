@@ -381,8 +381,14 @@ class OverflowBroker:
         endpoint_id = self._validate_request(session_id, profile, payload, requested_seconds)
         now = self._clock()
         day = utc_billing_day(now)
+        # The stock ComfyUI handler has no trustworthy per-request timeout
+        # control, so reserve the endpoint's full hard timeout for that profile.
+        # The MaskFactory handler enforces its payload timeout itself.
+        budgeted_execution_seconds = (
+            self.config.execution_timeout_seconds if profile == "comfyui" else requested_seconds
+        )
         reserve_seconds = (
-            requested_seconds
+            budgeted_execution_seconds
             + self.config.cold_start_reserve_seconds
             + self.config.idle_timeout_seconds
         )
@@ -395,7 +401,7 @@ class OverflowBroker:
                 raise OverflowError("shared Serverless overflow already has an in-flight job")
             daily_terminal_reserved = connection.execute(
                 """
-                SELECT COALESCE(SUM(reserved_usd), 0.0)
+                SELECT COALESCE(SUM(COALESCE(actual_usd, reserved_usd)), 0.0)
                 FROM jobs
                 WHERE billing_day = ? AND state IN ('completed','failed')
                 """,
@@ -411,7 +417,7 @@ class OverflowBroker:
             ).fetchone()[0]
             hourly_terminal_reserved = connection.execute(
                 """
-                SELECT COALESCE(SUM(reserved_usd), 0.0)
+                SELECT COALESCE(SUM(COALESCE(actual_usd, reserved_usd)), 0.0)
                 FROM jobs
                 WHERE created_at >= ? AND state IN ('completed','failed')
                 """,
@@ -557,8 +563,11 @@ class OverflowBroker:
         actual_usd = None
         if isinstance(execution_ms, (int, float)) and execution_ms >= 0:
             actual_usd = (
-                (float(execution_ms) / 1000.0) + self.config.idle_timeout_seconds
+                (float(execution_ms) / 1000.0)
+                + self.config.cold_start_reserve_seconds
+                + self.config.idle_timeout_seconds
             ) * self.config.max_rate_usd_per_second
+            actual_usd = min(actual_usd, float(row["reserved_usd"]))
         with self._transaction() as connection:
             connection.execute(
                 """
@@ -568,6 +577,30 @@ class OverflowBroker:
                 (
                     state,
                     actual_usd,
+                    self._clock(),
+                    json.dumps(response, sort_keys=True),
+                    job_id,
+                ),
+            )
+            updated = connection.execute("SELECT * FROM jobs WHERE job_id=?", (job_id,)).fetchone()
+        return dict(updated)
+
+    def cancel(self, job_id: str, client: RunPodClient) -> dict[str, Any]:
+        with self._transaction() as connection:
+            row = connection.execute("SELECT * FROM jobs WHERE job_id=?", (job_id,)).fetchone()
+            if row is None:
+                raise OverflowError("overflow job not found")
+            if row["state"] in TERMINAL_STATES:
+                return dict(row)
+            if not row["provider_job_id"]:
+                raise OverflowError("reserved job has no provider id; cannot cancel remotely")
+            response = client.cancel(row["endpoint_id"], row["provider_job_id"])
+            connection.execute(
+                """
+                UPDATE jobs SET state='cancelled', updated_at=?,
+                    provider_status_json=? WHERE job_id=?
+                """,
+                (
                     self._clock(),
                     json.dumps(response, sort_keys=True),
                     job_id,

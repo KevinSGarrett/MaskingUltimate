@@ -51,7 +51,7 @@ def endpoint_spec(profile: str, template_id: str, config: OverflowConfig) -> dic
         "templateId": template_id,
         "computeType": "GPU",
         "gpuCount": 1,
-        "gpuTypeIds": ["NVIDIA A40", "NVIDIA RTX A6000"],
+        "gpuTypeIds": ["NVIDIA RTX 6000 Ada Generation"],
         "dataCenterIds": [config.datacenter_id],
         "networkVolumeId": config.network_volume_id,
         "workersMin": 0,

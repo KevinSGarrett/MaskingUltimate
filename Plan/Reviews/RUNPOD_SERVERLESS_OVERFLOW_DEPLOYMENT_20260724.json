@@ -1,0 +1,38 @@
+{
+  "datacenter_id": "US-WA-1",
+  "budget": {
+    "daily_admission_limit_usd": 11.5,
+    "daily_hard_limit_usd": 13.0,
+    "rolling_hour_admission_limit_usd": 0.5,
+    "rolling_hour_hard_limit_usd": 0.54
+  },
+  "endpoints": {
+    "comfyui": {
+      "id": "l0v50bvx6jcbp9",
+      "name": "shared-overflow-comfyui-us-wa-1",
+      "templateId": "aurtpkuqla"
+    },
+    "maskfactory": {
+      "id": "ib4xwfo6p1mbja",
+      "name": "shared-overflow-maskfactory-us-wa-1",
+      "templateId": "vteoizojqr"
+    }
+  },
+  "gpu_type_ids": [
+    "NVIDIA RTX 6000 Ada Generation"
+  ],
+  "network_volume_id": "o9qv2ld91c",
+  "schema_version": "maskfactory.runpod_serverless_overflow_deployment.v1",
+  "templates": {
+    "comfyui": {
+      "id": "aurtpkuqla",
+      "imageName": "ghcr.io/kevinsgarrett/maskfactory-comfyui-overflow@sha256:4505c693244bf903e055e67e56932e8c0ed36760be58ef7692510b03b56aa66c",
+      "name": "Shared Overflow ComfyUI US-WA-1 20260724"
+    },
+    "maskfactory": {
+      "id": "vteoizojqr",
+      "imageName": "ghcr.io/kevinsgarrett/maskfactory-command-overflow@sha256:0062844516c79e2cf6e3057ae935c853eb2c338f216af2475d45e244fbd1cb59",
+      "name": "Shared Overflow MaskFactory US-WA-1 20260724"
+    }
+  }
+}

@@ -41,17 +41,22 @@ def test_config_binds_exact_sessions_volume_region_and_budget() -> None:
     assert document["runpod"]["datacenter_id"] == "US-WA-1"
     assert document["runpod"]["workers_min"] == 0
     assert document["runpod"]["workers_max"] == 1
-    assert document["budget"]["hard_daily_limit_usd"] == 13.0
-    assert document["budget"]["rolling_hour_hard_limit_usd"] == 0.54
+    assert document["runpod"]["queue_timeout_seconds"] == 300
+    assert document["runpod"]["gpu_type_ids"] == [
+        "NVIDIA RTX 6000 Ada Generation",
+        "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+    ]
+    assert document["budget"]["hard_daily_limit_usd"] == 15.6
+    assert document["budget"]["rolling_hour_hard_limit_usd"] == 0.65
     assert (
         document["budget"]["admission_limit_usd"]
         + document["budget"]["provider_variance_reserve_usd"]
-        == 13.0
+        == 15.6
     )
     assert (
         document["budget"]["rolling_hour_admission_limit_usd"]
         + document["budget"]["rolling_hour_variance_reserve_usd"]
-        == 0.54
+        == 0.65
     )
 
 
@@ -93,7 +98,7 @@ def test_budget_reservation_fails_before_daily_limit(tmp_path: Path) -> None:
             profile="comfyui",
             payload={"workflow": {"test": True}},
             requested_seconds=634,
-            observed_provider_spend_usd=11.1,
+            observed_provider_spend_usd=13.8,
         )
 
 
@@ -105,7 +110,7 @@ def test_budget_reservation_fails_before_rolling_hour_limit(tmp_path: Path) -> N
             profile="comfyui",
             payload={"workflow": {"test": True}},
             requested_seconds=60,
-            observed_provider_hour_spend_usd=0.40,
+            observed_provider_hour_spend_usd=0.50,
         )
 
 
@@ -138,9 +143,18 @@ def test_successful_submission_and_reconciliation_release_global_slot(tmp_path: 
     )
 
     class Client:
-        def submit(self, endpoint_id, value):
+        def submit(
+            self,
+            endpoint_id,
+            value,
+            *,
+            execution_timeout_seconds,
+            queue_timeout_seconds,
+        ):
             assert endpoint_id == "endpoint-comfy"
             assert value == payload
+            assert execution_timeout_seconds == 634
+            assert queue_timeout_seconds == 300
             return {"id": "provider-job-1", "status": "IN_QUEUE"}
 
         def status(self, endpoint_id, provider_job_id):
@@ -180,7 +194,16 @@ def test_cancelled_job_releases_global_and_budget_reservations(tmp_path: Path) -
     )
 
     class Client:
-        def submit(self, endpoint_id, value):
+        def submit(
+            self,
+            endpoint_id,
+            value,
+            *,
+            execution_timeout_seconds,
+            queue_timeout_seconds,
+        ):
+            assert execution_timeout_seconds == 634
+            assert queue_timeout_seconds == 300
             return {"id": "provider-job-cancel", "status": "IN_QUEUE"}
 
         def cancel(self, endpoint_id, provider_job_id):
@@ -197,3 +220,81 @@ def test_cancelled_job_releases_global_and_budget_reservations(tmp_path: Path) -
         requested_seconds=60,
     )
     assert replacement["state"] == "reserved"
+
+
+def test_reconcile_cancels_only_after_five_minutes_in_queue(tmp_path: Path) -> None:
+    now = [1_800_000_000.0]
+    broker = OverflowBroker(config(tmp_path), root=tmp_path, clock=lambda: now[0])
+    payload = {"workflow": {"test": True}}
+    row = broker.reserve(
+        session_id=COMFY_SESSION,
+        profile="comfyui",
+        payload=payload,
+        requested_seconds=60,
+    )
+
+    class Client:
+        def submit(
+            self,
+            endpoint_id,
+            value,
+            *,
+            execution_timeout_seconds,
+            queue_timeout_seconds,
+        ):
+            return {"id": "provider-job-expire", "status": "IN_QUEUE"}
+
+        def status(self, endpoint_id, provider_job_id):
+            return {"id": provider_job_id, "status": "IN_QUEUE"}
+
+        def cancel(self, endpoint_id, provider_job_id):
+            return {"id": provider_job_id, "status": "CANCELLED"}
+
+    broker.submit_reserved(row["job_id"], payload, Client())
+    now[0] += 299
+    assert broker.reconcile(row["job_id"], Client())["state"] == "submitted"
+    now[0] += 1
+    cancelled = broker.reconcile(row["job_id"], Client())
+    assert cancelled["state"] == "cancelled"
+    status = json.loads(cancelled["provider_status_json"])
+    assert status["reason"] == "queue_timeout"
+    assert status["queue_timeout_seconds"] == 300
+    assert broker.report()["active_jobs"] == 0
+
+
+def test_reconcile_active_checks_both_profiles_without_new_admission(tmp_path: Path) -> None:
+    broker = OverflowBroker(config(tmp_path), root=tmp_path)
+    payload = {"argv": ["/workspace/maskfactory/tools/example.py"]}
+    row = broker.reserve(
+        session_id=MASK_SESSION,
+        profile="maskfactory",
+        payload=payload,
+        requested_seconds=60,
+    )
+
+    class Client:
+        def submit(
+            self,
+            endpoint_id,
+            value,
+            *,
+            execution_timeout_seconds,
+            queue_timeout_seconds,
+        ):
+            assert execution_timeout_seconds == 60
+            assert queue_timeout_seconds == 300
+            return {"id": "provider-job-active", "status": "IN_QUEUE"}
+
+        def status(self, endpoint_id, provider_job_id):
+            return {"id": provider_job_id, "status": "COMPLETED", "executionTime": 500}
+
+    broker.submit_reserved(row["job_id"], payload, Client())
+    result = broker.reconcile_active(Client())
+    assert result["active_jobs_checked"] == 1
+    assert result["results"] == [
+        {
+            "job_id": row["job_id"],
+            "state": "completed",
+            "provider_job_id": "provider-job-active",
+        }
+    ]

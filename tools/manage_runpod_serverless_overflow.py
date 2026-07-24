@@ -62,6 +62,8 @@ def main() -> None:
     reconcile = commands.add_parser("reconcile")
     reconcile.add_argument("--job-id", required=True)
 
+    commands.add_parser("reconcile-active")
+
     cancel = commands.add_parser("cancel")
     cancel.add_argument("--job-id", required=True)
 
@@ -106,6 +108,8 @@ def main() -> None:
         output = broker.submit_reserved(args.job_id, _read(args.payload), _client())
     elif args.command == "reconcile":
         output = broker.reconcile(args.job_id, _client())
+    elif args.command == "reconcile-active":
+        output = broker.reconcile_active(_client())
     elif args.command == "cancel":
         output = broker.cancel(args.job_id, _client())
     else:

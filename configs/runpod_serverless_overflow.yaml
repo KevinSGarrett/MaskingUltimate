@@ -1,0 +1,53 @@
+schema_version: maskfactory.runpod_serverless_overflow.v1
+policy_id: shared_comfyui_maskfactory_overflow_20260724
+
+sessions:
+  "019f9200-4805-7632-83d3-ee9ae614c603":
+    profile: comfyui
+  "019f91d1-ea20-7d81-83ff-03d393eaa1f5":
+    profile: maskfactory
+
+runpod:
+  datacenter_id: US-WA-1
+  network_volume_id: o9qv2ld91c
+  network_volume_name: hyperreal-maskfactory-nv
+  volume_mount_path: /runpod-volume
+  gpu_type_ids:
+    - NVIDIA A40
+    - NVIDIA RTX A6000
+  allowed_cuda_versions:
+    - "12.4"
+    - "12.5"
+    - "12.6"
+    - "12.7"
+    - "12.8"
+    - "12.9"
+    - "13.0"
+  workers_min: 0
+  workers_max: 1
+  idle_timeout_seconds: 5
+  execution_timeout_seconds: 1800
+  endpoints:
+    comfyui: null
+    maskfactory: null
+
+budget:
+  timezone: UTC
+  hard_daily_limit_usd: 13.00
+  admission_limit_usd: 11.50
+  rolling_hour_hard_limit_usd: 0.54
+  rolling_hour_admission_limit_usd: 0.50
+  rolling_hour_seconds: 3600
+  max_active_rate_usd_per_second: 0.00034
+  cold_start_reserve_seconds: 300
+  provider_variance_reserve_usd: 1.50
+  rolling_hour_variance_reserve_usd: 0.04
+  max_global_inflight_jobs: 1
+
+local_gpu:
+  comfyui_queue_url: http://127.0.0.1:8188/queue
+  probe_timeout_seconds: 2
+
+durability:
+  runpod_root: /workspace/.maskfactory/serverless_overflow
+  sqlite_filename: overflow.sqlite

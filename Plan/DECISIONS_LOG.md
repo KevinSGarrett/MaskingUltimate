@@ -1423,3 +1423,42 @@ segmentation providers change pixels; deterministic certification evaluates
 authority.
 
 **Approved by:** Kevin, explicit strategy authorization on 2026-07-23
+
+## 2026-07-23R - External deep-review Amendments 1–3 adopted
+
+**Item(s) affected:** MF-P4-11.18, MF-P4-11.23, critic qualification and
+control-admission protocol/registry paths, the 66-label control program, and
+all future certification callers.
+
+**Decision:** Kevin adopts the three governed amendments from the external
+deep review, preserved verbatim with SHA-256
+`B97843DD4B7E3095547B7CE3EDA10C5F7A94F32B73044E221BFBA7AC6E31DBB7` at
+`Plan/Reviews/EXTERNAL_DEEP_REVIEW_20260723.md`:
+
+1. Per-record visual acceptance requires deterministic QA pass, no serious
+   finding from a qualified critic, and coherent evidence localization. A
+   VLM's bare `pass` token is never sufficient. Malformed, truncated,
+   timed-out, uncertain, or schema-invalid output is a typed abstention.
+2. Exact-panel interactive session-agent screening is a bounded, logged,
+   hash-bound, non-certifying calibration-control-admission activity. It can
+   never grant mask gold, training truth, a certificate, or visual-role
+   authority.
+3. A hard-QC-passing, multi-provider-consensus draft that passes Amendment-2
+   screening may be admitted only as a declared-fidelity, calibration-only
+   positive control. It never becomes gold, training truth, package authority,
+   or an operational certificate.
+
+**Versioning boundary:** These amendments apply only through new immutable
+artifacts. The initial implementation is
+`maskfactory-critic-protocol-v3-severity-20260723r` with its separately
+versioned `visual_critic_protocol_v3.yaml` registry. Frozen legacy protocol,
+corpus, role, certificate, and threshold artifacts remain unchanged. Any new
+label, fidelity tier, scale, calibration fit, or holdout board requires a new
+hash-bound registry/board version; no in-place adjustment is permitted.
+
+**Authority boundary:** Protocol-v3 is qualification-canary-only until a
+stage-2 frozen real-image board meets every governed metric. It does not issue
+roles, certification, autonomous gold, or training truth, and deterministic
+hard blocks remain absolute.
+
+**Approved by:** Kevin, explicit adoption in the 2026-07-23R pursuing goal.

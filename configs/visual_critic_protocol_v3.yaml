@@ -1,0 +1,42 @@
+schema_version: "1.0.0"
+protocol_id: "maskfactory-critic-protocol-v3-severity-20260723r"
+protocol_version: "3.0.0-20260723r-preholdout-zero-budget"
+authority_ceiling: "qualification_canary_only"
+role_certificate_issuance_allowed: false
+frozen_before_holdout: true
+calibration_split_only: true
+calibration_status: "preholdout_defaults_only"
+requires_reference_exemplar: true
+requires_describe_then_judge: true
+requires_coherent_localization: true
+serious_false_pass_tolerance: 0.0
+# This first frozen registry is scoped only to the existing real CelebAMask
+# controls.  Its zero-minor-budget values are pre-holdout defaults, not a
+# completed calibration fit. A calibration-only fit must create a new immutable
+# registry version before the existing qualification holdout is contacted. A
+# new version is also required for any label, authority tier, or scale change.
+tolerance_bands:
+  - label_id: "hair"
+    source_authority_tier: "external_labeled_reference"
+    label_scale: "small"
+    minor_budget: 0
+  - label_id: "hair"
+    source_authority_tier: "external_labeled_reference"
+    label_scale: "medium"
+    minor_budget: 0
+  - label_id: "hair"
+    source_authority_tier: "external_labeled_reference"
+    label_scale: "large"
+    minor_budget: 0
+  - label_id: "neck"
+    source_authority_tier: "external_labeled_reference"
+    label_scale: "small"
+    minor_budget: 0
+  - label_id: "neck"
+    source_authority_tier: "external_labeled_reference"
+    label_scale: "medium"
+    minor_budget: 0
+  - label_id: "neck"
+    source_authority_tier: "external_labeled_reference"
+    label_scale: "large"
+    minor_budget: 0

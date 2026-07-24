@@ -36,10 +36,22 @@
       "worker_id": "3ajxyrq8vgqf6e"
     },
     "maskfactory": {
-      "provider_job_id": "46e12666-f333-41c4-9f8b-1648862171f9-u2",
-      "result": "CANCELLED_QUEUE_TIMEOUT",
-      "execution_charge_usd": 0.0,
-      "queue_timeout_seconds": 300
+      "actual_usd": 0.16230243,
+      "binding_file": {
+        "path": "/runpod-volume/maskfactory/runtime_artifacts/serverless_overflow_smoke_20260724/smoke.py",
+        "sha256": "41268b11f2819909346e990aff7cc525649af7d0d90f99ac918335dcec71004b"
+      },
+      "broker_job_id": "overflow-c34cac7b-be6d-42fe-a625-35fefcc099b4",
+      "execution_time_ms": 1231,
+      "output": {
+        "cuda_available": true,
+        "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition MIG 2g.48gb",
+        "maskfactory_visible": true,
+        "network_volume_visible": true
+      },
+      "provider_job_id": "5ac2b0a9-b057-40e7-b9fc-1847229d1cb5-u1",
+      "result": "COMPLETED",
+      "worker_id": "fn4y5i7kxyf80r"
     }
   },
   "templates": {
@@ -50,7 +62,7 @@
     },
     "maskfactory": {
       "id": "vteoizojqr",
-      "imageName": "ghcr.io/kevinsgarrett/maskfactory-command-overflow@sha256:0062844516c79e2cf6e3057ae935c853eb2c338f216af2475d45e244fbd1cb59",
+      "imageName": "ghcr.io/kevinsgarrett/maskfactory-command-overflow@sha256:beb2477d6e1b4e96342e0abc8168452c44b83a889e2c6fb4f93c3c0668b42c2e",
       "name": "Shared Overflow MaskFactory US-WA-1 20260724"
     }
   }

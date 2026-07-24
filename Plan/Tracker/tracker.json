@@ -15100,12 +15100,17 @@
           "ts": "2026-07-24T15:31:17+00:00",
           "actor": "codex_runpod",
           "text": "LaPa head_face control lane advanced: 16 split-disjoint external-reference candidates, 96 exact panels, and per-record Amendment-2 calibration-only admissions; full seeded-negative taxonomy deferred because opposite-side and other-owner resources are not bound."
+        },
+        {
+          "ts": "2026-07-24T16:26:56+00:00",
+          "actor": "codex_runpod",
+          "text": "Sealed qualified LV-MHP source-hash and instance-identity gates; materialized and visually screened 16 direct label-2 hair calibration candidates (8 qualification_train, 8 qualification_test), each with exact source/per-person annotation panels. Calibration-only; no critic, gold, training-truth, production, or certificate authority."
         }
       ],
-      "evidence": "source manifest b19cf095082e72a27ebe347fd00bb8bbc3e0845e764d6c38c9eaa231dd7788e7; qualification bundle 56418c3aa16f7e6a5dee3d4effde05367b05088df9daabc2b3a52dca8a02627e9; panel report 793dd6c8bcb4e83bfc0caad4cd7486d4896f71f0e6550641d4a257298499a7d5; Amendment-2 receipt 025eb8f65ef332aa24305da3932bcf300633a0c2d4d4545548086a971804461f; resource gap d61b144df38ae69e7dd001d2be538ed507c64427142215769bcc90631095fb59.",
+      "evidence": "runtime_artifacts/external_supervision/lv_mhp_v1/qualification_evidence_bundle.json; runtime_artifacts/visual_control_sweep_20260724/lv_mhp_v1_hair_candidates_20260724.json; runtime_artifacts/visual_control_sweep_20260724/lv_mhp_v1_hair_panels_20260724/report.json; runtime_artifacts/visual_control_sweep_20260724/lv_mhp_v1_hair_amendment2_screening_20260724.json",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-24T15:31:17+00:00",
+      "updated_at": "2026-07-24T16:26:56+00:00",
       "orphaned": false
     },
     "MF-P4-11.24": {

@@ -40,7 +40,8 @@ def _resolved(path: str) -> Path:
 
 
 def _under_allowed_root(path: Path) -> bool:
-    return any(path == root or root in path.parents for root in ALLOWED_ROOTS)
+    resolved_roots = tuple(root.resolve(strict=True) for root in ALLOWED_ROOTS if root.exists())
+    return any(path == root or root in path.parents for root in resolved_roots)
 
 
 def _sha256(path: Path) -> str:

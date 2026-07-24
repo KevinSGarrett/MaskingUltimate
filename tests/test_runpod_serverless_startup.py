@@ -64,3 +64,28 @@ def test_startup_refuses_to_replace_nonempty_workspace(tmp_path: Path) -> None:
     assert result.returncode == 64
     assert marker.read_text(encoding="utf-8") == "preserve"
     assert not workspace.is_symlink()
+
+
+def test_startup_accepts_network_volume_mounted_directly_at_workspace(
+    tmp_path: Path,
+) -> None:
+    volume = tmp_path / "missing-runpod-volume"
+    workspace = tmp_path / "workspace"
+    (workspace / "maskfactory").mkdir(parents=True)
+
+    result = run_prepare(volume, workspace)
+
+    assert result.returncode == 0, result.stderr
+    assert workspace.is_dir()
+    assert not workspace.is_symlink()
+
+
+def test_startup_fails_when_neither_network_volume_layout_exists(tmp_path: Path) -> None:
+    volume = tmp_path / "missing-runpod-volume"
+    workspace = tmp_path / "workspace"
+    workspace.mkdir()
+
+    result = run_prepare(volume, workspace)
+
+    assert result.returncode == 66
+    assert "network volume is absent" in result.stderr

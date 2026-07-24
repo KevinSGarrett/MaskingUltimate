@@ -112,7 +112,7 @@ def _dedup_index(document: Mapping[str, Any]) -> dict[str, dict[str, str]]:
     if not isinstance(records, list):
         raise LaPaControlCandidateError("split-dedup records are missing")
     result: dict[str, dict[str, str]] = {}
-    groups: dict[str, str] = {}
+    groups: dict[str, set[str]] = {}
     for item in records:
         if not isinstance(item, Mapping) or item.get("source") != "lapa":
             continue
@@ -120,9 +120,10 @@ def _dedup_index(document: Mapping[str, Any]) -> dict[str, dict[str, str]]:
         group, split = item.get("split_group_id"), item.get("upstream_split")
         if path in result or not isinstance(group, str) or not group or not isinstance(split, str) or not split:
             raise LaPaControlCandidateError("split-dedup record drift")
-        if groups.setdefault(group, split) != split:
-            raise LaPaControlCandidateError("split group crosses upstream partitions")
+        groups.setdefault(group, set()).add(split)
         result[path] = {"source_sha256": _sha(item.get("source_sha256"), "split-dedup source"), "split_group_id": group, "upstream_split": split}
+    for item in result.values():
+        item["cross_split_group"] = "true" if len(groups[item["split_group_id"]]) > 1 else "false"
     if not result:
         raise LaPaControlCandidateError("LaPa records absent from split-dedup evidence")
     return result
@@ -162,6 +163,8 @@ def _candidate(root: Path, image: Path, manifest: Mapping[str, str], dedup: Mapp
     lineage = dedup.get(image_relative)
     if lineage is None:
         raise LaPaControlCandidateError(f"split-dedup omits input:{image_relative}")
+    if lineage["cross_split_group"] == "true":
+        return None
     label = _inside(root, label_relative, image_relative)
     image_sha, label_sha = manifest[image_relative], manifest[label_relative]
     if image_sha != lineage["source_sha256"] or split != lineage["upstream_split"]:

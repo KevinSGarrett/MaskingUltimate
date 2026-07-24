@@ -75,6 +75,18 @@ def test_selects_split_disjoint_exact_head_face_candidates(monkeypatch: pytest.M
     assert all(row["critic_control_eligible"] is False for row in document["selected"])
 
 
+def test_cross_split_identity_group_is_excluded(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    root, provenance, inventory, remap, bundle, manifest, dedup = _inputs(tmp_path)
+    document = json.loads(dedup.read_text(encoding="utf-8"))
+    train = next(row for row in document["records"] if row["relative_path"] == "train/images/train_00.jpg")
+    test = next(row for row in document["records"] if row["relative_path"] == "test/images/test_00.jpg")
+    test["split_group_id"] = train["split_group_id"]
+    dedup.write_text(json.dumps(document, sort_keys=True), encoding="utf-8")
+    monkeypatch.setattr(lapa, "verify_external_qualification_evidence", lambda *args, **kwargs: _qualified())
+    result = lapa.build_lapa_control_candidates(source_root=root, project_root=tmp_path, provenance_path=provenance, inventory_path=inventory, remap_path=remap, qualification_evidence_path=bundle, source_hash_manifest_path=manifest, split_dedup_path=dedup, per_partition=4)
+    assert train["split_group_id"] not in {row["split_group_id"] for row in result["selected"]}
+
+
 def test_external_qualification_failure_fails_closed(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     root, provenance, inventory, remap, bundle, manifest, dedup = _inputs(tmp_path)
     monkeypatch.setattr(lapa, "verify_external_qualification_evidence", lambda *args, **kwargs: _qualified(False))

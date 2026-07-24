@@ -6,6 +6,8 @@ role_certificate_issuance_allowed: false
 frozen_before_holdout: true
 calibration_split_only: true
 calibration_status: "preholdout_defaults_only"
+calibration_evidence_sha256: null
+calibration_observation_count: 0
 requires_reference_exemplar: true
 requires_describe_then_judge: true
 requires_coherent_localization: true

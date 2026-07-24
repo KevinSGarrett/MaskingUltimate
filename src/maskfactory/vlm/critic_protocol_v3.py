@@ -24,6 +24,10 @@ DERIVED_VERDICTS = frozenset({"pass", "pass_with_findings", "defect", "abstain"}
 SOURCE_AUTHORITY_TIERS = frozenset({"external_labeled_reference", "certified_package_bytes"})
 LABEL_SCALES = frozenset({"small", "medium", "large"})
 SHA256 = re.compile(r"^[a-f0-9]{64}$")
+DESCRIPTION_VERDICT_TOKENS = re.compile(
+    r"\b(?:verdict|pass|fail|approve|reject|defect|serious|cosmetic|minor)\b",
+    re.IGNORECASE,
+)
 
 REGISTRY_KEYS = frozenset(
     {
@@ -35,6 +39,8 @@ REGISTRY_KEYS = frozenset(
         "frozen_before_holdout",
         "calibration_split_only",
         "calibration_status",
+        "calibration_evidence_sha256",
+        "calibration_observation_count",
         "requires_reference_exemplar",
         "requires_describe_then_judge",
         "requires_coherent_localization",
@@ -113,6 +119,21 @@ def validate_protocol_registry(registry: Mapping[str, Any]) -> None:
         "fitted_calibration_only",
     }:
         raise CriticProtocolV3Error("protocol-v3 calibration status is invalid")
+    observation_count = _require_nonnegative_int(
+        registry["calibration_observation_count"], "calibration_observation_count"
+    )
+    evidence_sha256 = registry["calibration_evidence_sha256"]
+    if registry["calibration_status"] == "preholdout_defaults_only":
+        if evidence_sha256 is not None or observation_count != 0:
+            raise CriticProtocolV3Error(
+                "protocol-v3 preholdout registry carries calibration evidence"
+            )
+    else:
+        _require_sha256(evidence_sha256, "calibration_evidence_sha256")
+        if observation_count == 0:
+            raise CriticProtocolV3Error(
+                "protocol-v3 fitted registry lacks calibration observations"
+            )
     if registry["serious_false_pass_tolerance"] != 0.0:
         raise CriticProtocolV3Error("protocol-v3 serious false-pass tolerance must remain zero")
     bands = registry["tolerance_bands"]
@@ -236,6 +257,71 @@ def build_judgement_prompt(
         "cited_evidence_panels:[two panel labels],localization_xyxy:[x1,y1,x2,y2]|null}. "
         "Use null localization only for severity none."
     )
+
+
+def parse_protocol_v3_description(raw: str) -> str:
+    """Accept only a bounded non-verdict first-pass description."""
+
+    if not isinstance(raw, str):
+        raise CriticProtocolV3Error("protocol-v3 description is not text")
+    description = raw.strip()
+    if (
+        not description
+        or len(description) > 4096
+        or description.startswith(("{", "[", "```"))
+        or DESCRIPTION_VERDICT_TOKENS.search(description) is not None
+    ):
+        raise CriticProtocolV3Error(
+            "protocol-v3 first pass is not a bounded non-verdict description"
+        )
+    return description
+
+
+def protocol_v3_response_schema() -> dict[str, Any]:
+    """Provide a strict transport schema; semantic checks remain in the parser."""
+
+    finding = {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["severity", "cited_evidence_panels", "localization_xyxy"],
+        "properties": {
+            "severity": {"type": "string", "enum": sorted(SEVERITIES)},
+            "cited_evidence_panels": {
+                "type": "array",
+                "items": {"type": "string", "enum": list(EVIDENCE_BOARD_LAYOUT)},
+                "maxItems": len(EVIDENCE_BOARD_LAYOUT),
+            },
+            "localization_xyxy": {
+                "anyOf": [
+                    {"type": "null"},
+                    {
+                        "type": "array",
+                        "items": {"type": "number"},
+                        "minItems": 4,
+                        "maxItems": 4,
+                    },
+                ]
+            },
+        },
+    }
+    return {
+        "name": "maskfactory_critic_protocol_v3_response",
+        "strict": True,
+        "schema": {
+            "type": "object",
+            "additionalProperties": False,
+            "required": ["description", "findings"],
+            "properties": {
+                "description": {"type": "string", "minLength": 1, "maxLength": 4096},
+                "findings": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": list(CHECK_KEYS),
+                    "properties": {dimension: finding for dimension in CHECK_KEYS},
+                },
+            },
+        },
+    }
 
 
 def _validate_localization(value: Any, field: str) -> list[float]:
@@ -453,3 +539,44 @@ def fit_calibration_minor_budgets(
         }
         for (label_id, tier, scale), minor_budget in sorted(fitted.items())
     ]
+
+
+def seal_fitted_calibration_registry(
+    *,
+    preholdout_registry: Mapping[str, Any],
+    observations: Sequence[Mapping[str, Any]],
+    protocol_version: str,
+) -> dict[str, Any]:
+    """Create a new immutable calibration-only registry from exact observations.
+
+    The source registry remains a pre-holdout default.  A caller must persist the
+    returned object as a distinct version before it can be used on a qualification
+    holdout.  No evidence from a holdout can enter the fitting operation.
+    """
+
+    validate_protocol_registry(preholdout_registry)
+    if preholdout_registry["calibration_status"] != "preholdout_defaults_only":
+        raise CriticProtocolV3Error("only a preholdout registry may seed a fitted registry")
+    if not isinstance(protocol_version, str) or not protocol_version.strip():
+        raise CriticProtocolV3Error("fitted protocol version is invalid")
+    if protocol_version == preholdout_registry["protocol_version"]:
+        raise CriticProtocolV3Error("fitted registry requires a distinct protocol version")
+
+    bands = fit_calibration_minor_budgets(observations)
+    fitted = dict(preholdout_registry)
+    fitted.update(
+        {
+            "protocol_version": protocol_version.strip(),
+            "calibration_status": "fitted_calibration_only",
+            "calibration_evidence_sha256": canonical_sha256(
+                {
+                    "preholdout_registry_sha256": protocol_registry_sha256(preholdout_registry),
+                    "observations": list(observations),
+                }
+            ),
+            "calibration_observation_count": len(observations),
+            "tolerance_bands": bands,
+        }
+    )
+    validate_protocol_registry(fitted)
+    return fitted

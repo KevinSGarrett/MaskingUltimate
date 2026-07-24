@@ -14,10 +14,13 @@ from maskfactory.vlm.critic_protocol_v3 import (
     derive_protocol_v3_verdict,
     evaluate_visual_acceptance,
     fit_calibration_minor_budgets,
+    parse_protocol_v3_description,
     parse_protocol_v3_response,
     protocol_registry_sha256,
+    protocol_v3_response_schema,
     require_holdout_eligible_registry,
     resolve_minor_budget,
+    seal_fitted_calibration_registry,
     validate_protocol_registry,
 )
 
@@ -89,6 +92,15 @@ def test_two_pass_prompt_is_reference_anchored_and_budget_bound() -> None:
     )
     assert "image-disjoint known-good reference" in judgement
     assert "At most 0 minor findings" in judgement
+
+
+def test_first_pass_cannot_smuggle_a_verdict_and_second_pass_schema_is_closed() -> None:
+    assert parse_protocol_v3_description("The proposed and reference masks cover the target.")
+    with pytest.raises(CriticProtocolV3Error, match="non-verdict"):
+        parse_protocol_v3_description("Verdict: pass")
+    schema = protocol_v3_response_schema()
+    assert schema["strict"] is True
+    assert schema["schema"]["properties"]["findings"]["additionalProperties"] is False
 
 
 def test_serious_finding_is_a_defect_and_never_a_pass() -> None:
@@ -183,3 +195,25 @@ def test_fit_uses_calibration_only_and_rejects_holdout_contact() -> None:
     holdout["split"] = "qualification_holdout"
     with pytest.raises(CriticProtocolV3Error, match="may not contact holdout"):
         fit_calibration_minor_budgets([holdout])
+
+
+def test_fitted_registry_binds_calibration_evidence_and_unlocks_holdout_only_after_seal() -> None:
+    observation = {
+        "split": "calibration",
+        "label_id": "hair",
+        "source_authority_tier": "external_labeled_reference",
+        "label_scale": "small",
+        "expected_outcome": "valid_mask",
+        "serious_defect_count": 0,
+        "minor_finding_count": 1,
+    }
+    fitted = seal_fitted_calibration_registry(
+        preholdout_registry=_registry(),
+        observations=[observation],
+        protocol_version="3.0.1-20260723r-calibration-fit",
+    )
+    validate_protocol_registry(fitted)
+    require_holdout_eligible_registry(fitted)
+    assert fitted["calibration_observation_count"] == 1
+    assert len(fitted["calibration_evidence_sha256"]) == 64
+    assert fitted["tolerance_bands"][0]["minor_budget"] == 1

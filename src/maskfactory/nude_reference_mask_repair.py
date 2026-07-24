@@ -18,7 +18,12 @@ from .nude_box_mask_generation import validate_box_prompt_provider_batch
 from .nude_reference_strict_visual_review import (
     validate_reference_person_strict_visual_review,
 )
-from .providers.contracts import InteractiveSegmenter, MaskProposal, ProviderIdentity
+from .providers.contracts import (
+    InteractiveSegmenter,
+    MaskProposal,
+    MattingRefiner,
+    ProviderIdentity,
+)
 from .providers.disagreement import binary_mask_sha256
 from .vlm.target_contract import target_contract_sha256, validate_target_contract
 
@@ -100,12 +105,13 @@ def _execute_candidate_repair(
     *,
     report: Mapping[str, Any],
     sample_id: str,
-    source_embedding: Any,
+    source_path: Path,
+    source_embedding: Any | None,
     parent_candidates: Mapping[int, Mapping[str, Any]],
     parent_masks: Mapping[int, np.ndarray],
     histories: Mapping[str, Mapping[int, Sequence[Mapping[str, Any]]]],
     maximum_attempts: int,
-    repair_provider: InteractiveSegmenter,
+    repair_provider: InteractiveSegmenter | MattingRefiner,
     output_root: Path,
     target_contracts: Mapping[str, Mapping[int, Mapping[str, Any]]],
 ) -> dict[str, Any]:
@@ -132,15 +138,21 @@ def _execute_candidate_repair(
         }
     parent = parent_candidates[person_index]
     parent_mask = parent_masks[person_index]
-    proposals = repair_provider.refine(
-        source_embedding,
-        prompt={
-            "positive_points": plan["positive_points"],
-            "negative_points": plan["negative_points"],
-            "box_xyxy": plan["roi_xyxy"],
-            "mask_prompt": parent_mask,
-        },
-    )
+    if isinstance(repair_provider, MattingRefiner):
+        refine_mask = getattr(repair_provider, "refine_mask", None)
+        if not callable(refine_mask):
+            raise NudeReferenceMaskRepairError("matting_refiner_mask_output_unavailable")
+        proposals = (refine_mask(source_path, prior_mask=parent_mask),)
+    else:
+        proposals = repair_provider.refine(
+            source_embedding,
+            prompt={
+                "positive_points": plan["positive_points"],
+                "negative_points": plan["negative_points"],
+                "box_xyxy": plan["roi_xyxy"],
+                "mask_prompt": parent_mask,
+            },
+        )
     selected = _select(proposals, repair_provider.identity, parent_mask.shape)
     child_mask = np.asarray(selected.mask).astype(bool)
     roi = plan["roi_xyxy"]
@@ -220,7 +232,7 @@ def execute_reference_person_repair_batch(
     output_root: Path,
     source_paths: Mapping[str, Path],
     target_contracts: Mapping[str, Mapping[int, Mapping[str, Any]]],
-    repair_provider: InteractiveSegmenter,
+    repair_provider: InteractiveSegmenter | MattingRefiner,
     attempt_history: Mapping[str, Mapping[int, Sequence[Mapping[str, Any]]]] | None = None,
     maximum_attempts: int = 3,
 ) -> dict[str, Any]:
@@ -238,10 +250,14 @@ def execute_reference_person_repair_batch(
     )
     if review["provider_batch_sha256"] != batch["self_sha256"]:
         raise NudeReferenceMaskRepairError("repair_visual_provider_batch_drift")
-    if not isinstance(repair_provider, InteractiveSegmenter):
+    is_interactive = isinstance(repair_provider, InteractiveSegmenter)
+    is_matting = isinstance(repair_provider, MattingRefiner)
+    if not is_interactive and not is_matting:
         raise NudeReferenceMaskRepairError("repair_provider_contract_invalid")
-    if repair_provider.identity.role != "interactive_segmenter":
+    if repair_provider.identity.role not in {"interactive_segmenter", "boundary_refiner"}:
         raise NudeReferenceMaskRepairError("repair_provider_role_invalid")
+    if is_matting and repair_provider.identity.role != "boundary_refiner":
+        raise NudeReferenceMaskRepairError("matting_refiner_role_invalid")
     histories = attempt_history or {}
     batch_records = {record["sample_id"]: record for record in batch["records"]}
     output_records = []
@@ -261,9 +277,10 @@ def execute_reference_person_repair_batch(
                 or sha256_file(source_path) != review_record["source_sha256"]
             ):
                 raise NudeReferenceMaskRepairError("repair_source_hash_mismatch")
-            with Image.open(source_path) as opened:
-                source = np.asarray(opened.convert("RGB"))
-            source_embedding = repair_provider.embed(source)
+            if is_interactive:
+                with Image.open(source_path) as opened:
+                    source = np.asarray(opened.convert("RGB"))
+                source_embedding = repair_provider.embed(source)
             parent_candidates = {
                 int(candidate["person_index"]): candidate
                 for candidate in batch_records[sample_id]["candidates"]
@@ -278,6 +295,7 @@ def execute_reference_person_repair_batch(
                     outcome = _execute_candidate_repair(
                         report=report,
                         sample_id=sample_id,
+                        source_path=source_path,
                         source_embedding=source_embedding,
                         parent_candidates=parent_candidates,
                         parent_masks=parent_masks,
@@ -307,7 +325,7 @@ def execute_reference_person_repair_batch(
             record_reasons.append(f"{type(exc).__name__}:{exc}")
         finally:
             close = getattr(repair_provider, "close", None)
-            if source_embedding is not None and callable(close):
+            if is_interactive and source_embedding is not None and callable(close):
                 close(source_embedding)
         statuses = Counter(item["status"] for item in candidate_outputs)
         output_records.append(
@@ -381,7 +399,7 @@ def validate_reference_person_repair_batch(
         identity = ProviderIdentity(**document["repair_provider"])
     except (KeyError, TypeError, ValueError) as exc:
         raise NudeReferenceMaskRepairError("repair_batch_provider_invalid") from exc
-    if identity.role != "interactive_segmenter":
+    if identity.role not in {"interactive_segmenter", "boundary_refiner"}:
         raise NudeReferenceMaskRepairError("repair_batch_provider_role_invalid")
     records = document.get("records")
     if not isinstance(records, list) or len(records) != document.get("record_count"):
@@ -574,7 +592,7 @@ def build_reference_repair_stage_receipt(
         identity = ProviderIdentity(**repair_provider)
     except (TypeError, ValueError) as exc:
         raise NudeReferenceMaskRepairError("repair_stage_provider_invalid") from exc
-    if identity.role != "interactive_segmenter":
+    if identity.role not in {"interactive_segmenter", "boundary_refiner"}:
         raise NudeReferenceMaskRepairError("repair_stage_provider_invalid")
     if not isinstance(repair_batch_sha256, str) or len(repair_batch_sha256) != 64:
         raise NudeReferenceMaskRepairError("repair_stage_batch_hash_invalid")

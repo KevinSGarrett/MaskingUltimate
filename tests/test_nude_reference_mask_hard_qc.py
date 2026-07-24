@@ -33,7 +33,7 @@ from maskfactory.nude_reference_strict_visual_review import (
     validate_reference_person_strict_visual_review,
     validate_reference_strict_visual_stage_receipt,
 )
-from maskfactory.providers.contracts import MaskProposal, ProviderIdentity
+from maskfactory.providers.contracts import AlphaMatteProposal, MaskProposal, ProviderIdentity
 from maskfactory.vlm.critic_authority import certificate_sha256
 from maskfactory.vlm.critic_catalog import canonical_sha256, load_catalog
 from maskfactory.vlm.target_contract import target_contract_sha256
@@ -92,6 +92,30 @@ class _RepairProvider:
             if not self.outside_roi:
                 mask[2, 2] = ~mask[2, 2]
         return (MaskProposal(mask.astype(bool), 0.95, self.identity, "repair-prompt"),)
+
+
+class _MattingRepairProvider:
+    def __init__(self) -> None:
+        self.identity = ProviderIdentity(
+            "sam2matting-boundary",
+            "boundary_refiner",
+            "sam2matting",
+            "7" * 40,
+            "6" * 64,
+        )
+        self.paths = []
+
+    def refine_matte(self, image_path: Path, *, prior_mask: np.ndarray) -> AlphaMatteProposal:
+        self.paths.append(image_path)
+        return AlphaMatteProposal(
+            np.asarray(prior_mask, dtype=np.float32), self.identity, "matting-prior"
+        )
+
+    def refine_mask(self, image_path: Path, *, prior_mask: np.ndarray) -> MaskProposal:
+        self.paths.append(image_path)
+        mask = np.asarray(prior_mask, dtype=bool).copy()
+        mask[2, 2] = ~mask[2, 2]
+        return MaskProposal(mask, 0.92, self.identity, "matting-prior")
 
 
 class _Reviewer:
@@ -816,6 +840,39 @@ def test_repair_child_reenters_complete_hard_qc_and_visual_review(tmp_path: Path
     assert visual["status_counts"] == {"pass": 1}
     assert visual["production_mask_authority"] is False
     assert visual["operational_certificates_issued"] is False
+
+
+def test_boundary_refiner_repair_uses_exact_parent_as_prior_and_reenters_hard_qc(tmp_path: Path):
+    source, root, batch = _fixture(tmp_path)
+    hard_qc = run_reference_person_mask_hard_qc(
+        batch, output_root=root, source_paths={"sample-a": source}
+    )
+    review, target_contracts = _repair_ready_review(source, root, batch, hard_qc, tmp_path)
+    provider = _MattingRepairProvider()
+    repair = execute_reference_person_repair_batch(
+        provider_batch=batch,
+        visual_review=review,
+        evidence_root=tmp_path / "visual",
+        output_root=root,
+        source_paths={"sample-a": source},
+        target_contracts=target_contracts,
+        repair_provider=provider,
+    )
+    assert repair["status_counts"] == {"repair_candidates_created": 1}
+    assert provider.paths == [source]
+    reentry, contracts = build_reference_person_repair_reentry_batch(
+        parent_provider_batch=batch,
+        repair_batch=repair,
+        output_root=root,
+        parent_target_contracts=target_contracts,
+    )
+    candidate = reentry["records"][0]["candidates"][0]
+    assert candidate["author_provider"]["role"] == "boundary_refiner"
+    assert candidate["lineage"]["kind"] == "bounded_immutable_repair_child"
+    assert run_reference_person_mask_hard_qc(
+        reentry, output_root=root, source_paths={"sample-a": source}
+    )["status_counts"] == {"pass": 1}
+    assert contracts["sample-a"][0]["package"]["revision"] == 2
 
 
 def test_repair_batch_rejects_duplicate_hypothesis_without_provider_execution(tmp_path: Path):

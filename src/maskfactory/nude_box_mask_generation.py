@@ -628,7 +628,7 @@ def validate_box_prompt_provider_batch_structure(document: Mapping[str, Any]) ->
         identity = ProviderIdentity(**provider)
     except (TypeError, ValueError) as exc:
         raise NudeBoxMaskGenerationError("provider_batch_identity_invalid") from exc
-    if identity.role != "interactive_segmenter":
+    if identity.role not in {"interactive_segmenter", "boundary_refiner"}:
         raise NudeBoxMaskGenerationError("provider_batch_role_invalid")
     if (
         document.get("authority") != "draft_provider_masks_only"
@@ -704,7 +704,7 @@ def validate_box_prompt_provider_batch_structure(document: Mapping[str, Any]) ->
                     raise NudeBoxMaskGenerationError(
                         "provider_batch_candidate_author_provider_invalid"
                     ) from exc
-                if author_identity.role != "interactive_segmenter":
+                if author_identity.role not in {"interactive_segmenter", "boundary_refiner"}:
                     raise NudeBoxMaskGenerationError(
                         "provider_batch_candidate_author_provider_invalid"
                     )
@@ -714,6 +714,17 @@ def validate_box_prompt_provider_batch_structure(document: Mapping[str, Any]) ->
                     "bounded_immutable_repair_child",
                 }:
                     raise NudeBoxMaskGenerationError("provider_batch_candidate_lineage_invalid")
+                if (
+                    author_identity.role == "boundary_refiner"
+                    and lineage["kind"] != "bounded_immutable_repair_child"
+                ):
+                    raise NudeBoxMaskGenerationError(
+                        "provider_batch_boundary_refiner_requires_repair_child"
+                    )
+            elif identity.role == "boundary_refiner":
+                raise NudeBoxMaskGenerationError(
+                    "provider_batch_boundary_refiner_requires_parent_lineage"
+                )
             for field in ("mask_sha256", "artifact_sha256"):
                 if (
                     not isinstance(candidate.get(field), str)

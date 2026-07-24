@@ -13285,12 +13285,17 @@
           "ts": "2026-07-22T02:53:04+00:00",
           "actor": "codex",
           "text": "Installed as shadow boundary/alpha challenger only; receives an upstream binary prior and has no semantic-label, production-mask, or gold authority."
+        },
+        {
+          "ts": "2026-07-24T02:42:12+00:00",
+          "actor": "codex",
+          "text": "2026-07-24 STATIC_PASS integration extension: SAM2Matting can now execute only as a boundary_refiner repair route over an exact immutable SAM3.1 parent mask, with source-byte binding, bounded review ROI, protected-other-person rejection, changed-pixel limits, immutable child target-contract revision, and re-entry through full hard-QA/visual review. `tools/run_nude_sam2matting_repair.py` prepares the selected RunPod execution without granting semantic-label, production-mask, certificate, gold, or training-truth authority. 49 focused repair/hard-QA/SAM2Matting/provider-canary tests pass with Ruff and Black. This is not a live shard run or a claim that SAM2Matting is an independent semantic proposal."
         }
       ],
       "evidence": "Official SAM2Matting source 73dd721d and Base+ checkpoint 4315db9c/sha256 1f0eb2ed installed in isolated RunPod Python 3.10.12 torch 2.8.0+cu128 runtime; pip check passed. Two live deterministic 1920x1440 alpha passes matched payload e51a952a, recovered 5.546875% fractional-alpha boundary pixels, and passed authoritative visual review. Provider contract rejects geometry/provenance/checkpoint/determinism/semantic-authority drift and preserves explicit fallback. Evidence: qa/live_verification/sam2matting_runpod_runtime_20260722.json; lock: env/sam2matting_runtime.lock.json; focused provider/registry/runtime-matrix tests passed.",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-22T02:53:04+00:00",
+      "updated_at": "2026-07-24T02:42:12+00:00",
       "orphaned": false
     },
     "MF-P2-11.17": {

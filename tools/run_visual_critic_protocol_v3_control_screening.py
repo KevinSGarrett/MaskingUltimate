@@ -126,41 +126,78 @@ def _format_repair_projection(value: Mapping[str, Any]) -> dict[str, Any]:
     return projection
 
 
-def _format_repair_prompt(prior_response: Mapping[str, Any]) -> str:
-    return (
-        "/no_think\nReturn only corrected JSON. Do not evaluate the images again, change the response "
-        "description, change any finding severity, or change any non-none finding. The previous JSON is "
-        "invalid only because one or more findings with severity none cite evidence panels or localize. "
-        "For every severity none, set cited_evidence_panels to [] and localization_xyxy to null. Preserve "
-        "all other values exactly. Do not use Markdown.\nPREVIOUS_JSON:\n"
-        + json.dumps(prior_response, separators=(",", ":"), sort_keys=True)
-    )
+def _deterministic_transport_repair(raw: str) -> tuple[dict[str, Any], str]:
+    """Repair only a terminal JSON delimiter and semantically void ``none`` metadata.
 
+    This is intentionally not a second visual judgement. The sole permitted syntax
+    change is one closing brace at end of an otherwise JSON object. The sole
+    permitted value change is clearing fields which the response contract says must
+    be empty/null when their severity is ``none``. Description, every severity,
+    and every non-none finding must survive unchanged through the projection check
+    below; anything else remains an abstention.
+    """
 
-def _parse_with_bounded_format_repair(
-    *, raw: str, backend: str, model_id: str, endpoint: str | None, model: Any, tokenizer: Any, images: list[Path]
-) -> tuple[dict[str, Any], str | None, float, list[int]]:
+    if not isinstance(raw, str) or raw != raw.strip() or not raw:
+        raise CriticProtocolV3ControlScreeningError("control-screening response is not JSON")
+    candidate = raw
+    closed_terminal_brace = False
     try:
-        return parse_control_screening_response(raw), None, 0.0, []
-    except CriticProtocolV3ControlScreeningError as exc:
-        if not str(exc).startswith("control-screening none finding localizes:"):
-            raise
-    prior_response = _json_object(raw)
+        prior_response = _json_object(candidate)
+    except json.JSONDecodeError as exc:
+        if exc.pos != len(candidate):
+            raise CriticProtocolV3ControlScreeningError(
+                "control-screening response is not JSON"
+            ) from exc
+        candidate += "}"
+        closed_terminal_brace = True
+        try:
+            prior_response = _json_object(candidate)
+        except (TypeError, ValueError, json.JSONDecodeError) as repaired_exc:
+            raise CriticProtocolV3ControlScreeningError(
+                "control-screening response is not JSON"
+            ) from repaired_exc
+    except (TypeError, ValueError) as exc:
+        raise CriticProtocolV3ControlScreeningError(
+            "control-screening response is not JSON"
+        ) from exc
+
     prior_projection = _format_repair_projection(prior_response)
-    repaired_raw, latency_ms, patch_counts = _run_pass(
-        backend=backend,
-        model_id=model_id,
-        endpoint=endpoint,
-        model=model,
-        tokenizer=tokenizer,
-        prompt=_format_repair_prompt(prior_response),
-        images=images,
-        schema=control_response_schema(),
-    )
+    findings = prior_response["findings"]
+    changed_none_metadata = False
+    if not isinstance(findings, Mapping):
+        raise CriticProtocolV3ControlScreeningError("control-screening findings invalid")
+    repaired_response = dict(prior_response)
+    repaired_findings = {
+        key: dict(value) if isinstance(value, Mapping) else value for key, value in findings.items()
+    }
+    for finding in repaired_findings.values():
+        if not isinstance(finding, dict) or finding.get("severity") != "none":
+            continue
+        if finding.get("cited_evidence_panels") != [] or finding.get("localization_xyxy") is not None:
+            finding["cited_evidence_panels"] = []
+            finding["localization_xyxy"] = None
+            changed_none_metadata = True
+    if not closed_terminal_brace and not changed_none_metadata:
+        raise CriticProtocolV3ControlScreeningError("control-screening response is not repairable")
+    repaired_response["findings"] = repaired_findings
+    repaired_raw = json.dumps(repaired_response, separators=(",", ":"), sort_keys=True)
     repaired = parse_control_screening_response(repaired_raw)
     if _format_repair_projection(repaired) != prior_projection:
         raise ValueError("format-repair changed response semantics")
-    return repaired, repaired_raw, latency_ms, patch_counts
+    return repaired, repaired_raw
+
+
+def _parse_with_bounded_format_repair(*, raw: str) -> tuple[dict[str, Any], str | None, float, list[int]]:
+    try:
+        return parse_control_screening_response(raw), None, 0.0, []
+    except CriticProtocolV3ControlScreeningError as exc:
+        if not (
+            str(exc).startswith("control-screening none finding localizes:")
+            or str(exc) == "control-screening response is not JSON"
+        ):
+            raise
+    repaired, repaired_raw = _deterministic_transport_repair(raw)
+    return repaired, repaired_raw, 0.0, []
 
 
 def _abstain(
@@ -205,28 +242,12 @@ def _record(*, case: dict[str, Any], panel_root: Path, temp_root: Path, backend:
         description = parse_protocol_v3_description(description_raw)
         judgement_prompt = build_control_judgement_prompt(description=description, label_id=case["label_id"], label_scale=case["label_scale"], reference_case_id=case["reference_case_id"])
         judgement_raw, judgement_latency, judgement_patches = _run_pass(backend=backend, model_id=model_id, endpoint=endpoint, model=model, tokenizer=tokenizer, prompt=judgement_prompt, images=images, schema=control_response_schema())
-        parsed, judgement_format_repair_raw, judgement_repair_latency, judgement_repair_patches = _parse_with_bounded_format_repair(
-            raw=judgement_raw,
-            backend=backend,
-            model_id=model_id,
-            endpoint=endpoint,
-            model=model,
-            tokenizer=tokenizer,
-            images=images,
-        )
+        parsed, judgement_format_repair_raw, judgement_repair_latency, judgement_repair_patches = _parse_with_bounded_format_repair(raw=judgement_raw)
         replay_description_raw, replay_desc_latency, replay_desc_patches = _run_pass(backend=backend, model_id=model_id, endpoint=endpoint, model=model, tokenizer=tokenizer, prompt=description_prompt, images=images, schema=None)
         replay_description = parse_protocol_v3_description(replay_description_raw)
         replay_prompt = build_control_judgement_prompt(description=replay_description, label_id=case["label_id"], label_scale=case["label_scale"], reference_case_id=case["reference_case_id"])
         replay_judgement_raw, replay_judgement_latency, replay_judgement_patches = _run_pass(backend=backend, model_id=model_id, endpoint=endpoint, model=model, tokenizer=tokenizer, prompt=replay_prompt, images=images, schema=control_response_schema())
-        replay_parsed, replay_judgement_format_repair_raw, replay_judgement_repair_latency, replay_judgement_repair_patches = _parse_with_bounded_format_repair(
-            raw=replay_judgement_raw,
-            backend=backend,
-            model_id=model_id,
-            endpoint=endpoint,
-            model=model,
-            tokenizer=tokenizer,
-            images=images,
-        )
+        replay_parsed, replay_judgement_format_repair_raw, replay_judgement_repair_latency, replay_judgement_repair_patches = _parse_with_bounded_format_repair(raw=replay_judgement_raw)
         screening = derive_control_screening_verdict(response=parsed, geometry_wh=case["candidate"]["geometry_wh"])
         deterministic = (
             description == replay_description

@@ -169,3 +169,35 @@ def test_format_repair_projection_preserves_all_semantics_except_none_format() -
     severity_changed["findings"]["boundary"]["cited_evidence_panels"] = ["source", "contour"]
     severity_changed["findings"]["boundary"]["localization_xyxy"] = [1, 1, 5, 5]
     assert control_screening_runner._format_repair_projection(prior) != control_screening_runner._format_repair_projection(severity_changed)
+
+
+
+def test_bounded_format_repair_only_closes_terminal_json_and_clears_none_metadata() -> None:
+    prior = _response("none", None)
+    prior["findings"]["anatomy"]["cited_evidence_panels"] = ["source", "contour"]
+    prior["findings"]["boundary"] = {
+        "severity": "serious",
+        "cited_evidence_panels": ["source", "contour"],
+        "localization_xyxy": [1, 1, 5, 5],
+    }
+    raw = json.dumps(prior, separators=(",", ":"), sort_keys=True)
+    parsed, repaired_raw, latency_ms, patch_counts = control_screening_runner._parse_with_bounded_format_repair(
+        raw=raw[:-1]
+    )
+    assert repaired_raw is not None
+    assert latency_ms == 0.0
+    assert patch_counts == []
+    assert parsed["description"] == prior["description"]
+    assert parsed["findings"]["anatomy"] == {
+        "severity": "none",
+        "cited_evidence_panels": [],
+        "localization_xyxy": None,
+    }
+    assert parsed["findings"]["boundary"] == prior["findings"]["boundary"]
+
+
+def test_bounded_format_repair_rejects_nonterminal_json_damage() -> None:
+    prior = _response("none", None)
+    raw = json.dumps(prior, separators=(",", ":"), sort_keys=True)
+    with pytest.raises(CriticProtocolV3ControlScreeningError, match="not JSON"):
+        control_screening_runner._parse_with_bounded_format_repair(raw=raw[:-8])

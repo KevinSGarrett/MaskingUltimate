@@ -1,0 +1,11 @@
+{
+  "schema_version": "maskfactory.comfyui_serverless_runtime_bindings.v1",
+  "comfyui_commit_on_source_pod": "66655153499f89052aa72d5a869f556b25f0e9c6",
+  "worker_image": "runpod/worker-comfyui:5.8.6-base",
+  "custom_nodes": {
+    "ComfyUI-PuLID-Flux": "a80912fc3435c358607bf4b43a58dbcbebdb09ff",
+    "comfyui_controlnet_aux": "e8b689a513c3e6b63edc44066560ca5919c0576e",
+    "was-node-suite-comfyui": "ea935d1044ae5a26efa54ebeb18fe9020af49a45"
+  },
+  "network_volume_model_root": "/runpod-volume/ComfyUI/models"
+}

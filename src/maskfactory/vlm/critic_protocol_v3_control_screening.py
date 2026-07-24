@@ -309,15 +309,32 @@ def build_control_judgement_prompt(
 ) -> str:
     if not isinstance(description, str) or not description.strip():
         raise CriticProtocolV3ControlScreeningError("control-screening description missing")
+    none_finding = {
+        "severity": "none",
+        "cited_evidence_panels": [],
+        "localization_xyxy": None,
+    }
+    response_shape = {
+        "description": description.strip(),
+        "findings": {dimension: none_finding for dimension in CHECK_KEYS},
+    }
     return (
         "/no_think\nScreen the candidate against the image-disjoint known-good reference. This is not "
         "semantic qualification, a strict visual pass, or an authority decision. A serious visible "
         "discrepancy is a screening defect and the frozen minor budget is zero. Every non-none finding "
-        "requires two exact evidence panels and coherent source coordinates. Return only JSON.\n"
+        "requires two exact evidence panels and coherent source coordinates.\n"
         f"Target label: {label_id}; reference case: {reference_case_id}; label scale: {label_scale}\n"
         f"First-pass description: {description.strip()}\nFindings must contain exactly: "
         + ", ".join(CHECK_KEYS)
-        + ". Each finding is {severity:none|cosmetic|minor|serious,cited_evidence_panels:[two panel labels],localization_xyxy:[x1,y1,x2,y2]|null}."
+        + ". Return exactly one JSON object, no Markdown, no top-level array, no findings array, and no per-item anatomy field. "
+        "Copy this exact object shape and replace only its values:\n"
+        + json.dumps(response_shape, separators=(",", ":"), sort_keys=True)
+        + "\nFor severity none, cited_evidence_panels must be [] and localization_xyxy must be null. "
+        "Nonempty cited_evidence_panels or a non-null localization_xyxy with severity none invalidates the response. "
+        "Copy the response description from the first-pass description exactly; never use a placeholder. "
+        "For any other severity, cite at least two distinct lowercase panels from "
+        + ", ".join(PANEL_LAYOUT)
+        + ", and provide a positive-area [x1,y1,x2,y2] localization."
     )
 
 

@@ -11,6 +11,7 @@ import sys
 import tempfile
 import time
 import urllib.request
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
@@ -29,6 +30,7 @@ from maskfactory.vlm.critic_catalog import canonical_sha256
 from maskfactory.vlm.critic_protocol_v3 import parse_protocol_v3_description
 from maskfactory.vlm.critic_protocol_v3_control_screening import (
     CONTROL_PROTOCOL_ID,
+    CriticProtocolV3ControlScreeningError,
     build_control_description_prompt,
     build_control_judgement_prompt,
     control_registry_sha256,
@@ -79,7 +81,13 @@ def _openai_text(endpoint: str, model_id: str, prompt: str, images: list[Path]) 
 
 def _run_pass(*, backend: str, model_id: str, endpoint: str | None, model: Any, tokenizer: Any, prompt: str, images: list[Path], schema: dict[str, Any] | None) -> tuple[str, float, list[int]]:
     if backend == "internvl":
-        return legacy_runner._run_internvl(model=model, tokenizer=tokenizer, prompt=prompt, images=images)
+        return legacy_runner._run_internvl(
+            model=model,
+            tokenizer=tokenizer,
+            prompt=prompt,
+            images=images,
+            max_new_tokens=1536 if schema is not None else 512,
+        )
     if not endpoint:
         raise ValueError("OpenAI-compatible endpoint is required")
     if schema is None:
@@ -88,12 +96,93 @@ def _run_pass(*, backend: str, model_id: str, endpoint: str | None, model: Any, 
     return (*legacy_runner._run_openai(endpoint=endpoint, model_id=model_id, prompt=prompt, images=images, schema=schema), [])
 
 
-def _abstain(case: dict[str, Any], reason: str, error: Exception | None) -> dict[str, Any]:
+def _json_object(raw: str) -> Mapping[str, Any]:
+    value = raw.strip()
+    if value.startswith("```json"):
+        value = value[7:]
+    elif value.startswith("```"):
+        value = value[3:]
+    if value.endswith("```"):
+        value = value[:-3]
+    parsed = json.loads(value.strip())
+    if not isinstance(parsed, Mapping):
+        raise ValueError("format-repair prior response is not an object")
+    return parsed
+
+
+def _format_repair_projection(value: Mapping[str, Any]) -> dict[str, Any]:
+    if set(value) != {"description", "findings"} or not isinstance(value["description"], str):
+        raise ValueError("format-repair response fields are invalid")
+    findings = value["findings"]
+    if not isinstance(findings, Mapping) or not findings:
+        raise ValueError("format-repair findings are invalid")
+    projection: dict[str, Any] = {"description": value["description"], "findings": {}}
+    for dimension, finding in findings.items():
+        if not isinstance(dimension, str) or not isinstance(finding, Mapping) or "severity" not in finding:
+            raise ValueError("format-repair finding is invalid")
+        projection["findings"][dimension] = (
+            {"severity": finding["severity"]} if finding["severity"] == "none" else dict(finding)
+        )
+    return projection
+
+
+def _format_repair_prompt(prior_response: Mapping[str, Any]) -> str:
+    return (
+        "/no_think\nReturn only corrected JSON. Do not evaluate the images again, change the response "
+        "description, change any finding severity, or change any non-none finding. The previous JSON is "
+        "invalid only because one or more findings with severity none cite evidence panels or localize. "
+        "For every severity none, set cited_evidence_panels to [] and localization_xyxy to null. Preserve "
+        "all other values exactly. Do not use Markdown.\nPREVIOUS_JSON:\n"
+        + json.dumps(prior_response, separators=(",", ":"), sort_keys=True)
+    )
+
+
+def _parse_with_bounded_format_repair(
+    *, raw: str, backend: str, model_id: str, endpoint: str | None, model: Any, tokenizer: Any, images: list[Path]
+) -> tuple[dict[str, Any], str | None, float, list[int]]:
+    try:
+        return parse_control_screening_response(raw), None, 0.0, []
+    except CriticProtocolV3ControlScreeningError as exc:
+        if not str(exc).startswith("control-screening none finding localizes:"):
+            raise
+    prior_response = _json_object(raw)
+    prior_projection = _format_repair_projection(prior_response)
+    repaired_raw, latency_ms, patch_counts = _run_pass(
+        backend=backend,
+        model_id=model_id,
+        endpoint=endpoint,
+        model=model,
+        tokenizer=tokenizer,
+        prompt=_format_repair_prompt(prior_response),
+        images=images,
+        schema=control_response_schema(),
+    )
+    repaired = parse_control_screening_response(repaired_raw)
+    if _format_repair_projection(repaired) != prior_projection:
+        raise ValueError("format-repair changed response semantics")
+    return repaired, repaired_raw, latency_ms, patch_counts
+
+
+def _abstain(
+    case: dict[str, Any],
+    reason: str,
+    error: Exception | None,
+    *,
+    description_response: str | None = None,
+    judgement_response: str | None = None,
+    replay_description_response: str | None = None,
+    replay_judgement_response: str | None = None,
+    judgement_format_repair_response: str | None = None,
+    replay_judgement_format_repair_response: str | None = None,
+) -> dict[str, Any]:
     return {
         "case_id": case["case_id"], "reference_case_id": case["reference_case_id"],
         "schema_valid": False, "deterministic_replay": False,
-        "description_response": None, "judgement_response": None,
-        "replay_description_response": None, "replay_judgement_response": None,
+        "description_response": description_response, "judgement_response": judgement_response,
+        "replay_description_response": replay_description_response,
+        "replay_judgement_response": replay_judgement_response,
+        "judgement_format_repair_response": judgement_format_repair_response,
+        "replay_judgement_format_repair_response": replay_judgement_format_repair_response,
         "latency_ms": 0.0, "peak_vram_bytes": legacy_runner._peak_vram_bytes(),
         "screening": {"protocol_id": CONTROL_PROTOCOL_ID, "screening_outcome": "abstain", "reason": reason, "authority_claimed": False},
         "error": None if error is None else str(error),
@@ -101,6 +190,12 @@ def _abstain(case: dict[str, Any], reason: str, error: Exception | None) -> dict
 
 
 def _record(*, case: dict[str, Any], panel_root: Path, temp_root: Path, backend: str, model_id: str, endpoint: str | None, model: Any, tokenizer: Any) -> dict[str, Any]:
+    description_raw = None
+    judgement_raw = None
+    replay_description_raw = None
+    replay_judgement_raw = None
+    judgement_format_repair_raw = None
+    replay_judgement_format_repair_raw = None
     try:
         candidate = materialize_control_evidence_board(side=case["candidate"], panel_root=panel_root, output_path=temp_root / case["case_id"] / "candidate.png")
         reference = materialize_control_evidence_board(side=case["reference"], panel_root=panel_root, output_path=temp_root / case["case_id"] / "reference.png")
@@ -110,26 +205,68 @@ def _record(*, case: dict[str, Any], panel_root: Path, temp_root: Path, backend:
         description = parse_protocol_v3_description(description_raw)
         judgement_prompt = build_control_judgement_prompt(description=description, label_id=case["label_id"], label_scale=case["label_scale"], reference_case_id=case["reference_case_id"])
         judgement_raw, judgement_latency, judgement_patches = _run_pass(backend=backend, model_id=model_id, endpoint=endpoint, model=model, tokenizer=tokenizer, prompt=judgement_prompt, images=images, schema=control_response_schema())
+        parsed, judgement_format_repair_raw, judgement_repair_latency, judgement_repair_patches = _parse_with_bounded_format_repair(
+            raw=judgement_raw,
+            backend=backend,
+            model_id=model_id,
+            endpoint=endpoint,
+            model=model,
+            tokenizer=tokenizer,
+            images=images,
+        )
         replay_description_raw, replay_desc_latency, replay_desc_patches = _run_pass(backend=backend, model_id=model_id, endpoint=endpoint, model=model, tokenizer=tokenizer, prompt=description_prompt, images=images, schema=None)
         replay_description = parse_protocol_v3_description(replay_description_raw)
         replay_prompt = build_control_judgement_prompt(description=replay_description, label_id=case["label_id"], label_scale=case["label_scale"], reference_case_id=case["reference_case_id"])
         replay_judgement_raw, replay_judgement_latency, replay_judgement_patches = _run_pass(backend=backend, model_id=model_id, endpoint=endpoint, model=model, tokenizer=tokenizer, prompt=replay_prompt, images=images, schema=control_response_schema())
-        parsed = parse_control_screening_response(judgement_raw)
-        replay_parsed = parse_control_screening_response(replay_judgement_raw)
+        replay_parsed, replay_judgement_format_repair_raw, replay_judgement_repair_latency, replay_judgement_repair_patches = _parse_with_bounded_format_repair(
+            raw=replay_judgement_raw,
+            backend=backend,
+            model_id=model_id,
+            endpoint=endpoint,
+            model=model,
+            tokenizer=tokenizer,
+            images=images,
+        )
         screening = derive_control_screening_verdict(response=parsed, geometry_wh=case["candidate"]["geometry_wh"])
-        deterministic = description == replay_description and json.dumps(parsed, sort_keys=True) == json.dumps(replay_parsed, sort_keys=True) and first_patches == replay_desc_patches and judgement_patches == replay_judgement_patches
+        deterministic = (
+            description == replay_description
+            and json.dumps(parsed, sort_keys=True) == json.dumps(replay_parsed, sort_keys=True)
+            and first_patches == replay_desc_patches
+            and judgement_patches == replay_judgement_patches
+            and judgement_repair_patches == replay_judgement_repair_patches
+        )
         return {
             "case_id": case["case_id"], "reference_case_id": case["reference_case_id"],
             "candidate_board_sha256": candidate["sha256"], "reference_board_sha256": reference["sha256"],
             "description_response": description_raw, "judgement_response": judgement_raw,
             "replay_description_response": replay_description_raw, "replay_judgement_response": replay_judgement_raw,
+            "judgement_format_repair_response": judgement_format_repair_raw,
+            "replay_judgement_format_repair_response": replay_judgement_format_repair_raw,
+            "format_repair_applied": judgement_format_repair_raw is not None or replay_judgement_format_repair_raw is not None,
             "schema_valid": True, "deterministic_replay": deterministic,
-            "model_input_patch_counts": {"description": first_patches, "judgement": judgement_patches, "replay_description": replay_desc_patches, "replay_judgement": replay_judgement_patches},
-            "latency_ms": first_latency + judgement_latency + replay_desc_latency + replay_judgement_latency,
+            "model_input_patch_counts": {
+                "description": first_patches,
+                "judgement": judgement_patches,
+                "judgement_format_repair": judgement_repair_patches,
+                "replay_description": replay_desc_patches,
+                "replay_judgement": replay_judgement_patches,
+                "replay_judgement_format_repair": replay_judgement_repair_patches,
+            },
+            "latency_ms": first_latency + judgement_latency + judgement_repair_latency + replay_desc_latency + replay_judgement_latency + replay_judgement_repair_latency,
             "peak_vram_bytes": legacy_runner._peak_vram_bytes(), "screening": screening, "error": None,
         }
     except Exception as exc:
-        return _abstain(case, "screening_execution_invalid", exc)
+        return _abstain(
+            case,
+            "screening_execution_invalid",
+            exc,
+            description_response=description_raw,
+            judgement_response=judgement_raw,
+            replay_description_response=replay_description_raw,
+            replay_judgement_response=replay_judgement_raw,
+            judgement_format_repair_response=judgement_format_repair_raw,
+            replay_judgement_format_repair_response=replay_judgement_format_repair_raw,
+        )
 
 
 def main() -> int:

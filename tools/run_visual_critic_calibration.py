@@ -234,9 +234,17 @@ def _load_internvl(model_path: Path) -> tuple[Any, Any]:
 
 
 def _run_internvl(
-    *, model: Any, tokenizer: Any, prompt: str, images: list[Path]
+    *,
+    model: Any,
+    tokenizer: Any,
+    prompt: str,
+    images: list[Path],
+    max_new_tokens: int = 256,
 ) -> tuple[str, float, list[int]]:
     import torch
+
+    if isinstance(max_new_tokens, bool) or not isinstance(max_new_tokens, int) or not 1 <= max_new_tokens <= 2048:
+        raise ValueError("max_new_tokens must be an integer from 1 through 2048")
 
     tensors = []
     patch_counts = []
@@ -254,7 +262,7 @@ def _run_internvl(
         tokenizer,
         pixel_values,
         image_prefix + "\n" + prompt,
-        {"max_new_tokens": 256, "do_sample": False},
+        {"max_new_tokens": max_new_tokens, "do_sample": False},
         num_patches_list=patch_counts,
     )
     torch.cuda.synchronize()

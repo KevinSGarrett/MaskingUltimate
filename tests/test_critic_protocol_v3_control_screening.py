@@ -8,11 +8,14 @@ import pytest
 import yaml
 from PIL import Image
 
+from tools import run_visual_critic_protocol_v3_control_screening as control_screening_runner
+
 from maskfactory.vlm.critic_catalog import canonical_sha256
 from maskfactory.vlm.critic_protocol_v3 import CHECK_KEYS
 from maskfactory.vlm.critic_protocol_v3_control_screening import (
     CriticProtocolV3ControlScreeningError,
     build_control_screening_execution,
+    build_control_judgement_prompt,
     control_registry_sha256,
     derive_control_screening_verdict,
     parse_control_screening_response,
@@ -136,3 +139,33 @@ def test_minor_is_a_screening_defect_and_offboard_evidence_abstains() -> None:
     assert result["authority_claimed"] is False
     offboard = derive_control_screening_verdict(response=_response("serious", [50, 50, 60, 60]), geometry_wh=[12, 10])
     assert offboard["screening_outcome"] == "abstain"
+
+
+def test_control_judgement_prompt_pins_the_exact_object_shape() -> None:
+    prompt = build_control_judgement_prompt(
+        description="The candidate and reference show the same target region.",
+        label_id="hair",
+        label_scale="medium",
+        reference_case_id="control-reference",
+    )
+    assert '"findings":{' in prompt
+    assert '"findings":[' not in prompt
+    assert "no per-item anatomy field" in prompt
+    assert '"cited_evidence_panels":[]' in prompt
+    assert '"description":"The candidate and reference show the same target region."' in prompt
+    assert '"localization_xyxy":null' in prompt
+    assert "invalidates the response" in prompt
+    assert "source, binary_mask, overlay, contour, full_context, target_zoom" in prompt
+
+
+def test_format_repair_projection_preserves_all_semantics_except_none_format() -> None:
+    prior = _response("none", None)
+    prior["findings"]["anatomy"]["cited_evidence_panels"] = ["source", "contour"]
+    repaired = _response("none", None)
+    assert control_screening_runner._format_repair_projection(prior) == control_screening_runner._format_repair_projection(repaired)
+
+    severity_changed = _response("none", None)
+    severity_changed["findings"]["boundary"]["severity"] = "minor"
+    severity_changed["findings"]["boundary"]["cited_evidence_panels"] = ["source", "contour"]
+    severity_changed["findings"]["boundary"]["localization_xyxy"] = [1, 1, 5, 5]
+    assert control_screening_runner._format_repair_projection(prior) != control_screening_runner._format_repair_projection(severity_changed)

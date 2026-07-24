@@ -6,6 +6,7 @@ on:
       - codex/runpod-serverless-overflow-20260724
     paths:
       - ".github/workflows/runpod-serverless-overflow-images.yml"
+      - ".dockerignore"
       - "deploy/runpod_serverless/**"
       - "src/**"
       - "pyproject.toml"

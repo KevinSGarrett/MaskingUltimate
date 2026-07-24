@@ -8,6 +8,9 @@
 !README.md
 !src/
 !docker/
+!deploy/
+!deploy/runpod_serverless/
+!deploy/runpod_serverless/**
 
 # Even within re-included trees, drop caches/build noise.
 **/__pycache__/

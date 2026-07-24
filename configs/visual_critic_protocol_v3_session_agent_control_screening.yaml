@@ -1,0 +1,15 @@
+schema_version: "1.0.0"
+protocol_id: "maskfactory-critic-protocol-v3-session-agent-control-20260724"
+protocol_version: "3.0.0-20260724-session-agent-control-zero-budget"
+protocol_semantics_id: "maskfactory-critic-protocol-v3-severity-20260723r"
+authority_ceiling: "session_agent_control_screening_only"
+role_certificate_issuance_allowed: false
+strict_visual_authority_allowed: false
+gold_or_training_authority_allowed: false
+production_authority_allowed: false
+requires_reference_exemplar: true
+requires_describe_then_judge: true
+requires_coherent_localization: true
+minor_budget: 0
+calibration_fitting_allowed: false
+holdout_role_qualification_allowed: false

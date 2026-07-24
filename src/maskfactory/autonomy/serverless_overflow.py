@@ -46,6 +46,7 @@ class OverflowConfig:
     cold_start_reserve_seconds: int
     max_global_inflight_jobs: int
     execution_timeout_seconds: int
+    queue_timeout_seconds: int
     idle_timeout_seconds: int
     network_volume_id: str
     datacenter_id: str
@@ -88,6 +89,9 @@ class OverflowConfig:
             raise OverflowError("provider billing boundary must be UTC")
         if int(runpod["workers_min"]) != 0 or int(runpod["workers_max"]) != 1:
             raise OverflowError("overflow endpoints must scale from zero with one worker maximum")
+        queue_timeout_seconds = int(runpod["queue_timeout_seconds"])
+        if queue_timeout_seconds < 10:
+            raise OverflowError("Serverless queue timeout must be at least 10 seconds")
         if int(budget["max_global_inflight_jobs"]) != 1:
             raise OverflowError("shared overflow requires exactly one global in-flight job")
         if runpod["datacenter_id"] != "US-WA-1":
@@ -106,6 +110,7 @@ class OverflowConfig:
             cold_start_reserve_seconds=int(budget["cold_start_reserve_seconds"]),
             max_global_inflight_jobs=int(budget["max_global_inflight_jobs"]),
             execution_timeout_seconds=int(runpod["execution_timeout_seconds"]),
+            queue_timeout_seconds=queue_timeout_seconds,
             idle_timeout_seconds=int(runpod["idle_timeout_seconds"]),
             network_volume_id=str(runpod["network_volume_id"]),
             datacenter_id=str(runpod["datacenter_id"]),
@@ -210,9 +215,29 @@ class RunPodClient:
             raise OverflowError("RunPod response must be an object")
         return result
 
-    def submit(self, endpoint_id: str, payload: Mapping[str, Any]) -> dict[str, Any]:
+    def submit(
+        self,
+        endpoint_id: str,
+        payload: Mapping[str, Any],
+        *,
+        execution_timeout_seconds: int,
+        queue_timeout_seconds: int,
+    ) -> dict[str, Any]:
+        execution_timeout_ms = execution_timeout_seconds * 1000
+        # RunPod's ttl covers queue and execution rather than queue alone.
+        # Include both windows so the broker can cancel only queued work at
+        # queue_timeout_seconds without deleting a valid running job.
+        ttl_ms = (queue_timeout_seconds + execution_timeout_seconds) * 1000
         return self._request(
-            "POST", f"https://api.runpod.ai/v2/{endpoint_id}/run", {"input": payload}
+            "POST",
+            f"https://api.runpod.ai/v2/{endpoint_id}/run",
+            {
+                "input": payload,
+                "policy": {
+                    "executionTimeout": execution_timeout_ms,
+                    "ttl": ttl_ms,
+                },
+            },
         )
 
     def status(self, endpoint_id: str, provider_job_id: str) -> dict[str, Any]:
@@ -338,6 +363,7 @@ class OverflowBroker:
                     actual_usd REAL,
                     state TEXT NOT NULL,
                     provider_job_id TEXT UNIQUE,
+                    submitted_at REAL,
                     created_at REAL NOT NULL,
                     updated_at REAL NOT NULL,
                     provider_status_json TEXT
@@ -346,6 +372,11 @@ class OverflowBroker:
                     ON jobs (billing_day, state);
                 """
             )
+            columns = {
+                str(row["name"]) for row in connection.execute("PRAGMA table_info(jobs)").fetchall()
+            }
+            if "submitted_at" not in columns:
+                connection.execute("ALTER TABLE jobs ADD COLUMN submitted_at REAL")
 
     def _validate_request(
         self,
@@ -506,7 +537,17 @@ class OverflowBroker:
             # Hold the write transaction through submission. This prevents a
             # second broker process from admitting a competing profile.
             try:
-                response = client.submit(row["endpoint_id"], payload)
+                budgeted_execution_seconds = (
+                    self.config.execution_timeout_seconds
+                    if row["profile"] == "comfyui"
+                    else int(row["requested_seconds"])
+                )
+                response = client.submit(
+                    row["endpoint_id"],
+                    payload,
+                    execution_timeout_seconds=budgeted_execution_seconds,
+                    queue_timeout_seconds=self.config.queue_timeout_seconds,
+                )
             except Exception:
                 # An HTTP timeout is ambiguous: RunPod may have accepted the
                 # request. Keep the reservation active and require reconciliation.
@@ -525,12 +566,13 @@ class OverflowBroker:
             connection.execute(
                 """
                 UPDATE jobs
-                SET state='submitted', provider_job_id=?, updated_at=?,
+                SET state='submitted', provider_job_id=?, submitted_at=?, updated_at=?,
                     provider_status_json=?
                 WHERE job_id=?
                 """,
                 (
                     provider_job_id,
+                    self._clock(),
                     self._clock(),
                     json.dumps(response, sort_keys=True),
                     job_id,
@@ -549,6 +591,20 @@ class OverflowBroker:
             raise OverflowError("reserved job has no provider id; manual reconciliation required")
         response = client.status(row["endpoint_id"], row["provider_job_id"])
         provider_state = str(response.get("status", "")).upper()
+        submitted_at = float(row["submitted_at"] or row["created_at"])
+        if (
+            provider_state == "IN_QUEUE"
+            and self._clock() - submitted_at >= self.config.queue_timeout_seconds
+        ):
+            cancel_response = client.cancel(row["endpoint_id"], row["provider_job_id"])
+            response = {
+                "status": "CANCELLED",
+                "reason": "queue_timeout",
+                "queue_timeout_seconds": self.config.queue_timeout_seconds,
+                "provider_status": response,
+                "provider_cancel": cancel_response,
+            }
+            provider_state = "CANCELLED"
         state = {
             "IN_QUEUE": "submitted",
             "IN_PROGRESS": "running",
@@ -584,6 +640,37 @@ class OverflowBroker:
             )
             updated = connection.execute("SELECT * FROM jobs WHERE job_id=?", (job_id,)).fetchone()
         return dict(updated)
+
+    def reconcile_active(self, client: RunPodClient) -> dict[str, Any]:
+        """Reconcile every submitted/running job for the durable watchdog."""
+
+        with self._connect() as connection:
+            rows = connection.execute(
+                """
+                SELECT job_id FROM jobs
+                WHERE state IN ('submitted','running')
+                ORDER BY created_at
+                """
+            ).fetchall()
+        results: list[dict[str, Any]] = []
+        for row in rows:
+            try:
+                result = self.reconcile(str(row["job_id"]), client)
+            except OverflowError as exc:
+                results.append({"job_id": row["job_id"], "error": str(exc)})
+            else:
+                results.append(
+                    {
+                        "job_id": result["job_id"],
+                        "state": result["state"],
+                        "provider_job_id": result["provider_job_id"],
+                    }
+                )
+        return {
+            "schema_version": "maskfactory.runpod_serverless_overflow_reconcile.v1",
+            "active_jobs_checked": len(rows),
+            "results": results,
+        }
 
     def cancel(self, job_id: str, client: RunPodClient) -> dict[str, Any]:
         with self._transaction() as connection:

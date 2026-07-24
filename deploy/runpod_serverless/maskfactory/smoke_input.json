@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "python",
+    "/workspace/maskfactory/runtime_artifacts/serverless_overflow_smoke_20260724/smoke.py"
+  ],
+  "binding_files": [
+    {
+      "path": "/workspace/maskfactory/runtime_artifacts/serverless_overflow_smoke_20260724/smoke.py",
+      "sha256": "41268b11f2819909346e990aff7cc525649af7d0d90f99ac918335dcec71004b"
+    }
+  ],
+  "cwd": "/workspace/maskfactory",
+  "env": {},
+  "session_id": "019f91d1-ea20-7d81-83ff-03d393eaa1f5",
+  "timeout_seconds": 60
+}

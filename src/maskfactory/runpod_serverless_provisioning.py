@@ -51,7 +51,10 @@ def endpoint_spec(profile: str, template_id: str, config: OverflowConfig) -> dic
         "templateId": template_id,
         "computeType": "GPU",
         "gpuCount": 1,
-        "gpuTypeIds": ["NVIDIA RTX 6000 Ada Generation"],
+        "gpuTypeIds": [
+            "NVIDIA RTX 6000 Ada Generation",
+            "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        ],
         "dataCenterIds": [config.datacenter_id],
         "networkVolumeId": config.network_volume_id,
         "workersMin": 0,
@@ -159,6 +162,7 @@ def provision(
                 "workersMax",
                 "idleTimeout",
                 "executionTimeoutMs",
+                "gpuTypeIds",
             )
             drift = [field for field in drift_fields if existing.get(field) != expected.get(field)]
             if drift:

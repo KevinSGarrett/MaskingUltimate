@@ -29,7 +29,10 @@ def test_resource_specs_are_zero_idle_single_worker_and_us_wa_only(tmp_path: Pat
     assert endpoint["workersMin"] == 0
     assert endpoint["workersMax"] == 1
     assert endpoint["gpuCount"] == 1
-    assert endpoint["gpuTypeIds"] == ["NVIDIA RTX 6000 Ada Generation"]
+    assert endpoint["gpuTypeIds"] == [
+        "NVIDIA RTX 6000 Ada Generation",
+        "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+    ]
     assert endpoint["executionTimeoutMs"] == 634_000
 
 

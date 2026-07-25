@@ -18,7 +18,13 @@ from typing import Any
 from .critic_catalog import canonical_sha256
 
 SCHEMA_VERSION = "maskfactory.canonical_polygon_source_candidates.v2"
-EXACT_RAW_TO_CANONICAL = {"anus": "anus"}
+DEFAULT_SOURCE_LABEL_CONTRACTS = {
+    "anus": {
+        "canonical_label": "anus",
+        "candidate_kind": "anatomy",
+        "eligible_dataset_ids": [],
+    }
+}
 BOUNDED_ALIAS_RAW_TO_CANONICAL = {"vagina": "vulva"}
 REQUIRED_PARTITIONS = ("train", "test")
 ELIGIBLE_LICENSE = "CC BY 4.0"
@@ -49,6 +55,62 @@ def _dataset_rows(registry: Mapping[str, Any]) -> dict[str, Mapping[str, Any]]:
     return rows
 
 
+def _source_label_contracts(
+    contracts: Mapping[str, Any] | None,
+) -> dict[str, dict[str, Any]]:
+    """Normalize the explicit source-label contracts that may enter this lane.
+
+    A contract binds one raw source label to one canonical candidate and its
+    hard-QC kind.  It deliberately does not grant source qualification or
+    critic authority; that still occurs only after exact panel screening.
+    """
+
+    raw_contracts = DEFAULT_SOURCE_LABEL_CONTRACTS if contracts is None else contracts
+    if not isinstance(raw_contracts, Mapping) or not raw_contracts:
+        raise CanonicalPolygonSourceCandidateError("source-label contracts are missing")
+    normalized: dict[str, dict[str, Any]] = {}
+    for raw_label, value in raw_contracts.items():
+        if not isinstance(raw_label, str) or not raw_label or not isinstance(value, Mapping):
+            raise CanonicalPolygonSourceCandidateError("source-label contract is malformed")
+        raw = raw_label.casefold()
+        if raw != raw_label or raw in normalized:
+            raise CanonicalPolygonSourceCandidateError("source-label contract key is not canonical")
+        canonical = value.get("canonical_label")
+        candidate_kind = value.get("candidate_kind")
+        dataset_ids = value.get("eligible_dataset_ids", [])
+        if (
+            not isinstance(canonical, str)
+            or not canonical
+            or candidate_kind not in {"anatomy", "coarse_anatomy"}
+            or not isinstance(dataset_ids, list)
+            or any(not isinstance(item, str) or not item for item in dataset_ids)
+            or len(dataset_ids) != len(set(dataset_ids))
+        ):
+            raise CanonicalPolygonSourceCandidateError("source-label contract fields are invalid")
+        normalized[raw] = {
+            "canonical_label": canonical,
+            "candidate_kind": candidate_kind,
+            "eligible_dataset_ids": sorted(dataset_ids),
+        }
+    return dict(sorted(normalized.items()))
+
+
+def source_label_contracts_from_document(document: Mapping[str, Any]) -> dict[str, dict[str, Any]]:
+    """Read an authority-ceiling config before allowing a non-default label."""
+
+    if (
+        document.get("schema_version")
+        != "maskfactory.canonical_polygon_source_label_contracts.v1"
+        or document.get("artifact_type")
+        != "canonical_polygon_source_label_contracts"
+        or document.get("authority_claimed") is not False
+        or document.get("critic_positive_control_authority_granted") is not False
+        or document.get("gold_or_production_authority_granted") is not False
+    ):
+        raise CanonicalPolygonSourceCandidateError("source-label contract authority drift")
+    return _source_label_contracts(document.get("source_label_contracts"))
+
+
 def build_canonical_polygon_source_candidates(
     *,
     records: Iterable[Mapping[str, Any]],
@@ -58,8 +120,10 @@ def build_canonical_polygon_source_candidates(
     registry_file_sha256: str,
     hard_qc_summary_file_sha256: str,
     per_partition: int = 16,
+    source_label_contracts: Mapping[str, Any] | None = None,
+    source_label_contracts_file_sha256: str | None = None,
 ) -> dict[str, Any]:
-    """Select a split-disjoint, label-exact adult-anatomy source population."""
+    """Select split-disjoint, contract-bound external-polygon candidates."""
 
     if not 1 <= per_partition <= 256:
         raise CanonicalPolygonSourceCandidateError("per-partition count is out of bounds")
@@ -72,6 +136,12 @@ def build_canonical_polygon_source_candidates(
         )
     ):
         raise CanonicalPolygonSourceCandidateError("input file hashes are invalid")
+    if source_label_contracts_file_sha256 is not None and (
+        not isinstance(source_label_contracts_file_sha256, str)
+        or len(source_label_contracts_file_sha256) != 64
+    ):
+        raise CanonicalPolygonSourceCandidateError("source-label contract file hash is invalid")
+    contracts = _source_label_contracts(source_label_contracts)
     hard_qc = hard_qc_summary.get("hard_qc")
     if (
         not isinstance(hard_qc, Mapping)
@@ -127,12 +197,17 @@ def build_canonical_polygon_source_candidates(
             if raw in BOUNDED_ALIAS_RAW_TO_CANONICAL:
                 bounded_alias_counts[(partition, raw)] += 1
                 continue
-            canonical = EXACT_RAW_TO_CANONICAL.get(raw)
-            if canonical is None:
+            contract = contracts.get(raw)
+            if contract is None:
+                continue
+            canonical = contract["canonical_label"]
+            eligible_dataset_ids = contract["eligible_dataset_ids"]
+            if eligible_dataset_ids and dataset_id not in eligible_dataset_ids:
+                refusal_counts["source_label_dataset_contract_mismatch"] += 1
                 continue
             if (
                 mask.get("candidate_label") != canonical
-                or mask.get("candidate_kind") != "anatomy"
+                or mask.get("candidate_kind") != contract["candidate_kind"]
                 or mask.get("binary_mask_materialized") is not True
                 or mask.get("production_authority") is not False
                 or mask.get("gold_authority") is not False
@@ -150,6 +225,7 @@ def build_canonical_polygon_source_candidates(
                 "annotation_file_sha256": record["annotation_file_sha256"],
                 "raw_label": raw,
                 "canonical_label": canonical,
+                "candidate_kind": contract["candidate_kind"],
                 "mask_sha256": mask["mask_sha256"],
                 "mask_pixels": mask["mask_pixels"],
                 "mask_bbox_xyxy": mask["mask_bbox_xyxy"],
@@ -213,9 +289,14 @@ def build_canonical_polygon_source_candidates(
             "hard_qc_summary_self_sha256": hard_qc_summary["self_sha256"],
             "mask_hash_contract": hard_qc["mask_hash_contract"],
             "mask_hash_implementation_sha256": hard_qc["mask_hash_implementation_sha256"],
+            "source_label_contracts_file_sha256": source_label_contracts_file_sha256,
         },
         "selection_policy": {
-            "exact_raw_to_canonical": EXACT_RAW_TO_CANONICAL,
+            "exact_raw_to_canonical": {
+                raw: contract["canonical_label"] for raw, contract in contracts.items()
+            },
+            "source_label_contracts": contracts,
+            "source_label_contracts_file_sha256": source_label_contracts_file_sha256,
             "bounded_alias_raw_to_canonical": BOUNDED_ALIAS_RAW_TO_CANONICAL,
             "eligible_declared_license": ELIGIBLE_LICENSE,
             "required_partitions": list(REQUIRED_PARTITIONS),
@@ -227,6 +308,9 @@ def build_canonical_polygon_source_candidates(
             sorted(Counter(row["assigned_partition"] for row in selected).items())
         ),
         "selected_by_dataset": dict(sorted(Counter(row["dataset_id"] for row in selected).items())),
+        "selected_by_label": dict(
+            sorted(Counter(row["canonical_label"] for row in selected).items())
+        ),
         "bounded_alias_diagnostic_counts": {
             f"{partition}:{raw}": count
             for (partition, raw), count in sorted(bounded_alias_counts.items())
@@ -239,7 +323,8 @@ def build_canonical_polygon_source_candidates(
         ),
         "claim_limits": [
             "Selection is deterministic candidate evidence, not source qualification.",
-            "Only raw anus polygons map exactly to the current canonical anus label.",
+            "Only raw labels in the sealed source-label contract map to canonical candidate labels.",
+            "A coarse-anatomy contract is still calibration-only and requires exact per-record visual screening.",
             "Raw vagina polygons remain bounded external aliases for canonical vulva and do not count as exact positive controls.",
             "Every selected source still requires exact re-rasterization, panel evidence, visual-alignment qualification, and frozen case construction.",
             "No selected row is gold, production authority, an operational certificate, or autonomous training truth.",
@@ -265,6 +350,19 @@ def verify_canonical_polygon_source_candidates(document: Mapping[str, Any]) -> N
     policy = document.get("selection_policy")
     if not isinstance(selected, list) or not isinstance(policy, Mapping):
         raise CanonicalPolygonSourceCandidateError("candidate-set rows or policy missing")
+    is_legacy_document = "source_label_contracts" not in policy
+    contracts = _source_label_contracts(
+        None if is_legacy_document else policy.get("source_label_contracts")
+    )
+    if policy.get("exact_raw_to_canonical") != {
+        raw: contract["canonical_label"] for raw, contract in contracts.items()
+    }:
+        raise CanonicalPolygonSourceCandidateError("candidate-set label contract drift")
+    contract_file_sha256 = policy.get("source_label_contracts_file_sha256")
+    if contract_file_sha256 is not None and (
+        not isinstance(contract_file_sha256, str) or len(contract_file_sha256) != 64
+    ):
+        raise CanonicalPolygonSourceCandidateError("candidate-set label-contract file hash drift")
     expected = int(policy["per_partition"]) * len(REQUIRED_PARTITIONS)
     if document.get("selected_count") != expected or len(selected) != expected:
         raise CanonicalPolygonSourceCandidateError("candidate-set count drift")
@@ -272,15 +370,34 @@ def verify_canonical_polygon_source_candidates(document: Mapping[str, Any]) -> N
     if len(groups) != len(set(groups)):
         raise CanonicalPolygonSourceCandidateError("candidate-set split groups overlap")
     for row in selected:
+        raw = row.get("raw_label")
+        contract = contracts.get(raw)
         if (
-            row.get("raw_label") != "anus"
-            or row.get("canonical_label") != "anus"
+            contract is None
+            or row.get("canonical_label") != contract["canonical_label"]
+            or (
+                not is_legacy_document
+                and row.get("candidate_kind") != contract["candidate_kind"]
+            )
+            or (
+                is_legacy_document
+                and raw == "anus"
+                and row.get("candidate_kind") not in {None, "anatomy"}
+            )
+            or (
+                contract["eligible_dataset_ids"]
+                and row.get("dataset_id") not in contract["eligible_dataset_ids"]
+            )
             or row.get("declared_license") != ELIGIBLE_LICENSE
             or row.get("external_reference_qualification_complete") is not False
             or row.get("critic_positive_control_eligible") is not False
             or row.get("gold_or_production_authority") is not False
         ):
             raise CanonicalPolygonSourceCandidateError("candidate-set row authority drift")
+    if not is_legacy_document and document.get("selected_by_label") != dict(
+        sorted(Counter(row["canonical_label"] for row in selected).items())
+    ):
+        raise CanonicalPolygonSourceCandidateError("candidate-set label summary drift")
 
 
 def load_jsonl(path: Any) -> Iterable[dict[str, Any]]:
@@ -306,5 +423,6 @@ __all__ = [
     "build_canonical_polygon_source_candidates",
     "load_jsonl",
     "sha256_file",
+    "source_label_contracts_from_document",
     "verify_canonical_polygon_source_candidates",
 ]

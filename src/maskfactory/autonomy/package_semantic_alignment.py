@@ -204,7 +204,7 @@ def build_semantic_requalification_plan(
     and independent-family juror without granting either model mask authority.
     """
 
-    root = Path(packages_root)
+    root = Path(packages_root).resolve()
     if not root.is_dir():
         raise PackageSemanticAlignmentError(f"semantic requalification root is missing: {root}")
     if not 1 <= batch_size <= 128:

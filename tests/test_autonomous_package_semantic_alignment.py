@@ -238,6 +238,22 @@ def test_bulk_plan_batches_all_valid_cases_and_reports_only_exceptions(
     assert (contact_root / contact_manifest["sheets"][0]["file"]).is_file()
 
 
+def test_bulk_plan_canonicalizes_equivalent_root_paths(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    fixture, _, _ = _package(tmp_path / "fixture")
+    packages = tmp_path / "packages"
+    shutil.copytree(fixture.parents[1], packages / "img_00")
+
+    monkeypatch.chdir(tmp_path)
+    relative = build_semantic_requalification_plan(Path("packages"), batch_size=1)
+    absolute = build_semantic_requalification_plan(packages.resolve(), batch_size=1)
+
+    assert relative == absolute
+    assert relative["packages_root"] == packages.resolve().as_posix()
+
+
 def _batch_review(
     plan: dict,
     batch: dict,

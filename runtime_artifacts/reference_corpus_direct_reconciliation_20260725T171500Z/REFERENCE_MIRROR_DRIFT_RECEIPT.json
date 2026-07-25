@@ -1,0 +1,97 @@
+{
+  "artifact_type": "reference_corpus_direct_reconciliation_receipt.v1",
+  "assertions": {
+    "inventory_match": false,
+    "provider_invocation_performed": false,
+    "sample_source_hash_match": false,
+    "source_mutation_performed": false,
+    "stable_manifest_match": false,
+    "storage_mutation_performed": false
+  },
+  "authority_needed": "NEEDS KEVIN: governing source-of-truth and exact reconciliation authority for the divergent F: reference root versus the persistent Pod mirror.",
+  "created_at_utc": "2026-07-25T16:00:56.853643+00:00",
+  "execution_identity": {
+    "network_volume_id": "o9qv2ld91c",
+    "pod_id": "68psfqtaogg7s7",
+    "pod_name": "vitreous_beige_centipede",
+    "volume_mount": "/workspace"
+  },
+  "manifest_drift": [
+    {
+      "pod": {
+        "bytes": 446603264,
+        "sha256": "f3e90d63b8ebcfb0e88047a0be51b7b765fb81aa028312a9d7e589b1f9037861"
+      },
+      "relative": "manifests/reference_library.sqlite",
+      "source": {
+        "bytes": 446554112,
+        "sha256": "a6b3250251b1b0371eb85cb050fb24c20316ce07970d1786efec6889982e216b"
+      }
+    }
+  ],
+  "next_safe_action": "An authorized owner must declare the canonical snapshot and approve an exact hash-bound, reversible reconciliation plan. After that authority exists, create a new binding that enumerates the permitted transfer or retirement set; never modify this receipt.",
+  "pod_observation": {
+    "bytes": 11826388802,
+    "file_count": 3846,
+    "inventory_sha256": "5c6fc8277982e3db1e4bfe7c3224f9e9ff40d0aeda160ecf3996d44803d100bf",
+    "top_level": [
+      "PURPOSE_AND_COVERAGE.md",
+      "benchmark_reference",
+      "clothed__one",
+      "contact_sheets",
+      "logs",
+      "manifests",
+      "mixed__one",
+      "mixed__two",
+      "nude__one",
+      "retrieval_reference",
+      "tools"
+    ]
+  },
+  "prohibitions": [
+    "Do not treat the Pod mirror as reconciled.",
+    "Do not copy, delete, overwrite, reindex, or choose a source of truth automatically.",
+    "Do not invoke a provider or calibration workflow using this mirror as if the P9 reconciliation gate passed."
+  ],
+  "sample_results": {
+    "matching": 63,
+    "mismatch": [
+      {
+        "pod": {
+          "bytes": 5822976,
+          "sha256": "dd41ec1ec265fe439d099a1376e74d4c9c54161b056af629c719cc57c98b0a07"
+        },
+        "relative": "benchmark_reference/mixed__two/68b14bd67c5892e6__DSC_3209.jpg",
+        "source": {
+          "bytes": 8824733,
+          "sha256": "68b14bd67c5892e6e6ce9c49ad1bc71cd7a48cf353b29b103adbb513a6c899c5"
+        }
+      }
+    ],
+    "requested": 64
+  },
+  "scope": {
+    "inventory_canonicalization": "sort relative POSIX path then encode relative_path + TAB + byte_size with UTF-8 and SHA-256",
+    "pod_root": "/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images",
+    "sample_method": "select the first 64 image paths after sorting SHA-256(MF-P9-14.10.sample.v1: + relative_path) from the direct source inventory, then compare exact byte size and SHA-256 on the Pod",
+    "source_root": "F:/Reference_Images/Ultimate_Masking_Reference_Images",
+    "stable_manifest_scope": "all manifests/** files excluding SQLite -wal and -shm sidecars",
+    "tracker_item": "MF-P9-14.10"
+  },
+  "self_sha256": "aa300d3a19b8d7832a32bb1baac7873e68c0fb7b8da1199cfea8faf066440bfc",
+  "source_observation": {
+    "bytes": 8494252556,
+    "file_count": 2660,
+    "inventory_sha256": "59e3872162214812576c587d4283f6cf0fa8312f843391cb9d9348f207075b0f",
+    "top_level": [
+      "benchmark_reference",
+      "contact_sheets",
+      "logs",
+      "manifests",
+      "PURPOSE_AND_COVERAGE.md",
+      "retrieval_reference",
+      "tools"
+    ]
+  },
+  "status": "REFERENCE_MIRROR_DRIFT_BLOCKED"
+}

@@ -65,6 +65,23 @@ def _decision_by_id(
     return result
 
 
+def _candidate_kind_for_admission(candidate: Mapping[str, Any]) -> str:
+    """Resolve the only sealed legacy v2 candidate form accepted by this receipt."""
+
+    candidate_kind = candidate.get("candidate_kind")
+    if candidate_kind in {"anatomy", "coarse_anatomy"}:
+        return str(candidate_kind)
+    if (
+        candidate_kind is None
+        and candidate.get("raw_label") == "anus"
+        and candidate.get("canonical_label") == "anus"
+    ):
+        return "anatomy"
+    raise CanonicalPolygonCalibrationAdmissionError(
+        f"candidate kind is missing or invalid:{candidate.get('sample_id')}"
+    )
+
+
 def build_canonical_polygon_calibration_admission(
     *,
     candidates: Mapping[str, Any],
@@ -97,6 +114,7 @@ def build_canonical_polygon_calibration_admission(
         candidate = candidate_by_id[sample_id]
         panel = panel_by_id[sample_id]
         decision = decision_by_id[sample_id]
+        candidate_kind = _candidate_kind_for_admission(candidate)
         if (
             candidate.get("external_reference_qualification_complete") is not False
             or candidate.get("critic_positive_control_eligible") is not False
@@ -116,7 +134,7 @@ def build_canonical_polygon_calibration_admission(
             "assigned_partition": candidate["assigned_partition"],
             "raw_label": candidate["raw_label"],
             "canonical_label": candidate["canonical_label"],
-            "candidate_kind": candidate["candidate_kind"],
+            "candidate_kind": candidate_kind,
             "source_sha256": candidate["source_sha256"],
             "mask_sha256": candidate["mask_sha256"],
             "panel_set_sha256": panel["panel_set_sha256"],
@@ -221,6 +239,7 @@ def verify_canonical_polygon_calibration_admission(
         panel = panels_by_id[sample_id]
         verdict = result.get("screening_verdict")
         reason = result.get("reason_code")
+        candidate_kind = _candidate_kind_for_admission(candidate)
         if (
             verdict not in VERDICTS
             or reason not in REASONS[verdict]
@@ -230,7 +249,7 @@ def verify_canonical_polygon_calibration_admission(
             or result.get("canonical_label") != candidate.get("canonical_label")
             or result.get("raw_label") != candidate.get("raw_label")
             or result.get("assigned_partition") != candidate.get("assigned_partition")
-            or result.get("candidate_kind") != candidate.get("candidate_kind")
+            or result.get("candidate_kind") != candidate_kind
             or result.get("source_sha256") != candidate.get("source_sha256")
             or result.get("mask_sha256") != candidate.get("mask_sha256")
             or not isinstance(result.get("evidence_panels"), list)

@@ -127,6 +127,28 @@ def test_rejects_incomplete_or_invalid_decisions(monkeypatch: pytest.MonkeyPatch
         )
 
 
+def test_accepts_only_sealed_legacy_anus_candidate_kind(
+    monkeypatch: pytest.MonkeyPatch, tmp_path
+) -> None:
+    _bypass_upstream_verifiers(monkeypatch)
+    candidates, panels = _inputs()
+    legacy_candidate = candidates["selected"][0]
+    legacy_candidate["raw_label"] = "anus"
+    legacy_candidate["canonical_label"] = "anus"
+    legacy_candidate.pop("candidate_kind")
+    document = admission.build_canonical_polygon_calibration_admission(
+        candidates=candidates,
+        panel_report=panels,
+        panel_root=tmp_path,
+        decisions=_decisions(),
+    )
+    results_by_id = {result["sample_id"]: result for result in document["results"]}
+    assert results_by_id["case_train"]["candidate_kind"] == "anatomy"
+    admission.verify_canonical_polygon_calibration_admission(
+        document, candidates, panels, tmp_path
+    )
+
+
 def test_authority_mutation_breaks_receipt(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
     _bypass_upstream_verifiers(monkeypatch)
     candidates, panels = _inputs()

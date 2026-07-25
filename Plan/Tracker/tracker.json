@@ -23745,12 +23745,17 @@
           "ts": "2026-07-25T20:19:48+00:00",
           "actor": "codex",
           "text": "2026-07-25: Hardened durable submitted-unknown recovery: blank submission IDs now fail closed; submitted-unknown and reconciliation transitions append durable queue events; an observed submission remains failed and cannot requeue. CPU-only dependency-isolated queue contract PASS: runtime_artifacts/nude_queue_submitted_unknown_audit_20260725T203700Z/SUBMITTED_UNKNOWN_AUDIT_RECEIPT.json self SHA-256 08b6cd74c26874801f83e2cba7b64557e6802a5dca099284753c6ba8dd588444. Base Pod lacks pytest/scipy; failed environment evidence is preserved separately. No provider, active queue, visual authority, certification, gold, or training-truth action."
+        },
+        {
+          "ts": "2026-07-25T20:35:04+00:00",
+          "actor": "codex",
+          "text": "2026-07-25: Restored base-runtime observability for the durable queue operator: read-only summary no longer imports the NumPy-dependent intake path; seed retains its explicit validated intake import. Selected-Pod base CPython summary contract and direct regression test PASS: runtime_artifacts/nude_queue_operator_import_isolation_20260725T210300Z/QUEUE_OPERATOR_IMPORT_ISOLATION_RECEIPT.json self SHA-256 95f1c2157e0484078576a36c345e6c34dc49e595f1039bcd48a499b9b3200075. No active queue, provider, visual authority, certification, gold, or training-truth action."
         }
       ],
       "evidence": "qa/live_verification/runpod_sam31_provider_canary_failclosed_20260723.json; qa/live_verification/runpod_visual_unavailability_batch_abstention_20260723.json self SHA-256 3b53eaf5821e7dc7356e2a6882ed878fa8bf02d22ce69f9249ecf333b93983b5; qa/live_verification/runpod_persistence_refresh_20260723.json; qa/live_verification/runpod_corpus_mirrors_refresh_20260723.json; qa/live_verification/runpod_nude_queue_crash_resume_20260723.json file SHA-256 1b79b623d368cac039f4ffd077ebfbcbadb927363449ced91644ca6a0158463c self SHA-256 c20abf5fba44cffdd1655ae7ffd4fc7febf7478a34f4d38ec3714952623e6faf; qa/live_verification/runpod_sam31_reference_wave64_checkpoint_20260723.json self SHA-256 dbc32f5af91a1d1405ccc93ced2b976458ad17ded5ac79c62abc91fe1bfc19d3; qa/live_verification/runpod_sam31_resident_wave64_20260723.json self SHA-256 dd95b29af1a90d69e525b8624ff48124c10427b2017c028822f4bfbc76753b74",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-25T20:19:48+00:00",
+      "updated_at": "2026-07-25T20:35:04+00:00",
       "orphaned": false
     },
     "MF-P4-12.02": {

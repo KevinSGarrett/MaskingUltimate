@@ -14,8 +14,6 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from maskfactory.nude_batch_queue import NudeBatchQueue  # noqa: E402
-from maskfactory.nude_corpus_intake import load_adopted_intake  # noqa: E402
-
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -34,6 +32,8 @@ def main() -> int:
     queue = NudeBatchQueue(args.queue, max_attempts=args.max_attempts)
     result: dict[str, object] = {}
     if args.operation == "seed":
+        from maskfactory.nude_corpus_intake import load_adopted_intake
+
         intake = load_adopted_intake(args.intake, platform=args.platform)
         result["seed"] = queue.seed(intake["platform_descriptors"], platform=args.platform)
     result["summary"] = queue.summary(platform=args.platform)

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import hashlib
+import json
+import sqlite3
 from pathlib import Path
 
 import cv2
@@ -327,6 +329,13 @@ def test_submitted_unknown_must_reconcile_before_retry(tmp_path: Path) -> None:
     queue.seed(_descriptors()[:1], platform="runpod")
     lease = queue.claim(platform="runpod", owner="worker")
     assert lease is not None
+    with pytest.raises(ValueError, match="submission_id required"):
+        queue.mark_submitted_unknown(
+            platform="runpod",
+            shard_path=lease["shard_path"],
+            lease_token=lease["lease_token"],
+            submission_id=" ",
+        )
     queue.mark_submitted_unknown(
         platform="runpod",
         shard_path=lease["shard_path"],
@@ -341,6 +350,53 @@ def test_submitted_unknown_must_reconcile_before_retry(tmp_path: Path) -> None:
         observed="not_submitted",
     )
     assert queue.claim(platform="runpod", owner="other") is not None
+    with sqlite3.connect(queue.path) as connection:
+        rows = connection.execute(
+            "SELECT event,detail_json FROM queue_events WHERE event LIKE 'submitted_unknown%' "
+            "ORDER BY sequence"
+        ).fetchall()
+    assert [(event, json.loads(detail)) for event, detail in rows] == [
+        ("submitted_unknown", {"submission_id": "submission-1"}),
+        (
+            "submitted_unknown_reconciled",
+            {
+                "next_state": "queued",
+                "observed": "not_submitted",
+                "submission_id": "submission-1",
+            },
+        ),
+    ]
+
+
+def test_submitted_unknown_observed_submission_fails_closed(tmp_path: Path) -> None:
+    queue = NudeBatchQueue(tmp_path / "queue.sqlite")
+    queue.seed(_descriptors()[:1], platform="runpod")
+    lease = queue.claim(platform="runpod", owner="worker")
+    assert lease is not None
+    queue.mark_submitted_unknown(
+        platform="runpod",
+        shard_path=lease["shard_path"],
+        lease_token=lease["lease_token"],
+        submission_id="submission-2",
+    )
+    queue.reconcile_submitted_unknown(
+        platform="runpod",
+        shard_path=lease["shard_path"],
+        submission_id="submission-2",
+        observed="submitted",
+    )
+    assert queue.summary(platform="runpod")["states"] == {"failed": 1}
+    assert queue.claim(platform="runpod", owner="other") is None
+    with sqlite3.connect(queue.path) as connection:
+        event, detail = connection.execute(
+            "SELECT event,detail_json FROM queue_events WHERE event='submitted_unknown_reconciled'"
+        ).fetchone()
+    assert event == "submitted_unknown_reconciled"
+    assert json.loads(detail) == {
+        "next_state": "failed",
+        "observed": "submitted",
+        "submission_id": "submission-2",
+    }
 
 
 def test_retry_cap_turns_expired_work_terminal(

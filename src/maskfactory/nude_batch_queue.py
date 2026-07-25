@@ -951,6 +951,8 @@ class NudeBatchQueue:
         lease_token: str,
         submission_id: str,
     ) -> None:
+        if not submission_id.strip():
+            raise ValueError("submission_id required")
         now = time.time()
         with self._transaction() as connection:
             self._owned_lease(connection, platform, shard_path, lease_token)
@@ -958,6 +960,14 @@ class NudeBatchQueue:
                 "UPDATE shards SET state='submitted_unknown',submission_id=?,lease_owner=NULL,"
                 "lease_token=NULL,lease_expires_at=NULL,updated_at=? WHERE platform=? AND shard_path=?",
                 (submission_id, now, platform, shard_path),
+            )
+            self._event(
+                connection,
+                platform=platform,
+                shard_path=shard_path,
+                event="submitted_unknown",
+                detail={"submission_id": submission_id},
+                now=now,
             )
 
     def reconcile_submitted_unknown(
@@ -983,6 +993,18 @@ class NudeBatchQueue:
                 "UPDATE shards SET state=?,submission_id=NULL,last_error=?,updated_at=? "
                 "WHERE platform=? AND shard_path=?",
                 (state, reason, now, platform, shard_path),
+            )
+            self._event(
+                connection,
+                platform=platform,
+                shard_path=shard_path,
+                event="submitted_unknown_reconciled",
+                detail={
+                    "submission_id": submission_id,
+                    "observed": observed,
+                    "next_state": state,
+                },
+                now=now,
             )
 
     def summary(self, *, platform: str) -> dict[str, Any]:

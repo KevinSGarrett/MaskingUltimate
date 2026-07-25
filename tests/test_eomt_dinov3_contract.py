@@ -17,7 +17,8 @@ from maskfactory.training.bodypart.v2_contract import V2_CLASS_NAMES
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "configs" / "training" / "eomt_dinov3_small_v2.yaml"
-LOCK = ROOT / "env" / "eomt_dinov3_runtime.lock.json"
+LOCK = ROOT / "env" / "eomt_dinov3_runtime_v2.lock.json"
+HISTORICAL_LOCK = ROOT / "env" / "eomt_dinov3_runtime.lock.json"
 
 
 def test_eomt_contract_binds_exact_v2_vocabulary_and_discards_coco_head() -> None:
@@ -67,30 +68,27 @@ def test_eomt_snapshot_hash_drift_is_rejected(tmp_path: Path) -> None:
         EomtDinov3TrainingContract(snapshot=snapshot).validate()
 
 
-def test_eomt_lock_registry_and_live_evidence_are_bound() -> None:
+def test_eomt_v2_lock_binds_current_66_class_contract_without_runtime_claim() -> None:
     lock = json.loads(LOCK.read_text(encoding="utf-8"))
     registry = yaml.safe_load(
         (ROOT / "configs" / "external_sources.yaml").read_text(encoding="utf-8")
     )["providers"]["eomt_dinov3"]
+    assert lock["schema_version"] == "2.0.0"
+    assert lock["supersedes"]["path"] == "env/eomt_dinov3_runtime.lock.json"
+    assert (
+        hashlib.sha256(HISTORICAL_LOCK.read_bytes()).hexdigest()
+        == lock["supersedes"]["sha256"]
+    )
     assert registry["lifecycle_state"] == "installed"
     assert registry["verify_license"] is False
     assert registry["source_revision"] == lock["source"]["revision"]
     assert registry["checkpoint_sha256"] == lock["snapshot"]["checkpoint_sha256"]
-    for key in ("training_config", "smoke_script", "contract"):
+    for key in ("training_config", "smoke_script", "contract", "tests"):
         path = ROOT / lock["reproduction"][key]
         assert (
             hashlib.sha256(path.read_bytes()).hexdigest() == lock["reproduction"][f"{key}_sha256"]
         )
-    evidence_path = ROOT / lock["evidence"]["runtime"]
-    assert (
-        hashlib.sha256(evidence_path.read_bytes()).hexdigest() == lock["evidence"]["runtime_sha256"]
-    )
-    evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
-    claimed = evidence.pop("sha256")
-    assert (
-        claimed
-        == hashlib.sha256(
-            json.dumps(evidence, sort_keys=True, separators=(",", ":")).encode()
-        ).hexdigest()
-    )
-    assert evidence["authority"]["pretraining_labels_are_not_maskfactory_labels"] is True
+    assert lock["runtime"]["status"] == "not_installed"
+    assert lock["runtime"]["current_66_class_runtime_claimed"] is False
+    assert lock["authority"]["provider_promotion"] is False
+    assert lock["authority"]["gold_authority"] is False

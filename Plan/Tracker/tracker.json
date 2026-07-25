@@ -13099,12 +13099,17 @@
           "ts": "2026-07-25T20:09:15+00:00",
           "actor": "codex",
           "text": "V3-specific subprocess CUDA OOM is now deterministically propagated through the shadow-only SAM3D GeometryProvider to the existing DensePose fallback. Focused adapter/repeatability/lock suite exited 0 (31 tests); no SAM3D inference, lifecycle, provider-matrix, production, visual, gold, or promotion authority changed."
+        },
+        {
+          "ts": "2026-07-25T20:55:02+00:00",
+          "actor": "codex",
+          "text": "2026-07-25: Current authorized Ada-Pod requalification revalidated the V3 strict control after zero-compute admission: one non-evaluated warm-up then exactly two measured full inferences. Both retained raw NPZ files are byte-identical (d77d05c9367247247033ff1746a516ade1fa108762237a8fdc1a57c3631cb9d4), geometry hash d1167523d5b27e1ee6ea56b76f365cdc4ce9a3ee876df494fd45a81a49e71e5c, all arrays finite/exact. Receipt runtime_artifacts/sam3d_body_repeatability_v3_requalification_20260725T205224Z/SAM3D_BODY_V3_GPU_REQUALIFICATION_RECEIPT.json self_sha256 6c77cdff85fff7da93693fdd89d204076fb7010eb5b7c0cfc55da2661ac533b2. Fresh recovery evidence only; no provider matrix, lifecycle, production, gold, certification, or training promotion."
         }
       ],
       "evidence": "runtime_artifacts/sam3d_body_v3_oom_fallback_contract_20260725T200643Z/V3_OOM_FALLBACK_CONTRACT_RECEIPT.json raw_sha256=9aa73d1751416e8128cf0f48e6c98715f15eb82a263f635006d2dee6b3f03246 self_sha256=bdc1df2558729324e3346095af2a2d24dfbd900b614c893d37f306c0aa5e745d",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-25T20:09:15+00:00",
+      "updated_at": "2026-07-25T20:55:02+00:00",
       "orphaned": false
     },
     "MF-P2-11.08": {

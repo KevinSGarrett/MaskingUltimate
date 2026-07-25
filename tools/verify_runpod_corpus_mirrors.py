@@ -165,6 +165,32 @@ def run_remote_inventory(
     return payload
 
 
+def run_pod_local_inventory(*, sample_paths: tuple[str, ...] = ()) -> dict[str, Any]:
+    """Run the bounded mirror inventory locally when public SSH cannot hairpin."""
+
+    script = REMOTE_INVENTORY.replace(
+        "__SAMPLE_PATHS__", json.dumps(list(sample_paths), separators=(",", ":"))
+    )
+    completed = subprocess.run(
+        ["bash", "-s"],
+        input=script.replace("\r\n", "\n").encode("utf-8"),
+        capture_output=True,
+        check=False,
+        timeout=120,
+    )
+    stderr = completed.stderr.decode("utf-8", errors="replace")
+    if completed.returncode != 0:
+        raise RuntimeError(
+            f"RunPod pod-local corpus inventory failed with exit {completed.returncode}: "
+            f"{stderr.strip()[:300]}"
+        )
+    lines = completed.stdout.decode("utf-8", errors="replace").splitlines()
+    payload = json.loads(next(line for line in reversed(lines) if line.strip()))
+    if not isinstance(payload, dict):
+        raise RuntimeError("RunPod pod-local corpus inventory returned a non-object payload")
+    return payload
+
+
 def build_evidence(
     *,
     pod: dict[str, Any],
@@ -173,6 +199,7 @@ def build_evidence(
     source_path: Path,
     local_inventory: dict[str, Any] | None = None,
     local_inventory_path: Path | None = None,
+    inventory_scope: str = "read_only_root_and_hash_bound_inventory_snapshot_check",
 ) -> dict[str, Any]:
     expected = {
         "maskedwarehouse": source["sanity_counts"]["masked_warehouse"],
@@ -243,7 +270,7 @@ def build_evidence(
         "authority": {
             "api_calls": ["GET /v1/pods/{id}"],
             "mutating_api_calls": False,
-            "remote_operation": "read_only_root_and_hash_bound_inventory_snapshot_check",
+            "remote_operation": inventory_scope,
             "credentials_read_or_emitted": False,
         },
         "pod": {
@@ -277,6 +304,14 @@ def main() -> int:
         default=Path("configs/maskedwarehouse_inventory.json"),
     )
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument(
+        "--in-pod",
+        action="store_true",
+        help=(
+            "run the bounded inventory locally on an already externally verified "
+            "Pod when public-SSH hairpinning is unavailable"
+        ),
+    )
     args = parser.parse_args()
     api_key = load_env_value(args.env_file, "RUNPOD_API_KEY")
     pod = runpod_get(f"pods/{args.pod_id}", api_key)
@@ -290,11 +325,16 @@ def main() -> int:
         args.local_maskedwarehouse_inventory.read_text(encoding="utf-8-sig")
     )
     sample_bindings = maskedwarehouse_sample_bindings(local_inventory)
-    remote = run_remote_inventory(
-        host=public_ip,
-        port=ssh_port,
-        sample_paths=tuple(sample_bindings),
-    )
+    if args.in_pod:
+        remote = run_pod_local_inventory(sample_paths=tuple(sample_bindings))
+        inventory_scope = "pod_local_read_only_inventory_after_live_api_identity_check"
+    else:
+        remote = run_remote_inventory(
+            host=public_ip,
+            port=ssh_port,
+            sample_paths=tuple(sample_bindings),
+        )
+        inventory_scope = "read_only_root_and_hash_bound_inventory_snapshot_check"
     evidence = build_evidence(
         pod=pod,
         remote=remote,
@@ -302,6 +342,7 @@ def main() -> int:
         source_path=args.source_evidence,
         local_inventory=local_inventory,
         local_inventory_path=args.local_maskedwarehouse_inventory,
+        inventory_scope=inventory_scope,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(evidence, indent=2, sort_keys=True) + "\n", encoding="utf-8")

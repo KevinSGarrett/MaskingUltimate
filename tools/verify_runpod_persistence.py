@@ -194,12 +194,44 @@ def run_remote_probe(
     return payload
 
 
+def run_pod_local_probe(*, token: str) -> dict[str, Any]:
+    """Run the same bounded probe locally when public-SSH hairpinning is unavailable.
+
+    This mode is explicit and keeps the live control-plane checks in ``main``.
+    It is intended only for an already externally verified authorized Pod; callers
+    must never treat it as a substitute for a remote Pod identity check.
+    """
+
+    completed = subprocess.run(
+        ["bash", "-s", "--", token],
+        input=REMOTE_PROBE.replace("\r\n", "\n").encode("utf-8"),
+        capture_output=True,
+        check=False,
+        timeout=45,
+    )
+    stdout = completed.stdout.decode("utf-8", errors="replace")
+    stderr = completed.stderr.decode("utf-8", errors="replace")
+    if completed.returncode != 0:
+        raise RuntimeError(
+            f"RunPod pod-local probe failed with exit {completed.returncode}: "
+            f"{stderr.strip()[:300]}"
+        )
+    lines = [line for line in stdout.splitlines() if line.strip()]
+    if not lines:
+        raise RuntimeError("RunPod pod-local probe returned no JSON")
+    payload = json.loads(lines[-1])
+    if not isinstance(payload, dict):
+        raise RuntimeError("RunPod pod-local probe returned a non-object payload")
+    return payload
+
+
 def build_evidence(
     *,
     pod: dict[str, Any],
     network_volume: dict[str, Any],
     remote: dict[str, Any],
     source_evidence: Path | None,
+    probe_scope: str = "bounded_workspace_sentinel_and_read_only_runtime_probe",
 ) -> dict[str, Any]:
     network_volume_id = str(pod.get("networkVolumeId") or "")
     pod_id = str(pod.get("id") or "")
@@ -238,7 +270,7 @@ def build_evidence(
         "authority": {
             "api_calls": ["GET /v1/pods/{id}", "GET /v1/networkvolumes/{id}"],
             "mutating_api_calls": False,
-            "ssh_scope": "bounded_workspace_sentinel_and_read_only_runtime_probe",
+            "ssh_scope": probe_scope,
             "credentials_read_or_emitted": False,
         },
         "pod": {
@@ -290,6 +322,14 @@ def main() -> int:
     parser.add_argument("--pod-id", required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--source-evidence", type=Path)
+    parser.add_argument(
+        "--in-pod",
+        action="store_true",
+        help=(
+            "run the bounded filesystem probe locally on an already externally "
+            "verified Pod when public-SSH hairpinning is unavailable"
+        ),
+    )
     args = parser.parse_args()
     api_key = load_env_value(args.env_file, "RUNPOD_API_KEY")
     pod = runpod_get(f"pods/{args.pod_id}", api_key)
@@ -303,12 +343,18 @@ def main() -> int:
     if not public_ip or not ssh_port:
         raise RuntimeError("RunPod pod has no public SSH endpoint")
     token = secrets.token_hex(32)
-    remote = run_remote_probe(host=public_ip, port=ssh_port, token=token)
+    if args.in_pod:
+        remote = run_pod_local_probe(token=token)
+        probe_scope = "pod_local_bounded_workspace_sentinel_after_live_api_identity_check"
+    else:
+        remote = run_remote_probe(host=public_ip, port=ssh_port, token=token)
+        probe_scope = "bounded_workspace_sentinel_and_read_only_runtime_probe"
     evidence = build_evidence(
         pod=pod,
         network_volume=volume,
         remote=remote,
         source_evidence=args.source_evidence,
+        probe_scope=probe_scope,
     )
     _write_json(args.output.resolve(), evidence)
     print(

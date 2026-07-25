@@ -12,18 +12,6 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Iterator, Mapping, Sequence
 
-from .nude_box_mask_generation import validate_box_prompt_mask_stage_receipt
-from .nude_person_catalog import validate_person_catalog_stage_receipt
-from .nude_person_ownership import validate_person_ownership_stage_receipt
-from .nude_record_qualification import (
-    validate_input_terminal_queue_payload,
-    validate_nonacceptance_queue_payload,
-    validate_qualified_queue_payload,
-)
-from .nude_reference_mask_hard_qc import validate_reference_mask_hard_qc_stage_receipt
-from .nude_reference_mask_repair import validate_reference_repair_stage_receipt
-from .nude_reference_strict_visual_review import validate_reference_strict_visual_stage_receipt
-
 TERMINAL_OUTCOMES = frozenset(
     {"accepted", "repaired", "abstained", "rejected", "quarantined", "holdout"}
 )
@@ -375,6 +363,12 @@ class NudeBatchQueue:
                 }
             if shard["state"] == "complete":
                 raise NudeBatchQueueError("complete shard only accepts exact replay")
+            from .nude_record_qualification import (
+                validate_input_terminal_queue_payload,
+                validate_nonacceptance_queue_payload,
+                validate_qualified_queue_payload,
+            )
+
             inserted = 0
             for offset, outcome in enumerate(outcomes):
                 sample_index = int(outcome["sample_index"])
@@ -468,6 +462,8 @@ class NudeBatchQueue:
     ) -> dict[str, Any]:
         """Checkpoint accepted/repaired rows only after exact evidence revalidation."""
 
+        from .nude_record_qualification import validate_qualified_queue_payload
+
         validated = []
         for outcome in outcomes:
             payload = validate_qualified_queue_payload(outcome)
@@ -493,6 +489,8 @@ class NudeBatchQueue:
 
         if not receipts:
             raise NudeBatchQueueError("empty ownership checkpoint")
+        from .nude_person_ownership import validate_person_ownership_stage_receipt
+
         validated = []
         for receipt in receipts:
             sample_index = receipt.get("sample_index")
@@ -570,6 +568,8 @@ class NudeBatchQueue:
 
         if not receipts:
             raise NudeBatchQueueError("empty person catalog checkpoint")
+        from .nude_person_catalog import validate_person_catalog_stage_receipt
+
         validated = []
         for receipt in receipts:
             sample_index = receipt.get("sample_index")
@@ -647,6 +647,8 @@ class NudeBatchQueue:
 
         if not receipts:
             raise NudeBatchQueueError("empty box prompt mask checkpoint")
+        from .nude_box_mask_generation import validate_box_prompt_mask_stage_receipt
+
         validated = []
         for receipt in receipts:
             sample_index = receipt.get("sample_index")
@@ -724,6 +726,8 @@ class NudeBatchQueue:
 
         if not receipts:
             raise NudeBatchQueueError("empty reference mask hard QC checkpoint")
+        from .nude_reference_mask_hard_qc import validate_reference_mask_hard_qc_stage_receipt
+
         validated = []
         for receipt in receipts:
             sample_index = receipt.get("sample_index")
@@ -803,6 +807,8 @@ class NudeBatchQueue:
 
         if not receipts:
             raise NudeBatchQueueError("empty reference strict visual checkpoint")
+        from .nude_reference_strict_visual_review import validate_reference_strict_visual_stage_receipt
+
         validated = []
         for receipt in receipts:
             sample_index = receipt.get("sample_index")
@@ -878,6 +884,8 @@ class NudeBatchQueue:
 
         if not receipts:
             raise NudeBatchQueueError("empty reference repair checkpoint")
+        from .nude_reference_mask_repair import validate_reference_repair_stage_receipt
+
         validated = []
         for receipt in receipts:
             sample_index = receipt.get("sample_index")

@@ -11377,12 +11377,17 @@
           "ts": "2026-07-25T18:22:23+00:00",
           "actor": "codex",
           "text": "2026-07-25: Rebound the cross-runtime matrix to the current RunPod 66-class EoMT closure and corrected the stale SAM 3.1 lock hash. The fail-closed verifier returns 10 providers, 8 qualified, 2 explicit pending, 0 human gates, 22 verified artifacts, and PyTorch 2.11.0+cu128. SAM 3.1 point refinement and SAM3D repeatability remain unresolved; no provider, gold, promotion, or certificate authority changed."
+        },
+        {
+          "ts": "2026-07-25T20:30:26+00:00",
+          "actor": "codex",
+          "text": "2026-07-25: Restored durable-queue core isolation on the selected Pod. Optional validator imports now occur only inside their corresponding stage checkpoint methods, so base CPython without SciPy can import and execute the SQLite seed/claim/heartbeat/release recovery state machine; stage validation remains fail-closed when invoked. CPU-only receipt: runtime_artifacts/nude_queue_import_isolation_20260725T205200Z/QUEUE_IMPORT_ISOLATION_RECEIPT.json self SHA-256 c0f6fa94859f8d0a726f104b3e13f41db9dd126b7d2f0ee9bed093f12428e2de. No provider, visual authority, certification, gold, or training-truth action."
         }
       ],
       "evidence": "env/provider_runtime_matrix.json canonical manifest 3b99c7f8cca7128d4f656cb0ef8667a9a3859574223ba60ad7c493f1994f5ed8, locked in src/maskfactory/providers/runtime_matrix.py and verified with verify_runtime_matrix() on Pod 68psfqtaogg7s7. EoMT row binds env/eomt_dinov3_runtime_v2.lock.json SHA 33074535ca8d7e7c022006b54187dbb5a84e51ff86d6d9801e57482f44610295 and the structural Ada receipt runtime_artifacts/eomt_dinov3_66_class_gpu_shadow_20260725T175822Z/EOMT_DINOV3_66_CLASS_GPU_SHADOW_RECEIPT.json raw SHA 58058b2990331e035f13fb2f8991c21ace1e31432cbffea6f012d4ef136fe0d1 self 2841e8cd4e8ccb38941fe005b6baeed3a788e7534927f6e4e2f1555e10a78913. Current pending states remain exact and fail closed.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-25T18:22:23+00:00",
+      "updated_at": "2026-07-25T20:30:26+00:00",
       "orphaned": false
     },
     "MF-P0-17.14": {

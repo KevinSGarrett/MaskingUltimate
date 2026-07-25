@@ -11190,8 +11190,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
-      "percent_complete": 97,
+      "status": "in_progress",
+      "percent_complete": 99,
       "notes": [
         {
           "ts": "2026-07-15T00:18:20+00:00",
@@ -11302,12 +11302,82 @@
           "ts": "2026-07-22T05:28:50+00:00",
           "actor": "codex",
           "text": "The provider aggregate remains 97%. EoMT static contracts now bind 66 classes, while its amended 66-class isolated live runtime requalification remains open alongside the already recorded exact provider gaps."
+        },
+        {
+          "ts": "2026-07-24T23:39:29+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-24: Brokered Serverless native-box SAM3.1 fallback was attempted only because the designated RTX 6000 Ada pod has a foreign CUDA context. Job overflow-60a81a66-15d6-42ff-b20f-6aeabbf2d001 / provider 607a5168-cbdb-4e8f-889f-9f8021c0cbd3-u2 completed with no native-box result: all eight permitted MaskFactory-root bindings and the driver self-check passed, but the mounted Python 3.11 SAM environment resolved under the immutable Serverless Python 3.12 worker and failed import numpy. Evidence runtime_artifacts/serverless_sam31_native_box_preflight_20260724/serverless_sam31_native_box_preflight_20260724T233400Z_v2_handlerrootfix/execution.json self_sha256=2a9e3b377f061991333336086363ff05d8656cb7d178e9cc2128e69f528c749c; actual broker cost USD 0.16431166. No endpoint image/config change, V3 retry, role, gold, production, or GPU authority claim; do not retry this ABI-mismatched Serverless path unchanged.\r"
+        },
+        {
+          "ts": "2026-07-25T00:46:52+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-25: CPU-safe official-source capability audit sealed runtime_artifacts/sam31_point_refinement_capability_gap_20260725T010500Z/receipt.json (self SHA-256 e1d869215a4418d1d149c49f9d7af6524f300d1ede70396f03905f06afdedc6f). The pinned SAM 3.1 multiplex source commit 5dd401d1 explicitly refuses native point prompts; the prior point smoke yielded zero masks. The deferred operation requires a new governed official point-capable source revision plus lock, CPU contract, and designated-GPU requalification. No synthetic-box translation, source mutation, Serverless ABI retry, role, gold, production, certificate, or qualification claim."
+        },
+        {
+          "ts": "2026-07-25T00:48:27+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-25: Read-only official upstream head probe sealed at runtime_artifacts/sam31_point_refinement_capability_gap_20260725T010500Z/upstream_head_probe.json (self SHA-256 51f3c454932d483c8a557aea117bb833907124e37a403b326a0863a5e638fdcc). Current upstream HEAD 46957e47805eaa273f4aa7bbbd25a88bca9108ce still contains the multiplex point refusal, so no governed point-capable upgrade candidate exists. Deferred source/GPU admission conditions remain unchanged; no source upgrade, retry, role, production, certificate, or point-qualification claim."
+        },
+        {
+          "ts": "2026-07-25T00:51:12+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-25: Sealed SAM3D Body strict-repeatability deferred operation runtime_artifacts/sam3d_body_repeatability_gap_20260725T011500Z/receipt.json (self SHA-256 2fdcdf3e9fb44f9071da1a77b025f55ab7a7e4a234ddf7b1a5a1953fb6c6ae1e). Existing full two-run smoke has identical shapes but non-exact vertices/keypoints/camera translation; the receipt binds raw log hashes and preserves byte equality as the only acceptance. No tolerance, rounding, Serverless reuse, role, gold, production, certificate, or repeatability qualification claim; retry only on the designated GPU after foreign-process/VRAM admission."
+        },
+        {
+          "ts": "2026-07-25T04:41:09+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-25: Serverless cross-runtime diagnosis sealed. Broker job overflow-40262b82-e014-4a55-95c9-9137894ef9e7 failed before execution because the broker forbids the SAM checkpoint path outside allowed binding roots (actual .16172685); a fresh v2 allowed-root payload completed as overflow-5d2f0c90-4cda-49bb-8a4c-731641ec09f4 (actual .16441925) and proved the endpoint worker is Python 3.12 while the shared SAM environment is a Python 3.11 venv. Its NumPy 1.26.4 C extension fails under Python 3.12; evidence runtime_artifacts/serverless_sam31_runtimepath_preflight_20260725/serverless_sam31_runtimepath_preflight_20260725T043722Z_v2_allowed_bindings_043925Z/execution.json self_sha256 898a4e26c949b3205546d01a958597c347958fcbcada781320263443177022a6. Remediation is a distinct pinned Python-3.12-compatible runtime bundle using the existing SAM lock; no endpoint change, model substitution, visual authority, mask promotion, certification, gold, or training truth."
+        },
+        {
+          "ts": "2026-07-25T04:48:52+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-25: Prepared, but did not submit, one fresh Python-3.12 remediation preflight because the broker rolling reservation is .51410 of .60 and its next 180-second reservation is .25705. Immutable v3 payload: /workspace/.maskfactory/serverless_overflow_control/jobs/019f91d1_serverless_sam31_runtimepath_preflight_20260725T043722Z_v2_allowed_bindings_043925Z_v3_cp312_numpy_044557Z.json; sealed recovery receipt runtime_artifacts/serverless_sam31_runtimepath_preflight_20260725/serverless_sam31_runtimepath_preflight_20260725T043722Z_v2_allowed_bindings_043925Z_v3_cp312_numpy_044557Z/SERVERLESS_SAM31_PY312_RECOVERY_RECEIPT.json self_sha256 5522becb333ba97c71b2cc13872972058ed0320d682847f6b2db97e41e1577d1. The payload uses the endpoint base Python 3.12 plus a sealed 789-file CP312 NumPy 1.26.4 bundle and fails closed on input/runtime-tree drift. It must be reserved/submitted once only after broker admission; no endpoint change, direct call, duplicate, runtime authority, provider acceptance, visual authority, certification, gold, or training truth."
+        },
+        {
+          "ts": "2026-07-25T04:56:48+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-25: Static runtime review showed the prepared NumPy-only Serverless v3 was unexecuted and insufficient for the pinned SAM runner/source imports, so it was superseded before spend. New immutable v4 full-support preflight binds the endpoint base Python 3.12, sealed CP312 NumPy bundle (789 files/tree f8e144b7...) and sealed exact SAM support bundle (27 locked wheels plus existing pinned pure-Python iopath, 1,254 files/tree 42980641...). Payload /workspace/.maskfactory/serverless_overflow_control/jobs/019f91d1_serverless_sam31_runtimepath_preflight_20260725T043722Z_v2_allowed_bindings_043925Z_v3_cp312_numpy_044557Z_v4_full_support_045432Z.json; staging self 2be575e8e8ae1c2da9b6b52f1dddb82311172ba306e5092265d960c99da5c3c6; deferred receipt runtime_artifacts/serverless_sam31_runtimepath_preflight_20260725/serverless_sam31_runtimepath_preflight_20260725T043722Z_v2_allowed_bindings_043925Z_v3_cp312_numpy_044557Z_v4_full_support_045432Z/SERVERLESS_SAM31_FULL_SUPPORT_DEFERRED.json self b29f0cec06880a909039244f2d74c9566d32f394db7b33db4fc9b6b41bee0a30. Admission remains broker-gated; no endpoint change, inference result, visual authority, mask promotion, certification, gold, or training truth."
+        },
+        {
+          "ts": "2026-07-25T05:04:40+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-25: CPU-safe CP312 bundle ABI/extraction audit sealed ahead of the broker-gated V4 Serverless preflight. All 28 selected wheels have CPython-3.12-compatible tags (including valid abi3 wheels), 1,998 extracted files match the originating wheel RECORD hashes, and the exact vendored iopath 0.1.10 is pure Python. Evidence runtime_artifacts/serverless_sam31_runtimepath_preflight_20260725/serverless_sam31_runtimepath_preflight_20260725T043722Z_v2_allowed_bindings_043925Z_v3_cp312_numpy_044557Z_v4_full_support_045432Z/CP312_BUNDLE_ABI_AUDIT.json self_sha256 e6815a420a71b20054cfd870a724511ec11ed1ef8ea278cfe5a04eb7c6fb1236. This is static compatibility evidence only; endpoint import/CUDA/provider execution and all authority remain unclaimed."
+        },
+        {
+          "ts": "2026-07-25T14:54:00+00:00",
+          "actor": "codex",
+          "text": "2026-07-25: User-authorized requalification on Pod 68psfqtaogg7s7 (vitreous_beige_centipede), one RTX 6000 Ada and volume o9qv2ld91c, reproduced the sealed SAM3D full two-run strict failure byte-for-byte: identical baseline geometry-hash pair with non-exact vertices/keypoints/camera translation. No tolerance, promotion, or retry. Evidence: runtime_artifacts/sam3d_body_repeatability_requalification_20260725T145057Z/receipt.json self_sha256 bfac5baf2f87f44f541b34146da4ca702a1a0df1d6fef2dd9fe91dbe4465955a."
+        },
+        {
+          "ts": "2026-07-25T14:58:32+00:00",
+          "actor": "codex",
+          "text": "2026-07-25: Began Tier-1 static implementation of a separate SAM3D repeatability-v2 runner and lock. It will retain two measured raw outputs on strict mismatch after one non-evaluated warm-up; v1 runner/lock and the unqualified provider state remain immutable."
+        },
+        {
+          "ts": "2026-07-25T15:15:10+00:00",
+          "actor": "codex",
+          "text": "2026-07-25: Separate v3 SAM3D warm-up/capture runner passed one bounded RunPod requalification on Pod 68psfqtaogg7s7: after one non-evaluated full warm-up, two measured full inferences produced byte-identical raw NPZ and required-array hashes. Runtime evidence: runtime_artifacts/sam3d_body_repeatability_v3_requalification_control_20260725T150946Z/V3_RUNTIME_RECEIPT.json self_sha256 afe31a4a45f39791df6c7cda352d79acf103885a9221de700a69d01f9841c6ae; source wave fa21337ce812434875ca82b0972964a3aafb5846. The v1 host adapter/runtime matrix remain unmodified and unqualified pending their separately tested v3-contract integration; no provider, gold, production, certificate, or training authority changed."
+        },
+        {
+          "ts": "2026-07-25T15:29:27+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-25: User-authorized replacement Pod 68psfqtaogg7s7/vitreous_beige_centipede was live-verified (one RTX 6000 Ada; volume o9qv2ld91c /workspace). Added a shadow-only V3 host adapter bound to immutable V3 runner/lock/receipt and strict warm-up plus two raw-NPZ equality validation; static receipt runtime_artifacts/sam3d_body_v3_host_adapter_static_20260725T154000Z/STATIC_VALIDATION_RECEIPT.json self 4680518e24dfe5ffb15b35155b3db2f8d00522f458652808e2c9c8beec6e5c1c. V1 path/provider matrix remain unmodified; no gold/promotion authority."
+        },
+        {
+          "ts": "2026-07-25T15:52:51+00:00",
+          "actor": "ai_agent",
+          "text": "SAM3D V3 host adapter static integration is sealed. Exact recovery V2 reached terminal GatedRepoError for locked facebook/sam-3d-body-dinov3 revision 11aaa346. Targets remain absent and staging plus evidence are preserved. No retry or checkpoint substitution is authorized pending governed access."
+        },
+        {
+          "ts": "2026-07-25T18:22:23+00:00",
+          "actor": "codex",
+          "text": "2026-07-25: Rebound the cross-runtime matrix to the current RunPod 66-class EoMT closure and corrected the stale SAM 3.1 lock hash. The fail-closed verifier returns 10 providers, 8 qualified, 2 explicit pending, 0 human gates, 22 verified artifacts, and PyTorch 2.11.0+cu128. SAM 3.1 point refinement and SAM3D repeatability remain unresolved; no provider, gold, promotion, or certificate authority changed."
         }
       ],
-      "evidence": "env/provider_runtime_matrix.json canonical SHA-256 b6cf5e25a5f98dd421b71998c976b7a6a5e8956fa5dbf4dffb6dd8e4287090ef; ten provider runtimes, eight qualified, two exact pending, zero human gates, twenty-two exact artifacts. MatAnyone2 static and temporal routes are live-qualified; SAM 3.1 point refinement and SAM 3D Body byte-exact repeatability remain honestly pending. Evidence: qa/live_verification/matanyone2_runpod_capability_20260722.json, qa/live_verification/sam2matting_runpod_runtime_20260722.json, qa/live_verification/sam31_runpod_runtime_smoke_20260722.json, qa/live_verification/sam3d_body_runpod_runtime_smoke_20260722.json.",
+      "evidence": "env/provider_runtime_matrix.json canonical manifest 3b99c7f8cca7128d4f656cb0ef8667a9a3859574223ba60ad7c493f1994f5ed8, locked in src/maskfactory/providers/runtime_matrix.py and verified with verify_runtime_matrix() on Pod 68psfqtaogg7s7. EoMT row binds env/eomt_dinov3_runtime_v2.lock.json SHA 33074535ca8d7e7c022006b54187dbb5a84e51ff86d6d9801e57482f44610295 and the structural Ada receipt runtime_artifacts/eomt_dinov3_66_class_gpu_shadow_20260725T175822Z/EOMT_DINOV3_66_CLASS_GPU_SHADOW_RECEIPT.json raw SHA 58058b2990331e035f13fb2f8991c21ace1e31432cbffea6f012d4ef136fe0d1 self 2841e8cd4e8ccb38941fe005b6baeed3a788e7534927f6e4e2f1555e10a78913. Current pending states remain exact and fail closed.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-22T05:28:50+00:00",
+      "updated_at": "2026-07-25T18:22:23+00:00",
       "orphaned": false
     },
     "MF-P0-17.14": {
@@ -12942,8 +13012,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "in_progress",
-      "percent_complete": 90,
+      "status": "partially_complete",
+      "percent_complete": 92,
       "notes": [
         {
           "ts": "2026-07-15T00:18:03+00:00",
@@ -12999,12 +13069,17 @@
           "ts": "2026-07-22T01:51:53+00:00",
           "actor": "codex",
           "text": "2026-07-22: exact SAM 3D Body source, checkpoint/config/MHR assets, Python 3.11/CUDA runtime, Detectron2 commit, pip integrity, and required imports are live on persistent RunPod. One exact person box returned finite geometry with stable shapes and identity, but two-repeat raw geometry hashes differed twice, including after TF32/fused SDP disablement. Maximum drift was 0.0001832 image pixel and 5.44e-7 mesh units. The exact-hash gate remains closed; DensePose remains active/rollback; no benchmark, promotion, or authority claim. Anti-spin limit reached for this failure class."
+        },
+        {
+          "ts": "2026-07-25T18:54:15+00:00",
+          "actor": "codex",
+          "text": "2026-07-25: Fresh bounded V3 host-adapter closure on Pod 68psfqtaogg7s7/vitreous_beige_centipede bound the existing hash-verified /workspace/models SAM3D source and checkpoint roots after preserving the V2 failure. One warm-up plus two full measured inferences produced byte-identical raw NPZ and geometry hashes. Receipt: runtime_artifacts/sam3d_body_v3_host_adapter_runtime_20260725T193000Z_v3_workspace_models_closure/HOST_ADAPTER_RUNTIME_RECEIPT.json (file SHA-256 863ea6f5c58ee0fbaaea9c418242cb4ea757f5d43569871db84062941dc2c8e0; self SHA-256 6d4c694b481c6886a72445d5482f52f4d4d54bbd9e5378d7033ba07e2fd31d77). Shadow-only; no provider matrix, production route, gold, certification, or training authority changed; DensePose remains fallback."
         }
       ],
       "evidence": "qa/live_verification/sam3d_body_runpod_runtime_smoke_20260722.json SHA-256 cce59137fde35dd0ef8ae25813ce56807c4f1f9a748659d29338691397cc8a26; env/sam3d_body_runtime.lock.json; env/sam3d_body_runtime.requirements.lock.txt; 10 runner tests and 35 runtime-matrix/fallback tests pass; Ruff/Black/diff checks clean.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-22T01:51:53+00:00",
+      "updated_at": "2026-07-25T18:54:15+00:00",
       "orphaned": false
     },
     "MF-P2-11.08": {
@@ -13067,8 +13142,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "in_progress",
-      "percent_complete": 90,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-15T00:36:40+00:00",
@@ -13084,12 +13159,47 @@
           "ts": "2026-07-22T05:28:50+00:00",
           "actor": "codex",
           "text": "The 65-class live smoke is historical and no longer proves the amended 66-class vocabulary. Static 66-class config/provider/tournament contracts pass, but the exact EoMT asset is absent from this worktree/root and a 66-class isolated live runtime smoke remains required before recompletion."
+        },
+        {
+          "ts": "2026-07-25T16:11:07+00:00",
+          "actor": "ai_agent",
+          "text": "Recovered the exact public MIT EoMT snapshot on RunPod with all four locked byte hashes verified. Replaced the stale historical 65-class lock reference with immutable eomt_dinov3_runtime_v2.lock.json for the active 66-class contract. Focused contract suite passes 12/12; static receipt runtime_artifacts/eomt_dinov3_66class_static_contract_20260725T180000Z/STATIC_VALIDATION_RECEIPT.json self e4d51682008277180e5e432b70023d501609bb67804ab8c60861a748ff685be3. EoMT runtime remains uninstalled, and no inference or promotion is claimed."
+        },
+        {
+          "ts": "2026-07-25T16:40:54+00:00",
+          "actor": "codex",
+          "text": "Recovered a clean CPython 3.11 isolated EoMT runtime on the authorized Pod from 53 hash-bound local wheels. The closure passes pip check and imports torch 2.11.0+cu128, Transformers 5.13.0, and EomtDinov3ForUniversalSegmentation without model weights or CUDA execution. Receipt runtime_artifacts/eomt_dinov3_clean_isolated_runtime_closure_20260725T191500Z/CLEAN_ISOLATED_RUNTIME_RECEIPT.json self 2d834d1e842321990fe3a4a4a18d99a503ba90bfe99935c5a5e66db44dfc8a78; file a7db618b5aad35cdaba6a055301351ad9003f6efe64ea29cd8d9a63aa0411635. This advances dependency closure only; the next governed step remains a separate shadow-only model-load binding."
+        },
+        {
+          "ts": "2026-07-25T16:44:29+00:00",
+          "actor": "codex",
+          "text": "CPU-only EoMT shadow-load binding eomt_dinov3_cpu_shadow_load_20260725T194500Z reached its immutable terminal failure before any inference or GPU work: Transformers requires SciPy for EomtDinov3Loss. Receipt self dcd62448bc202f4bd80839387e279e3a8e3e803e5aefed1dd26d8786464c764e; file 8403e4c796ae2a518b259fd367220f5c933304ee0a9905f1fa95d4c15fb0cfa8. Do not relaunch this binding; next recovery must stage a hash-bound SciPy wheel and create a new clean closure."
+        },
+        {
+          "ts": "2026-07-25T16:49:43+00:00",
+          "actor": "codex",
+          "text": "Clean-runtime V3 eomt_dinov3_clean_isolated_runtime_closure_20260725T201000Z is terminal and must not be rerun. Its 54-package lock and staged SciPy wheel verified, but the immutable V3 launcher omitted the SciPy wheel directory from offline --find-links. Receipt self 606a73437ff94a732e089265bf5b589a24d0b60cd16f754d0d2fb110a1310ac3; file 6ea1b4e01738efb6837d1f886503e05b23752842add8ea1b3486f1898af5f7b4. A distinct V4 closure may reuse the unchanged V3 lock with the missing local find-links binding restored; no model/GPU work occurred."
+        },
+        {
+          "ts": "2026-07-25T17:00:05+00:00",
+          "actor": "codex",
+          "text": "The repaired V2 CPU-only EoMT shadow-load passed on the clean V4 closure. All four locked snapshot files re-verified and the 23,356,934-parameter EomtDinov3ForUniversalSegmentation checkpoint loaded on CPU with CUDA_VISIBLE_DEVICES empty, offline mode, and no inference. It reports upstream config_num_labels=133 and preserves that the COCO head is uninstantiated for body_parts_v2/promotion. Receipt runtime_artifacts/eomt_dinov3_cpu_shadow_load_20260725T203000Z/EOMT_CPU_SHADOW_LOAD_RECEIPT.json self 77737e62b79a136c375273ab5b260a8f057a7c9fdaadf1cde22710b5bff57608; file 1c2a441e4e5e60fafd25296ea187197474ea9d652d9771e5ca47a1ec9c0bbcb9. Next remains a separate GPU-admitted 66-class shadow-only inference binding over governed real-adult assets."
+        },
+        {
+          "ts": "2026-07-25T18:04:35+00:00",
+          "actor": "codex",
+          "text": "2026-07-25: authorized Pod 68psfqtaogg7s7 (RTX 6000 Ada) completed one structurally passing shadow-only EoMT/DINOv3 66-class runtime. Snapshot and 66-class random head verified; two deterministic calls completed. No semantic mask acceptance, gold, promotion, or rollback claim. Receipt self=2841e8cd4e8ccb38941fe005b6baeed3a788e7534927f6e4e2f1555e10a78913."
+        },
+        {
+          "ts": "2026-07-25T18:12:29+00:00",
+          "actor": "codex",
+          "text": "2026-07-25: P2 contract is complete at the stated structural scope. The final 66-class Ada binding is single-use and terminal; no further replay is authorized absent drift. This does not qualify the random training head for semantic use or alter provider/gold authority."
         }
       ],
-      "evidence": "env/eomt_dinov3_runtime.lock.json binds revision 602edaa, exact 93,450,628-byte safetensors/config/preprocessor hashes, Transformers 5.13/cu128 runtime, 65-class ontology hash, training config, smoke, contract, and tests. qa/live_verification/eomt_dinov3_runtime_20260715.json proves deterministic two-run adult-bus CUDA panoptic inference, 700,448,768-byte peak reserved, and 0.039196s warm latency. Contract tests discard the COCO-133 head, require a random 65-class body_parts_v2 head, reject vocabulary/snapshot/authority drift, preserve SegFormer/Mask2Former, and deny pretrained gold authority. Full suite 1095/1095; Ruff clean.",
+      "evidence": "66-class contract completion: config SHA a0d21b8b8c1da900b6f354e1a244537db5f85a6b2650aae007ddb3195644466f; v2 contract SHA 692e5c4552bfbf4450b6116740c82ac94e86d9938f60b8e34563eb397105cf09; ontology SHA e4bea7663ad4f72c5550fbf93efafb506eca8593ad227f338620d6d5137ed2c4; runtime lock SHA 33074535ca8d7e7c022006b54187dbb5a84e51ff86d6d9801e57482f44610295. Authorized Ada structural shadow receipt runtime_artifacts/eomt_dinov3_66_class_gpu_shadow_20260725T175822Z/EOMT_DINOV3_66_CLASS_GPU_SHADOW_RECEIPT.json self 2841e8cd4e8ccb38941fe005b6baeed3a788e7534927f6e4e2f1555e10a78913; binding self b73320a88c9e79e92e1c9c9fdc4934087f39411515aa8d1117382d2727a5c393. It verifies four exact snapshot hashes, discarded COCO head, a 66-class random head (67 out), and two deterministic calls. Static 66-class receipt runtime_artifacts/eomt_dinov3_66class_static_contract_20260725T180000Z/STATIC_VALIDATION_RECEIPT.json self e4d51682008277180e5e432b70023d501609bb67804ab8c60861a748ff685be3. Shadow-only; no semantic-mask, visual, gold, promotion, or rollback authority claimed.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-22T05:28:50+00:00",
+      "updated_at": "2026-07-25T18:12:29+00:00",
       "orphaned": false
     },
     "MF-P2-11.11": {
@@ -13882,12 +13992,27 @@
           "ts": "2026-07-22T17:41:52+00:00",
           "actor": "ai_agent",
           "text": "2026-07-22 historical intake reconciliation is complete: 641/641 primary packages accounted, iso220 proven as subset, zero unknown records, and all 641 routed to immutable quarantine. Actual promoted-critic bulk requalification, relabel/repair outcomes, and new package versions remain open."
+        },
+        {
+          "ts": "2026-07-25T02:39:11+00:00",
+          "actor": "codex",
+          "text": "2026-07-25: Current CPU-only integrity replay sealed at runtime_artifacts/historical_caa_semantic_requalification_preflight_20260724/current_integrity_replay_20260725T023834Z/receipt.json. Recomputed 641 package source/active-mask/per-target-panel bindings to plan ab9b1cc3; all 21 contact sheets verified by byte hash and cover exactly 641 unique cases. Packages remain quarantined: no semantic review, independent quorum, unquarantine, training, production, or certificate authority is claimed."
+        },
+        {
+          "ts": "2026-07-25T02:45:18+00:00",
+          "actor": "codex",
+          "text": "2026-07-25: Commit a02cf4e canonicalized semantic-requalification plan roots so equivalent relative and absolute roots cannot produce a false binding-drift hash. 16 focused tests passed; a real 641-case replay via data/packages now resolves to /workspace/maskfactory/data/packages and matches plan ab9b1cc3. Receipt runtime_artifacts/semantic_requalification_plan_root_canonicalization_20260725T024444Z/receipt.json. This is deterministic replay integrity only; quarantine and all semantic/critic/training/production gates remain unchanged."
+        },
+        {
+          "ts": "2026-07-25T02:48:14+00:00",
+          "actor": "codex",
+          "text": "2026-07-25: The prior current-Pod deferred queue became stale only on package_semantic_alignment module bytes after commit a02cf4e. A new immutable v3 queue is sealed at runtime_artifacts/historical_caa_semantic_requalification_preflight_20260724/deferred_gpu_requalification_queue_current_pod_v3_20260725T024731Z.json, self_sha256 5cc518663d0e7d6612c40a2970c798fc4c96395f845a24b2f433c5254ed35a47. It binds the current RTX 6000 Ada pod, plan/contact/preflight hashes, and current module sha 22d933be; it remains deferred with promotion disallowed until qualified independent roles and clean GPU admission are revalidated. V2 remains preserved and superseded."
         }
       ],
       "evidence": "qa/live_verification/historical_caa_641_to_220_reconciliation_20260722.json; classification report SHA-256 30c701d4a3e5e812b430c8d908dfbba2ecff0fba9dded1a6bd2b0e27ce539479.",
       "blocked_reason": null,
       "created_at": "2026-07-22T06:28:15+00:00",
-      "updated_at": "2026-07-22T17:41:52+00:00",
+      "updated_at": "2026-07-25T02:48:14+00:00",
       "orphaned": false
     },
     "MF-P4-09.01": {
@@ -14885,12 +15010,22 @@
           "ts": "2026-07-24T03:03:27+00:00",
           "actor": "codex",
           "text": "2026-07-23 STATIC_PASS: added immutable protocol-v3 stage-2 board/result evaluator with >=100 total, >=40 valid-mask, >=60 serious-defect holdout requirements; one-sided 95% Wilson lower bounds (serious recall >=0.90, valid pass >=0.80); and zero tolerance for serious false-passes/schema failures. The report is explicitly non-authoritative and cannot issue a role certificate. Validation: 45 focused v3/qualification tests, Ruff, and Black passed. Live selected 2xA40 capacity/start, frozen real >=100-case board execution, and role-certificate evidence remain open."
+        },
+        {
+          "ts": "2026-07-25T03:23:59+00:00",
+          "actor": "codex",
+          "text": "2026-07-25: Prepared the hash-bound local-only Qwen3-VL Protocol V3 recovery launcher at commit ea62799 after retained evidence showed the prior attempt ended during shard 2 of 4 rather than semantic review. Deferred binding runtime_artifacts/visual_critic_v3_control_screening_20260724/deferred_local_jobs/qwen3_vl_30b_v3_local_20260725T032051Z/launch_binding.json self 330e84baaacff9b15057a17f0617721f6c7637f56a63cfac701e275c0481166d requires broker local_pod plus zero foreign compute processes; it has a 1200-second local startup window and no Serverless submission, role, certificate, gold, training, or production authority."
+        },
+        {
+          "ts": "2026-07-25T04:01:14+00:00",
+          "actor": "codex",
+          "text": "2026-07-25 pod-resident local-admission watcher installed for the already sealed Qwen3-VL Protocol V3 control-screening binding. Watcher runtime artifact: runtime_artifacts/visual_critic_v3_control_screening_20260724/deferred_local_jobs/qwen3_vl_30b_v3_local_20260725T032051Z/qwen_local_admission_watcher.py sha256 fa732e62bc1e97de1118a1a82137694296e7cd05213e44c50d42c25a6cb45d49; binding canonical self 330e84baaacff9b15057a17f0617721f6c7637f56a63cfac701e275c0481166d/raw file sha a797f5e22db62412f7db9b0ecfeb05a6a9aef4a82e43cd1371eb035ee210e26c. First independent broker decision recorded WAITING_FOR_LOCAL_GPU with route=serverless_overflow reason=gpu_compute_process_present. The watcher launches only after route=local_pod and the launcher then independently verifies the one-Ada/zero-compute-process gate. No V3 critic call, visual authority, role certificate, certification, gold, or training truth is claimed."
         }
       ],
       "evidence": "qa/live_verification/runpod_current_visual_critic_failclosed_20260723.json",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-24T03:03:27+00:00",
+      "updated_at": "2026-07-25T04:01:14+00:00",
       "orphaned": false
     },
     "MF-P4-11.19": {
@@ -15024,7 +15159,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "in_progress",
-      "percent_complete": 82,
+      "percent_complete": 93,
       "notes": [
         {
           "ts": "2026-07-21T23:46:02+00:00",
@@ -15110,12 +15245,137 @@
           "ts": "2026-07-24T16:49:40+00:00",
           "actor": "codex",
           "text": "CPU-safe LV-MHP hair auxiliary resources sealed: 16 exact selected records, each with hash-bound neighbor/other-owner hair plus direct face wrong-label/protected-region rasters. Evidence: runtime_artifacts/visual_control_sweep_20260724/lv_mhp_v1_hair_auxiliary_resources_20260724/report.json (file sha256 fc6a543a63a797ae4e24bf66ca47d76869886d30f77011a6e361d15f02f7a8e6; self sha256 7eabe385848d94e2e42d6b8b4face203df78ba44303c7adf4721d852dc0f3450). Hair laterality/opposite_side_mask remains source-semantics deferred; no seeded taxonomy, control admission, critic role, gold, training truth, package, production, or certificate authority."
+        },
+        {
+          "ts": "2026-07-24T20:21:13+00:00",
+          "actor": "codex",
+          "text": "2026-07-24: sealed additive operational calibration-control coverage delta without rewriting the frozen source-deficit report. Existing base hair/neck controls plus 16 LaPa head_face and 16 LV-MHP hair Amendment-2 admissions yield 57 bound calibration-only records across hair, neck, and head_face; both full ten-defect taxonomies remain correctly deferred for typed resource gaps. Evidence: runtime_artifacts/real_control_coverage_delta_20260724T202058Z/coverage_delta.json (file sha256 04b0880a2c78d30a6a8c6b0114caf2e5bb81432de1e3c67aa425a18db9cdd2ad; self sha256 6d83a1d260555129f89baf4e8f33a5a411487904e850310c170f118a8a87a59f). No critic, visual, gold, training, certificate, package, production, or promotion authority."
+        },
+        {
+          "ts": "2026-07-24T20:48:51+00:00",
+          "actor": "codex",
+          "text": "2026-07-24: exact LV-MHP direct hat-to-accessory_or_prop CPU-safe candidate/panel wave sealed. 16 split-disjoint records (8 qualification_train, 8 qualification_test) and 96 exact panels are rendered and hash-bound, but remain PANEL_RENDERED_UNSCREENED pending individual Amendment-2 non-certifying admission; no control, critic, visual, gold, training, certificate, package, production, or promotion authority. Evidence: runtime_artifacts/lv_mhp_direct_control_render_receipt_20260724T204527Z/receipt.json (file sha256 2523e446ce6804e30899fe08a3cd33e93b6c08be20efc0dca32e23bf50065251; self sha256 23c0df07e396821278726d945df4fa9a05acffda3c9f10ae1a92a6f184a9ee8a)."
+        },
+        {
+          "ts": "2026-07-24T20:56:26+00:00",
+          "actor": "codex",
+          "text": "2026-07-24: completed interactive Amendment-2 per-record screening for 16 exact LV-MHP direct hat-to-accessory_or_prop panels. Result: 10 calibration-only admissions, 5 abstentions, and 1 semantic rejection (integrated hood). Receipt is self-hash-bound to the immutable candidate and panel manifests; no critic, gold, training-truth, certificate, production, or promotion authority. Evidence: runtime_artifacts/visual_control_sweep_20260724/lv_mhp_v1_accessory_or_prop_hat_amendment2_screening_20260724.json (file sha256 255e30dc1d03eda016e4422c5b84fda13e71d81dc9f1e7ad843b03cb4ce95fa8; self sha256 b8fa999cab696a30ce41b46f15fa5cdb9633c3002c748631e799dd6e7b952391)."
+        },
+        {
+          "ts": "2026-07-24T22:04:09+00:00",
+          "actor": "codex",
+          "text": "2026-07-24: LV-MHP direct bag-to-accessory Amendment-2 screening sealed: 12 calibration-only admissions, 3 abstentions, 1 protected-overlap rejection. Evidence: runtime_artifacts/visual_control_sweep_20260724/lv_mhp_v1_accessory_or_prop_bag_amendment2_screening_20260724.json (file sha256 310b5927ea8f2d3a01b087005b67feccae2ee78b1336ab7adbb9171202ff72f8; self sha256 5eb6e061858d4d560c59b9ee277f152cc929804ee7b7d77848ea699b279c892b). No critic, gold, training-truth, certificate, production, or promotion authority."
+        },
+        {
+          "ts": "2026-07-24T22:37:09+00:00",
+          "actor": "codex",
+          "text": "2026-07-24: LV-MHP direct face-to-head_face Amendment-2 screening sealed: 16 split-disjoint candidates and 96 byte-verified exact panels; 14 calibration-only admissions, 1 abstention, 1 rejection for disconnected/leaking pixels. Candidate file sha256 538c5c5d1cdadc14dc98786f5eb2c4728b9f8a3e495456a00a64087e072a0e68 (self a0eb3255ffdd23e09ea53ee06b061fbcfb82c6499ce7375659241669ff4b5d47); panel report file sha256 b2a866d22a47c6178cb5a313a9ffbdd31976ca9b28145dc5a63d685482360cbe (self 9d5f4aa787a93895d4d105182cd9e51a80bdc5f8edbef1e35da6fa9f15c8dd5f); screening file sha256 a850dbe2fd8f2fa81d3ce1c8d08aefd6e872fab5296bbf9e875dc8a4b36973b3 (self dddfa2fab461f100cf46877b6125854716091a97700c9f00eeb50d23a36c71a9). No critic, strict-visual-pass, gold, training-truth, certificate, production, or promotion authority."
+        },
+        {
+          "ts": "2026-07-24T22:46:06+00:00",
+          "actor": "codex",
+          "text": "2026-07-24: LV-MHP direct sunglass-to-accessory_or_prop Amendment-2 screening sealed: 16 split-disjoint candidates and 96 byte-verified exact panels; 15 calibration-only admissions and 1 rejection for held off-face/wrong-owner context. Candidate file sha256 22e88db0e36dfd5fb91d47f700db5dd045257e57004af5671f257da2e219bf6c (self 9aa5637edd664948991d8ce41c62dfc7b23a0114e86f275f3a3150a8e449031b); panel report file sha256 5ec37f14b3dc0651efe0c30999078c9795c8bdab4917ef3a47d2ec8ac1c8afdf (self 1e3b0a61df696290a03074c9e8e4f65902a8cd8636d3b28b964db07e67dc4efa); screening file sha256 367448e60cf353c91e712eb269008ee584a87110d382777cb5a1dbcefee6164d (self d43ccf39e88e16272e7b83afcd8036478ebb78213670782674f6a31a18935b5f). No critic, strict-visual-pass, gold, training-truth, certificate, production, or promotion authority."
+        },
+        {
+          "ts": "2026-07-24T22:54:43+00:00",
+          "actor": "codex",
+          "text": "2026-07-24: LV-MHP direct belt-to-accessory_or_prop Amendment-2 screening sealed: 16 split-disjoint candidates and 96 byte-verified exact panels; 9 calibration-only admissions, 2 waist-boundary abstentions, and 5 semantic bow/necktie rejections. Candidate file sha256 7ebe49e6376cc318a5556d580427bc85651a091001e1a1f971f55ded745f658e (self 82980588f76b556a45749bc0842e04fa326d8964176a78efb5d13fd02e72d1d2); panel report file sha256 9d0d4dca8ac5b0d82960ed72defbaed2fc21e568233593eac7a57e941cd57eca (self d2371ca8b237599f9072111ce80a5246cb07974561a8cff45d74e9a1cc5d672d); screening file sha256 6824184c315fe7723b29d5541df798267efbee63d14ca7b158e5a82832b821ed (self e8fd252405b647e053b3bee5f59ab632bdd04eac92a0b6e939f3ce34236d2992). No critic, strict-visual-pass, gold, training-truth, certificate, production, or promotion authority."
+        },
+        {
+          "ts": "2026-07-24T23:03:00+00:00",
+          "actor": "codex",
+          "text": "2026-07-24: LV-MHP direct scarf-to-accessory_or_prop Amendment-2 screening sealed: 16 split-disjoint candidates and 96 byte-verified exact panels; 14 calibration-only admissions and 2 semantic necktie rejections. Candidate file sha256 b91fe1f348d25bbfc99713a59687342ac840e806b2260efe5e36bbc72831a721 (self 2118d19422e51ed03167de69e6d4144410bd0213336271fd972be0aceeb331e6); panel report file sha256 7cd6329d0d7312112af5e23a11d002e636069544d9bbcded3157dd5372c81297 (self b322d01ed110b2e93bf16774e5b34ca8e9aa8f4a47e0ab3c6913b0044e8c691e); screening file sha256 680d528500b0a1e8e96c9a7768e926fdb0a6bbfe7f7b7b287d6b78b8fd363ad9 (self a282035425cc4fed3f65b7ac0fdcad2b74a72d26b1d0daae59f49e764493901e). No critic, strict-visual-pass, gold, training-truth, certificate, production, or promotion authority."
+        },
+        {
+          "ts": "2026-07-24T23:10:52+00:00",
+          "actor": "codex",
+          "text": "2026-07-24: verified pre-change backup at runtime_artifacts/session_backups/lv_mhp_direct_aux_resources_20260724T230731Z (SHA256SUMS revalidated; implementation_log.json file sha256 d546f16ae1d596517f349fcb3740f95abc6bd9aac93fed66ab46071e5b73978b). No source edit made: inspection confirmed all direct LV-MHP candidate labels lack governed opposite-side semantics, so generalizing the partial-resource generator cannot authorize the full seeded-defect taxonomy without prohibited heuristic laterality. Preserved fail-closed resource gap and moved to next eligible lane."
+        },
+        {
+          "ts": "2026-07-24T23:19:31+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-24: Replaced stale deferred V3 GPU queue with current-pod-only manifest after checksum-verified backup. Queue sha256=d3b0debcd70cb5b11b6a182f4a72e87ee83a09279fc35e95708f357dc23367af; binds only pod yn53vaivspl175 / RTX 6000 Ada, requires >=29.85 GiB free with no foreign CUDA context, and forbids direct Serverless submission or retry/alteration of failed V3 Serverless preflight. Current foreign PID 401750 consumes 24188 MiB, so status remains deferred_gpu_admission; no role/training/gold authority. Backup: runtime_artifacts/session_backups/visual_critic_v3_queue_current_pod_20260724T231733Z/ (SHA256SUMS verified)."
+        },
+        {
+          "ts": "2026-07-24T23:57:04+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-24: CPU-safe Mange v3 head_face source lane advanced on the designated RTX 6000 Ada Pod while foreign GPU PID 401750 remains untouched. Added sealed source-label contract limited to roboflow_mange_v3 female face/male face -> head_face coarse_anatomy; focused selector/panel/semantic tests passed 16/16. Built candidate receipt runtime_artifacts/visual_corpus_source_candidates/mange_v3_head_face_20260724T235400Z/candidates.json (file SHA-256 d05a25392f2aa013fb7dab80a6aaf62aa73d9cce7ce004e81ae27ea10ead6dcc; self f21e0ff58c4ec6b98434c744b8e48c08188686dfdcb6274f9ff7eb70f3863794): 16 exact hard-QC candidates, 8 train/8 test. Materialized 96 panels; report SHA-256 a300cd9175ae83f52c2400ac67f247ef22e7b04f9be7cdb0ad371db32769895f/self d2de711909021f32450302262fc0bc63d4220b24873b0c5bb3a57868f76c0e47, verified. These remain calibration-only candidate evidence: no source qualification, critic role, gold, training truth, production, certificate, or strict visual pass claim."
+        },
+        {
+          "ts": "2026-07-25T00:03:14+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-24: Sealed Mange v3 head_face per-record calibration admission after direct review of all 96 hash-bound panels. New generic fail-closed admission validator/tool/test hashes: 0d0a48ee3a59d6358c98987c6fd737f5cd4d8096146b774484652560f94b9c4c, b48036778baeb61c15c3a5af79409247d333d8ceca259a70f0fa72789b2a4962, fcac0b9e7759b5e6fba818b3154c738f6f4b552e9431d5b9440c73f66029e7c3. Focused admission/source/panel/semantic tests passed 19/19. Decisions SHA-256 01ff07363b56ad66800aa7c88d205f75a069cb49c658649b55f4e68ee4176edd; admission file runtime_artifacts/visual_corpus_source_admissions/mange_v3_head_face_20260724T235400Z/admission.json SHA-256 33e5658bbb677612cc46f1d5ed6f3039718aba9b844b20940384d9ca76fe5640, self de874c4970a873cb7fd8db18f6b3147eb12989dc90ebc251ec4391995ae97044, independently verified. 16 admitted_calibration_only, 0 abstained, 0 rejected. This is explicitly non-certifying calibration evidence only: no source qualification, critic role, gold/training truth, production, certificate, or strict visual pass claim."
+        },
+        {
+          "ts": "2026-07-25T00:38:15+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-25: Advanced canonical external-polygon calibration lane with verified anus receipt runtime_artifacts/visual_corpus_source_admissions/anus_polygon_20260725T001500Z/admission.json (self SHA-256 907e48c950450e55b62fbcb056b8881ebfb18a9cbc9d76e56554beaa17ac1078): 32 complete exact records, 2 admitted calibration-only, 24 abstained, 6 rejected. Added fail-closed compatibility for the sealed legacy anus v2 candidate form only; commit f245fba. No critic, source qualification, gold, training, production, certificate, or strict-visual-pass authority granted."
+        },
+        {
+          "ts": "2026-07-25T01:05:35+00:00",
+          "actor": "codex_runpod",
+          "text": "2026-07-25: sealed coarse canonical-polygon buttocks calibration lane on the designated pod. Contract commit 1290686 limits raw buttocks to coarse_anatomy/buttocks_region only. Candidates self_sha256=257f25534497a4e9ac233e31e689fffd7d28c6c7a46605d98d575fa8cb41f1ab; panels self_sha256=7969a3069d7a8267187f4510810f31602800243b9e690f37d5feb35b7f5a99de; independent admission verification self_sha256=3c35869773202e79c53464dabd23be9b6c85b58644a7d1d50f42d380ce2ecaed. 11 calibration-only admissions, 2 abstentions, 3 rejections. No source qualification, critic role, gold/training truth, production, certificate, or strict-visual-pass authority."
+        },
+        {
+          "ts": "2026-07-25T01:17:24+00:00",
+          "actor": "codex_runpod",
+          "text": "2026-07-25: sealed coarse canonical-polygon breast calibration lane after verified pre-change backup runtime_artifacts/session_backups/canonical_polygon_breast_source_contract_20260725T014500Z (SHA256SUMS revalidated). Contract commit 6aa7c0a limits raw female_breast to coarse_anatomy/breast_region only. Candidates self_sha256=d7c38c60997d917d37c9a02ec3d7e92c338d67aac48fadbc297fe6a7fad81cf9; panels self_sha256=b9311c84f10992ac190b0bc43a56225288f006bc6c860ac280c0930f82f2b27b; independent admission verification self_sha256=8f67f77df18404af12385160ee73378a2daa1eb7c5963e872f197923b5379a35. 10 calibration-only admissions, 3 abstentions, 3 rejections. No laterality, source qualification, critic role, gold/training truth, production, certificate, or strict-visual-pass authority."
+        },
+        {
+          "ts": "2026-07-25T01:29:28+00:00",
+          "actor": "codex_runpod",
+          "text": "2026-07-25: sealed coarse canonical-polygon vulva external-region calibration lane after verified pre-change backup runtime_artifacts/session_backups/canonical_polygon_vulva_source_contract_20260725T020000Z (SHA256SUMS revalidated). Contract commit 385fa8c limits raw female_genitalia to coarse_anatomy/vulva_external_region only; no internal anatomy or precise substructure inference. Candidates self_sha256=6b1287f6a56e31e15429f3cfab52dcef0e7dcb435c61825eb92a207beb24d6ba; panels self_sha256=7aa18cde3bcf288121947e11221991a08cb7f3dacdc329dd90f1e1431159c353; independent admission verification self_sha256=ea43fa14c759e4e7098b910ed0d949a5a98900061ead284e9f9063c8801f5663. 3 calibration-only admissions, 2 abstentions, 11 rejections. No source qualification, critic role, gold/training truth, production, certificate, or strict-visual-pass authority."
+        },
+        {
+          "ts": "2026-07-25T01:35:10+00:00",
+          "actor": "codex_runpod",
+          "text": "2026-07-25: opened next distinct canonical-polygon lane with verified pre-change backup runtime_artifacts/session_backups/canonical_polygon_male_genital_source_contract_20260725T023000Z. Commit f7765c0 binds raw male_genitalia only to coarse_anatomy/male_genital_region. Candidate self_sha256=c616b437d08d718a99fb361676d1964db5a3e9347fed92fa5ce970381215c4eb; panels self_sha256=50ac15aaa5db9aea5394bf08f538bb8fd65b29c4e66781c5f51f1bc8e8f42e8b; 16 split-disjoint candidates and 96 verified panels. Status remains PANEL_RENDERED_UNSCREENED; no calibration admission, source qualification, critic, gold/training, production, certificate, or strict-visual authority."
+        },
+        {
+          "ts": "2026-07-25T01:40:26+00:00",
+          "actor": "codex_runpod",
+          "text": "2026-07-25: sealed coarse male_genital_region calibration admission after exact panel review. Contract commit f7765c0; candidate self c616b437d08d718a99fb361676d1964db5a3e9347fed92fa5ce970381215c4eb; panels self 50ac15aaa5db9aea5394bf08f538bb8fd65b29c4e66781c5f51f1bc8e8f42e8b; independently verified admission self 7836137018d018518aedabb36a73f8c7039de018aa7d67f4fd289ee2e1589750. 1 calibration-only admission, 2 abstentions, 13 rejections. No source qualification, critic, gold/training, production, certificate, or strict visual authority."
+        },
+        {
+          "ts": "2026-07-25T01:44:11+00:00",
+          "actor": "codex_runpod",
+          "text": "2026-07-25: NWeud face_female to coarse head_face lane opened after verified backup. Commit 988040e; candidate self c3af9664bd1941f554e62d79b378b518a854e08879955a216829ec85524a28bb; verified 96-panel receipt self f50230416c3be415237e319924c75cd4d92b93c815922c582d3c2911cea4f575. 16 split-disjoint records remain PANEL_RENDERED_UNSCREENED; no admission or downstream authority."
+        },
+        {
+          "ts": "2026-07-25T01:47:59+00:00",
+          "actor": "codex_runpod",
+          "text": "2026-07-25: sealed NWeud coarse head_face calibration admission. Contract 988040e; candidate self c3af9664bd1941f554e62d79b378b518a854e08879955a216829ec85524a28bb; panel self f50230416c3be415237e319924c75cd4d92b93c815922c582d3c2911cea4f575; verified admission self d49d541541eeef184f0e541ef9e27a9195b27362bd3ab5292a0227b774e32b76. 14 admissions, 1 abstention, 1 rejection; calibration-only and no downstream authority."
+        },
+        {
+          "ts": "2026-07-25T01:58:00+00:00",
+          "actor": "codex_runpod",
+          "text": "2026-07-25: feet/toes source lane sealed as a governed acquisition gap. Local NWeud evidence contains 3,223 hard-QC feet_region_unspecified masks, all ambiguous_coarse_anatomy, so no left/right foot/toe or ownership truth can be inferred. Gap receipt self b5c2df218a3e9f21a0f4de17db33865d4bdf9854362e9ade61d1962380977e31; acquisition plan self 8e79d8270f38eacb3e3a90cb6ff4a0f729f8211fa8190e93e45558f0a9ca1fcb. Requires governed external source authority and exact laterality/mask semantics."
+        },
+        {
+          "ts": "2026-07-25T02:27:16+00:00",
+          "actor": "codex",
+          "text": "2026-07-25: Bound penis source lane sealed at runtime_artifacts/visual_corpus_source_admissions/penis_20260725T021720Z/implementation_receipt.json. 16 split-disjoint candidate panels passed deterministic integrity, but rendered context did not establish required real-adult visual-control scope; all 16 abstained, zero calibration controls admitted, and P4 remains 93 percent."
+        },
+        {
+          "ts": "2026-07-25T03:38:10+00:00",
+          "actor": "codex",
+          "text": "2026-07-25: Restored the immutable admitted hair/neck control queue from Pod-resident CelebAMask bytes. Materialization runtime_artifacts/visual_control_sweep_20260724/admitted_hair_neck_exact_materialization_20260725T033651Z/report.json self 683dd21b5ea1434f5032dd6d525e3eb76fedceb4c3c083b65799c0695dc0c58e contains 30 records and 180 panels; all source/component-mask SHA-256 values and all stored queue panel/panel-set hashes matched exactly. Acceptance self eaf42b87bea0111a1aad84d1a0e570937bf81322ac1aeb63a67c7f86c7a3be89. Calibration controls only; seeded-negative construction and existing screening requirements remain."
+        },
+        {
+          "ts": "2026-07-25T03:43:48+00:00",
+          "actor": "codex",
+          "text": "2026-07-25: Completed direct exact-record visual screening of the restored 30-record hair/neck panel set. Review self 1935ff483fc9ca109f2a32e4a1909ce4fc0de7ae60b745208451265c396d4cfe: 25 exact-alignment candidates passed (hair 13, neck 12) and the five immutable known defects were rejected. Compacted acceptance runtime_artifacts/visual_control_sweep_20260724/admitted_hair_neck_exact_materialization_20260725T033651Z/control_stage_acceptance.json self fae926fcfe944f4e25adc78cc361096de6490344ffcecbe2bfa40ec799e43802. Every record remains calibration-only; external-reference, identity, split, seeded-negative, critic-role, certificate, gold, training, and production authority remain closed."
+        },
+        {
+          "ts": "2026-07-25T03:49:37+00:00",
+          "actor": "codex",
+          "text": "2026-07-25: Pod-local UniDataPro swimsuit preview intake was fail-closed and preserved untouched. Receipt runtime_artifacts/asset_intake/unidatapro_swimsuit_preview_nonadmission_20260725T034850Z/receipt.json self 09c36b63fbb4e5ea570c4f9c2125e98026a01a8ac2b2f9b27dd470a11e920be0 records 10 preview pairs, README license cc-by-nc-nd-4.0, and no governed exact canonical label mapping for RGB masks. It cannot supply calibration controls, training/gold data, or production truth without explicit license/allowed-use and immutable semantic-mapping governance."
         }
       ],
       "evidence": "runtime_artifacts/external_supervision/lv_mhp_v1/qualification_evidence_bundle.json; runtime_artifacts/visual_control_sweep_20260724/lv_mhp_v1_hair_candidates_20260724.json; runtime_artifacts/visual_control_sweep_20260724/lv_mhp_v1_hair_panels_20260724/report.json; runtime_artifacts/visual_control_sweep_20260724/lv_mhp_v1_hair_amendment2_screening_20260724.json",
       "blocked_reason": null,
       "created_at": "2026-07-21T19:18:54+00:00",
-      "updated_at": "2026-07-24T16:49:40+00:00",
+      "updated_at": "2026-07-25T03:49:37+00:00",
       "orphaned": false
     },
     "MF-P4-11.24": {
@@ -16274,12 +16534,22 @@
           "ts": "2026-07-19T22:33:45+00:00",
           "actor": "ai_agent",
           "text": "STATIC 2026-07-19: refreshed signed scheduled_90_day review after DECISIONS_LOG drift (active_input_hash_mismatch). Integrity+current-input pass with --allow-failed-review; honest policy FAIL sealed with exact missing artifacts listed in currency_review_integrity_20260719.json. No require-pass claim."
+        },
+        {
+          "ts": "2026-07-24T20:16:58+00:00",
+          "actor": "codex",
+          "text": "2026-07-24: current signed review cannot reach integrity verification because all 5 active_role records contain content_compatibility, rejected by the strict currency_review schema as additionalProperties. Sealed diagnosis: runtime_artifacts/currency_review_schema_diagnosis_20260724T201635Z/diagnosis.json (file sha256 c866c248a087c40bebecdd49d1192a6a7504b369596026d57f48f657d6058caf). Required remediation is a governed rebuild-and-sign with the existing authorized signer; no hand edit, new signer, policy pass, promotion, or release claim."
+        },
+        {
+          "ts": "2026-07-25T00:10:07+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-25: Read-only designated-pod signer discovery found no existing authorized currency-review private-key file at documented candidate locations and no currency-signing environment binding (no secret values read or emitted). Current source builder already emits schema-valid role records; remediation remains a governed rebuild-and-sign with the existing authorized signer after its external restoration. No signed-review hand edit, new signer, schema broadening, policy pass, promotion, release, or authority claim.\r"
         }
       ],
       "evidence": "STATIC integrity_pass_policy_fail 2026-07-19: signed review 38a72efc80e2ca02c7a7985d / review_sha256 4d60db8fe0ba1eb551e9113fc0b72e713af2d280aeabe619f152e7609027030c rebound to live governance_decisions sha256 e5a0862f6cebf68f1afabd78926eaa6b9fe4a0f3ba3615423a0331ffc4ea627f; archived prior d503f42f644baaa008056f78; evidence qa/live_verification/currency_review_integrity_20260719.json. Strict FAIL remains on benchmark_certificate_missing, rollback_evidence_missing, rollback_provider_not_distinct for all 5 active roles. No certificates/rollback wins invented; not PRODUCTION_EVIDENCE_PASS / doctor-green.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-19T22:33:45+00:00",
+      "updated_at": "2026-07-25T00:10:07+00:00",
       "orphaned": false
     },
     "MF-P7-07.02": {
@@ -20876,19 +21146,24 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "in_progress",
+      "status": "blocked",
       "percent_complete": 80,
       "notes": [
         {
           "ts": "2026-07-22T05:37:00+00:00",
           "actor": "codex",
           "text": "Live Ultimate reference root, manifests, benchmark pack, and exact authoritative snapshot hash are verified on RunPod. Completion remains open for a fresh direct database/manifest and sampled-source hash comparison against F:."
+        },
+        {
+          "ts": "2026-07-25T16:01:27+00:00",
+          "actor": "ai_agent",
+          "text": "Direct F: to Pod comparison found real reference-mirror drift: source 2,660 files/8,494,252,556 bytes versus Pod 3,846 files/11,826,388,802 bytes; reference_library.sqlite and one of 64 deterministic image hashes differ. Receipt: runtime_artifacts/reference_corpus_direct_reconciliation_20260725T171500Z/REFERENCE_MIRROR_DRIFT_RECEIPT.json self aa300d3a19b8d7832a32bb1baac7873e68c0fb7b8da1199cfea8faf066440bfc. No storage or provider mutation occurred."
         }
       ],
       "evidence": "qa/live_verification/runpod_persistence_binding_20260722.json and qa/live_verification/runpod_corpus_mirror_reconciliation_20260722.json: current pod RUNNING; 1 TiB persistent volume 13/13; exact remote snapshot hash 46f5fee69ef7acb0479c0c68c3fe07bedf351224f79f909a23bdf1ef5170a205; both required roots and top-level structures 10/10.",
-      "blocked_reason": null,
+      "blocked_reason": "NEEDS KEVIN: declare the canonical reference snapshot and authorize an exact hash-bound reversible reconciliation plan for divergent F: source versus persistent Pod mirror. Current receipt runtime_artifacts/reference_corpus_direct_reconciliation_20260725T171500Z/REFERENCE_MIRROR_DRIFT_RECEIPT.json self aa300d3a19b8d7832a32bb1baac7873e68c0fb7b8da1199cfea8faf066440bfc.",
       "created_at": "2026-07-22T05:06:30+00:00",
-      "updated_at": "2026-07-22T05:37:00+00:00",
+      "updated_at": "2026-07-25T16:01:27+00:00",
       "orphaned": false
     },
     "MF-P9-15.01": {
@@ -23435,12 +23710,17 @@
           "ts": "2026-07-24T17:27:02+00:00",
           "actor": "codex",
           "text": "2026-07-24: Added v2 mission-review panel evidence bindings: visual receipts may carry a safe path under the manifest output prefix; admission and review-bundle emission re-hash exact panel bytes; missing or drifted files leave panel completeness false. CPU-only typed visual-role-unavailable canary sealed at runtime_artifacts/mission_review_panel_binding_canary_20260724/proof.json (file sha256 74f13f18d6701d5681a09d8a7ef3bccc773762a9d80989920e604f9ea82778c7; self sha256 f4bfe19d583aa9601b517d66004e423228d6fb7eae8ea9cde9666e43fbb3ec4a). Targeted binding plus regression tests passed; no visual authority, certification, gold, or training truth claimed."
+        },
+        {
+          "ts": "2026-07-25T04:31:06+00:00",
+          "actor": "ai_agent",
+          "text": "2026-07-25: Sealed role-binding expiry hardening in 616ba1f4f73d546b7ca65164aeb136e22153c04e. Mission role bindings now require qualified_until and fail closed at admission, visual-pass acceptance, and certification when missing, malformed, revoked, or expired. Focused work-cell suite: 31/31 passed; Ruff, schema, and scoped diff checks passed. Evidence: runtime_artifacts/role_binding_expiry_hardening_20260725T042814Z/ROLE_BINDING_EXPIRY_HARDENING_VALIDATION.json (content_sha256 eb138cf1fec46103340bf3f05b185737ffe3abc92bfc8521a7b9700f8fc5241f). This does not confer qualification, visual authority, certification, gold, or training truth."
         }
       ],
       "evidence": "qa/live_verification/runpod_sam31_provider_canary_failclosed_20260723.json; qa/live_verification/runpod_visual_unavailability_batch_abstention_20260723.json self SHA-256 3b53eaf5821e7dc7356e2a6882ed878fa8bf02d22ce69f9249ecf333b93983b5; qa/live_verification/runpod_persistence_refresh_20260723.json; qa/live_verification/runpod_corpus_mirrors_refresh_20260723.json; qa/live_verification/runpod_nude_queue_crash_resume_20260723.json file SHA-256 1b79b623d368cac039f4ffd077ebfbcbadb927363449ced91644ca6a0158463c self SHA-256 c20abf5fba44cffdd1655ae7ffd4fc7febf7478a34f4d38ec3714952623e6faf; qa/live_verification/runpod_sam31_reference_wave64_checkpoint_20260723.json self SHA-256 dbc32f5af91a1d1405ccc93ced2b976458ad17ded5ac79c62abc91fe1bfc19d3; qa/live_verification/runpod_sam31_resident_wave64_20260723.json self SHA-256 dd95b29af1a90d69e525b8624ff48124c10427b2017c028822f4bfbc76753b74",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-24T17:27:02+00:00",
+      "updated_at": "2026-07-25T04:31:06+00:00",
       "orphaned": false
     },
     "MF-P4-12.02": {

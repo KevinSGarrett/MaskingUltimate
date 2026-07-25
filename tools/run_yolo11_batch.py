@@ -3,8 +3,11 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
 import hashlib
+import io
 import json
+import sys
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
@@ -264,19 +267,20 @@ def main() -> None:
     parser.add_argument("--microbatch-size", type=int, default=8)
     parser.add_argument("--progress-path", type=Path)
     args = parser.parse_args()
-    print(
-        json.dumps(
-            run_batch(
-                checkpoint=args.checkpoint,
-                shard_path=args.nude_shard,
-                confidence_min=args.confidence_min,
-                device=args.device,
-                microbatch_size=args.microbatch_size,
-                progress_path=args.progress_path,
-            ),
-            sort_keys=True,
+    provider_stdout = io.StringIO()
+    with contextlib.redirect_stdout(provider_stdout):
+        report = run_batch(
+            checkpoint=args.checkpoint,
+            shard_path=args.nude_shard,
+            confidence_min=args.confidence_min,
+            device=args.device,
+            microbatch_size=args.microbatch_size,
+            progress_path=args.progress_path,
         )
-    )
+    diagnostics = provider_stdout.getvalue()
+    if diagnostics:
+        print(diagnostics, end="", file=sys.stderr)
+    print(json.dumps(report, sort_keys=True))
 
 
 if __name__ == "__main__":

@@ -49,6 +49,35 @@ SAM3D_BODY_RUNTIME_REPORT_KEYS = frozenset(
         "may_author_gold",
     }
 )
+V3_HOST_ADAPTER_LOCK_PATH = ROOT / "env/sam3d_body_runtime_v4_warmup.lock.json"
+SAM3D_BODY_V3_RUNTIME_REPORT_KEYS = frozenset(
+    {
+        "schema_version",
+        "provider",
+        "runner",
+        "source_commit",
+        "source_tree_clean",
+        "runtime_lock_sha256",
+        "checkpoint_assets",
+        "image",
+        "requested_bbox_xyxy",
+        "inference_type",
+        "source_root_import_injected",
+        "warmup",
+        "measured_repeats",
+        "measured_outputs",
+        "measured_latency_ms",
+        "model_load_latency_ms",
+        "model_vram_bytes",
+        "peak_inference_vram_bytes",
+        "deterministic",
+        "measured_geometry_sha256_by_repeat",
+        "repeat_comparison",
+        "authority",
+        "may_author_gold",
+    }
+)
+V3_MEASURED_OUTPUT_FILENAMES = ("measured_repeat_1.npz", "measured_repeat_2.npz")
 
 
 class Sam3dBodyGeometryError(ValueError):
@@ -292,6 +321,298 @@ class Sam3dBodySubprocessBackend:
         return output
 
 
+class Sam3dBodyV3RunpodBackend:
+    """Execute the bounded V3 warm-up contract without changing provider authority."""
+
+    def __init__(
+        self,
+        *,
+        lock_path: Path = V3_HOST_ADAPTER_LOCK_PATH,
+        runtime_python: str = "/workspace/maskfactory/runtime_artifacts/sam3d_body_runpod_env/bin/python",
+        timeout_seconds: int = 600,
+        executor: CommandExecutor = _run_command,
+        source_root: Path | None = None,
+        checkpoint_root: Path | None = None,
+    ) -> None:
+        if timeout_seconds < 1:
+            raise ValueError("SAM 3D Body timeout must be positive")
+        self.lock_path = Path(lock_path)
+        self.lock = json.loads(self.lock_path.read_text(encoding="utf-8"))
+        self.identity = sam3d_body_identity(self.lock_path)
+        runtime = self.lock.get("runtime")
+        if not isinstance(runtime, Mapping):
+            raise Sam3dBodyProcessError("SAM 3D Body V3 host-adapter runtime binding is missing")
+        self.runner_path = ROOT / str(runtime.get("runner", ""))
+        self.repeatability_lock_path = ROOT / str(runtime.get("repeatability_runtime_lock", ""))
+        self.source_root = (
+            Path(source_root)
+            if source_root is not None
+            else ROOT / self.lock["source"]["local_path"]
+        )
+        self.checkpoint_root = (
+            Path(checkpoint_root)
+            if checkpoint_root is not None
+            else ROOT / self.lock["checkpoint"]["local_root"]
+        )
+        self.runtime_python = runtime_python
+        self.timeout_seconds = timeout_seconds
+        self._executor = executor
+        self._validate_host_adapter_bindings()
+
+    def _validate_host_adapter_bindings(self) -> None:
+        runtime = self.lock["runtime"]
+        authority = self.lock.get("authority")
+        if (
+            self.lock.get("artifact") != "sam3d_body_v3_host_adapter_activation"
+            or self.lock.get("status")
+            != "runtime_pass_bounded_v3_host_adapter_static_contract_pending"
+            or not isinstance(authority, Mapping)
+            or authority.get("lifecycle_state") != "installed_unqualified"
+            or authority.get("may_author_gold") is not False
+            or authority.get("may_promote_provider") is not False
+            or runtime.get("runner") != "tools/run_sam3d_body_repeatability_v3.py"
+            or runtime.get("runner_sha256") != _sha256(self.runner_path)
+            or runtime.get("repeatability_runtime_lock_sha256")
+            != _sha256(self.repeatability_lock_path)
+        ):
+            raise Sam3dBodyProcessError("SAM 3D Body V3 host-adapter binding mismatch")
+        inherited = self.lock.get("inherits")
+        if not isinstance(inherited, Mapping):
+            raise Sam3dBodyProcessError("SAM 3D Body V3 host-adapter inheritance is missing")
+        receipt = inherited.get("v3_runtime_receipt")
+        if not isinstance(receipt, Mapping):
+            raise Sam3dBodyProcessError("SAM 3D Body V3 runtime receipt binding is missing")
+        receipt_path = ROOT / str(receipt.get("path", ""))
+        if (
+            not receipt_path.is_file()
+            or receipt.get("file_sha256") != _sha256(receipt_path)
+            or receipt.get("self_sha256")
+            != "afe31a4a45f39791df6c7cda352d79acf103885a9221de700a69d01f9841c6ae"
+        ):
+            raise Sam3dBodyProcessError("SAM 3D Body V3 runtime receipt binding mismatch")
+
+    def __call__(self, image_path: Path, *, bboxes: np.ndarray) -> Sequence[Mapping[str, Any]]:
+        image_path = Path(image_path)
+        requested = np.asarray(bboxes, dtype=np.float32)
+        if requested.shape != (1, 4) or not np.all(np.isfinite(requested)):
+            raise Sam3dBodyProcessError("SAM 3D Body V3 requires one finite xyxy box")
+        checkpoint = self.checkpoint_root / "model.ckpt"
+        config = self.checkpoint_root / "model_config.yaml"
+        mhr = self.checkpoint_root / "assets" / "mhr_model.pt"
+        required = (
+            image_path,
+            self.source_root,
+            checkpoint,
+            config,
+            mhr,
+            self.lock_path,
+            self.repeatability_lock_path,
+            self.runner_path,
+        )
+        if not all(path.exists() for path in required):
+            raise Sam3dBodyProcessError("one or more governed SAM 3D Body V3 inputs are missing")
+        with tempfile.TemporaryDirectory(prefix="maskfactory-sam3d-body-v3-") as directory:
+            output_dir = Path(directory) / "repeatability"
+            argv = (
+                self.runtime_python,
+                str(self.runner_path),
+                "--source-root",
+                str(self.source_root),
+                "--checkpoint",
+                str(checkpoint),
+                "--mhr",
+                str(mhr),
+                "--runtime-lock",
+                str(self.repeatability_lock_path),
+                "--image",
+                str(image_path),
+                "--bbox",
+                *(str(float(value)) for value in requested.reshape(-1)),
+                "--output-dir",
+                str(output_dir),
+                "--expected-source-commit",
+                self.identity.source_commit,
+                "--repeats",
+                "2",
+                "--inference-type",
+                "full",
+            )
+            try:
+                completed = self._executor(argv, self.timeout_seconds)
+            except subprocess.TimeoutExpired as exc:
+                raise Sam3dBodyProcessError(
+                    f"SAM 3D Body V3 exceeded {self.timeout_seconds}s timeout"
+                ) from exc
+            if completed.returncode != 0:
+                detail = (completed.stderr or completed.stdout or "no process output").strip()
+                raise Sam3dBodyProcessError(
+                    f"SAM 3D Body V3 process failed with exit {completed.returncode}: {detail[-2000:]}"
+                )
+            report = _last_json_object(completed.stdout)
+            return (
+                self._validate_report(
+                    report,
+                    output_dir=output_dir,
+                    image_path=image_path,
+                    requested=requested.reshape(-1),
+                ),
+            )
+
+    def _validate_report(
+        self,
+        report: Mapping[str, Any],
+        *,
+        output_dir: Path,
+        image_path: Path,
+        requested: np.ndarray,
+    ) -> Mapping[str, Any]:
+        if set(report) != SAM3D_BODY_V3_RUNTIME_REPORT_KEYS:
+            raise Sam3dBodyProcessError("SAM 3D Body V3 runtime report fields are not closed")
+        expected_assets = {
+            asset["filename"]: asset["sha256"] for asset in self.lock["checkpoint"]["assets"]
+        }
+        if (
+            report.get("schema_version") != "3.0.0"
+            or report.get("provider") != "sam3d_body"
+            or report.get("runner") != "sam3d_body_repeatability_v3"
+            or report.get("source_commit") != self.identity.source_commit
+            or report.get("source_tree_clean") is not True
+            or report.get("runtime_lock_sha256") != _sha256(self.repeatability_lock_path)
+            or report.get("checkpoint_assets") != expected_assets
+            or report.get("source_root_import_injected") != str(self.source_root)
+        ):
+            raise Sam3dBodyProcessError("SAM 3D Body V3 source/runtime/checkpoint provenance mismatch")
+        image = report.get("image")
+        if not isinstance(image, Mapping) or image.get("sha256") != _sha256(image_path):
+            raise Sam3dBodyProcessError("SAM 3D Body V3 input image SHA-256 mismatch")
+        reported_box = report.get("requested_bbox_xyxy")
+        if (
+            not isinstance(reported_box, list)
+            or len(reported_box) != 4
+            or not all(
+                math.isclose(float(actual), float(expected), abs_tol=1e-6)
+                for actual, expected in zip(reported_box, requested, strict=True)
+            )
+        ):
+            raise Sam3dBodyProcessError("SAM 3D Body V3 requested box provenance mismatch")
+        if (
+            report.get("inference_type") != "full"
+            or report.get("measured_repeats") != 2
+            or report.get("deterministic") is not True
+            or report.get("authority") != "shadow_geometry_challenger_only"
+            or report.get("may_author_gold") is not False
+        ):
+            raise Sam3dBodyProcessError("SAM 3D Body V3 determinism or authority evidence is invalid")
+        warmup = report.get("warmup")
+        if (
+            not isinstance(warmup, Mapping)
+            or set(warmup)
+            != {"evaluated_for_repeatability", "geometry_sha256", "latency_ms", "peak_vram_bytes"}
+            or warmup.get("evaluated_for_repeatability") is not False
+            or not isinstance(warmup.get("geometry_sha256"), str)
+            or len(str(warmup["geometry_sha256"])) != 64
+        ):
+            raise Sam3dBodyProcessError("SAM 3D Body V3 warm-up evidence is invalid")
+        for metric in (
+            warmup["latency_ms"],
+            warmup["peak_vram_bytes"],
+            report.get("model_load_latency_ms"),
+            report.get("model_vram_bytes"),
+            report.get("peak_inference_vram_bytes"),
+        ):
+            if not isinstance(metric, (int, float)) or not math.isfinite(metric) or metric < 0:
+                raise Sam3dBodyProcessError("SAM 3D Body V3 runtime metric is invalid")
+        measured_latency = report.get("measured_latency_ms")
+        if (
+            not isinstance(measured_latency, list)
+            or len(measured_latency) != 2
+            or any(
+                not isinstance(metric, (int, float)) or not math.isfinite(metric) or metric < 0
+                for metric in measured_latency
+            )
+        ):
+            raise Sam3dBodyProcessError("SAM 3D Body V3 measured latency evidence is invalid")
+        report_path = output_dir / "repeatability_report.json"
+        if not report_path.is_file() or json.loads(report_path.read_text(encoding="utf-8")) != report:
+            raise Sam3dBodyProcessError("SAM 3D Body V3 persisted report mismatch")
+        outputs = report.get("measured_outputs")
+        geometry_hashes = report.get("measured_geometry_sha256_by_repeat")
+        if not isinstance(outputs, list) or not isinstance(geometry_hashes, list):
+            raise Sam3dBodyProcessError("SAM 3D Body V3 measured output evidence is invalid")
+        if len(outputs) != 2 or len(geometry_hashes) != 2:
+            raise Sam3dBodyProcessError("SAM 3D Body V3 measured output count is invalid")
+        loaded: list[dict[str, np.ndarray]] = []
+        raw_hashes: list[str] = []
+        for entry, expected_name, geometry_hash in zip(
+            outputs, V3_MEASURED_OUTPUT_FILENAMES, geometry_hashes, strict=True
+        ):
+            if not isinstance(entry, Mapping) or set(entry) != {
+                "path",
+                "npz_sha256",
+                "geometry_sha256",
+                "array_shapes",
+            }:
+                raise Sam3dBodyProcessError("SAM 3D Body V3 measured output fields are not closed")
+            output_path = output_dir / expected_name
+            if entry.get("path") != expected_name or not output_path.is_file():
+                raise Sam3dBodyProcessError("SAM 3D Body V3 measured output path mismatch")
+            raw_hash = _sha256(output_path)
+            if entry.get("npz_sha256") != raw_hash:
+                raise Sam3dBodyProcessError("SAM 3D Body V3 measured NPZ SHA-256 mismatch")
+            try:
+                with np.load(output_path, allow_pickle=False) as archive:
+                    expected_names = {"bbox", "focal_length", *REQUIRED_ARRAYS}
+                    if set(archive.files) != expected_names:
+                        raise Sam3dBodyProcessError(
+                            "SAM 3D Body V3 measured artifact fields are not closed"
+                        )
+                    output = {name: np.asarray(archive[name]).copy() for name in expected_names}
+            except (KeyError, OSError, ValueError) as exc:
+                raise Sam3dBodyProcessError(
+                    "SAM 3D Body V3 measured artifact is unreadable"
+                ) from exc
+            if entry.get("array_shapes") != {
+                name: list(value.shape) for name, value in output.items()
+            }:
+                raise Sam3dBodyProcessError("SAM 3D Body V3 measured shape evidence mismatch")
+            payload_hash = _geometry_sha256(
+                output["bbox"],
+                output["focal_length"],
+                {name: output[name] for name in REQUIRED_ARRAYS},
+            )
+            if entry.get("geometry_sha256") != payload_hash or geometry_hash != payload_hash:
+                raise Sam3dBodyProcessError("SAM 3D Body V3 measured geometry SHA-256 mismatch")
+            loaded.append(output)
+            raw_hashes.append(raw_hash)
+        comparison = report.get("repeat_comparison")
+        if not isinstance(comparison, Mapping) or comparison.get("all_arrays_exact") is not True:
+            raise Sam3dBodyProcessError("SAM 3D Body V3 repeat comparison is invalid")
+        if raw_hashes[0] != raw_hashes[1] or any(
+            not np.array_equal(loaded[0][name], loaded[1][name])
+            for name in {"bbox", "focal_length", *REQUIRED_ARRAYS}
+        ):
+            raise Sam3dBodyProcessError("SAM 3D Body V3 measured repeats are not byte-exact")
+        output = loaded[0]
+        output["_runtime_evidence"] = {
+            "schema_version": report["schema_version"],
+            "source_tree_clean": True,
+            "warmup": dict(warmup),
+            "measured_repeats": 2,
+            "deterministic": True,
+            "inference_type": "full",
+            "measured_outputs": [dict(entry) for entry in outputs],
+            "measured_latency_ms": [float(value) for value in measured_latency],
+            "model_load_latency_ms": float(report["model_load_latency_ms"]),
+            "model_vram_bytes": int(report["model_vram_bytes"]),
+            "peak_inference_vram_bytes": int(report["peak_inference_vram_bytes"]),
+            "geometry_output_sha256": str(geometry_hashes[0]),
+            "raw_npz_sha256": raw_hashes[0],
+            "repeat_comparison": {"all_arrays_exact": True},
+            "authority": "shadow_geometry_challenger_only",
+        }
+        return output
+
+
 def sam3d_body_identity(lock_path: Path = LOCK_PATH) -> ProviderIdentity:
     """Build exact provider identity from the governed runtime lock."""
     path = Path(lock_path)
@@ -453,6 +774,7 @@ __all__ = [
     "Sam3dBodyGeometryProvider",
     "Sam3dBodyProcessError",
     "Sam3dBodySubprocessBackend",
+    "Sam3dBodyV3RunpodBackend",
     "sam3d_body_identity",
     "windows_to_wsl_path",
 ]

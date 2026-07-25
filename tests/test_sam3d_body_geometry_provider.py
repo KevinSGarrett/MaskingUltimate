@@ -16,6 +16,7 @@ from maskfactory.providers.sam3d_body import (
     Sam3dBodyGeometryProvider,
     Sam3dBodyProcessError,
     Sam3dBodySubprocessBackend,
+    Sam3dBodyV3RunpodBackend,
     _geometry_sha256,
     sam3d_body_identity,
 )
@@ -222,6 +223,140 @@ def _isolated_backend(tmp_path: Path) -> Sam3dBodySubprocessBackend:
         source_root=source_root,
         checkpoint_root=checkpoint_root,
     )
+
+
+def _v3_subprocess_executor(backend, image: Path, *, mutate=None, returncode: int = 0):
+    def executor(argv, timeout):
+        assert argv[:2] == (backend.runtime_python, str(backend.runner_path))
+        assert argv[argv.index("--runtime-lock") + 1] == str(backend.repeatability_lock_path)
+        assert argv[argv.index("--repeats") + 1] == "2"
+        assert timeout == 600
+        if returncode:
+            return subprocess.CompletedProcess(argv, returncode, "", "CUDA out of memory")
+        output_dir = Path(argv[argv.index("--output-dir") + 1])
+        output_dir.mkdir()
+        output = _output()
+        first_path = output_dir / "measured_repeat_1.npz"
+        np.savez_compressed(first_path, **output)
+        second_path = output_dir / "measured_repeat_2.npz"
+        second_path.write_bytes(first_path.read_bytes())
+        arrays = {
+            name: output[name]
+            for name in (
+                "pred_vertices",
+                "pred_keypoints_3d",
+                "pred_keypoints_2d",
+                "pred_cam_t",
+            )
+        }
+        geometry_sha256 = _geometry_sha256(output["bbox"], output["focal_length"], arrays)
+        persisted = [
+            {
+                "path": path.name,
+                "npz_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                "geometry_sha256": geometry_sha256,
+                "array_shapes": {name: list(value.shape) for name, value in output.items()},
+            }
+            for path in (first_path, second_path)
+        ]
+        report = {
+            "schema_version": "3.0.0",
+            "provider": "sam3d_body",
+            "runner": "sam3d_body_repeatability_v3",
+            "source_commit": backend.identity.source_commit,
+            "source_tree_clean": True,
+            "runtime_lock_sha256": hashlib.sha256(
+                backend.repeatability_lock_path.read_bytes()
+            ).hexdigest(),
+            "checkpoint_assets": {
+                asset["filename"]: asset["sha256"] for asset in backend.lock["checkpoint"]["assets"]
+            },
+            "image": {"sha256": hashlib.sha256(image.read_bytes()).hexdigest()},
+            "requested_bbox_xyxy": list(_box().bbox_xyxy),
+            "inference_type": "full",
+            "source_root_import_injected": str(backend.source_root),
+            "warmup": {
+                "evaluated_for_repeatability": False,
+                "geometry_sha256": "1" * 64,
+                "latency_ms": 111.25,
+                "peak_vram_bytes": 2_500_000_000,
+            },
+            "measured_repeats": 2,
+            "measured_outputs": persisted,
+            "measured_latency_ms": [99.5, 98.25],
+            "model_load_latency_ms": 4567.0,
+            "model_vram_bytes": 2_000_000_000,
+            "peak_inference_vram_bytes": 3_000_000_000,
+            "deterministic": True,
+            "measured_geometry_sha256_by_repeat": [geometry_sha256, geometry_sha256],
+            "repeat_comparison": {"all_arrays_exact": True},
+            "authority": "shadow_geometry_challenger_only",
+            "may_author_gold": False,
+        }
+        if mutate is not None:
+            mutate(report)
+        (output_dir / "repeatability_report.json").write_text(
+            json.dumps(report, sort_keys=True, indent=2) + "\n", encoding="utf-8"
+        )
+        return subprocess.CompletedProcess(argv, 0, json.dumps(report), "")
+
+    return executor
+
+
+def _isolated_v3_backend(tmp_path: Path) -> Sam3dBodyV3RunpodBackend:
+    source_root = tmp_path / "source"
+    checkpoint_root = tmp_path / "checkpoint"
+    source_root.mkdir()
+    (checkpoint_root / "assets").mkdir(parents=True)
+    (checkpoint_root / "model.ckpt").write_bytes(b"test-checkpoint-placeholder")
+    (checkpoint_root / "model_config.yaml").write_bytes(b"test-config-placeholder")
+    (checkpoint_root / "assets" / "mhr_model.pt").write_bytes(b"test-mhr-placeholder")
+    return Sam3dBodyV3RunpodBackend(source_root=source_root, checkpoint_root=checkpoint_root)
+
+
+def test_v3_host_adapter_binds_warmup_and_exact_measured_artifacts(tmp_path: Path) -> None:
+    image = tmp_path / "person.png"
+    image.write_bytes(b"governed-person-fixture")
+    backend = _isolated_v3_backend(tmp_path)
+    backend._executor = _v3_subprocess_executor(backend, image)
+    provider = Sam3dBodyGeometryProvider(backend, identity=backend.identity)
+    result = provider.infer_geometry(image, person_box=_box())
+    evidence = result["provenance"]["runtime_evidence"]
+    assert evidence["warmup"]["evaluated_for_repeatability"] is False
+    assert evidence["measured_repeats"] == 2
+    assert evidence["deterministic"] is True
+    assert len(evidence["measured_outputs"]) == 2
+    assert evidence["raw_npz_sha256"] == evidence["measured_outputs"][0]["npz_sha256"]
+    assert result["provenance"]["may_author_gold"] is False
+
+
+@pytest.mark.parametrize(
+    ("mutate", "message"),
+    [
+        (lambda report: report.update(source_root_import_injected="wrong"), "provenance mismatch"),
+        (lambda report: report.update(unexpected="field"), "fields are not closed"),
+        (lambda report: report.update(deterministic=False), "determinism or authority"),
+        (
+            lambda report: report["warmup"].update(evaluated_for_repeatability=True),
+            "warm-up evidence",
+        ),
+        (
+            lambda report: report["measured_outputs"][0].update(npz_sha256="0" * 64),
+            "NPZ SHA-256",
+        ),
+        (
+            lambda report: report.update(measured_geometry_sha256_by_repeat=["0" * 64] * 2),
+            "geometry SHA-256",
+        ),
+    ],
+)
+def test_v3_host_adapter_rejects_contract_drift(tmp_path: Path, mutate, message: str) -> None:
+    image = tmp_path / "person.png"
+    image.write_bytes(b"governed-person-fixture")
+    backend = _isolated_v3_backend(tmp_path)
+    backend._executor = _v3_subprocess_executor(backend, image, mutate=mutate)
+    with pytest.raises(Sam3dBodyProcessError, match=message):
+        backend(image, bboxes=np.asarray([_box().bbox_xyxy], dtype=np.float32))
 
 
 def test_isolated_subprocess_backend_binds_exact_report_and_artifact(tmp_path: Path) -> None:

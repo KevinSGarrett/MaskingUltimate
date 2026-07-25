@@ -1,0 +1,16 @@
+{
+  "authority": {
+    "may_author_gold": false,
+    "promotion_claimed": false,
+    "semantic_mask_claimed": false,
+    "shadow_only": true
+  },
+  "binding_self_sha256": "2939a21e2d622b20fb1029532e23a1b6b7b5bc9270b69be9d8b232a687923a7d",
+  "captured_at": "2026-07-25T17:47:25.624077+00:00",
+  "error": "\nAutoImageProcessor requires the Torchvision library but it was not found in your environment. Check out the instructions on the\ninstallation page: https://pytorch.org/get-started/locally/ and follow the ones that match your environment.\nPlease note that you may need to restart your runtime after installation.\n",
+  "error_type": "ImportError",
+  "result": "failure",
+  "schema_version": "maskfactory.eomt_dinov3_66_class_shadow_failure.v1",
+  "self_sha256": "2b381a42a50c40c8475c4ea2c5a5107941359602d8d28e3ffb1c6eadd6ddf4d6",
+  "traceback": "Traceback (most recent call last):\n  File \"/workspace/maskfactory/tools/eomt_dinov3_66_class_shadow.py\", line 227, in run\n    processor = AutoImageProcessor.from_pretrained(model_directory, local_files_only=True)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/maskfactory/runtime_artifacts/eomt_dinov3_clean_isolated_runtime_closure_20260725T172623Z/venv/lib/python3.11/site-packages/transformers/utils/import_utils.py\", line 2133, in __getattribute__\n    requires_backends(cls, cls._backends)\n  File \"/workspace/maskfactory/runtime_artifacts/eomt_dinov3_clean_isolated_runtime_closure_20260725T172623Z/venv/lib/python3.11/site-packages/transformers/utils/import_utils.py\", line 2119, in requires_backends\n    raise ImportError(\"\".join(failed))\nImportError: \nAutoImageProcessor requires the Torchvision library but it was not found in your environment. Check out the instructions on the\ninstallation page: https://pytorch.org/get-started/locally/ and follow the ones that match your environment.\nPlease note that you may need to restart your runtime after installation.\n\n"
+}

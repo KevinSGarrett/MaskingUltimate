@@ -1,0 +1,76 @@
+{
+  "acceptance": {
+    "next_safe_action": "Create a fresh 66-class random-head GPU shadow binding; do not reuse the failed pre-import V2 binding.",
+    "pass_status": "CLEAN_ISOLATED_RUNTIME_CLOSURE_IMPORT_AND_FIXTURE_DECODE_PASS",
+    "terminal_receipt": "CLEAN_ISOLATED_RUNTIME_RECEIPT.json"
+  },
+  "artifact_type": "eomt_dinov3_clean_isolated_runtime_closure_binding.v5",
+  "base_contract": {
+    "eomt_lock": "env/eomt_dinov3_runtime_v2.lock.json",
+    "eomt_lock_sha256": "33074535ca8d7e7c022006b54187dbb5a84e51ff86d6d9801e57482f44610295",
+    "requirements_count": 55,
+    "requirements_lock": "env/eomt_dinov3_clean_runtime.requirements_v4.lock.txt",
+    "requirements_lock_sha256": "ea289aa2bf979cd2b23c0417a6fed43cb314f219736fc6374669a89c2133285a"
+  },
+  "candidates": [
+    {
+      "receipt": "runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/CANDIDATE_CLOSURE_RECEIPT.json",
+      "receipt_sha256": "d385c9f152395bc70983d4f5a7bb3ffeb1495935f55b1fcc907b9df7cf0c57ce",
+      "wheel_root": "runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels"
+    },
+    {
+      "receipt": "runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/CLEAN_TORCH_CLOSURE_STAGE_RECEIPT.json",
+      "receipt_sha256": "23007311c018259c71e5f6c9cc52fbac4d4fd8e57b6253305ca878909f7582c5",
+      "wheel_root": "runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels"
+    },
+    {
+      "receipt": "runtime_artifacts/eomt_dinov3_scipy_dependency_recovery_20260725T200000Z/SCIPY_STAGE_RECEIPT.json",
+      "receipt_sha256": "4e2185eda1404821cb36b36ae5e263e366ed42356dc1fa7973cf1f62ab4fa252",
+      "wheel_root": "runtime_artifacts/eomt_dinov3_scipy_dependency_recovery_20260725T200000Z/wheels"
+    },
+    {
+      "receipt": "runtime_artifacts/eomt_dinov3_pillow_dependency_recovery_20260725T172412Z/PILLOW_DEPENDENCY_RECOVERY_RECEIPT.json",
+      "receipt_sha256": "8c8277e7631d3d68cbd8949826a2a6f44bce1b9a67967a20efe56298422c0afe",
+      "wheel_root": "runtime_artifacts/eomt_dinov3_pillow_dependency_recovery_20260725T172412Z/wheels"
+    }
+  ],
+  "controls": {
+    "gpu_execution": false,
+    "model_load": false,
+    "network_install": false,
+    "no_overwrite": true,
+    "no_system_site_packages": true,
+    "provider_promotion": false,
+    "single_launch_only": true
+  },
+  "environment": {
+    "base_python": "/usr/bin/python3",
+    "python_version": "CPython 3.11",
+    "system_site_packages": false,
+    "target": "runtime_artifacts/eomt_dinov3_clean_isolated_runtime_closure_20260725T172623Z/venv"
+  },
+  "execution_identity": {
+    "network_volume_id": "o9qv2ld91c",
+    "pod_id": "68psfqtaogg7s7",
+    "pod_name": "vitreous_beige_centipede",
+    "volume_mount": "/workspace"
+  },
+  "fixture": {
+    "path": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+    "sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63"
+  },
+  "launcher": {
+    "path": "runtime_artifacts/eomt_dinov3_clean_isolated_runtime_closure_20260725T172623Z/create_clean_runtime.py",
+    "sha256": "f18a341e217aedd21312e9c6fee1e9728561bbc2c5b6a3082c2da1dcd7843775"
+  },
+  "predecessors": {
+    "clean_v4_receipt": "runtime_artifacts/eomt_dinov3_clean_isolated_runtime_closure_20260725T202000Z/CLEAN_ISOLATED_RUNTIME_RECEIPT.json",
+    "clean_v4_receipt_sha256": "482f36f27335a0f3e1f3e44dbc9e6ccb23341736d556466b9eff5e2796bd0bd5",
+    "failed_shadow_binding": "runtime_artifacts/eomt_dinov3_66_class_gpu_shadow_20260725T171921Z/launch_binding.json",
+    "failed_shadow_binding_self_sha256": "9eab3a97b8fcc8027729b2afaa93c4e28d5238609ca07568b0468546126c58bb",
+    "failed_shadow_failure_receipt": "runtime_artifacts/eomt_dinov3_66_class_gpu_shadow_20260725T171921Z/EOMT_DINOV3_66_CLASS_GPU_SHADOW_PREIMPORT_FAILURE.json",
+    "failed_shadow_failure_receipt_sha256": "db95d2b8a4c14a09b18ef750fdcb4ac70fe891ae76c07c1fb566a67a76bfa16c",
+    "reason": "The V4 clean runtime omitted Pillow. V5 adds exactly one hash-bound CP311 Pillow wheel and retains all prior verified candidate wheels."
+  },
+  "self_sha256": "3a422bb285061cc67459cb065bf2abf9656ddd3c129ceef7c87f1e45f96b5a30"
+}

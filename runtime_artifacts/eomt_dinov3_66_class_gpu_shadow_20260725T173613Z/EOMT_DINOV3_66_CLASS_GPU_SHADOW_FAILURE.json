@@ -1,0 +1,16 @@
+{
+  "authority": {
+    "may_author_gold": false,
+    "promotion_claimed": false,
+    "semantic_mask_claimed": false,
+    "shadow_only": true
+  },
+  "binding_self_sha256": "e00354f0c99cb8a237a1362e14b19a2d125c4aace4413c106edec5aaccf9eae0",
+  "captured_at": "2026-07-25T17:38:14.888117+00:00",
+  "error": "clean closure receipt is not a pass",
+  "error_type": "ShadowBindingError",
+  "result": "failure",
+  "schema_version": "maskfactory.eomt_dinov3_66_class_shadow_failure.v1",
+  "self_sha256": "58caa1d42c27e99776743ac9c318bde2b8dd52021f5b2b31c5c860060c1a1f79",
+  "traceback": "Traceback (most recent call last):\n  File \"/workspace/maskfactory/tools/eomt_dinov3_66_class_shadow.py\", line 193, in run\n    _verify_runtime(binding)\n  File \"/workspace/maskfactory/tools/eomt_dinov3_66_class_shadow.py\", line 95, in _verify_runtime\n    raise ShadowBindingError(\"clean closure receipt is not a pass\")\nShadowBindingError: clean closure receipt is not a pass\n"
+}

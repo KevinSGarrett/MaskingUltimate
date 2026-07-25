@@ -1,0 +1,79 @@
+{
+  "authority": {
+    "lifecycle_state": "trainable_shadow_challenger_only",
+    "may_author_gold": false,
+    "promotion_claimed": false,
+    "semantic_mask_claimed": false,
+    "shadow_only": true,
+    "visual_acceptance_claimed": false
+  },
+  "binding_self_sha256": "b73320a88c9e79e92e1c9c9fdc4934087f39411515aa8d1117382d2727a5c393",
+  "captured_at": "2026-07-25T18:01:30.615053+00:00",
+  "fixture": {
+    "content_lane": "adult_nonexplicit_allowed",
+    "path": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+    "sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63",
+    "use_scope": "governed_smoke_shadow_only"
+  },
+  "result": "structural_runtime_pass",
+  "runtime": {
+    "admission": {
+      "nvidia_smi": "NVIDIA RTX 6000 Ada Generation, 49140 MiB",
+      "torch_device": "NVIDIA RTX 6000 Ada Generation"
+    },
+    "cuda": "12.8",
+    "device": "NVIDIA RTX 6000 Ada Generation",
+    "load_seconds": 0.456899,
+    "peak_allocated_bytes": 586228736,
+    "peak_reserved_bytes": 639631360,
+    "precision": "float16",
+    "python": "/workspace/maskfactory/runtime_artifacts/eomt_dinov3_clean_isolated_runtime_closure_20260725T174904Z/venv/bin/python",
+    "torch": "2.11.0+cu128"
+  },
+  "schema_version": "maskfactory.eomt_dinov3_66_class_shadow_receipt.v1",
+  "self_sha256": "2841e8cd4e8ccb38941fe005b6baeed3a788e7534927f6e4e2f1555e10a78913",
+  "shadow_execution": {
+    "calls": [
+      {
+        "payload_sha256": "0139ec0d5b0852bf59740f71af1f485d8668df476f66c0dfe5826551ab38c9d7",
+        "seconds": 2.675209,
+        "segment_count": 0
+      },
+      {
+        "payload_sha256": "0139ec0d5b0852bf59740f71af1f485d8668df476f66c0dfe5826551ab38c9d7",
+        "seconds": 0.016463,
+        "segment_count": 0
+      }
+    ],
+    "deterministic": true,
+    "mask_artifact_written": false,
+    "repeats": 2,
+    "semantic_acceptance_evaluated": false
+  },
+  "snapshot": {
+    "README.md": {
+      "path": "models/runtime_cache/eomt_dinov3_small_602edaa/README.md",
+      "sha256": "1e13062ee2842cd1e92206b7a7ecd3944a243b169d0da8f43e04d94a31794165"
+    },
+    "config.json": {
+      "path": "models/runtime_cache/eomt_dinov3_small_602edaa/config.json",
+      "sha256": "8baa79f9cc2d41a4e01f575efb97b0aad1353ce955c9e95b7da4c8f61f1034d3"
+    },
+    "model.safetensors": {
+      "path": "models/runtime_cache/eomt_dinov3_small_602edaa/model.safetensors",
+      "sha256": "1fed3231445cce739e368c1828f49215459ca33ba56b6712d48e3058274c5d6f"
+    },
+    "preprocessor_config.json": {
+      "path": "models/runtime_cache/eomt_dinov3_small_602edaa/preprocessor_config.json",
+      "sha256": "ce1554014d6dcea56b2f352e564275c9ec4a07c5efee704742fe3ed128550e2e"
+    }
+  },
+  "target_head": {
+    "class_count": 66,
+    "class_names_sha256": "69591268cb7314d19d71af6fa9c7d4076b6f8c4caaee88670b2854b14f386b2e",
+    "classifier_out_features": 67,
+    "initialization": "random_new_segmentation_head",
+    "pretrained_head_disposition": "discarded_coco_panoptic_head",
+    "random_head_sha256": "8f24e9f468d9299a452d6aa453d312f6cfd451959bf4025c1224e8c95947e7e5"
+  }
+}

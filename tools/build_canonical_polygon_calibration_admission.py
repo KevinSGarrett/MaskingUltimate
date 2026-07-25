@@ -12,11 +12,22 @@ from maskfactory.vlm.canonical_polygon_calibration_admission import (
 )
 
 
-def _load(path: Path) -> dict:
+def _load_object(path: Path, *, document_name: str) -> dict:
     value = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
-        raise ValueError(f"expected JSON object:{path}")
+        raise ValueError(f"{document_name} must be a JSON object:{path}")
     return value
+
+
+def _load_decisions(path: Path) -> list:
+    document = _load_object(
+        path,
+        document_name="decisions document (containing a 'decisions' list)",
+    )
+    decisions = document.get("decisions")
+    if not isinstance(decisions, list):
+        raise ValueError(f"decisions document must contain a 'decisions' list:{path}")
+    return decisions
 
 
 def main() -> int:
@@ -24,19 +35,21 @@ def main() -> int:
     parser.add_argument("--candidates", type=Path, required=True)
     parser.add_argument("--panel-report", type=Path, required=True)
     parser.add_argument("--panel-root", type=Path, required=True)
-    parser.add_argument("--decisions", type=Path, required=True)
+    parser.add_argument(
+        "--decisions",
+        type=Path,
+        required=True,
+        help="JSON object containing the required 'decisions' list",
+    )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if args.output.exists():
         raise FileExistsError(f"refusing to overwrite immutable receipt:{args.output}")
-    decisions = _load(args.decisions).get("decisions")
-    if not isinstance(decisions, list):
-        raise ValueError("decisions document requires a decisions list")
     document = build_canonical_polygon_calibration_admission(
-        candidates=_load(args.candidates),
-        panel_report=_load(args.panel_report),
+        candidates=_load_object(args.candidates, document_name="candidate document"),
+        panel_report=_load_object(args.panel_report, document_name="panel report document"),
         panel_root=args.panel_root,
-        decisions=decisions,
+        decisions=_load_decisions(args.decisions),
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(document, indent=2, sort_keys=True) + "\n", encoding="utf-8")

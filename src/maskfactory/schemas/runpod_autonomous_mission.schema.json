@@ -227,6 +227,7 @@
         "family",
         "revision_sha256",
         "role_certificate_sha256",
+        "qualified_until",
         "revoked"
       ],
       "properties": {
@@ -236,6 +237,9 @@
         "revision_sha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
         "role_certificate_sha256": {
           "oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]
+        },
+        "qualified_until": {
+          "oneOf": [{"format": "date-time", "type": "string"}, {"type": "null"}]
         },
         "revoked": {"type": "boolean"}
       }

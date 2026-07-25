@@ -5,6 +5,7 @@ import json
 import os
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
@@ -41,6 +42,7 @@ def manifest(*, record_count: int = 1, authority: str = "operationally_certified
         "family": "family-a",
         "revision_sha256": HEX,
         "role_certificate_sha256": HEX,
+        "qualified_until": "2099-01-01T00:00:00Z",
         "revoked": False,
     }
     return seal_manifest(
@@ -247,11 +249,53 @@ def test_manifest_rejects_drift_correlated_roles_and_unqualified_authority() -> 
         "family": None,
         "revision_sha256": None,
         "role_certificate_sha256": None,
+        "qualified_until": None,
         "revoked": False,
     }
     document = seal_manifest(document)
     with pytest.raises(WorkCellError, match="two qualified visual roles"):
         validate_mission_manifest(document)
+
+
+def test_role_binding_expiry_is_required_and_rechecked_at_visual_acceptance(tmp_path: Path) -> None:
+    document = manifest()
+    del document["role_bindings"]["primary_visual_critic"]["qualified_until"]
+    document = seal_manifest(document)
+    with pytest.raises(WorkCellError, match="schema invalid"):
+        validate_mission_manifest(document)
+
+    clock = [datetime(2026, 7, 25, tzinfo=timezone.utc).timestamp()]
+    cell = AutonomousWorkCell(tmp_path, clock=lambda: clock[0])
+    document = manifest(authority="machine_verified_candidate")
+    for role in document["role_bindings"].values():
+        role["qualified_until"] = "2026-07-25T00:00:05Z"
+    document = seal_manifest(document)
+    cell.admit(document)
+    cell.seed_records(
+        document["mission_id"],
+        [{"record_id": "r1", "source_sha256": HEX, "input_payload_sha256": HEX}],
+    )
+    for expected, actor in (
+        ("source_decode", "deterministic_qa"),
+        ("detection_ownership", "deterministic_qa"),
+        ("provider_tournament", "segmentation_provider"),
+        ("hard_qc", "deterministic_qa"),
+    ):
+        work = cell.claim(document["mission_id"], owner="worker")
+        cell.apply_result(
+            document["mission_id"], "r1", work["lease_token"], receipt(expected, actor)
+        )
+    work = cell.claim(document["mission_id"], owner="worker")
+    clock[0] = datetime(2026, 7, 25, 0, 0, 6, tzinfo=timezone.utc).timestamp()
+    with pytest.raises(
+        WorkCellError, match="qualified role binding expired: primary_visual_critic"
+    ):
+        cell.apply_result(
+            document["mission_id"],
+            "r1",
+            work["lease_token"],
+            receipt("primary_visual_review", "visual_critic"),
+        )
 
 
 def test_manifest_requires_bulk_masking_review_repair_and_milestone_policy() -> None:
@@ -332,6 +376,7 @@ def test_visual_critic_cannot_execute_repairs_or_clear_unqualified_role(tmp_path
         "family": None,
         "revision_sha256": None,
         "role_certificate_sha256": None,
+        "qualified_until": None,
         "revoked": False,
     }
     document["role_bindings"]["primary_visual_critic"] = unavailable
@@ -373,6 +418,7 @@ def test_unavailable_visual_role_abstains_without_invoking_a_critic(tmp_path: Pa
         "family": None,
         "revision_sha256": None,
         "role_certificate_sha256": None,
+        "qualified_until": None,
         "revoked": False,
     }
     document["role_bindings"]["primary_visual_critic"] = unavailable
@@ -427,6 +473,7 @@ def test_visual_authority_gate_rejects_forged_or_stale_role_binding(tmp_path: Pa
         "family": None,
         "revision_sha256": None,
         "role_certificate_sha256": None,
+        "qualified_until": None,
         "revoked": False,
     }
     document["role_bindings"]["primary_visual_critic"] = unavailable
@@ -1544,6 +1591,7 @@ def test_prepare_builder_emits_artifacts_that_run_without_manual_json_handoff(
         "family": "family-a",
         "revision_sha256": HEX,
         "role_certificate_sha256": HEX,
+        "qualified_until": "2099-01-01T00:00:00Z",
         "revoked": False,
     }
     result = build_mission_artifacts(
@@ -1712,6 +1760,7 @@ def test_prepare_cli_builds_wrapper_handlers_from_compact_stage_commands(
         "family": "family-a",
         "revision_sha256": HEX,
         "role_certificate_sha256": HEX,
+        "qualified_until": "2099-01-01T00:00:00Z",
         "revoked": False,
     }
     roles_path.write_text(

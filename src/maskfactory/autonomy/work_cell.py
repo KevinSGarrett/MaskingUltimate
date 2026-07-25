@@ -15,6 +15,7 @@ import time
 import uuid
 from collections import Counter
 from contextlib import contextmanager
+from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 from typing import Any, Callable, Iterator, Mapping, Sequence
 
@@ -134,6 +135,37 @@ def _file_sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _current_utc(now: datetime | None) -> datetime:
+    if now is None:
+        return datetime.now(timezone.utc)
+    if now.tzinfo is None:
+        raise ValueError("mission validation time must be timezone-aware")
+    return now.astimezone(timezone.utc)
+
+
+def _require_current_qualified_role(role: Mapping[str, Any], name: str, *, now: datetime) -> None:
+    qualified_fields = (
+        role.get("model_id"),
+        role.get("family"),
+        role.get("revision_sha256"),
+        role.get("role_certificate_sha256"),
+        role.get("qualified_until"),
+    )
+    if not all(qualified_fields) or role.get("revoked"):
+        raise WorkCellError(f"qualified role binding invalid: {name}")
+    qualified_until = role["qualified_until"]
+    if not isinstance(qualified_until, str):
+        raise WorkCellError(f"qualified role binding expiration invalid: {name}")
+    try:
+        expires_at = datetime.fromisoformat(qualified_until.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise WorkCellError(f"qualified role binding expiration invalid: {name}") from exc
+    if expires_at.tzinfo is None:
+        raise WorkCellError(f"qualified role binding expiration invalid: {name}")
+    if expires_at.astimezone(timezone.utc) <= now:
+        raise WorkCellError(f"qualified role binding expired: {name}")
+
+
 def _require_sha(detail: Mapping[str, Any], field: str) -> str:
     value = detail.get(field)
     if not isinstance(value, str) or len(value) != 64:
@@ -162,7 +194,9 @@ def seal_manifest(value: Mapping[str, Any]) -> dict[str, Any]:
     return result
 
 
-def validate_mission_manifest(value: Mapping[str, Any]) -> dict[str, Any]:
+def validate_mission_manifest(
+    value: Mapping[str, Any], *, now: datetime | None = None
+) -> dict[str, Any]:
     manifest = dict(value)
     schema_path = Path(__file__).parents[1] / "schemas" / "runpod_autonomous_mission.schema.json"
     schema = json.loads(schema_path.read_text(encoding="utf-8"))
@@ -178,22 +212,28 @@ def validate_mission_manifest(value: Mapping[str, Any]) -> dict[str, Any]:
     if manifest["manifest_sha256"] != expected:
         raise WorkCellError("mission manifest seal mismatch")
 
+    current_time = _current_utc(now)
     providers = manifest["provider_bindings"]
     if len({row["family"] for row in providers}) < 2:
         raise WorkCellError("provider tournament requires at least two distinct families")
 
     roles = manifest["role_bindings"]
     for name, role in roles.items():
-        qualified_fields = (
-            role["model_id"],
-            role["family"],
-            role["revision_sha256"],
-            role["role_certificate_sha256"],
-        )
         if role["status"] == "qualified":
-            if not all(qualified_fields) or role["revoked"]:
-                raise WorkCellError(f"qualified role binding invalid: {name}")
-        elif any(value is not None for value in qualified_fields) or role["revoked"]:
+            _require_current_qualified_role(role, name, now=current_time)
+        elif (
+            any(
+                role[field] is not None
+                for field in (
+                    "model_id",
+                    "family",
+                    "revision_sha256",
+                    "role_certificate_sha256",
+                    "qualified_until",
+                )
+            )
+            or role["revoked"]
+        ):
             raise WorkCellError(f"unavailable role must not retain authority fields: {name}")
 
     if manifest["authority_ceiling"] != "machine_verified_candidate":
@@ -314,13 +354,15 @@ class AutonomousWorkCell:
         )
 
     def admit(self, manifest: Mapping[str, Any]) -> dict[str, Any]:
-        document = validate_mission_manifest(manifest)
+        now = self._clock()
+        document = validate_mission_manifest(
+            manifest, now=datetime.fromtimestamp(now, tz=timezone.utc)
+        )
         mission_id = str(document["mission_id"])
         mission_root = self.root / "missions" / mission_id
         mission_root.mkdir(parents=True, exist_ok=True)
         manifest_path = mission_root / "manifest.json"
         encoded = json.dumps(document, indent=2, sort_keys=True) + "\n"
-        now = self._clock()
         with self._transaction() as connection:
             existing = connection.execute(
                 "SELECT manifest_sha256 FROM missions WHERE mission_id=?", (mission_id,)
@@ -628,7 +670,13 @@ class AutonomousWorkCell:
                     "idempotent": True,
                 }
 
-            self._validate_authority_for_result(manifest, stage, status, actor)
+            self._validate_authority_for_result(
+                manifest,
+                stage,
+                status,
+                actor,
+                now=datetime.fromtimestamp(now, tz=timezone.utc),
+            )
             self._validate_stage_detail(
                 manifest,
                 stage,
@@ -696,7 +744,7 @@ class AutonomousWorkCell:
 
     @staticmethod
     def _validate_authority_for_result(
-        manifest: Mapping[str, Any], stage: str, status: str, actor: str
+        manifest: Mapping[str, Any], stage: str, status: str, actor: str, *, now: datetime
     ) -> None:
         if stage in VISUAL_STAGES and status == "pass":
             role_name = (
@@ -705,6 +753,7 @@ class AutonomousWorkCell:
             role = manifest["role_bindings"][role_name]
             if role["status"] != "qualified" or role["revoked"]:
                 raise WorkCellError(f"unqualified visual role cannot pass: {role_name}")
+            _require_current_qualified_role(role, role_name, now=now)
         if actor == "visual_authority_gate":
             if stage not in VISUAL_STAGES or status != "abstain":
                 raise WorkCellError(
@@ -723,6 +772,11 @@ class AutonomousWorkCell:
         if stage == "certification" and status == "pass":
             if manifest["authority_ceiling"] == "machine_verified_candidate":
                 raise WorkCellError("mission authority ceiling forbids certification")
+            for role_name in ("primary_visual_critic", "independent_juror"):
+                role = manifest["role_bindings"][role_name]
+                if role["status"] != "qualified" or role["revoked"]:
+                    raise WorkCellError(f"unqualified visual role cannot certify: {role_name}")
+                _require_current_qualified_role(role, role_name, now=now)
 
     def _resolve_panel_evidence(
         self,

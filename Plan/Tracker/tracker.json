@@ -13028,7 +13028,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 92,
+      "percent_complete": 93,
       "notes": [
         {
           "ts": "2026-07-15T00:18:03+00:00",
@@ -13089,12 +13089,17 @@
           "ts": "2026-07-25T18:54:15+00:00",
           "actor": "codex",
           "text": "2026-07-25: Fresh bounded V3 host-adapter closure on Pod 68psfqtaogg7s7/vitreous_beige_centipede bound the existing hash-verified /workspace/models SAM3D source and checkpoint roots after preserving the V2 failure. One warm-up plus two full measured inferences produced byte-identical raw NPZ and geometry hashes. Receipt: runtime_artifacts/sam3d_body_v3_host_adapter_runtime_20260725T193000Z_v3_workspace_models_closure/HOST_ADAPTER_RUNTIME_RECEIPT.json (file SHA-256 863ea6f5c58ee0fbaaea9c418242cb4ea757f5d43569871db84062941dc2c8e0; self SHA-256 6d4c694b481c6886a72445d5482f52f4d4d54bbd9e5378d7033ba07e2fd31d77). Shadow-only; no provider matrix, production route, gold, certification, or training authority changed; DensePose remains fallback."
+        },
+        {
+          "ts": "2026-07-25T20:09:15+00:00",
+          "actor": "codex",
+          "text": "V3-specific subprocess CUDA OOM is now deterministically propagated through the shadow-only SAM3D GeometryProvider to the existing DensePose fallback. Focused adapter/repeatability/lock suite exited 0 (31 tests); no SAM3D inference, lifecycle, provider-matrix, production, visual, gold, or promotion authority changed."
         }
       ],
-      "evidence": "qa/live_verification/sam3d_body_runpod_runtime_smoke_20260722.json SHA-256 cce59137fde35dd0ef8ae25813ce56807c4f1f9a748659d29338691397cc8a26; env/sam3d_body_runtime.lock.json; env/sam3d_body_runtime.requirements.lock.txt; 10 runner tests and 35 runtime-matrix/fallback tests pass; Ruff/Black/diff checks clean.",
+      "evidence": "runtime_artifacts/sam3d_body_v3_oom_fallback_contract_20260725T200643Z/V3_OOM_FALLBACK_CONTRACT_RECEIPT.json raw_sha256=9aa73d1751416e8128cf0f48e6c98715f15eb82a263f635006d2dee6b3f03246 self_sha256=bdc1df2558729324e3346095af2a2d24dfbd900b614c893d37f306c0aa5e745d",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-25T18:54:15+00:00",
+      "updated_at": "2026-07-25T20:09:15+00:00",
       "orphaned": false
     },
     "MF-P2-11.08": {

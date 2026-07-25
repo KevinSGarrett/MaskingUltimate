@@ -359,6 +359,35 @@ def test_v3_host_adapter_rejects_contract_drift(tmp_path: Path, mutate, message:
         backend(image, bboxes=np.asarray([_box().bbox_xyxy], dtype=np.float32))
 
 
+def test_v3_cuda_oom_is_visible_to_densepose_router(tmp_path: Path) -> None:
+    image = tmp_path / "person.png"
+    image.write_bytes(b"governed-person-fixture")
+    backend = _isolated_v3_backend(tmp_path)
+    backend._executor = lambda argv, _timeout: subprocess.CompletedProcess(
+        argv, 1, "", "RuntimeError: CUDA out of memory"
+    )
+    challenger = Sam3dBodyGeometryProvider(backend)
+    fallback = GeometryProviderAdapter(
+        _identity("densepose_r50_fpn_s1x", "densepose"),
+        lambda _path, *, person_box: {
+            "provider": "densepose_r50_fpn_s1x",
+            "person_instance_key": person_box.instance_key,
+        },
+    )
+
+    result = GeometryProviderWithOomFallback(challenger, fallback).infer_geometry(
+        image, person_box=_box()
+    )
+
+    assert result["routing"] == {
+        "attempted_provider": "sam3d_body",
+        "used_provider": "densepose_r50_fpn_s1x",
+        "fallback_reason": "out_of_memory",
+        "fallback_exception_type": "Sam3dBodyProcessError",
+        "production_route_changed": False,
+    }
+
+
 def test_isolated_subprocess_backend_binds_exact_report_and_artifact(tmp_path: Path) -> None:
     image = tmp_path / "person.png"
     image.write_bytes(b"governed-person-fixture")

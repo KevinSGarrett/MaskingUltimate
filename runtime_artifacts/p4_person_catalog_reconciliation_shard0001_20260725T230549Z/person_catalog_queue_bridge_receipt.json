@@ -1,0 +1,23 @@
+{
+  "artifact_type": "adult_corpus_person_catalog_queue_bridge",
+  "authority": "durable_nonterminal_person_catalog_evidence_only",
+  "catalog_batch_file_sha256": "bcab66687258677bdcb2fb488d36e4d31399cfd4d77ef03ac2104bf6af15c115",
+  "catalog_batch_path": "runtime_artifacts/p4_person_catalog_reconciliation_shard0001_20260725T230549Z/person_catalog_batch.json",
+  "catalog_batch_self_sha256": "f61ec7f1077e6b0485b0d8a40b1e39553d0f3b119c7fccf3c2ab46056dd20c7a",
+  "checkpoint": {
+    "inserted": 256,
+    "retained": 0,
+    "terminal_progress_advanced": false
+  },
+  "nude_shard_file_sha256": "7eb66b3aa9032ec83a9755447c818395270fd4ec25003dd3f0310ec5cd5602a0",
+  "nude_shard_path": "/workspace/assets/MaskedWarehouse/Nude/_MASKFACTORY_INTAKE/batch_shards/runpod/bbox_prompt_and_action_tag_supervision.0001.json",
+  "nude_shard_self_sha256": "8ad938d4287305d74e3efda68b87323e709bbe23ed575d03c6ddd793b3231d88",
+  "operational_certificate_issued": false,
+  "platform": "runpod",
+  "production_mask_authority": false,
+  "queue_shard_path": "runpod/bbox_prompt_and_action_tag_supervision.0001.json",
+  "record_count": 256,
+  "schema_version": "maskfactory.nude_person_catalog_queue_bridge.v1",
+  "self_sha256": "9db910d6cd0c30552601b53de59336699ed19b4bbc89f1a31d24aca272de07bd",
+  "terminal_progress_advanced": false
+}

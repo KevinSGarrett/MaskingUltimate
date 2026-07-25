@@ -12357,7 +12357,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 78,
+      "percent_complete": 80,
       "notes": [
         {
           "ts": "2026-07-19T22:43:43+00:00",
@@ -12378,12 +12378,17 @@
           "ts": "2026-07-22T19:27:53+00:00",
           "actor": "ai_agent",
           "text": "2026-07-22 post-build semantic correction: pre-proposal class/state requests are coverage_targets, not canonical v2 target contracts. Workload v2 now requires owner/candidate binding and canonical target-contract materialization before hard QA or critic invocation."
+        },
+        {
+          "ts": "2026-07-25T19:55:19+00:00",
+          "actor": "codex",
+          "text": "RunPod-local bounded preproposal verified source identity, decoded geometry, and immutable coverage-target binding for 24 governed images / 90 work units; semantic resolution, visual review, masks, gold, and promotion remain pending."
         }
       ],
-      "evidence": "PARTIAL_PASS 2026-07-22 corrected v2 artifacts: configs/ontology_v2_authority_pilot.generated.json file sha256 f6d8e4220922d81083c61950facfdaed5eeae9a297e49c028eec0dbb39e18f82 / self seal 380745f9ce2f53a3b2741f9ff95b04d18b4897665157b2598df8828181c84628; configs/ontology_v2_resolution_workload.generated.json file sha256 a0479c9daf3282fb3792f6279cba0cc6a31569696adebb56312707cda5273ff2 / self seal 3f8d9eca7027da36cb551972a71da69ed9c1004881856219e331aa1aee877147. The 24-image pilot binds 90 non-authoritative coverage targets. The 90 queued work units require proposal generation, owner/candidate binding, canonical v2 target-contract materialization, hard QA, qualified independent visual review, bounded repair, semantic alignment, and immutable outcome. All remain authority none; zero complete. 92 focused/adjacent tests, Ruff, Black, source rehash, tracker validation, and diff integrity pass.",
+      "evidence": "runtime_artifacts/ontology_v2_real_pilot_preflight_20260725T194820Z/preflight.json raw_sha256=68aa1c6dbc1ac4b11c934fcdc4d6bef2dd52a040680dd5dca4466025d967ad60 self_sha256=6ec2836b72c5427e1e4920eb2de107548b50d61f76a350b261b78fea2830a1cd; focused_pod_tests=16_pass",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-22T19:29:54+00:00",
+      "updated_at": "2026-07-25T19:55:19+00:00",
       "orphaned": false
     },
     "MF-P1-12.10": {

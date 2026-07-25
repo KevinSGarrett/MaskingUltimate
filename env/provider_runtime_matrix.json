@@ -30,7 +30,7 @@
       "smoke_status": "text_discovery_pass_point_refinement_empty_output",
       "may_author_gold": false,
       "artifacts": [
-        {"kind": "lock", "path": "env/sam31_runtime.lock.json", "sha256": "99ec9d708f1a970d969b0b15dad95a1b60efe40be941b4bfbbf6332d6992f11e"},
+        {"kind": "lock", "path": "env/sam31_runtime.lock.json", "sha256": "f238e6e82a24acc2e4ac88d7da7a5bd4d670c89d02a91372b391f6472ad88112"},
         {"kind": "evidence", "path": "qa/live_verification/sam31_runpod_runtime_smoke_20260722.json", "sha256": "8cf2a320dd80b5a4f05fc71a78e29d6a613e19e1f1c2d099e721dcde81ac647e"}
       ]
     },
@@ -97,13 +97,13 @@
     {
       "provider": "eomt_dinov3",
       "status": "live_smoke_passed",
-      "isolation_boundary": "external_comfy_cuda_runtime",
+      "isolation_boundary": "runpod_venv_eomt_dinov3_66_20260725T174904Z",
       "checkpoint_status": "installed",
       "smoke_status": "pass",
       "may_author_gold": false,
       "artifacts": [
-        {"kind": "lock", "path": "env/eomt_dinov3_runtime.lock.json", "sha256": "ac988f5a3d5e94259d7f52064c2d228ec4c34b7f594f9e9a3c817f38aa66b6b8"},
-        {"kind": "evidence", "path": "qa/live_verification/eomt_dinov3_runtime_20260715.json", "sha256": "2ab06635c5bb9309809bb1881af931c8da105dc73b17af78ce0ccc69d6acb0ad"}
+        {"kind": "lock", "path": "env/eomt_dinov3_runtime_v2.lock.json", "sha256": "33074535ca8d7e7c022006b54187dbb5a84e51ff86d6d9801e57482f44610295"},
+        {"kind": "evidence", "path": "runtime_artifacts/eomt_dinov3_66_class_gpu_shadow_20260725T175822Z/EOMT_DINOV3_66_CLASS_GPU_SHADOW_RECEIPT.json", "sha256": "58058b2990331e035f13fb2f8991c21ace1e31432cbffea6f012d4ef136fe0d1"}
       ]
     },
     {
@@ -131,5 +131,5 @@
       ]
     }
   ],
-  "manifest_sha256": "ae9e433ebc271c49c1a70a1b7ee21cd5f486fa97c8fd18888d58ff583a728429"
+  "manifest_sha256": "3b99c7f8cca7128d4f656cb0ef8667a9a3859574223ba60ad7c493f1994f5ed8"
 }

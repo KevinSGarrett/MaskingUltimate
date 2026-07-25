@@ -1731,7 +1731,7 @@
       "hard_blocker": false,
       "conditional": false,
       "status": "partially_complete",
-      "percent_complete": 85,
+      "percent_complete": 90,
       "notes": [
         {
           "ts": "2026-07-14T07:48:12+00:00",
@@ -1822,12 +1822,17 @@
           "ts": "2026-07-20T03:31:49+00:00",
           "actor": "ai_agent",
           "text": "Disk ingest-floor sub-blocker RESOLVED autonomously (data/ on F:, doctor disk_free PASS 251.1 GiB, reversible). Doctor still not all-green (PASS=8 FAIL=4): remaining root causes = Ubuntu ext4 VHD (scripted elevated e2fsck) + 8GB GPU VRAM contention. MF-P0-EXIT remains partially_complete pending doctor-green."
+        },
+        {
+          "ts": "2026-07-25T19:25:28+00:00",
+          "actor": "codex",
+          "text": "2026-07-25: Pod-aware doctor execution was added and exercised on exact Pod 68psfqtaogg7s7. It passes Ada/cu128, storage, PNG, and SQLite checks with zero FAILs; the hash-bound provider matrix is WARN only for its two explicit unqualified rows. Host-only WSL/CVAT/Ollama checks are no longer misreported as Pod failures. No provider promotion, visual authority, gold, or completion claim."
         }
       ],
-      "evidence": "qa/live_verification/proof_tier_runtime_reprobe_20260719T1917.json",
+      "evidence": "runtime_artifacts/doctor_runpod_context_20260725T203000Z/RUNTIME_RECEIPT.json SHA-256 260ee9b609e278e3cdbf75ca415ef62f3c893f8d359b78d06cbf066057f33c99",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-20T03:31:49+00:00",
+      "updated_at": "2026-07-25T19:25:28+00:00",
       "orphaned": false
     },
     "MF-P1-01.01": {

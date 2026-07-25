@@ -14,7 +14,7 @@ import click
 import yaml
 
 from . import __version__
-from .doctor import LOCAL_INFERENCE_TIMEOUT_SECONDS, run_doctor
+from .doctor import LOCAL_INFERENCE_TIMEOUT_SECONDS, is_runpod_execution, run_doctor
 from .models import (
     DEFAULT_CATALOG,
     DEFAULT_REGISTRY,
@@ -11432,8 +11432,9 @@ def doctor() -> None:
             click.echo(f"  FIX: {result.hint}")
         emitted += 1
 
+    scope = "RunPod" if is_runpod_execution() else "local"
     click.echo(
-        "doctor: running bounded local checks "
+        f"doctor: running bounded {scope} checks "
         f"({LOCAL_INFERENCE_TIMEOUT_SECONDS}s maximum per inference request)"
     )
     results = run_doctor(on_result=emit)

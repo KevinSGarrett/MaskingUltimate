@@ -27,6 +27,11 @@ import yaml
 from .governance import provider_activation_issues, validate_external_source_registry
 from .io import png_strict
 from .models import verify_registered_model_smokes
+from .runpod_doctor import (
+    check_runpod_runtime_matrix,
+    check_runpod_torch_cuda,
+    is_runpod_execution,
+)
 
 ROOT = Path(__file__).resolve().parents[2]
 CVAT_BASE_URL = "http://localhost:8080"
@@ -658,6 +663,13 @@ DEFAULT_CHECKS: tuple[Callable[[], CheckResult], ...] = (
     check_png_strict,
     check_sqlite,
 )
+RUNPOD_CHECKS: tuple[Callable[[], CheckResult], ...] = (
+    check_runpod_torch_cuda,
+    check_runpod_runtime_matrix,
+    check_disk_free,
+    check_png_strict,
+    check_sqlite,
+)
 
 _WSL_DEPENDENT_CHECKS = frozenset(
     {"check_torch_cuda", "check_registered_models", "check_wsl_roundtrip"}
@@ -695,12 +707,14 @@ def _wsl_short_circuit(check_name: str, detail: str, hint: str) -> CheckResult:
 
 
 def run_doctor(
-    checks: Sequence[Callable[[], CheckResult]] = DEFAULT_CHECKS,
+    checks: Sequence[Callable[[], CheckResult]] | None = None,
     *,
     preflight_wsl: bool | None = None,
     on_result: Callable[[CheckResult], None] | None = None,
 ) -> list[CheckResult]:
     """Run checks in stable order and convert unexpected exceptions to actionable FAILs."""
+    if checks is None:
+        checks = RUNPOD_CHECKS if is_runpod_execution() else DEFAULT_CHECKS
     if preflight_wsl is None:
         preflight_wsl = checks is DEFAULT_CHECKS
     wsl_failure = _wsl_preflight_failure() if preflight_wsl else None

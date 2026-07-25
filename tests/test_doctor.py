@@ -13,6 +13,7 @@ from maskfactory.doctor import (
     DEFAULT_CHECKS,
     LOCAL_API_TIMEOUT_SECONDS,
     LOCAL_INFERENCE_TIMEOUT_SECONDS,
+    RUNPOD_CHECKS,
     CheckResult,
     check_cvat_project,
     check_data_junction_not_removable_usb,
@@ -20,6 +21,8 @@ from maskfactory.doctor import (
     check_gpu_lock,
     check_nuclio_interactor,
     check_registered_models,
+    check_runpod_runtime_matrix,
+    check_runpod_torch_cuda,
     check_torch_cuda,
     check_wsl_backing_store,
     check_wsl_roundtrip,
@@ -63,6 +66,47 @@ def test_default_doctor_battery_covers_every_p0_requirement() -> None:
         "check_png_strict",
         "check_sqlite",
     ]
+def test_runpod_doctor_battery_only_claims_pod_scoped_checks() -> None:
+    assert [check.__name__ for check in RUNPOD_CHECKS] == [
+        "check_runpod_torch_cuda",
+        "check_runpod_runtime_matrix",
+        "check_disk_free",
+        "check_png_strict",
+        "check_sqlite",
+    ]
+
+
+def test_runpod_torch_cuda_requires_exact_ada_cu128_contract() -> None:
+    payload = {
+        "torch": "2.11.0+cu128",
+        "cuda": "12.8",
+        "available": True,
+        "name": "NVIDIA RTX 6000 Ada Generation",
+        "capability": [8, 9],
+    }
+    process = SimpleNamespace(returncode=0, stdout=json.dumps(payload), stderr="")
+    with patch("maskfactory.runpod_doctor.subprocess.run", return_value=process):
+        assert check_runpod_torch_cuda().status == "PASS"
+    payload["name"] = "NVIDIA A40"
+    process = SimpleNamespace(returncode=0, stdout=json.dumps(payload), stderr="")
+    with patch("maskfactory.runpod_doctor.subprocess.run", return_value=process):
+        assert check_runpod_torch_cuda().status == "FAIL"
+
+
+def test_runpod_matrix_warns_for_explicit_pending_rows() -> None:
+    report = {
+        "qualified_runtime_count": 8,
+        "pending_runtime_count": 2,
+        "artifact_count": 22,
+        "status": "pass_with_explicit_pending_runtimes",
+    }
+    with patch(
+        "maskfactory.runpod_doctor.verify_runtime_matrix", return_value=report
+    ):
+        result = check_runpod_runtime_matrix()
+    assert result.status == "WARN"
+    assert "pending=2" in result.detail
+
 
 
 def test_run_doctor_preserves_statuses_and_converts_unexpected_exceptions() -> None:

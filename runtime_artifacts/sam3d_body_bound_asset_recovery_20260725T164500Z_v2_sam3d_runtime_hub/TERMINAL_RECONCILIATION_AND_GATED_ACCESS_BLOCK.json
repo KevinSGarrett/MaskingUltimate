@@ -1,0 +1,48 @@
+{
+  "artifact_type": "sam3d_body_bound_asset_recovery_terminal_reconciliation.v1",
+  "created_at_utc": "2026-07-25T15:52:08.874873+00:00",
+  "exact_blocker": {
+    "access_required": "A governed Hugging Face identity with approved access to this exact gated repository and revision, or a separately authorized existing byte-identical artifact source with the same hashes.",
+    "first_locked_asset": "model.ckpt",
+    "message": "401 Client Error. (Request ID: Root=1-6a64db57-27914d426d8cec8d5f4b7782;5e42c5e2-b31e-48f6-b8d3-e2c90e2c0fae)\n\nCannot access gated repo for url https://huggingface.co/facebook/sam-3d-body-dinov3/resolve/11aaa346c7204874a1cbafe3d39a979080b2c55a/model.ckpt.\nAccess to model facebook/sam-3d-body-dinov3 is restricted. You must have access to it and be authenticated to access it. Please log in.",
+    "repository": "facebook/sam-3d-body-dinov3",
+    "revision": "11aaa346c7204874a1cbafe3d39a979080b2c55a",
+    "type": "GatedRepoError"
+  },
+  "execution_identity": {
+    "network_volume_id": "o9qv2ld91c",
+    "pod_id": "68psfqtaogg7s7",
+    "pod_name": "vitreous_beige_centipede",
+    "volume_mount": "/workspace"
+  },
+  "next_safe_action": "Await explicit governed authorization for exact checkpoint access or an authority-approved byte-identical existing artifact location. Then construct a new immutable recovery binding; do not modify this binding or its evidence.",
+  "non_destructive_state": {
+    "checkpoint_target_exists": false,
+    "source_target_exists": false,
+    "source_tree_matches_lock": true,
+    "staged_source": {
+      "commit": "b5c765a0d89d789985e186d396315e7590887b94",
+      "exists": true,
+      "status": "",
+      "tree": "7b5a2a23619659a679d64f096201c6504cbebe30"
+    },
+    "staging_preserved": "runtime_artifacts/sam3d_body_bound_asset_recovery_20260725T164500Z_v2_sam3d_runtime_hub/staging"
+  },
+  "prohibitions": [
+    "Do not rerun V1 or V2 unchanged.",
+    "Do not add credentials, alter Hugging Face authentication, bypass the gated repository, substitute any checkpoint, or promote the provider without new governing authority.",
+    "Do not delete preserved staging or terminal failure evidence."
+  ],
+  "self_sha256": "c7edcff251d8589c1d1db208b676c5dbaa898463c0bae32006f42d533654254c",
+  "status": "BLOCKED_GOVERNED_GATED_CHECKPOINT_ACCESS",
+  "v2_execution": {
+    "binding": "runtime_artifacts/sam3d_body_bound_asset_recovery_20260725T164500Z_v2_sam3d_runtime_hub/recovery_binding.json",
+    "binding_file_sha256": "ab0a6246a1ad7680528ddcb3a2e4ca1453ad755258f447c04d73e31b56d46268",
+    "binding_self_sha256": "b49571f08dd3e47c5d03b5f8293acb1c464023612999babee98cba8270a1ceac",
+    "launch_pid_unrecorded": "The background job executed and sealed its terminal receipt; the parent shell wrote the PID from a non-project working directory, so no pid file exists. This is reconciled by the immutable terminal receipt and must not trigger relaunch.",
+    "receipt": "runtime_artifacts/sam3d_body_bound_asset_recovery_20260725T164500Z_v2_sam3d_runtime_hub/ASSET_RECOVERY_RECEIPT.json",
+    "receipt_file_sha256": "00e3401bf6b8a0d26b65459796e0fa0a01e01d731713c1b59ee76a3b1e1343e1",
+    "receipt_self_sha256": "7dacec2fc4af7a0f21d1fb57ae86146952fa908f43ca4553422e706b2a4fc08f",
+    "script_sha256": "594415c03eb8371aaf4997be76435e768a7ab76d3265c8319c8a631abdf87fc2"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "artifact_type": "sam3d_body_bound_asset_recovery_binding.v1",
+  "authority": {
+    "may_author_gold": false,
+    "may_promote_provider": false,
+    "no_overwrite": true,
+    "no_provider_substitution": true,
+    "provider_lifecycle_state": "installed_unqualified"
+  },
+  "bindings": {
+    "checkpoint_assets": [
+      {
+        "filename": "model.ckpt",
+        "git_blob_id": "245c34983d39a78fa4c1b42d2f5f60cf918fb102",
+        "sha256": "b5a2f9d305dd02626b967aa2e86021fba07065df66ce7a7e00ffb9664f150abf",
+        "size_bytes": 2109129346
+      },
+      {
+        "filename": "model_config.yaml",
+        "git_blob_id": "c43c46e52f41c76094a6fdfe12aee0348213a82b",
+        "sha256": "1012fc3f39cb5e90e3f8fbadf7bded31604bfafdce0321d17a7c1a2d3f08b88d",
+        "size_bytes": 1488
+      },
+      {
+        "filename": "assets/mhr_model.pt",
+        "git_blob_id": "6e67294a1b91c304465a0e3392ea8ab9c4d81af9",
+        "sha256": "352e271a6c42729c68554ceaea0c955e866970160c31e35506d782dc0f7377bc",
+        "size_bytes": 696110248
+      }
+    ],
+    "checkpoint_repository": "facebook/sam-3d-body-dinov3",
+    "checkpoint_revision": "11aaa346c7204874a1cbafe3d39a979080b2c55a",
+    "host_adapter_failure_receipt_sha256": "b5300145a82139c0b2d34cf97fc572ac250e9dec935cfda21e6f277e9a56eda6",
+    "recovery_script_sha256": "81169d55076c94f14763e74ce5553ad7cd0b731914751a593d3177d6e35b6705",
+    "runtime_lock_sha256": "61a8d53e5a08309ca5cf2c879a7bed509ff81422283b5ea31133d6859e4987a3",
+    "source_commit": "b5c765a0d89d789985e186d396315e7590887b94",
+    "source_repository": "https://github.com/facebookresearch/sam-3d-body",
+    "source_tree": "7b5a2a23619659a679d64f096201c6504cbebe30"
+  },
+  "command": [
+    "env",
+    "PYTHONPATH=src",
+    ".train_cu128_ada/bin/python",
+    "runtime_artifacts/sam3d_body_bound_asset_recovery_20260725T164000Z/recover_bound_assets.py"
+  ],
+  "preflight": {
+    "no_overwrite": true,
+    "required_free_bytes_minimum": 5610482164,
+    "target_checkpoint_absent": true,
+    "target_source_absent": true
+  },
+  "self_sha256": "c47acddafee76d74a516b53215a2692582d6ba0efb255dd9cfb324d760967413"
+}

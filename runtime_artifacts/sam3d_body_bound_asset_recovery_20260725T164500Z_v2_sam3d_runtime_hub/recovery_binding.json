@@ -1,0 +1,85 @@
+{
+  "acceptance": {
+    "failure_status": "ASSET_RECOVERY_FAIL",
+    "next_after_pass": "Create a new immutable host-adapter binding; do not relaunch V2 or host adapter V2.",
+    "pass_status": "ASSET_RECOVERY_PASS_EXACT_BOUND_BYTES",
+    "terminal_receipt": "ASSET_RECOVERY_RECEIPT.json"
+  },
+  "artifact_type": "sam3d_body_bound_asset_recovery_binding.v2",
+  "controls": {
+    "exact_locked_checkpoint_only": true,
+    "exact_locked_source_only": true,
+    "gold_authority": false,
+    "gpu_execution": false,
+    "no_model_substitution": true,
+    "no_overwrite": true,
+    "preserve_staging_on_failure": true,
+    "provider_promotion": false,
+    "sha256_and_size_validation_required": true
+  },
+  "created_at_utc": "2026-07-25T15:49:55.249302+00:00",
+  "execution_identity": {
+    "network_volume_id": "o9qv2ld91c",
+    "pod_id": "68psfqtaogg7s7",
+    "pod_name": "vitreous_beige_centipede",
+    "volume_mount": "/workspace"
+  },
+  "immutable_inputs": {
+    "checkpoint_assets": [
+      {
+        "filename": "model.ckpt",
+        "git_blob_id": "245c34983d39a78fa4c1b42d2f5f60cf918fb102",
+        "sha256": "b5a2f9d305dd02626b967aa2e86021fba07065df66ce7a7e00ffb9664f150abf",
+        "size_bytes": 2109129346
+      },
+      {
+        "filename": "model_config.yaml",
+        "git_blob_id": "c43c46e52f41c76094a6fdfe12aee0348213a82b",
+        "sha256": "1012fc3f39cb5e90e3f8fbadf7bded31604bfafdce0321d17a7c1a2d3f08b88d",
+        "size_bytes": 1488
+      },
+      {
+        "filename": "assets/mhr_model.pt",
+        "git_blob_id": "6e67294a1b91c304465a0e3392ea8ab9c4d81af9",
+        "sha256": "352e271a6c42729c68554ceaea0c955e866970160c31e35506d782dc0f7377bc",
+        "size_bytes": 696110248
+      }
+    ],
+    "checkpoint_repository": "facebook/sam-3d-body-dinov3",
+    "checkpoint_revision": "11aaa346c7204874a1cbafe3d39a979080b2c55a",
+    "checkpoint_target": "models/runtime_cache/sam3d_body_checkpoint_11aaa346",
+    "runtime_lock": "env/sam3d_body_runtime.lock.json",
+    "runtime_lock_sha256": "61a8d53e5a08309ca5cf2c879a7bed509ff81422283b5ea31133d6859e4987a3",
+    "script_sha256": "594415c03eb8371aaf4997be76435e768a7ab76d3265c8319c8a631abdf87fc2",
+    "source_commit": "b5c765a0d89d789985e186d396315e7590887b94",
+    "source_repository": "https://github.com/facebookresearch/sam-3d-body",
+    "source_target": "models/runtime_cache/sam-3d-body_b5c765a",
+    "source_tree": "7b5a2a23619659a679d64f096201c6504cbebe30"
+  },
+  "launch": {
+    "command": "PYTHONPATH=src runtime_artifacts/sam3d_body_runpod_env/bin/python runtime_artifacts/sam3d_body_bound_asset_recovery_20260725T164500Z_v2_sam3d_runtime_hub/recover_bound_assets.py",
+    "pid_file": "runtime_artifacts/sam3d_body_bound_asset_recovery_20260725T164500Z_v2_sam3d_runtime_hub/recovery.pid",
+    "single_launch_only": true,
+    "stderr_log": "runtime_artifacts/sam3d_body_bound_asset_recovery_20260725T164500Z_v2_sam3d_runtime_hub/recovery.stderr.log",
+    "stdout_log": "runtime_artifacts/sam3d_body_bound_asset_recovery_20260725T164500Z_v2_sam3d_runtime_hub/recovery.stdout.log"
+  },
+  "preflight": {
+    "checkpoint_target_exists": false,
+    "durable_free_bytes": 89463739842560,
+    "minimum_free_bytes": 5610482164,
+    "source_target_exists": false
+  },
+  "runtime": {
+    "client_requirement": "huggingface_hub must import inside try block so terminal errors seal ASSET_RECOVERY_RECEIPT.json.",
+    "interpreter": "runtime_artifacts/sam3d_body_runpod_env/bin/python",
+    "interpreter_exists": true,
+    "interpreter_sha256": "45c68b7ca1e3765a06756734c15af204ca9c0588a3f6d7a6d8bb8ed58e3e2a1a"
+  },
+  "self_sha256": "b49571f08dd3e47c5d03b5f8293acb1c464023612999babee98cba8270a1ceac",
+  "supersedes": {
+    "reason": "V1 failed before all governed asset writes because env/.train_cu128_ada lacks huggingface_hub.",
+    "v1_failure_marker": "runtime_artifacts/sam3d_body_bound_asset_recovery_20260725T164000Z/BOOTSTRAP_FAILURE_NO_ASSET_WRITE.json",
+    "v1_failure_marker_self_sha256": "27cda373c9bc5c4a9aef1f1e97c879f16357a6a99a059234c834223282e41e67",
+    "v1_output": "runtime_artifacts/sam3d_body_bound_asset_recovery_20260725T164000Z"
+  }
+}

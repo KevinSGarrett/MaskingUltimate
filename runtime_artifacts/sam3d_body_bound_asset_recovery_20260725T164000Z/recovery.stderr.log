@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/workspace/maskfactory/runtime_artifacts/sam3d_body_bound_asset_recovery_20260725T164000Z/recover_bound_assets.py", line 13, in <module>
+    from huggingface_hub import hf_hub_download
+ModuleNotFoundError: No module named 'huggingface_hub'

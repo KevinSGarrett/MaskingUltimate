@@ -1,4 +1,5 @@
 from __future__ import annotations
+import importlib.util
 import json
 from pathlib import Path
 from maskfactory.nude_batch_queue import NudeBatchQueue
@@ -34,3 +35,25 @@ def test_bridge_rejects_seal_drift_before_queue_mutation(tmp_path: Path) -> None
     else:
         raise AssertionError("sealed batch drift must fail")
     assert queue.summary(platform="runpod")["stage_evidence"]=={}
+
+def test_bridge_accepts_the_actual_comparator_batch_report(tmp_path: Path) -> None:
+    comparator_path = Path(__file__).resolve().parents[1] / "tools/compare_person_proposal_batches.py"
+    spec = importlib.util.spec_from_file_location("compare_person_proposal_batches_bridge", comparator_path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    lane = "bbox_prompt_and_action_tag_supervision"
+    fixture_spec = importlib.util.spec_from_file_location(
+        "compare_person_proposal_batches_fixture",
+        Path(__file__).resolve().with_name("test_compare_person_proposal_batches.py"),
+    )
+    assert fixture_spec and fixture_spec.loader
+    fixture_module = importlib.util.module_from_spec(fixture_spec)
+    fixture_spec.loader.exec_module(fixture_module)
+    shard, (gdino, yolo) = fixture_module._fixture(tmp_path, lane=lane)
+    batch = tmp_path / "actual-comparator.json"
+    batch.write_text(json.dumps(module.compare_batches(shard_path=shard, groundingdino_path=gdino, yolo_path=yolo, platform="runpod", expected_lane=lane)))
+    queue, path, token = _queue(tmp_path, shard, lane)
+    result = bridge_person_catalog_batch_to_queue(catalog_batch_path=batch, nude_shard_path=shard, output_path=tmp_path / "actual-bridge.json", queue=queue, platform="runpod", shard_path=path, lease_token=token)
+    assert result["record_count"] == 1
+    assert result["checkpoint"]["inserted"] == 1

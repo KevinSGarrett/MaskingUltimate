@@ -1,0 +1,39 @@
+{
+  "artifact_type": "eomt_dinov3_pycairo_dependency_recovery_receipt.v1",
+  "binding": {
+    "path": "runtime_artifacts/eomt_dinov3_pycairo_dependency_recovery_20260725T184500Z/pycairo_stage_binding.json",
+    "sha256": "191474faa98a4079e03f6da9ea22280649aebde40ea211276c2ed3db6babed99"
+  },
+  "controls": {
+    "gpu_execution": false,
+    "model_load": false,
+    "network_download": true,
+    "package_install": false,
+    "provider_promotion": false
+  },
+  "download": {
+    "argv": [
+      "/workspace/maskfactory/.train_cu128_ada/bin/python",
+      "-m",
+      "pip",
+      "download",
+      "--disable-pip-version-check",
+      "--only-binary=:all:",
+      "--no-deps",
+      "--dest",
+      "/workspace/maskfactory/runtime_artifacts/eomt_dinov3_pycairo_dependency_recovery_20260725T184500Z/wheels",
+      "pycairo==1.29.0"
+    ],
+    "output": "ERROR: Could not find a version that satisfies the requirement pycairo==1.29.0 (from versions: none)\nERROR: No matching distribution found for pycairo==1.29.0\n",
+    "returncode": 1
+  },
+  "ended_at_utc": "2026-07-25T16:25:36.536186+00:00",
+  "error": {
+    "message": "wheel-only pycairo staging failed",
+    "traceback": "Traceback (most recent call last):\n  File \"/workspace/maskfactory/runtime_artifacts/eomt_dinov3_pycairo_dependency_recovery_20260725T184500Z/stage_pycairo.py\", line 59, in main\n    raise RuntimeError(\"wheel-only pycairo staging failed\")\nRuntimeError: wheel-only pycairo staging failed\n",
+    "type": "RuntimeError"
+  },
+  "self_sha256": "504f7e403526760cc64a7209cf6e449dceb0fc498b7512dec8376cef0c3d47f1",
+  "started_at_utc": "2026-07-25T16:25:34.509985+00:00",
+  "status": "PYCAIRO_ARTIFACT_STAGE_FAIL"
+}

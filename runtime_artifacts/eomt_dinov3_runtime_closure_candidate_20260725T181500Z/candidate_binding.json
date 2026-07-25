@@ -1,0 +1,58 @@
+{
+  "acceptance": {
+    "next_after_pass": "Bind wheel filenames, sizes, and hashes into a new immutable requirements lock before considering a separate isolated environment.",
+    "pass_status": "CANDIDATE_CLOSURE_WHEELS_DOWNLOADED",
+    "terminal_receipt": "CANDIDATE_CLOSURE_RECEIPT.json"
+  },
+  "artifact_type": "eomt_dinov3_runtime_closure_candidate_binding.v1",
+  "base_contract": {
+    "lock": "env/eomt_dinov3_runtime_v2.lock.json",
+    "lock_sha256": "33074535ca8d7e7c022006b54187dbb5a84e51ff86d6d9801e57482f44610295",
+    "required_transformers_version": "5.13.0",
+    "training_config": "configs/training/eomt_dinov3_small_v2.yaml",
+    "training_config_sha256": "a0d21b8b8c1da900b6f354e1a244537db5f85a6b2650aae007ddb3195644466f"
+  },
+  "controls": {
+    "no_environment_creation": true,
+    "no_gold_authority": true,
+    "no_gpu_execution": true,
+    "no_install": true,
+    "no_model_import": true,
+    "no_overwrite": true,
+    "no_provider_promotion": true,
+    "preserve_partial_wheels_on_failure": true
+  },
+  "created_at_utc": "2026-07-25T16:15:01.088853+00:00",
+  "execution_identity": {
+    "network_volume_id": "o9qv2ld91c",
+    "pod_id": "68psfqtaogg7s7",
+    "pod_name": "vitreous_beige_centipede",
+    "volume_mount": "/workspace"
+  },
+  "interpreter": {
+    "path": ".train_cu128_ada/bin/python",
+    "role": "resolver/download helper only; no EoMT runtime environment is created or modified",
+    "sha256": "45c68b7ca1e3765a06756734c15af204ca9c0588a3f6d7a6d8bb8ed58e3e2a1a"
+  },
+  "launch": {
+    "command": "PYTHONPATH=src .train_cu128_ada/bin/python runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/download_candidate_closure.py",
+    "pid_file": "runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/download.pid",
+    "single_launch_only": true,
+    "stderr_log": "runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/download.stderr.log",
+    "stdout_log": "runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/download.stdout.log"
+  },
+  "preflight": {
+    "existing_package_cache_candidates": 0,
+    "free_bytes": 89914181287936,
+    "minimum_free_bytes": 1073741824
+  },
+  "request": {
+    "expected_output": "a complete candidate wheel manifest for a later immutable closure lock",
+    "platform": "current_pod_linux",
+    "python_abi": "cp311",
+    "top_level_requirement": "transformers==5.13.0",
+    "wheel_only": true
+  },
+  "script_sha256": "134de6314f9e837b171fa8033f917959ff78aa9bc87c22108218cd02a5d287f0",
+  "self_sha256": "83aac2e5da1f7d2c558ff70e57b2c565e716c2ac29cfce3c257cfdcdb272679f"
+}

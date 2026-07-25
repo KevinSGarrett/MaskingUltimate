@@ -1,0 +1,40 @@
+{
+  "acceptance": {
+    "pass_status": "EOMT_CPU_SHADOW_LOAD_PASS",
+    "terminal_receipt": "EOMT_CPU_SHADOW_LOAD_RECEIPT.json",
+    "next_safe_action": "Create a separate immutable CUDA-admission-aware 66-class shadow inference binding over governed real-adult assets. This load receipt alone does not authorize inference, promotion, training truth, or production masks."
+  },
+  "artifact_type": "eomt_dinov3_cpu_shadow_load_binding.v1",
+  "controls": {
+    "cuda_visible_devices": "",
+    "gpu_execution": false,
+    "inference": false,
+    "model_load": "cpu_only",
+    "network_access": false,
+    "no_overwrite": true,
+    "provider_promotion": false,
+    "single_launch_only": true
+  },
+  "execution_identity": {
+    "network_volume_id": "o9qv2ld91c",
+    "pod_id": "68psfqtaogg7s7",
+    "pod_name": "vitreous_beige_centipede",
+    "volume_mount": "/workspace"
+  },
+  "inputs": {
+    "eomt_lock": "env/eomt_dinov3_runtime_v2.lock.json",
+    "eomt_lock_sha256": "33074535ca8d7e7c022006b54187dbb5a84e51ff86d6d9801e57482f44610295",
+    "runtime_closure_receipt": "runtime_artifacts/eomt_dinov3_clean_isolated_runtime_closure_20260725T191500Z/CLEAN_ISOLATED_RUNTIME_RECEIPT.json",
+    "runtime_closure_receipt_sha256": "a7db618b5aad35cdaba6a055301351ad9003f6efe64ea29cd8d9a63aa0411635",
+    "runtime_closure_receipt_self_sha256": "2d834d1e842321990fe3a4a4a18d99a503ba90bfe99935c5a5e66db44dfc8a78",
+    "runtime_python": "runtime_artifacts/eomt_dinov3_clean_isolated_runtime_closure_20260725T191500Z/venv/bin/python",
+    "snapshot": "models/runtime_cache/eomt_dinov3_small_602edaa"
+  },
+  "target_contract": {
+    "class_count": 66,
+    "mode": "training_and_shadow_evaluation_only",
+    "pretrained_head": "discard_coco_panoptic_head",
+    "prohibited_claim": "The loaded upstream checkpoint is not a 66-class production head and cannot become production truth."
+  },
+  "self_sha256": "43b0ee67ad4648d1f63d498fcda21100697debcd4a0c40464ffa6adc5b6bda85"
+}

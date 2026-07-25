@@ -1,0 +1,50 @@
+{
+  "artifact_type": "eomt_dinov3_cpu_shadow_load_receipt.v1",
+  "binding": {
+    "path": "runtime_artifacts/eomt_dinov3_cpu_shadow_load_20260725T203000Z/cpu_shadow_load_binding.json",
+    "sha256": "39ad0d6a289caba71b582ecff4a747a0fd32a7fa575801427fddba3688e40887"
+  },
+  "controls": {
+    "cuda_visible_devices": "",
+    "gpu_execution": false,
+    "inference": false,
+    "model_load": "cpu_only",
+    "network_access": false,
+    "provider_promotion": false
+  },
+  "ended_at_utc": "2026-07-25T16:59:32.555193+00:00",
+  "model": {
+    "class": "EomtDinov3ForUniversalSegmentation",
+    "config_model_type": "eomt_dinov3",
+    "config_num_labels": 133,
+    "device": "cpu",
+    "parameter_count": 23356934,
+    "pretrained_head_status": "loaded_upstream_coco_panoptic_head_only; 66-class body_parts_v2 target head remains uninstantiated and unpromoted"
+  },
+  "next_safe_action": "A new binding must independently admit GPU use, instantiate the random 66-class target head, and run shadow-only inference on governed real-adult assets before any provider/tournament claim.",
+  "self_sha256": "77737e62b79a136c375273ab5b260a8f057a7c9fdaadf1cde22710b5bff57608",
+  "snapshot_verified": [
+    {
+      "filename": "model.safetensors",
+      "sha256": "1fed3231445cce739e368c1828f49215459ca33ba56b6712d48e3058274c5d6f",
+      "size_bytes": 93450628
+    },
+    {
+      "filename": "config.json",
+      "sha256": "8baa79f9cc2d41a4e01f575efb97b0aad1353ce955c9e95b7da4c8f61f1034d3",
+      "size_bytes": 6703
+    },
+    {
+      "filename": "preprocessor_config.json",
+      "sha256": "ce1554014d6dcea56b2f352e564275c9ec4a07c5efee704742fe3ed128550e2e",
+      "size_bytes": 436
+    },
+    {
+      "filename": "README.md",
+      "sha256": "1e13062ee2842cd1e92206b7a7ecd3944a243b169d0da8f43e04d94a31794165",
+      "size_bytes": 3118
+    }
+  ],
+  "started_at_utc": "2026-07-25T16:59:03.180424+00:00",
+  "status": "EOMT_CPU_SHADOW_LOAD_PASS"
+}

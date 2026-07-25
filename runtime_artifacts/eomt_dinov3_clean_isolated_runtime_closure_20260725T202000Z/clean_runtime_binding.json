@@ -1,0 +1,52 @@
+{
+  "acceptance": {
+    "pass_status": "CLEAN_ISOLATED_RUNTIME_CLOSURE_IMPORT_PASS",
+    "terminal_receipt": "CLEAN_ISOLATED_RUNTIME_RECEIPT.json",
+    "next_safe_action": "Create one new immutable CPU-only EoMT shadow-load binding that consumes this V3 closure. This closure does not load weights, call CUDA, or authorize a provider."
+  },
+  "artifact_type": "eomt_dinov3_clean_isolated_runtime_closure_binding.v4",
+  "base_contract": {
+    "eomt_lock": "env/eomt_dinov3_runtime_v2.lock.json",
+    "eomt_lock_sha256": "33074535ca8d7e7c022006b54187dbb5a84e51ff86d6d9801e57482f44610295",
+    "requirements_lock": "env/eomt_dinov3_clean_runtime.requirements_v3.lock.txt",
+    "requirements_lock_sha256": "1b65c8a29899b2ef7812144e7937223ee822c2e867a1dc867b600650c33ced14",
+    "requirements_count": 54,
+    "scipy_candidate_receipt": "runtime_artifacts/eomt_dinov3_scipy_dependency_recovery_20260725T200000Z/SCIPY_STAGE_RECEIPT.json",
+    "scipy_candidate_receipt_sha256": "4e2185eda1404821cb36b36ae5e263e366ed42356dc1fa7973cf1f62ab4fa252",
+    "torch_candidate_receipt": "runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/CLEAN_TORCH_CLOSURE_STAGE_RECEIPT.json",
+    "torch_candidate_receipt_sha256": "23007311c018259c71e5f6c9cc52fbac4d4fd8e57b6253305ca878909f7582c5",
+    "transformers_candidate_receipt": "runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/CANDIDATE_CLOSURE_RECEIPT.json",
+    "transformers_candidate_receipt_sha256": "d385c9f152395bc70983d4f5a7bb3ffeb1495935f55b1fcc907b9df7cf0c57ce"
+  },
+  "controls": {
+    "gpu_execution": false,
+    "model_load": false,
+    "network_install": false,
+    "no_system_site_packages": true,
+    "no_overwrite": true,
+    "provider_promotion": false,
+    "single_launch_only": true
+  },
+  "environment": {
+    "base_python": "/usr/bin/python3",
+    "python_version": "CPython 3.11",
+    "system_site_packages": false,
+    "target": "runtime_artifacts/eomt_dinov3_clean_isolated_runtime_closure_20260725T202000Z/venv"
+  },
+  "execution_identity": {
+    "network_volume_id": "o9qv2ld91c",
+    "pod_id": "68psfqtaogg7s7",
+    "pod_name": "vitreous_beige_centipede",
+    "volume_mount": "/workspace"
+  },
+  "predecessors": {
+    "cpu_shadow_load_receipt": "runtime_artifacts/eomt_dinov3_cpu_shadow_load_20260725T194500Z/EOMT_CPU_SHADOW_LOAD_RECEIPT.json",
+    "cpu_shadow_load_receipt_sha256": "8403e4c796ae2a518b259fd367220f5c933304ee0a9905f1fa95d4c15fb0cfa8",
+    "cpu_shadow_load_retry_prohibited": true,
+    "root_cause": "The V3 launcher omitted the sealed SciPy wheel directory from offline --find-links. V4 retains the exact V3 54-package lock and candidate hashes, adds the omitted local wheel source, and reconstructs a new no-system-site-packages environment.",
+    "v3_closure_receipt": "runtime_artifacts/eomt_dinov3_clean_isolated_runtime_closure_20260725T201000Z/CLEAN_ISOLATED_RUNTIME_RECEIPT.json",
+    "v3_closure_receipt_sha256": "6ea1b4e01738efb6837d1f886503e05b23752842add8ea1b3486f1898af5f7b4",
+    "v3_closure_retry_prohibited": true
+  },
+  "self_sha256": "6f871b0971f476cc7ec8144bbaf11170fbf3722d413f99e17bf9a93c36c3b3ff"
+}

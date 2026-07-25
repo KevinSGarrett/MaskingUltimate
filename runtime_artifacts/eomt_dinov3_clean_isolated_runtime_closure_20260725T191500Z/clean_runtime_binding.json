@@ -1,0 +1,50 @@
+{
+  "acceptance": {
+    "pass_status": "CLEAN_ISOLATED_RUNTIME_CLOSURE_IMPORT_PASS",
+    "terminal_receipt": "CLEAN_ISOLATED_RUNTIME_RECEIPT.json",
+    "next_safe_action": "Create one new immutable shadow-only EoMT model-load binding. This closure does not load model weights, call CUDA, or authorize a provider."
+  },
+  "artifact_type": "eomt_dinov3_clean_isolated_runtime_closure_binding.v2",
+  "base_contract": {
+    "eomt_lock": "env/eomt_dinov3_runtime_v2.lock.json",
+    "eomt_lock_sha256": "33074535ca8d7e7c022006b54187dbb5a84e51ff86d6d9801e57482f44610295",
+    "requirements_lock": "env/eomt_dinov3_clean_runtime.requirements_v2.lock.txt",
+    "requirements_lock_sha256": "f5c207675e14f9352fe13191c047e1bf306044e97d15da8dac4b7093b97d0d98",
+    "requirements_count": 53,
+    "torch_candidate_receipt": "runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/CLEAN_TORCH_CLOSURE_STAGE_RECEIPT.json",
+    "torch_candidate_receipt_sha256": "23007311c018259c71e5f6c9cc52fbac4d4fd8e57b6253305ca878909f7582c5",
+    "transformers_candidate_receipt": "runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/CANDIDATE_CLOSURE_RECEIPT.json",
+    "transformers_candidate_receipt_sha256": "d385c9f152395bc70983d4f5a7bb3ffeb1495935f55b1fcc907b9df7cf0c57ce"
+  },
+  "controls": {
+    "gpu_execution": false,
+    "model_load": false,
+    "network_install": false,
+    "no_system_site_packages": true,
+    "no_overwrite": true,
+    "provider_promotion": false,
+    "single_launch_only": true
+  },
+  "environment": {
+    "base_python": "/usr/bin/python3",
+    "python_version": "CPython 3.11",
+    "system_site_packages": false,
+    "target": "runtime_artifacts/eomt_dinov3_clean_isolated_runtime_closure_20260725T191500Z/venv"
+  },
+  "execution_identity": {
+    "network_volume_id": "o9qv2ld91c",
+    "pod_id": "68psfqtaogg7s7",
+    "pod_name": "vitreous_beige_centipede",
+    "volume_mount": "/workspace"
+  },
+  "predecessors": {
+    "inherited_site_v1_receipt": "runtime_artifacts/eomt_dinov3_isolated_runtime_closure_20260725T183000Z/ISOLATED_RUNTIME_RECEIPT.json",
+    "inherited_site_v1_receipt_sha256": "fda8f2b502d8be1b76d9db8163f2f206ddf84175ab1d5e358fead1c741e353b6",
+    "inherited_site_v1_retry_prohibited": true,
+    "pycairo_wheel_stage_receipt": "runtime_artifacts/eomt_dinov3_pycairo_dependency_recovery_20260725T184500Z/PYCAIRO_STAGE_RECEIPT.json",
+    "pycairo_wheel_stage_receipt_sha256": "de50afc6f1000bbcafe052633b6735f3b665dff9dbb479d66162135a5e26aed0",
+    "pycairo_wheel_stage_retry_prohibited": true,
+    "root_cause": "The prior closure inherited unrelated system-site packages. This binding creates a clean CPython 3.11 environment and installs only 53 hash-bound wheels staged by the two accepted candidates."
+  },
+  "self_sha256": "d1e42cc793260a51fe8837bb661d74607fe87519bf0c8003c18344922a5fcfec"
+}

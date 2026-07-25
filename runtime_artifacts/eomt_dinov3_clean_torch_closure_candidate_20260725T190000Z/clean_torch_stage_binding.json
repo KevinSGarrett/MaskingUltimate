@@ -1,0 +1,38 @@
+{
+  "acceptance": {
+    "pass_status": "CLEAN_TORCH_CLOSURE_STAGE_PASS",
+    "terminal_receipt": "CLEAN_TORCH_CLOSURE_STAGE_RECEIPT.json",
+    "next_safe_action": "Create a hash-bound combined requirements lock from this candidate and the prior 27-wheel Transformers candidate, then run one new clean isolated-runtime closure."
+  },
+  "artifact_type": "eomt_dinov3_clean_torch_closure_stage_binding.v1",
+  "controls": {
+    "gpu_execution": false,
+    "model_load": false,
+    "network_download": true,
+    "package_install": false,
+    "provider_promotion": false,
+    "single_launch_only": true
+  },
+  "execution_identity": {
+    "network_volume_id": "o9qv2ld91c",
+    "pod_id": "68psfqtaogg7s7",
+    "pod_name": "vitreous_beige_centipede",
+    "volume_mount": "/workspace"
+  },
+  "package_target": {
+    "constraint": "torch==2.11.0+cu128",
+    "extra_index_url": "https://pypi.org/simple",
+    "index_url": "https://download.pytorch.org/whl/cu128",
+    "mode": "wheel_only_with_resolved_runtime_dependencies",
+    "reason": "A clean isolated environment is required because both inherited PyGObject and the source .train environment have unrelated `pip check` defects. The exact CUDA torch version was read-only verified as available from the official cu128 index."
+  },
+  "predecessors": {
+    "base_train_pip_check": "opencv-contrib-python 5.0.0.93 requires numpy>=2 while base holds numpy 1.26.4; base cloning cannot meet the full closure contract.",
+    "pycairo_stage_receipt": "runtime_artifacts/eomt_dinov3_pycairo_dependency_recovery_20260725T184500Z/PYCAIRO_STAGE_RECEIPT.json",
+    "pycairo_stage_receipt_sha256": "de50afc6f1000bbcafe052633b6735f3b665dff9dbb479d66162135a5e26aed0",
+    "pycairo_stage_retry_prohibited": true,
+    "transformers_candidate_receipt": "runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/CANDIDATE_CLOSURE_RECEIPT.json",
+    "transformers_candidate_receipt_sha256": "d385c9f152395bc70983d4f5a7bb3ffeb1495935f55b1fcc907b9df7cf0c57ce"
+  },
+  "self_sha256": "550f4ce8295c022ed000a572cc60883430b029142404a17e704f7fa6780ce3ae"
+}

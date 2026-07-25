@@ -1,0 +1,66 @@
+{
+  "artifact_type": "eomt_dinov3_isolated_runtime_closure_receipt.v1",
+  "bindings": {
+    "candidate_receipt": "runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/CANDIDATE_CLOSURE_RECEIPT.json",
+    "candidate_receipt_sha256": "d385c9f152395bc70983d4f5a7bb3ffeb1495935f55b1fcc907b9df7cf0c57ce",
+    "requirements_lock": "env/eomt_dinov3_runtime.requirements_v1.lock.txt",
+    "requirements_lock_sha256": "8d19573f86d2169067d86e9b2c657db6199effeb3dbb14675aef5412500b12e4"
+  },
+  "controls": {
+    "gold_authority": false,
+    "gpu_execution": false,
+    "model_load": false,
+    "network_install": false,
+    "overwrite_allowed": false,
+    "provider_promotion": false
+  },
+  "create_venv": {
+    "argv": [
+      "/workspace/maskfactory/.train_cu128_ada/bin/python",
+      "-m",
+      "venv",
+      "--system-site-packages",
+      "/workspace/maskfactory/runtime_artifacts/eomt_dinov3_isolated_runtime_closure_20260725T183000Z/venv"
+    ],
+    "output": "",
+    "returncode": 0
+  },
+  "ended_at_utc": "2026-07-25T16:20:39.924646+00:00",
+  "environment_preserved": "runtime_artifacts/eomt_dinov3_isolated_runtime_closure_20260725T183000Z/venv",
+  "error": {
+    "message": "pip check failed",
+    "traceback": "Traceback (most recent call last):\n  File \"/workspace/maskfactory/runtime_artifacts/eomt_dinov3_isolated_runtime_closure_20260725T183000Z/create_isolated_runtime.py\", line 31, in main\n    if d[\"pip_check\"][\"returncode\"]:raise RuntimeError(\"pip check failed\")\n                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: pip check failed\n",
+    "type": "RuntimeError"
+  },
+  "install": {
+    "argv": [
+      "/workspace/maskfactory/runtime_artifacts/eomt_dinov3_isolated_runtime_closure_20260725T183000Z/venv/bin/python",
+      "-m",
+      "pip",
+      "install",
+      "--disable-pip-version-check",
+      "--no-index",
+      "--find-links",
+      "/workspace/maskfactory/runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels",
+      "--require-hashes",
+      "--ignore-installed",
+      "-r",
+      "/workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt"
+    ],
+    "output": "Looking in links: /workspace/maskfactory/runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/annotated_doc-0.0.4-py3-none-any.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 2))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/anyio-4.14.2-py3-none-any.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 3))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/certifi-2026.7.22-py3-none-any.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 4))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/click-8.4.2-py3-none-any.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 5))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/filelock-3.32.0-py3-none-any.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 6))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/fsspec-2026.6.0-py3-none-any.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 7))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/h11-0.16.0-py3-none-any.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 8))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/hf_xet-1.5.2-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 9))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/httpcore-1.0.9-py3-none-any.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 10))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/httpx-0.28.1-py3-none-any.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 11))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/huggingface_hub-1.24.0-py3-none-any.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 12))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/idna-3.18-py3-none-any.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 13))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/markdown_it_py-4.2.0-py3-none-any.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 14))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/mdurl-0.1.2-py3-none-any.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 15))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/numpy-2.4.6-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 16))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/packaging-26.2-py3-none-any.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 17))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/pygments-2.20.0-py3-none-any.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 18))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/pyyaml-6.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 19))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/regex-2026.7.19-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 20))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/rich-15.0.0-py3-none-any.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 21))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 22))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/shellingham-1.5.4-py2.py3-none-any.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 23))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/tokenizers-0.22.2-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 24))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/tqdm-4.69.1-py3-none-any.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 25))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/transformers-5.13.0-py3-none-any.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 26))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/typer-0.27.0-py3-none-any.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 27))\nProcessing ./runtime_artifacts/eomt_dinov3_runtime_closure_candidate_20260725T181500Z/wheels/typing_extensions-4.16.0-py3-none-any.whl (from -r /workspace/maskfactory/env/eomt_dinov3_runtime.requirements_v1.lock.txt (line 28))\nInstalling collected packages: typing_extensions, tqdm, shellingham, safetensors, regex, PyYAML, Pygments, packaging, numpy, mdurl, idna, hf-xet, h11, fsspec, filelock, click, certifi, annotated-doc, markdown-it-py, httpcore, anyio, rich, httpx, typer, huggingface_hub, tokenizers, transformers\nSuccessfully installed PyYAML-6.0.3 Pygments-2.20.0 annotated-doc-0.0.4 anyio-4.14.2 certifi-2026.7.22 click-8.4.2 filelock-3.32.0 fsspec-2026.6.0 h11-0.16.0 hf-xet-1.5.2 httpcore-1.0.9 httpx-0.28.1 huggingface_hub-1.24.0 idna-3.18 markdown-it-py-4.2.0 mdurl-0.1.2 numpy-2.4.6 packaging-26.2 regex-2026.7.19 rich-15.0.0 safetensors-0.8.0 shellingham-1.5.4 tokenizers-0.22.2 tqdm-4.69.1 transformers-5.13.0 typer-0.27.0 typing_extensions-4.16.0\n",
+    "returncode": 0
+  },
+  "pip_check": {
+    "argv": [
+      "/workspace/maskfactory/runtime_artifacts/eomt_dinov3_isolated_runtime_closure_20260725T183000Z/venv/bin/python",
+      "-m",
+      "pip",
+      "check"
+    ],
+    "output": "pygobject 3.42.1 requires pycairo, which is not installed.\n",
+    "returncode": 1
+  },
+  "self_sha256": "83b644809e7518030d669de5e2987e0f50d010860891ce6dd1a7afcba74c402a",
+  "started_at_utc": "2026-07-25T16:19:01.046738+00:00",
+  "status": "ISOLATED_RUNTIME_CLOSURE_FAIL"
+}

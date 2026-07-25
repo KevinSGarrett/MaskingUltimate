@@ -1,0 +1,24 @@
+{
+  "artifact_type": "eomt_dinov3_cpu_shadow_load_receipt.v1",
+  "binding": {
+    "path": "runtime_artifacts/eomt_dinov3_cpu_shadow_load_20260725T194500Z/cpu_shadow_load_binding.json",
+    "sha256": "ff57c965ef50be5191ff4d3c1542bd6bead2fac8b9099221a72b8cb249950ea0"
+  },
+  "controls": {
+    "cuda_visible_devices": "",
+    "gpu_execution": false,
+    "inference": false,
+    "model_load": "cpu_only",
+    "network_access": false,
+    "provider_promotion": false
+  },
+  "ended_at_utc": "2026-07-25T16:43:53.147548+00:00",
+  "error": {
+    "message": "\nEomtDinov3Loss requires the scipy library but it was not found in your environment. You can install it with pip:\n`pip install scipy`. Please note that you may need to restart your runtime after installation.\n",
+    "traceback": "Traceback (most recent call last):\n  File \"/workspace/maskfactory/runtime_artifacts/eomt_dinov3_cpu_shadow_load_20260725T194500Z/run_cpu_shadow_load.py\", line 76, in main\n    model = EomtDinov3ForUniversalSegmentation.from_pretrained(\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/maskfactory/runtime_artifacts/eomt_dinov3_clean_isolated_runtime_closure_20260725T191500Z/venv/lib/python3.11/site-packages/transformers/modeling_utils.py\", line 4324, in from_pretrained\n    model = cls(config, *model_args, **model_kwargs)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/maskfactory/runtime_artifacts/eomt_dinov3_clean_isolated_runtime_closure_20260725T191500Z/venv/lib/python3.11/site-packages/transformers/models/eomt_dinov3/modeling_eomt_dinov3.py\", line 1196, in __init__\n    self.criterion = EomtDinov3Loss(config=config, weight_dict=self.weight_dict)\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/maskfactory/runtime_artifacts/eomt_dinov3_clean_isolated_runtime_closure_20260725T191500Z/venv/lib/python3.11/site-packages/transformers/models/eomt_dinov3/modeling_eomt_dinov3.py\", line 723, in __init__\n    requires_backends(self, [\"scipy\"])\n  File \"/workspace/maskfactory/runtime_artifacts/eomt_dinov3_clean_isolated_runtime_closure_20260725T191500Z/venv/lib/python3.11/site-packages/transformers/utils/import_utils.py\", line 2119, in requires_backends\n    raise ImportError(\"\".join(failed))\nImportError: \nEomtDinov3Loss requires the scipy library but it was not found in your environment. You can install it with pip:\n`pip install scipy`. Please note that you may need to restart your runtime after installation.\n\n",
+    "type": "ImportError"
+  },
+  "self_sha256": "dcd62448bc202f4bd80839387e279e3a8e3e803e5aefed1dd26d8786464c764e",
+  "started_at_utc": "2026-07-25T16:43:25.123212+00:00",
+  "status": "EOMT_CPU_SHADOW_LOAD_FAIL"
+}

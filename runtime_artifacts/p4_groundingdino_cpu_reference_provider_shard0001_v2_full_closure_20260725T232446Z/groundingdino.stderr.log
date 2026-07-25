@@ -1,0 +1,19 @@
+FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+UserWarning: Failed to load custom C++ ops. Running on CPU mode Only!
+Traceback (most recent call last):
+  File "/workspace/maskfactory/tools/run_groundingdino_wsl.py", line 457, in <module>
+    main()
+  File "/workspace/maskfactory/tools/run_groundingdino_wsl.py", line 443, in main
+    result = run_batch(
+             ^^^^^^^^^^
+  File "/workspace/maskfactory/tools/run_groundingdino_wsl.py", line 306, in run_batch
+    outputs = _load_checkpoint(
+              ^^^^^^^^^^^^^^^^^
+  File "/workspace/maskfactory/tools/run_groundingdino_wsl.py", line 75, in _load_checkpoint
+    document = json.loads(path.read_text(encoding="utf-8"))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1059, in read_text
+    return f.read()
+           ^^^^^^^^
+  File "<frozen codecs>", line 322, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0x80 in position 64: invalid start byte

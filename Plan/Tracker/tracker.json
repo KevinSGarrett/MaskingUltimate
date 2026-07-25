@@ -11695,8 +11695,8 @@
       "is_exit_gate": false,
       "hard_blocker": false,
       "conditional": false,
-      "status": "partially_complete",
-      "percent_complete": 85,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-22T18:42:24+00:00",
@@ -11712,12 +11712,17 @@
           "ts": "2026-07-22T18:55:53+00:00",
           "actor": "codex",
           "text": "Correction to immediately prior tracker evidence entry: the shell resolved the evidence hash from Plan/Tracker and left that entry's SHA value empty. The exact tracked evidence SHA-256 is 0954318c66c5a5f97ea1a1da4774bdc8339564df0160f78e9ffb30de6541a9db."
+        },
+        {
+          "ts": "2026-07-25T19:37:15+00:00",
+          "actor": "codex",
+          "text": "Distinct user-authorized Pod 68psfqtaogg7s7 (vitreous_beige_centipede) with the unchanged o9qv2ld91c /workspace volume read-only reverified the exact prior 15-file package from old Pod 1q4ji0gg1fkhvt: descriptor, manifest, five chunks, reconstructed archive, and separate-process restored-tree hashes all match. No sync, fault seed, deletion, or package/model authority change."
         }
       ],
-      "evidence": "qa/live_verification/runpod_package_persistence_and_restore_20260722.json SHA256=0954318c66c5a5f97ea1a1da4774bdc8339564df0160f78e9ffb30de6541a9db; runtime_artifacts/runpod_package_persistence_20260722/{preflight,live_sync,live_sync_resume,live_sync_hardened_resume,live_sync_missing_repair,live_sync_corrupt_repair,live_sync_partial_repair}.json; qa/live_verification/dvc_packages_first_push_restore_20260722.json SHA256=6321e81bab426e4513a2b16fc1b5f456292cab21714588fd74be342906de1354",
+      "evidence": "runtime_artifacts/runpod_package_pod_replacement_restore_20260725T205000Z/POD_REPLACEMENT_RESTORE_RECEIPT.json SHA-256 ec10a935e311a6a909f3b54c3113753566a815df416e610dce1fd7b4296fb6b4; verifier SHA-256 0eb9dfe828a54ab28112c1f89e93a3ebc2f8d710a23175a0aaf27baed862d489",
       "blocked_reason": null,
       "created_at": "2026-07-22T18:41:45+00:00",
-      "updated_at": "2026-07-22T18:55:53+00:00",
+      "updated_at": "2026-07-25T19:37:15+00:00",
       "orphaned": false
     },
     "MF-P1-10.01": {

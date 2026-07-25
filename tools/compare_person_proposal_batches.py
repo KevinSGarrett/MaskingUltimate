@@ -94,13 +94,14 @@ def compare_batches(
     groundingdino_path: Path,
     yolo_path: Path,
     platform: str,
+    expected_lane: str = "reference_and_tournament_input",
     iou_min: float = 0.50,
     groundingdino_confidence_min: float | None = None,
     yolo_confidence_min: float | None = None,
 ) -> dict[str, Any]:
     shard = validate_shard(
         shard_path,
-        expected_lane="reference_and_tournament_input",
+        expected_lane=expected_lane,
         platform=platform,
     )
     outputs = []
@@ -231,6 +232,11 @@ def main() -> None:
     parser.add_argument("--groundingdino-output", type=Path, required=True)
     parser.add_argument("--yolo-output", type=Path, required=True)
     parser.add_argument("--platform", choices=("local", "runpod"), required=True)
+    parser.add_argument(
+        "--expected-lane",
+        default="reference_and_tournament_input",
+        help="Exact governed shard lane; defaults to the historical reference lane.",
+    )
     parser.add_argument("--iou-min", type=float, default=0.50)
     parser.add_argument("--groundingdino-confidence-min", type=float)
     parser.add_argument("--yolo-confidence-min", type=float)
@@ -241,6 +247,7 @@ def main() -> None:
         groundingdino_path=args.groundingdino_output,
         yolo_path=args.yolo_output,
         platform=args.platform,
+        expected_lane=args.expected_lane,
         iou_min=args.iou_min,
         groundingdino_confidence_min=args.groundingdino_confidence_min,
         yolo_confidence_min=args.yolo_confidence_min,

@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 from PIL import Image
 
-from maskfactory.nude_corpus_intake import canonical_sha256
+from maskfactory.nude_corpus_intake import NudeCorpusIntakeError, canonical_sha256
 
 
 def _module():
@@ -24,14 +24,14 @@ def _sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _fixture(tmp_path: Path):
+def _fixture(tmp_path: Path, *, lane: str = "reference_and_tournament_input"):
     image = tmp_path / "source.png"
     Image.new("RGB", (100, 80), "white").save(image)
     sample = {
         "sample_id": "sample-1",
         "source_sha256": _sha(image),
         "source_path_readonly": str(image),
-        "source_role": "reference_and_tournament_input",
+        "source_role": lane,
         "source_split": "unsplit_reference",
         "source_labels": [],
         "annotation_ref": None,
@@ -39,7 +39,7 @@ def _fixture(tmp_path: Path):
     shard_body = {
         "schema_version": "maskfactory.nude_batch_shard.v1",
         "artifact_type": "tournament_sample_set",
-        "batch_lane": "reference_and_tournament_input",
+        "batch_lane": lane,
         "batch_number": 1,
         "platform": "runpod",
         "sample_count": 1,
@@ -104,6 +104,27 @@ def test_complete_outputs_compare_as_non_authoritative_catalog(tmp_path: Path) -
     assert report["record_count"] == 1
     assert report["production_mask_authority"] is False
     assert len(report["self_sha256"]) == 64
+
+
+def test_non_reference_lane_requires_an_explicit_exact_contract(tmp_path: Path) -> None:
+    runner = _module()
+    lane = "bbox_prompt_and_action_tag_supervision"
+    shard, (gdino, yolo) = _fixture(tmp_path, lane=lane)
+    report = runner.compare_batches(
+        shard_path=shard,
+        groundingdino_path=gdino,
+        yolo_path=yolo,
+        platform="runpod",
+        expected_lane=lane,
+    )
+    assert report["batch_lane"] == lane
+    with pytest.raises(NudeCorpusIntakeError, match="shard_contract_invalid"):
+        runner.compare_batches(
+            shard_path=shard,
+            groundingdino_path=gdino,
+            yolo_path=yolo,
+            platform="runpod",
+        )
 
 
 def test_comparison_may_raise_but_never_lower_provider_execution_threshold(

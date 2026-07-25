@@ -1,0 +1,22 @@
+{
+  "artifact_type": "canonical_polygon_source_label_contracts",
+  "authority_claimed": false,
+  "claim_limits": [
+    "This contract binds the raw buttocks label only to a coarse calibration candidate.",
+    "It cannot infer left/right glute laterality, source qualification, critic controls, gold, training truth, or production masks.",
+    "Every selected record remains subject to exact re-rasterization and per-record visual screening."
+  ],
+  "critic_positive_control_authority_granted": false,
+  "gold_or_production_authority_granted": false,
+  "schema_version": "maskfactory.canonical_polygon_source_label_contracts.v1",
+  "source_label_contracts": {
+    "buttocks": {
+      "candidate_kind": "coarse_anatomy",
+      "canonical_label": "buttocks_region",
+      "eligible_dataset_ids": [
+        "roboflow_nsegnu_v1",
+        "roboflow_nweud_v1"
+      ]
+    }
+  }
+}

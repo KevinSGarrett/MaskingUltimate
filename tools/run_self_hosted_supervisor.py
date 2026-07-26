@@ -237,6 +237,7 @@ def _inbox_totals(inbox_root: Path) -> dict[str, int]:
         "openrouter_duplicate_blocked": 0,
         "serverless_missions": 0,
         "serverless_completed": 0,
+        "serverless_failed": 0,
     }
     if not inbox_root.is_dir():
         return totals
@@ -276,9 +277,52 @@ def _inbox_totals(inbox_root: Path) -> dict[str, int]:
                 totals["openrouter_duplicate_blocked"] += 1
         elif route == "serverless_overflow":
             totals["serverless_missions"] += 1
-            if isinstance(terminal, dict) and terminal.get("disposition") == "completed":
+            native_ready = _serverless_native_ready(mission_root)
+            if native_ready is True:
+                totals["serverless_completed"] += 1
+            elif native_ready is False or (
+                isinstance(terminal, dict)
+                and terminal.get("disposition") == "failed"
+            ):
+                totals["serverless_failed"] += 1
+            elif (
+                isinstance(terminal, dict)
+                and terminal.get("disposition") == "completed"
+            ):
                 totals["serverless_completed"] += 1
     return totals
+
+
+def _serverless_native_ready(mission_root: Path) -> bool | None:
+    """Recover the SAM semantic result from immutable broker evidence."""
+    route_state_path = mission_root / "serverless_route_state.json"
+    if not route_state_path.is_file():
+        return None
+    try:
+        route_state = json.loads(route_state_path.read_text(encoding="utf-8"))
+        last_result = route_state.get("last_result")
+        if not isinstance(last_result, dict):
+            return None
+        provider_status = json.loads(last_result.get("provider_status_json", ""))
+        output = provider_status.get("output")
+        if not isinstance(output, dict):
+            return None
+        stdout_tail = output.get("stdout_tail")
+        if not isinstance(stdout_tail, str):
+            return None
+    except (OSError, UnicodeError, json.JSONDecodeError, AttributeError):
+        return None
+    for line in reversed(stdout_tail.splitlines()):
+        try:
+            report = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if (
+            isinstance(report, dict)
+            and isinstance(report.get("native_box_runtime_ready"), bool)
+        ):
+            return report["native_box_runtime_ready"]
+    return None
 
 
 def main() -> int:

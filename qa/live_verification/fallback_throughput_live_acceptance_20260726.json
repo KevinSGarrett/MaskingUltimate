@@ -1,0 +1,67 @@
+{
+  "schema_version": "maskfactory.fallback_throughput_live_acceptance.v1",
+  "accepted_at": "2026-07-26T22:21:00Z",
+  "status": "PASS",
+  "scope": "unavailable-local-gpu governed OpenRouter and RunPod Serverless fallback throughput",
+  "openrouter": {
+    "missions_materialized": 57,
+    "completed": 51,
+    "historical_duplicate_identities_blocked": 6,
+    "queued_after_drain": 0,
+    "active_reservations_after_drain": 0,
+    "completed_cost_usd_today": 0.16196773,
+    "admission_remaining_usd": 9.33803227,
+    "direct_provider_bypass_used": false
+  },
+  "serverless": {
+    "automatic_missions_materialized": 3,
+    "automatic_terminal_jobs": 3,
+    "automatic_semantic_successes": 1,
+    "automatic_semantic_failures": 2,
+    "active_jobs_after_drain": 0,
+    "all_completed_jobs_today": 6,
+    "estimated_actual_usd_today": 1.0173,
+    "endpoint_id": "ib4xwfo6p1mbja",
+    "profile": "maskfactory",
+    "successful_mission_id": "92cacfcabb07fc44662e19f6a39acd8ec87e2c50b13048eb8831c2b0526adf22",
+    "successful_broker_job_id": "overflow-a9fe4471-096e-405f-bd15-970c39ddef5a",
+    "successful_provider_job_id": "25a6f026-67ba-493a-a80c-1b8e1e585c36-u1",
+    "successful_payload_canonical_sha256": "97ad3771aa99e1b6abfcee729fea1ec285fd256bd1c617b2e85c01eab8f8f192",
+    "successful_execution_raw_sha256": "3c84b1afe18a77c0ea631019aa5a5ebbf3206a15d3fb2953996e111a46fa9962",
+    "successful_execution_self_sha256": "8405735fae7f5d78f84cd8a0b3fb6912311aed13d3cc4f29206df98552b49e1d",
+    "successful_output_npz_sha256": "11effee23dc47370581a4b6e4cd9c015e59996a8a2a080ae390263d7c6b0525d",
+    "result_count": 3,
+    "inference_latency_ms": 532.2580490028486,
+    "model_load_latency_ms": 8819.641835987568,
+    "source_tree_clean": true,
+    "authority": "official_sam31_runtime_draft_candidates_only_no_gold_or_active_map_authority"
+  },
+  "restart_replay": {
+    "old_supervisor_pid": 49888,
+    "intermediate_supervisor_pid": 25040,
+    "new_supervisor_pid": 52556,
+    "new_generation": 7,
+    "v12_event_count_before": 14,
+    "v12_event_count_after": 14,
+    "v12_state_sha256_before": "ca669d6512c8fab6308cab82c579b941170e19ab2ed0470ff5100a102820b7d2",
+    "v12_state_sha256_after": "ca669d6512c8fab6308cab82c579b941170e19ab2ed0470ff5100a102820b7d2",
+    "openrouter_outputs_before": 51,
+    "openrouter_outputs_after": 51,
+    "duplicate_provider_reissue_observed": false
+  },
+  "evidence": {
+    "throughput_summary_sha256": "c9dcf4c075b11488af7b778ac4e2666d1dec708b13bf2631cf90eca78e5e52fb",
+    "throughput_event_ledger_sha256": "bb69920691e75f5981351e1e9174a45563730a7017de0d203fa2a294cf6ed75a",
+    "v12_route_state_raw_sha256": "838ea6d32fb40366674872076b4a81e7b264b5aa892d529d1005714a380ac7b6",
+    "v12_payload_raw_sha256": "5935a8c66468f89dbb14081caf4e1e6826c3b081678cd35161ca0fc2d59c6a9d",
+    "v12_preflight_sha256": "6a71dfc7948c9e96777d7c65c436f66d17aa606b9809a50dabee4c6a0f72ecae",
+    "v12_prepared_receipt_raw_sha256": "8622c206f2fe19fc4f0fea5e522ca01d8d252914f8bb8a820dec1f0dd98fc3fe"
+  },
+  "limitations": [
+    "This proves one successful real SAM Serverless workload after two automatically dispatched material successors in the repair window, not a 99.9 percent long-duration SLO.",
+    "OpenRouter outputs are advisory only; Codex retains implementation and acceptance authority.",
+    "Serverless output is draft-candidate evidence and does not grant gold-mask or production-map authority."
+  ],
+  "authority_claimed": false,
+  "self_sha256": "3c3e0751ac77639f9ddf234831f45437c74e638a8e61354f120e85947ae39110"
+}

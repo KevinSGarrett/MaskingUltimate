@@ -15,7 +15,7 @@ from maskfactory.steward.supervisor import (
     SupervisorAlreadyRunning,
     SupervisorStateError,
 )
-from tools.run_self_hosted_supervisor import build_parser
+from tools.run_self_hosted_supervisor import _inbox_totals, build_parser
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
@@ -269,10 +269,58 @@ def test_standalone_launcher_once_writes_terminal_state(tmp_path: Path) -> None:
         "openrouter_duplicate_blocked": 0,
         "serverless_missions": 0,
         "serverless_completed": 0,
+        "serverless_failed": 0,
     }
     assert len(events) == 1
     assert events[0]["cycle"]["dispatch_results"] == 0
     assert not (state_root / "owner.token").exists()
+
+
+def test_inbox_totals_reports_serverless_semantic_false_as_failed(
+    tmp_path: Path,
+) -> None:
+    inbox = tmp_path / "inbox"
+    failed = inbox / ("a" * 64)
+    passed = inbox / ("b" * 64)
+    for mission_root, native_ready in ((failed, False), (passed, True)):
+        mission_root.mkdir(parents=True)
+        (mission_root / "fallback_work_item.json").write_text(
+            json.dumps({"route": "serverless_overflow"}),
+            encoding="utf-8",
+        )
+        (mission_root / "fallback_terminal_receipt.json").write_text(
+            json.dumps({"disposition": "completed"}),
+            encoding="utf-8",
+        )
+        (mission_root / "serverless_route_state.json").write_text(
+            json.dumps(
+                {
+                    "last_result": {
+                        "provider_status_json": json.dumps(
+                            {
+                                "output": {
+                                    "stdout_tail": json.dumps(
+                                        {
+                                            "native_box_runtime_ready": native_ready,
+                                        }
+                                    )
+                                }
+                            }
+                        )
+                    }
+                }
+            ),
+            encoding="utf-8",
+        )
+
+    assert _inbox_totals(inbox) == {
+        "openrouter_missions": 0,
+        "openrouter_completed": 0,
+        "openrouter_duplicate_blocked": 0,
+        "serverless_missions": 2,
+        "serverless_completed": 1,
+        "serverless_failed": 1,
+    }
 
 
 def test_standalone_launcher_refuses_stale_tracker_path(tmp_path: Path) -> None:

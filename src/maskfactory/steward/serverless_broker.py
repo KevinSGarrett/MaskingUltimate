@@ -12,6 +12,7 @@ import hashlib
 import json
 import os
 import re
+import stat
 import subprocess
 import sys
 import time
@@ -25,8 +26,7 @@ MANAGER_PATH = Path(
     "tools/manage_runpod_serverless_overflow.py"
 )
 CONFIG_PATH = Path(
-    "/workspace/.maskfactory/serverless_overflow_control/"
-    "configs/runpod_serverless_overflow.yaml"
+    "/workspace/.maskfactory/serverless_overflow_control/" "configs/runpod_serverless_overflow.yaml"
 )
 BROKER_ROOT = Path("/workspace/.maskfactory/serverless_overflow_control")
 STATE_SCHEMA = "maskfactory.steward.serverless_route_state.v1"
@@ -108,12 +108,15 @@ def _validate_state(value: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def _atomic_write_json(path: Path, value: Mapping[str, Any]) -> None:
-    body = json.dumps(
-        value,
-        sort_keys=True,
-        indent=2,
-        ensure_ascii=False,
-    ).encode("utf-8") + b"\n"
+    body = (
+        json.dumps(
+            value,
+            sort_keys=True,
+            indent=2,
+            ensure_ascii=False,
+        ).encode("utf-8")
+        + b"\n"
+    )
     temporary = path.with_name(f".{path.name}.{os.getpid()}.tmp")
     descriptor = os.open(
         temporary,
@@ -135,12 +138,15 @@ def _atomic_write_json(path: Path, value: Mapping[str, Any]) -> None:
 
 
 def _write_exclusive_json(path: Path, value: Mapping[str, Any]) -> None:
-    body = json.dumps(
-        value,
-        sort_keys=True,
-        indent=2,
-        ensure_ascii=False,
-    ).encode("utf-8") + b"\n"
+    body = (
+        json.dumps(
+            value,
+            sort_keys=True,
+            indent=2,
+            ensure_ascii=False,
+        ).encode("utf-8")
+        + b"\n"
+    )
     descriptor = os.open(
         path,
         os.O_WRONLY | os.O_CREAT | os.O_EXCL,
@@ -152,9 +158,11 @@ def _write_exclusive_json(path: Path, value: Mapping[str, Any]) -> None:
         os.fsync(stream.fileno())
 
 
-def _default_command_runner(
+def _run_broker_command(
     command: Sequence[str],
     timeout_seconds: float,
+    *,
+    environment: Mapping[str, str] | None = None,
 ) -> Mapping[str, Any]:
     try:
         completed = subprocess.run(
@@ -163,6 +171,7 @@ def _default_command_runner(
             capture_output=True,
             text=True,
             timeout=timeout_seconds,
+            env=None if environment is None else dict(environment),
         )
     except subprocess.TimeoutExpired as exc:
         raise BrokerCommandTimeout("shared broker command timed out") from exc
@@ -176,14 +185,52 @@ def _default_command_runner(
     try:
         result = json.loads(completed.stdout)
     except json.JSONDecodeError as exc:
-        raise BrokerCommandProtocolError(
-            "shared broker output is not valid JSON"
-        ) from exc
+        raise BrokerCommandProtocolError("shared broker output is not valid JSON") from exc
     if not isinstance(result, dict):
-        raise BrokerCommandProtocolError(
-            "shared broker output is not a JSON object"
-        )
+        raise BrokerCommandProtocolError("shared broker output is not a JSON object")
     return result
+
+
+def _default_command_runner(
+    command: Sequence[str],
+    timeout_seconds: float,
+) -> Mapping[str, Any]:
+    return _run_broker_command(command, timeout_seconds)
+
+
+def _credential_command_runner(
+    credential_path: Path,
+) -> BrokerCommandRunner:
+    """Inject a protected RunPod key without placing it in argv or artifacts."""
+
+    path = Path(credential_path)
+    if not path.is_file():
+        raise ServerlessRouteError("protected RunPod credential file is missing")
+    if os.name != "nt" and stat.S_IMODE(path.stat().st_mode) != 0o600:
+        raise ServerlessRouteError("protected RunPod credential file must have mode 0600")
+
+    def run(
+        command: Sequence[str],
+        timeout_seconds: float,
+    ) -> Mapping[str, Any]:
+        try:
+            api_key = path.read_text(encoding="utf-8").strip()
+        except (OSError, UnicodeError) as exc:
+            raise ServerlessRouteError("protected RunPod credential file is unreadable") from exc
+        if not api_key or "\n" in api_key or "\r" in api_key:
+            raise ServerlessRouteError("protected RunPod credential file is invalid")
+        environment = dict(os.environ)
+        environment["RUNPOD_API_KEY"] = api_key
+        try:
+            return _run_broker_command(
+                command,
+                timeout_seconds,
+                environment=environment,
+            )
+        finally:
+            environment.pop("RUNPOD_API_KEY", None)
+
+    return run
 
 
 class BrokerOnlyServerlessRoute:
@@ -202,6 +249,7 @@ class BrokerOnlyServerlessRoute:
         broker_root: Path = BROKER_ROOT,
         python_executable: str = sys.executable,
         command_runner: BrokerCommandRunner | None = None,
+        runpod_api_key_file: Path | None = None,
         command_timeout_seconds: float = 45.0,
         clock: Callable[[], float] = time.time,
     ) -> None:
@@ -229,13 +277,9 @@ class BrokerOnlyServerlessRoute:
         try:
             payload = json.loads(self.payload_path.read_text(encoding="utf-8"))
         except (OSError, UnicodeError, json.JSONDecodeError) as exc:
-            raise ServerlessRouteError(
-                "immutable Serverless payload is unreadable"
-            ) from exc
+            raise ServerlessRouteError("immutable Serverless payload is unreadable") from exc
         if not isinstance(payload, dict) or not payload:
-            raise ServerlessRouteError(
-                "immutable Serverless payload must be a non-empty object"
-            )
+            raise ServerlessRouteError("immutable Serverless payload must be a non-empty object")
         self.payload = payload
         self.mission_id = mission_id
         self.session_id = session_id
@@ -250,7 +294,18 @@ class BrokerOnlyServerlessRoute:
             if not path.is_file():
                 raise ServerlessRouteError(f"shared broker {label} is missing")
         self.python_executable = python_executable
-        self.command_runner = command_runner or _default_command_runner
+        if command_runner is not None and runpod_api_key_file is not None:
+            raise ServerlessRouteError(
+                "custom broker command runner cannot also use a credential file"
+            )
+        self.runpod_api_key_file = (
+            Path(runpod_api_key_file) if runpod_api_key_file is not None else None
+        )
+        self.command_runner = command_runner or (
+            _credential_command_runner(self.runpod_api_key_file)
+            if self.runpod_api_key_file is not None
+            else _default_command_runner
+        )
         self.command_timeout_seconds = float(command_timeout_seconds)
         self.clock = clock
         self.state_path = self.mission_root / "serverless_route_state.json"
@@ -268,16 +323,17 @@ class BrokerOnlyServerlessRoute:
             "config_path": str(self.config_path),
             "config_sha256": _file_sha256(self.config_path),
             "broker_root": str(self.broker_root),
+            "runpod_api_key_file": (
+                str(self.runpod_api_key_file.resolve())
+                if self.runpod_api_key_file is not None
+                else None
+            ),
         }
         if self.state_path.exists():
-            self._state = _validate_state(
-                json.loads(self.state_path.read_text(encoding="utf-8"))
-            )
+            self._state = _validate_state(json.loads(self.state_path.read_text(encoding="utf-8")))
             for key, expected in self._identity.items():
                 if self._state.get(key) != expected:
-                    raise ServerlessRouteError(
-                        f"durable Serverless identity mismatch: {key}"
-                    )
+                    raise ServerlessRouteError(f"durable Serverless identity mismatch: {key}")
             if self._state["state"] == "reserving":
                 self._transition(
                     "reservation_unknown",
@@ -373,9 +429,7 @@ class BrokerOnlyServerlessRoute:
         if self._state["state"] == "decided":
             return copy.deepcopy(self._state["last_result"])
         if self._state["state"] != "intent_persisted":
-            raise ServerlessRouteError(
-                f"decide is not allowed from state {self._state['state']}"
-            )
+            raise ServerlessRouteError(f"decide is not allowed from state {self._state['state']}")
         try:
             result = self._command(
                 "decide",
@@ -385,18 +439,13 @@ class BrokerOnlyServerlessRoute:
         except BrokerCommandRejected as exc:
             self._transition("rejected", "decide_rejected", error=str(exc))
             raise
-        if (
-            result.get("session_id") != self.session_id
-            or result.get("profile") != self.profile
-        ):
+        if result.get("session_id") != self.session_id or result.get("profile") != self.profile:
             self._transition(
                 "rejected",
                 "decide_contradiction",
                 error="broker decision identity mismatch",
             )
-            raise BrokerCommandProtocolError(
-                "shared broker decision identity mismatch"
-            )
+            raise BrokerCommandProtocolError("shared broker decision identity mismatch")
         if result.get("route") != "serverless_overflow":
             self._transition(
                 "rejected",
@@ -404,9 +453,7 @@ class BrokerOnlyServerlessRoute:
                 result=result,
                 error="Serverless fallback is not selected",
             )
-            raise BrokerCommandRejected(
-                "shared broker did not select Serverless overflow"
-            )
+            raise BrokerCommandRejected("shared broker did not select Serverless overflow")
         self._transition(
             "decided",
             "serverless_decided",
@@ -425,14 +472,10 @@ class BrokerOnlyServerlessRoute:
         """Reserve shared budget/concurrency exactly once for this payload."""
         if self._state["state"] == "reserved":
             if self._state["requested_seconds"] != requested_seconds:
-                raise ServerlessRouteError(
-                    "requested seconds changed after reservation"
-                )
+                raise ServerlessRouteError("requested seconds changed after reservation")
             return copy.deepcopy(self._state["last_result"])
         if self._state["state"] != "decided":
-            raise ServerlessRouteError(
-                f"reserve is not allowed from state {self._state['state']}"
-            )
+            raise ServerlessRouteError(f"reserve is not allowed from state {self._state['state']}")
         if (
             isinstance(requested_seconds, bool)
             or not isinstance(requested_seconds, int)
@@ -481,9 +524,7 @@ class BrokerOnlyServerlessRoute:
                 "reserve_outcome_unknown",
                 error=str(exc),
             )
-            raise ServerlessRouteAmbiguous(
-                "reserve outcome must reconcile before retry"
-            ) from exc
+            raise ServerlessRouteAmbiguous("reserve outcome must reconcile before retry") from exc
         if (
             result.get("state") != "reserved"
             or result.get("session_id") != self.session_id
@@ -529,14 +570,10 @@ class BrokerOnlyServerlessRoute:
                 "reservation_report_failed",
                 error=str(exc),
             )
-            raise ServerlessRouteAmbiguous(
-                "reservation report remains unavailable"
-            ) from exc
+            raise ServerlessRouteAmbiguous("reservation report remains unavailable") from exc
         jobs = report.get("jobs")
         if not isinstance(jobs, list):
-            raise BrokerCommandProtocolError(
-                "shared broker report is missing jobs"
-            )
+            raise BrokerCommandProtocolError("shared broker report is missing jobs")
         matches = [
             job
             for job in jobs
@@ -553,9 +590,7 @@ class BrokerOnlyServerlessRoute:
                 result=report,
                 error="multiple broker jobs match one canonical payload",
             )
-            raise ServerlessRouteAmbiguous(
-                "multiple broker jobs match one canonical payload"
-            )
+            raise ServerlessRouteAmbiguous("multiple broker jobs match one canonical payload")
         if not matches:
             resolution = {
                 "resolution": "reservation_absent",
@@ -572,9 +607,7 @@ class BrokerOnlyServerlessRoute:
         job_id = job.get("job_id")
         state = job.get("state")
         if not isinstance(job_id, str) or not job_id:
-            raise BrokerCommandProtocolError(
-                "matched broker reservation has no job_id"
-            )
+            raise BrokerCommandProtocolError("matched broker reservation has no job_id")
         adopted = "terminal" if state in TERMINAL_BROKER_STATES else str(state)
         self._transition(
             adopted,
@@ -588,9 +621,7 @@ class BrokerOnlyServerlessRoute:
     def submit(self) -> dict[str, Any]:
         """Submit one reserved payload through the manager, never directly."""
         if self._state["state"] != "reserved":
-            raise ServerlessRouteError(
-                f"submit is not allowed from state {self._state['state']}"
-            )
+            raise ServerlessRouteError(f"submit is not allowed from state {self._state['state']}")
         job_id = self._state.get("broker_job_id")
         if not isinstance(job_id, str) or not job_id:
             raise ServerlessRouteError("reserved state has no broker_job_id")
@@ -654,9 +685,7 @@ class BrokerOnlyServerlessRoute:
                 "reconcile_missing_broker_job_id",
                 error="unknown submission has no broker job identity",
             )
-            raise ServerlessRouteAmbiguous(
-                "unknown submission has no broker job identity"
-            )
+            raise ServerlessRouteAmbiguous("unknown submission has no broker job identity")
         try:
             result = self._command(
                 "reconcile",
@@ -673,9 +702,7 @@ class BrokerOnlyServerlessRoute:
                 "reconcile_failed",
                 error=str(exc),
             )
-            raise ServerlessRouteAmbiguous(
-                "submission remains unreconciled"
-            ) from exc
+            raise ServerlessRouteAmbiguous("submission remains unreconciled") from exc
         broker_state = result.get("state")
         if broker_state in TERMINAL_BROKER_STATES:
             self._transition(
@@ -698,7 +725,5 @@ class BrokerOnlyServerlessRoute:
                 result=result,
                 error="unknown broker state",
             )
-            raise BrokerCommandProtocolError(
-                "shared broker returned an unknown job state"
-            )
+            raise BrokerCommandProtocolError("shared broker returned an unknown job state")
         return copy.deepcopy(dict(result))

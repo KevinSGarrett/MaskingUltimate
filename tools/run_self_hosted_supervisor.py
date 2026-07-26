@@ -41,6 +41,15 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--serverless-manager", type=Path, default=SERVERLESS_MANAGER_PATH)
     parser.add_argument("--serverless-config", type=Path, default=CONFIG_PATH)
     parser.add_argument("--serverless-broker-root", type=Path, default=BROKER_ROOT)
+    parser.add_argument(
+        "--serverless-api-key-file",
+        type=Path,
+        default=Path("/tmp/maskfactory-runpod-api-key"),
+        help=(
+            "Protected mode-0600 file used only to inject RUNPOD_API_KEY into "
+            "broker subprocesses; the key is never placed in argv or artifacts."
+        ),
+    )
     parser.add_argument("--openrouter-manager", type=Path, default=OPENROUTER_MANAGER_PATH)
     parser.add_argument("--openrouter-policy", type=Path, default=OPENROUTER_POLICY_PATH)
     parser.add_argument(
@@ -73,6 +82,7 @@ def main() -> int:
         serverless_manager_path=args.serverless_manager,
         serverless_config_path=args.serverless_config,
         serverless_broker_root=args.serverless_broker_root,
+        serverless_api_key_file=args.serverless_api_key_file,
         openrouter_manager_path=args.openrouter_manager,
         openrouter_policy_path=args.openrouter_policy,
         openrouter_manager_state_root=args.openrouter_state_root,

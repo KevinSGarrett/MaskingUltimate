@@ -135,6 +135,7 @@ class FallbackWorkDispatcher:
         openrouter_manager_path: Path,
         openrouter_policy_path: Path,
         openrouter_manager_state_root: Path,
+        serverless_api_key_file: Path | None = None,
         python_executable: str = sys.executable,
         serverless_factory: RouteFactory = BrokerOnlyServerlessRoute,
         openrouter_factory: RouteFactory = GovernedOpenRouterAdvisory,
@@ -160,6 +161,9 @@ class FallbackWorkDispatcher:
         self.openrouter_manager_path = Path(openrouter_manager_path)
         self.openrouter_policy_path = Path(openrouter_policy_path)
         self.openrouter_manager_state_root = Path(openrouter_manager_state_root)
+        self.serverless_api_key_file = (
+            Path(serverless_api_key_file) if serverless_api_key_file is not None else None
+        )
         self.python_executable = python_executable
         self.serverless_factory = serverless_factory
         self.openrouter_factory = openrouter_factory
@@ -381,6 +385,7 @@ class FallbackWorkDispatcher:
             config_path=self.serverless_config_path,
             broker_root=self.serverless_broker_root,
             python_executable=self.python_executable,
+            runpod_api_key_file=self.serverless_api_key_file,
         )
         if route.state["payload_sha256"] != item["payload_sha256"]:
             raise FallbackDispatchError("Serverless payload identity mismatch")

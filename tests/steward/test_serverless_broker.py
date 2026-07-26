@@ -3,6 +3,8 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import os
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -334,12 +336,84 @@ def test_duplicate_payload_collision_and_direct_endpoint_bypass_fail_closed(
         build(tmp_path, FakeBroker(), payload={"input": {"value": 2}})
 
     source = (
-        Path(__file__).parents[2]
-        / "src"
-        / "maskfactory"
-        / "steward"
-        / "serverless_broker.py"
+        Path(__file__).parents[2] / "src" / "maskfactory" / "steward" / "serverless_broker.py"
     ).read_text(encoding="utf-8")
     assert "urllib" not in source
     assert "requests." not in source
     assert "https://" not in source
+
+
+def test_protected_credential_is_injected_without_persistence(tmp_path: Path) -> None:
+    mission = tmp_path / "mission"
+    mission.mkdir()
+    payload_path = mission / "payload.json"
+    payload_path.write_text('{"input":{"prompt":"bounded"}}\n', encoding="utf-8")
+    manager = tmp_path / "manager.py"
+    manager.write_text(
+        "\n".join(
+            (
+                "import json",
+                "import os",
+                "print(json.dumps({",
+                "    'session_id': 'session-maskfactory',",
+                "    'profile': 'maskfactory',",
+                "    'route': 'serverless_overflow',",
+                "    'local_gpu': {'available': False},",
+                "    'credential_present': bool(os.environ.get('RUNPOD_API_KEY')),",
+                "}))",
+            )
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    config = tmp_path / "config.yaml"
+    config.write_text("config: true\n", encoding="utf-8")
+    credential = tmp_path / "runpod.token"
+    secret = "test-secret-never-persist"
+    credential.write_text(secret, encoding="utf-8")
+    if os.name != "nt":
+        credential.chmod(0o600)
+
+    route = BrokerOnlyServerlessRoute(
+        mission_root=mission,
+        mission_id="9" * 64,
+        session_id="session-maskfactory",
+        profile="maskfactory",
+        payload_path=payload_path,
+        manager_path=manager,
+        config_path=config,
+        broker_root=tmp_path / "broker",
+        python_executable=sys.executable,
+        runpod_api_key_file=credential,
+    )
+    decision_result = route.decide()
+
+    assert decision_result["credential_present"] is True
+    assert secret not in route.state_path.read_text(encoding="utf-8")
+    assert secret not in json.dumps(route.state)
+
+
+def test_protected_credential_must_exist_before_broker_reservation(
+    tmp_path: Path,
+) -> None:
+    mission = tmp_path / "mission"
+    mission.mkdir()
+    payload_path = mission / "payload.json"
+    payload_path.write_text('{"input":{"prompt":"bounded"}}\n', encoding="utf-8")
+    manager = tmp_path / "manager.py"
+    manager.write_text("# manager\n", encoding="utf-8")
+    config = tmp_path / "config.yaml"
+    config.write_text("config: true\n", encoding="utf-8")
+
+    with pytest.raises(ServerlessRouteError, match="credential file is missing"):
+        BrokerOnlyServerlessRoute(
+            mission_root=mission,
+            mission_id="8" * 64,
+            session_id="session-maskfactory",
+            profile="maskfactory",
+            payload_path=payload_path,
+            manager_path=manager,
+            config_path=config,
+            broker_root=tmp_path / "broker",
+            runpod_api_key_file=tmp_path / "missing.token",
+        )

@@ -1,0 +1,34 @@
+{
+  "schema_version": "maskfactory_local_workspace_hygiene.v1",
+  "local_drive": "C:",
+  "warning_free_gib": 75,
+  "new_allocation_floor_gib": 50,
+  "maximum_single_local_backup_bytes": 1073741824,
+  "full_repository_bundle_allowed": false,
+  "verified_checkpoint_retention_count": 2,
+  "verified_checkpoint_retention_hours": 24,
+  "preferred_runtime_artifact_root": "/workspace/maskfactory/runtime_artifacts",
+  "local_recovery_root": "F:\\CodexRecovery",
+  "google_drive_fallback_requires_live_probe": true,
+  "google_drive_manifest_fallback": {
+    "folder_id": "1p-C603pKnQZYay5hxarM2DGB6WVPXbfQ",
+    "folder_name": "MaskFactory_Recovery_Manifests",
+    "scope": "compact manifests and recovery receipts only",
+    "large_runtime_artifacts_allowed": false,
+    "last_verified_round_trip_utc": "2026-07-26T20:56:47Z",
+    "probe_sha256": "c558861c7b0bb005e98937f086c6868008fb654640191a2c1c3dd33dbac0aab1"
+  },
+  "main_threads": {
+    "maskfactory": "019f91d1-ea20-7d81-83ff-03d393eaa1f5",
+    "comfyui": "019f9200-4805-7632-83d3-ee9ae614c603"
+  },
+  "standalone_cron_automations_paused": [
+    "comfy-ui-main-timed-probe-anti-loop-supervisor",
+    "shared-openrouter-fallback-capability-supervisor",
+    "shared-serverless-fallback-reliability-supervisor"
+  ],
+  "session_reuse_automations": [
+    "maskfactory-serverless-continuation-recovery",
+    "persistently-wait-for-a6000-execution"
+  ]
+}

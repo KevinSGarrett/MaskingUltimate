@@ -1,0 +1,25 @@
+{
+  "schema_version": "maskfactory_google_drive_manifest_fallback_probe.v1",
+  "verified_at_utc": "2026-07-26T20:56:47Z",
+  "provider": "google_drive_connector",
+  "folder": {
+    "id": "1p-C603pKnQZYay5hxarM2DGB6WVPXbfQ",
+    "name": "MaskFactory_Recovery_Manifests",
+    "url": "https://drive.google.com/drive/folders/1p-C603pKnQZYay5hxarM2DGB6WVPXbfQ"
+  },
+  "file": {
+    "id": "1IJVntAiTN52zmy_98G_iu4kqSPiA9x23",
+    "name": "local_storage_session_hygiene_recovery_20260726.json",
+    "local_path": "qa/live_verification/local_storage_session_hygiene_recovery_20260726.json",
+    "bytes": 4028,
+    "local_sha256": "c558861c7b0bb005e98937f086c6868008fb654640191a2c1c3dd33dbac0aab1",
+    "downloaded_sha256": "c558861c7b0bb005e98937f086c6868008fb654640191a2c1c3dd33dbac0aab1",
+    "http_status": 200,
+    "byte_identical": true
+  },
+  "authority": {
+    "compact_manifests_and_receipts": true,
+    "large_runtime_artifacts": false,
+    "runtime_artifact_destination": "/workspace/maskfactory/runtime_artifacts"
+  }
+}

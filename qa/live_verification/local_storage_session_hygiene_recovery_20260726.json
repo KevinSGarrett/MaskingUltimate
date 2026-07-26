@@ -1,0 +1,103 @@
+{
+  "schema_version": "maskfactory_local_storage_session_hygiene_recovery.v1",
+  "recorded_at_utc": "2026-07-26T20:08:00Z",
+  "scope": "C:\\Comfy_UI_Main_Masking",
+  "outcome": "PASS_WITH_PRESERVED_DIRTY_CHECKOUT",
+  "storage": {
+    "initial_free_gib_approx": 2.5,
+    "final_free_gib": 84.119,
+    "allocation_floor_gib": 50,
+    "warning_threshold_gib": 75,
+    "full_repository_bundle_policy": "PROHIBITED",
+    "comfyui_project_assets_deleted": false,
+    "unique_uncommitted_work_deleted": false
+  },
+  "recovery_checkpoint": {
+    "root": "F:\\CodexRecovery\\maskfactory_recovery_20260726T145600Z",
+    "files": 364,
+    "bytes": 421577346,
+    "manifest_sha256": "7d4d26ae7ac1ce3e2e5d14501a8e3d386404636c19ef584065bbf923e0a77cda",
+    "reread_verified": true
+  },
+  "cleanup": {
+    "removed_redundant_archive": "C:\\Users\\kevin\\.codex\\backups\\full-fallback-enforcement-20260726T015000Z\\Comfy_UI_Main_Masking\\raw-git.tgz",
+    "removed_archive_logical_bytes": 25767656509,
+    "removed_archive_manifest_sha256": "af96ecdd430120434a0d17bad6ddc61b08d95417c1fd04422614b25f1fba738a",
+    "removed_archive_head": "1240fbf0d6ac89cae6c588ab84fb354c75197ee7",
+    "removed_archive_recoverability": "HEAD remains in the current Git database and multiple remote branches; compact recovery checkpoint preserved status, patches, refs, automation definitions, and untracked source/config files.",
+    "retired_clean_remote_contained_worktrees": [
+      "C:\\w\\mask-plan27-contract-integration-20260726T1147Z",
+      "C:\\w\\maskfactory-autonomous-work-cell"
+    ],
+    "preserved_protected_residual": "C:\\w\\mask-autonomy-bridge-plan",
+    "cache_cleanup": [
+      "uv cache clean",
+      "repository pytest and Ruff caches",
+      "old diagnostic output",
+      "old VS Code installer temporary directories"
+    ],
+    "preserved_unverified_large_inputs": [
+      "C:\\Users\\kevin\\AppData\\Local\\Temp\\c1_sync_parts",
+      "Comfy character tar staging files",
+      "Hugging Face model cache"
+    ]
+  },
+  "session_automation": {
+    "active_heartbeats": {
+      "maskfactory-serverless-continuation-recovery": "019f91d1-ea20-7d81-83ff-03d393eaa1f5",
+      "persistently-wait-for-a6000-execution": "019f9200-4805-7632-83d3-ee9ae614c603"
+    },
+    "paused_standalone_cron_automations": [
+      "comfy-ui-main-timed-probe-anti-loop-supervisor",
+      "shared-openrouter-fallback-capability-supervisor",
+      "shared-serverless-fallback-reliability-supervisor"
+    ],
+    "archived_maskfactory_automation_threads": 13,
+    "archived_additional_superseded_automation_threads": 25,
+    "maskfactory_visible_threads_after_cleanup": [
+      "019f91d1-ea20-7d81-83ff-03d393eaa1f5",
+      "019f4cfc-60c3-7500-8626-261dcf70db5d"
+    ]
+  },
+  "validation": {
+    "focused_tests": "30 passed",
+    "ruff": "PASS",
+    "compileall": "PASS",
+    "policy_json": "PASS",
+    "tracker_validate": "PASS; 894 non-orphaned items; 51 unresolved hard blockers",
+    "tracker_report": "PASS",
+    "live_full_repository_bundle_check": "BLOCKED_WITH_EXIT_2",
+    "live_one_gib_worktree_check": "ADMITTED_WITH_EXIT_0_ABOVE_FLOOR"
+  },
+  "autonomy_truth": {
+    "status": "SELF_HOSTED_AUTONOMOUS_LLM_THROUGHPUT_INCOMPLETE",
+    "completed_control_plane_rows": [
+      "MF-P6-13.01",
+      "MF-P6-13.02",
+      "MF-P6-13.03",
+      "MF-P6-13.04",
+      "MF-P6-14.01",
+      "MF-P6-14.02",
+      "MF-P6-14.03",
+      "MF-P6-14.04"
+    ],
+    "next_rows": [
+      "MF-P6-15.01",
+      "MF-P6-15.02",
+      "MF-P6-15.03",
+      "MF-P6-15.04"
+    ],
+    "qualification_claimed": false
+  },
+  "limitations": [
+    "No live Google Drive mount or byte/hash round-trip has been proven.",
+    "The main checkout remains dirty and requires explicit path-owned reconciliation.",
+    "The 25-mission, 100-mask, interruption/routing, and sustained-campaign acceptance gates have not all passed."
+  ],
+  "prohibited_actions_observed": {
+    "gpu_launch": false,
+    "provider_request": false,
+    "git_reset": false,
+    "comfyui_source_mutation": false
+  }
+}

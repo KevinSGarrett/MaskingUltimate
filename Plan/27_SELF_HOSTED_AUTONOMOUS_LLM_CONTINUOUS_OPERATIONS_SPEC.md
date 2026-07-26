@@ -243,6 +243,9 @@ The v1 policy is `configs/local_workspace_hygiene_v1.json`.
   manifests and receipts.
 - Google Drive is not an available fallback until a live destination probe and
   byte/hash round trip pass.
+- The compact-manifest destination `MaskFactory_Recovery_Manifests` passed that
+  round trip on 2026-07-26. Its scope is receipts/manifests only; large runtime
+  artifacts remain Pod-resident.
 - Worktrees may be retired only when clean, remote-contained, unreferenced by
   a process, not the main checkout, and free of unresolved reparse points.
 - A failed or partial retirement is preserved and investigated; force deletion

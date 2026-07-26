@@ -1,0 +1,200 @@
+{
+  "schema_version": "1.1.0",
+  "registry_id": "maskfactory_completion_tracks",
+  "policy_version": "2026-07-26",
+  "authoritative_spec": "Plan/24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md",
+  "authoritative_spec_sha256": "9ee33527c889c94eeeb2e68b373972318248edd1b662ef1fd6d82af83451b9ce",
+  "migration": {
+    "from_schema_version": "1.0.0",
+    "from_registry_sha256": "029c3fba47b6522721c915d95c007bd58daecba45dbf682b011fd441464092fc",
+    "migration_kind": "additive_blocking_gate",
+    "preserves_profile_required_item_ids": true,
+    "preserves_existing_item_evidence": true
+  },
+  "profiles": [
+    {
+      "profile_id": "core_autonomous_runtime",
+      "classification": "required",
+      "blocking_for_core_completion": true,
+      "purpose": "Prove a human-free autonomous MaskFactory runtime and adopted ComfyUI bridge with bounded QA, repair, abstention, certification, revocation, and recovery.",
+      "completion_claim": "operational autonomous runtime complete",
+      "required_item_ids": [
+        "MF-P6-07.01",
+        "MF-P6-07.02",
+        "MF-P6-07.03",
+        "MF-P6-07.04",
+        "MF-P6-07.05",
+        "MF-P6-07.06",
+        "MF-P6-07.07",
+        "MF-P6-08.01",
+        "MF-P6-08.02",
+        "MF-P6-08.03",
+        "MF-P6-08.04",
+        "MF-P6-08.05",
+        "MF-P6-08.06",
+        "MF-P6-08.07",
+        "MF-P6-08.08",
+        "MF-P6-09.01",
+        "MF-P6-09.02",
+        "MF-P6-09.03",
+        "MF-P6-09.04",
+        "MF-P6-09.05",
+        "MF-P6-09.06",
+        "MF-P6-09.07",
+        "MF-P6-10.01",
+        "MF-P6-10.02",
+        "MF-P6-10.03",
+        "MF-P6-10.04",
+        "MF-P6-10.05",
+        "MF-P6-10.06",
+        "MF-P6-10.07",
+        "MF-P6-11.01",
+        "MF-P6-11.02",
+        "MF-P6-11.03",
+        "MF-P6-11.04",
+        "MF-P6-11.05",
+        "MF-P6-11.06",
+        "MF-P6-11.07",
+        "MF-P6-11.08",
+        "MF-P6-12.01",
+        "MF-P6-12.02",
+        "MF-P6-12.03",
+        "MF-P6-12.04",
+        "MF-P6-12.05",
+        "MF-P6-12.06"
+      ],
+      "prerequisite_profile_ids": [],
+      "allowed_evidence": [
+        "closed-contract and negative fixtures",
+        "deterministic replay and seeded-defect tests",
+        "exact synthetic truth and metamorphic tests",
+        "governed human-uncorrected single-person and multi-person runs",
+        "fault-injection, restart, revocation, and rollback drills",
+        "pinned cross-project release and adoption evidence"
+      ],
+      "forbidden_claims": [
+        "independently measured real-image accuracy",
+        "calibrated population false-accept bound",
+        "complete model-library qualification",
+        "DAZ production maturity"
+      ],
+      "excluded_core_dependencies": [
+        "human_anchor_masks",
+        "manual_cvat_correction",
+        "blinded_human_review",
+        "minimum_package_corpus",
+        "full_model_library_download",
+        "daz_asset_or_render_work",
+        "long_duration_daz_soak",
+        "independent_real_accuracy_measurement"
+      ]
+    },
+    {
+      "profile_id": "independent_real_accuracy",
+      "classification": "optional",
+      "blocking_for_core_completion": false,
+      "purpose": "Measure real-image accuracy, boundary quality, false-accept bounds, and comparative model performance against independent human-authored truth.",
+      "completion_claim": "independent real-accuracy claims qualified",
+      "required_item_ids": [
+        "MF-P6-07.03",
+        "MF-P4-11.10",
+        "MF-P4-11.15",
+        "MF-P7-07.07",
+        "MF-P8-11.07",
+        "MF-P9-15.01"
+      ],
+      "prerequisite_profile_ids": [],
+      "allowed_evidence": [
+        "image-disjoint human-anchor masks",
+        "manual CVAT corrections",
+        "blinded independent audits",
+        "frozen real-image holdout measurements"
+      ],
+      "forbidden_claims": [
+        "core runtime incompleteness inferred from optional evidence absence",
+        "human agreement converted into wider operational certificate scope"
+      ],
+      "excluded_core_dependencies": []
+    },
+    {
+      "profile_id": "scale_daz_maturity",
+      "classification": "post_core",
+      "blocking_for_core_completion": false,
+      "purpose": "Measure large-corpus, full model-library, custom-training, DAZ synthetic-data, and long-duration reliability maturity after core completion.",
+      "completion_claim": "scale and DAZ maturity qualified",
+      "required_item_ids": [
+        "MF-P6-07.04",
+        "MF-P5-10.05",
+        "MF-P7-01.01",
+        "MF-P9-12.07",
+        "MF-P9-EXIT"
+      ],
+      "prerequisite_profile_ids": ["core_autonomous_runtime"],
+      "allowed_evidence": [
+        "certified package-volume and coverage reports",
+        "full model-library qualification reports",
+        "custom model training and leaderboard evidence",
+        "DAZ asset, render, ablation, and soak evidence"
+      ],
+      "forbidden_claims": [
+        "optional scale or DAZ incompleteness presented as core-runtime failure",
+        "synthetic geometry presented as independently measured real-image truth"
+      ],
+      "excluded_core_dependencies": []
+    }
+  ],
+  "throughput_gates": [
+    {
+      "gate_id": "self_hosted_autonomy_throughput_v1",
+      "blocking_profile_ids": [
+        "core_autonomous_runtime"
+      ],
+      "required_item_ids": [
+        "MF-P6-13.01",
+        "MF-P6-13.02",
+        "MF-P6-13.03",
+        "MF-P6-13.04",
+        "MF-P6-14.01",
+        "MF-P6-14.02",
+        "MF-P6-14.03",
+        "MF-P6-14.04",
+        "MF-P6-15.01",
+        "MF-P6-15.02",
+        "MF-P6-15.03",
+        "MF-P6-15.04",
+        "MF-P6-16.01",
+        "MF-P6-16.02",
+        "MF-P6-16.03",
+        "MF-P6-16.04",
+        "MF-P6-17.01",
+        "MF-P6-17.02",
+        "MF-P6-17.03",
+        "MF-P6-17.04",
+        "MF-P6-18.01",
+        "MF-P6-18.02",
+        "MF-P6-18.03",
+        "MF-P6-18.04",
+        "MF-P6-19.01",
+        "MF-P6-19.02",
+        "MF-P6-19.03",
+        "MF-P6-19.04"
+      ],
+      "legacy_evidence_disposition": "preserved_but_insufficient_for_throughput_completion",
+      "incomplete_claim": "SELF_HOSTED_AUTONOMOUS_LLM_THROUGHPUT_INCOMPLETE",
+      "acceptance_schema": "configs/self_hosted_autonomy_acceptance_v1.schema.json",
+      "acceptance_schema_sha256": "e38905c0bcbd7f2710765c9db4109d341ff18de204b34e059dd4a02359dc791d",
+      "campaign_requirements": {
+        "minimum_engineering_missions": 25,
+        "minimum_mask_records": 100,
+        "minimum_consecutive_mixed_campaigns": 3,
+        "minimum_autonomous_preparation_percent": 80,
+        "maximum_routine_codex_handoffs_per_campaign": 1,
+        "minimum_codex_usage_reduction_percent": 70,
+        "maximum_duplicate_submissions_or_promotions": 0,
+        "required_terminal_reconciliation_percent": 100,
+        "required_local_lease_release_percent": 100
+      }
+    }
+  ],
+  "sha256": "330301009cdabc34a7d8c80e4f73c4c44051c74037c07e89d5538c976289df1a"
+}

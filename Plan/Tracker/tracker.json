@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-26T21:59:20+00:00",
+    "generated_at": "2026-07-26T22:12:53+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 894,
     "total_tracked_including_orphaned": 894
@@ -25008,7 +25008,7 @@
       "cluster_id": "MF-P6-18",
       "cluster_title": "Micro-handoff elimination and autonomy telemetry",
       "spec_ref": "27 §§6–7",
-      "description": "Enforce targets of ≥80% autonomous preparation, ≤1 routine Codex handoff per 25 missions or 100 masks, ≥70% lower Codex usage per accepted artifact, zero duplicates, and 100% reconciliation/release · Verify: baseline and campaign reports fail closed on missing or under-target measures · Blocked by: MF-P6-18.02, MF-P6-18.03 · HARD BLOCKER",
+      "description": "Enforce targets of ≥80% autonomous preparation, ≤1 routine Codex handoff per 25 missions or 100 masks, ≥70% lower Codex usage per accepted artifact, zero duplicates, and 100% reconciliation/release · Verify: baseline and campaign reports fail closed on missing or under-target measures; this row consumes real campaign telemetry and cannot block the first 25-mission engineering campaign · Blocked by: MF-P6-18.02, MF-P6-18.03 · HARD BLOCKER",
       "source_file": "23_ITEMS_P6_SELF_HOSTED_AUTONOMOUS_LLM_OPERATIONS.md",
       "source_line": 56,
       "is_exit_gate": false,
@@ -25045,7 +25045,7 @@
       "cluster_id": "MF-P6-19",
       "cluster_title": "Real campaigns and final throughput acceptance",
       "spec_ref": "27 §§8–9",
-      "description": "Run one real 25-mission MaskFactory engineering campaign through selection, self-hosted work, patch/test/repair, consolidated adoption, tracker proposal, and release · Verify: the committed focused-tested runtime controller, guarded CLI, supervisor wiring, and CPU fake-runtime E2E precede the run; one owned Qwen/vLLM lifetime processes the eligible requests; one immutable packet binds all 25 terminal outcomes, exact real-request/accepted-artifact counts, reconciliation/release, and no routine intermediate Codex handoff · Blocked by: MF-P6-15.04, MF-P6-16.04, MF-P6-18.04 · HARD BLOCKER",
+      "description": "Run one real 25-mission MaskFactory engineering campaign through selection, self-hosted work, patch/test/repair, consolidated adoption, tracker proposal, and release · Verify: the committed focused-tested runtime controller, guarded CLI, supervisor wiring, and CPU fake-runtime E2E precede the run; one owned Qwen/vLLM lifetime processes the eligible requests; one immutable packet binds all 25 terminal outcomes, exact real-request/accepted-artifact counts, reconciliation/release, and no routine intermediate Codex handoff; later telemetry/acceptance rows consume this campaign's evidence and do not block it · Blocked by: MF-P6-15.04, MF-P6-16.04 · HARD BLOCKER",
       "source_file": "23_ITEMS_P6_SELF_HOSTED_AUTONOMOUS_LLM_OPERATIONS.md",
       "source_line": 59,
       "is_exit_gate": false,
@@ -25063,12 +25063,17 @@
           "ts": "2026-07-26T21:32:27+00:00",
           "actor": "codex_last_mile_authority",
           "text": "2026-07-26 FOUR-HOUR REVIEW: 27 commits and 317 passing steward tests were substantial control-plane engineering, but only three drill roots existed and no real 25-mission campaign ran. Required order is committed focused-tested runtime controller, guarded CLI, supervisor wiring, CPU fake-runtime 25-mission E2E, then one real 25-mission Qwen campaign under one owned service lifetime. Static packet aggregation earns no runtime credit."
+        },
+        {
+          "ts": "2026-07-26T22:12:55+00:00",
+          "actor": "codex_authority_reconciliation",
+          "text": "2026-07-26 AUTHORITY RECONCILIATION: MF-P6-18.04 evaluates telemetry produced by the first real 25-mission campaign and no longer blocks MF-P6-19.01. After verified controller/CLI/supervisor/CPU-E2E prerequisites, selector priority schedules MF-P6-19.01 before later mask/telemetry/acceptance rows when inference is eligible. This is a scheduling repair only; it grants no runtime acceptance credit and the guarded runtime still rejects missing or stale receipts."
         }
       ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-26T05:44:33+00:00",
-      "updated_at": "2026-07-26T21:32:27+00:00",
+      "updated_at": "2026-07-26T22:12:55+00:00",
       "orphaned": false
     },
     "MF-P6-19.02": {

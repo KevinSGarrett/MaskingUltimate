@@ -107,6 +107,25 @@ the next action to runtime integration/execution. Static fixtures are
 a blocking defect; successor packets require a material immutable change; and
 replacement clones/worktrees cannot substitute for checkout reconciliation.
 
+Tracker/selector authority reconciliation: after the verified controller,
+guarded CLI, supervisor, and CPU fake-runtime E2E foundation, select
+`MF-P6-19.01` ahead of later mask/telemetry/acceptance rows. `MF-P6-18.04`
+consumes the first campaign's telemetry and does not block it; this scheduling
+rule does not mark any runtime or throughput acceptance row complete.
+
+## Authority-reconciliation checkpoint
+
+- Path:
+  `C:\Comfy_UI_Main_Masking\.codex-ops\backups\self_hosted_authority_reconcile_20260726T220918Z`
+- Manifest SHA-256:
+  `68a8a6a5e203f08705895ceb37554ecbb32f1355bfd8bda8b07bdb3dfca85df2`
+- Integrity: all 18 scoped authority, selector, tracker, and heartbeat entries
+  re-hashed successfully before the dependency/priority reconciliation.
+- Scope: `MF-P6-19.01` now has only its direct routing/engineering dependency
+  gates. Later telemetry and acceptance rows consume the first real campaign's
+  evidence; they remain incomplete and the guarded runtime remains the
+  prerequisite authority.
+
 ## Verified rollback checkpoint
 
 - Pod path: `/workspace/maskfactory/runtime_artifacts/session_backups/self_hosted_continuous_ops_before_change_20260726T060856Z`

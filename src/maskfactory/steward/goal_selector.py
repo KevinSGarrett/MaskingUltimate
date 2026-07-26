@@ -17,6 +17,27 @@ PLAN27_ITEM_ORDER = tuple(
     f"MF-P6-{cluster}.{item:02d}" for cluster in range(13, 20) for item in range(1, 5)
 )
 
+# The first real engineering campaign is intentionally scheduled immediately
+# after the foundational control, routing, and engineering units.  It must not
+# be preempted by later mask or acceptance/telemetry rows whose real evidence
+# is produced by that campaign.  This is a scheduling rule only: normal
+# dependency checks and the guarded runtime still reject an unverified run.
+FIRST_REAL_ENGINEERING_CAMPAIGN = "MF-P6-19.01"
+_FOUNDATION_ITEM_ORDER = tuple(
+    item_id
+    for item_id in PLAN27_ITEM_ORDER
+    if int(item_id.split("-")[2].split(".")[0]) <= 16
+)
+SELECTION_ITEM_ORDER = (
+    *_FOUNDATION_ITEM_ORDER,
+    FIRST_REAL_ENGINEERING_CAMPAIGN,
+    *(
+        item_id
+        for item_id in PLAN27_ITEM_ORDER
+        if item_id not in {*_FOUNDATION_ITEM_ORDER, FIRST_REAL_ENGINEERING_CAMPAIGN}
+    ),
+)
+
 ACTIONABLE_STATUSES = frozenset({"open", "in_progress", "partially_complete", "failed"})
 DEPENDENCY_DONE_STATUSES = frozenset({"complete", "not_applicable"})
 
@@ -154,7 +175,7 @@ def select_next_plan27_work(
         raise GoalSelectionError(f"contradictory durable item states: {details}")
     excluded = frozenset().union(*exclusions.values())
 
-    for priority_index, item_id in enumerate(PLAN27_ITEM_ORDER):
+    for item_id in SELECTION_ITEM_ORDER:
         item = items.get(item_id)
         if not isinstance(item, Mapping) or item.get("orphaned"):
             continue
@@ -174,12 +195,15 @@ def select_next_plan27_work(
         )
         return GoalSelection(
             item_id=item_id,
-            priority_index=priority_index,
+            priority_index=PLAN27_ITEM_ORDER.index(item_id),
             campaign_kind=_campaign_kind(item_id),
             work_mode=work_mode,
             dependency_ids=dependencies,
             reason=(
-                "highest-priority unblocked Plan-27 dependency; "
+                "first real engineering campaign after verified foundation; "
+                "later acceptance telemetry cannot preempt its evidence"
+                if item_id == FIRST_REAL_ENGINEERING_CAMPAIGN
+                else "highest-priority unblocked Plan-27 dependency; "
                 "micro-review and bookkeeping lanes are out of scope"
             ),
         )
@@ -188,10 +212,12 @@ def select_next_plan27_work(
 
 __all__ = [
     "ACTIONABLE_STATUSES",
+    "FIRST_REAL_ENGINEERING_CAMPAIGN",
     "GoalSelection",
     "GoalSelectionError",
     "LIVE_INFERENCE_REQUIRED",
     "PLAN27_ITEM_ORDER",
+    "SELECTION_ITEM_ORDER",
     "parse_dependency_ids",
     "select_next_plan27_work",
 ]

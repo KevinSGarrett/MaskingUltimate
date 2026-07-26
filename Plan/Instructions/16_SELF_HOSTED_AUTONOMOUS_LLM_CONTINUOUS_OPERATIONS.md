@@ -49,6 +49,14 @@ wired into the supervisor. Before the live run, execute a CPU fake-runtime
 25-mission E2E that proves restart, terminal accounting, and one-packet
 behavior.
 
+Once those prerequisites are verified and an eligible inference route is
+available, select `MF-P6-19.01` before pending mask, telemetry, or sustained
+acceptance rows. The first real campaign supplies the evidence those rows
+evaluate; they may fail closed on it but cannot preempt or block it. This
+scheduling rule never grants runtime acceptance: the guarded runtime still
+requires current prerequisite receipts, and later rows remain incomplete until
+their required real evidence exists.
+
 ## Last-mile anti-spin rules
 
 - A wave is productive only if it yields executable integration plus focused

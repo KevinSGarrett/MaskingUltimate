@@ -322,6 +322,14 @@ artifacts, and newly terminal runtime outcomes. A zero production delta forces
 the next action to be runtime integration or execution, not additional
 bookkeeping.
 
+The first real 25-mission engineering campaign is the production-evidence
+producer for the later telemetry and sustained-acceptance rows. Once its
+controller, guarded CLI, supervisor integration, and CPU fake-runtime E2E
+prerequisites are verified, tracker selection SHALL prioritize that campaign
+over pending mask, telemetry, or acceptance rows. Those later rows may collect
+and fail-close on its evidence, but they SHALL NOT block the first campaign or
+be marked complete from its static prerequisites.
+
 ## 7. Telemetry and success measures
 
 For every campaign, measure eligible and completed mission count, autonomous
@@ -384,7 +392,10 @@ Required sustained targets:
     selection, builder, execution, reconciliation, and consolidation chain.
 11. Run a CPU fake-runtime 25-mission end-to-end campaign proving restart,
     terminal accounting, and one-packet behavior.
-12. Run one real 25-mission engineering campaign.
+12. Run one real 25-mission engineering campaign. After steps 9–11 are
+    verified, selection prioritizes this execution before later acceptance rows
+    that consume its telemetry; the guarded runtime remains responsible for
+    rejecting a missing or stale prerequisite receipt.
 13. Run restart, ambiguous-completion, stale-owner, and route fault drills.
 14. Run one governed 100-mask campaign with full outcome accounting.
 15. Repeat three mixed campaigns while meeting every sustained target.

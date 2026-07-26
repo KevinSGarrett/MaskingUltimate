@@ -94,6 +94,15 @@ Until the first real 25-mission campaign is terminal:
   reconciliation; and
 - record the production delta on every heartbeat.
 
+### Authority reconciliation
+
+The tracker gate for `MF-P6-19.01` must not require `MF-P6-18.04`: that later
+acceptance row evaluates telemetry produced by the first real campaign. Once
+the verified controller/CLI/supervisor/CPU-E2E foundation is present, selector
+priority is the real 25-mission campaign ahead of pending telemetry or mask
+rows. This changes neither the guarded runtime's prerequisite checks nor any
+runtime-acceptance status.
+
 This review does not mark any runtime acceptance item complete. It corrects
 work selection so the remaining effort is spent on the product's actual
 throughput gates.

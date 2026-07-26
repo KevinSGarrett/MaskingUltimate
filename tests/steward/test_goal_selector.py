@@ -65,7 +65,7 @@ def test_inference_unavailable_continues_cpu_safe_fault_drill():
     _set_plan27_statuses(data)
     data["items"]["MF-P6-19.01"]["status"] = "open"
     data["items"]["MF-P6-19.02"]["status"] = "open"
-    for dependency in ("MF-P6-15.04", "MF-P6-16.04", "MF-P6-18.04"):
+    for dependency in ("MF-P6-15.04", "MF-P6-16.04"):
         data["items"][dependency]["status"] = "complete"
 
     decision = select_next_plan27_work(data, inference_available=False)
@@ -73,6 +73,33 @@ def test_inference_unavailable_continues_cpu_safe_fault_drill():
     assert decision is not None
     assert decision.item_id == "MF-P6-19.02"
     assert decision.work_mode == "cpu_safe"
+
+
+def test_first_real_campaign_preempts_later_telemetry_after_foundation():
+    data = _tracker()
+    _set_plan27_statuses(data)
+    data["items"]["MF-P6-18.03"]["status"] = "in_progress"
+    data["items"]["MF-P6-18.04"]["status"] = "in_progress"
+    data["items"]["MF-P6-19.01"]["status"] = "open"
+
+    decision = select_next_plan27_work(data, inference_available=True)
+
+    assert decision is not None
+    assert decision.item_id == "MF-P6-19.01"
+    assert decision.work_mode == "live_inference"
+    assert decision.dependency_ids == ("MF-P6-15.04", "MF-P6-16.04")
+
+
+def test_first_real_campaign_stays_blocked_without_direct_prerequisite():
+    data = _tracker()
+    _set_plan27_statuses(data)
+    data["items"]["MF-P6-16.04"]["status"] = "in_progress"
+    data["items"]["MF-P6-19.01"]["status"] = "open"
+
+    decision = select_next_plan27_work(data, inference_available=True)
+
+    assert decision is not None
+    assert decision.item_id == "MF-P6-16.04"
 
 
 def test_durable_states_suppress_reissue_and_select_next_safe_unit():

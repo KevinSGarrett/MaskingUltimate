@@ -172,7 +172,11 @@ def _append_event(path: Path, value: dict[str, object]) -> None:
         os.fsync(stream.fileno())
 
 
-def _reconstruct_cumulative(path: Path) -> dict[str, int]:
+def _reconstruct_cumulative(
+    path: Path,
+    *,
+    legacy_summary_path: Path | None = None,
+) -> dict[str, int]:
     totals = {
         "openrouter_created": 0,
         "serverless_created": 0,
@@ -181,6 +185,16 @@ def _reconstruct_cumulative(path: Path) -> dict[str, int]:
         "dispatch_cycles": 0,
     }
     if not path.is_file():
+        if legacy_summary_path is not None and legacy_summary_path.is_file():
+            try:
+                summary = json.loads(legacy_summary_path.read_text(encoding="utf-8"))
+                legacy = summary.get("cumulative")
+            except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+                raise SystemExit("fallback throughput summary is unreadable") from exc
+            if not isinstance(legacy, dict):
+                raise SystemExit("fallback throughput summary is contradictory")
+            for key in totals:
+                totals[key] = int(legacy.get(key) or 0)
         return totals
     try:
         lines = path.read_text(encoding="utf-8").splitlines()
@@ -275,7 +289,10 @@ def main() -> int:
         )
     throughput_path = args.state_root / "fallback_throughput.json"
     throughput_events_path = args.state_root / "fallback_throughput_events.jsonl"
-    cumulative = _reconstruct_cumulative(throughput_events_path)
+    cumulative = _reconstruct_cumulative(
+        throughput_events_path,
+        legacy_summary_path=throughput_path,
+    )
     supervisor.start()
     try:
         while True:

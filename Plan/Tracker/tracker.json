@@ -25000,7 +25000,7 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "in_progress",
-      "percent_complete": 65,
+      "percent_complete": 80,
       "notes": [
         {
           "ts": "2026-07-26T19:55:47+00:00",
@@ -25011,12 +25011,17 @@
           "ts": "2026-07-26T20:14:17+00:00",
           "actor": "codex",
           "text": "2026-07-26 STATIC_PASS: commit e33d6d456 adds an exact three-campaign sustained SLO evaluator that replays each mixed campaign telemetry ledger, single-campaign SLO, typed handoff audit, terminal adoption packet binding, contiguous campaign sequence, chronological non-overlap, aggregate worst-case metrics, and deterministic self-hash. Under-target, missing, duplicate, nonmixed, overlapping, reordered, or drifted evidence fails or keeps passed=false. 93 focused+neighbor tests PASS; Ruff, compileall, diff-check, and secret scan PASS. Fixtures explicitly do not prove production provenance or an omission-free global campaign ledger; real three-campaign acceptance remains open."
+        },
+        {
+          "ts": "2026-07-26T20:43:23+00:00",
+          "actor": "ai_agent",
+          "text": "STATIC_PASS/RUNTIME_PASS_BOUNDED_CPU: commit dfbd1edaf requires exact replay of the ledger/artifact reconciliation receipt before computing or accepting any single-campaign Plan-27 SLO result. Campaign/telemetry hashes are cross-bound; under-target but otherwise fully reconciled campaigns remain passed=false; receipt drift fails before target evaluation. Full steward suite 313 passed, 1 expected skip; focused SLO/reconciliation wave 46 passed; Ruff/compileall/diff PASS. Real target-meeting campaigns and sustained production provenance remain required."
         }
       ],
-      "evidence": "commit 1519fcbf7; src/maskfactory/steward/campaign_slo.py; tests/steward/test_campaign_slo.py; campaign/ledger/route/acceptance neighbor wave 77 passed; Ruff/compileall/diff PASS",
+      "evidence": "commits 1519fcbf7, e33d6d456, 1eba234f4, dfbd1edaf; src/maskfactory/steward/campaign_reconciliation.py; tests/steward/test_campaign_reconciliation.py; full tests/steward 313 passed, 1 skipped",
       "blocked_reason": null,
       "created_at": "2026-07-26T05:44:33+00:00",
-      "updated_at": "2026-07-26T20:14:17+00:00",
+      "updated_at": "2026-07-26T20:43:23+00:00",
       "orphaned": false
     },
     "MF-P6-19.01": {

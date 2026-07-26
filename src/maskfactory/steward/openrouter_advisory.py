@@ -21,12 +21,10 @@ from pathlib import Path
 from typing import Any
 
 MANAGER_PATH = Path(
-    r"C:\Comfy_UI_Main\Plan\07_IMPLEMENTATION\scripts"
-    r"\manage_openrouter_reasoning_fallback.py"
+    r"C:\Comfy_UI_Main\Plan\07_IMPLEMENTATION\scripts" r"\manage_openrouter_reasoning_fallback.py"
 )
 POLICY_PATH = Path(
-    r"C:\Comfy_UI_Main\Plan\10_REGISTRIES"
-    r"\openrouter_reasoning_fallback_policy.json"
+    r"C:\Comfy_UI_Main\Plan\10_REGISTRIES" r"\openrouter_reasoning_fallback_policy.json"
 )
 STATE_ROOT = Path.home() / ".codex/openrouter_fallback"
 STATE_SCHEMA = "maskfactory.steward.openrouter_advisory_state.v1"
@@ -109,9 +107,7 @@ def _seal(value: Mapping[str, Any]) -> dict[str, Any]:
 def _validate_seal(value: Mapping[str, Any]) -> dict[str, Any]:
     body = copy.deepcopy(dict(value))
     expected = body.pop("self_sha256", None)
-    if not isinstance(expected, str) or expected != _sha256_bytes(
-        _canonical_bytes(body)
-    ):
+    if not isinstance(expected, str) or expected != _sha256_bytes(_canonical_bytes(body)):
         raise OpenRouterAdvisoryError("durable advisory state hash mismatch")
     body["self_sha256"] = expected
     return body
@@ -147,19 +143,13 @@ def _default_runner(
         raise OpenRouterManagerTimeout("OpenRouter manager command timed out") from exc
     if completed.returncode != 0:
         detail = (completed.stderr or completed.stdout).strip()
-        raise OpenRouterManagerRejected(
-            f"OpenRouter manager rejected command: {detail[-1000:]}"
-        )
+        raise OpenRouterManagerRejected(f"OpenRouter manager rejected command: {detail[-1000:]}")
     try:
         result = json.loads(completed.stdout)
     except json.JSONDecodeError as exc:
-        raise OpenRouterManagerProtocolError(
-            "OpenRouter manager output is not JSON"
-        ) from exc
+        raise OpenRouterManagerProtocolError("OpenRouter manager output is not JSON") from exc
     if not isinstance(result, dict):
-        raise OpenRouterManagerProtocolError(
-            "OpenRouter manager output is not an object"
-        )
+        raise OpenRouterManagerProtocolError("OpenRouter manager output is not an object")
     return result
 
 
@@ -200,9 +190,7 @@ class GovernedOpenRouterAdvisory:
             try:
                 path.relative_to(self.mission_root)
             except ValueError as exc:
-                raise OpenRouterAdvisoryError(
-                    f"{label} must be inside mission_root"
-                ) from exc
+                raise OpenRouterAdvisoryError(f"{label} must be inside mission_root") from exc
             if not path.is_file():
                 raise OpenRouterAdvisoryError(f"{label} file is absent")
         if not self.manager_path.is_file() or not self.policy_path.is_file():
@@ -214,6 +202,17 @@ class GovernedOpenRouterAdvisory:
             raise OpenRouterAdvisoryError("advisory request is unreadable") from exc
         if not isinstance(request, dict):
             raise OpenRouterAdvisoryError("advisory request must be an object")
+        try:
+            policy = json.loads(self.policy_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            raise OpenRouterAdvisoryError("OpenRouter policy is unreadable") from exc
+        if (
+            not isinstance(policy, dict)
+            or not isinstance(policy.get("models"), dict)
+            or not isinstance(policy.get("work_profiles"), dict)
+        ):
+            raise OpenRouterAdvisoryError("OpenRouter policy contract is invalid")
+        self.policy = copy.deepcopy(policy)
         self._validate_request(request)
         prompt = self.prompt_path.read_text(encoding="utf-8")
         if _sha256_bytes(prompt.encode("utf-8")) != request["prompt_sha256"]:
@@ -221,6 +220,26 @@ class GovernedOpenRouterAdvisory:
         lowered = prompt.lower()
         if any(marker in lowered for marker in SECRET_MARKERS):
             raise OpenRouterAdvisoryError("prompt may contain secret material")
+        self.attachment_paths = self._request_paths(
+            request.get("attachments", []),
+            label="attachment",
+        )
+        actual_attachment_hashes = [_file_sha256(path) for path in self.attachment_paths]
+        if request.get("attachment_sha256", []) != actual_attachment_hashes:
+            raise OpenRouterAdvisoryError("attachment identity mismatch")
+        system_prompt_file = request.get("system_prompt_file")
+        self.system_prompt_path = None
+        if system_prompt_file is not None:
+            paths = self._request_paths(
+                [system_prompt_file],
+                label="system_prompt_file",
+            )
+            self.system_prompt_path = paths[0]
+            system_prompt = self.system_prompt_path.read_text(encoding="utf-8")
+            if request.get("system_prompt_sha256") != _file_sha256(self.system_prompt_path):
+                raise OpenRouterAdvisoryError("system prompt identity mismatch")
+            if any(marker in system_prompt.lower() for marker in SECRET_MARKERS):
+                raise OpenRouterAdvisoryError("system prompt may contain secret material")
 
         self.request = copy.deepcopy(request)
         identity = {
@@ -234,16 +253,18 @@ class GovernedOpenRouterAdvisory:
             "request_sha256": _file_sha256(self.request_path),
             "manager_sha256": _file_sha256(self.manager_path),
             "policy_sha256": _file_sha256(self.policy_path),
+            "attachment_sha256": actual_attachment_hashes,
+            "system_prompt_sha256": (
+                _file_sha256(self.system_prompt_path)
+                if self.system_prompt_path is not None
+                else None
+            ),
         }
         if self.state_path.exists():
-            state = _validate_seal(
-                json.loads(self.state_path.read_text(encoding="utf-8"))
-            )
+            state = _validate_seal(json.loads(self.state_path.read_text(encoding="utf-8")))
             for key, value in identity.items():
                 if state.get(key) != value:
-                    raise OpenRouterAdvisoryError(
-                        "persisted advisory identity mismatch"
-                    )
+                    raise OpenRouterAdvisoryError("persisted advisory identity mismatch")
             if state["state"] in {"reserving", "submitting"}:
                 state = self._transition(
                     state,
@@ -274,9 +295,7 @@ class GovernedOpenRouterAdvisory:
         if request.get("schema_version") != REQUEST_SCHEMA:
             raise OpenRouterAdvisoryError("unsupported advisory request schema")
         for field in ("mission_id", "prompt_sha256"):
-            if not isinstance(request.get(field), str) or not SHA256_RE.fullmatch(
-                request[field]
-            ):
+            if not isinstance(request.get(field), str) or not SHA256_RE.fullmatch(request[field]):
                 raise OpenRouterAdvisoryError(f"invalid {field}")
         for field in ("session_id", "work_kind"):
             if not isinstance(request.get(field), str) or not request[field]:
@@ -285,26 +304,81 @@ class GovernedOpenRouterAdvisory:
             request["job_id"]
         ):
             raise OpenRouterAdvisoryError("invalid job_id")
-        if request.get("model_tier") not in {"routine", "escalation"}:
-            raise OpenRouterAdvisoryError("only Qwen advisory tiers are allowed")
-        if request.get("model_tier") == "escalation" and not request.get(
-            "materially_difficult"
+        model_tier = request.get("model_tier")
+        work_kind = request.get("work_kind")
+        if model_tier not in self.policy["models"]:
+            raise OpenRouterAdvisoryError("model tier is not authorized by policy")
+        required_tier = self.policy["work_profiles"].get(work_kind)
+        if required_tier is None:
+            raise OpenRouterAdvisoryError("work kind is not authorized by policy")
+        if model_tier != required_tier and not (
+            required_tier == "routine" and model_tier == "escalation"
         ):
-            raise OpenRouterAdvisoryError(
-                "Qwen escalation requires a materially difficult request"
-            )
+            raise OpenRouterAdvisoryError("model tier does not match the governed work profile")
+        if request.get("model_tier") == "escalation" and not request.get("materially_difficult"):
+            raise OpenRouterAdvisoryError("Qwen escalation requires a materially difficult request")
         authority = request.get("authority")
         if not isinstance(authority, dict):
             raise OpenRouterAdvisoryError("authority ceiling is required")
         if any(authority.get(name) is not False for name in FORBIDDEN_AUTHORITY):
             raise OpenRouterAdvisoryError("advisory request exceeds authority ceiling")
-        if request.get("attachments") not in (None, []):
-            raise OpenRouterAdvisoryError(
-                "text advisory does not admit attachments or private raw data"
+        attachments = request.get("attachments", [])
+        if not isinstance(attachments, list) or any(
+            not isinstance(value, str) or not value for value in attachments
+        ):
+            raise OpenRouterAdvisoryError("attachments must be relative mission-root paths")
+        attachment_sha256 = request.get("attachment_sha256", [])
+        if (
+            not isinstance(attachment_sha256, list)
+            or len(attachment_sha256) != len(attachments)
+            or any(
+                not isinstance(value, str) or not SHA256_RE.fullmatch(value)
+                for value in attachment_sha256
             )
+        ):
+            raise OpenRouterAdvisoryError("attachment_sha256 must bind every attachment")
         tokens = request.get("max_output_tokens")
-        if isinstance(tokens, bool) or not isinstance(tokens, int) or tokens <= 0:
+        api_kind = self.policy["models"][model_tier].get("api_kind")
+        if api_kind == "chat" and (
+            isinstance(tokens, bool) or not isinstance(tokens, int) or tokens <= 0
+        ):
             raise OpenRouterAdvisoryError("max_output_tokens must be positive")
+        if api_kind != "chat" and tokens not in (None, 0):
+            raise OpenRouterAdvisoryError(
+                "non-chat capability max_output_tokens must be zero or null"
+            )
+        if request.get("system_prompt_file") is not None and not isinstance(
+            request["system_prompt_file"], str
+        ):
+            raise OpenRouterAdvisoryError("system_prompt_file must be a relative path")
+        system_prompt_sha256 = request.get("system_prompt_sha256")
+        if request.get("system_prompt_file") is None:
+            if system_prompt_sha256 is not None:
+                raise OpenRouterAdvisoryError("system_prompt_sha256 has no bound file")
+        elif not isinstance(system_prompt_sha256, str) or not SHA256_RE.fullmatch(
+            system_prompt_sha256
+        ):
+            raise OpenRouterAdvisoryError("system_prompt_sha256 is invalid")
+
+    def _request_paths(self, values: list[str], *, label: str) -> list[Path]:
+        paths: list[Path] = []
+        for value in values:
+            relative = Path(value)
+            if (
+                relative.is_absolute()
+                or not relative.parts
+                or any(part in {"", ".", ".."} for part in relative.parts)
+            ):
+                raise OpenRouterAdvisoryError(f"{label} must remain inside mission_root")
+            path = (self.mission_root / relative).resolve()
+            try:
+                path.relative_to(self.mission_root)
+            except ValueError as exc:
+                raise OpenRouterAdvisoryError(f"{label} must remain inside mission_root") from exc
+            if not path.is_file():
+                raise OpenRouterAdvisoryError(f"{label} file is absent")
+            paths.append(path)
+        return paths
 
     def _transition(
         self,
@@ -396,22 +470,29 @@ class GovernedOpenRouterAdvisory:
                 f"reserve is not allowed from state {self._state['state']}"
             )
         self._transition(self._state, "reserving", "reserve_intent")
-        try:
-            result = self._command(
-                "reserve",
-                "--session-id",
-                self.request["session_id"],
-                "--job-id",
-                self.request["job_id"],
-                "--work-kind",
-                self.request["work_kind"],
-                "--model-tier",
-                self.request["model_tier"],
-                "--prompt-file",
-                str(self.prompt_path),
-                "--max-output-tokens",
-                str(self.request["max_output_tokens"]),
+        arguments = [
+            "--session-id",
+            self.request["session_id"],
+            "--job-id",
+            self.request["job_id"],
+            "--work-kind",
+            self.request["work_kind"],
+            "--model-tier",
+            self.request["model_tier"],
+            "--prompt-file",
+            str(self.prompt_path),
+        ]
+        if self.request.get("max_output_tokens") is not None:
+            arguments.extend(
+                [
+                    "--max-output-tokens",
+                    str(self.request["max_output_tokens"]),
+                ]
             )
+        for attachment_path in self.attachment_paths:
+            arguments.extend(["--attachment", str(attachment_path)])
+        try:
+            result = self._command("reserve", *arguments)
         except OpenRouterManagerRejected as exc:
             self._transition(
                 self._state,
@@ -428,14 +509,13 @@ class GovernedOpenRouterAdvisory:
                 "reservation_outcome_unknown",
                 error=str(exc),
             )
-            raise OpenRouterOutcomeUnknown(
-                "reservation outcome is unknown; do not retry"
-            ) from exc
+            raise OpenRouterOutcomeUnknown("reservation outcome is unknown; do not retry") from exc
         if (
             result.get("status") != "RESERVED"
             or result.get("session_id") != self.request["session_id"]
             or result.get("job_id") != self.request["job_id"]
             or result.get("work_kind") != self.request["work_kind"]
+            or result.get("model_tier") != self.request["model_tier"]
             or result.get("prompt_sha256") != self.request["prompt_sha256"]
             or not isinstance(result.get("reservation_id"), str)
         ):
@@ -445,9 +525,7 @@ class GovernedOpenRouterAdvisory:
                 "reservation_output_contradiction",
                 result=result,
             )
-            raise OpenRouterOutcomeUnknown(
-                "reservation output contradicts immutable request"
-            )
+            raise OpenRouterOutcomeUnknown("reservation output contradicts immutable request")
         self._transition(
             self._state,
             "reserved",
@@ -464,16 +542,20 @@ class GovernedOpenRouterAdvisory:
             )
         reservation_id = self._state["reservation_id"]
         self._transition(self._state, "submitting", "submit_intent")
+        arguments = [
+            "--reservation-id",
+            reservation_id,
+            "--prompt-file",
+            str(self.prompt_path),
+            "--output",
+            str(self.output_path),
+        ]
+        if self.system_prompt_path is not None:
+            arguments.extend(["--system-prompt-file", str(self.system_prompt_path)])
+        for attachment_path in self.attachment_paths:
+            arguments.extend(["--attachment", str(attachment_path)])
         try:
-            result = self._command(
-                "submit",
-                "--reservation-id",
-                reservation_id,
-                "--prompt-file",
-                str(self.prompt_path),
-                "--output",
-                str(self.output_path),
-            )
+            result = self._command("submit", *arguments)
         except (
             OpenRouterManagerRejected,
             OpenRouterManagerTimeout,
@@ -489,7 +571,7 @@ class GovernedOpenRouterAdvisory:
                 "submission outcome is unknown; do not retry or change route"
             ) from exc
         if (
-            result.get("status") != "COMPLETED"
+            result.get("status") not in {"COMPLETED", "SUBMITTED"}
             or result.get("reservation_id") != reservation_id
             or Path(str(result.get("output"))).resolve() != self.output_path
             or not self.output_path.is_file()
@@ -502,10 +584,26 @@ class GovernedOpenRouterAdvisory:
             )
             raise OpenRouterOutcomeUnknown("submission output is contradictory")
         output_sha256 = _file_sha256(self.output_path)
-        if result.get("content_sha256") and not SHA256_RE.fullmatch(
-            str(result["content_sha256"])
-        ):
+        if result.get("content_sha256") and not SHA256_RE.fullmatch(str(result["content_sha256"])):
             raise OpenRouterManagerProtocolError("invalid advisory content hash")
+        if result["status"] == "SUBMITTED":
+            if self.request["model_tier"] != "video_generation":
+                self._transition(
+                    self._state,
+                    "outcome_unknown",
+                    "unexpected_async_submission",
+                    result=result,
+                )
+                raise OpenRouterOutcomeUnknown(
+                    "only governed video generation may remain asynchronous"
+                )
+            self._transition(
+                self._state,
+                "submitted",
+                "video_submitted",
+                result=result,
+            )
+            return self.state
         self._transition(
             self._state,
             "terminal",
@@ -513,4 +611,65 @@ class GovernedOpenRouterAdvisory:
             result=result,
             output_sha256=output_sha256,
         )
+        return self.state
+
+    def reconcile(self) -> dict[str, Any]:
+        """Reconcile asynchronous governed video work without resubmission."""
+        if self._state["state"] not in {"submitted", "running"}:
+            if self._state["state"] == "terminal":
+                return self.state
+            raise OpenRouterAdvisoryError(
+                f"reconcile is not allowed from state {self._state['state']}"
+            )
+        reservation_id = self._state["reservation_id"]
+        try:
+            result = self._command(
+                "reconcile-video",
+                "--reservation-id",
+                reservation_id,
+                "--output",
+                str(self.output_path),
+            )
+        except (
+            OpenRouterManagerRejected,
+            OpenRouterManagerTimeout,
+            OpenRouterManagerProtocolError,
+        ) as exc:
+            self._transition(
+                self._state,
+                "outcome_unknown",
+                "video_reconcile_outcome_unknown",
+                error=str(exc),
+            )
+            raise OpenRouterOutcomeUnknown(
+                "video reconciliation is unknown; do not retry submission"
+            ) from exc
+        if (
+            result.get("reservation_id") != reservation_id
+            or result.get("status") not in {"PENDING", "IN_PROGRESS", "COMPLETED"}
+            or Path(str(result.get("output"))).resolve() != self.output_path
+            or not self.output_path.is_file()
+        ):
+            self._transition(
+                self._state,
+                "outcome_unknown",
+                "video_reconcile_contradiction",
+                result=result,
+            )
+            raise OpenRouterOutcomeUnknown("video reconciliation contradicts immutable state")
+        if result["status"] == "COMPLETED":
+            self._transition(
+                self._state,
+                "terminal",
+                "video_completed",
+                result=result,
+                output_sha256=_file_sha256(self.output_path),
+            )
+        else:
+            self._transition(
+                self._state,
+                "running",
+                "video_still_running",
+                result=result,
+            )
         return self.state

@@ -42,6 +42,9 @@ def request_body(prompt: str) -> dict[str, Any]:
         "prompt_sha256": hashlib.sha256(prompt.encode()).hexdigest(),
         "max_output_tokens": 128,
         "attachments": [],
+        "attachment_sha256": [],
+        "system_prompt_file": None,
+        "system_prompt_sha256": None,
         "authority": {
             "read_secrets": False,
             "execute_tools": False,
@@ -55,6 +58,49 @@ def request_body(prompt: str) -> dict[str, Any]:
     }
 
 
+def policy_body() -> dict[str, Any]:
+    return {
+        "models": {
+            "routine": {
+                "id": "qwen/qwen3-coder-next",
+                "api_kind": "chat",
+            },
+            "escalation": {
+                "id": "qwen/qwen3-coder",
+                "api_kind": "chat",
+            },
+            "multimodal_review": {
+                "id": "qwen/qwen3.5-flash-02-23",
+                "api_kind": "chat",
+            },
+            "speech_to_text": {
+                "id": "qwen/qwen3-asr-flash-2026-02-10",
+                "api_kind": "speech_to_text",
+            },
+            "text_to_speech": {
+                "id": "qwen/qwen-audio-3.0-tts-flash",
+                "api_kind": "text_to_speech",
+            },
+            "image_generation": {
+                "id": "black-forest-labs/flux.2-klein-4b",
+                "api_kind": "image_generation",
+            },
+            "video_generation": {
+                "id": "alibaba/wan-2.6",
+                "api_kind": "video_generation",
+            },
+        },
+        "work_profiles": {
+            "coding_advice": "routine",
+            "visual_qa": "multimodal_review",
+            "audio_transcription": "speech_to_text",
+            "speech_generation": "text_to_speech",
+            "image_generation": "image_generation",
+            "video_generation": "video_generation",
+        },
+    }
+
+
 def build(
     tmp_path: Path,
     manager: FakeManager,
@@ -63,7 +109,7 @@ def build(
     request_updates: dict[str, Any] | None = None,
 ) -> GovernedOpenRouterAdvisory:
     mission = tmp_path / "mission"
-    mission.mkdir(parents=True)
+    mission.mkdir(parents=True, exist_ok=True)
     prompt_path = mission / "prompt.txt"
     prompt_path.write_text(prompt, encoding="utf-8")
     request = request_body(prompt)
@@ -74,7 +120,7 @@ def build(
     manager_path = tmp_path / "manage_openrouter_reasoning_fallback.py"
     policy_path = tmp_path / "openrouter_reasoning_fallback_policy.json"
     manager_path.write_text("# manager\n", encoding="utf-8")
-    policy_path.write_text("{}\n", encoding="utf-8")
+    policy_path.write_text(json.dumps(policy_body()) + "\n", encoding="utf-8")
     return GovernedOpenRouterAdvisory(
         mission_root=mission,
         request_path=request_path,
@@ -117,10 +163,13 @@ def test_ineligible_route_continues_cpu_without_reserve(tmp_path: Path) -> None:
     )
     route = build(tmp_path, manager)
 
-    assert route.decide(
-        pod_state="unavailable",
-        serverless_state="unavailable",
-    )["state"] == "cpu_fallback"
+    assert (
+        route.decide(
+            pod_state="unavailable",
+            serverless_state="unavailable",
+        )["state"]
+        == "cpu_fallback"
+    )
     with pytest.raises(OpenRouterAdvisoryError, match="reserve is not allowed"):
         route.reserve()
     assert [command[6] for command in manager.commands] == ["decide"]
@@ -219,11 +268,103 @@ def test_success_is_terminal_read_only_advice(tmp_path: Path) -> None:
     state = route.submit()
     assert state["state"] == "terminal"
     assert state["output_sha256"] == hashlib.sha256(output.read_bytes()).hexdigest()
+    assert "--artifact-root" not in manager.commands[-1]
     assert [command[6] for command in manager.commands] == [
         "decide",
         "reserve",
         "submit",
     ]
+
+
+def test_multimodal_attachment_is_bound_and_forwarded(tmp_path: Path) -> None:
+    prompt = "Review the bounded mask overlay and return evidence only."
+    attachment = tmp_path / "mission" / "overlay.png"
+    attachment.parent.mkdir(parents=True)
+    attachment.write_bytes(b"\x89PNG\r\n\x1a\nbounded")
+    manager = FakeManager(
+        openrouter_decision(),
+        {
+            **reservation(prompt),
+            "work_kind": "visual_qa",
+            "model_tier": "multimodal_review",
+            "model": "qwen/qwen3.5-flash-02-23",
+        },
+    )
+    route = build(
+        tmp_path,
+        manager,
+        prompt=prompt,
+        request_updates={
+            "work_kind": "visual_qa",
+            "model_tier": "multimodal_review",
+            "attachments": ["overlay.png"],
+            "attachment_sha256": [hashlib.sha256(attachment.read_bytes()).hexdigest()],
+        },
+    )
+
+    route.decide(pod_state="unavailable", serverless_state="unavailable")
+    route.reserve()
+
+    reserve_command = manager.commands[-1]
+    assert reserve_command.count("--attachment") == 1
+    assert str(attachment.resolve()) in reserve_command
+    assert route.state["attachment_sha256"] == [hashlib.sha256(attachment.read_bytes()).hexdigest()]
+
+
+def test_async_video_reconciles_without_second_submit(tmp_path: Path) -> None:
+    prompt = "Generate a bounded five-second candidate video."
+    manager = FakeManager(
+        openrouter_decision(),
+        {
+            **reservation(prompt),
+            "work_kind": "video_generation",
+            "model_tier": "video_generation",
+            "model": "alibaba/wan-2.6",
+        },
+    )
+    route = build(
+        tmp_path,
+        manager,
+        prompt=prompt,
+        request_updates={
+            "work_kind": "video_generation",
+            "model_tier": "video_generation",
+            "max_output_tokens": 0,
+        },
+    )
+    route.decide(pod_state="unavailable", serverless_state="unavailable")
+    route.reserve()
+    route.output_path.write_text(
+        json.dumps({"status": "SUBMITTED"}),
+        encoding="utf-8",
+    )
+    manager.results.append(
+        {
+            "status": "SUBMITTED",
+            "reservation_id": "or-reservation-1",
+            "output": str(route.output_path),
+            "content_sha256": None,
+            "cost_usd": None,
+        }
+    )
+
+    assert route.submit()["state"] == "submitted"
+    route.output_path.write_text(
+        json.dumps({"status": "COMPLETED"}),
+        encoding="utf-8",
+    )
+    manager.results.append(
+        {
+            "status": "COMPLETED",
+            "reservation_id": "or-reservation-1",
+            "output": str(route.output_path),
+            "cost_usd": 0.1,
+        }
+    )
+
+    assert route.reconcile()["state"] == "terminal"
+    verbs = [command[6] for command in manager.commands]
+    assert verbs == ["decide", "reserve", "submit", "reconcile-video"]
 
 
 def test_submit_timeout_blocks_retry_and_route_change(tmp_path: Path) -> None:
@@ -247,11 +388,7 @@ def test_submit_timeout_blocks_retry_and_route_change(tmp_path: Path) -> None:
 
 def test_source_has_no_direct_provider_client() -> None:
     source = (
-        Path(__file__).parents[2]
-        / "src"
-        / "maskfactory"
-        / "steward"
-        / "openrouter_advisory.py"
+        Path(__file__).parents[2] / "src" / "maskfactory" / "steward" / "openrouter_advisory.py"
     ).read_text(encoding="utf-8")
     assert "urllib" not in source
     assert "requests." not in source

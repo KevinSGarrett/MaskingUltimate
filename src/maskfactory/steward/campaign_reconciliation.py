@@ -12,12 +12,14 @@ from copy import deepcopy
 from pathlib import Path, PurePosixPath
 from typing import Any
 
+from .campaign_slo import evaluate_campaign_slo, validate_campaign_slo_replay
 from .campaign_telemetry import validate_campaign_telemetry_replay
 from .continuous_ledger import canonical_sha256, validate_continuous_binding
 
 
 ARTIFACT_MANIFEST_SCHEMA = "maskfactory_campaign_artifact_manifest.v1"
 RECONCILIATION_SCHEMA = "maskfactory_closed_campaign_reconciliation.v1"
+RECONCILED_SLO_SCHEMA = "maskfactory_reconciled_campaign_slo_gate.v1"
 ZERO_SHA256 = "0" * 64
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 LEDGER_ROUTE_TO_TELEMETRY = {
@@ -531,11 +533,87 @@ def validate_closed_campaign_reconciliation(
         )
 
 
+def evaluate_reconciled_campaign_slo(
+    *,
+    reconciliation: Mapping[str, Any],
+    repo_root: Path,
+    source: Mapping[str, Any],
+    events: Sequence[Mapping[str, Any]],
+    telemetry: Mapping[str, Any],
+    ledger_database: Path,
+    session_id: str,
+    artifact_root: Path,
+    artifact_manifest: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Evaluate Plan-27 targets only after exact evidence reconciliation."""
+
+    evidence = {
+        "repo_root": repo_root,
+        "source": source,
+        "events": events,
+        "telemetry": telemetry,
+        "ledger_database": ledger_database,
+        "session_id": session_id,
+        "artifact_root": artifact_root,
+        "artifact_manifest": artifact_manifest,
+    }
+    validate_closed_campaign_reconciliation(reconciliation, **evidence)
+    slo = evaluate_campaign_slo(telemetry, repo_root=repo_root)
+    validate_campaign_slo_replay(
+        slo,
+        telemetry=telemetry,
+        repo_root=repo_root,
+    )
+    telemetry_sha256 = _canonical_sha256(telemetry)
+    if (
+        reconciliation.get("campaign_id") != slo["campaign_id"]
+        or reconciliation.get("telemetry_canonical_sha256") != telemetry_sha256
+    ):
+        raise CampaignReconciliationError(
+            "SLO and reconciliation campaign bindings differ"
+        )
+    return _seal(
+        {
+            "schema_version": RECONCILED_SLO_SCHEMA,
+            "campaign_id": slo["campaign_id"],
+            "campaign_kind": slo["campaign_kind"],
+            "telemetry_canonical_sha256": telemetry_sha256,
+            "reconciliation_receipt_sha256": reconciliation["receipt_sha256"],
+            "slo_result_sha256": slo["result_sha256"],
+            "metrics": slo["metrics"],
+            "gates": slo["gates"],
+            "passed": slo["passed"],
+            "authority_claimed": False,
+            "limitations": [
+                "The gate proves one reconciled campaign; sustained production acceptance still requires three consecutive real mixed campaigns."
+            ],
+            "gate_sha256": ZERO_SHA256,
+        },
+        "gate_sha256",
+    )
+
+
+def validate_reconciled_campaign_slo_replay(
+    result: Mapping[str, Any],
+    **kwargs: Any,
+) -> None:
+    """Reject a reconciled target gate that differs from exact current evidence."""
+
+    expected = evaluate_reconciled_campaign_slo(**kwargs)
+    if dict(result) != expected:
+        raise CampaignReconciliationError(
+            "reconciled campaign SLO replay mismatch"
+        )
+
+
 __all__ = [
     "ARTIFACT_MANIFEST_SCHEMA",
     "CampaignReconciliationError",
     "RECONCILIATION_SCHEMA",
+    "RECONCILED_SLO_SCHEMA",
+    "evaluate_reconciled_campaign_slo",
     "reconcile_closed_campaign",
     "seal_artifact_manifest",
     "validate_closed_campaign_reconciliation",
+    "validate_reconciled_campaign_slo_replay",
 ]

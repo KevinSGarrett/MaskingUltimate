@@ -9,9 +9,11 @@ import pytest
 
 from maskfactory.steward.campaign_reconciliation import (
     CampaignReconciliationError,
+    evaluate_reconciled_campaign_slo,
     reconcile_closed_campaign,
     seal_artifact_manifest,
     validate_closed_campaign_reconciliation,
+    validate_reconciled_campaign_slo_replay,
 )
 from maskfactory.steward.campaign_telemetry import (
     build_telemetry_event,
@@ -99,7 +101,7 @@ def _terminalize(
         )
 
 
-def _fixture(tmp_path: Path) -> dict:
+def _fixture(tmp_path: Path, *, autonomous_prepared: int = 2) -> dict:
     database = tmp_path / "ledger.sqlite"
     artifact_root = tmp_path / "artifacts"
     artifact_root.mkdir()
@@ -160,7 +162,8 @@ def _fixture(tmp_path: Path) -> dict:
         add("planned", mission_id)
         add("eligible", mission_id)
         add("route_selected", mission_id, route=route)
-        add("autonomously_prepared", mission_id)
+        if index < autonomous_prepared:
+            add("autonomously_prepared", mission_id)
         add("admitted", mission_id)
         if route == "local_pod":
             add("local_gpu_work_cell", mission_id, subject_id="cell-00")
@@ -341,4 +344,55 @@ def test_missing_local_release_fails_before_receipt(tmp_path: Path) -> None:
     ):
         reconcile_closed_campaign(
             **fixture["kwargs"] | {"events": events, "telemetry": telemetry}
+        )
+
+
+def test_slo_gate_requires_and_replays_exact_reconciliation(
+    tmp_path: Path,
+) -> None:
+    fixture = _fixture(tmp_path)
+    reconciliation = reconcile_closed_campaign(**fixture["kwargs"])
+
+    gate = evaluate_reconciled_campaign_slo(
+        reconciliation=reconciliation,
+        **fixture["kwargs"],
+    )
+
+    assert gate["passed"] is True
+    assert all(gate["gates"].values())
+    assert gate["reconciliation_receipt_sha256"] == reconciliation["receipt_sha256"]
+    validate_reconciled_campaign_slo_replay(
+        gate,
+        reconciliation=reconciliation,
+        **fixture["kwargs"],
+    )
+
+
+def test_under_target_reconciled_campaign_remains_failed(
+    tmp_path: Path,
+) -> None:
+    fixture = _fixture(tmp_path, autonomous_prepared=1)
+    reconciliation = reconcile_closed_campaign(**fixture["kwargs"])
+
+    gate = evaluate_reconciled_campaign_slo(
+        reconciliation=reconciliation,
+        **fixture["kwargs"],
+    )
+
+    assert gate["passed"] is False
+    assert gate["gates"]["autonomous_preparation"] is False
+
+
+def test_slo_gate_rejects_reconciliation_receipt_drift(tmp_path: Path) -> None:
+    fixture = _fixture(tmp_path)
+    reconciliation = reconcile_closed_campaign(**fixture["kwargs"])
+    reconciliation["counts"]["accepted_artifacts"] = 2
+
+    with pytest.raises(
+        CampaignReconciliationError,
+        match="reconciliation replay mismatch",
+    ):
+        evaluate_reconciled_campaign_slo(
+            reconciliation=reconciliation,
+            **fixture["kwargs"],
         )

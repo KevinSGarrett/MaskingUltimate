@@ -25048,18 +25048,23 @@
       "hard_blocker": true,
       "conditional": false,
       "status": "in_progress",
-      "percent_complete": 60,
+      "percent_complete": 80,
       "notes": [
         {
           "ts": "2026-07-26T19:51:40+00:00",
           "actor": "ai_agent",
           "text": "STATIC_PASS/RUNTIME_PASS_BOUNDED_CPU: commit 62796713f runs real owned CPU child interruption for local_pod, serverless_overflow, and openrouter_advisory canonical routes; reconstructs without duplicate generation, rejects stale owner tokens, blocks unresolved ambiguity and persisted-terminal resend, durably releases terminal state, removes tokens, and leaves zero active route attempts. Receipt raw SHA 69984ecac0c7c3cd20f1b04d05fecdf51fbc45a144c0b8973716866cbc5db0a5; canonical self 44fce90f6a7f6bdaf4a70913771d9089e7798c2af9cb5bcb995583e17c6fa61f. CPU-only; no live GPU lease, broker reservation, provider job, or completion claim."
+        },
+        {
+          "ts": "2026-07-26T20:33:21+00:00",
+          "actor": "ai_agent",
+          "text": "RUNTIME_PASS_BOUNDED_CPU: commit ed2dbbb80 adds and executes two real owned child-process interruptions. Persisted terminal reconstructed as completed without request/run reissue; ambiguous persisted intent/run evidence reconstructed as recovery_required and blocked unsafe resend; stale owner identity cleared; terminal release recorded; zero model/GPU requests. Actual-interruption result raw SHA 10368c1eb64c1b02dd7dca8e6ef570da3971342a08467d3fd7c26bbd5da5c8ea, canonical 0ec2e01aceb1d5cff3678680882294da93120d607b7c9fbd120bd63c575002ea. All-route receipt replay raw SHA 69984ecac0c7c3cd20f1b04d05fecdf51fbc45a144c0b8973716866cbc5db0a5, self 44fce90f6a7f6bdaf4a70913771d9089e7798c2af9cb5bcb995583e17c6fa61f, with 3/3 routes zero active attempts and tokens removed. Live route-specific reconciliation remains unclaimed."
         }
       ],
-      "evidence": "commit 62796713f; runtime_artifacts/self_hosted_llm_route_fault_drill_20260726T194856Z/route_fault_drill_receipt.json; focused+neighbor recovery/routing wave 60 passed; Ruff/compileall/diff PASS",
+      "evidence": "commits 62796713f, ed2dbbb80; runtime_artifacts/self_hosted_llm_interrupted_recovery_drill_20260726T203051Z/interrupted_recovery_result.json; runtime_artifacts/self_hosted_llm_all_route_fault_drill_20260726T203135Z/route_fault_drill_receipt.json; 8 focused recovery/route tests PASS; Ruff/compileall PASS",
       "blocked_reason": null,
       "created_at": "2026-07-26T05:44:33+00:00",
-      "updated_at": "2026-07-26T19:51:40+00:00",
+      "updated_at": "2026-07-26T20:33:21+00:00",
       "orphaned": false
     },
     "MF-P6-19.03": {

@@ -33,6 +33,24 @@ def test_standalone_launcher_defaults_to_one_bounded_advisory_mode() -> None:
     assert args.openrouter_work_kinds == "implementation_review"
 
 
+def test_local_campaign_preparation_arguments_are_explicit() -> None:
+    args = build_parser().parse_args(
+        [
+            "--state-root",
+            "state",
+            "--supervisor-id",
+            "maskfactory-test",
+            "--local-campaign-source",
+            "source.json",
+            "--local-packet-parent",
+            "packets",
+        ]
+    )
+
+    assert args.local_campaign_source == Path("source.json")
+    assert args.local_packet_parent == Path("packets")
+
+
 class Clock:
     def __init__(self) -> None:
         self.value = 1000.0
@@ -245,6 +263,13 @@ def test_standalone_launcher_once_writes_terminal_state(tmp_path: Path) -> None:
         (PROJECT_ROOT / "Plan" / "Tracker" / "tracker.json").resolve()
     )
     assert throughput["cumulative"]["dispatch_cycles"] == 1
+    assert throughput["inbox_totals"] == {
+        "openrouter_missions": 0,
+        "openrouter_completed": 0,
+        "openrouter_duplicate_blocked": 0,
+        "serverless_missions": 0,
+        "serverless_completed": 0,
+    }
     assert len(events) == 1
     assert events[0]["cycle"]["dispatch_results"] == 0
     assert not (state_root / "owner.token").exists()

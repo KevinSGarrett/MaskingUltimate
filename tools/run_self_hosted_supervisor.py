@@ -21,6 +21,9 @@ if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
 from maskfactory.steward.fallback_dispatcher import (  # noqa: E402
+    STATUS_NAME,
+    TERMINAL_NAME,
+    WORK_ITEM_NAME,
     FallbackWorkDispatcher,
 )
 from maskfactory.steward.fallback_campaign_producer import (  # noqa: E402
@@ -33,6 +36,9 @@ from maskfactory.steward.openrouter_advisory import (  # noqa: E402
 )
 from maskfactory.steward.local_campaign_dispatcher import (  # noqa: E402
     LocalEngineeringCampaignDispatcher,
+)
+from maskfactory.steward.engineering_campaign_preparer import (  # noqa: E402
+    prepare_engineering_campaign,
 )
 from maskfactory.steward.serverless_broker import (  # noqa: E402
     BROKER_ROOT,
@@ -105,6 +111,15 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--max-serverless-workers", type=int, default=4)
     parser.add_argument("--max-openrouter-workers", type=int, default=4)
     parser.add_argument("--local-campaign-inbox", type=Path)
+    parser.add_argument(
+        "--local-campaign-source",
+        type=Path,
+        help=(
+            "Optional canonical 25-mission source to prepare CPU-side before "
+            "each local dispatcher poll."
+        ),
+    )
+    parser.add_argument("--local-packet-parent", type=Path)
     parser.add_argument("--local-runtime-contract", type=Path)
     parser.add_argument("--local-steward-database", type=Path)
     parser.add_argument(
@@ -215,6 +230,57 @@ def _reconstruct_cumulative(
     return totals
 
 
+def _inbox_totals(inbox_root: Path) -> dict[str, int]:
+    totals = {
+        "openrouter_missions": 0,
+        "openrouter_completed": 0,
+        "openrouter_duplicate_blocked": 0,
+        "serverless_missions": 0,
+        "serverless_completed": 0,
+    }
+    if not inbox_root.is_dir():
+        return totals
+    for mission_root in inbox_root.iterdir():
+        work_item_path = mission_root / WORK_ITEM_NAME
+        if not mission_root.is_dir() or not work_item_path.is_file():
+            continue
+        try:
+            work_item = json.loads(work_item_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError):
+            continue
+        route = work_item.get("route")
+        terminal_path = mission_root / TERMINAL_NAME
+        status_path = mission_root / STATUS_NAME
+        terminal = None
+        status = None
+        if terminal_path.is_file():
+            try:
+                terminal = json.loads(terminal_path.read_text(encoding="utf-8"))
+            except (OSError, UnicodeError, json.JSONDecodeError):
+                terminal = None
+        if status_path.is_file():
+            try:
+                status = json.loads(status_path.read_text(encoding="utf-8"))
+            except (OSError, UnicodeError, json.JSONDecodeError):
+                status = None
+        if route == "openrouter_advisory":
+            totals["openrouter_missions"] += 1
+            if isinstance(terminal, dict) and terminal.get("disposition") == "completed":
+                totals["openrouter_completed"] += 1
+            if (
+                isinstance(status, dict)
+                and status.get("state") == "route_unavailable"
+                and "terminal reservation already exists"
+                in str(status.get("detail") or "")
+            ):
+                totals["openrouter_duplicate_blocked"] += 1
+        elif route == "serverless_overflow":
+            totals["serverless_missions"] += 1
+            if isinstance(terminal, dict) and terminal.get("disposition") == "completed":
+                totals["serverless_completed"] += 1
+    return totals
+
+
 def main() -> int:
     args = build_parser().parse_args()
     if args.heartbeat_seconds <= 0:
@@ -286,6 +352,18 @@ def main() -> int:
             runtime_tool_path=args.local_runtime_tool,
             max_runtime_seconds=args.local_max_runtime_seconds,
         )
+    if (args.local_campaign_source is None) != (
+        args.local_packet_parent is None
+    ):
+        raise SystemExit(
+            "--local-campaign-source and --local-packet-parent must be "
+            "supplied together"
+        )
+    if args.local_campaign_source is not None and local_dispatcher is None:
+        raise SystemExit(
+            "local campaign preparation requires the complete local "
+            "dispatcher configuration"
+        )
     throughput_path = args.state_root / "fallback_throughput.json"
     throughput_events_path = args.state_root / "fallback_throughput_events.jsonl"
     cumulative = _reconstruct_cumulative(
@@ -309,6 +387,21 @@ def main() -> int:
                     supervisor.record_exception(
                         "recovery",
                         f"serverless producer: {exc}",
+                    )
+            if args.local_campaign_source is not None:
+                try:
+                    prepare_engineering_campaign(
+                        repo_root=PROJECT_ROOT,
+                        tracker_path=args.tracker_path,
+                        source_path=args.local_campaign_source,
+                        packet_parent=args.local_packet_parent,
+                        campaign_inbox=args.local_campaign_inbox,
+                        runtime_contract_path=args.local_runtime_contract,
+                    )
+                except Exception as exc:
+                    supervisor.record_exception(
+                        "campaign",
+                        f"local campaign preparer: {exc}",
                     )
             fallback_ids = dispatcher.pending_ids()
             local_ids = (
@@ -421,6 +514,7 @@ def main() -> int:
                 "supervisor_source_sha256": _file_sha256(Path(__file__)),
                 "tracker_sha256": _file_sha256(args.tracker_path),
                 "cycle": cycle,
+                "inbox_totals": _inbox_totals(fallback_inbox),
             }
             _append_event(throughput_events_path, event)
             _atomic_json(
@@ -438,6 +532,7 @@ def main() -> int:
                     "cycle": cycle,
                     "queue_by_route": queue_by_route,
                     "cumulative": cumulative,
+                    "inbox_totals": event["inbox_totals"],
                     "event_ledger_path": str(throughput_events_path.resolve()),
                 },
             )

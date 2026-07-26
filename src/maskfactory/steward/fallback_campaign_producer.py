@@ -36,6 +36,19 @@ from .openrouter_advisory import MANAGER_PATH, POLICY_PATH
 PRODUCER_SCHEMA = "maskfactory.steward.fallback_campaign_producer.v1"
 REQUEST_SCHEMA = "maskfactory.openrouter_advisory_request.v1"
 SESSION_ID = "019f91d1-ea20-7d81-83ff-03d393eaa1f5"
+DEFAULT_ADVISORY_WORK_KINDS = (
+    "implementation_review",
+    "code_review",
+    "test_strategy",
+    "test_generation",
+    "root_cause_analysis",
+    "dependency_analysis",
+    "repair_planning",
+    "evidence_compaction",
+)
+BLOCKED_ANALYSIS_WORK_KINDS = frozenset(
+    {"root_cause_analysis", "dependency_analysis", "repair_planning"}
+)
 SHA256_RE = re.compile(r"^[a-f0-9]{64}$")
 AUTHORITY = {
     "read_secrets": False,
@@ -109,12 +122,51 @@ def _bounded_item(item_id: str, item: Mapping[str, object]) -> dict[str, Any]:
     }
 
 
-def _prompt(packet: Mapping[str, Any]) -> str:
+def _prompt(packet: Mapping[str, Any], *, work_kind: str) -> str:
+    focus = {
+        "implementation_review": (
+            "Produce the smallest executable implementation plan with exact source "
+            "paths, state transitions, and rollback boundaries."
+        ),
+        "test_strategy": (
+            "Produce a focused adversarial test matrix, including restart, ambiguity, "
+            "duplicate-execution, and route-unavailable cases."
+        ),
+        "code_review": (
+            "Review the likely implementation boundaries for correctness, security, "
+            "idempotency, race conditions, and regression risks."
+        ),
+        "test_generation": (
+            "Draft concrete focused test cases and fixtures that would prove the "
+            "tracker acceptance criteria without weakening fail-closed behavior."
+        ),
+        "root_cause_analysis": (
+            "Diagnose the concrete blockers and likely root causes. Distinguish missing "
+            "runtime evidence from missing implementation and static coverage."
+        ),
+        "dependency_analysis": (
+            "Reconstruct the dependency DAG and identify the smallest safe work that can "
+            "advance each blocked item without claiming completion."
+        ),
+        "repair_planning": (
+            "Produce bounded hypothesis-distinct repair steps, their stop conditions, "
+            "and the exact evidence that would distinguish each hypothesis."
+        ),
+        "evidence_compaction": (
+            "Design one compact acceptance packet that reconciles every required "
+            "runtime, test, route, duplicate, budget, and release fact."
+        ),
+    }.get(work_kind)
+    if focus is None:
+        raise FallbackCampaignProducerError(
+            f"unsupported OpenRouter advisory work kind: {work_kind}"
+        )
     return "\n".join(
         (
             "You are a read-only engineering adviser for MaskFactory.",
             "Analyze this bounded tracker-driven Plan-27 campaign and return one "
             "consolidated implementation proposal.",
+            focus,
             "For each item provide: exact likely source paths, smallest safe change, "
             "focused tests, failure/recovery cases, evidence needed, and unresolved "
             "risks. Prioritize executable engineering detail over status prose.",
@@ -141,6 +193,7 @@ class FallbackCampaignProducer:
         context_token_cap: int = 12_000,
         engineering_mission_cap: int = 25,
         max_output_tokens: int = 4096,
+        advisory_work_kinds: tuple[str, ...] = ("implementation_review",),
         openrouter_manager_path: Path = MANAGER_PATH,
         openrouter_policy_path: Path = POLICY_PATH,
     ) -> None:
@@ -156,6 +209,15 @@ class FallbackCampaignProducer:
         self.context_token_cap = int(context_token_cap)
         self.engineering_mission_cap = int(engineering_mission_cap)
         self.max_output_tokens = int(max_output_tokens)
+        if (
+            not advisory_work_kinds
+            or len(set(advisory_work_kinds)) != len(advisory_work_kinds)
+            or any(kind not in DEFAULT_ADVISORY_WORK_KINDS for kind in advisory_work_kinds)
+        ):
+            raise FallbackCampaignProducerError(
+                "advisory_work_kinds must be unique governed producer modes"
+            )
+        self.advisory_work_kinds = tuple(advisory_work_kinds)
         self.openrouter_manager_path = Path(openrouter_manager_path)
         self.openrouter_policy_path = Path(openrouter_policy_path)
         if not self.openrouter_manager_path.is_file():
@@ -174,7 +236,10 @@ class FallbackCampaignProducer:
         return tracker
 
     def _candidates(
-        self, tracker: Mapping[str, Any]
+        self,
+        tracker: Mapping[str, Any],
+        *,
+        include_blocked_dependencies: bool = False,
     ) -> tuple[list[CampaignCandidate], dict[str, dict[str, Any]], set[str]]:
         items = tracker["items"]
         completed = {
@@ -195,9 +260,10 @@ class FallbackCampaignProducer:
             ):
                 continue
             packet = _bounded_item(item_id, item)
-            if not all(
+            dependencies_done = all(
                 _dependency_done(items, dependency) for dependency in packet["dependency_ids"]
-            ):
+            )
+            if not dependencies_done and not include_blocked_dependencies:
                 continue
             packets[item_id] = packet
             encoded = _canonical_bytes(packet)
@@ -208,7 +274,11 @@ class FallbackCampaignProducer:
                     compatibility_key=f"plan27:{packet['cluster_id']}",
                     payload_sha256=hashlib.sha256(encoded).hexdigest(),
                     estimated_context_tokens=max(256, (len(encoded) + 3) // 4),
-                    dependency_ids=tuple(packet["dependency_ids"]),
+                    dependency_ids=(
+                        ()
+                        if include_blocked_dependencies
+                        else tuple(packet["dependency_ids"])
+                    ),
                     status=str(item.get("status")),
                 )
             )
@@ -243,43 +313,72 @@ class FallbackCampaignProducer:
         tracker_sha256 = _file_sha256(self.tracker_path)
         manager_sha256 = _file_sha256(self.openrouter_manager_path)
         policy_sha256 = _file_sha256(self.openrouter_policy_path)
-        candidates, packets, completed = self._candidates(tracker)
-        built = build_campaigns(
-            candidates,
-            completed_dependency_ids=completed,
-            context_token_cap=self.context_token_cap,
-            engineering_mission_cap=self.engineering_mission_cap,
-        )
         receipts: list[dict[str, Any]] = []
-        for campaign in built.campaigns:
+        for work_kind in self.advisory_work_kinds:
+            include_blocked = work_kind in BLOCKED_ANALYSIS_WORK_KINDS
+            candidates, packets, completed = self._candidates(
+                tracker,
+                include_blocked_dependencies=include_blocked,
+            )
+            built = build_campaigns(
+                candidates,
+                completed_dependency_ids=completed,
+                context_token_cap=self.context_token_cap,
+                engineering_mission_cap=self.engineering_mission_cap,
+            )
+            for campaign in built.campaigns:
+                receipts.append(
+                    self._produce_campaign(
+                        campaign=campaign,
+                        packets=packets,
+                        tracker_sha256=tracker_sha256,
+                        manager_sha256=manager_sha256,
+                        policy_sha256=policy_sha256,
+                        work_kind=work_kind,
+                        include_blocked=include_blocked,
+                    )
+                )
+        return receipts
+
+    def _produce_campaign(
+        self,
+        *,
+        campaign: Any,
+        packets: Mapping[str, dict[str, Any]],
+        tracker_sha256: str,
+        manager_sha256: str,
+        policy_sha256: str,
+        work_kind: str,
+        include_blocked: bool,
+    ) -> dict[str, Any]:
             prior_terminal = self._terminal_campaign(
-                campaign_id=campaign.campaign_id,
+                campaign_id=f"{campaign.campaign_id}:{work_kind}",
                 tracker_sha256=tracker_sha256,
             )
             if prior_terminal is not None:
-                receipts.append(
-                    {
-                        "mission_id": prior_terminal,
-                        "campaign_id": campaign.campaign_id,
-                        "item_ids": list(campaign.item_ids),
-                        "created": False,
-                        "terminal_reused": True,
-                    }
-                )
-                continue
+                return {
+                    "mission_id": prior_terminal,
+                    "campaign_id": campaign.campaign_id,
+                    "work_kind": work_kind,
+                    "item_ids": list(campaign.item_ids),
+                    "created": False,
+                    "terminal_reused": True,
+                }
             packet = {
                 "schema_version": PRODUCER_SCHEMA,
                 "tracker_sha256": tracker_sha256,
                 "openrouter_manager_sha256": manager_sha256,
                 "openrouter_policy_sha256": policy_sha256,
-                "campaign_id": campaign.campaign_id,
+                "campaign_id": f"{campaign.campaign_id}:{work_kind}",
                 "campaign_kind": "plan27_engineering",
+                "advisory_work_kind": work_kind,
+                "blocked_dependency_analysis": include_blocked,
                 "item_count": len(campaign.item_ids),
                 "item_ids": list(campaign.item_ids),
                 "items": [packets[item_id] for item_id in campaign.item_ids],
                 "authority": AUTHORITY,
             }
-            prompt = _prompt(packet)
+            prompt = _prompt(packet, work_kind=work_kind)
             prompt_bytes = prompt.encode("utf-8")
             prompt_sha256 = hashlib.sha256(prompt_bytes).hexdigest()
             identity = {
@@ -289,6 +388,7 @@ class FallbackCampaignProducer:
                 "openrouter_manager_sha256": manager_sha256,
                 "openrouter_policy_sha256": policy_sha256,
                 "campaign_id": campaign.campaign_id,
+                "work_kind": work_kind,
                 "item_ids": list(campaign.item_ids),
                 "prompt_sha256": prompt_sha256,
             }
@@ -297,15 +397,13 @@ class FallbackCampaignProducer:
                 raise FallbackCampaignProducerError("derived mission identity is invalid")
             mission_root = self.inbox_root / mission_id
             if mission_root.exists():
-                receipts.append(
-                    {
-                        "mission_id": mission_id,
-                        "campaign_id": campaign.campaign_id,
-                        "item_ids": list(campaign.item_ids),
-                        "created": False,
-                    }
-                )
-                continue
+                return {
+                    "mission_id": mission_id,
+                    "campaign_id": campaign.campaign_id,
+                    "work_kind": work_kind,
+                    "item_ids": list(campaign.item_ids),
+                    "created": False,
+                }
 
             temporary = self.inbox_root / f".{mission_id}.{os.getpid()}.tmp"
             temporary.mkdir(mode=0o700)
@@ -317,7 +415,7 @@ class FallbackCampaignProducer:
                     "mission_id": mission_id,
                     "session_id": self.session_id,
                     "job_id": f"mf-plan27-{mission_id[:20]}",
-                    "work_kind": "implementation_review",
+                    "work_kind": work_kind,
                     "model_tier": "routine",
                     "materially_difficult": False,
                     "prompt_sha256": prompt_sha256,
@@ -350,21 +448,20 @@ class FallbackCampaignProducer:
             except BaseException:
                 shutil.rmtree(temporary, ignore_errors=True)
                 raise
-            receipts.append(
-                {
-                    "mission_id": mission_id,
-                    "campaign_id": campaign.campaign_id,
-                    "item_ids": list(campaign.item_ids),
-                    "created": True,
-                    "request_sha256": _file_sha256(mission_root / "request.json"),
-                    "work_item_sha256": _file_sha256(mission_root / WORK_ITEM_NAME),
-                }
-            )
-        return receipts
+            return {
+                "mission_id": mission_id,
+                "campaign_id": campaign.campaign_id,
+                "work_kind": work_kind,
+                "item_ids": list(campaign.item_ids),
+                "created": True,
+                "request_sha256": _file_sha256(mission_root / "request.json"),
+                "work_item_sha256": _file_sha256(mission_root / WORK_ITEM_NAME),
+            }
 
 
 __all__ = [
     "FallbackCampaignProducer",
     "FallbackCampaignProducerError",
+    "DEFAULT_ADVISORY_WORK_KINDS",
     "PRODUCER_SCHEMA",
 ]

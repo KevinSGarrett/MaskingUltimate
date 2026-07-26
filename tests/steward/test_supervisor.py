@@ -204,6 +204,8 @@ def test_standalone_launcher_once_writes_terminal_state(tmp_path: Path) -> None:
             str(state_root),
             "--supervisor-id",
             "maskfactory-test",
+            "--no-auto-produce-openrouter",
+            "--no-auto-produce-serverless",
             "--once",
         ],
         cwd=tmp_path,
@@ -216,6 +218,34 @@ def test_standalone_launcher_once_writes_terminal_state(tmp_path: Path) -> None:
     assert result.returncode == 0, result.stderr
     owner = json.loads((state_root / "owner.json").read_text())
     shutdown = json.loads((state_root / "shutdown_000001.json").read_text())
+    throughput = json.loads((state_root / "fallback_throughput.json").read_text())
     assert owner["state"] == "stopped"
     assert shutdown["reason"] == "signal_or_clean_exit"
+    assert throughput["tracker_path"] == str(
+        (PROJECT_ROOT / "Plan" / "Tracker" / "tracker.json").resolve()
+    )
+    assert throughput["cumulative"]["dispatch_cycles"] == 1
     assert not (state_root / "owner.token").exists()
+
+
+def test_standalone_launcher_refuses_stale_tracker_path(tmp_path: Path) -> None:
+    stale = tmp_path / "tracker.json"
+    stale.write_text('{"items":{}}\n', encoding="utf-8")
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(PROJECT_ROOT / "tools" / "run_self_hosted_supervisor.py"),
+            "--state-root",
+            str(tmp_path / "state"),
+            "--supervisor-id",
+            "maskfactory-test",
+            "--tracker-path",
+            str(stale),
+            "--once",
+        ],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode != 0
+    assert "non-authoritative tracker" in result.stderr

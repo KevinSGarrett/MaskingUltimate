@@ -75,6 +75,7 @@ def test_produces_one_bounded_unblocked_cluster_and_is_idempotent(tmp_path: Path
         {
             "mission_id": first[0]["mission_id"],
             "campaign_id": first[0]["campaign_id"],
+            "work_kind": "implementation_review",
             "item_ids": first[0]["item_ids"],
             "created": False,
         }
@@ -115,6 +116,47 @@ def test_new_tracker_snapshot_gets_new_identity_without_reissue(
 
     assert first["mission_id"] != second["mission_id"]
     assert second["created"] is True
+
+
+def test_production_modes_create_distinct_useful_advisory_jobs(
+    tmp_path: Path,
+) -> None:
+    tracker = tmp_path / "tracker.json"
+    inbox = tmp_path / "inbox"
+    manager = tmp_path / "manager.py"
+    policy = tmp_path / "policy.json"
+    manager.write_text("# manager\n", encoding="utf-8")
+    policy.write_text("{}\n", encoding="utf-8")
+    _tracker(tracker)
+    producer = FallbackCampaignProducer(
+        tracker_path=tracker,
+        inbox_root=inbox,
+        advisory_work_kinds=(
+            "implementation_review",
+            "test_strategy",
+            "root_cause_analysis",
+            "dependency_analysis",
+        ),
+        openrouter_manager_path=manager,
+        openrouter_policy_path=policy,
+    )
+
+    receipts = producer.produce()
+
+    assert {item["work_kind"] for item in receipts} == {
+        "implementation_review",
+        "test_strategy",
+        "root_cause_analysis",
+        "dependency_analysis",
+    }
+    assert len({item["mission_id"] for item in receipts}) == len(receipts)
+    assert all(item["created"] is True for item in receipts)
+    blocked = [
+        item
+        for item in receipts
+        if item["work_kind"] in {"root_cause_analysis", "dependency_analysis"}
+    ]
+    assert all("MF-P6-15.04" in item["item_ids"] for item in blocked)
 
 
 def test_manager_change_forces_material_successor_identity(tmp_path: Path) -> None:

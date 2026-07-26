@@ -100,6 +100,20 @@ def _box_from_masks(masks: np.ndarray, *, height: int, width: int) -> np.ndarray
     return boxes
 
 
+def _filter_nonempty_masks(arrays: Mapping[str, np.ndarray]) -> dict[str, np.ndarray]:
+    """Remove postprocessed empty masks while preserving aligned result fields."""
+
+    masks = arrays["masks"]
+    if masks.ndim != 3:
+        raise RuntimeError("official SAM 3.1 postprocessed mask geometry is invalid")
+    keep = masks.any(axis=(1, 2))
+    if not keep.any():
+        raise RuntimeError("official SAM 3.1 ROI clip removed the refinement")
+    if any(value.shape[0] != masks.shape[0] for value in arrays.values()):
+        raise RuntimeError("official SAM 3.1 postprocessed result alignment is invalid")
+    return {name: value[keep] for name, value in arrays.items()}
+
+
 def _derived_positive(mask: np.ndarray) -> tuple[int, int]:
     ys, xs = np.nonzero(mask)
     if not len(xs):
@@ -425,8 +439,7 @@ def execute(args: argparse.Namespace) -> dict[str, Any]:
                 allowed = np.zeros((height, width), dtype=bool)
                 allowed[y1:y2, x1:x2] = True
                 current["masks"] &= allowed[None, :, :]
-                if not current["masks"].any():
-                    raise RuntimeError("official SAM 3.1 ROI clip removed the refinement")
+                current = _filter_nonempty_masks(current)
                 current["boxes_xywh"] = _box_from_masks(
                     current["masks"], height=height, width=width
                 )

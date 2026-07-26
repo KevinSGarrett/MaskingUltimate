@@ -11,6 +11,7 @@ from PIL import Image
 from tools.run_sam31_runtime import (
     _box_from_masks,
     _derived_positive,
+    _filter_nonempty_masks,
     _normalize_refinement_box,
     _normalize_visual_exemplars,
 )
@@ -288,6 +289,41 @@ def test_host_and_runner_share_payload_hash_and_deterministic_prompt_geometry() 
     assert '"bounding_boxes": [normalized_box]' in runner
     assert '"bounding_box_labels": [1]' in runner
     assert '"points": relative' not in runner
+
+
+def test_postprocessed_empty_masks_are_filtered_with_aligned_fields() -> None:
+    masks = np.zeros((2, 12, 16), dtype=bool)
+    masks[0, 2:8, 4:10] = True
+    arrays = {
+        "masks": masks,
+        "object_ids": np.asarray([11, 22], dtype=np.int64),
+        "probabilities": np.asarray([0.9, 0.8], dtype=np.float32),
+        "boxes_xywh": np.asarray([[4, 2, 6, 6], [0, 0, 0, 0]], dtype=np.float32),
+    }
+
+    filtered = _filter_nonempty_masks(arrays)
+
+    assert filtered["masks"].shape == (1, 12, 16)
+    assert filtered["object_ids"].tolist() == [11]
+    assert filtered["probabilities"].tolist() == pytest.approx([0.9])
+    assert filtered["boxes_xywh"].shape == (1, 4)
+
+
+def test_postprocessed_empty_mask_filter_fails_closed() -> None:
+    arrays = {
+        "masks": np.zeros((1, 12, 16), dtype=bool),
+        "object_ids": np.asarray([11], dtype=np.int64),
+        "probabilities": np.asarray([0.9], dtype=np.float32),
+        "boxes_xywh": np.asarray([[0, 0, 0, 0]], dtype=np.float32),
+    }
+    with pytest.raises(RuntimeError, match="ROI clip removed"):
+        _filter_nonempty_masks(arrays)
+
+    misaligned = dict(arrays)
+    misaligned["object_ids"] = np.asarray([11, 22], dtype=np.int64)
+    misaligned["masks"] = np.ones((1, 12, 16), dtype=bool)
+    with pytest.raises(RuntimeError, match="alignment"):
+        _filter_nonempty_masks(misaligned)
 
 
 @pytest.mark.parametrize(

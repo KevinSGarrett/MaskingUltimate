@@ -24,7 +24,6 @@ from maskfactory.steward.fallback_dispatcher import (  # noqa: E402
     FallbackWorkDispatcher,
 )
 from maskfactory.steward.fallback_campaign_producer import (  # noqa: E402
-    DEFAULT_ADVISORY_WORK_KINDS,
     FallbackCampaignProducer,
 )
 from maskfactory.steward.openrouter_advisory import (  # noqa: E402
@@ -64,7 +63,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--openrouter-work-kinds",
-        default=",".join(DEFAULT_ADVISORY_WORK_KINDS),
+        default="implementation_review",
         help="Comma-separated governed advisory modes produced per campaign.",
     )
     parser.add_argument(

@@ -15,8 +15,22 @@ from maskfactory.steward.supervisor import (
     SupervisorAlreadyRunning,
     SupervisorStateError,
 )
+from tools.run_self_hosted_supervisor import build_parser
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+
+def test_standalone_launcher_defaults_to_one_bounded_advisory_mode() -> None:
+    args = build_parser().parse_args(
+        [
+            "--state-root",
+            "state",
+            "--supervisor-id",
+            "maskfactory-test",
+        ]
+    )
+
+    assert args.openrouter_work_kinds == "implementation_review"
 
 
 class Clock:

@@ -22,20 +22,48 @@ from pathlib import Path
 from typing import Any
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
-if os.name == "nt":
-    MANAGER_PATH = PROJECT_ROOT / "tools" / "manage_runpod_serverless_overflow.py"
-    CONFIG_PATH = PROJECT_ROOT / "configs" / "runpod_serverless_overflow.yaml"
-    BROKER_ROOT = Path.home() / ".maskfactory" / "serverless_overflow_control"
-else:
-    MANAGER_PATH = Path(
-        "/workspace/.maskfactory/serverless_overflow_control/"
-        "tools/manage_runpod_serverless_overflow.py"
+
+
+def _default_broker_paths(
+    *,
+    is_windows: bool,
+    environment: Mapping[str, str] | None = None,
+) -> tuple[Path, Path, Path]:
+    """Return the checked-out manager/config and the durable ledger root.
+
+    The former non-Windows defaults referenced a disposable historical
+    `/workspace/.maskfactory/serverless_overflow_control` source tree.  That
+    made a WSL or Pod caller silently diverge from the committed manager.  The
+    executable and configuration must instead come from this checkout (or an
+    explicit, hash-bound deployment override); only the broker SQLite ledger
+    belongs on the shared execution-host volume.
+    """
+
+    values = environment if environment is not None else os.environ
+    manager = Path(
+        values.get(
+            "MASKFACTORY_SERVERLESS_MANAGER_PATH",
+            str(PROJECT_ROOT / "tools" / "manage_runpod_serverless_overflow.py"),
+        )
+    ).expanduser()
+    config = Path(
+        values.get(
+            "MASKFACTORY_SERVERLESS_CONFIG_PATH",
+            str(PROJECT_ROOT / "configs" / "runpod_serverless_overflow.yaml"),
+        )
+    ).expanduser()
+    default_root = (
+        Path.home() / ".maskfactory" / "serverless_overflow_control"
+        if is_windows
+        else Path("/workspace/.maskfactory/serverless_overflow")
     )
-    CONFIG_PATH = Path(
-        "/workspace/.maskfactory/serverless_overflow_control/"
-        "configs/runpod_serverless_overflow.yaml"
-    )
-    BROKER_ROOT = Path("/workspace/.maskfactory/serverless_overflow_control")
+    broker_root = Path(
+        values.get("MASKFACTORY_SERVERLESS_BROKER_ROOT", str(default_root))
+    ).expanduser()
+    return manager, config, broker_root
+
+
+MANAGER_PATH, CONFIG_PATH, BROKER_ROOT = _default_broker_paths(is_windows=os.name == "nt")
 STATE_SCHEMA = "maskfactory.steward.serverless_route_state.v1"
 EVENT_SCHEMA = "maskfactory.steward.serverless_route_event.v1"
 SHA256_RE = re.compile(r"^[a-f0-9]{64}$")

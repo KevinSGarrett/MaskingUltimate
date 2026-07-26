@@ -14,8 +14,10 @@ from maskfactory.steward.serverless_broker import (
     BrokerCommandRejected,
     BrokerCommandTimeout,
     BrokerOnlyServerlessRoute,
+    PROJECT_ROOT,
     ServerlessRouteAmbiguous,
     ServerlessRouteError,
+    _default_broker_paths,
 )
 
 
@@ -40,6 +42,36 @@ def payload_sha(payload: dict[str, Any]) -> str:
             separators=(",", ":"),
         ).encode()
     ).hexdigest()
+
+
+def test_non_windows_defaults_use_committed_manager_and_shared_ledger() -> None:
+    manager, config, broker_root = _default_broker_paths(
+        is_windows=False,
+        environment={},
+    )
+
+    assert manager == PROJECT_ROOT / "tools" / "manage_runpod_serverless_overflow.py"
+    assert config == PROJECT_ROOT / "configs" / "runpod_serverless_overflow.yaml"
+    assert broker_root == Path("/workspace/.maskfactory/serverless_overflow")
+
+
+def test_broker_paths_allow_explicit_execution_host_mapping() -> None:
+    manager, config, broker_root = _default_broker_paths(
+        is_windows=False,
+        environment={
+            "MASKFACTORY_SERVERLESS_MANAGER_PATH": "/mnt/c/Comfy_UI_Main_Masking/tools/manage_runpod_serverless_overflow.py",
+            "MASKFACTORY_SERVERLESS_CONFIG_PATH": "/mnt/c/Comfy_UI_Main_Masking/configs/runpod_serverless_overflow.yaml",
+            "MASKFACTORY_SERVERLESS_BROKER_ROOT": "/workspace/.maskfactory/serverless_overflow",
+        },
+    )
+
+    assert manager == Path(
+        "/mnt/c/Comfy_UI_Main_Masking/tools/manage_runpod_serverless_overflow.py"
+    )
+    assert config == Path(
+        "/mnt/c/Comfy_UI_Main_Masking/configs/runpod_serverless_overflow.yaml"
+    )
+    assert broker_root == Path("/workspace/.maskfactory/serverless_overflow")
 
 
 def build(

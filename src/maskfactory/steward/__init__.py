@@ -41,6 +41,11 @@ from .engineering_campaign_runtime import (
     validate_engineering_campaign_runtime_binding,
     validate_engineering_campaign_runtime_terminal,
 )
+from .engineering_campaign_preparer import (
+    EngineeringCampaignPreparationError,
+    prepare_engineering_campaign,
+    seal_engineering_campaign_source,
+)
 from .local_campaign_dispatcher import (
     LocalCampaignDispatchError,
     LocalEngineeringCampaignDispatcher,
@@ -90,6 +95,9 @@ __all__ = [
     "build_engineering_campaign_runtime_binding",
     "validate_engineering_campaign_runtime_binding",
     "validate_engineering_campaign_runtime_terminal",
+    "EngineeringCampaignPreparationError",
+    "prepare_engineering_campaign",
+    "seal_engineering_campaign_source",
     "LocalCampaignDispatchError",
     "LocalEngineeringCampaignDispatcher",
     "SupervisorAlreadyRunning",

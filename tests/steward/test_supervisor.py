@@ -15,7 +15,11 @@ from maskfactory.steward.supervisor import (
     SupervisorAlreadyRunning,
     SupervisorStateError,
 )
-from tools.run_self_hosted_supervisor import _inbox_totals, build_parser
+from tools.run_self_hosted_supervisor import (
+    _inbox_totals,
+    _validate_fallback_admission,
+    build_parser,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
@@ -31,6 +35,42 @@ def test_standalone_launcher_defaults_to_one_bounded_advisory_mode() -> None:
     )
 
     assert args.openrouter_work_kinds == "implementation_review"
+    assert args.max_openrouter_workers == 1
+    assert args.max_serverless_workers == 1
+
+
+def test_supervisor_rejects_fallback_worker_fanout() -> None:
+    args = build_parser().parse_args(
+        [
+            "--state-root",
+            "state",
+            "--supervisor-id",
+            "maskfactory-test",
+            "--no-auto-produce-serverless",
+            "--max-openrouter-workers",
+            "4",
+        ]
+    )
+
+    with pytest.raises(SystemExit, match="max-openrouter-workers must be exactly 1"):
+        _validate_fallback_admission(args)
+
+
+def test_supervisor_rejects_stale_serverless_manager_path() -> None:
+    args = build_parser().parse_args(
+        [
+            "--state-root",
+            "state",
+            "--supervisor-id",
+            "maskfactory-test",
+            "--no-auto-produce-serverless",
+            "--serverless-manager",
+            "C:/stale/manage_runpod_serverless_overflow.py",
+        ]
+    )
+
+    with pytest.raises(SystemExit, match="non-canonical Serverless manager"):
+        _validate_fallback_admission(args)
 
 
 def test_local_campaign_preparation_arguments_are_explicit() -> None:

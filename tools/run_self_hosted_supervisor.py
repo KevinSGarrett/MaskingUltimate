@@ -108,8 +108,8 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Perform one governed fallback poll, heartbeat, and clean shutdown.",
     )
-    parser.add_argument("--max-serverless-workers", type=int, default=4)
-    parser.add_argument("--max-openrouter-workers", type=int, default=4)
+    parser.add_argument("--max-serverless-workers", type=int, default=1)
+    parser.add_argument("--max-openrouter-workers", type=int, default=1)
     parser.add_argument("--local-campaign-inbox", type=Path)
     parser.add_argument(
         "--local-campaign-source",
@@ -150,6 +150,39 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--local-max-runtime-seconds", type=int, default=3600)
     return parser
+
+
+def _validate_fallback_admission(args: argparse.Namespace) -> None:
+    """Fail closed on stale paths or fan-out before a supervisor starts.
+
+    One campaign may have at most one active governed fallback unit.  Parallel
+    producer workers turn bounded advisory reasoning into an unbounded
+    micro-request loop, and a Windows process cannot safely own the shared
+    execution-host Serverless ledger.  Serverless production therefore belongs
+    to the verified WSL execution host; Windows may still run CPU-safe local
+    supervision with automatic Serverless discovery disabled.
+    """
+
+    if args.max_serverless_workers != 1:
+        raise SystemExit("--max-serverless-workers must be exactly 1")
+    if args.max_openrouter_workers != 1:
+        raise SystemExit("--max-openrouter-workers must be exactly 1")
+    for actual, expected, label in (
+        (args.serverless_manager, SERVERLESS_MANAGER_PATH, "Serverless manager"),
+        (args.serverless_config, CONFIG_PATH, "Serverless config"),
+        (args.serverless_broker_root, BROKER_ROOT, "Serverless broker root"),
+    ):
+        if actual.resolve() != expected.resolve():
+            raise SystemExit(
+                f"refusing non-canonical {label} path; use the checked-out "
+                "canonical execution-host mapping"
+            )
+    if os.name == "nt" and not args.no_auto_produce_serverless:
+        raise SystemExit(
+            "automatic Serverless production is disabled on Windows; run the "
+            "source-hash-bound successor from the verified WSL execution host "
+            "or pass --no-auto-produce-serverless"
+        )
 
 
 def _file_sha256(path: Path) -> str:
@@ -335,6 +368,7 @@ def main() -> int:
             "refusing non-authoritative tracker path; deploy from the current "
             "project root instead of a stale worktree"
         )
+    _validate_fallback_admission(args)
     work_kinds = tuple(
         value.strip()
         for value in args.openrouter_work_kinds.split(",")

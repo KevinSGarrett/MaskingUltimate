@@ -395,7 +395,10 @@ def test_real_runtime_emits_one_exact_adoption_packet(
         "gpu_utilization_percent": 0,
         "compute_app_count": 0,
         "ports_open": {"8188": False, "18008": False, "18125": False},
-        "lease_active": False,
+        "active_lease_session_id": None,
+        "active_lease_job_id": None,
+        "campaign_lease_active": False,
+        "foreign_lease_active": False,
         "lease_queue_count": 0,
         "owned_process_count": 0,
         "owner_token_present": False,
@@ -434,6 +437,44 @@ def test_real_runtime_emits_one_exact_adoption_packet(
         )
         == packet
     )
+
+    foreign_handoff = {
+        **handoff,
+        "gpu_memory_used_mib": 31188,
+        "gpu_utilization_percent": 64,
+        "compute_app_count": 1,
+        "ports_open": {"8188": False, "18008": True, "18125": False},
+        "active_lease_session_id": "foreign-session",
+        "active_lease_job_id": "foreign-job",
+        "foreign_lease_active": True,
+    }
+    assert build_engineering_campaign_runtime_packet(
+        campaign_root=campaign_root,
+        contract_path=CONTRACT_PATH,
+        database=database,
+        output_root=tmp_path / "foreign-occupied-packet",
+        handoff=foreign_handoff,
+        decision="ADOPT",
+        decision_reason="The completed campaign no longer owns the GPU.",
+        limitations=["A later foreign lease is recorded without becoming a veto."],
+        tracker_proposals=[],
+    )["resource_handoff"]["foreign_lease_active"] is True
+
+    with pytest.raises(
+        EngineeringCampaignRuntimePacketError,
+        match="resource handoff",
+    ):
+        build_engineering_campaign_runtime_packet(
+            campaign_root=campaign_root,
+            contract_path=CONTRACT_PATH,
+            database=database,
+            output_root=tmp_path / "still-owned-packet",
+            handoff={**handoff, "campaign_lease_active": True},
+            decision="ADOPT",
+            decision_reason="This must fail while the campaign owns the lease.",
+            limitations=[],
+            tracker_proposals=[],
+        )
 
     release["child_returncode"] = 1
     release["self_sha256"] = "0" * 64

@@ -263,7 +263,10 @@ def _validate_handoff(handoff: Mapping[str, Any]) -> dict[str, Any]:
         "gpu_utilization_percent",
         "compute_app_count",
         "ports_open",
-        "lease_active",
+        "active_lease_session_id",
+        "active_lease_job_id",
+        "campaign_lease_active",
+        "foreign_lease_active",
         "lease_queue_count",
         "owned_process_count",
         "owner_token_present",
@@ -277,19 +280,38 @@ def _validate_handoff(handoff: Mapping[str, Any]) -> dict[str, Any]:
     if (
         not isinstance(ports, dict)
         or set(ports) != {"8188", "18008", "18125"}
-        or any(value is not False for value in ports.values())
+        or any(not isinstance(value, bool) for value in ports.values())
         or handoff.get("gpu_name") != "NVIDIA RTX 6000 Ada Generation"
-        or handoff.get("gpu_memory_used_mib") > 4
-        or handoff.get("gpu_utilization_percent") != 0
-        or handoff.get("compute_app_count") != 0
-        or handoff.get("lease_active") is not False
-        or handoff.get("lease_queue_count") != 0
+        or not isinstance(handoff.get("gpu_memory_used_mib"), int)
+        or handoff.get("gpu_memory_used_mib") < 0
+        or not isinstance(handoff.get("gpu_utilization_percent"), int)
+        or handoff.get("gpu_utilization_percent") < 0
+        or not isinstance(handoff.get("compute_app_count"), int)
+        or handoff.get("compute_app_count") < 0
+        or handoff.get("campaign_lease_active") is not False
+        or not isinstance(handoff.get("foreign_lease_active"), bool)
+        or not isinstance(handoff.get("lease_queue_count"), int)
+        or handoff.get("lease_queue_count") < 0
         or handoff.get("owned_process_count") != 0
         or handoff.get("owner_token_present") is not False
         or handoff.get("authority_claimed") is not False
     ):
         raise EngineeringCampaignRuntimePacketError(
             "resource handoff is not clean"
+        )
+    foreign_busy = (
+        handoff["compute_app_count"] > 0
+        or any(ports.values())
+        or handoff["gpu_memory_used_mib"] > 4
+        or handoff["gpu_utilization_percent"] > 0
+    )
+    if foreign_busy and (
+        handoff["foreign_lease_active"] is not True
+        or not handoff["active_lease_session_id"]
+        or not handoff["active_lease_job_id"]
+    ):
+        raise EngineeringCampaignRuntimePacketError(
+            "post-release GPU occupancy lacks a foreign lease"
         )
     return deepcopy(dict(handoff))
 

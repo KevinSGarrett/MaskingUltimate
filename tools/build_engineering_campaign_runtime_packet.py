@@ -87,6 +87,9 @@ def _handoff(args: argparse.Namespace) -> dict:
     if len(gpu_rows) != 1:
         raise RuntimeError("exactly one GPU is required for handoff proof")
     name, memory, utilization = [value.strip() for value in gpu_rows[0].split(",")]
+    active = status.get("active")
+    active_session = active.get("session_id") if isinstance(active, dict) else None
+    active_job = active.get("job_id") if isinstance(active, dict) else None
     return {
         "captured_at": datetime.now(UTC).isoformat(),
         "pod_id": args.pod_id,
@@ -100,7 +103,20 @@ def _handoff(args: argparse.Namespace) -> dict:
         "ports_open": {
             str(port): _port_open(port) for port in (8188, 18008, 18125)
         },
-        "lease_active": status.get("active") is not None,
+        "active_lease_session_id": active_session,
+        "active_lease_job_id": active_job,
+        "campaign_lease_active": bool(
+            isinstance(active, dict)
+            and active.get("session_id") == release["session_id"]
+            and active.get("job_id") == release["job_id"]
+        ),
+        "foreign_lease_active": bool(
+            isinstance(active, dict)
+            and (
+                active.get("session_id") != release["session_id"]
+                or active.get("job_id") != release["job_id"]
+            )
+        ),
         "lease_queue_count": len(status.get("queued", [])),
         "owned_process_count": _owned_process_count(args.campaign_id),
         "owner_token_present": Path(release["owner_token_path"]).exists(),

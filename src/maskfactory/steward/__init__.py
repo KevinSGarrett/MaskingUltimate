@@ -28,6 +28,11 @@ from .fallback_dispatcher import (
     FallbackWorkDispatcher,
     seal_fallback_work_item,
 )
+from .engineering_campaign_packet import (
+    EngineeringCampaignPacketError,
+    build_engineering_campaign_packet,
+    validate_engineering_campaign_packet,
+)
 from .goal_selector import (
     GoalSelection,
     GoalSelectionError,
@@ -64,6 +69,9 @@ __all__ = [
     "FallbackDispatchError",
     "FallbackWorkDispatcher",
     "seal_fallback_work_item",
+    "EngineeringCampaignPacketError",
+    "build_engineering_campaign_packet",
+    "validate_engineering_campaign_packet",
     "SupervisorAlreadyRunning",
     "SupervisorStateError",
 ]

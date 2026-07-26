@@ -6,6 +6,7 @@ from pathlib import Path
 
 from maskfactory.steward.engineering_campaign_runtime import (
     BINDING_NAME,
+    EngineeringCampaignRuntimeController,
     build_engineering_campaign_runtime_binding,
 )
 from maskfactory.steward.local_campaign_dispatcher import (
@@ -14,7 +15,11 @@ from maskfactory.steward.local_campaign_dispatcher import (
     LocalEngineeringCampaignDispatcher,
 )
 
-from .test_engineering_campaign_runtime import CONTRACT_PATH, _prepare_campaign
+from .test_engineering_campaign_runtime import (
+    CONTRACT_PATH,
+    _install_fake_runtime,
+    _prepare_campaign,
+)
 
 
 class Child:
@@ -272,3 +277,43 @@ def test_existing_later_sorted_active_intent_prevents_new_local_launch(
     by_campaign = {result["campaign_id"]: result for result in results}
     assert by_campaign["z-active-campaign"]["state"] == "active"
     assert by_campaign["a-new-campaign"]["state"] == "queued"
+
+
+def test_cpu_fake_runtime_end_to_end_dispatches_25_once_and_replays_terminal(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    _inbox, campaign = _prepared_inbox(tmp_path)
+    runtime_state = _install_fake_runtime(monkeypatch)
+    child_calls = 0
+
+    def popen(_command, **_kwargs):
+        nonlocal child_calls
+        child_calls += 1
+        terminal = EngineeringCampaignRuntimeController(
+            contract_path=CONTRACT_PATH,
+            campaign_root=campaign,
+            database=tmp_path / "steward.sqlite",
+        ).run()
+        assert terminal["outcome"] == "SUCCESS"
+        return Child()
+
+    dispatcher = _dispatcher(
+        tmp_path,
+        popen_factory=popen,
+        process_identity_probe=lambda _pid: None,
+        process_discovery=lambda _campaign, _guard: (),
+    )
+
+    launched = dispatcher.poll_once()
+    terminal = dispatcher.poll_once()
+    replay = dispatcher.poll_once()
+
+    assert launched[0]["state"] == "active"
+    assert terminal[0]["outcome"] == "terminal"
+    assert terminal[0]["retry_permitted"] is False
+    assert replay == ()
+    assert child_calls == 1
+    assert runtime_state["launches"] == 1
+    assert runtime_state["shutdowns"] == 1
+    assert len(runtime_state["submits"]) == 25

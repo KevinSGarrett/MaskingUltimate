@@ -11,6 +11,7 @@ from maskfactory.aws_runpod_transfer import (
     ordered_chunk_list_sha256,
     seal_manifest,
 )
+from maskfactory.corpus_mirror_manifest import build_corpus_mirror_manifest
 from maskfactory.transferred_asset_durability import (
     DurabilityRegistryError,
     audit_registry,
@@ -193,6 +194,67 @@ def test_complete_aws_chunk_transfer_passes(tmp_path: Path) -> None:
     assert result["status"] == "RUNTIME_PASS_DURABILITY"
     assert result["assets"][0]["checks"]["manifest_contract_valid"] is True
     assert result["assets"][0]["checks"]["assembled_destination_hash"] is True
+
+
+def test_complete_corpus_mirror_passes(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "asset.bin").write_bytes(b"asset")
+    destination = tmp_path / "mirror"
+    destination.mkdir()
+    (destination / "asset.bin").write_bytes(b"asset")
+    staging = tmp_path / "manifest-staging"
+    built = build_corpus_mirror_manifest(
+        source_root=source,
+        destination_root=destination,
+        output_dir=staging,
+        asset_id="corpus-fixture",
+    )
+    manifest = destination / "MIGRATION_MANIFEST.json"
+    inventory = destination / "MIGRATION_INVENTORY.sqlite"
+    manifest.write_bytes(built.manifest_path.read_bytes())
+    inventory.write_bytes(built.inventory_path.read_bytes())
+    registry = _write_registry(
+        tmp_path,
+        manifest,
+        destination,
+        kind="corpus_mirror_v1",
+    )
+    result = _audit(registry, tmp_path)
+    assert result["status"] == "RUNTIME_PASS_DURABILITY"
+    assert result["assets"][0]["checks"]["all_expected_files_hash_bound"] is True
+
+
+def test_corpus_mirror_drift_fails_closed(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "asset.bin").write_bytes(b"asset")
+    destination = tmp_path / "mirror"
+    destination.mkdir()
+    (destination / "asset.bin").write_bytes(b"asset")
+    staging = tmp_path / "manifest-staging"
+    built = build_corpus_mirror_manifest(
+        source_root=source,
+        destination_root=destination,
+        output_dir=staging,
+        asset_id="corpus-fixture",
+    )
+    manifest = destination / "MIGRATION_MANIFEST.json"
+    inventory = destination / "MIGRATION_INVENTORY.sqlite"
+    manifest.write_bytes(built.manifest_path.read_bytes())
+    inventory.write_bytes(built.inventory_path.read_bytes())
+    registry = _write_registry(
+        tmp_path,
+        manifest,
+        destination,
+        kind="corpus_mirror_v1",
+    )
+    (destination / "asset.bin").write_bytes(b"drift")
+    result = _audit(registry, tmp_path)
+    assert result["status"] == "RUNTIME_BLOCKED_DURABILITY"
+    assert "CORPUS_FILE_DRIFT" in {
+        item["code"] for item in result["assets"][0]["issues"]
+    }
 
 
 def test_missing_manifest_fails_closed(tmp_path: Path) -> None:

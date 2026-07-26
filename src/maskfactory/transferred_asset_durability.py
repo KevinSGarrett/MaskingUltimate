@@ -14,6 +14,10 @@ from maskfactory.aws_runpod_transfer import (
     TransferManifestError,
     verify_transfer_manifest,
 )
+from maskfactory.corpus_mirror_manifest import (
+    CorpusMirrorManifestError,
+    verify_corpus_mirror_manifest,
+)
 
 REGISTRY_SCHEMA_VERSION = "maskfactory.transferred_asset_registry.v1"
 AUDIT_SCHEMA_VERSION = "maskfactory.transferred_asset_durability_audit.v1"
@@ -290,6 +294,36 @@ def _audit_aws_chunk_transfer(
     return checks, issues, detail
 
 
+def _audit_corpus_mirror(
+    manifest_path: Path,
+    destination: Path,
+    row: dict[str, Any],
+) -> tuple[dict[str, bool], list[dict[str, str]], dict[str, Any]]:
+    checks: dict[str, bool] = {}
+    issues: list[dict[str, str]] = []
+    detail: dict[str, Any] = {}
+    try:
+        verified = verify_corpus_mirror_manifest(
+            manifest_path,
+            destination,
+        )
+    except (CorpusMirrorManifestError, OSError) as exc:
+        return (
+            checks,
+            [_issue("CORPUS_MIRROR_MANIFEST_INVALID", str(exc))],
+            detail,
+        )
+    checks.update(verified["checks"])
+    issues.extend(verified["issues"])
+    detail.update(verified["detail"])
+    checks["manifest_self_hash_binding"] = row.get("manifest_self_sha256") == verified[
+        "detail"
+    ].get("manifest_self_sha256")
+    if not checks["manifest_self_hash_binding"]:
+        issues.append(_issue("MANIFEST_BINDING_DRIFT", str(manifest_path)))
+    return checks, issues, detail
+
+
 def audit_registry(
     registry_path: Path,
     *,
@@ -354,6 +388,14 @@ def audit_registry(
                 manifest,
                 destination,
                 allowed_root,
+            )
+            checks.update(child_checks)
+            issues.extend(child_issues)
+        elif manifest.is_file() and kind == "corpus_mirror_v1":
+            child_checks, child_issues, detail = _audit_corpus_mirror(
+                manifest,
+                destination,
+                row,
             )
             checks.update(child_checks)
             issues.extend(child_issues)

@@ -20,6 +20,12 @@ from .supervisor import (
     SupervisorAlreadyRunning,
     SupervisorStateError,
 )
+from .continuous_ledger import (
+    ContinuousBindingError,
+    ContinuousLedgerError,
+    ContinuousWorkLedger,
+    seal_continuous_binding,
+)
 
 __all__ = [
     "AmbiguousMissionError",
@@ -32,7 +38,11 @@ __all__ = [
     "GoalSelection",
     "GoalSelectionError",
     "CpuSafeSupervisor",
+    "ContinuousBindingError",
+    "ContinuousLedgerError",
+    "ContinuousWorkLedger",
     "seal_binding",
+    "seal_continuous_binding",
     "select_next_plan27_work",
     "SupervisorAlreadyRunning",
     "SupervisorStateError",

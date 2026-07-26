@@ -1,0 +1,71 @@
+{
+  "authority": {
+    "final_acceptance": false,
+    "git": false,
+    "infrastructure": false,
+    "repository_mutation": false,
+    "runpod_control": false,
+    "secret_access": false,
+    "tool_invocation": false,
+    "tracker": false
+  },
+  "contract_sha256": "a9d644b1a64918e32395546bb33bc14e25ead14322d29e6a02d9acf4a60b3d1b",
+  "engine": {
+    "python_executable": "/workspace/maskfactory/runtime_artifacts/visual_critic_setup/qwen36_env/bin/python",
+    "vllm_executable": "/workspace/maskfactory/runtime_artifacts/visual_critic_setup/qwen36_env/bin/vllm",
+    "vllm_executable_sha256": "9ba9c0d5973abfbefb842ed8a1ed73fba6478259e5360418dd78c68458db0ade",
+    "vllm_version": "0.19.1"
+  },
+  "model": {
+    "architecture": "Qwen3_5ForConditionalGeneration",
+    "config_sha256": "885e6830f8d6883fefd63e3608c267452da2e6ce353a3494f42a7aa3d70c8434",
+    "file_bytes": 30890040900,
+    "file_count": 80,
+    "index_sha256": "6d19a4e607604c1ac631f810a56e6084c892b4cb0251c530c6a24fc877f9fb4b",
+    "path": "/workspace/models/visual_critics/qwen3_6_27b_fp8",
+    "quantization": "fp8",
+    "revision": "e89b16ebf1988b3d6befa7de50abc2d76f26eb09",
+    "tree_sha256": "8349ee8e70b8a08bdf1b94c6165dffd6ee57117cfc6b7a9211a45c1abb91ee48"
+  },
+  "pod": {
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "gpu_count": 1,
+    "id": "68psfqtaogg7s7",
+    "mount": "/workspace",
+    "name": "vitreous_beige_centipede",
+    "network_volume_id": "o9qv2ld91c"
+  },
+  "schema_version": "maskfactory_self_hosted_steward_runtime_contract.v1",
+  "server": {
+    "default_port": 18008,
+    "enforce_eager": true,
+    "gpu_memory_utilization": 0.66,
+    "host": "127.0.0.1",
+    "max_model_len": 4096,
+    "max_num_seqs": 1,
+    "seed": 1337,
+    "served_model": "maskfactory-mission-steward-qwen3_5_27b_fp8",
+    "shutdown_timeout_seconds": 90,
+    "startup_timeout_seconds": 600,
+    "trust_remote_code": true
+  },
+  "submission": {
+    "max_output_tokens": 900,
+    "path": "/v1/chat/completions",
+    "replay_runs": 2,
+    "request_timeout_seconds": 300,
+    "seed": 1337,
+    "strict_json_schema": true,
+    "temperature": 0,
+    "thinking_enabled": false
+  },
+  "validated_runtime": {
+    "acceptance_file_sha256": "7ca0415b3043b1e2290cab4af91dddf26a47002ab59f4e3d5771497deda3e3cf",
+    "binding_file_sha256": "148a48a1780780c41b54415c0d5f417d1ba86caf7e289316cfde0e41553a95ab",
+    "launch_once_sha256": "25762281585eb318635f9062a17a3e9534deb7e872aad585ad9810091bcce00b",
+    "mission_root": "/workspace/maskfactory/runtime_artifacts/autonomous_self_hosted_llm/maskfactory-steward-restart-refusal-audit-v3-20260726T024500Z",
+    "run_atomic_mission_sha256": "3fb14332f8d0b11f609025f355fe7ed6f00dc88ef6f25619a7630f9b80a14f66",
+    "run_steward_client_sha256": "be02733d76fc5cdcd34cacc6f3724083057dfdf326c7fa28c1f08a2facf61ee9",
+    "runner_terminal_sha256": "9ac4cf6aeab24ede66596cbe10104af8380459b29b06bcc9aaa916c57d8addb4"
+  }
+}

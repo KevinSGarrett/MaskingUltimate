@@ -1,0 +1,328 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/configs/self_hosted_autonomy_campaign_telemetry_v1.schema.json",
+  "title": "MaskFactory self-hosted autonomy campaign telemetry v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "campaign_id",
+    "campaign_kind",
+    "campaign_payload_sha256",
+    "source_commit_sha256",
+    "started_at",
+    "ended_at",
+    "counts",
+    "codex",
+    "timing",
+    "routes",
+    "integrity",
+    "engineering",
+    "masks",
+    "artifacts",
+    "event_sha256",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "maskfactory_self_hosted_autonomy_campaign_telemetry.v1"
+    },
+    "campaign_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{2,127}$"
+    },
+    "campaign_kind": {
+      "enum": [
+        "engineering",
+        "mask",
+        "mixed"
+      ]
+    },
+    "campaign_payload_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "source_commit_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ended_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "planned",
+        "eligible",
+        "completed",
+        "autonomously_prepared",
+        "accepted"
+      ],
+      "properties": {
+        "planned": {
+          "$ref": "#/$defs/count"
+        },
+        "eligible": {
+          "$ref": "#/$defs/count"
+        },
+        "completed": {
+          "$ref": "#/$defs/count"
+        },
+        "autonomously_prepared": {
+          "$ref": "#/$defs/count"
+        },
+        "accepted": {
+          "$ref": "#/$defs/count"
+        }
+      }
+    },
+    "codex": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "interventions",
+        "routine_handoffs",
+        "review_seconds",
+        "baseline_usage_units_per_accepted_artifact",
+        "observed_usage_units_per_accepted_artifact"
+      ],
+      "properties": {
+        "interventions": {
+          "$ref": "#/$defs/count"
+        },
+        "routine_handoffs": {
+          "$ref": "#/$defs/count"
+        },
+        "review_seconds": {
+          "$ref": "#/$defs/nonnegative"
+        },
+        "baseline_usage_units_per_accepted_artifact": {
+          "$ref": "#/$defs/nonnegative"
+        },
+        "observed_usage_units_per_accepted_artifact": {
+          "$ref": "#/$defs/nonnegative"
+        }
+      }
+    },
+    "timing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_startup_seconds",
+        "inference_seconds",
+        "idle_gpu_seconds",
+        "local_gpu_work_cells",
+        "local_gpu_released_work_cells"
+      ],
+      "properties": {
+        "model_startup_seconds": {
+          "$ref": "#/$defs/nonnegative"
+        },
+        "inference_seconds": {
+          "$ref": "#/$defs/nonnegative"
+        },
+        "idle_gpu_seconds": {
+          "$ref": "#/$defs/nonnegative"
+        },
+        "local_gpu_work_cells": {
+          "$ref": "#/$defs/count"
+        },
+        "local_gpu_released_work_cells": {
+          "$ref": "#/$defs/count"
+        }
+      }
+    },
+    "routes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "local_pod",
+        "serverless",
+        "openrouter_advisory",
+        "cpu_safe",
+        "fallback_reasons"
+      ],
+      "properties": {
+        "local_pod": {
+          "$ref": "#/$defs/count"
+        },
+        "serverless": {
+          "$ref": "#/$defs/count"
+        },
+        "openrouter_advisory": {
+          "$ref": "#/$defs/count"
+        },
+        "cpu_safe": {
+          "$ref": "#/$defs/count"
+        },
+        "fallback_reasons": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "duplicate_inference_submissions",
+        "duplicate_promotions",
+        "admitted_missions",
+        "terminally_reconciled_missions",
+        "submitted_unknown_events",
+        "recovery_required_events",
+        "recovery_resolved_events",
+        "authority_bypasses"
+      ],
+      "properties": {
+        "duplicate_inference_submissions": {
+          "$ref": "#/$defs/count"
+        },
+        "duplicate_promotions": {
+          "$ref": "#/$defs/count"
+        },
+        "admitted_missions": {
+          "$ref": "#/$defs/count"
+        },
+        "terminally_reconciled_missions": {
+          "$ref": "#/$defs/count"
+        },
+        "submitted_unknown_events": {
+          "$ref": "#/$defs/count"
+        },
+        "recovery_required_events": {
+          "$ref": "#/$defs/count"
+        },
+        "recovery_resolved_events": {
+          "$ref": "#/$defs/count"
+        },
+        "authority_bypasses": {
+          "$ref": "#/$defs/count"
+        }
+      }
+    },
+    "engineering": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "patch_attempts",
+        "focused_test_runs",
+        "repair_attempts",
+        "repair_exhaustions"
+      ],
+      "properties": {
+        "patch_attempts": {
+          "$ref": "#/$defs/count"
+        },
+        "focused_test_runs": {
+          "$ref": "#/$defs/count"
+        },
+        "repair_attempts": {
+          "$ref": "#/$defs/count"
+        },
+        "repair_exhaustions": {
+          "$ref": "#/$defs/count"
+        }
+      }
+    },
+    "masks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "accept",
+        "repair",
+        "abstain",
+        "reject",
+        "quarantine",
+        "hard_qa_vetoes",
+        "critic_disagreements"
+      ],
+      "properties": {
+        "accept": {
+          "$ref": "#/$defs/count"
+        },
+        "repair": {
+          "$ref": "#/$defs/count"
+        },
+        "abstain": {
+          "$ref": "#/$defs/count"
+        },
+        "reject": {
+          "$ref": "#/$defs/count"
+        },
+        "quarantine": {
+          "$ref": "#/$defs/count"
+        },
+        "hard_qa_vetoes": {
+          "$ref": "#/$defs/count"
+        },
+        "critic_disagreements": {
+          "$ref": "#/$defs/count"
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "produced",
+        "accepted",
+        "gpu_hours",
+        "accepted_per_gpu_hour"
+      ],
+      "properties": {
+        "produced": {
+          "$ref": "#/$defs/count"
+        },
+        "accepted": {
+          "$ref": "#/$defs/count"
+        },
+        "gpu_hours": {
+          "$ref": "#/$defs/nonnegative"
+        },
+        "accepted_per_gpu_hour": {
+          "$ref": "#/$defs/nonnegative"
+        }
+      }
+    },
+    "event_sha256": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/sha256"
+      },
+      "uniqueItems": true
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1024
+      },
+      "uniqueItems": true
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "nonnegative": {
+      "type": "number",
+      "minimum": 0
+    }
+  }
+}

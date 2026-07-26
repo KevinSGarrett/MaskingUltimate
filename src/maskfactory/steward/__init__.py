@@ -41,6 +41,10 @@ from .engineering_campaign_runtime import (
     validate_engineering_campaign_runtime_binding,
     validate_engineering_campaign_runtime_terminal,
 )
+from .local_campaign_dispatcher import (
+    LocalCampaignDispatchError,
+    LocalEngineeringCampaignDispatcher,
+)
 from .goal_selector import (
     GoalSelection,
     GoalSelectionError,
@@ -86,6 +90,8 @@ __all__ = [
     "build_engineering_campaign_runtime_binding",
     "validate_engineering_campaign_runtime_binding",
     "validate_engineering_campaign_runtime_terminal",
+    "LocalCampaignDispatchError",
+    "LocalEngineeringCampaignDispatcher",
     "SupervisorAlreadyRunning",
     "SupervisorStateError",
 ]

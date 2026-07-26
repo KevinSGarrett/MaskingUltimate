@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 import sqlite3
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -220,3 +222,20 @@ def test_inventory_metadata_drift_fails_closed(tmp_path: Path) -> None:
     assert "CORPUS_INVENTORY_METADATA_DRIFT" in {
         issue["code"] for issue in verification["issues"]
     }
+
+
+def test_cli_imports_from_repository_checkout(tmp_path: Path) -> None:
+    repository_root = Path(__file__).resolve().parents[1]
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(repository_root / "tools" / "build_corpus_mirror_manifest.py"),
+            "--help",
+        ],
+        cwd=tmp_path,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert completed.returncode == 0, completed.stderr
+    assert "{build,verify}" in completed.stdout

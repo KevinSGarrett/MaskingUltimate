@@ -5,9 +5,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
-from maskfactory.corpus_mirror_manifest import (
+REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPOSITORY_ROOT / "src"))
+
+from maskfactory.corpus_mirror_manifest import (  # noqa: E402
     build_corpus_mirror_manifest,
     verify_corpus_mirror_manifest,
 )

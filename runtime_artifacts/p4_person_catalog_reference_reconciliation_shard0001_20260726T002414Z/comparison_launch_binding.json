@@ -1,0 +1,32 @@
+{
+  "authority_ceiling": "person_catalog_comparison_only",
+  "execution_platform": "runpod",
+  "groundingdino": {
+    "launch_binding_raw_sha256": "13226042ef4950839ba963bc578c9cfd24146da9912793f9ef6ff2756ea210ce",
+    "record_count": 256,
+    "report_output_sha256": "0560950e4c9be8ccf6c964b611ffc81d04bda283c57a0e3bd56ae34e8e19b64a",
+    "report_raw_sha256": "796c20031511645f770077360010d748bcef4fb9dc23e79b2cdabc87445477c5",
+    "root": "/workspace/maskfactory/runtime_artifacts/p4_groundingdino_cpu_reference_provider_shard0001_v3_checkpointflag_20260725T232825Z"
+  },
+  "input_shard": {
+    "path": "/workspace/assets/MaskedWarehouse/Nude/_MASKFACTORY_INTAKE/batch_shards/runpod/reference_and_tournament_input.0001.json",
+    "raw_sha256": "1cf9572717f3f3f89d20cf1832dadd5a825e0407d06537f3578c72cac1c0fee2",
+    "record_count": 256,
+    "self_sha256": "dd61d484ef3e6d357e3c5fdfd4134fb937cfcd2f7217256d4ff3e81e61eac03a"
+  },
+  "production_mask_authority": false,
+  "schema_version": "maskfactory.p4_person_catalog_reference_reconciliation_binding.v1",
+  "self_sha256": "f5ffd5e4b8a3e83f181b023d6b6b6b286b4f1b8d7bfc937752b5912cc37dc5d4",
+  "tool": {
+    "iou_min": 0.5,
+    "path": "tools/compare_person_proposal_batches.py",
+    "raw_sha256": "009db00b7be86171f30c521afd2b7900a066c53bd37f28256a0f7bc8b54fe9cf"
+  },
+  "yolo11m": {
+    "launch_binding_raw_sha256": "dc614e533eafbfd1b0216e9bdfb2ae4b42e693824d40794f45b96279f815240a",
+    "record_count": 256,
+    "report_output_sha256": "f3374553166e2a51546f8af35403ff4718af386f972c499483681fb31616d23a",
+    "report_raw_sha256": "ddb7b2760267c292d51c4a529a8ce4f9389027762e54aaa3f7ace29a79a84b03",
+    "root": "/workspace/maskfactory/runtime_artifacts/p4_yolo11m_reference_provider_shard0001_20260725T231400Z"
+  }
+}

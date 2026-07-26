@@ -1,0 +1,8 @@
+{
+  "authority_ceiling": "proposal_boxes_only",
+  "binding_self_sha256": "6260604ddbe534c8e7a0cb9f069669719d5996917836c0311a933d5fa38fefd8",
+  "created_at_utc": "20260725T232825Z",
+  "schema_version": "maskfactory.provider_progress.v1",
+  "self_sha256": "97090160076bdd75a3e6a9f1b04bfceadccf2ee943679be751c5394d8b9e1cc9",
+  "state": "launched"
+}

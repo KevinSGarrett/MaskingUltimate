@@ -1,0 +1,76 @@
+{
+  "authority_ceiling": "proposal_boxes_only",
+  "claims": {
+    "masks_emitted": false,
+    "person_ownership": false,
+    "queue_terminal_progress": false,
+    "training_eligibility": false,
+    "visual_review": false
+  },
+  "created_at_utc": "20260725T232825Z",
+  "execution_contract": {
+    "checkpoint_argument": "models/gdino/groundingdino_swint_ogc.pth",
+    "checkpoint_path_argument": "runtime_artifacts/p4_groundingdino_cpu_reference_provider_shard0001_v3_checkpointflag_20260725T232825Z/groundingdino_checkpoint.json",
+    "invariant": "--checkpoint is the hash-bound model file; --checkpoint-path is a distinct resumable JSON state file, established from the runner contract before launch"
+  },
+  "input_shard": {
+    "batch_lane": "reference_and_tournament_input",
+    "file_sha256": "1cf9572717f3f3f89d20cf1832dadd5a825e0407d06537f3578c72cac1c0fee2",
+    "path": "/workspace/assets/MaskedWarehouse/Nude/_MASKFACTORY_INTAKE/batch_shards/runpod/reference_and_tournament_input.0001.json",
+    "platform": "runpod",
+    "sample_count": 256,
+    "self_sha256": "dd61d484ef3e6d357e3c5fdfd4134fb937cfcd2f7217256d4ff3e81e61eac03a"
+  },
+  "outputs": {
+    "checkpoint_path": "runtime_artifacts/p4_groundingdino_cpu_reference_provider_shard0001_v3_checkpointflag_20260725T232825Z/groundingdino_checkpoint.json",
+    "progress_path": "runtime_artifacts/p4_groundingdino_cpu_reference_provider_shard0001_v3_checkpointflag_20260725T232825Z/progress.json",
+    "receipt_path": "runtime_artifacts/p4_groundingdino_cpu_reference_provider_shard0001_v3_checkpointflag_20260725T232825Z/PROVIDER_RECEIPT.json",
+    "report_path": "runtime_artifacts/p4_groundingdino_cpu_reference_provider_shard0001_v3_checkpointflag_20260725T232825Z/groundingdino_report.json",
+    "stderr_path": "runtime_artifacts/p4_groundingdino_cpu_reference_provider_shard0001_v3_checkpointflag_20260725T232825Z/groundingdino.stderr.log"
+  },
+  "paired_yolo_report": {
+    "file_sha256": "ddb7b2760267c292d51c4a529a8ce4f9389027762e54aaa3f7ace29a79a84b03",
+    "output_sha256": "f3374553166e2a51546f8af35403ff4718af386f972c499483681fb31616d23a",
+    "path": "runtime_artifacts/p4_yolo11m_reference_provider_shard0001_20260725T231400Z/yolo11m_report.json"
+  },
+  "provider": {
+    "box_threshold": 0.4,
+    "checkpoint_path": "models/gdino/groundingdino_swint_ogc.pth",
+    "checkpoint_sha256": "3b3ca2563c77c69f651d7bd133e97139c186df06231157a64c507099c52bc799",
+    "device": "cpu",
+    "prompts": [
+      "person"
+    ],
+    "provider": "groundingdino_person",
+    "provider_family": "groundingdino",
+    "python_executable": "/workspace/maskfactory/.train_cu128_ada/bin/python",
+    "source_revision": "856dde20aee659246248e20734ef9ba5214f5e44",
+    "source_root": "/workspace/source/GroundingDINO",
+    "text_threshold": 0.25,
+    "tool_path": "tools/run_groundingdino_wsl.py",
+    "tool_sha256": "1c6932715842a83f50b46e42ae366da1947631c7ac7a771bcf5591ba284abb71"
+  },
+  "purpose": "independent CPU person-proposal provider for the governed reference shard, using the sealed full GroundingDINO closure and a distinct validated batch-checkpoint path",
+  "queue": {
+    "mutation_authorized": false,
+    "reason": "independent provider output requires a governed comparison before any queue-stage evidence is written"
+  },
+  "runtime_closure": {
+    "closure_pythonpath_entry": "/workspace/maskfactory/runtime_artifacts/groundingdino_runtime_closure_v4_20260725T220957Z/site-packages",
+    "closure_receipt": "runtime_artifacts/groundingdino_runtime_closure_v4_20260725T220957Z/CLOSURE_RECEIPT.json",
+    "closure_receipt_sha256": "624c12579144a4fc987b480afe8a75bd7b22ce470207d999875c0f296a1bf6a7",
+    "model_load_receipt": "runtime_artifacts/groundingdino_cpu_model_load_v4_20260725T221157Z/MODEL_LOAD_RECEIPT.json",
+    "model_load_receipt_sha256": "e2972a03f78eab55c978af9de3ef35a6b0cda50ad87be6b5c822dd39e512af33",
+    "preflight": "combined source and sealed closure import passed before launch",
+    "source_pythonpath_entry": "/workspace/source/GroundingDINO"
+  },
+  "schema_version": "maskfactory.p4_groundingdino_cpu_independent_provider_binding.v3",
+  "self_sha256": "6260604ddbe534c8e7a0cb9f069669719d5996917836c0311a933d5fa38fefd8",
+  "supersedes_failed_binding": {
+    "failed_binding_path": "runtime_artifacts/p4_groundingdino_cpu_reference_provider_shard0001_v2_full_closure_20260725T232446Z/launch_binding.json",
+    "failed_binding_sha256": "253ee59243f67d90185cc2ac79085ec8751a0a933f64e1b783ef8fdf0bc16974",
+    "failure_class": "wrong checkpoint-path type decoded as UTF-8; v2 binding remains immutable failure evidence and is never retried",
+    "failure_receipt_path": "runtime_artifacts/p4_groundingdino_cpu_reference_provider_shard0001_v2_full_closure_20260725T232446Z/PROVIDER_RECEIPT.json",
+    "failure_receipt_sha256": "9aa72c79af286c20b5a350016e2f5cd8a2d7f954f2349fea1f15dcda1936dfe2"
+  }
+}

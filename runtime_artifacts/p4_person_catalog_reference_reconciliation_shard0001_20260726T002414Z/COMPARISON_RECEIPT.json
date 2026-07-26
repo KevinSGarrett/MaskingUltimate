@@ -1,0 +1,13 @@
+{
+  "authority_ceiling": "person_catalog_comparison_only",
+  "binding_raw_sha256": "7be6b6c77f14b01d2c47754739948f8b84eaea2cbde03784133679b61b631705",
+  "exit_code": 0,
+  "production_mask_authority": false,
+  "report_raw_sha256": "5cc848fc64eefe364f9a36af7142f9de1ab94225fc5c954a6167571029cec0b1",
+  "schema_version": "maskfactory.p4_person_catalog_reference_reconciliation_receipt.v1",
+  "self_sha256": "a650414ab36ee1cbf2194e054499412a087e96bf6178a4b661f2048780e1e30c",
+  "state": "completed",
+  "stderr_raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_raw_sha256": "082ec675d8a6f637435ae3366cffd98efd17c923a7431982f191c912399b2d33",
+  "tool_raw_sha256": "009db00b7be86171f30c521afd2b7900a066c53bd37f28256a0f7bc8b54fe9cf"
+}

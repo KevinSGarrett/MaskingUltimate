@@ -21,14 +21,21 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-MANAGER_PATH = Path(
-    "/workspace/.maskfactory/serverless_overflow_control/"
-    "tools/manage_runpod_serverless_overflow.py"
-)
-CONFIG_PATH = Path(
-    "/workspace/.maskfactory/serverless_overflow_control/" "configs/runpod_serverless_overflow.yaml"
-)
-BROKER_ROOT = Path("/workspace/.maskfactory/serverless_overflow_control")
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+if os.name == "nt":
+    MANAGER_PATH = PROJECT_ROOT / "tools" / "manage_runpod_serverless_overflow.py"
+    CONFIG_PATH = PROJECT_ROOT / "configs" / "runpod_serverless_overflow.yaml"
+    BROKER_ROOT = Path.home() / ".maskfactory" / "serverless_overflow_control"
+else:
+    MANAGER_PATH = Path(
+        "/workspace/.maskfactory/serverless_overflow_control/"
+        "tools/manage_runpod_serverless_overflow.py"
+    )
+    CONFIG_PATH = Path(
+        "/workspace/.maskfactory/serverless_overflow_control/"
+        "configs/runpod_serverless_overflow.yaml"
+    )
+    BROKER_ROOT = Path("/workspace/.maskfactory/serverless_overflow_control")
 STATE_SCHEMA = "maskfactory.steward.serverless_route_state.v1"
 EVENT_SCHEMA = "maskfactory.steward.serverless_route_event.v1"
 SHA256_RE = re.compile(r"^[a-f0-9]{64}$")

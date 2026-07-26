@@ -680,7 +680,26 @@ class OverflowBroker:
             if row["state"] in TERMINAL_STATES:
                 return dict(row)
             if not row["provider_job_id"]:
-                raise OverflowError("reserved job has no provider id; cannot cancel remotely")
+                response = {
+                    "status": "CANCELLED_BEFORE_PROVIDER_SUBMIT",
+                    "reason": "reservation released without a provider job id",
+                }
+                connection.execute(
+                    """
+                    UPDATE jobs SET state='cancelled', updated_at=?,
+                        provider_status_json=? WHERE job_id=?
+                    """,
+                    (
+                        self._clock(),
+                        json.dumps(response, sort_keys=True),
+                        job_id,
+                    ),
+                )
+                updated = connection.execute(
+                    "SELECT * FROM jobs WHERE job_id=?",
+                    (job_id,),
+                ).fetchone()
+                return dict(updated)
             response = client.cancel(row["endpoint_id"], row["provider_job_id"])
             connection.execute(
                 """

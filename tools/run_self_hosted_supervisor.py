@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import signal
 import sys
 import threading
@@ -44,10 +45,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--serverless-api-key-file",
         type=Path,
-        default=Path("/tmp/maskfactory-runpod-api-key"),
+        default=(Path("/tmp/maskfactory-runpod-api-key") if os.name != "nt" else None),
         help=(
-            "Protected mode-0600 file used only to inject RUNPOD_API_KEY into "
-            "broker subprocesses; the key is never placed in argv or artifacts."
+            "Optional protected mode-0600 file used only to inject "
+            "RUNPOD_API_KEY into broker subprocesses. When omitted, the "
+            "broker inherits the process environment. The key is never "
+            "placed in argv or artifacts."
         ),
     )
     parser.add_argument("--openrouter-manager", type=Path, default=OPENROUTER_MANAGER_PATH)

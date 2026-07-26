@@ -222,6 +222,31 @@ def test_cancelled_job_releases_global_and_budget_reservations(tmp_path: Path) -
     assert replacement["state"] == "reserved"
 
 
+def test_cancel_reserved_without_provider_id_releases_locally(tmp_path: Path) -> None:
+    broker = OverflowBroker(config(tmp_path), root=tmp_path)
+    reserved = broker.reserve(
+        session_id=MASK_SESSION,
+        profile="maskfactory",
+        payload={"input": {"proof": "bounded"}},
+        requested_seconds=60,
+    )
+
+    class Client:
+        def cancel(self, *_args, **_kwargs):
+            raise AssertionError("provider cancel must not run without provider id")
+
+    cancelled = broker.cancel(reserved["job_id"], Client())
+    report = broker.report(billing_day=reserved["billing_day"])
+
+    assert cancelled["state"] == "cancelled"
+    assert cancelled["provider_job_id"] is None
+    assert json.loads(cancelled["provider_status_json"])["status"] == (
+        "CANCELLED_BEFORE_PROVIDER_SUBMIT"
+    )
+    assert report["active_jobs"] == 0
+    assert report["reserved_usd"] == 0.0
+
+
 def test_reconcile_cancels_only_after_five_minutes_in_queue(tmp_path: Path) -> None:
     now = [1_800_000_000.0]
     broker = OverflowBroker(config(tmp_path), root=tmp_path, clock=lambda: now[0])

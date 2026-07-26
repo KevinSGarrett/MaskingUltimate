@@ -1,16 +1,16 @@
 {
   "schema_version": "maskfactory_self_hosted_autonomy_contract_freeze.v1",
   "registry_id": "maskfactory_self_hosted_autonomy_contract_v1",
-  "frozen_at": "2026-07-26T21:01:38Z",
+  "frozen_at": "2026-07-26T21:32:00Z",
   "incomplete_claim": "SELF_HOSTED_AUTONOMOUS_LLM_THROUGHPUT_INCOMPLETE",
   "authority_files": [
     {
       "path": "Plan/27_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS_SPEC.md",
-      "sha256": "4a83af9b7b766ee9ac70592ebe3605efaab3a84e9237d283854539c14df0064c"
+      "sha256": "2a9e8b4baedd10199a16c11b48885b8d346b201240876d51111dc915113fb033"
     },
     {
       "path": "Plan/Instructions/16_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS.md",
-      "sha256": "bed85e202823296cc36e7bffc53105856392acc05508416a5730be446a4d4e20"
+      "sha256": "79c31b2e00285beaa85917d54cd15a447ff5aaaf07447d9d0919b1e62a714c08"
     },
     {
       "path": "Plan/SELF_HOSTED_AUTONOMOUS_LLM_PURSUING_GOAL_MESSAGE.md",
@@ -18,7 +18,7 @@
     },
     {
       "path": "Plan/Items/23_ITEMS_P6_SELF_HOSTED_AUTONOMOUS_LLM_OPERATIONS.md",
-      "sha256": "ac751c486a41c1884ec2cd0845bba37a40f385db98f12b1f2b1e2864d11b332c"
+      "sha256": "ba1041755e3baf60bc37f046ebede648cab2d7c8ee3256900740111d6af7aeac"
     }
   ],
   "schema_files": [
@@ -61,5 +61,5 @@
     "MF-P6-19.03",
     "MF-P6-19.04"
   ],
-  "registry_sha256": "48a918ec8e767538af02a955f64de0c21bb9bab1a61b8104f1f09deae502002f"
+  "registry_sha256": "5d5d7e8ebce512b8f9220494a4e372655bdf7aeace0f7c94c47de9d8151e0b1d"
 }

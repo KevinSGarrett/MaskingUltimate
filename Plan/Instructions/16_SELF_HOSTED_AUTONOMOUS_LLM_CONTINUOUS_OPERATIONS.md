@@ -5,6 +5,12 @@
 This instruction implements Plan 27. It supersedes any interpretation that
 one safe bounded self-hosted review equals continuous autonomy.
 
+The current honest state is
+`SELF_HOSTED_AUTONOMOUS_LLM_THROUGHPUT_INCOMPLETE`. The top priority is the
+last-mile executable chain and its real campaigns, not additional control
+documents. Until the first real 25-mission campaign is terminal, do not start
+non-defect Plan/schema/hygiene work.
+
 At session start:
 
 1. read `Plan/STANDING_ORDERS_AUTONOMOUS_BUILD.md`;
@@ -30,6 +36,37 @@ At session start:
    receipts; resolve unknown outcomes before retry.
 9. **Consolidate:** send one campaign packet to Codex.
 10. **Continue:** immediately select the next unblocked campaign.
+
+The first integration target is:
+
+`tracker selection → campaign construction → guarded engineering runtime →
+patch/test/repair → terminal reconciliation → one Codex packet`.
+
+The runtime controller must process the 25 missions under one owned Qwen/vLLM
+lifetime with durable per-request intent and duplicate-safe recovery. It must
+be exposed by a guarded CLI, invoked through the shared-Pod lease wrapper, and
+wired into the supervisor. Before the live run, execute a CPU fake-runtime
+25-mission E2E that proves restart, terminal accounting, and one-packet
+behavior.
+
+## Last-mile anti-spin rules
+
+- A wave is productive only if it yields executable integration plus focused
+  tests, or real terminal runtime evidence.
+- Unit fixtures are `STATIC_PASS_CONTROL_PLANE_ONLY`; never use them alone to
+  advance a runtime acceptance row.
+- Bookkeeping and hygiene consume at most 10% of active effort unless a
+  storage, security, authority, or recovery defect blocks execution.
+- Do not create a successor packet without a receipt identifying a material
+  immutable contract, prompt, schema, runtime/source binding, or
+  representation change.
+- Do not create a replacement clone/worktree to avoid reconciling the current
+  checkout.
+- On each heartbeat, record the production delta: executable integration,
+  real requests, accepted artifacts, and terminal runtime outcomes. If all are
+  zero, the next action is runtime integration or execution.
+- Count real requests and accepted artifacts separately from commits, tests,
+  schemas, manifests, and receipts.
 
 ## Local GPU rule
 
@@ -92,7 +129,8 @@ reconciled, repeated bounded repair exhaustion, or terminal campaign adoption.
 Record eligible/completed/autonomous counts, Codex intervention and review
 time, route/fallback reasons, inference/startup/idle GPU time, duplicate and
 recovery events, patch/test repair attempts, mask outcomes, critic disagreement,
-hard-QA vetoes, terminal reconciliation, and resource release.
+hard-QA vetoes, terminal reconciliation, resource release, real model requests,
+accepted project artifacts, and bookkeeping/hygiene effort.
 
 Validate every campaign against the frozen closed contract:
 

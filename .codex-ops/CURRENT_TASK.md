@@ -1,7 +1,7 @@
 ﻿# Current Task
 
 Task ID: MASKFACTORY-SELF-HOSTED-AUTONOMY-E2E-20260726
-Updated UTC: 2026-07-26T20:08:00Z
+Updated UTC: 2026-07-26T21:30:58Z
 
 ## Objective
 
@@ -38,6 +38,14 @@ Binding authorities:
 - One real 25-mission campaign, one governed 100-mask campaign, interruption
   and routing drills, and three consecutive target-meeting mixed campaigns
   pass before completion is claimed.
+- Before the real 25-mission campaign, the committed runtime controller,
+  guarded CLI, supervisor wiring, and CPU fake-runtime 25-mission E2E pass.
+- The real engineering campaign uses one owned Qwen/vLLM lifetime with durable
+  request intents, no duplicate reissue, exact terminal accounting, and one
+  consolidated packet.
+- Runtime acceptance counts real model requests and accepted artifacts;
+  commits, tests, schemas, manifests, receipts, and static fixtures are
+  supporting evidence only.
 - Recurring continuation reuses the two pinned main-session heartbeat threads;
   no standalone cron task may create repeated project sessions.
 - Local worktree/backup allocation passes the configured disk guard; repeated
@@ -85,10 +93,19 @@ Binding authorities:
 ## First next action
 
 `MF-P6-13.01` through `MF-P6-16.04`, plus `MF-P6-17.01` and
-`MF-P6-17.02`, are tracker-complete. Continue the in-progress real campaign
-lanes `MF-P6-17.03`, `MF-P6-17.04`, and `MF-P6-18.01` through
-`MF-P6-18.04`, then close the measured acceptance rows under `MF-P6-19`.
-Do not regress into micro-packet churn.
+`MF-P6-17.02`, are tracker-complete. Finish the 25-mission engineering runtime
+controller and focused tests, add its guarded CLI, wire it into the supervisor,
+and run the CPU fake-runtime 25-mission E2E. Then run `MF-P6-19.01` as one real
+25-mission Qwen campaign before any non-defect Plan/schema/hygiene wave.
+Continue `MF-P6-17.03`/`17.04` into the governed 100-mask campaign, then close
+the measured sustained acceptance rows under `MF-P6-18` and `MF-P6-19`.
+
+Every heartbeat records executable-integration, real-request,
+accepted-artifact, and terminal-runtime deltas. A zero production delta forces
+the next action to runtime integration/execution. Static fixtures are
+`STATIC_PASS_CONTROL_PLANE_ONLY`; bookkeeping/hygiene is capped at 10% outside
+a blocking defect; successor packets require a material immutable change; and
+replacement clones/worktrees cannot substitute for checkout reconciliation.
 
 ## Verified rollback checkpoint
 
@@ -141,3 +158,46 @@ Do not regress into micro-packet churn.
   HEAD/status, and scoped index/worktree patches.
 - Scope: no new full Git bundle was created; the verified full recovery
   checkpoint above remains the repository-wide rollback authority.
+
+## Last-mile authority update checkpoint
+
+- Path:
+  `F:\CodexRecovery\maskfactory_last_mile_authority_20260726T212739Z`
+- Manifest SHA-256:
+  `b891b7e1c2c43d55785b62ce2e07134f88d889374684fa45c035c0c727adfaa4`
+- Integrity: all 29 listed files re-hashed successfully; the 647,016-byte
+  upstream-to-HEAD incremental Git bundle passed `git bundle verify`.
+- Scope: exact pre-change copies of the self-hosted authority, instruction,
+  item, tracker/report, phase, and heartbeat definitions plus scoped binary
+  patches. The existing repository-wide checkpoint remains the recovery base;
+  no prohibited full-repository backup was created.
+
+## Four-hour readiness review
+
+- Audit snapshot: control plane 85–90%, working autonomous runtime 45–55%,
+  production qualification 20–30%, and end-to-end readiness 60–65%.
+- Engineering delta: 27 commits, 70 source/tool/test files, approximately
+  25,364 additions, and 317 passing steward tests with one Windows symlink skip.
+- Runtime delta: three drill roots, 33 files, 266,072 bytes; no real
+  25-mission campaign, no real 100-mask campaign, and no three consecutive
+  target-meeting mixed campaigns.
+- Binding conclusion:
+  `SELF_HOSTED_AUTONOMOUS_LLM_THROUGHPUT_INCOMPLETE`.
+- Full evidence and corrective sequence:
+  `Plan/SELF_HOSTED_AUTONOMY_FOUR_HOUR_REVIEW_20260726.md`.
+
+## Recovery-continuation checkpoint
+
+- Path:
+  `C:\Comfy_UI_Main_Masking\.codex-ops\backups\self_hosted_authority_resume_20260726T215828Z`
+- Manifest SHA-256:
+  `97f5abafb0b20156603f328840c059d17a078ff16959290fc9e4be4839234b87`
+- Integrity: all 15 scoped entries, including the current authority/config/tracker
+  bytes, active heartbeat definition, and scoped binary worktree/index patches,
+  re-hashed successfully.
+- Allocation: the checkout-volume incremental-backup guard admitted 2,500,000
+  bytes with 96,766,853,120 bytes free. `F:\CodexRecovery` is currently below
+  the 50 GiB floor, so no new recovery-volume allocation was made.
+- Scope: recovery continuation only. This checkpoint does not create runtime
+  evidence or change the binding
+  `SELF_HOSTED_AUTONOMOUS_LLM_THROUGHPUT_INCOMPLETE` status.

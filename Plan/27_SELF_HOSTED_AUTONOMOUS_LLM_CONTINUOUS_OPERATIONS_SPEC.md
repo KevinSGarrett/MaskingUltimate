@@ -62,6 +62,16 @@ They do not by themselves establish:
 
 These remaining capabilities are required by this specification.
 
+The 2026-07-26 four-hour review found a material readiness split: the control
+plane was approximately 85–90% implemented, the working autonomous runtime
+45–55%, production qualification 20–30%, and end-to-end readiness 60–65%.
+Twenty-seven commits and 317 passing steward tests were substantial
+engineering, but the same window produced only three drill evidence roots and
+no real 25-mission, 100-mask, or sustained mixed campaign. These percentages
+are an audit snapshot, not completion credit. Runtime truth SHALL be based on
+real model requests, accepted project artifacts, terminal reconciliation, and
+resource release.
+
 ## 4. Components
 
 ### 4.1 CPU-safe campaign supervisor
@@ -80,6 +90,20 @@ SHALL:
 - stop only at a true authority boundary with no other unblocked lane.
 
 The supervisor SHALL NOT infer completion from conversation memory.
+
+The supervisor SHALL drive the complete executable chain:
+
+`tracker selection → deterministic campaign construction → guarded local
+self-hosted execution → patch/test/repair → terminal reconciliation → one
+consolidated Codex packet`.
+
+A packet aggregator or fallback dispatcher alone is not the campaign runtime.
+Before the first real 25-mission acceptance run, the repository SHALL contain
+a focused-tested 25-mission runtime controller, a guarded CLI launched through
+the shared-Pod lease wrapper, supervisor integration, and a CPU fake-runtime
+25-mission end-to-end proof. The real campaign SHALL then use one owned
+Qwen/vLLM service lifetime for all eligible requests, with durable request
+intents and duplicate-safe reconstruction.
 
 ### 4.2 Durable mission and campaign ledger
 
@@ -250,6 +274,10 @@ The v1 policy is `configs/local_workspace_hygiene_v1.json`.
   a process, not the main checkout, and free of unresolved reparse points.
 - A failed or partial retirement is preserved and investigated; force deletion
   across a junction/reparse point is forbidden.
+- A replacement clone or worktree MUST NOT be created to avoid reconciling an
+  existing dirty checkout. Ownership is resolved path-by-path in the current
+  checkout; a new isolated tree is permitted only for an actual campaign
+  execution need after the storage guard admits it.
 
 ## 6. Handoff-suppression policy
 
@@ -267,6 +295,32 @@ The default operating unit is a campaign, not a micro task.
 
 These targets never suppress a hard-QA failure, security issue, contradictory
 truth, or required authority decision.
+
+### 6.1 Last-mile anti-spin gate
+
+Until the first real 25-mission campaign is terminal, non-defect Plan, schema,
+dashboard, receipt-format, and hygiene work is frozen. A new wave counts as
+progress only when it delivers at least one of:
+
+1. executable integration plus focused tests that closes a direct dependency
+   of the next real campaign; or
+2. real terminal runtime evidence containing model requests or accepted
+   project artifacts.
+
+Static fixtures and unit tests are reported as
+`STATIC_PASS_CONTROL_PLANE_ONLY`; they cannot complete a runtime acceptance
+row. Bookkeeping and hygiene may consume at most 10% of active effort unless a
+storage, security, authority, or recovery defect makes it temporarily
+blocking. A successor packet is forbidden unless its receipt identifies a
+material canonical change to the immutable contract, prompt, schema, runtime
+binding, source binding, or representation. Reformatting, nonce changes, and
+unchanged revalidation are not material changes.
+
+Every heartbeat SHALL compute a production delta since its previous cycle:
+executable integration added, real model requests attempted/accepted, accepted
+artifacts, and newly terminal runtime outcomes. A zero production delta forces
+the next action to be runtime integration or execution, not additional
+bookkeeping.
 
 ## 7. Telemetry and success measures
 
@@ -305,7 +359,11 @@ Required sustained targets:
 8. zero recurring standalone Codex task/session creation for the two project
    supervisors; and
 9. zero local allocation admitted below the storage floor or via a prohibited
-   full-repository bundle.
+   full-repository bundle;
+10. real model request count and accepted project artifact count are reported
+    separately from commits, tests, schemas, manifests, and receipts; and
+11. bookkeeping/hygiene effort remains at or below 10% outside a documented
+    blocking defect.
 
 ## 8. Implementation sequence
 
@@ -319,22 +377,31 @@ Required sustained targets:
 6. Integrate isolated engineering patch/test/repair campaigns.
 7. Integrate mask candidate, hard-QA, repair, panel, and dual-critic campaigns.
 8. Replace routine micro handoffs with campaign-level adoption.
-9. Run one real 25-mission engineering campaign.
-10. Run restart, ambiguous-completion, stale-owner, and route fault drills.
-11. Run one governed 100-mask campaign with full outcome accounting.
-12. Repeat three mixed campaigns while meeting every sustained target.
+9. Commit and focused-test the 25-mission runtime controller with one owned
+   model lifetime, durable request intents, duplicate prevention,
+   reconstruction, and release.
+10. Add the guarded runtime CLI and wire it into the supervisor's tracker
+    selection, builder, execution, reconciliation, and consolidation chain.
+11. Run a CPU fake-runtime 25-mission end-to-end campaign proving restart,
+    terminal accounting, and one-packet behavior.
+12. Run one real 25-mission engineering campaign.
+13. Run restart, ambiguous-completion, stale-owner, and route fault drills.
+14. Run one governed 100-mask campaign with full outcome accounting.
+15. Repeat three mixed campaigns while meeting every sustained target.
 
 ## 9. End-to-end acceptance
 
 This track is complete only when one immutable acceptance bundle proves exact
 committed supervisor/runtime/config/schema bytes; clean reconstruction and
 operating procedures; 25 real project engineering missions processed as one
-campaign; 100 governed masks processed as one compatible campaign or
+campaign under one owned model-service lifetime; 100 governed masks processed as one compatible campaign or
 deterministically bounded subcampaigns; all route and recovery fault tests;
 autonomous patch/test/repair and consolidated Codex adoption; qualified visual
 primary and independent-family juror behavior; all section 7 targets for three
 consecutive campaigns; safe release/reconciliation; and exact tracker evidence
-with limitations and no overclaim.
+with limitations and no overclaim. Unit-test count, commit count, schemas,
+receipts, and packet construction are supporting evidence only; they do not
+substitute for the required real requests and accepted artifacts.
 
 Until this bundle passes, the honest state is:
 

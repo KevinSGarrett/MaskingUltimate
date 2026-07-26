@@ -22,6 +22,11 @@ from maskfactory.steward.engineering_campaign_runtime import (
     validate_engineering_campaign_runtime_binding,
     validate_engineering_campaign_runtime_terminal,
 )
+from maskfactory.steward.engineering_campaign_runtime_packet import (
+    EngineeringCampaignRuntimePacketError,
+    build_engineering_campaign_runtime_packet,
+    validate_engineering_campaign_runtime_packet,
+)
 from maskfactory.steward.runtime import (
     LAUNCH_RECEIPT_SCHEMA,
     SHUTDOWN_RECEIPT_SCHEMA,
@@ -334,6 +339,117 @@ def test_one_runtime_lifetime_executes_and_releases_all_25(
     assert controller.run() == terminal
     assert state["launches"] == 1
     assert len(state["submits"]) == 25
+
+
+def test_real_runtime_emits_one_exact_adoption_packet(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    campaign_root, _mission_roots, database = _prepare_campaign(tmp_path)
+    _install_fake_runtime(monkeypatch)
+    terminal = EngineeringCampaignRuntimeController(
+        contract_path=CONTRACT_PATH,
+        campaign_root=campaign_root,
+        database=database,
+    ).run()
+    binding = read_json(campaign_root / BINDING_NAME)
+    atomic_write_json(
+        campaign_root / "cpu_grammar_preflight_25.json",
+        {
+            "schema_version": "maskfactory.engineering_campaign_grammar_preflight.v1",
+            "campaign_id": terminal["campaign_id"],
+            "status": "PASS",
+            "request_count": 25,
+            "all_schemas_unmodified_from_request_json": True,
+            "cuda_visible_devices": "",
+            "results": [{"status": "PASS"} for _ in range(25)],
+            "canonical_sha256": "a" * 64,
+        },
+    )
+    (campaign_root / "run_guarded_campaign_once.sh").write_text(
+        "#!/bin/sh\nexit 0\n",
+        encoding="utf-8",
+    )
+    (campaign_root / "guarded_campaign_stdout.log").write_text(
+        "completed\n",
+        encoding="utf-8",
+    )
+    release = {
+        "schema_version": "maskfactory.shared_gpu_release_receipt.v1",
+        "session_id": binding["session_id"],
+        "job_id": binding["campaign_id"],
+        "payload_sha256": binding["binding_sha256"],
+        "request_id": "gpu-request-1",
+        "lease_state": "completed",
+        "disposition": "completed",
+        "child_returncode": 0,
+        "self_sha256": "0" * 64,
+    }
+    release["self_sha256"] = canonical_sha256(release)
+    atomic_write_json(campaign_root / "local_gpu_lease_release.json", release)
+    handoff = {
+        "captured_at": "2026-07-26T23:15:00+00:00",
+        "pod_id": "68psfqtaogg7s7",
+        "volume_id": "o9qv2ld91c",
+        "gpu_name": "NVIDIA RTX 6000 Ada Generation",
+        "gpu_memory_used_mib": 2,
+        "gpu_utilization_percent": 0,
+        "compute_app_count": 0,
+        "ports_open": {"8188": False, "18008": False, "18125": False},
+        "lease_active": False,
+        "lease_queue_count": 0,
+        "owned_process_count": 0,
+        "owner_token_present": False,
+        "authority_claimed": False,
+    }
+    output = tmp_path / "packet"
+    packet = build_engineering_campaign_runtime_packet(
+        campaign_root=campaign_root,
+        contract_path=CONTRACT_PATH,
+        database=database,
+        output_root=output,
+        handoff=handoff,
+        decision="ADOPT",
+        decision_reason="The exact real campaign replayed successfully.",
+        limitations=["Later campaign acceptance gates remain open."],
+        tracker_proposals=[
+            {
+                "item_id": "MF-P6-19.01",
+                "status": "complete",
+                "percent": 100,
+                "evidence": "Exact 25-mission runtime evidence is bound.",
+            }
+        ],
+    )
+
+    assert packet["runtime_database"]["counts"]["real_request_count"] == 50
+    assert packet["runtime_database"]["counts"]["accepted_artifact_count"] == 25
+    assert packet["campaign_terminal"]["service_generation_count"] == 1
+    assert len(packet["mission_outcomes"]) == 25
+    assert (
+        validate_engineering_campaign_runtime_packet(
+            output,
+            campaign_root=campaign_root,
+            contract_path=CONTRACT_PATH,
+            database=database,
+        )
+        == packet
+    )
+
+    release["child_returncode"] = 1
+    release["self_sha256"] = "0" * 64
+    release["self_sha256"] = canonical_sha256(release)
+    (campaign_root / "local_gpu_lease_release.json").unlink()
+    atomic_write_json(campaign_root / "local_gpu_lease_release.json", release)
+    with pytest.raises(
+        EngineeringCampaignRuntimePacketError,
+        match="lease release",
+    ):
+        validate_engineering_campaign_runtime_packet(
+            output,
+            campaign_root=campaign_root,
+            contract_path=CONTRACT_PATH,
+            database=database,
+        )
 
 
 def test_ambiguous_request_is_never_reissued_and_unrelated_missions_continue(

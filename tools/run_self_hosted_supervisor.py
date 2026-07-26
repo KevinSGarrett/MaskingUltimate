@@ -20,6 +20,9 @@ if str(SRC_ROOT) not in sys.path:
 from maskfactory.steward.fallback_dispatcher import (  # noqa: E402
     FallbackWorkDispatcher,
 )
+from maskfactory.steward.fallback_campaign_producer import (  # noqa: E402
+    FallbackCampaignProducer,
+)
 from maskfactory.steward.openrouter_advisory import (  # noqa: E402
     MANAGER_PATH as OPENROUTER_MANAGER_PATH,
     POLICY_PATH as OPENROUTER_POLICY_PATH,
@@ -39,6 +42,16 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--supervisor-id", required=True)
     parser.add_argument("--heartbeat-seconds", type=float, default=5.0)
     parser.add_argument("--fallback-inbox", type=Path)
+    parser.add_argument(
+        "--tracker-path",
+        type=Path,
+        default=PROJECT_ROOT / "Plan" / "Tracker" / "tracker.json",
+    )
+    parser.add_argument(
+        "--no-auto-produce-openrouter",
+        action="store_true",
+        help="Disable tracker-driven governed OpenRouter campaign production.",
+    )
     parser.add_argument("--serverless-manager", type=Path, default=SERVERLESS_MANAGER_PATH)
     parser.add_argument("--serverless-config", type=Path, default=CONFIG_PATH)
     parser.add_argument("--serverless-broker-root", type=Path, default=BROKER_ROOT)
@@ -92,9 +105,22 @@ def main() -> int:
         max_serverless_workers=args.max_serverless_workers,
         max_openrouter_workers=args.max_openrouter_workers,
     )
+    producer = None
+    if not args.no_auto_produce_openrouter:
+        producer = FallbackCampaignProducer(
+            tracker_path=args.tracker_path,
+            inbox_root=fallback_inbox,
+            openrouter_manager_path=args.openrouter_manager,
+            openrouter_policy_path=args.openrouter_policy,
+        )
     supervisor.start()
     try:
         while True:
+            if producer is not None:
+                try:
+                    producer.produce()
+                except Exception as exc:
+                    supervisor.record_exception("recovery", f"fallback producer: {exc}")
             supervisor.update_queue(dispatcher.pending_ids())
             try:
                 dispatcher.poll_once()

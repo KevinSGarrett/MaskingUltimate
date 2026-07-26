@@ -246,7 +246,7 @@ class FallbackWorkDispatcher:
                     status = json.loads(status_path.read_text(encoding="utf-8"))
                 except (OSError, UnicodeError, json.JSONDecodeError):
                     status = {}
-                if status.get("state") in {"route_unavailable", "outcome_unknown"}:
+                if status.get("state") == "route_unavailable":
                     continue
             discovered.append((mission_root, self._load_item(mission_root)))
         return discovered
@@ -500,18 +500,60 @@ class FallbackWorkDispatcher:
                         or "OpenRouter manager selected CPU continuation",
                     )
                 elif state == "outcome_unknown":
-                    self.ledger.mark_outcome_unknown(
-                        mission_id=item["mission_id"],
-                        owner_token=owner_token,
-                        reason=route.state.get("last_error")
-                        or "OpenRouter manager outcome is unknown",
-                    )
-                    return self._status(
-                        mission_root,
-                        item,
-                        state="outcome_unknown",
-                        detail="OpenRouter outcome must be reconciled; retry is blocked",
-                    )
+                    route.reconcile_unknown()
+                    if route.state["state"] == "reserved":
+                        self.ledger.reconcile_unknown(
+                            mission_id=item["mission_id"],
+                            owner_token=owner_token,
+                            resolution="not_submitted",
+                            reason="manager proved reservation remained unsubmitted",
+                        )
+                        self.ledger.claim_route(
+                            mission_id=item["mission_id"],
+                            session_id=item["session_id"],
+                            payload_sha256=item["payload_sha256"],
+                            route=item["route"],
+                            owner_token=owner_token,
+                        )
+                    elif route.state["state"] == "terminal":
+                        durable = self.ledger.reconcile_unknown(
+                            mission_id=item["mission_id"],
+                            owner_token=owner_token,
+                            resolution="completed",
+                            reason="manager and persisted output prove completion",
+                        )
+                        receipt = _seal(
+                            {
+                                "schema_version": TERMINAL_SCHEMA,
+                                "mission_id": item["mission_id"],
+                                "route": item["route"],
+                                "disposition": "completed",
+                                "result_file": route.output_path.name,
+                                "result_sha256": _file_sha256(route.output_path),
+                                "ledger_state": durable["state"],
+                                "work_item_sha256": _file_sha256(mission_root / WORK_ITEM_NAME),
+                                "self_sha256": "0" * 64,
+                            }
+                        )
+                        _atomic_json(mission_root / TERMINAL_NAME, receipt)
+                        self._release_token(item["mission_id"])
+                        return receipt
+                    elif route.state["state"] == "failed":
+                        durable = self.ledger.reconcile_unknown(
+                            mission_id=item["mission_id"],
+                            owner_token=owner_token,
+                            resolution="failed",
+                            reason=route.state.get("last_error")
+                            or "manager proved terminal failure",
+                        )
+                        return self._status(
+                            mission_root,
+                            item,
+                            state="failed",
+                            detail=f"OpenRouter terminal failure: {durable['state']}",
+                        )
+                    else:
+                        raise FallbackDispatchError("unsupported OpenRouter reconciliation result")
                 elif state == "terminal":
                     return self._terminal(
                         mission_root,
@@ -583,6 +625,13 @@ class FallbackWorkDispatcher:
             _atomic_json(mission_root / TERMINAL_NAME, receipt)
             self._release_token(mission_id)
             return receipt
+        if durable and durable["state"] == "outcome_unknown":
+            token = self._owner_token(mission_id)
+            if item["route"] != "openrouter_advisory":
+                raise FallbackDispatchError(
+                    "unknown Serverless route requires broker reconciliation"
+                )
+            return self._openrouter(mission_root, item, token)
         token = self._owner_token(mission_id)
         try:
             self.ledger.claim_route(

@@ -613,6 +613,74 @@ class GovernedOpenRouterAdvisory:
         )
         return self.state
 
+    def reconcile_unknown(self) -> dict[str, Any]:
+        """Inspect manager state and never guess whether submission occurred."""
+        if self._state["state"] != "outcome_unknown":
+            raise OpenRouterAdvisoryError(
+                f"unknown reconciliation is not allowed from state {self._state['state']}"
+            )
+        reservation_id = self._state.get("reservation_id")
+        if not isinstance(reservation_id, str) or not reservation_id:
+            raise OpenRouterOutcomeUnknown("unknown outcome has no reservation identity")
+        try:
+            result = self._command(
+                "inspect-reservation",
+                "--reservation-id",
+                reservation_id,
+            )
+        except (
+            OpenRouterManagerRejected,
+            OpenRouterManagerTimeout,
+            OpenRouterManagerProtocolError,
+        ) as exc:
+            raise OpenRouterOutcomeUnknown(
+                "reservation inspection is unavailable; submission remains unknown"
+            ) from exc
+        if (
+            result.get("reservation_id") != reservation_id
+            or result.get("session_id") != self.request["session_id"]
+            or result.get("job_id") != self.request["job_id"]
+            or result.get("work_kind") != self.request["work_kind"]
+            or result.get("model_tier") != self.request["model_tier"]
+            or result.get("prompt_sha256") != self.request["prompt_sha256"]
+        ):
+            raise OpenRouterOutcomeUnknown(
+                "reservation inspection contradicts immutable request identity"
+            )
+        status = result.get("status")
+        if (
+            status == "RESERVED"
+            and result.get("provider_job_id") is None
+            and result.get("submitted_at") is None
+        ):
+            return self._transition(
+                self._state,
+                "reserved",
+                "submission_absent_reconciled",
+                result=result,
+                error=None,
+            )
+        if status == "COMPLETED" and self.output_path.is_file():
+            return self._transition(
+                self._state,
+                "terminal",
+                "completed_output_reconstructed",
+                result=result,
+                output_sha256=_file_sha256(self.output_path),
+                error=None,
+            )
+        if status in {"FAILED", "EXPIRED", "CANCELLED"}:
+            return self._transition(
+                self._state,
+                "failed",
+                "terminal_failure_reconstructed",
+                result=result,
+                error=f"manager reservation terminalized as {status}",
+            )
+        raise OpenRouterOutcomeUnknown(
+            f"manager reservation remains {status}; submission cannot be reissued"
+        )
+
     def reconcile(self) -> dict[str, Any]:
         """Reconcile asynchronous governed video work without resubmission."""
         if self._state["state"] not in {"submitted", "running"}:

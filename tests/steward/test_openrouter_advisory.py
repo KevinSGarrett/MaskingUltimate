@@ -386,6 +386,68 @@ def test_submit_timeout_blocks_retry_and_route_change(tmp_path: Path) -> None:
     assert [command[6] for command in manager.commands].count("submit") == 1
 
 
+def test_unknown_submit_can_resume_only_after_manager_proves_absence(
+    tmp_path: Path,
+) -> None:
+    prompt = "Review this bounded implementation and return advice only."
+    manager = FakeManager(
+        openrouter_decision(),
+        reservation(prompt),
+        OpenRouterManagerTimeout("submit timed out"),
+        {
+            **reservation(prompt),
+            "provider_job_id": None,
+            "submitted_at": None,
+            "actual_cost_usd": None,
+            "terminal_at": None,
+        },
+    )
+    route = build(tmp_path, manager, prompt=prompt)
+    route.decide(pod_state="unavailable", serverless_state="rejected")
+    route.reserve()
+    with pytest.raises(OpenRouterOutcomeUnknown):
+        route.submit()
+
+    state = route.reconcile_unknown()
+
+    assert state["state"] == "reserved"
+    assert state["event"] == "submission_absent_reconciled"
+    assert [command[6] for command in manager.commands] == [
+        "decide",
+        "reserve",
+        "submit",
+        "inspect-reservation",
+    ]
+
+
+def test_unknown_submit_stays_blocked_when_manager_reports_submitting(
+    tmp_path: Path,
+) -> None:
+    prompt = "Review this bounded implementation and return advice only."
+    manager = FakeManager(
+        openrouter_decision(),
+        reservation(prompt),
+        OpenRouterManagerTimeout("submit timed out"),
+        {
+            **reservation(prompt),
+            "status": "SUBMITTING",
+            "provider_job_id": None,
+            "submitted_at": "2026-07-26T17:00:00+00:00",
+            "actual_cost_usd": None,
+            "terminal_at": None,
+        },
+    )
+    route = build(tmp_path, manager, prompt=prompt)
+    route.decide(pod_state="unavailable", serverless_state="rejected")
+    route.reserve()
+    with pytest.raises(OpenRouterOutcomeUnknown):
+        route.submit()
+
+    with pytest.raises(OpenRouterOutcomeUnknown, match="remains SUBMITTING"):
+        route.reconcile_unknown()
+    assert route.state["state"] == "outcome_unknown"
+
+
 def test_source_has_no_direct_provider_client() -> None:
     source = (
         Path(__file__).parents[2] / "src" / "maskfactory" / "steward" / "openrouter_advisory.py"

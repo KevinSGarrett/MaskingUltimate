@@ -25038,11 +25038,17 @@
       "conditional": false,
       "status": "open",
       "percent_complete": 0,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-26T21:04:35+00:00",
+          "actor": "codex",
+          "text": "STATIC IMPLEMENTATION ONLY: commit 96b36e90d adds one immutable campaign packet for exactly 25 terminal engineering missions, binding ledger order, terminal/evidence-tree hashes, reconciliation, and SLO replay while rejecting missing, duplicate, reordered, drifted, non-success, or overclaimed evidence. Focused/neighboring campaign wave: 66 PASS after concurrent authority freeze rebind. Real 25-mission campaign and final Codex adoption remain required; no completion claim."
+        }
+      ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-26T05:44:33+00:00",
-      "updated_at": "2026-07-26T05:44:33+00:00",
+      "updated_at": "2026-07-26T21:04:35+00:00",
       "orphaned": false
     },
     "MF-P6-19.02": {

@@ -1,14 +1,23 @@
 from __future__ import annotations
 
+import io
 import json
+import urllib.error
 from copy import deepcopy
 from pathlib import Path
 
 import pytest
 
-from maskfactory.steward import MissionBindingError, MissionConflictError, seal_binding
+from maskfactory.steward import (
+    AmbiguousMissionError,
+    MissionBindingError,
+    MissionConflictError,
+    seal_binding,
+)
 from maskfactory.steward.core import AUTHORITY_KEYS, BINDING_SCHEMA, StewardLedger
 from maskfactory.steward.runtime import (
+    AMBIGUOUS_COMPLETION_SCHEMA,
+    REQUEST_REJECTION_SCHEMA,
     StewardRuntimeController,
     atomic_write_json,
     build_vllm_command,
@@ -260,6 +269,87 @@ def test_submit_refuses_authority_claim_and_leaves_ambiguous_recovery(
     )
     assert reconciled["outcome"] == "recovery_required"
     assert not controller.terminal_receipt_path.exists()
+
+
+def test_submit_persists_http_schema_rejection_and_terminalizes_failed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    controller, binding, request_path = prepare_controller(tmp_path)
+    monkeypatch.setattr(controller, "health", lambda: {"status": "PASS"})
+    body = json.dumps(
+        {
+            "error": {
+                "message": "unsupported JSON schema keyword",
+                "type": "BadRequestError",
+            }
+        }
+    ).encode("utf-8")
+
+    def reject(_request, *, timeout):
+        assert timeout == 300
+        raise urllib.error.HTTPError(
+            "http://127.0.0.1:18008/v1/chat/completions",
+            400,
+            "Bad Request",
+            {},
+            io.BytesIO(body),
+        )
+
+    monkeypatch.setattr("urllib.request.urlopen", reject)
+
+    with pytest.raises(MissionConflictError, match="before generation"):
+        controller.submit(request_path)
+
+    response_path = controller.mission_root / "response_run1.json"
+    rejection = json.loads(
+        (controller.mission_root / "request_rejection.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    terminal = json.loads(
+        controller.terminal_receipt_path.read_text(encoding="utf-8")
+    )
+    assert response_path.read_bytes() == body + b"\n"
+    assert rejection["schema_version"] == REQUEST_REJECTION_SCHEMA
+    assert rejection["http_status"] == 400
+    assert rejection["retry_permitted"] is False
+    assert terminal["binding_sha256"] == binding["binding_sha256"]
+    assert terminal["state"] == "failed"
+    assert controller.ledger.get("session-1", "runtime-job")["state"] == "failed"
+    with pytest.raises(MissionConflictError, match="running mission"):
+        controller.submit(request_path)
+
+
+def test_submit_transport_ambiguity_persists_no_resend_receipt(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    controller, _binding, request_path = prepare_controller(tmp_path)
+    monkeypatch.setattr(controller, "health", lambda: {"status": "PASS"})
+    calls = 0
+
+    def disconnected(_request, *, timeout):
+        nonlocal calls
+        calls += 1
+        assert timeout == 300
+        raise urllib.error.URLError("connection reset after request send")
+
+    monkeypatch.setattr("urllib.request.urlopen", disconnected)
+
+    with pytest.raises(AmbiguousMissionError, match="do not reissue"):
+        controller.submit(request_path)
+
+    ambiguous = json.loads(
+        (controller.mission_root / "ambiguous_completion.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert ambiguous["schema_version"] == AMBIGUOUS_COMPLETION_SCHEMA
+    assert ambiguous["response_persisted"] is False
+    assert ambiguous["retry_permitted"] is False
+    assert controller.ledger.get("session-1", "runtime-job")["request_sha256"]
+    with pytest.raises(AmbiguousMissionError, match="do not reissue"):
+        controller.submit(request_path)
+    assert calls == 1
 
 
 def test_shutdown_records_terminal_release_without_touching_unowned_process(

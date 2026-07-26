@@ -15,6 +15,7 @@ import signal
 import socket
 import subprocess
 import time
+import urllib.error
 import urllib.request
 from copy import deepcopy
 from pathlib import Path
@@ -23,6 +24,7 @@ from typing import Any, Mapping
 from .core import (
     AUTHORITY_KEYS,
     TERMINAL_RECEIPT_SCHEMA,
+    AmbiguousMissionError,
     MissionBindingError,
     MissionConflictError,
     StewardLedger,
@@ -33,7 +35,12 @@ RUNTIME_CONTRACT_SCHEMA = "maskfactory_self_hosted_steward_runtime_contract.v1"
 LAUNCH_RECEIPT_SCHEMA = "maskfactory_self_hosted_steward_launch_receipt.v1"
 SHUTDOWN_RECEIPT_SCHEMA = "maskfactory_self_hosted_steward_shutdown_receipt.v1"
 SUBMISSION_RECEIPT_SCHEMA = "maskfactory_self_hosted_steward_submission_receipt.v1"
+REQUEST_REJECTION_SCHEMA = "maskfactory_self_hosted_steward_request_rejection.v1"
+AMBIGUOUS_COMPLETION_SCHEMA = (
+    "maskfactory_self_hosted_steward_ambiguous_completion.v1"
+)
 SHA256_LENGTH = 64
+_UNAMBIGUOUS_REQUEST_REJECTION_STATUS = frozenset({400, 404, 405, 413, 415, 422})
 
 _TOP_LEVEL_KEYS = {
     "schema_version",
@@ -707,12 +714,95 @@ class StewardRuntimeController:
                 headers={"Content-Type": "application/json"},
                 method="POST",
             )
-            with urllib.request.urlopen(
-                request,
-                timeout=self.contract["submission"]["request_timeout_seconds"],
-            ) as response:
-                raw = response.read()
             response_path = self.mission_root / f"response_run{run_number}.json"
+            try:
+                with urllib.request.urlopen(
+                    request,
+                    timeout=self.contract["submission"]["request_timeout_seconds"],
+                ) as response:
+                    raw = response.read()
+            except urllib.error.HTTPError as exc:
+                raw = exc.read()
+                _atomic_write_bytes(
+                    response_path, raw + (b"" if raw.endswith(b"\n") else b"\n")
+                )
+                if exc.code in _UNAMBIGUOUS_REQUEST_REJECTION_STATUS:
+                    response_sha256 = file_sha256(response_path)
+                    rejection = {
+                        "schema_version": REQUEST_REJECTION_SCHEMA,
+                        "session_id": binding["session_id"],
+                        "job_id": binding["job_id"],
+                        "request_sha256": request_digest,
+                        "run_number": run_number,
+                        "http_status": exc.code,
+                        "response_sha256": response_sha256,
+                        "classification": "rejected_before_generation",
+                        "retry_permitted": False,
+                        "created_at": time.time(),
+                    }
+                    rejection_path = self.mission_root / "request_rejection.json"
+                    atomic_write_json(rejection_path, rejection)
+                    terminal = {
+                        "schema_version": TERMINAL_RECEIPT_SCHEMA,
+                        "session_id": binding["session_id"],
+                        "job_id": binding["job_id"],
+                        "payload_sha256": binding["payload_sha256"],
+                        "binding_sha256": binding["binding_sha256"],
+                        "state": "failed",
+                        "proposal_canonical_sha256": canonical_sha256(rejection),
+                        "authority_claimed": False,
+                    }
+                    atomic_write_json(self.terminal_receipt_path, terminal)
+                    self.ledger.reconcile_recorded_owner(
+                        binding["session_id"],
+                        binding["job_id"],
+                        terminal_receipt=terminal,
+                    )
+                    raise MissionConflictError(
+                        "model endpoint rejected immutable request before generation "
+                        f"(HTTP {exc.code})"
+                    ) from exc
+                ambiguous = {
+                    "schema_version": AMBIGUOUS_COMPLETION_SCHEMA,
+                    "session_id": binding["session_id"],
+                    "job_id": binding["job_id"],
+                    "request_sha256": request_digest,
+                    "run_number": run_number,
+                    "exception_type": type(exc).__name__,
+                    "http_status": exc.code,
+                    "response_persisted": True,
+                    "response_sha256": file_sha256(response_path),
+                    "recovery_required": True,
+                    "retry_permitted": False,
+                    "created_at": time.time(),
+                }
+                atomic_write_json(
+                    self.mission_root / "ambiguous_completion.json", ambiguous
+                )
+                raise AmbiguousMissionError(
+                    "model request completion is ambiguous; do not reissue"
+                ) from exc
+            except (urllib.error.URLError, TimeoutError, OSError) as exc:
+                ambiguous = {
+                    "schema_version": AMBIGUOUS_COMPLETION_SCHEMA,
+                    "session_id": binding["session_id"],
+                    "job_id": binding["job_id"],
+                    "request_sha256": request_digest,
+                    "run_number": run_number,
+                    "exception_type": type(exc).__name__,
+                    "http_status": None,
+                    "response_persisted": False,
+                    "response_sha256": None,
+                    "recovery_required": True,
+                    "retry_permitted": False,
+                    "created_at": time.time(),
+                }
+                atomic_write_json(
+                    self.mission_root / "ambiguous_completion.json", ambiguous
+                )
+                raise AmbiguousMissionError(
+                    "model request completion is ambiguous; do not reissue"
+                ) from exc
             _atomic_write_bytes(
                 response_path, raw + (b"" if raw.endswith(b"\n") else b"\n")
             )
@@ -872,7 +962,9 @@ class StewardRuntimeController:
 
 
 __all__ = [
+    "AMBIGUOUS_COMPLETION_SCHEMA",
     "LAUNCH_RECEIPT_SCHEMA",
+    "REQUEST_REJECTION_SCHEMA",
     "RUNTIME_CONTRACT_SCHEMA",
     "SHUTDOWN_RECEIPT_SCHEMA",
     "SUBMISSION_RECEIPT_SCHEMA",

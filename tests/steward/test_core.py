@@ -344,3 +344,21 @@ def test_exact_pid_start_token_keeps_live_owner(tmp_path) -> None:
     )
 
     assert result["outcome"] == "owner_still_running"
+
+
+def test_zombie_with_exact_pid_start_token_is_not_live_owner(tmp_path) -> None:
+    ledger = StewardLedger(tmp_path / "steward.sqlite")
+    running(ledger)
+    proc_root = tmp_path / "proc"
+    stat_path = proc_root / "1234" / "stat"
+    stat_path.parent.mkdir(parents=True)
+    fields = ["Z", *(["0"] * 18), "linux-proc-start-100"]
+    stat_path.write_text(f"1234 (worker name) {' '.join(fields)}\n", encoding="utf-8")
+
+    result = ledger.reconcile_recorded_owner(
+        "session-1",
+        "job-1",
+        proc_root=proc_root,
+    )
+
+    assert result["outcome"] == "recovery_required"

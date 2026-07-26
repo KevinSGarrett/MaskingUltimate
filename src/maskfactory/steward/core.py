@@ -713,6 +713,8 @@ class StewardLedger:
         fields_after_command = stat[closing_parenthesis + 1 :].split()
         if len(fields_after_command) <= 19:
             return False
+        if fields_after_command[0] == "Z":
+            return False
         process_start_token = fields_after_command[19]
         return process_start_token == owner_start_token
 

@@ -1,0 +1,405 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/configs/self_hosted_autonomy_acceptance_v1.schema.json",
+  "title": "MaskFactory self-hosted autonomous throughput acceptance v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "acceptance_id",
+    "created_at",
+    "throughput_claim",
+    "authority_freeze_sha256",
+    "source_commit_sha256",
+    "telemetry_schema_sha256",
+    "acceptance_schema_sha256",
+    "campaign_telemetry_sha256",
+    "evidence",
+    "metrics",
+    "acceptance_gates",
+    "codex_recommendation",
+    "authority_claimed",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "maskfactory_self_hosted_autonomy_acceptance.v1"
+    },
+    "acceptance_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{2,127}$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "throughput_claim": {
+      "enum": [
+        "SELF_HOSTED_AUTONOMOUS_LLM_THROUGHPUT_INCOMPLETE",
+        "PRODUCTION_EVIDENCE_PASS"
+      ]
+    },
+    "authority_freeze_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "source_commit_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "telemetry_schema_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "acceptance_schema_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "campaign_telemetry_sha256": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/sha256"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "engineering_campaign_missions",
+        "mask_campaign_records",
+        "consecutive_target_mixed_campaigns",
+        "interruption_drill_passed",
+        "routing_fault_drill_passed",
+        "persisted_terminal_adoption_passed",
+        "unresolved_ambiguity_blocked_resend",
+        "qualified_primary_visual_critic",
+        "qualified_independent_family_juror",
+        "clean_reconstruction_passed",
+        "operating_procedure_sha256",
+        "consolidated_packet_sha256"
+      ],
+      "properties": {
+        "engineering_campaign_missions": {
+          "$ref": "#/$defs/count"
+        },
+        "mask_campaign_records": {
+          "$ref": "#/$defs/count"
+        },
+        "consecutive_target_mixed_campaigns": {
+          "$ref": "#/$defs/count"
+        },
+        "interruption_drill_passed": {
+          "type": "boolean"
+        },
+        "routing_fault_drill_passed": {
+          "type": "boolean"
+        },
+        "persisted_terminal_adoption_passed": {
+          "type": "boolean"
+        },
+        "unresolved_ambiguity_blocked_resend": {
+          "type": "boolean"
+        },
+        "qualified_primary_visual_critic": {
+          "type": "boolean"
+        },
+        "qualified_independent_family_juror": {
+          "type": "boolean"
+        },
+        "clean_reconstruction_passed": {
+          "type": "boolean"
+        },
+        "operating_procedure_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "consolidated_packet_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "autonomously_prepared_fraction",
+        "routine_handoffs_per_campaign_bound",
+        "codex_usage_reduction_fraction",
+        "duplicate_inference_submissions",
+        "duplicate_promotions",
+        "terminal_reconciliation_fraction",
+        "local_gpu_release_fraction",
+        "authority_bypasses"
+      ],
+      "properties": {
+        "autonomously_prepared_fraction": {
+          "$ref": "#/$defs/fraction"
+        },
+        "routine_handoffs_per_campaign_bound": {
+          "$ref": "#/$defs/nonnegative"
+        },
+        "codex_usage_reduction_fraction": {
+          "$ref": "#/$defs/fraction"
+        },
+        "duplicate_inference_submissions": {
+          "$ref": "#/$defs/count"
+        },
+        "duplicate_promotions": {
+          "$ref": "#/$defs/count"
+        },
+        "terminal_reconciliation_fraction": {
+          "$ref": "#/$defs/fraction"
+        },
+        "local_gpu_release_fraction": {
+          "$ref": "#/$defs/fraction"
+        },
+        "authority_bypasses": {
+          "$ref": "#/$defs/count"
+        }
+      }
+    },
+    "acceptance_gates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority_bytes_frozen",
+        "schemas_closed",
+        "real_engineering_campaign",
+        "real_mask_campaign",
+        "three_consecutive_target_campaigns",
+        "recovery_and_routing_drills",
+        "visual_authority_qualified",
+        "zero_duplicates",
+        "full_terminal_reconciliation",
+        "full_local_gpu_release",
+        "codex_reduction_target",
+        "no_authority_bypass"
+      ],
+      "properties": {
+        "authority_bytes_frozen": {
+          "type": "boolean"
+        },
+        "schemas_closed": {
+          "type": "boolean"
+        },
+        "real_engineering_campaign": {
+          "type": "boolean"
+        },
+        "real_mask_campaign": {
+          "type": "boolean"
+        },
+        "three_consecutive_target_campaigns": {
+          "type": "boolean"
+        },
+        "recovery_and_routing_drills": {
+          "type": "boolean"
+        },
+        "visual_authority_qualified": {
+          "type": "boolean"
+        },
+        "zero_duplicates": {
+          "type": "boolean"
+        },
+        "full_terminal_reconciliation": {
+          "type": "boolean"
+        },
+        "full_local_gpu_release": {
+          "type": "boolean"
+        },
+        "codex_reduction_target": {
+          "type": "boolean"
+        },
+        "no_authority_bypass": {
+          "type": "boolean"
+        }
+      }
+    },
+    "codex_recommendation": {
+      "enum": [
+        "ADOPT",
+        "PARTIALLY_ADOPT",
+        "REJECT"
+      ]
+    },
+    "authority_claimed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "git",
+        "tracker_completion",
+        "infrastructure",
+        "credentials",
+        "final_mask",
+        "final_adoption"
+      ],
+      "properties": {
+        "git": {
+          "const": false
+        },
+        "tracker_completion": {
+          "const": false
+        },
+        "infrastructure": {
+          "const": false
+        },
+        "credentials": {
+          "const": false
+        },
+        "final_mask": {
+          "const": false
+        },
+        "final_adoption": {
+          "const": false
+        }
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1024
+      },
+      "uniqueItems": true
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "throughput_claim": {
+            "const": "PRODUCTION_EVIDENCE_PASS"
+          }
+        },
+        "required": [
+          "throughput_claim"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidence": {
+            "properties": {
+              "engineering_campaign_missions": {
+                "minimum": 25
+              },
+              "mask_campaign_records": {
+                "minimum": 100
+              },
+              "consecutive_target_mixed_campaigns": {
+                "minimum": 3
+              },
+              "interruption_drill_passed": {
+                "const": true
+              },
+              "routing_fault_drill_passed": {
+                "const": true
+              },
+              "persisted_terminal_adoption_passed": {
+                "const": true
+              },
+              "unresolved_ambiguity_blocked_resend": {
+                "const": true
+              },
+              "qualified_primary_visual_critic": {
+                "const": true
+              },
+              "qualified_independent_family_juror": {
+                "const": true
+              },
+              "clean_reconstruction_passed": {
+                "const": true
+              }
+            }
+          },
+          "metrics": {
+            "properties": {
+              "autonomously_prepared_fraction": {
+                "minimum": 0.8
+              },
+              "routine_handoffs_per_campaign_bound": {
+                "maximum": 1
+              },
+              "codex_usage_reduction_fraction": {
+                "minimum": 0.7
+              },
+              "duplicate_inference_submissions": {
+                "const": 0
+              },
+              "duplicate_promotions": {
+                "const": 0
+              },
+              "terminal_reconciliation_fraction": {
+                "const": 1
+              },
+              "local_gpu_release_fraction": {
+                "const": 1
+              },
+              "authority_bypasses": {
+                "const": 0
+              }
+            }
+          },
+          "acceptance_gates": {
+            "properties": {
+              "authority_bytes_frozen": {
+                "const": true
+              },
+              "schemas_closed": {
+                "const": true
+              },
+              "real_engineering_campaign": {
+                "const": true
+              },
+              "real_mask_campaign": {
+                "const": true
+              },
+              "three_consecutive_target_campaigns": {
+                "const": true
+              },
+              "recovery_and_routing_drills": {
+                "const": true
+              },
+              "visual_authority_qualified": {
+                "const": true
+              },
+              "zero_duplicates": {
+                "const": true
+              },
+              "full_terminal_reconciliation": {
+                "const": true
+              },
+              "full_local_gpu_release": {
+                "const": true
+              },
+              "codex_reduction_target": {
+                "const": true
+              },
+              "no_authority_bypass": {
+                "const": true
+              }
+            }
+          },
+          "codex_recommendation": {
+            "const": "ADOPT"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "nonnegative": {
+      "type": "number",
+      "minimum": 0
+    },
+    "fraction": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    }
+  }
+}

@@ -24,6 +24,12 @@ EXCLUDED_ARTIFACTS = frozenset(
         f"{INVENTORY_NAME}-wal",
     }
 )
+EPHEMERAL_SQLITE_SUFFIXES = (
+    ".sqlite-shm",
+    ".sqlite-wal",
+    ".db-shm",
+    ".db-wal",
+)
 
 
 class CorpusMirrorManifestError(ValueError):
@@ -166,6 +172,10 @@ def _source_files(source_root: Path, output_dir: Path) -> list[Path]:
         if not path.is_file():
             continue
         relative = path.relative_to(source_root).as_posix()
+        if relative in EXCLUDED_ARTIFACTS or relative.lower().endswith(
+            EPHEMERAL_SQLITE_SUFFIXES
+        ):
+            continue
         _safe_relative(relative)
         folded = relative.casefold()
         if folded in casefolded and casefolded[folded] != relative:
@@ -531,7 +541,9 @@ def verify_corpus_mirror_manifest(
         if not child.is_file():
             continue
         relative = child.relative_to(destination_root).as_posix()
-        if relative in EXCLUDED_ARTIFACTS:
+        if relative in EXCLUDED_ARTIFACTS or relative.lower().endswith(
+            EPHEMERAL_SQLITE_SUFFIXES
+        ):
             continue
         actual_paths.add(relative)
     extras = sorted(actual_paths - expected_paths)
@@ -561,5 +573,9 @@ def verify_corpus_mirror_manifest(
             "tree_sha256": expected_tree,
             "inventory_sha256": inventory_binding["raw_sha256"],
             "manifest_self_sha256": manifest["manifest_sha256"],
+            "extra_file_count": len(extras),
+            "missing_file_count": len(missing),
+            "extra_paths": extras,
+            "missing_paths": missing,
         },
     }

@@ -62,6 +62,38 @@ def test_byte_exact_corpus_mirror_passes(tmp_path: Path) -> None:
     assert verification["detail"]["tree_sha256"] == result.tree_sha256
 
 
+def test_ephemeral_sqlite_sidecars_are_not_migration_content(
+    tmp_path: Path,
+) -> None:
+    source = _source(tmp_path)
+    (source / "state.sqlite-wal").write_bytes(b"transient")
+    (source / "state.sqlite-shm").write_bytes(b"transient")
+    destination = tmp_path / "destination"
+    destination.mkdir()
+    (destination / "nested").mkdir()
+    (destination / "a.bin").write_bytes(b"a")
+    (destination / "nested" / "b.bin").write_bytes(b"bb")
+    (destination / "state.sqlite-wal").write_bytes(b"different-transient")
+    result = build_corpus_mirror_manifest(
+        source_root=source,
+        destination_root=destination,
+        output_dir=tmp_path / "output",
+        asset_id="fixture",
+    )
+    (destination / "MIGRATION_MANIFEST.json").write_bytes(
+        result.manifest_path.read_bytes()
+    )
+    (destination / "MIGRATION_INVENTORY.sqlite").write_bytes(
+        result.inventory_path.read_bytes()
+    )
+    verification = verify_corpus_mirror_manifest(
+        destination / "MIGRATION_MANIFEST.json",
+        destination,
+    )
+    assert result.entry_count == 2
+    assert verification["issues"] == []
+
+
 @pytest.mark.parametrize(
     "mutation,code",
     [
@@ -87,6 +119,8 @@ def test_missing_drifted_or_extra_file_fails(
         destination,
     )
     assert code in {issue["code"] for issue in verification["issues"]}
+    if mutation == "extra":
+        assert verification["detail"]["extra_paths"] == ["extra.bin"]
 
 
 def test_inventory_hash_drift_fails_before_trusting_rows(tmp_path: Path) -> None:

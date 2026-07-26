@@ -15,6 +15,11 @@ from .goal_selector import (
     GoalSelectionError,
     select_next_plan27_work,
 )
+from .supervisor import (
+    CpuSafeSupervisor,
+    SupervisorAlreadyRunning,
+    SupervisorStateError,
+)
 
 __all__ = [
     "AmbiguousMissionError",
@@ -26,6 +31,9 @@ __all__ = [
     "canonical_sha256",
     "GoalSelection",
     "GoalSelectionError",
+    "CpuSafeSupervisor",
     "seal_binding",
     "select_next_plan27_work",
+    "SupervisorAlreadyRunning",
+    "SupervisorStateError",
 ]

@@ -1,0 +1,191 @@
+from __future__ import annotations
+
+import hashlib
+import json
+import os
+import stat
+import subprocess
+import sys
+from pathlib import Path
+
+import pytest
+
+from maskfactory.steward.supervisor import (
+    CpuSafeSupervisor,
+    SupervisorAlreadyRunning,
+    SupervisorStateError,
+)
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+
+class Clock:
+    def __init__(self) -> None:
+        self.value = 1000.0
+
+    def __call__(self) -> float:
+        self.value += 1.0
+        return self.value
+
+
+def test_clean_start_heartbeat_snapshot_and_shutdown(tmp_path: Path) -> None:
+    clock = Clock()
+    supervisor = CpuSafeSupervisor(
+        tmp_path,
+        supervisor_id="maskfactory-main",
+        process_identity_probe=lambda pid: f"start-{pid}",
+        clock=clock,
+    )
+
+    started = supervisor.start()
+    health = supervisor.heartbeat()
+    snapshot = supervisor.snapshot()
+    shutdown = supervisor.shutdown(reason="test_complete")
+
+    assert started["state"] == "running"
+    assert "owner_token_sha256" not in started
+    assert health["cpu_safe"] is True and health["gpu_held"] is False
+    assert snapshot["queue"]["count"] == 0
+    assert snapshot["campaign"]["state"] == "idle"
+    assert shutdown["reason"] == "test_complete"
+    assert not supervisor.token_path.exists()
+    assert json.loads(supervisor.owner_path.read_text())["state"] == "stopped"
+
+
+def test_protected_token_is_mode_0600_and_never_in_safe_state(tmp_path: Path) -> None:
+    supervisor = CpuSafeSupervisor(
+        tmp_path,
+        supervisor_id="maskfactory-main",
+        process_identity_probe=lambda pid: f"start-{pid}",
+    )
+    safe_owner = supervisor.start()
+    raw_token = supervisor.token_path.read_bytes()
+
+    if os.name != "nt":
+        assert stat.S_IMODE(supervisor.token_path.stat().st_mode) == 0o600
+    assert raw_token
+    assert raw_token not in json.dumps(safe_owner).encode()
+    assert hashlib.sha256(raw_token).hexdigest() not in json.dumps(safe_owner)
+    supervisor.shutdown()
+
+
+def test_matching_live_owner_blocks_duplicate_supervisor(tmp_path: Path) -> None:
+    def identity(pid: int) -> str:
+        return f"start-{pid}"
+
+    first = CpuSafeSupervisor(
+        tmp_path,
+        supervisor_id="maskfactory-main",
+        process_identity_probe=identity,
+    )
+    first.start()
+    duplicate = CpuSafeSupervisor(
+        tmp_path,
+        supervisor_id="maskfactory-main",
+        process_identity_probe=identity,
+    )
+
+    with pytest.raises(SupervisorAlreadyRunning):
+        duplicate.start()
+    first.shutdown()
+
+
+def test_stale_pid_token_is_recovered_without_process_action(tmp_path: Path) -> None:
+    first = CpuSafeSupervisor(
+        tmp_path,
+        supervisor_id="maskfactory-main",
+        process_identity_probe=lambda pid: f"old-{pid}",
+    )
+    first.start()
+    second = CpuSafeSupervisor(
+        tmp_path,
+        supervisor_id="maskfactory-main",
+        process_identity_probe=lambda pid: f"new-{pid}",
+    )
+
+    started = second.start()
+
+    assert started["generation"] == 2
+    receipt = json.loads((tmp_path / "stale_owner_000001.json").read_text())
+    assert receipt["expected_process_start_token"].startswith("old-")
+    assert receipt["observed_process_start_token"].startswith("new-")
+    second.shutdown()
+
+
+def test_clean_restart_increments_generation(tmp_path: Path) -> None:
+    def identity(pid: int) -> str:
+        return f"start-{pid}"
+
+    first = CpuSafeSupervisor(
+        tmp_path,
+        supervisor_id="maskfactory-main",
+        process_identity_probe=identity,
+    )
+    first.start()
+    first.shutdown()
+    second = CpuSafeSupervisor(
+        tmp_path,
+        supervisor_id="maskfactory-main",
+        process_identity_probe=identity,
+    )
+
+    started = second.start()
+
+    assert started["generation"] == 2
+    second.shutdown()
+
+
+def test_queue_campaign_and_hash_chained_exception_contracts(tmp_path: Path) -> None:
+    supervisor = CpuSafeSupervisor(
+        tmp_path,
+        supervisor_id="maskfactory-main",
+        process_identity_probe=lambda pid: f"start-{pid}",
+    )
+    supervisor.start()
+
+    queue = supervisor.update_queue(["MF-P6-14.02", "MF-P6-14.03"])
+    campaign = supervisor.update_campaign("engineering-001", state="planned")
+    first = supervisor.record_exception("queue", "one item deferred")
+    second = supervisor.record_exception("recovery", "reconciled stale state")
+
+    assert queue["count"] == 2
+    assert campaign["campaign_id"] == "engineering-001"
+    assert second["previous_sha256"] == first["event_sha256"]
+    supervisor.shutdown()
+
+
+def test_malformed_queue_and_ownership_drift_fail_closed(tmp_path: Path) -> None:
+    identities = {os.getpid(): f"start-{os.getpid()}"}
+    supervisor = CpuSafeSupervisor(
+        tmp_path,
+        supervisor_id="maskfactory-main",
+        process_identity_probe=lambda pid: identities.get(pid),
+    )
+    supervisor.start()
+
+    with pytest.raises(SupervisorStateError, match="unique"):
+        supervisor.update_queue(["MF-P6-14.02", "MF-P6-14.02"])
+    identities[os.getpid()] = "reused-pid"
+    with pytest.raises(SupervisorStateError, match="start token changed"):
+        supervisor.heartbeat()
+
+
+def test_standalone_launcher_resolves_src_outside_repository(tmp_path: Path) -> None:
+    environment = dict(os.environ)
+    environment.pop("PYTHONPATH", None)
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(PROJECT_ROOT / "tools" / "run_self_hosted_supervisor.py"),
+            "--help",
+        ],
+        cwd=tmp_path,
+        env=environment,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0
+    assert "--state-root" in result.stdout

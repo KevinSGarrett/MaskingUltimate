@@ -219,12 +219,20 @@ def test_standalone_launcher_once_writes_terminal_state(tmp_path: Path) -> None:
     owner = json.loads((state_root / "owner.json").read_text())
     shutdown = json.loads((state_root / "shutdown_000001.json").read_text())
     throughput = json.loads((state_root / "fallback_throughput.json").read_text())
+    events = [
+        json.loads(line)
+        for line in (state_root / "fallback_throughput_events.jsonl")
+        .read_text()
+        .splitlines()
+    ]
     assert owner["state"] == "stopped"
     assert shutdown["reason"] == "signal_or_clean_exit"
     assert throughput["tracker_path"] == str(
         (PROJECT_ROOT / "Plan" / "Tracker" / "tracker.json").resolve()
     )
     assert throughput["cumulative"]["dispatch_cycles"] == 1
+    assert len(events) == 1
+    assert events[0]["cycle"]["dispatch_results"] == 0
     assert not (state_root / "owner.token").exists()
 
 

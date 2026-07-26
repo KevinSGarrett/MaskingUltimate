@@ -156,6 +156,52 @@ def _atomic_json(path: Path, value: dict[str, object]) -> None:
     os.replace(temporary, path)
 
 
+def _append_event(path: Path, value: dict[str, object]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    body = (
+        json.dumps(value, sort_keys=True, separators=(",", ":")) + "\n"
+    ).encode("utf-8")
+    descriptor = os.open(
+        path,
+        os.O_WRONLY | os.O_CREAT | os.O_APPEND,
+        0o600,
+    )
+    with os.fdopen(descriptor, "ab") as stream:
+        stream.write(body)
+        stream.flush()
+        os.fsync(stream.fileno())
+
+
+def _reconstruct_cumulative(path: Path) -> dict[str, int]:
+    totals = {
+        "openrouter_created": 0,
+        "serverless_created": 0,
+        "dispatch_terminal": 0,
+        "duplicates_blocked": 0,
+        "dispatch_cycles": 0,
+    }
+    if not path.is_file():
+        return totals
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except (OSError, UnicodeError) as exc:
+        raise SystemExit("fallback throughput event ledger is unreadable") from exc
+    for line in lines:
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise SystemExit("fallback throughput event ledger is corrupt") from exc
+        cycle = event.get("cycle")
+        if not isinstance(cycle, dict):
+            raise SystemExit("fallback throughput event ledger is contradictory")
+        totals["openrouter_created"] += int(cycle.get("openrouter_created") or 0)
+        totals["serverless_created"] += int(cycle.get("serverless_created") or 0)
+        totals["dispatch_terminal"] += int(cycle.get("terminal_results") or 0)
+        totals["duplicates_blocked"] += int(cycle.get("duplicates_blocked") or 0)
+        totals["dispatch_cycles"] += 1
+    return totals
+
+
 def main() -> int:
     args = build_parser().parse_args()
     if args.heartbeat_seconds <= 0:
@@ -228,12 +274,8 @@ def main() -> int:
             max_runtime_seconds=args.local_max_runtime_seconds,
         )
     throughput_path = args.state_root / "fallback_throughput.json"
-    cumulative = {
-        "openrouter_created": 0,
-        "serverless_created": 0,
-        "dispatch_terminal": 0,
-        "dispatch_cycles": 0,
-    }
+    throughput_events_path = args.state_root / "fallback_throughput_events.jsonl"
+    cumulative = _reconstruct_cumulative(throughput_events_path)
     supervisor.start()
     try:
         while True:
@@ -327,41 +369,60 @@ def main() -> int:
                 or result.get("disposition") in {"completed", "failed"}
                 for result in dispatch_results
             )
+            duplicates_blocked = sum(
+                result.get("state") == "route_unavailable"
+                and "terminal reservation already exists"
+                in str(result.get("detail") or "")
+                for result in dispatch_results
+            )
             cumulative["dispatch_terminal"] += terminal_results
+            cumulative["duplicates_blocked"] += duplicates_blocked
             cumulative["dispatch_cycles"] += 1
             discovered = dispatcher.discover()
             queue_by_route = {
                 route: sum(item["route"] == route for _, item in discovered)
                 for route in ("openrouter_advisory", "serverless_overflow")
             }
+            cycle = {
+                "openrouter_candidates": len(openrouter_receipts),
+                "openrouter_created": sum(
+                    receipt.get("created") is True
+                    for receipt in openrouter_receipts
+                ),
+                "serverless_candidates": len(serverless_receipts),
+                "serverless_created": sum(
+                    receipt.get("created") is True
+                    for receipt in serverless_receipts
+                ),
+                "dispatch_results": len(dispatch_results),
+                "terminal_results": terminal_results,
+                "duplicates_blocked": duplicates_blocked,
+            }
+            updated_at = time.time()
+            event = {
+                "schema_version": "maskfactory.fallback_throughput_event.v1",
+                "updated_at": updated_at,
+                "supervisor_source_sha256": _file_sha256(Path(__file__)),
+                "tracker_sha256": _file_sha256(args.tracker_path),
+                "cycle": cycle,
+            }
+            _append_event(throughput_events_path, event)
             _atomic_json(
                 throughput_path,
                 {
                     "schema_version": "maskfactory.fallback_throughput.v1",
                     "status": "productive" if dispatch_results else "idle",
-                    "updated_at": time.time(),
+                    "updated_at": updated_at,
                     "project_root": str(PROJECT_ROOT),
                     "supervisor_source_sha256": _file_sha256(Path(__file__)),
                     "tracker_path": str(args.tracker_path.resolve()),
                     "tracker_sha256": _file_sha256(args.tracker_path),
                     "openrouter_work_kinds": list(work_kinds),
                     "serverless_ready_root": str(args.serverless_ready_root.resolve()),
-                    "cycle": {
-                        "openrouter_candidates": len(openrouter_receipts),
-                        "openrouter_created": sum(
-                            receipt.get("created") is True
-                            for receipt in openrouter_receipts
-                        ),
-                        "serverless_candidates": len(serverless_receipts),
-                        "serverless_created": sum(
-                            receipt.get("created") is True
-                            for receipt in serverless_receipts
-                        ),
-                        "dispatch_results": len(dispatch_results),
-                        "terminal_results": terminal_results,
-                    },
+                    "cycle": cycle,
                     "queue_by_route": queue_by_route,
                     "cumulative": cumulative,
+                    "event_ledger_path": str(throughput_events_path.resolve()),
                 },
             )
             supervisor.heartbeat()

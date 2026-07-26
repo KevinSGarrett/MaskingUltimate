@@ -101,6 +101,28 @@ class FakeServerless:
         write_json(self.state_path, self._state)
 
 
+class SemanticFalseServerless(FakeServerless):
+    def submit(self) -> None:
+        self._state.update(
+            state="terminal",
+            last_result={
+                "state": "completed",
+                "job_id": "overflow-semantic-failure",
+                "provider_status_json": json.dumps(
+                    {
+                        "output": {
+                            "stdout_tail": (
+                                '{"native_box_runtime_ready": false, "token": "preflight"}\n'
+                            )
+                        },
+                        "status": "COMPLETED",
+                    }
+                ),
+            },
+        )
+        write_json(self.state_path, self._state)
+
+
 class FakeOpenRouter:
     def __init__(self, barrier: threading.Barrier, **kwargs: Any) -> None:
         self.barrier = barrier
@@ -183,8 +205,38 @@ def test_serverless_and_openrouter_advance_concurrently_and_terminalize(
     assert len(results) == 2
     assert (serverless / TERMINAL_NAME).is_file()
     assert (openrouter / TERMINAL_NAME).is_file()
+    assert (
+        json.loads((serverless / TERMINAL_NAME).read_text(encoding="utf-8"))[
+            "disposition"
+        ]
+        == "completed"
+    )
     assert dispatcher.pending_ids() == []
     assert list((dispatcher.state_root / "route_tokens").iterdir()) == []
+
+
+def test_serverless_semantic_false_is_terminal_failure(tmp_path: Path) -> None:
+    dispatcher = build(
+        tmp_path,
+        serverless_factory=lambda **kwargs: SemanticFalseServerless(
+            threading.Barrier(1), **kwargs
+        ),
+        openrouter_factory=lambda **kwargs: FakeOpenRouter(
+            threading.Barrier(1), **kwargs
+        ),
+    )
+    serverless = write_item(
+        dispatcher.inbox_root,
+        mission_id="9" * 64,
+        route="serverless_overflow",
+    )
+
+    results = dispatcher.poll_once()
+
+    assert results[0]["disposition"] == "failed"
+    receipt = json.loads((serverless / TERMINAL_NAME).read_text(encoding="utf-8"))
+    assert receipt["disposition"] == "failed"
+    assert dispatcher.pending_ids() == []
 
 
 def test_openrouter_cap_rejection_is_not_retried_on_next_poll(tmp_path: Path) -> None:

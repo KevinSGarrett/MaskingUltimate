@@ -73,6 +73,39 @@ def _file_sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _serverless_disposition(result: Mapping[str, Any]) -> str:
+    """Classify a broker-terminal result without mistaking a semantic false for success."""
+    if result.get("state") != "completed":
+        return "failed"
+    raw_status = result.get("provider_status_json")
+    if not isinstance(raw_status, str):
+        return "completed"
+    try:
+        provider_status = json.loads(raw_status)
+    except json.JSONDecodeError:
+        return "completed"
+    if not isinstance(provider_status, Mapping):
+        return "completed"
+    output = provider_status.get("output")
+    if not isinstance(output, Mapping):
+        return "completed"
+    stdout_tail = output.get("stdout_tail")
+    if not isinstance(stdout_tail, str):
+        return "completed"
+    for line in reversed(stdout_tail.splitlines()):
+        try:
+            report = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(report, Mapping):
+            return (
+                "failed"
+                if report.get("native_box_runtime_ready") is False
+                else "completed"
+            )
+    return "completed"
+
+
 def _seal(value: Mapping[str, Any]) -> dict[str, Any]:
     sealed = copy.deepcopy(dict(value))
     sealed["self_sha256"] = "0" * 64
@@ -417,7 +450,7 @@ class FallbackWorkDispatcher:
                     )
                 elif state == "terminal":
                     result = route.state.get("last_result") or {}
-                    disposition = "completed" if result.get("state") == "completed" else "failed"
+                    disposition = _serverless_disposition(result)
                     return self._terminal(
                         mission_root,
                         item,

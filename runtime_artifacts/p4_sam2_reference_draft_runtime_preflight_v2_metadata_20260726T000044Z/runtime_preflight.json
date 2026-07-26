@@ -1,0 +1,53 @@
+{
+  "admission": {
+    "gpu_compute_apps": 0,
+    "pod_id": "68psfqtaogg7s7",
+    "pod_name": "vitreous_beige_centipede"
+  },
+  "authority_ceiling": "runtime_import_preflight_only",
+  "checkpoints": {
+    "sam2.1_hiera_base_plus": {
+      "path": "/workspace/maskfactory/models/sam2/sam2.1_hiera_base_plus.pt",
+      "sha256": "a2345aede8715ab1d5d31b4a509fb160c5a4af1970f199d9054ccfb746c004c5"
+    },
+    "sam2.1_hiera_large": {
+      "path": "/workspace/maskfactory/models/sam2/sam2.1_hiera_large.pt",
+      "sha256": "2647878d5dfa5098f2f8649825738a9345572bae2d4350a2468587ece47dd318"
+    }
+  },
+  "claims": {
+    "inference_executed": false,
+    "masks_emitted": false,
+    "queue_mutated": false,
+    "training_eligibility": false,
+    "visual_review": false
+  },
+  "created_at_utc": "20260726T000044Z",
+  "purpose": "sealed local-Pod SAM2.1 draft-only runtime closure for a future reference catalog; no inference, masks, queue transition, visual verdict, or promotion executed",
+  "runtime": {
+    "cuda_available": true,
+    "cuda_version": "12.8",
+    "dependency_site": "/workspace/maskfactory/runtime_artifacts/sam2matting_env/lib/python3.10/site-packages",
+    "package_inventory_path": "runtime_artifacts/p4_sam2_reference_draft_runtime_preflight_v2_metadata_20260726T000044Z/import_preflight.json",
+    "package_inventory_sha256": "e95f532adec2b1e797f929f20aa36425fd04d5c5b416d4ec7b3b922a984f4914",
+    "python": "/workspace/maskfactory/runtime_artifacts/sam2matting_env/bin/python",
+    "python_sha256": "b94e9b56bc1f96b18d36a0f1d14308575bb7b5960eda94ae0520f0376e95d12d",
+    "python_version": "3.10.12",
+    "torch": "2.8.0+cu128"
+  },
+  "runtime_fingerprint": "883587994cfa159757959df470b8f5c6801a91e6be9b808fed8412ea208cf720",
+  "schema_version": "maskfactory.p4_sam2_reference_draft_runtime_preflight.v2",
+  "self_sha256": "b31aeed2d9c2a48123cd5908622012dbf4f3926836a0d76da83a6ff7966d1d51",
+  "source": {
+    "declared_revision": "2b90b9f5ceec907a1c18123530e92e794ad901a4",
+    "path": "/workspace/maskfactory/models/runtime_cache/sam2/2b90b9f5ceec907a1c18123530e92e794ad901a4",
+    "sam2_module": "/workspace/maskfactory/models/runtime_cache/sam2/2b90b9f5ceec907a1c18123530e92e794ad901a4/sam2/__init__.py",
+    "tree_sha256": "9b6e8ca9359ae8340f899b977a611b6f36074e8e8dbf9f6afb5c7481c2640a1b"
+  },
+  "supersedes_failed_preflight": {
+    "failure_class": "sealed_sam2_python_has_no_pip_module",
+    "path": "runtime_artifacts/p4_sam2_reference_draft_runtime_preflight_20260725T235841Z/SAM2_RUNTIME_PREFLIGHT_FAILURE_RECEIPT.json",
+    "rule": "v1 remains immutable failure evidence; v2 uses importlib.metadata and never invokes pip",
+    "sha256": "e2124e37136f5287c004f361193fdcfdc14637f3ce5a32c9e89a65012918fa03"
+  }
+}

@@ -7,6 +7,28 @@ def _read(relative_path: str) -> str:
     return (ROOT / relative_path).read_text(encoding="utf-8")
 
 
+def test_agent_intake_selects_runpod_directly_without_shared_lease_veto() -> None:
+    agents = _read("AGENTS.md")
+    normalized = " ".join(agents.split())
+
+    required = (
+        "RunPod execution is selected directly for the intended pod",
+        "No Windows-local shared scheduler, lease token, capacity reservation, "
+        "or cross-pod admission check is required",
+        "MaskFactory internal locks remain local critical-section evidence only",
+        "not a veto on another pod",
+    )
+    for phrase in required:
+        assert phrase in normalized
+
+    forbidden = (
+        "tools/run_with_shared_pod_gpu_lease.py",
+        "No lease means no local GPU launch",
+    )
+    for phrase in forbidden:
+        assert phrase not in normalized
+
+
 def test_authoritative_instructions_fail_closed_on_local_runtime() -> None:
     standing = _read("Plan/STANDING_ORDERS_AUTONOMOUS_BUILD.md")
     start = _read("Plan/Instructions/00_START_HERE.md")

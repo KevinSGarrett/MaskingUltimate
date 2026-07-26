@@ -23760,12 +23760,17 @@
           "ts": "2026-07-25T20:39:15+00:00",
           "actor": "codex",
           "text": "2026-07-25: Selected-Pod base-runtime metadata seed now succeeds after isolating NumPy/Pillow pixel-canary imports from adopted-intake seal/policy/descriptor loading. Fresh governed intake seed into a new artifact-local queue inserted 322 RunPod shards / 81,910 records, all queued with zero checkpoints: runtime_artifacts/nude_corpus_intake_seed_base_runtime_20260725T211100Z/ADOPTED_INTAKE_SEED_RECEIPT.json self SHA-256 12ab59aff8a56d71e56330989293dcc0edbb7058e112556cf7b70fe511994909. No source pixels decoded; no active queue, provider, visual authority, certificate, gold, or training-truth action."
+        },
+        {
+          "ts": "2026-07-26T03:37:29+00:00",
+          "actor": "codex",
+          "text": "2026-07-26: The bounded autonomous self-hosted text-steward milestone is independently ADOPTED after three real project mission classes, commits c97184535686f76c80661430162c09ce24b1ea33 and f6ea5dddc2a5f7ba8f4a23a29b4106e19eba8ecb, 21/21 focused local and selected-Pod tests, exact-byte runtime binding, and a CPU-only interrupted-mission recovery drill. V2 acceptance packet: runtime_artifacts/autonomous_self_hosted_llm/self_hosted_llm_production_acceptance_v2_20260726T034000Z/compact_acceptance_packet_v2.json raw SHA-256 9aa74a91008320a9100f7deaca79f953c499f87426c07016bfb3dc7a96d4bf39, canonical self SHA-256 9d53e6c4532f71e47f98e2353163078e9f978574220c99fc48c9d6f233c9dde1. Recovery drill raw/canonical SHA-256 ee3ad355297e69a2c28c9d1a4a2213aef1fee1e53058f0e0eabad17563007cd4 / 4766bc0e95f0a4e701e0ee9c7d7bd4aa4d70b25aebc9589496791a818c58bd64 proves persisted-terminal adoption without reissue, recovery_required on ambiguous completion, stale-PID token mismatch, durable persistence, and zero model/GPU request. This closes the steward acceleration subsystem only; MF-P4-12.01 remains 99% partially_complete because the distinct observed 1,000-record production milestone and visual/provider authority gates remain open. No visual approval, certificate, gold, training truth, or full-project completion is claimed."
         }
       ],
       "evidence": "qa/live_verification/runpod_sam31_provider_canary_failclosed_20260723.json; qa/live_verification/runpod_visual_unavailability_batch_abstention_20260723.json self SHA-256 3b53eaf5821e7dc7356e2a6882ed878fa8bf02d22ce69f9249ecf333b93983b5; qa/live_verification/runpod_persistence_refresh_20260723.json; qa/live_verification/runpod_corpus_mirrors_refresh_20260723.json; qa/live_verification/runpod_nude_queue_crash_resume_20260723.json file SHA-256 1b79b623d368cac039f4ffd077ebfbcbadb927363449ced91644ca6a0158463c self SHA-256 c20abf5fba44cffdd1655ae7ffd4fc7febf7478a34f4d38ec3714952623e6faf; qa/live_verification/runpod_sam31_reference_wave64_checkpoint_20260723.json self SHA-256 dbc32f5af91a1d1405ccc93ced2b976458ad17ded5ac79c62abc91fe1bfc19d3; qa/live_verification/runpod_sam31_resident_wave64_20260723.json self SHA-256 dd95b29af1a90d69e525b8624ff48124c10427b2017c028822f4bfbc76753b74",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-25T20:39:15+00:00",
+      "updated_at": "2026-07-26T03:37:29+00:00",
       "orphaned": false
     },
     "MF-P4-12.02": {

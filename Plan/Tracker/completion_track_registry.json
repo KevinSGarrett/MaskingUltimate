@@ -1,9 +1,16 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "registry_id": "maskfactory_completion_tracks",
-  "policy_version": "2026-07-17",
+  "policy_version": "2026-07-26",
   "authoritative_spec": "Plan/24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md",
   "authoritative_spec_sha256": "9ee33527c889c94eeeb2e68b373972318248edd1b662ef1fd6d82af83451b9ce",
+  "migration": {
+    "from_schema_version": "1.0.0",
+    "from_registry_sha256": "029c3fba47b6522721c915d95c007bd58daecba45dbf682b011fd441464092fc",
+    "migration_kind": "additive_blocking_gate",
+    "preserves_profile_required_item_ids": true,
+    "preserves_existing_item_evidence": true
+  },
   "profiles": [
     {
       "profile_id": "core_autonomous_runtime",
@@ -136,5 +143,58 @@
       "excluded_core_dependencies": []
     }
   ],
-  "sha256": "029c3fba47b6522721c915d95c007bd58daecba45dbf682b011fd441464092fc"
+  "throughput_gates": [
+    {
+      "gate_id": "self_hosted_autonomy_throughput_v1",
+      "blocking_profile_ids": [
+        "core_autonomous_runtime"
+      ],
+      "required_item_ids": [
+        "MF-P6-13.01",
+        "MF-P6-13.02",
+        "MF-P6-13.03",
+        "MF-P6-13.04",
+        "MF-P6-14.01",
+        "MF-P6-14.02",
+        "MF-P6-14.03",
+        "MF-P6-14.04",
+        "MF-P6-15.01",
+        "MF-P6-15.02",
+        "MF-P6-15.03",
+        "MF-P6-15.04",
+        "MF-P6-16.01",
+        "MF-P6-16.02",
+        "MF-P6-16.03",
+        "MF-P6-16.04",
+        "MF-P6-17.01",
+        "MF-P6-17.02",
+        "MF-P6-17.03",
+        "MF-P6-17.04",
+        "MF-P6-18.01",
+        "MF-P6-18.02",
+        "MF-P6-18.03",
+        "MF-P6-18.04",
+        "MF-P6-19.01",
+        "MF-P6-19.02",
+        "MF-P6-19.03",
+        "MF-P6-19.04"
+      ],
+      "legacy_evidence_disposition": "preserved_but_insufficient_for_throughput_completion",
+      "incomplete_claim": "SELF_HOSTED_AUTONOMOUS_LLM_THROUGHPUT_INCOMPLETE",
+      "acceptance_schema": "configs/self_hosted_autonomy_acceptance_v1.schema.json",
+      "acceptance_schema_sha256": "e38905c0bcbd7f2710765c9db4109d341ff18de204b34e059dd4a02359dc791d",
+      "campaign_requirements": {
+        "minimum_engineering_missions": 25,
+        "minimum_mask_records": 100,
+        "minimum_consecutive_mixed_campaigns": 3,
+        "minimum_autonomous_preparation_percent": 80,
+        "maximum_routine_codex_handoffs_per_campaign": 1,
+        "minimum_codex_usage_reduction_percent": 70,
+        "maximum_duplicate_submissions_or_promotions": 0,
+        "required_terminal_reconciliation_percent": 100,
+        "required_local_lease_release_percent": 100
+      }
+    }
+  ],
+  "sha256": "330301009cdabc34a7d8c80e4f73c4c44051c74037c07e89d5538c976289df1a"
 }

@@ -60,6 +60,7 @@ for _stream in (sys.stdout, sys.stderr):
 # ---------------------------------------------------------------------------
 ROOT = Path(__file__).resolve().parent  # ...\Plan\Tracker
 PLAN_DIR = ROOT.parent  # ...\Plan
+PROJECT_ROOT = PLAN_DIR.parent
 ITEMS_DIR = PLAN_DIR / "Items"
 TRACKER_JSON = ROOT / "tracker.json"
 CHANGELOG = ROOT / "CHANGELOG.jsonl"
@@ -95,7 +96,7 @@ STATUS_GLYPH = {
     "not_applicable": "\u2796",  # ➖
 }
 
-EXPECTED_ITEM_COUNT = 866
+EXPECTED_ITEM_COUNT = 894
 
 CORE_EXCLUDED_DEPENDENCIES = (
     "human_anchor_masks",
@@ -192,6 +193,62 @@ COMPLETION_PROFILES = {
             "MF-P9-12.07",
             "MF-P9-EXIT",
         ],
+    },
+}
+
+SELF_HOSTED_AUTONOMY_THROUGHPUT_ITEM_IDS = [
+    "MF-P6-13.01",
+    "MF-P6-13.02",
+    "MF-P6-13.03",
+    "MF-P6-13.04",
+    "MF-P6-14.01",
+    "MF-P6-14.02",
+    "MF-P6-14.03",
+    "MF-P6-14.04",
+    "MF-P6-15.01",
+    "MF-P6-15.02",
+    "MF-P6-15.03",
+    "MF-P6-15.04",
+    "MF-P6-16.01",
+    "MF-P6-16.02",
+    "MF-P6-16.03",
+    "MF-P6-16.04",
+    "MF-P6-17.01",
+    "MF-P6-17.02",
+    "MF-P6-17.03",
+    "MF-P6-17.04",
+    "MF-P6-18.01",
+    "MF-P6-18.02",
+    "MF-P6-18.03",
+    "MF-P6-18.04",
+    "MF-P6-19.01",
+    "MF-P6-19.02",
+    "MF-P6-19.03",
+    "MF-P6-19.04",
+]
+
+SELF_HOSTED_AUTONOMY_THROUGHPUT_GATE = {
+    "gate_id": "self_hosted_autonomy_throughput_v1",
+    "blocking_profile_ids": ["core_autonomous_runtime"],
+    "required_item_ids": SELF_HOSTED_AUTONOMY_THROUGHPUT_ITEM_IDS,
+    "legacy_evidence_disposition": (
+        "preserved_but_insufficient_for_throughput_completion"
+    ),
+    "incomplete_claim": "SELF_HOSTED_AUTONOMOUS_LLM_THROUGHPUT_INCOMPLETE",
+    "acceptance_schema": "configs/self_hosted_autonomy_acceptance_v1.schema.json",
+    "acceptance_schema_sha256": (
+        "e38905c0bcbd7f2710765c9db4109d341ff18de204b34e059dd4a02359dc791d"
+    ),
+    "campaign_requirements": {
+        "minimum_engineering_missions": 25,
+        "minimum_mask_records": 100,
+        "minimum_consecutive_mixed_campaigns": 3,
+        "minimum_autonomous_preparation_percent": 80,
+        "maximum_routine_codex_handoffs_per_campaign": 1,
+        "minimum_codex_usage_reduction_percent": 70,
+        "maximum_duplicate_submissions_or_promotions": 0,
+        "required_terminal_reconciliation_percent": 100,
+        "required_local_lease_release_percent": 100,
     },
 }
 
@@ -1077,6 +1134,15 @@ def compute_completion_profile_status(data, profile_id):
     return "open"
 
 
+def completion_profile_direct_item_ids(profile_id):
+    """Return direct profile items plus additive blocking-gate items."""
+
+    direct = list(COMPLETION_PROFILES[profile_id]["driven_by"])
+    if profile_id in SELF_HOSTED_AUTONOMY_THROUGHPUT_GATE["blocking_profile_ids"]:
+        direct.extend(SELF_HOSTED_AUTONOMY_THROUGHPUT_GATE["required_item_ids"])
+    return direct
+
+
 def validate_completion_track_registry(data):
     """Return structural problems for the frozen completion registry."""
 
@@ -1124,7 +1190,9 @@ def validate_completion_track_registry(data):
         "policy_version",
         "authoritative_spec",
         "authoritative_spec_sha256",
+        "migration",
         "profiles",
+        "throughput_gates",
         "sha256",
     }
     top_extra = set(registry).difference(top_required) if isinstance(registry, dict) else set()
@@ -1139,8 +1207,8 @@ def validate_completion_track_registry(data):
             "completion track registry is missing top-level fields: "
             + ", ".join(sorted(top_missing))
         )
-    if registry.get("schema_version") != "1.0.0":
-        problems.append("completion track registry schema_version must be 1.0.0")
+    if registry.get("schema_version") != "1.1.0":
+        problems.append("completion track registry schema_version must be 1.1.0")
     if registry.get("registry_id") != "maskfactory_completion_tracks":
         problems.append("completion track registry_id must be maskfactory_completion_tracks")
     if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(registry.get("policy_version") or "")):
@@ -1164,6 +1232,18 @@ def validate_completion_track_registry(data):
     ).encode("utf-8")
     if registry.get("sha256") != hashlib.sha256(canonical_registry).hexdigest():
         problems.append("completion track registry sha256 drifted")
+    migration = registry.get("migration")
+    expected_migration = {
+        "from_schema_version": "1.0.0",
+        "from_registry_sha256": (
+            "029c3fba47b6522721c915d95c007bd58daecba45dbf682b011fd441464092fc"
+        ),
+        "migration_kind": "additive_blocking_gate",
+        "preserves_profile_required_item_ids": True,
+        "preserves_existing_item_evidence": True,
+    }
+    if migration != expected_migration:
+        problems.append("completion track registry migration receipt drifted")
     rows = registry.get("profiles")
     if not isinstance(rows, list):
         return problems + ["completion track registry profiles must be an array"]
@@ -1251,6 +1331,26 @@ def validate_completion_track_registry(data):
         row = indexed.get(pid, {})
         if row.get("blocking_for_core_completion") is not False:
             problems.append(f"{pid} must remain non-blocking for core")
+    throughput_gates = registry.get("throughput_gates")
+    if not isinstance(throughput_gates, list):
+        problems.append("completion track registry throughput_gates must be an array")
+    elif throughput_gates != [SELF_HOSTED_AUTONOMY_THROUGHPUT_GATE]:
+        problems.append("completion track registry throughput gate differs from tracker.py")
+    else:
+        for iid in throughput_gates[0]["required_item_ids"]:
+            if iid not in data.get("items", {}) or data["items"][iid].get("orphaned"):
+                problems.append(
+                    "self_hosted_autonomy_throughput_v1 requires "
+                    f"missing/orphaned item {iid}"
+                )
+        acceptance_schema_path = PROJECT_ROOT / throughput_gates[0]["acceptance_schema"]
+        if not acceptance_schema_path.exists():
+            problems.append("self-hosted autonomy acceptance schema is missing")
+        elif (
+            hashlib.sha256(acceptance_schema_path.read_bytes()).hexdigest()
+            != throughput_gates[0]["acceptance_schema_sha256"]
+        ):
+            problems.append("self-hosted autonomy acceptance schema sha256 drifted")
     graph = {pid: list(row.get("prerequisite_profile_ids") or []) for pid, row in indexed.items()}
     for pid, prerequisites in graph.items():
         for prerequisite in prerequisites:
@@ -1279,7 +1379,7 @@ def completion_profile_dependency_closure(data, profile_id):
 
     items = data.get("items", {})
     closure = set()
-    stack = list(COMPLETION_PROFILES[profile_id]["driven_by"])
+    stack = completion_profile_direct_item_ids(profile_id)
     while stack:
         current = stack.pop()
         if current in closure:
@@ -1297,7 +1397,7 @@ def validate_core_dependency_firewall(data):
     """Reject direct or transitive human/volume/DAZ dependencies from core."""
 
     items = data.get("items", {})
-    core_ids = set(COMPLETION_PROFILES["core_autonomous_runtime"]["driven_by"])
+    core_ids = set(completion_profile_direct_item_ids("core_autonomous_runtime"))
     optional_only_ids = set()
     for pid in ("independent_real_accuracy", "scale_daz_maturity"):
         optional_only_ids.update(COMPLETION_PROFILES[pid]["driven_by"])

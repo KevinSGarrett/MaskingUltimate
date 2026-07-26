@@ -1,0 +1,25 @@
+{
+  "authority": {
+    "final_acceptance": false,
+    "git": false,
+    "infrastructure": false,
+    "repository_mutation": false,
+    "runpod_control": false,
+    "secret_access": false,
+    "tool_invocation": false,
+    "tracker": false
+  },
+  "binding_sha256": "05eda826e3696d44839d399130defbeaaaaccbd32fc064df38767b3f81fefd33",
+  "input_sha256": {
+    "prompt.txt": "c6c9c482f99e7dabc03223bc539c2199e75d0ce40408bfe56ff1a7a9c3c2fcdc",
+    "request.json": "d05c15af7d7d959149c29a1bc511f08ab92762e4b766893ed0255e506954bebe"
+  },
+  "job_id": "ambiguous-without-terminal",
+  "model_tree_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+  "output_namespace": "maskfactory-recovery-drill/ambiguous-without-terminal",
+  "payload_sha256": "dc10300853f7e175a4606306241d94195e5cac969f097244adcae4b75d383c68",
+  "requires_replay": true,
+  "runtime_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+  "schema_version": "maskfactory_self_hosted_steward_binding.v1",
+  "session_id": "maskfactory-recovery-drill"
+}

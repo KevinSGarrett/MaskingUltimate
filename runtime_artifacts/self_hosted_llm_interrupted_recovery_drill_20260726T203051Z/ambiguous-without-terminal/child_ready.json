@@ -1,0 +1,18 @@
+{
+  "admission_outcome": "admitted",
+  "binding_sha256": "05eda826e3696d44839d399130defbeaaaaccbd32fc064df38767b3f81fefd33",
+  "job_id": "ambiguous-without-terminal",
+  "pid": 67432,
+  "process_start_token": "actual-child-start-67432",
+  "ready_sha256": "b8fa8072c519b0ed867010fb2603f3cc9f42f90ebf867b739b94586db0d50041",
+  "request_sha256": "d05c15af7d7d959149c29a1bc511f08ab92762e4b766893ed0255e506954bebe",
+  "run1": {
+    "proposal_canonical_sha256": "a7fe25f896731e2f5c25fde6fd82fd99db456ccd98ca905b83dca7b12fa24ae9",
+    "proposal_sha256": "c53d86bfe32d06e463f718e57d10ef286b9aa90481754bf8867a80c7478720d2",
+    "response_sha256": "a1b664f9026d1ddf75326b023b5b3e21668929757fff6a65a020a7355a34ed40"
+  },
+  "run2": null,
+  "scenario": "ambiguous_without_terminal",
+  "schema_version": "maskfactory_self_hosted_steward_interrupted_child_ready.v1",
+  "terminal_receipt_present": false
+}

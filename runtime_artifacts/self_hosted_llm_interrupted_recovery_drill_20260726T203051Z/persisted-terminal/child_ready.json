@@ -1,0 +1,22 @@
+{
+  "admission_outcome": "admitted",
+  "binding_sha256": "4e695cfe32b5c0b9e3d3dd9a226fdaaeecdc197355eec4566d02d39835f384f7",
+  "job_id": "persisted-terminal",
+  "pid": 55144,
+  "process_start_token": "actual-child-start-55144",
+  "ready_sha256": "f7c3ad6f8a947f7acbaad469933cb4344284ba1c5a79ab6c8a25bed559fdd113",
+  "request_sha256": "12f2008788d4aafdd197930af87776ddc3122fa08bed3f263e07388eb38c9e85",
+  "run1": {
+    "proposal_canonical_sha256": "9d51ae8147ad853475f77f290ec48f200cd5527bb4c31b7afb73c2af5de32982",
+    "proposal_sha256": "8060a1795f827c85d3438b5e923472a2bfa78e2efefd344241ce550ac09fdcf6",
+    "response_sha256": "3cec402e8a2d144baf4c7609e42ca84f9c3b343bfeedd1d2a6762d56441ef519"
+  },
+  "run2": {
+    "proposal_canonical_sha256": "9d51ae8147ad853475f77f290ec48f200cd5527bb4c31b7afb73c2af5de32982",
+    "proposal_sha256": "8060a1795f827c85d3438b5e923472a2bfa78e2efefd344241ce550ac09fdcf6",
+    "response_sha256": "03825a262215058d6497aea6015b75fbcc58d5fd594586a7a649edbdebdfee43"
+  },
+  "scenario": "persisted_terminal",
+  "schema_version": "maskfactory_self_hosted_steward_interrupted_child_ready.v1",
+  "terminal_receipt_present": true
+}

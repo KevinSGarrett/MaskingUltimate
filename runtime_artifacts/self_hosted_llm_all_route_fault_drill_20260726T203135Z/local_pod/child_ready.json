@@ -1,0 +1,10 @@
+{
+  "attempt_id": "58d320dad241f83506265df09c00502b9f54de28086515a7562f214df4acd249.0001",
+  "external_action_attempted": false,
+  "generation": 1,
+  "mission_id": "58d320dad241f83506265df09c00502b9f54de28086515a7562f214df4acd249",
+  "payload_sha256": "504f2bf06dece84bd33d847744c6080e28da52c284670449b0d809769a10527b",
+  "ready_sha256": "f720a41d5927de65772fc6ff779c672a4f9e680297fd32fc3af459690c9513d5",
+  "route": "local_pod",
+  "schema_version": "maskfactory.steward.route_fault_child_ready.v1"
+}

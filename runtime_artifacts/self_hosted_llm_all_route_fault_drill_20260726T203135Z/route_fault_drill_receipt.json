@@ -1,0 +1,96 @@
+{
+  "assertions": {
+    "all_governed_routes_covered": true,
+    "all_owner_tokens_removed_after_release": true,
+    "no_active_route_attempts_remain": true,
+    "no_external_gpu_provider_or_broker_action_attempted": true,
+    "owned_process_interruptions_reconstructed_without_duplicate_claim": true,
+    "persisted_terminals_block_resend": true,
+    "stale_owner_tokens_rejected": true,
+    "unresolved_ambiguity_blocks_resend": true
+  },
+  "limitations": [
+    "CPU-only canonical-route fault drill; no live GPU lease, broker reservation, or provider job was created.",
+    "Production completion remains unclaimed until live route-specific evidence is independently reconciled."
+  ],
+  "receipt_sha256": "44fce90f6a7f6bdaf4a70913771d9089e7798c2af9cb5bcb995583e17c6fa61f",
+  "routes": [
+    {
+      "active_attempts_after_release": 0,
+      "actual_owned_child_interrupted": true,
+      "external_action_attempted": false,
+      "final_state": "completed",
+      "initial_generation": 1,
+      "mission_id": "58d320dad241f83506265df09c00502b9f54de28086515a7562f214df4acd249",
+      "no_submit_reconciliation_state": "available",
+      "payload_sha256": "504f2bf06dece84bd33d847744c6080e28da52c284670449b0d809769a10527b",
+      "protected_token_removed": true,
+      "reconstructed_generation": 1,
+      "route": "local_pod",
+      "route_events": [
+        "route_claimed",
+        "route_outcome_unknown",
+        "route_reconciled_not_submitted",
+        "route_claimed",
+        "route_terminal_persisted",
+        "terminal_route_released"
+      ],
+      "stale_owner_token_blocked": true,
+      "terminal_resend_blocked": true,
+      "terminal_state_reconstructed": "terminal_pending_release",
+      "unresolved_ambiguity_blocked_resend": true
+    },
+    {
+      "active_attempts_after_release": 0,
+      "actual_owned_child_interrupted": true,
+      "external_action_attempted": false,
+      "final_state": "completed",
+      "initial_generation": 1,
+      "mission_id": "28372ae4bcda503253d62c86de85a5347bf59a83b781822c1709aa0b8e69705e",
+      "no_submit_reconciliation_state": "available",
+      "payload_sha256": "8f23b7e53c91ac1f2d15b826c46cd2324dfc702ae77d452394f51ddac0afba8d",
+      "protected_token_removed": true,
+      "reconstructed_generation": 1,
+      "route": "openrouter_advisory",
+      "route_events": [
+        "route_claimed",
+        "route_outcome_unknown",
+        "route_reconciled_not_submitted",
+        "route_claimed",
+        "route_terminal_persisted",
+        "terminal_route_released"
+      ],
+      "stale_owner_token_blocked": true,
+      "terminal_resend_blocked": true,
+      "terminal_state_reconstructed": "terminal_pending_release",
+      "unresolved_ambiguity_blocked_resend": true
+    },
+    {
+      "active_attempts_after_release": 0,
+      "actual_owned_child_interrupted": true,
+      "external_action_attempted": false,
+      "final_state": "completed",
+      "initial_generation": 1,
+      "mission_id": "cd89585c7d2dd6d3213c0e4baedc52dfe1b290ff5d409944a4f3af375c67d816",
+      "no_submit_reconciliation_state": "available",
+      "payload_sha256": "4fad18e6ebfa65b369b7b3b9e64b024cf8fab52151f779d75dc7abf4fbd81106",
+      "protected_token_removed": true,
+      "reconstructed_generation": 1,
+      "route": "serverless_overflow",
+      "route_events": [
+        "route_claimed",
+        "route_outcome_unknown",
+        "route_reconciled_not_submitted",
+        "route_claimed",
+        "route_terminal_persisted",
+        "terminal_route_released"
+      ],
+      "stale_owner_token_blocked": true,
+      "terminal_resend_blocked": true,
+      "terminal_state_reconstructed": "terminal_pending_release",
+      "unresolved_ambiguity_blocked_resend": true
+    }
+  ],
+  "schema_version": "maskfactory.steward.all_route_fault_drill.v1",
+  "session_id": "019f91d1-ea20-7d81-83ff-03d393eaa1f5"
+}

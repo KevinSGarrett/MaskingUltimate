@@ -1,0 +1,25 @@
+{
+  "authority": {
+    "final_acceptance": false,
+    "git": false,
+    "infrastructure": false,
+    "repository_mutation": false,
+    "runpod_control": false,
+    "secret_access": false,
+    "tool_invocation": false,
+    "tracker": false
+  },
+  "binding_sha256": "4e695cfe32b5c0b9e3d3dd9a226fdaaeecdc197355eec4566d02d39835f384f7",
+  "input_sha256": {
+    "prompt.txt": "c6c9c482f99e7dabc03223bc539c2199e75d0ce40408bfe56ff1a7a9c3c2fcdc",
+    "request.json": "12f2008788d4aafdd197930af87776ddc3122fa08bed3f263e07388eb38c9e85"
+  },
+  "job_id": "persisted-terminal",
+  "model_tree_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+  "output_namespace": "maskfactory-recovery-drill/persisted-terminal",
+  "payload_sha256": "06b93a6a361e9423386fef92589ddb6b034f5b52be8463f445be110b316f85b4",
+  "requires_replay": true,
+  "runtime_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+  "schema_version": "maskfactory_self_hosted_steward_binding.v1",
+  "session_id": "maskfactory-recovery-drill"
+}

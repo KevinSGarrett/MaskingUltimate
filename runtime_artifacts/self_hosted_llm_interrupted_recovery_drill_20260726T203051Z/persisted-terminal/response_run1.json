@@ -1,0 +1,10 @@
+{
+  "choices": [
+    {
+      "message": {
+        "content": "{\"authority_claimed\": false, \"decision\": \"ADVISORY_ACCEPT\", \"mission_id\": \"persisted-terminal\", \"schema_version\": \"maskfactory_interrupted_recovery_proposal.v1\"}"
+      }
+    }
+  ],
+  "run_number": 1
+}

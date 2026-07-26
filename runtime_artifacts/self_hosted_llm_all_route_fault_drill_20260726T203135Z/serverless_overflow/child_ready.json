@@ -1,0 +1,10 @@
+{
+  "attempt_id": "cd89585c7d2dd6d3213c0e4baedc52dfe1b290ff5d409944a4f3af375c67d816.0001",
+  "external_action_attempted": false,
+  "generation": 1,
+  "mission_id": "cd89585c7d2dd6d3213c0e4baedc52dfe1b290ff5d409944a4f3af375c67d816",
+  "payload_sha256": "4fad18e6ebfa65b369b7b3b9e64b024cf8fab52151f779d75dc7abf4fbd81106",
+  "ready_sha256": "d74fc8724dcc228c03dc299e0fe7679464787b29ee9ba586257770de0b197fc8",
+  "route": "serverless_overflow",
+  "schema_version": "maskfactory.steward.route_fault_child_ready.v1"
+}

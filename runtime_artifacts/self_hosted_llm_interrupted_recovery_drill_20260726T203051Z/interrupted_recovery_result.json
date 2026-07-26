@@ -1,0 +1,51 @@
+{
+  "acceptance_gates": {
+    "ambiguous_evidence_requires_recovery": true,
+    "no_model_reissue_or_gpu_process": true,
+    "persisted_terminal_adopted_without_reissue": true,
+    "stale_owner_identity_cleared": true,
+    "terminal_release_persisted": true,
+    "two_real_child_processes_interrupted": true
+  },
+  "ambiguous_without_terminal_case": {
+    "actual_child_process_interrupted": true,
+    "binding_sha256": "05eda826e3696d44839d399130defbeaaaaccbd32fc064df38767b3f81fefd33",
+    "child_pid": 67432,
+    "child_returncode": 1,
+    "job_id": "ambiguous-without-terminal",
+    "ready_receipt_sha256": "97b7e43bfeedab81d8c590360c79857143de8c91c6af6f9ac7af0952355438c8",
+    "reconstructed_state": "recovery_required",
+    "reconstruction_outcome": "recovery_required",
+    "request_sha256": "d05c15af7d7d959149c29a1bc511f08ab92762e4b766893ed0255e506954bebe",
+    "resend_blocked": true,
+    "resend_error": "AmbiguousMissionError: model request evidence exists; terminal reconciliation is required",
+    "run_count_after_resume_attempt": 1,
+    "run_count_before_resume_attempt": 1,
+    "terminal_receipt_present": false
+  },
+  "database_sha256": "a845ef0d6c7ff78c291089ee14550de4f617958eb6a7f3c92193e05163b2d66e",
+  "gpu_processes_started": 0,
+  "mode": "cpu_safe_actual_child_process_interruption",
+  "model_requests_issued": 0,
+  "persisted_terminal_case": {
+    "actual_child_process_interrupted": true,
+    "binding_sha256": "4e695cfe32b5c0b9e3d3dd9a226fdaaeecdc197355eec4566d02d39835f384f7",
+    "child_pid": 55144,
+    "child_returncode": 1,
+    "duplicate_admission_outcome": "reconciled_terminal",
+    "job_id": "persisted-terminal",
+    "ready_receipt_sha256": "9134fe2820385f4ff0ad7d1be5a9325cb8e91a07e4d9a2e5d5bad713f45a82cb",
+    "reconstructed_state": "completed",
+    "reconstruction_outcome": "reconciled_terminal_receipt",
+    "release_sha256": "c234186fc9665c0e86663eb8057a350a13af65340868b99f6b3d0dae9ab5c5ed",
+    "request_sha256": "12f2008788d4aafdd197930af87776ddc3122fa08bed3f263e07388eb38c9e85",
+    "resend_blocked": true,
+    "resend_error": "MissionConflictError: request intent requires a running mission",
+    "run_count_after_reconciliation_attempt": 2,
+    "run_count_before_reconciliation_attempt": 2,
+    "terminal_receipt_sha256": "ed4aa9c7163eff6f265f8ca0446ec16315df7b4fa4b9e2b9d628633997ed3bdb"
+  },
+  "result_sha256": "0ec2e01aceb1d5cff3678680882294da93120d607b7c9fbd120bd63c575002ea",
+  "schema_version": "maskfactory_self_hosted_steward_interrupted_recovery_drill.v1",
+  "status": "PASS"
+}

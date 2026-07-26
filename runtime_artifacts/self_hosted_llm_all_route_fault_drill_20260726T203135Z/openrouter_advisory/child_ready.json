@@ -1,0 +1,10 @@
+{
+  "attempt_id": "28372ae4bcda503253d62c86de85a5347bf59a83b781822c1709aa0b8e69705e.0001",
+  "external_action_attempted": false,
+  "generation": 1,
+  "mission_id": "28372ae4bcda503253d62c86de85a5347bf59a83b781822c1709aa0b8e69705e",
+  "payload_sha256": "8f23b7e53c91ac1f2d15b826c46cd2324dfc702ae77d452394f51ddac0afba8d",
+  "ready_sha256": "db8f4e5cba2a6caae2628fb7cda52a8b4d9f807bf2a68cebda0348dd34c065ef",
+  "route": "openrouter_advisory",
+  "schema_version": "maskfactory.steward.route_fault_child_ready.v1"
+}

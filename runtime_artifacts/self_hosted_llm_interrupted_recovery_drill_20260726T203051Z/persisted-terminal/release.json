@@ -1,0 +1,8 @@
+{
+  "child_pid": 55144,
+  "child_returncode": 1,
+  "job_id": "persisted-terminal",
+  "no_gpu_or_model_process_started": true,
+  "released_after_reconstruction": true,
+  "schema_version": "maskfactory_self_hosted_steward_interrupted_release.v1"
+}

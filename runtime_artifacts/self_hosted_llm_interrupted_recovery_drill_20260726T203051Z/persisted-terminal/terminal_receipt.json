@@ -1,0 +1,10 @@
+{
+  "authority_claimed": false,
+  "binding_sha256": "4e695cfe32b5c0b9e3d3dd9a226fdaaeecdc197355eec4566d02d39835f384f7",
+  "job_id": "persisted-terminal",
+  "payload_sha256": "06b93a6a361e9423386fef92589ddb6b034f5b52be8463f445be110b316f85b4",
+  "proposal_canonical_sha256": "9d51ae8147ad853475f77f290ec48f200cd5527bb4c31b7afb73c2af5de32982",
+  "schema_version": "maskfactory_self_hosted_steward_terminal.v1",
+  "session_id": "maskfactory-recovery-drill",
+  "state": "completed"
+}

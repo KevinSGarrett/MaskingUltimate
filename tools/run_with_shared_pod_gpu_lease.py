@@ -643,7 +643,23 @@ def run_guarded(
         daemon=True,
     )
     try:
-        child = subprocess.Popen(command, start_new_session=True)
+        child_environment = os.environ.copy()
+        child_environment.update(
+            {
+                "MASKFACTORY_SHARED_GPU_GUARD_ACTIVE": "1",
+                "MASKFACTORY_SHARED_GPU_GUARD_JOB_ID": job_id,
+                "MASKFACTORY_SHARED_GPU_GUARD_PAYLOAD_SHA256": payload_sha256,
+                "MASKFACTORY_SHARED_GPU_GUARD_REQUEST_ID": request_id,
+                "MASKFACTORY_SHARED_GPU_GUARD_RECEIPT_ROOT": str(
+                    Path(receipt_root).resolve()
+                ),
+            }
+        )
+        child = subprocess.Popen(
+            command,
+            start_new_session=True,
+            env=child_environment,
+        )
         thread.start()
         emit(
             {

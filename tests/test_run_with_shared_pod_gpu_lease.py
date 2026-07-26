@@ -126,6 +126,44 @@ def test_acquired_lease_wraps_child_and_terminally_releases(
     assert receipt["child_returncode"] == 0
 
 
+def test_acquired_lease_passes_nonsecret_bound_child_context(
+    tmp_path: Path, monkeypatch
+) -> None:
+    manager = FakeManager()
+    observed: dict[str, object] = {}
+
+    class Child:
+        pid = 12345
+
+        @staticmethod
+        def poll() -> int:
+            return 0
+
+    def popen(command, *, start_new_session, env):
+        observed["command"] = command
+        observed["start_new_session"] = start_new_session
+        observed["env"] = env
+        return Child()
+
+    monkeypatch.setattr(MODULE.subprocess, "Popen", popen)
+    args = run_args(tmp_path)
+    assert MODULE.run_guarded(manager=manager, **args) == 0
+
+    environment = observed["env"]
+    assert isinstance(environment, dict)
+    assert environment["MASKFACTORY_SHARED_GPU_GUARD_ACTIVE"] == "1"
+    assert environment["MASKFACTORY_SHARED_GPU_GUARD_JOB_ID"] == "mask-job"
+    assert (
+        environment["MASKFACTORY_SHARED_GPU_GUARD_PAYLOAD_SHA256"]
+        == "a" * 64
+    )
+    assert environment["MASKFACTORY_SHARED_GPU_GUARD_REQUEST_ID"] == "gpu-mask-test"
+    assert environment["MASKFACTORY_SHARED_GPU_GUARD_RECEIPT_ROOT"] == str(
+        (tmp_path / "mission").resolve()
+    )
+    assert "test-owner-token" not in repr(environment)
+
+
 def test_release_failure_fails_closed_after_own_child_terminal(
     tmp_path: Path,
 ) -> None:

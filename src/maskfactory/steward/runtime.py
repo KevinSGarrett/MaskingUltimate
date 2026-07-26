@@ -576,7 +576,13 @@ class StewardRuntimeController:
     def launch(self) -> dict[str, Any]:
         validate_runtime_files(self.contract)
         admitted = self.admit()
-        if admitted["outcome"] != "admitted":
+        if not (
+            admitted["outcome"] == "admitted"
+            or (
+                admitted["outcome"] == "duplicate_nonterminal"
+                and admitted["mission"]["state"] == "admitted"
+            )
+        ):
             raise MissionConflictError(
                 f"new launch refused for {admitted['outcome']}; reconcile instead"
             )

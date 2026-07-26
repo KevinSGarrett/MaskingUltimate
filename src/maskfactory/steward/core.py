@@ -170,6 +170,12 @@ def _validate_binding(binding: Mapping[str, Any]) -> dict[str, Any]:
     return normalized
 
 
+def validate_binding(binding: Mapping[str, Any]) -> dict[str, Any]:
+    """Validate and normalize one immutable steward mission binding."""
+
+    return _validate_binding(binding)
+
+
 class StewardLedger:
     """SQLite-backed mission admission and recovery state."""
 
@@ -807,4 +813,5 @@ __all__ = [
     "TERMINAL_RECEIPT_SCHEMA",
     "canonical_sha256",
     "seal_binding",
+    "validate_binding",
 ]

@@ -22,6 +22,7 @@ from .core import (
     StewardLedger,
     canonical_sha256,
     seal_binding,
+    validate_binding,
 )
 from .fallback_dispatcher import (
     FallbackDispatchError,
@@ -32,6 +33,13 @@ from .engineering_campaign_packet import (
     EngineeringCampaignPacketError,
     build_engineering_campaign_packet,
     validate_engineering_campaign_packet,
+)
+from .engineering_campaign_runtime import (
+    EngineeringCampaignRuntimeController,
+    EngineeringCampaignRuntimeError,
+    build_engineering_campaign_runtime_binding,
+    validate_engineering_campaign_runtime_binding,
+    validate_engineering_campaign_runtime_terminal,
 )
 from .goal_selector import (
     GoalSelection,
@@ -52,6 +60,7 @@ __all__ = [
     "MissionConflictError",
     "StewardLedger",
     "canonical_sha256",
+    "validate_binding",
     "GoalSelection",
     "GoalSelectionError",
     "CpuSafeSupervisor",
@@ -72,6 +81,11 @@ __all__ = [
     "EngineeringCampaignPacketError",
     "build_engineering_campaign_packet",
     "validate_engineering_campaign_packet",
+    "EngineeringCampaignRuntimeController",
+    "EngineeringCampaignRuntimeError",
+    "build_engineering_campaign_runtime_binding",
+    "validate_engineering_campaign_runtime_binding",
+    "validate_engineering_campaign_runtime_terminal",
     "SupervisorAlreadyRunning",
     "SupervisorStateError",
 ]

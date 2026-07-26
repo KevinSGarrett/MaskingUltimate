@@ -1,0 +1,65 @@
+{
+  "schema_version": "maskfactory_self_hosted_autonomy_contract_freeze.v1",
+  "registry_id": "maskfactory_self_hosted_autonomy_contract_v1",
+  "frozen_at": "2026-07-26T19:36:56Z",
+  "incomplete_claim": "SELF_HOSTED_AUTONOMOUS_LLM_THROUGHPUT_INCOMPLETE",
+  "authority_files": [
+    {
+      "path": "Plan/27_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS_SPEC.md",
+      "sha256": "144a2eb768ae9025f29c2d4d3a1bb2338478109c51d6427db73ec2d12c5e8319"
+    },
+    {
+      "path": "Plan/Instructions/16_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS.md",
+      "sha256": "bed85e202823296cc36e7bffc53105856392acc05508416a5730be446a4d4e20"
+    },
+    {
+      "path": "Plan/SELF_HOSTED_AUTONOMOUS_LLM_PURSUING_GOAL_MESSAGE.md",
+      "sha256": "e2c911bf8b685a3421587d739d44687939556bc854a0157998c5f560ccf4955c"
+    },
+    {
+      "path": "Plan/Items/23_ITEMS_P6_SELF_HOSTED_AUTONOMOUS_LLM_OPERATIONS.md",
+      "sha256": "ac751c486a41c1884ec2cd0845bba37a40f385db98f12b1f2b1e2864d11b332c"
+    }
+  ],
+  "schema_files": [
+    {
+      "path": "configs/self_hosted_autonomy_campaign_telemetry_v1.schema.json",
+      "sha256": "1bffb871cdad1520cf7b21a579675b61c1fd6184c060dac293303b36f61eab55"
+    },
+    {
+      "path": "configs/self_hosted_autonomy_acceptance_v1.schema.json",
+      "sha256": "e38905c0bcbd7f2710765c9db4109d341ff18de204b34e059dd4a02359dc791d"
+    }
+  ],
+  "item_ids": [
+    "MF-P6-13.01",
+    "MF-P6-13.02",
+    "MF-P6-13.03",
+    "MF-P6-13.04",
+    "MF-P6-14.01",
+    "MF-P6-14.02",
+    "MF-P6-14.03",
+    "MF-P6-14.04",
+    "MF-P6-15.01",
+    "MF-P6-15.02",
+    "MF-P6-15.03",
+    "MF-P6-15.04",
+    "MF-P6-16.01",
+    "MF-P6-16.02",
+    "MF-P6-16.03",
+    "MF-P6-16.04",
+    "MF-P6-17.01",
+    "MF-P6-17.02",
+    "MF-P6-17.03",
+    "MF-P6-17.04",
+    "MF-P6-18.01",
+    "MF-P6-18.02",
+    "MF-P6-18.03",
+    "MF-P6-18.04",
+    "MF-P6-19.01",
+    "MF-P6-19.02",
+    "MF-P6-19.03",
+    "MF-P6-19.04"
+  ],
+  "registry_sha256": "d2a449b1da847a34afe5684f3c51abfab4fac1141128fe5df40f71593d4948bb"
+}

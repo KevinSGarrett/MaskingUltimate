@@ -1,0 +1,86 @@
+{
+  "authority_file_sha256": {
+    "Plan/28_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md": "a82a3844736b6558d7ce54b2fd2bec1ac3151d791acf700900b65b51ac65d947",
+    "Plan/Items/24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md": "e8a50512409a236e95a39e56b6a571e677d507fad7533e4a7fdd67802d9062c9",
+    "Plan/SELF_HOSTED_AUTONOMOUS_LLM_PURSUING_GOAL_MESSAGE.md": "47e3192565c04f0ff3f4a9881397355b230ba78abda5f5dfd1132412d81da713"
+  },
+  "completion_credit_claimed": false,
+  "entries": [
+    {
+      "artifacts": [
+        {
+          "bytes": 1042,
+          "location": "runtime_artifacts/self_hosted_llm_interrupted_recovery_drill_20260726T203051Z/persisted-terminal/binding.json",
+          "name": "persisted_terminal_binding",
+          "role": "input",
+          "sha256": "d90a814ff6385184413b89f1da2b18b2dd88fb322a7b8388635d1672ea91be96"
+        },
+        {
+          "bytes": 24576,
+          "location": "runtime_artifacts/self_hosted_llm_interrupted_recovery_drill_20260726T203051Z/interrupted_recovery.sqlite",
+          "name": "interrupted_recovery_sqlite",
+          "role": "runtime",
+          "sha256": "a845ef0d6c7ff78c291089ee14550de4f617958eb6a7f3c92193e05163b2d66e"
+        },
+        {
+          "bytes": 2539,
+          "location": "runtime_artifacts/self_hosted_llm_interrupted_recovery_drill_20260726T203051Z/interrupted_recovery_result.json",
+          "name": "interrupted_recovery_result",
+          "role": "output",
+          "sha256": "10368c1eb64c1b02dd7dca8e6ef570da3971342a08467d3fd7c26bbd5da5c8ea"
+        },
+        {
+          "bytes": 3846,
+          "location": "runtime_artifacts/self_hosted_llm_all_route_fault_drill_20260726T203135Z/route_fault_drill_receipt.json",
+          "name": "all_route_fault_drill_receipt",
+          "role": "terminal",
+          "sha256": "69984ecac0c7c3cd20f1b04d05fecdf51fbc45a144c0b8973716866cbc5db0a5"
+        },
+        {
+          "bytes": 479,
+          "location": "runtime_artifacts/self_hosted_llm_interrupted_recovery_drill_20260726T203051Z/persisted-terminal/terminal_receipt.json",
+          "name": "persisted_terminal_receipt",
+          "role": "terminal",
+          "sha256": "ed4aa9c7163eff6f265f8ca0446ec16315df7b4fa4b9e2b9d628633997ed3bdb"
+        },
+        {
+          "bytes": 246,
+          "location": "runtime_artifacts/self_hosted_llm_interrupted_recovery_drill_20260726T203051Z/persisted-terminal/release.json",
+          "name": "persisted_terminal_release",
+          "role": "release",
+          "sha256": "c234186fc9665c0e86663eb8057a350a13af65340868b99f6b3d0dae9ab5c5ed"
+        }
+      ],
+      "disposition": "accepted",
+      "limitations": [
+        "This accepted CPU-safe recovery drill proves no-reissue and release reconstruction only; it did not start a model, GPU process, broker reservation, or provider job.",
+        "The accepted 25-mission campaign remains separately indexed only after its Pod-resident terminal packet and exact source binding are locally reconstructable.",
+        "Visual qualification, the governed 100-mask campaign, mixed-campaign throughput, release, and ComfyUI adoption remain unclaimed."
+      ],
+      "locations": {
+        "compact_recovery_relative": [],
+        "pod_relative": [],
+        "repository_relative": [
+          "runtime_artifacts/self_hosted_llm_all_route_fault_drill_20260726T203135Z",
+          "runtime_artifacts/self_hosted_llm_interrupted_recovery_drill_20260726T203051Z"
+        ]
+      },
+      "parent_campaign_id": null,
+      "replay_command": "python tools/verify_steward_interrupted_recovery_drill.py --output-root runtime_artifacts/self_hosted_llm_interrupted_recovery_drill_20260726T203051Z",
+      "source": {
+        "commit_sha": "ed2dbbb806e7640c429110901a5c5da4eb47b3a6",
+        "path": "tools/run_steward_interrupted_recovery_drill.py",
+        "tree_sha": "4b0e560e4bb7bb5471d03440bfbfd6c6d315c2f4"
+      },
+      "supersedes": [],
+      "tracker_item": "MF-P6-19.02"
+    }
+  ],
+  "limitations": [
+    "The locator is a compact, no-secret index and cannot itself claim tracker completion.",
+    "Only entries whose current source, artifacts, and replay path are reconstructable are included."
+  ],
+  "schema_version": "maskfactory.completion_evidence_locator.v1",
+  "self_sha256": "18938365fca25588b990fc2c3a178b15dc69c4c75e49d3491c9f4a967d7f04a5",
+  "tracker_item": "MF-P6-21.01"
+}

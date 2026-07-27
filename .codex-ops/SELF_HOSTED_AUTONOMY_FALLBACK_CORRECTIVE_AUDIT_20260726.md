@@ -75,25 +75,42 @@ Only then, for one eligible immutable parent, may the controller perform
 submission, V7–V11 reissue, detached child job, or retry after an ambiguous
 outcome is permitted.
 
-### Unresolved mixed-parent controller binding
+### Mixed-parent controller binding — implemented control plane, no capacity credit
 
-The present fallback dispatcher can advance Serverless and OpenRouter
-concurrently only for different `mission_id` values. Its v1 work-item and
-adapter identities bind `mission_id` and `session_id`, but do not yet bind an
-explicit immutable `parent_campaign_id`, parent-contract hash, or child role.
-Consequently, it cannot prove that a Serverless child and a consolidated
-OpenRouter child are parts of the same parent outcome rather than unrelated
-coexisting work. This is a structural implementation gap, not a reason to
-relax the current legacy-recovery one-worker caps.
+Commit `e4793cca1b1ec4c1ccb6c993464d61debbb6ec16` implements the missing
+immutable parent/child boundary without changing the accepted canonical
+mission route replay state machine. V2 work items and advisory requests bind
+64-hex `parent_campaign_id`, parent-contract hash, declared child roles, and
+one derived child mission ID per role. A parent ledger in the same SQLite file
+enforces `UNIQUE(parent_campaign_id, child_role)` and unique child mission
+attachment under `BEGIN IMMEDIATE`; both metadata schema keys now bootstrap
+atomically. Existing canonical missions cannot be retroactively attached.
 
-The campaign controller must add and test immutable parent/child binding,
-per-parent child-role admission (one active child per role), terminal
-suppression, cost and route ledger reconciliation, and a mixed-parent test
-pair. The pair may permit one Serverless and one OpenRouter child below the
-same parent only after each has a distinct immutable child identity and the
-parent can reconcile both; it must never allow two children of the same role
-or turn an admission rejection into a retry. Until this exists and is proved
-with real parent work, `FALLBACK_CAPACITY_UNPROVEN` remains binding.
+A mixed parent may have exactly one `serverless_execution` child and one
+`consolidated_advisory` child; each has its own immutable identity and route.
+No second child of either role can enter, terminal `unavailable` cannot reopen
+the role, outcome-unknown vetoes parent closure, and terminal reconciliation
+requires a result hash. A manager-proven OpenRouter failure now seals its
+terminal receipt before token release, avoiding heartbeat rediscovery. Legacy
+unbound work items, requests, and prepared workloads are preserved but
+non-executable.
+
+The shared manager contract is CUI commit `4a1e3420`: new reserves require
+`--parent-campaign-id`, `--parent-contract-sha256`, and `--child-role`; reserve,
+submit, inspection, and reconciliation receipts carry and validate the
+canonical `comfyui.openrouter_parent_binding.v1` digest. The MaskFactory
+adapter carries that exact all-or-nothing binding end-to-end. Initial shared
+manager evidence is 45 focused tests plus Ruff/compileall; MaskFactory source
+evidence is 62 focused tests, while an independent local rerun passed 46
+parent-binding/producer/advisory tests and 31 supervisor/broker tests, with
+Ruff, compileall, and diff checks clean.
+
+This proves only CPU control-plane pairing and exact manager binding. It does
+not permit a successor from `decide` alone, relax the legacy owner-recovery
+1/1 worker caps, execute a provider job, or grant `FALLBACK_CAPACITY_UNPROVEN`
+any credit. One real parent must still retain host preflight, complete its
+source-hash-bound child work, apply/test/QA its result, and reconcile both
+children to terminal state.
 
 The RunPod browser is currently at an authorized-console sign-in page. No SSH
 or Jupyter bypass is authorized. Consequently, local tests prove the control
@@ -101,13 +118,20 @@ plane, not the actual execution host or capacity.
 
 ## OpenRouter and legacy-daemon containment
 
-OpenRouter remains governed, read-only advisory work. The shared manager's
-one-active-session and terminal-parent guard is committed in ComfyUI commit
-`a9be7460`; it permits one bounded parent-namespaced Qwen advisory, rejects a
-second active child before provider work, and blocks a child under a terminal
-consolidated parent. It cannot approve masks, replace strict VLM QA, or supply
-Serverless capacity credit. Last reconciled state was zero active reservations
-and zero reserved cost; no new reservation is authorized here.
+OpenRouter remains governed, read-only advisory work. ComfyUI commit
+`a9be7460` remains the conservative legacy containment guard for callers that
+cannot supply a parent contract. For new work, commit `4a1e3420` supersedes
+that coarse session-only identity with the all-or-nothing immutable
+parent/contract/role binding described above: one active child for a given
+parent+contract, terminal suppression until a new contract hash, and receipt
+verification across reserve, submit, inspection, and reconciliation. The
+MaskFactory adapter now supplies that exact binding; an admission rejection is
+terminal containment, never a retry job.
+
+Neither guard can approve masks, replace strict VLM QA, or provide Serverless
+capacity credit. The last reconciled shared-manager state was zero active
+reservations and zero reserved cost; this task is not authorized to create a
+new reservation.
 
 At the latest local observation, externally owned PID `52556` is still running
 the obsolete fallback supervisor with a disposable-worktree Serverless manager,

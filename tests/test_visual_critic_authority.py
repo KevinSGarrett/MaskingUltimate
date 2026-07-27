@@ -5,6 +5,8 @@ from datetime import UTC, datetime
 
 import pytest
 
+from maskfactory.authority import OperationalCertificateIssuanceError, bind_catalog_critic_quorum
+from maskfactory.intelligence import CriticQuorumDecision, critic_quorum_sha256
 from maskfactory.vlm.critic_authority import (
     CriticAuthorityError,
     certificate_sha256,
@@ -59,6 +61,19 @@ def _certificate(catalog: dict, model_index: int, role: str) -> dict:
     return certificate
 
 
+def _runtime_quorum(*, families: tuple[str, ...] = ("internvl", "qwen")) -> CriticQuorumDecision:
+    return CriticQuorumDecision(
+        status="pass",
+        independent_families=families,
+        counted_critic_ids=("critic-a", "critic-b"),
+        excluded_critic_ids=(),
+        family_verdicts={family: "pass" for family in families},
+        blockers=(),
+        explicit_uncertainty=False,
+        critic_evidence_sha256="c" * 64,
+    )
+
+
 def test_current_exact_independent_quorum_is_eligible_and_hash_bound() -> None:
     catalog = _promoted_catalog()
     certificates = [
@@ -68,6 +83,45 @@ def test_current_exact_independent_quorum_is_eligible_and_hash_bound() -> None:
     result = evaluate_pass_quorum(certificates, catalog, now=NOW, deterministic_hard_veto=False)
     assert result["status"] == "eligible"
     assert len(result["quorum_sha256"]) == 64
+
+
+def test_catalog_binding_becomes_part_of_the_runtime_quorum_hash() -> None:
+    catalog = _promoted_catalog()
+    runtime_quorum = _runtime_quorum()
+    bound = bind_catalog_critic_quorum(
+        runtime_quorum,
+        critic_catalog=catalog,
+        critic_role_certificates=(
+            _certificate(catalog, 5, "primary_visual_critic"),
+            _certificate(catalog, 3, "independent_juror"),
+        ),
+        decision_time="2026-07-21T22:00:00Z",
+    )
+    assert bound.catalog_sha256 == catalog["sha256"]
+    assert len(bound.role_certificate_sha256s) == 2
+    assert critic_quorum_sha256(bound) != critic_quorum_sha256(runtime_quorum)
+
+
+def test_catalog_binding_rejects_unpromoted_or_family_mismatched_runtime_quorum() -> None:
+    catalog = _promoted_catalog()
+    certificates = (
+        _certificate(catalog, 5, "primary_visual_critic"),
+        _certificate(catalog, 3, "independent_juror"),
+    )
+    with pytest.raises(OperationalCertificateIssuanceError, match="runtime_quorum_mismatch"):
+        bind_catalog_critic_quorum(
+            _runtime_quorum(families=("internvl", "not-qwen")),
+            critic_catalog=catalog,
+            critic_role_certificates=certificates,
+            decision_time="2026-07-21T22:00:00Z",
+        )
+    with pytest.raises(OperationalCertificateIssuanceError, match="role_pair_invalid"):
+        bind_catalog_critic_quorum(
+            _runtime_quorum(),
+            critic_catalog=load_catalog(),
+            critic_role_certificates=(),
+            decision_time="2026-07-21T22:00:00Z",
+        )
 
 
 def test_deterministic_hard_veto_precedes_valid_critic_quorum() -> None:

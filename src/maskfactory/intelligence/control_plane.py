@@ -517,6 +517,8 @@ class CriticQuorumDecision:
     critic_evidence_sha256: str
     may_clear_hard_veto: bool = False
     may_issue_certificate: bool = False
+    catalog_sha256: str | None = None
+    role_certificate_sha256s: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         if self.status not in {"pass", "autonomous_abstention"}:
@@ -528,6 +530,21 @@ class CriticQuorumDecision:
         if not set(self.family_verdicts.values()) <= {"pass", "fail", "uncertain"}:
             raise IntelligenceControlError("critic family verdict is invalid")
         _require_sha(self.critic_evidence_sha256, "critic_evidence_sha256")
+        has_catalog_binding = self.catalog_sha256 is not None
+        if has_catalog_binding != bool(self.role_certificate_sha256s):
+            raise IntelligenceControlError("critic catalog binding is incomplete")
+        if has_catalog_binding:
+            _require_sha(self.catalog_sha256, "catalog_sha256")
+            if (
+                len(self.role_certificate_sha256s) != 2
+                or tuple(sorted(set(self.role_certificate_sha256s)))
+                != self.role_certificate_sha256s
+            ):
+                raise IntelligenceControlError(
+                    "critic catalog role certificate binding is not an exact pair"
+                )
+            for certificate_sha256 in self.role_certificate_sha256s:
+                _require_sha(certificate_sha256, "role_certificate_sha256")
 
 
 def evaluate_critic_quorum(
@@ -639,7 +656,7 @@ def evaluate_critic_quorum(
 
 
 def critic_quorum_document(decision: CriticQuorumDecision) -> dict[str, Any]:
-    return {
+    document = {
         "control_version": CONTROL_VERSION,
         "status": decision.status,
         "independent_families": list(decision.independent_families),
@@ -652,6 +669,10 @@ def critic_quorum_document(decision: CriticQuorumDecision) -> dict[str, Any]:
         "may_clear_hard_veto": decision.may_clear_hard_veto,
         "may_issue_certificate": decision.may_issue_certificate,
     }
+    if decision.catalog_sha256 is not None:
+        document["catalog_sha256"] = decision.catalog_sha256
+        document["role_certificate_sha256s"] = list(decision.role_certificate_sha256s)
+    return document
 
 
 def critic_quorum_sha256(decision: CriticQuorumDecision) -> str:

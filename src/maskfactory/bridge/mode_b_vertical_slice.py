@@ -38,6 +38,7 @@ from maskfactory.authority.complete_map_hard_veto import (
 )
 from maskfactory.authority.operational_certificate import (
     OperationalCertificateIssuanceError,
+    bind_catalog_critic_quorum,
     canonical_decoded_raster_sha256,
     issue_operational_autonomy_certificate,
 )
@@ -68,6 +69,8 @@ from maskfactory.validation import (
     canonical_document_sha256,
     canonical_json_bytes,
 )
+from maskfactory.vlm.critic_authority import certificate_sha256
+from maskfactory.vlm.critic_catalog import canonical_sha256, load_catalog
 
 POLICY_PATH = Path(__file__).parents[3] / "configs" / "mode_b_vertical_slice_policy.yaml"
 SCHEMA_PATH = Path(__file__).parents[1] / "schemas" / "mode_b_vertical_slice_evidence.schema.json"
@@ -119,6 +122,50 @@ def _sha256_bytes(raw: bytes) -> str:
 
 def _sha256_file(path: Path) -> str:
     return _sha256_bytes(path.read_bytes())
+
+
+def _fixture_catalog_critic_authority() -> tuple[dict[str, Any], tuple[dict[str, Any], ...]]:
+    """Build in-memory-only role evidence for the deterministic fixture slice.
+
+    This deliberately does not promote the repository catalog or qualify a
+    live model.  It lets the fixture exercise the same issuance boundary while
+    retaining the real catalog's no-qualified-critic state.
+    """
+
+    catalog = copy.deepcopy(load_catalog())
+    assignments = ((5, "primary_visual_critic"), (3, "independent_juror"))
+    certificates: list[dict[str, Any]] = []
+    for index, role_id in assignments:
+        model = catalog["models"][index]
+        model["lifecycle"] = "promoted"
+        model["assigned_roles"] = [role_id]
+        model["artifact_sha256"] = f"{index + 1:x}" * 64
+        model["calibration"] = {"status": "pass", "report_sha256": f"{index + 5:x}" * 64}
+        model["private_endpoint"] = f"http://127.0.0.1:{18100 + index}"
+    catalog["sha256"] = canonical_sha256(
+        {key: value for key, value in catalog.items() if key != "sha256"}
+    )
+    for index, role_id in assignments:
+        model = catalog["models"][index]
+        certificate = {
+            "schema_version": "1.0.0",
+            "certificate_id": f"fixture-cert-{model['model_id']}",
+            "role_id": role_id,
+            "model_id": model["model_id"],
+            "family_id": model["family_id"],
+            "catalog_sha256": catalog["sha256"],
+            "revision": model["revision"],
+            "artifact_sha256": model["artifact_sha256"],
+            "calibration_report_sha256": model["calibration"]["report_sha256"],
+            "prompt_sha256": hashlib.sha256(f"fixture-prompt:{role_id}".encode()).hexdigest(),
+            "runtime_sha256": hashlib.sha256(f"fixture-runtime:{role_id}".encode()).hexdigest(),
+            "issued_at": "2026-07-18T00:00:00Z",
+            "qualified_until": "2026-07-20T00:00:00Z",
+            "status": "pass",
+        }
+        certificate["certificate_sha256"] = certificate_sha256(certificate)
+        certificates.append(certificate)
+    return catalog, tuple(certificates)
 
 
 def _policy() -> dict[str, Any]:
@@ -621,17 +668,26 @@ def _prepare_certification_bundle(
         signing_key_set_sha256=key_set,
     )
     certificate["revocation"].update(checked_at="2026-07-19T00:00:05Z", is_revoked=False)
+    critic_catalog, critic_role_certificates = _fixture_catalog_critic_authority()
     critic = CriticQuorumDecision(
         "pass",
-        ("slice-critic-a", "slice-critic-b"),
+        ("internvl", "qwen"),
         ("a", "b"),
         (),
-        {"slice-critic-a": "pass", "slice-critic-b": "pass"},
+        {"internvl": "pass", "qwen": "pass"},
         (),
         False,
         hashlib.sha256(b"mode-b-slice-critics").hexdigest(),
     )
-    certificate["qa_evidence"]["critic_report_sha256"] = critic_quorum_sha256(critic)
+    catalog_bound_critic = bind_catalog_critic_quorum(
+        critic,
+        critic_catalog=critic_catalog,
+        critic_role_certificates=critic_role_certificates,
+        decision_time="2026-07-19T00:00:05Z",
+    )
+    certificate["qa_evidence"]["critic_report_sha256"] = critic_quorum_sha256(
+        catalog_bound_critic
+    )
     policy = _policy_report(root, certificate, unstable=unstable_policy)
     certificate = bind_operational_policy_report(certificate, policy)
     veto = _veto_report(certificate, context, fail_veto_qc)
@@ -647,6 +703,8 @@ def _prepare_certification_bundle(
         "policy": policy,
         "veto": veto,
         "critic": critic,
+        "critic_catalog": critic_catalog,
+        "critic_role_certificates": critic_role_certificates,
         "authoritative": {
             field: copy.deepcopy(certificate[field]) for field in _AUTHORITATIVE_FIELDS
         },
@@ -807,6 +865,8 @@ def submit_exact_prediction_certification_transaction(
             complete_map_hard_veto_report=certified_prep["veto"],
             trusted_hard_veto_evaluators={_VETO_ID: _VETO_SHA256},
             critic_quorum_decision=certified_prep["critic"],
+            critic_catalog=certified_prep["critic_catalog"],
+            critic_role_certificates=certified_prep["critic_role_certificates"],
             operational_policy_report=certified_prep["policy"],
             trusted_operational_policy_evaluators={_ISSUER_ID: _ISSUER_SHA256},
         )
@@ -857,6 +917,8 @@ def submit_exact_prediction_certification_transaction(
             complete_map_hard_veto_report=abstain_prep["veto"],
             trusted_hard_veto_evaluators={_VETO_ID: _VETO_SHA256},
             critic_quorum_decision=abstain_prep["critic"],
+            critic_catalog=abstain_prep["critic_catalog"],
+            critic_role_certificates=abstain_prep["critic_role_certificates"],
             operational_policy_report=abstain_prep["policy"],
             trusted_operational_policy_evaluators={_ISSUER_ID: _ISSUER_SHA256},
         )

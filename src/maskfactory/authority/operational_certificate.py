@@ -11,9 +11,10 @@ from __future__ import annotations
 import base64
 import copy
 import hashlib
+from dataclasses import replace
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
 import numpy as np
 from cryptography.hazmat.primitives import serialization
@@ -27,6 +28,7 @@ from maskfactory.validation import (
     canonical_json_bytes,
     validate_operational_autonomy_certificate,
 )
+from maskfactory.vlm.critic_authority import CriticAuthorityError, evaluate_pass_quorum
 
 from .complete_map_hard_veto import validate_complete_map_report_binding
 from .operational_policy import validate_operational_policy_report_binding
@@ -50,6 +52,67 @@ class OperationalCertificateIssuanceError(ValueError):
     def __init__(self, *codes: str):
         self.codes = tuple(sorted(set(codes))) or ("issuance_rejected",)
         super().__init__("operational certificate issuance rejected: " + ", ".join(self.codes))
+
+
+def bind_catalog_critic_quorum(
+    critic_quorum_decision: CriticQuorumDecision,
+    *,
+    critic_catalog: Mapping[str, Any],
+    critic_role_certificates: Sequence[Mapping[str, Any]],
+    decision_time: str,
+    deterministic_hard_veto: bool = False,
+) -> CriticQuorumDecision:
+    """Bind an operational quorum to two current promoted catalog roles.
+
+    The caller's runtime quorum remains independently responsible for actual
+    observations and citations.  This adapter adds the catalog's exact role
+    certificates to that quorum's signed hash; it never treats a catalog entry
+    as a visual verdict or as permission to clear a deterministic veto.
+    """
+
+    at_time = _parse_timestamp(decision_time)
+    if at_time is None:
+        raise OperationalCertificateIssuanceError("critic_catalog_decision_time_invalid")
+    if (
+        critic_quorum_decision.catalog_sha256 is not None
+        or critic_quorum_decision.role_certificate_sha256s
+    ):
+        raise OperationalCertificateIssuanceError("critic_catalog_quorum_already_bound")
+    declared_roles = {str(certificate.get("role_id")) for certificate in critic_role_certificates}
+    if len(critic_role_certificates) != 2 or declared_roles != {
+        "primary_visual_critic",
+        "independent_juror",
+    }:
+        raise OperationalCertificateIssuanceError("critic_catalog_role_pair_invalid")
+    try:
+        catalog_quorum = evaluate_pass_quorum(
+            critic_role_certificates,
+            critic_catalog,
+            now=at_time,
+            deterministic_hard_veto=deterministic_hard_veto,
+        )
+    except CriticAuthorityError as exc:
+        raise OperationalCertificateIssuanceError("critic_catalog_authority_invalid") from exc
+    if catalog_quorum["status"] != "eligible":
+        raise OperationalCertificateIssuanceError(
+            f"critic_catalog_{catalog_quorum['reason']}"
+        )
+    certificate_families = tuple(
+        sorted({str(certificate["family_id"]) for certificate in critic_role_certificates})
+    )
+    if (
+        critic_quorum_decision.status != "pass"
+        or critic_quorum_decision.independent_families != certificate_families
+        or set(critic_quorum_decision.family_verdicts.values()) != {"pass"}
+        or critic_quorum_decision.blockers
+        or critic_quorum_decision.explicit_uncertainty
+    ):
+        raise OperationalCertificateIssuanceError("catalog_critic_runtime_quorum_mismatch")
+    return replace(
+        critic_quorum_decision,
+        catalog_sha256=str(catalog_quorum["catalog_sha256"]),
+        role_certificate_sha256s=tuple(catalog_quorum["certificate_sha256s"]),
+    )
 
 
 def _parse_timestamp(value: Any) -> datetime | None:
@@ -236,6 +299,8 @@ def issue_operational_autonomy_certificate(
     complete_map_hard_veto_report: Mapping[str, Any],
     trusted_hard_veto_evaluators: Mapping[str, str],
     critic_quorum_decision: CriticQuorumDecision,
+    critic_catalog: Mapping[str, Any],
+    critic_role_certificates: Sequence[Mapping[str, Any]],
     operational_policy_report: Mapping[str, Any],
     trusted_operational_policy_evaluators: Mapping[str, str],
 ) -> dict[str, Any]:
@@ -336,19 +401,25 @@ def issue_operational_autonomy_certificate(
     )
     if operational_policy_codes:
         raise OperationalCertificateIssuanceError(*operational_policy_codes)
+    catalog_bound_quorum = bind_catalog_critic_quorum(
+        critic_quorum_decision,
+        critic_catalog=critic_catalog,
+        critic_role_certificates=critic_role_certificates,
+        decision_time=decision_time,
+    )
     critic_codes: list[str] = []
     if (
-        critic_quorum_decision.status != "pass"
-        or len(critic_quorum_decision.independent_families) < 2
-        or set(critic_quorum_decision.family_verdicts.values()) != {"pass"}
-        or critic_quorum_decision.blockers
-        or critic_quorum_decision.explicit_uncertainty
+        catalog_bound_quorum.status != "pass"
+        or len(catalog_bound_quorum.independent_families) < 2
+        or set(catalog_bound_quorum.family_verdicts.values()) != {"pass"}
+        or catalog_bound_quorum.blockers
+        or catalog_bound_quorum.explicit_uncertainty
     ):
         critic_codes.append("independent_critic_quorum_failed")
-    if critic_quorum_decision.may_clear_hard_veto or critic_quorum_decision.may_issue_certificate:
+    if catalog_bound_quorum.may_clear_hard_veto or catalog_bound_quorum.may_issue_certificate:
         critic_codes.append("critic_authority_escalation")
     if document.get("qa_evidence", {}).get("critic_report_sha256") != critic_quorum_sha256(
-        critic_quorum_decision
+        catalog_bound_quorum
     ):
         critic_codes.append("critic_report_hash_mismatch")
     if critic_codes:

@@ -8,6 +8,7 @@ from .complete_map_hard_veto import (
 )
 from .operational_certificate import (
     OperationalCertificateIssuanceError,
+    bind_catalog_critic_quorum,
     canonical_decoded_raster_sha256,
     issue_operational_autonomy_certificate,
 )
@@ -32,6 +33,7 @@ __all__ = [
     "OperationalCertificateIssuanceError",
     "OperationalInvalidationError",
     "OperationalPolicyError",
+    "bind_catalog_critic_quorum",
     "bind_operational_policy_report",
     "bind_complete_map_report",
     "build_operational_policy_replay_observation",

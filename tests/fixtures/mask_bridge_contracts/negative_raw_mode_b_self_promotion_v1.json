@@ -1,0 +1,25 @@
+{
+  "schema": "mask_acquisition_receipt",
+  "mutations": [
+    {
+      "pointer": "/authority/authority_state",
+      "value": "draft"
+    },
+    {
+      "pointer": "/truth_tier",
+      "value": "machine_candidate"
+    },
+    {
+      "pointer": "/use_eligibility/required_authority_state",
+      "value": "certified"
+    },
+    {
+      "pointer": "/use_eligibility/exact_use_scope",
+      "value": "production_conditioning"
+    },
+    {
+      "pointer": "/use_eligibility/eligible",
+      "value": true
+    }
+  ]
+}

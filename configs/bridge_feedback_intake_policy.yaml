@@ -1,0 +1,57 @@
+schema_version: 1.0.0
+policy_id: maskfactory-bridge-feedback-intake-v1
+policy_version: 1.0.0
+reason_codes:
+- eligible
+- feedback_document_invalid
+- feedback_forgery
+- stale_parent
+- parent_evidence_missing
+- provider_binding_drift
+- subject_binding_drift
+- policy_binding_drift
+- protected_scope_mismatch
+- output_binding_drift
+- transform_binding_drift
+- qa_failure_id_mismatch
+- release_binding_drift
+- capability_binding_drift
+- certificate_binding_drift
+- source_binding_drift
+- authority_binding_drift
+- semantic_profile_drift
+- revocation_active
+- feedback_id_body_collision
+- authentication_nonce_replay
+- duplicate_hypothesis
+- immaterial_hypothesis
+- attempt_cap_exhausted
+- no_progress_exhausted
+- conflicting_observation
+- unauthorized_write_attempt
+- parent_mutation_blocked
+decision_outcomes:
+- rejected
+- mining_only
+- candidate_created
+- quarantine_and_abstain
+- idempotent_replay
+candidate_actions:
+- mode_b_live_refine
+- mode_b_live_predict
+mining_actions:
+- package_revalidation
+- provider_rebenchmark
+quarantine_actions:
+- quarantine_and_abstain
+max_hypothesis_history: 32
+mining_corpus_gold_forbidden: true
+parent_mutation_forbidden: true
+truth_creation_forbidden: true
+forbidden_write_targets:
+- parent_package
+- parent_certificate
+- parent_mask
+- truth_tier
+- gold_corpus
+policy_sha256: d9b6dc73d38959b69bf5140cf316190ced22d110497a2c9561eb4c95a970c9c3

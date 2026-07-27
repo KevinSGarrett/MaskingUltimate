@@ -1,0 +1,459 @@
+{
+  "schema_version": "1.0.0",
+  "record_type": "mask_acquisition_request",
+  "request_id": "mfareq_cccccccccccccccccccccccc",
+  "project_id": "comfy-main-fixture",
+  "run_id": "run-fixture",
+  "correlation_id": "correlation-fixture",
+  "job_id": "job-fixture",
+  "pass_id": "pass-mask-fixture",
+  "attempt_id": "attempt-2",
+  "attempt_number": 2,
+  "hypothesis": {
+    "hypothesis_id": "hypothesis-refine-boundary",
+    "hypothesis_class": "boundary",
+    "material_change_sha256": "b20e7e67c0a9c77b98114df819eca501da9645c9c288cb602f6e582f59266692",
+    "retry_kind": "quality_hypothesis"
+  },
+  "idempotency_key": "fixture:mode_b_live_refine:attempt:2",
+  "created_at": "2026-07-17T00:00:00Z",
+  "deadline_at": "2026-07-17T00:01:00Z",
+  "authentication": {
+    "principal_id": "fixture:consumer_request",
+    "authority": "Comfy_UI_Main",
+    "role": "consumer_request",
+    "nonce": "request-mode_b_live_refine-nonce-0001",
+    "issued_at": "2026-07-16T23:59:59Z",
+    "expires_at": "2026-07-17T00:02:00Z",
+    "replay_window_seconds": 300,
+    "credential_material_included": false
+  },
+  "trust_binding": {
+    "key_set_id": "comfy-main-fixture-trust-set",
+    "key_set_version": "1.0.0",
+    "key_set_sha256": "39ccd77fccd407c90638280a28584c716fde4d98197754dc4cdb96d4eabd79f5",
+    "key_role": "consumer_request",
+    "signing_key_id": "comfy-main-request-fixture",
+    "signing_public_key_sha256": "72456720412037a6b339f884ce6d91bb4cc163a7dc3e4c58c658e6c2097b92a2",
+    "rotation_policy_sha256": "26e69fdc949c88a5d387e72c6fa5ff302be3c6f14a39bf29cbdfc2c0234c96c8",
+    "revocation_policy_sha256": "0d0a427e07e5071102bc413ee4e863518ad75c7b52316556541f8e4c61bb5e69"
+  },
+  "canonicalization": {
+    "algorithm": "maskfactory-canonical-json-v1",
+    "excluded_top_level_fields": [
+      "request_payload_sha256",
+      "signature"
+    ]
+  },
+  "access_mode": "mode_b_live_refine",
+  "media_scope": {
+    "scope_kind": "still_image",
+    "sequence_id": "sequence-fixture",
+    "shot_id": "shot-fixture",
+    "take_id": "take-fixture",
+    "source_video_sha256": null,
+    "decoded_frame_sha256": null,
+    "frame_index": null,
+    "pts": null,
+    "timebase_numerator": null,
+    "timebase_denominator": null,
+    "timestamp_ns": null,
+    "frame_span": null,
+    "neighbor_frames": []
+  },
+  "source": {
+    "artifact_id": "source-fixture",
+    "encoded_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+    "decoded_pixel_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+    "decoder": {
+      "decoder_id": "pillow",
+      "version": "11.0.0",
+      "binary_sha256": "7ce1102f71f01d4a593640f8da4d9f97edf8886dcb477c1ef2c491d56b15f347"
+    },
+    "exif_orientation": 1,
+    "orientation_applied": true,
+    "width": 512,
+    "height": 512,
+    "channel_layout": "RGB",
+    "alpha_mode": "none",
+    "bit_depth": 8,
+    "dtype": "uint8",
+    "color_space": "sRGB",
+    "icc_profile_sha256": null,
+    "color_transform": {
+      "transform_id": "srgb-canonical-v1",
+      "transform_sha256": "51858c0854529b1c5df573d43f54a39b73617435933629f3a1cc6cd93403dc09"
+    },
+    "frame_extraction": null,
+    "coordinate_space": "source_pixel"
+  },
+  "subject": {
+    "scene_id": "scene-fixture",
+    "shot_id": "shot-fixture",
+    "take_id": "take-fixture",
+    "character_id": "character-fixture",
+    "character_revision": "1.0.0",
+    "scene_instance_id": "scene-instance-001",
+    "canonical_person_id": "person-canonical-001",
+    "person_index": 0,
+    "provider_person_index": 1,
+    "assignment_evidence": {
+      "mapping_id": "assignment-fixture",
+      "mapping_sha256": "41d25c13fee1458a9de40e0d91ca004fd3e18b4a90fe843db3113a049e8a6450",
+      "status": "unambiguous",
+      "bbox_sha256": "8991a87047eac75f89d845dcd6b1a65fbcc714cc1c57aea2e2934f06baac2cfe",
+      "skeleton_sha256": null,
+      "silhouette_sha256": null,
+      "depth_sha256": null
+    }
+  },
+  "mask_intents": [
+    {
+      "intent_id": "intent-left-hand",
+      "label": "left_hand",
+      "artifact_kind": "atomic_visible",
+      "purpose": "conditioning",
+      "target_coordinate_space": "output_pixel",
+      "target_region_ids": [
+        "target-left-hand"
+      ],
+      "protected_region_ids": [
+        "protected-other-torso"
+      ]
+    }
+  ],
+  "target_regions": [
+    {
+      "region_id": "target-left-hand",
+      "artifact_id": "control-left-hand",
+      "artifact_identity_sha256": "146e4f92fdd082be321294bdb2648622e5248cffb79872bbda6387e15e593ff1",
+      "encoded_sha256": "585c52455572006d92961928de95c5ecfa7d0943d1934fda55b7aae20257373a",
+      "decoded_mask_sha256": "5e2c8395bd470f72faddbecad66188e350f52ce4811e065258783011e23c5c2a",
+      "format": "PNG",
+      "channel_layout": "L",
+      "dtype": "uint8",
+      "allowed_values": "binary_0_255",
+      "mask_type": "roi_control",
+      "artifact_kind": "atomic_visible",
+      "visibility": "visible",
+      "empty_semantics": "forbidden",
+      "content_summary": {
+        "bounds": {
+          "x": 100,
+          "y": 100,
+          "width": 10,
+          "height": 10
+        },
+        "area_pixels": 100,
+        "area_ppm": 381,
+        "is_empty": false
+      },
+      "source_decoded_pixel_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+      "owner": {
+        "owner_kind": "character_instance",
+        "entity_id": "character-fixture",
+        "scene_instance_id": "scene-instance-001",
+        "canonical_person_id": "person-canonical-001",
+        "person_index": 0
+      },
+      "label": "left_hand",
+      "coordinate_space": "output_pixel",
+      "width": 512,
+      "height": 512,
+      "transform_chain_sha256": "361555fb909a4648d3c4efc6e65458d9f4e50c7bd711b7aabc4495c1b09fae1f",
+      "transform_step_sequence": 0,
+      "required_minimum_authority_state": "draft",
+      "authority_binding": {
+        "authority_state": "draft",
+        "issuer_kind": "consumer_advisory",
+        "certificate_kind": "none",
+        "certificate_id": null,
+        "certificate_sha256": null,
+        "certificate_status": "none",
+        "certificate_scope_sha256": null,
+        "certificate_exact_scope_match": false,
+        "revocation_checked_at": null,
+        "revocation_checkpoint_sha256": null
+      }
+    }
+  ],
+  "protected_regions": [
+    {
+      "region_id": "protected-other-torso",
+      "artifact_id": "protected-other-torso",
+      "artifact_identity_sha256": "cf3b4259e0c656714a9207edd38f16bcf578f322dae682c7f4b4e41f45b0a403",
+      "encoded_sha256": "78530054498b4103cab3a5adcd5cd2d0df8b7414ba639308dd3e8d089ccac00c",
+      "decoded_mask_sha256": "04b6153ce9dedd821239fb00a93f334f677599329443ba7cce707717bdb3fbbb",
+      "format": "PNG",
+      "channel_layout": "L",
+      "dtype": "uint8",
+      "allowed_values": "binary_0_255",
+      "mask_type": "atomic",
+      "artifact_kind": "protected_qa",
+      "visibility": "visible",
+      "empty_semantics": "forbidden",
+      "content_summary": {
+        "bounds": {
+          "x": 100,
+          "y": 100,
+          "width": 10,
+          "height": 10
+        },
+        "area_pixels": 100,
+        "area_ppm": 381,
+        "is_empty": false
+      },
+      "source_decoded_pixel_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+      "owner": {
+        "owner_kind": "character_instance",
+        "entity_id": "character-fixture-002",
+        "scene_instance_id": "scene-instance-002",
+        "canonical_person_id": "person-canonical-002",
+        "person_index": 1
+      },
+      "label": "torso",
+      "coordinate_space": "output_pixel",
+      "width": 512,
+      "height": 512,
+      "transform_chain_sha256": "361555fb909a4648d3c4efc6e65458d9f4e50c7bd711b7aabc4495c1b09fae1f",
+      "transform_step_sequence": 0,
+      "required_minimum_authority_state": "certified",
+      "authority_binding": {
+        "authority_state": "certified",
+        "issuer_kind": "maskfactory_autonomous",
+        "certificate_kind": "exact_serving_route_output",
+        "certificate_id": "mfac_aaaaaaaaaaaaaaaaaaaaaaaa",
+        "certificate_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "certificate_status": "active",
+        "certificate_scope_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "certificate_exact_scope_match": true,
+        "revocation_checked_at": "2026-07-17T00:00:05Z",
+        "revocation_checkpoint_sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+      }
+    }
+  ],
+  "protected_owner_roster": [
+    {
+      "owner": {
+        "owner_kind": "character_instance",
+        "entity_id": "character-fixture",
+        "scene_instance_id": "scene-instance-001",
+        "canonical_person_id": "person-canonical-001",
+        "person_index": 0
+      },
+      "relationship": "self",
+      "authorization_policy_id": "owner-policy-v1",
+      "authorization_policy_sha256": "17c576801cd2a0838c231937e99dd4e002106aa9ba8765ea98836c5e1381fb21"
+    },
+    {
+      "owner": {
+        "owner_kind": "character_instance",
+        "entity_id": "character-fixture-002",
+        "scene_instance_id": "scene-instance-002",
+        "canonical_person_id": "person-canonical-002",
+        "person_index": 1
+      },
+      "relationship": "other_character",
+      "authorization_policy_id": "owner-policy-v1",
+      "authorization_policy_sha256": "17c576801cd2a0838c231937e99dd4e002106aa9ba8765ea98836c5e1381fb21"
+    }
+  ],
+  "transform_chain": {
+    "chain_id": "fixture-transform-v1",
+    "chain_sha256": "361555fb909a4648d3c4efc6e65458d9f4e50c7bd711b7aabc4495c1b09fae1f",
+    "source": {
+      "coordinate_space": "source_pixel",
+      "width": 512,
+      "height": 512
+    },
+    "output": {
+      "coordinate_space": "output_pixel",
+      "width": 512,
+      "height": 512
+    },
+    "steps": [
+      {
+        "sequence": 0,
+        "operation": "project",
+        "input": {
+          "coordinate_space": "source_pixel",
+          "width": 512,
+          "height": 512
+        },
+        "output": {
+          "coordinate_space": "output_pixel",
+          "width": 512,
+          "height": 512
+        },
+        "parameters": {
+          "parameter_type": "project",
+          "matrix_3x3": [
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1
+          ],
+          "clip_policy": "clip",
+          "rounding": "half_even"
+        },
+        "inverse_strategy": "exact_inverse",
+        "step_sha256": "7ff6019a4c399360f2c019f02f1d9c80a0f0a1eb324dee2ef3d4134047ec13c3"
+      }
+    ],
+    "roundtrip_policy": {
+      "required": true,
+      "maximum_error_px": 0.01,
+      "reject_noninvertible": true
+    }
+  },
+  "compatibility": {
+    "bridge_contract": "maskfactory-comfyui-bridge/1.0",
+    "release_id": "mfr_20260717_012345abcdef",
+    "capability_snapshot_id": "mfcap_0123456789abcdef01234567",
+    "capability_snapshot_sha256": "0515eaeff6a2242c1877d7ae7bce072736a8cebddb249bf28b25e119857fd230",
+    "api_contract": "maskfactory-api/1.0",
+    "package_format": "maskfactory-package/1.0",
+    "ontology_version": "body_parts_v1",
+    "ontology_sha256": "86883200c40c642d7c9813b52a0affa70d92dfff56e9a9eab0751f4b6b8f0ee3"
+  },
+  "minimum_authority_state": "certified",
+  "accepted_authority": {
+    "issuer_kinds": [
+      "maskfactory_autonomous"
+    ],
+    "certificate_kinds": [
+      "exact_serving_route_output"
+    ],
+    "required_certificate_scope_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+    "require_active_certificate": true,
+    "require_exact_scope_match": true
+  },
+  "resource_envelope": {
+    "maximum_runtime_ms": 5000,
+    "maximum_queue_ms": 1000,
+    "maximum_vram_mb": 8192,
+    "maximum_ram_mb": 16384,
+    "maximum_output_bytes": 1000000,
+    "priority": "normal",
+    "allow_cpu_fallback": false
+  },
+  "retry_policy": {
+    "maximum_attempts": 3,
+    "retry_only_typed_transient_errors": true,
+    "allow_silent_fallback": false
+  },
+  "mode_payload": {
+    "payload_type": "mode_b_live_refine",
+    "parent_artifacts": [
+      {
+        "artifact_id": "output-left-hand-predict",
+        "artifact_identity_sha256": "e281e0a74e8c3fda742d2f97c0d279667271ee3cfa0d5debbe4e014c3a59e191",
+        "encoded_sha256": "2be342ef1f62dbacb8312668e87f7c785807574c49f028333916bf831b5799a0",
+        "decoded_mask_sha256": "d1f4563258e5a03657610bc03f09e24109da5b5c393e624fca066beb5af6d226",
+        "source_decoded_pixel_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+        "owner": {
+          "owner_kind": "character_instance",
+          "entity_id": "character-fixture",
+          "scene_instance_id": "scene-instance-001",
+          "canonical_person_id": "person-canonical-001",
+          "person_index": 0
+        },
+        "label": "left_hand",
+        "mask_type": "atomic",
+        "coordinate_space": "output_pixel",
+        "width": 512,
+        "height": 512,
+        "transform_chain_sha256": "361555fb909a4648d3c4efc6e65458d9f4e50c7bd711b7aabc4495c1b09fae1f",
+        "transform_step_sequence": 0,
+        "authority_state": "certified",
+        "truth_tier": "operationally_certified_artifact",
+        "certificate_kind": "exact_serving_route_output",
+        "certificate_id": "mfac_0123456789abcdef01234567",
+        "certificate_sha256": "51afa9290cb54f3055a415938b9bcb45d4b5bcf02ec56bf8a4db0ca1d3a4416c",
+        "certificate_status": "active",
+        "certificate_scope_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "certificate_exact_scope_match": true,
+        "revocation_checked_at": "2026-07-17T00:00:05Z",
+        "revocation_checkpoint_sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+      }
+    ],
+    "prior_mask": {
+      "region_id": "target-left-hand",
+      "artifact_id": "output-left-hand-predict",
+      "artifact_identity_sha256": "e281e0a74e8c3fda742d2f97c0d279667271ee3cfa0d5debbe4e014c3a59e191",
+      "encoded_sha256": "2be342ef1f62dbacb8312668e87f7c785807574c49f028333916bf831b5799a0",
+      "decoded_mask_sha256": "d1f4563258e5a03657610bc03f09e24109da5b5c393e624fca066beb5af6d226",
+      "format": "PNG",
+      "channel_layout": "L",
+      "dtype": "uint8",
+      "allowed_values": "binary_0_255",
+      "mask_type": "atomic",
+      "artifact_kind": "atomic_visible",
+      "visibility": "visible",
+      "empty_semantics": "forbidden",
+      "content_summary": {
+        "bounds": {
+          "x": 100,
+          "y": 100,
+          "width": 10,
+          "height": 10
+        },
+        "area_pixels": 100,
+        "area_ppm": 381,
+        "is_empty": false
+      },
+      "source_decoded_pixel_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+      "owner": {
+        "owner_kind": "character_instance",
+        "entity_id": "character-fixture",
+        "scene_instance_id": "scene-instance-001",
+        "canonical_person_id": "person-canonical-001",
+        "person_index": 0
+      },
+      "label": "left_hand",
+      "coordinate_space": "output_pixel",
+      "width": 512,
+      "height": 512,
+      "transform_chain_sha256": "361555fb909a4648d3c4efc6e65458d9f4e50c7bd711b7aabc4495c1b09fae1f",
+      "transform_step_sequence": 0,
+      "required_minimum_authority_state": "certified",
+      "authority_binding": {
+        "authority_state": "certified",
+        "issuer_kind": "maskfactory_autonomous",
+        "certificate_kind": "exact_serving_route_output",
+        "certificate_id": "mfac_0123456789abcdef01234567",
+        "certificate_sha256": "51afa9290cb54f3055a415938b9bcb45d4b5bcf02ec56bf8a4db0ca1d3a4416c",
+        "certificate_status": "active",
+        "certificate_scope_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "certificate_exact_scope_match": true,
+        "revocation_checked_at": "2026-07-17T00:00:05Z",
+        "revocation_checkpoint_sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+      }
+    },
+    "refinement_prompt": "repair left-hand boundary",
+    "positive_clicks": [
+      {
+        "x": 106,
+        "y": 106,
+        "coordinate_space": "output_pixel"
+      }
+    ],
+    "negative_clicks": [],
+    "boxes": [],
+    "mode_payload_sha256": "fa2640525247280b7d2819b2cafefff9fa0dff22c6f0601807de7b6b77816760"
+  },
+  "request_payload_sha256": "21714602a75d9e03a46fbab89811a846f2906de5c6f6e14a7c14848eb4d24dec",
+  "signature": {
+    "algorithm": "ed25519",
+    "key_id": "comfy-main-request-fixture",
+    "public_key_base64": "iodf/x6zhFFXes1a/uQFRWVo3XyJ4JCGOgVXvHr0nxc=",
+    "signed_payload_sha256": "21714602a75d9e03a46fbab89811a846f2906de5c6f6e14a7c14848eb4d24dec",
+    "signed_payload_format": "sha256_digest_bytes",
+    "value_base64": "X7p1na6YRIsLKWzKPnMwoLNRBw8ClRIlzmCXM40v1sKr4XPctn4rvEQExXz2JbhDiiPELGw7+ecs6m4ENqoYDg=="
+  }
+}

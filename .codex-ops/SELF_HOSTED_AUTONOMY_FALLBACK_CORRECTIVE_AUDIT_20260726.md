@@ -64,6 +64,25 @@ regressions passed 23 tests; the relevant wave passed 37, with public-import,
 replay, Ruff, compile, diff, secret, and tracker validation clean. This is a
 bounded reconciliation, not `MF-P6-20.01` completion or route capacity credit.
 
+Authority-aligned integration delta `5906587f0` then resolves five additional
+selector/control paths. Its V2 receipt verifies the actual superseded V1
+receipt's raw bytes and canonical self-hash, sorted unique supersession paths,
+the exact current authority hashes, and the full/autonomy/worktree test
+lineage: `qa/live_verification/mf_p6_20_01_source_resolution_authority_selector_20260727.json`
+(raw `33188342dfde15cb06c9a2a4328e9e3d29a436917e6ebde19231ce4c1fb7589f`, self
+`d136af14594c97d6a288d4d77d1bf796660da7b993ce048dbe2a3af45ffbb97b`). The
+rebuilt inventory is raw
+`a3f0cf51814847fa02b7bb2b736f66a75cbc00e175c487b12f5b2d1e30672647`, self
+`328e5a2f36e3cb7398d36a79af6e351346e9ba9c59ada7ac21eed42da6bff420`.
+It records union 1,819/full 1,596/autonomy 105, with five authority and three
+behavioral resolutions and 1,723 unresolved paths (down from 1,728). The
+canonical-inventory wave passed 5 tests, authority/selector 21, and
+core/runtime 23; freeze validation, tracker validation (906 items/54 hard
+blockers), Ruff, compile, diff, secret scan, import, and deterministic replay
+all pass. `MF-P6-20.01` remains open with zero completion credit: 17
+behavioral conflicts and 1,723 unresolved paths still require bounded evidence
+or explicit supersession, without wholesale source replacement.
+
 - `MF-P6-19.01`: 25 completed / 0 failed engineering missions, one service
   generation, 50 real replay requests and unique responses, 25 accepted
   canonical proposals and releases, no request-binding mismatch. The immutable

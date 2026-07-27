@@ -20,6 +20,19 @@ def _sha(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
 
+AUTHORITY_CONTENT = {
+    "Plan/28_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md": "plan28",
+    "Plan/Items/24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md": "item24",
+}
+
+
+def _write_authority_files(root) -> None:
+    for location, content in AUTHORITY_CONTENT.items():
+        path = root / location
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(content, encoding="utf-8")
+
+
 def _entry(*, disposition: str = "accepted", parent: str | None = "campaign-25") -> dict:
     artifacts = [
         {
@@ -79,14 +92,7 @@ def _entry(*, disposition: str = "accepted", parent: str | None = "campaign-25")
 def _locator(*, entries: list[dict] | None = None) -> dict:
     return build_evidence_locator(
         entries=entries or [_entry()],
-        authority_file_sha256={
-            "Plan/28_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md": _sha(
-                "plan28"
-            ),
-            "Plan/Items/24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md": _sha(
-                "item24"
-            ),
-        },
+        authority_file_sha256={location: _sha(content) for location, content in AUTHORITY_CONTENT.items()},
         limitations=["The locator is an index, not a release or completion claim."],
     )
 
@@ -154,6 +160,7 @@ def test_repository_evidence_verification_checks_exact_bytes_and_hashes(tmp_path
     location = "qa/live_verification/campaign_packet.json"
     artifact_path = tmp_path / location
     artifact_path.parent.mkdir(parents=True)
+    _write_authority_files(tmp_path)
 
     with pytest.raises(EvidenceLocatorError, match="absent or not a regular file"):
         verify_repository_evidence(locator, tmp_path)
@@ -168,3 +175,28 @@ def test_repository_evidence_verification_checks_exact_bytes_and_hashes(tmp_path
     artifact_path.write_bytes(b"x" * 6)
     with pytest.raises(EvidenceLocatorError, match="SHA-256 mismatch"):
         verify_repository_evidence(locator, tmp_path)
+
+
+def test_repository_evidence_verification_requires_current_authority_files(tmp_path) -> None:
+    locator = _locator()
+    artifact_path = tmp_path / "qa/live_verification/campaign_packet.json"
+    artifact_path.parent.mkdir(parents=True)
+    artifact_path.write_bytes(b"output")
+
+    with pytest.raises(EvidenceLocatorError, match="authority is absent"):
+        verify_repository_evidence(locator, tmp_path)
+
+    _write_authority_files(tmp_path)
+    verify_repository_evidence(locator, tmp_path)
+
+    authority_path = tmp_path / next(iter(AUTHORITY_CONTENT))
+    authority_path.write_text("drift", encoding="utf-8")
+    with pytest.raises(EvidenceLocatorError, match="authority SHA-256 mismatch"):
+        verify_repository_evidence(locator, tmp_path)
+
+
+def test_authority_paths_are_relative_and_cannot_escape() -> None:
+    locator = _locator()
+    locator["authority_file_sha256"] = {"../authority.md": _sha("authority")}
+    with pytest.raises(EvidenceLocatorError, match="escapes"):
+        validate_evidence_locator(seal_evidence_locator(locator))

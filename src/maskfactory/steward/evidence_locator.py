@@ -237,6 +237,8 @@ def validate_evidence_locator(value: Mapping[str, Any]) -> None:
         )
     ):
         raise EvidenceLocatorError("locator authority hashes are invalid")
+    for path in authority:
+        _safe_relative_path(path, field="locator authority path")
     entries = value.get("entries")
     if not isinstance(entries, list) or not entries:
         raise EvidenceLocatorError("evidence locator entries are absent")
@@ -295,15 +297,31 @@ def verify_repository_evidence(locator: Mapping[str, Any], repository_root: Path
     """Verify bytes and hashes for all repository-resident locator artifacts.
 
     Pod-only and compact-recovery artifacts remain identities in the locator;
-    they are not silently treated as local files.  Every artifact explicitly
-    declared under ``repository_relative`` must exist below ``repository_root``
-    as a regular, non-symlink file with its recorded byte count and SHA-256.
+    they are not silently treated as local files.  The authority files and
+    every artifact explicitly declared under ``repository_relative`` must
+    exist below ``repository_root`` as regular, non-symlink files whose
+    SHA-256 values match the sealed locator.
     """
 
     validate_evidence_locator(locator)
     root = Path(repository_root).resolve()
     if not root.is_dir():
         raise EvidenceLocatorError("repository root is not a directory")
+    for location, expected_sha256 in locator["authority_file_sha256"].items():
+        candidate = root.joinpath(*PurePosixPath(location).parts)
+        if candidate.is_symlink() or not candidate.is_file():
+            raise EvidenceLocatorError(
+                f"repository authority is absent or not a regular file: {location}"
+            )
+        resolved = candidate.resolve()
+        try:
+            resolved.relative_to(root)
+        except ValueError as error:
+            raise EvidenceLocatorError(
+                f"repository authority escapes root: {location}"
+            ) from error
+        if _file_sha256(candidate) != expected_sha256:
+            raise EvidenceLocatorError(f"repository authority SHA-256 mismatch: {location}")
     for entry in locator["entries"]:
         for location, artifact in _repository_artifacts(entry).items():
             candidate = root.joinpath(*PurePosixPath(location).parts)

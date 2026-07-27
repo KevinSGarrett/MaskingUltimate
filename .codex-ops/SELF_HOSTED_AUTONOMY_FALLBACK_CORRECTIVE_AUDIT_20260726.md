@@ -98,19 +98,33 @@ non-executable.
 The shared manager contract is CUI commit `4a1e3420`: new reserves require
 `--parent-campaign-id`, `--parent-contract-sha256`, and `--child-role`; reserve,
 submit, inspection, and reconciliation receipts carry and validate the
-canonical `comfyui.openrouter_parent_binding.v1` digest. The MaskFactory
-adapter carries that exact all-or-nothing binding end-to-end. Initial shared
-manager evidence is 45 focused tests plus Ruff/compileall; MaskFactory source
-evidence is 62 focused tests, while an independent local rerun passed 46
+canonical `comfyui.openrouter_parent_binding.v1` digest. Commit `0e805e63`
+adds policy-admitted capability tiers while retaining governed model admission.
+The current shared manager SHA-256 is
+`a2ecf84d6d4fcfdcff55ce9c8a8d372a7ffaf09540a2b6fd1bceb63c3a81ff15`; its
+focused manager/Serverless-validator suite has 55 passing tests plus
+Ruff/compileall.
+
+`MASKFACTORY_ADAPTER_SEALED`: MaskFactory's `GovernedOpenRouterAdvisory` v2
+constructs the exact manager reserve argv and validates manager
+reserve/submit/inspect/reconcile parent-binding receipts against that sealed
+contract. Its controller-side parent/child ledger mechanics and adapter are
+therefore independently proved. The local rerun passed 46
 parent-binding/producer/advisory tests and 31 supervisor/broker tests, with
 Ruff, compileall, and diff checks clean.
 
-This proves only CPU control-plane pairing and exact manager binding. It does
-not permit a successor from `decide` alone, relax the legacy owner-recovery
-1/1 worker caps, execute a provider job, or grant `FALLBACK_CAPACITY_UNPROVEN`
-any credit. One real parent must still retain host preflight, complete its
-source-hash-bound child work, apply/test/QA its result, and reconcile both
-children to terminal state.
+`CROSS_CONTROLLER_INTEGRATION_OPEN`: CUI's separate primary-controller tip
+`dd93e09c` does not yet build and consume that binding. The two systems cannot
+yet be treated as one end-to-end controller, and no test has exercised a real
+same-parent provider run across that boundary.
+
+This does not permit a successor from `decide` alone, relax the legacy
+owner-recovery 1/1 worker caps, execute a provider job, or grant
+`FALLBACK_CAPACITY_UNPROVEN` any credit. `NO_CAPACITY_CREDIT` remains binding
+until the CUI primary controller consumes the exact CUI manager contract and
+one real parent retains host preflight, completes its source-hash-bound child
+work, applies/tests/QAs its result, and reconciles both children to terminal
+state.
 
 The RunPod browser is currently at an authorized-console sign-in page. No SSH
 or Jupyter bypass is authorized. Consequently, local tests prove the control
@@ -125,8 +139,9 @@ that coarse session-only identity with the all-or-nothing immutable
 parent/contract/role binding described above: one active child for a given
 parent+contract, terminal suppression until a new contract hash, and receipt
 verification across reserve, submit, inspection, and reconciliation. The
-MaskFactory adapter now supplies that exact binding; an admission rejection is
-terminal containment, never a retry job.
+MaskFactory adapter supplies that exact binding; until the separate CUI primary
+controller does too, it cannot issue new OpenRouter child work. Any admission
+rejection is terminal containment, never a retry job.
 
 Neither guard can approve masks, replace strict VLM QA, or provide Serverless
 capacity credit. The last reconciled shared-manager state was zero active

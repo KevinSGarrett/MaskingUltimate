@@ -1,0 +1,229 @@
+{
+  "schema_version": "maskfactory.canonical_source_resolution.v2",
+  "full_product_commit_sha": "7d66ca27781d899a43eb644c0378bcf1478045a7",
+  "autonomy_commit_sha": "0d2efa6ff2b9a35b064d33bedbbdcab06517a685",
+  "authority_file_sha256": {
+    "Plan/27_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS_SPEC.md": "638d8f1a0e73af20189ec0773bac360d980ac78e86a0846a104d5181f4ca4e07",
+    "Plan/28_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md": "a82a3844736b6558d7ce54b2fd2bec1ac3151d791acf700900b65b51ac65d947",
+    "Plan/Instructions/16_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS.md": "e6608e03789676f1db80640731e1edc40a3370bcec2147acfdd7e5094d4989ce",
+    "Plan/Instructions/18_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md": "66a65af8ef6fa53b36a171fec9ea6d213a2f564d6d426224296dde53c919aa05",
+    "Plan/Items/23_ITEMS_P6_SELF_HOSTED_AUTONOMOUS_LLM_OPERATIONS.md": "f03df89fc8b6de5925fd551e9df9e92c3212ca4388725caccbc47d12630e9ffb",
+    "Plan/Items/24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md": "e8a50512409a236e95a39e56b6a571e677d507fad7533e4a7fdd67802d9062c9",
+    "Plan/SELF_HOSTED_AUTONOMOUS_LLM_PURSUING_GOAL_MESSAGE.md": "47e3192565c04f0ff3f4a9881397355b230ba78abda5f5dfd1132412d81da713",
+    "configs/self_hosted_autonomy_contract_freeze_v1.json": "d4e55cd9f957d8dde7678744c91a7aa7d4bc5e6c68cb8b54cc5934abc09b9d73"
+  },
+  "supersedes": [
+    {
+      "path": "qa/live_verification/mf_p6_20_01_source_resolution_steward_core_20260727.json",
+      "raw_sha256": "27024c2c50de49997db5112711bfb83fec775b8c2a42fd5ee8443453a5fc0fd6",
+      "self_sha256": "7a4b17a3ca7ef51c05e4003f269a14e2cf67a5c66af238bb7282226f51338f10"
+    }
+  ],
+  "resolutions": [
+    {
+      "path": "configs/self_hosted_autonomy_contract_freeze_v1.json",
+      "resolution_kind": "authority_aligned_supersession",
+      "full_product_git_object_id": "45cf8960816c495feb5455216bdbf15cd7e6c327",
+      "autonomy_git_object_id": "79ca45c6230baa0c1f6727590c563c7eb0851dd7",
+      "worktree_sha256": "d4e55cd9f957d8dde7678744c91a7aa7d4bc5e6c68cb8b54cc5934abc09b9d73",
+      "verification": {
+        "commands": [
+          "python -m pytest tests/steward/test_continuous_contract.py tests/steward/test_goal_selector.py -q",
+          "python -c \"from pathlib import Path; from maskfactory.steward.continuous_contract import validate_freeze_registry; problems=validate_freeze_registry(Path('.')); print(problems); raise SystemExit(bool(problems))\"",
+          "python Plan/Tracker/tracker.py validate"
+        ],
+        "passed_test_count": 21,
+        "test_lineage": {
+          "tests/steward/test_continuous_contract.py": {
+            "full_product_git_object_id": "285fb9c213726a2da8eef3bd627d0d2c912ef844",
+            "autonomy_git_object_id": "ae886d9c85d7c733e43658a04c41fda29761ae72",
+            "worktree_sha256": "b0517cf1649e7445c0075c98a60395661420a306bebeeb3240fe5e64894318ef"
+          }
+        },
+        "result": "pass"
+      },
+      "limitations": [
+        "This resolves the freeze registry only against the exact current authority set.",
+        "It claims no campaign, provider, route, or tracker completion."
+      ]
+    },
+    {
+      "path": "src/maskfactory/steward/__init__.py",
+      "resolution_kind": "behavior_preserving_autonomy_superset",
+      "full_product_git_object_id": "0123f09aedce0f2bfd6b0435472876e9cf018f91",
+      "autonomy_git_object_id": "d8bc2903cdbfc3f1267c75d484a80c4577860fb6",
+      "worktree_sha256": "a9355415c11227ba6afef09dbc8fbb24dc67d04ed4e082be9bd846b6c989cbca",
+      "verification": {
+        "commands": [
+          "python -m pytest tests/steward/test_core.py tests/steward/test_runtime.py -q",
+          "python -c \"from maskfactory.steward import EngineeringCampaignRuntimeController, LocalEngineeringCampaignDispatcher, StewardLedger, validate_binding; print('STEWARD_PUBLIC_IMPORT_PASS')\""
+        ],
+        "passed_test_count": 23,
+        "candidate_test_git_object_ids": {
+          "tests/steward/test_core.py": "11f997ebc2a4c0db4a55638f78d8f67ab8bc28a7",
+          "tests/steward/test_runtime.py": "ac420e8c16b96d7c8b29d9a66b0cf0ca07eef66f"
+        },
+        "result": "pass"
+      },
+      "limitations": [
+        "This resolves only the steward package export surface.",
+        "It does not claim package installation, full-suite, runtime, route, or tracker completion."
+      ]
+    },
+    {
+      "path": "src/maskfactory/steward/continuous_contract.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "full_product_git_object_id": "44b1a39130943a033f86ec918adb26d14ff90f85",
+      "autonomy_git_object_id": "7a35618b492f0f3274d019ed04d69812cfbe1d80",
+      "worktree_sha256": "fc08f0eab3ce224ec41a9cb8ace995c91c3842ff723ae680e6c3c8d2c8316026",
+      "verification": {
+        "commands": [
+          "python -m pytest tests/steward/test_continuous_contract.py tests/steward/test_goal_selector.py -q",
+          "python -c \"from pathlib import Path; from maskfactory.steward.continuous_contract import validate_freeze_registry; problems=validate_freeze_registry(Path('.')); print(problems); raise SystemExit(bool(problems))\"",
+          "python Plan/Tracker/tracker.py validate"
+        ],
+        "passed_test_count": 21,
+        "test_lineage": {
+          "tests/steward/test_continuous_contract.py": {
+            "full_product_git_object_id": "285fb9c213726a2da8eef3bd627d0d2c912ef844",
+            "autonomy_git_object_id": "ae886d9c85d7c733e43658a04c41fda29761ae72",
+            "worktree_sha256": "b0517cf1649e7445c0075c98a60395661420a306bebeeb3240fe5e64894318ef"
+          }
+        },
+        "result": "pass"
+      },
+      "limitations": [
+        "The current contract intentionally extends the frozen authority to Plan 28 and Item 24.",
+        "It does not claim full-suite, runtime, provider, route, or tracker completion."
+      ]
+    },
+    {
+      "path": "src/maskfactory/steward/core.py",
+      "resolution_kind": "behavior_preserving_autonomy_superset",
+      "full_product_git_object_id": "cd80ee5592262651ce3bb5b4f41fb2d1fe5b81a9",
+      "autonomy_git_object_id": "5b89119fe5cd3744ea5a4a2897511d93d59ab318",
+      "worktree_sha256": "280b84f3c5683b11889b739798c7508f4d468d6751f031dfe1fb8fbaba8b44d6",
+      "verification": {
+        "commands": [
+          "python -m pytest tests/steward/test_core.py tests/steward/test_runtime.py -q",
+          "python -c \"from maskfactory.steward import EngineeringCampaignRuntimeController, LocalEngineeringCampaignDispatcher, StewardLedger, validate_binding; print('STEWARD_PUBLIC_IMPORT_PASS')\""
+        ],
+        "passed_test_count": 23,
+        "candidate_test_git_object_ids": {
+          "tests/steward/test_core.py": "11f997ebc2a4c0db4a55638f78d8f67ab8bc28a7",
+          "tests/steward/test_runtime.py": "ac420e8c16b96d7c8b29d9a66b0cf0ca07eef66f"
+        },
+        "result": "pass"
+      },
+      "limitations": [
+        "The current core adds a public validate_binding wrapper without removing candidate ledger behavior.",
+        "It does not claim full-suite, runtime, route, or tracker completion."
+      ]
+    },
+    {
+      "path": "src/maskfactory/steward/goal_selector.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "full_product_git_object_id": "41720f5f27d50714137e56fdea42c61e6638cf2c",
+      "autonomy_git_object_id": "05974aa8116c430d4f9cfbd9d33994a3f220e415",
+      "worktree_sha256": "512c802424cf9b9b0cb6bbad81a9ce59c931b28ff047193657bc41a1e7b3dd2c",
+      "verification": {
+        "commands": [
+          "python -m pytest tests/steward/test_continuous_contract.py tests/steward/test_goal_selector.py -q",
+          "python -c \"from pathlib import Path; from maskfactory.steward.continuous_contract import validate_freeze_registry; problems=validate_freeze_registry(Path('.')); print(problems); raise SystemExit(bool(problems))\"",
+          "python Plan/Tracker/tracker.py validate"
+        ],
+        "passed_test_count": 21,
+        "test_lineage": {
+          "tests/steward/test_goal_selector.py": {
+            "full_product_git_object_id": "0785172b6d806a98f98903d41eca92fb7c96cdb5",
+            "autonomy_git_object_id": "88eb11f9319baed755a96e0b7d5b6b70c6c79d40",
+            "worktree_sha256": "fcc2df45ae648561ddfee06c6b70589a83c86d8e3f8898881dae0c08d896eb2c"
+          }
+        },
+        "result": "pass"
+      },
+      "limitations": [
+        "The current selector intentionally schedules and suppresses work under the accepted Plan-27 authority.",
+        "It does not select Plan-28 rows or claim live campaign completion."
+      ]
+    },
+    {
+      "path": "src/maskfactory/steward/runtime.py",
+      "resolution_kind": "behavior_preserving_autonomy_superset",
+      "full_product_git_object_id": "6c97b0cb7ce0fc72145d35cff9a890fb27fcf868",
+      "autonomy_git_object_id": "fbffc80371328af5d85d4d6960e2ecc7a4513218",
+      "worktree_sha256": "8eaa788588615bc203fdcd34bce6a2ba3954e1ebd849447ac10aec89d371783c",
+      "verification": {
+        "commands": [
+          "python -m pytest tests/steward/test_core.py tests/steward/test_runtime.py -q",
+          "python -c \"from maskfactory.steward import EngineeringCampaignRuntimeController, LocalEngineeringCampaignDispatcher, StewardLedger, validate_binding; print('STEWARD_PUBLIC_IMPORT_PASS')\""
+        ],
+        "passed_test_count": 23,
+        "candidate_test_git_object_ids": {
+          "tests/steward/test_core.py": "11f997ebc2a4c0db4a55638f78d8f67ab8bc28a7",
+          "tests/steward/test_runtime.py": "ac420e8c16b96d7c8b29d9a66b0cf0ca07eef66f"
+        },
+        "result": "pass"
+      },
+      "limitations": [
+        "The current runtime permits restart-safe attachment only to the already-admitted state.",
+        "It does not claim a new model request, runtime execution, route, or tracker completion."
+      ]
+    },
+    {
+      "path": "tests/steward/test_continuous_contract.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "full_product_git_object_id": "285fb9c213726a2da8eef3bd627d0d2c912ef844",
+      "autonomy_git_object_id": "ae886d9c85d7c733e43658a04c41fda29761ae72",
+      "worktree_sha256": "b0517cf1649e7445c0075c98a60395661420a306bebeeb3240fe5e64894318ef",
+      "verification": {
+        "commands": [
+          "python -m pytest tests/steward/test_continuous_contract.py tests/steward/test_goal_selector.py -q",
+          "python -c \"from pathlib import Path; from maskfactory.steward.continuous_contract import validate_freeze_registry; problems=validate_freeze_registry(Path('.')); print(problems); raise SystemExit(bool(problems))\"",
+          "python Plan/Tracker/tracker.py validate"
+        ],
+        "passed_test_count": 21,
+        "test_lineage": {
+          "tests/steward/test_continuous_contract.py": {
+            "full_product_git_object_id": "285fb9c213726a2da8eef3bd627d0d2c912ef844",
+            "autonomy_git_object_id": "ae886d9c85d7c733e43658a04c41fda29761ae72",
+            "worktree_sha256": "b0517cf1649e7445c0075c98a60395661420a306bebeeb3240fe5e64894318ef"
+          }
+        },
+        "result": "pass"
+      },
+      "limitations": [
+        "These tests supersede the narrower candidate freeze set with exact Plan-28 negative coverage.",
+        "They do not substitute for the full product suite."
+      ]
+    },
+    {
+      "path": "tests/steward/test_goal_selector.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "full_product_git_object_id": "0785172b6d806a98f98903d41eca92fb7c96cdb5",
+      "autonomy_git_object_id": "88eb11f9319baed755a96e0b7d5b6b70c6c79d40",
+      "worktree_sha256": "fcc2df45ae648561ddfee06c6b70589a83c86d8e3f8898881dae0c08d896eb2c",
+      "verification": {
+        "commands": [
+          "python -m pytest tests/steward/test_continuous_contract.py tests/steward/test_goal_selector.py -q",
+          "python -c \"from pathlib import Path; from maskfactory.steward.continuous_contract import validate_freeze_registry; problems=validate_freeze_registry(Path('.')); print(problems); raise SystemExit(bool(problems))\"",
+          "python Plan/Tracker/tracker.py validate"
+        ],
+        "passed_test_count": 21,
+        "test_lineage": {
+          "tests/steward/test_goal_selector.py": {
+            "full_product_git_object_id": "0785172b6d806a98f98903d41eca92fb7c96cdb5",
+            "autonomy_git_object_id": "88eb11f9319baed755a96e0b7d5b6b70c6c79d40",
+            "worktree_sha256": "fcc2df45ae648561ddfee06c6b70589a83c86d8e3f8898881dae0c08d896eb2c"
+          }
+        },
+        "result": "pass"
+      },
+      "limitations": [
+        "These tests preserve old dependency and no-reissue behavior while adding current scheduling and stalled-work coverage.",
+        "They do not substitute for live campaign execution."
+      ]
+    }
+  ],
+  "self_sha256": "d136af14594c97d6a288d4d77d1bf796660da7b993ce048dbe2a3af45ffbb97b"
+}

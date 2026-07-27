@@ -3168,11 +3168,14 @@
         "mode": "100644",
         "object_type": "blob"
       },
-      "integration_status": "behavioral_resolution_required",
-      "owner": "shared_conflict_unresolved",
+      "integration_status": "resolved_authority_aligned_supersession",
+      "owner": "shared_behavior_resolved",
       "path": "configs/self_hosted_autonomy_contract_freeze_v1.json",
-      "resolution": null,
-      "unresolved_conflict": true,
+      "resolution": {
+        "evidence_self_sha256": "d136af14594c97d6a288d4d77d1bf796660da7b993ce048dbe2a3af45ffbb97b",
+        "kind": "authority_aligned_supersession"
+      },
+      "unresolved_conflict": false,
       "worktree": {
         "bytes": 2793,
         "git_object_id": "79ca45c6230baa0c1f6727590c563c7eb0851dd7",
@@ -17716,7 +17719,7 @@
       "owner": "shared_behavior_resolved",
       "path": "src/maskfactory/steward/__init__.py",
       "resolution": {
-        "evidence_self_sha256": "7a4b17a3ca7ef51c05e4003f269a14e2cf67a5c66af238bb7282226f51338f10",
+        "evidence_self_sha256": "d136af14594c97d6a288d4d77d1bf796660da7b993ce048dbe2a3af45ffbb97b",
         "kind": "behavior_preserving_autonomy_superset"
       },
       "unresolved_conflict": false,
@@ -17854,11 +17857,11 @@
       "resolution": null,
       "unresolved_conflict": true,
       "worktree": {
-        "bytes": 37329,
-        "git_object_id": "263c4537ec870e9294bea562048c283fa51ec2fc",
+        "bytes": 45489,
+        "git_object_id": "d41499fbb95e9395029a95efecc933929428c98c",
         "matches_autonomy": false,
         "matches_full_product": false,
-        "sha256": "8d253cf3ee97eee199013d9c1dedd57490a477fcae1292d4119087c3bc29733a",
+        "sha256": "7db8b60dda18d9effd224c06226c4921cf7cec2d210a6dccda3081f8f5709461",
         "state": "untracked_user_or_generated_preserve",
         "tracked_by_autonomy": false
       }
@@ -18638,11 +18641,11 @@
       "resolution": null,
       "unresolved_conflict": true,
       "worktree": {
-        "bytes": 27791,
-        "git_object_id": "35c86721e71f1c37c4061a1b6fb0f554f543dfd4",
+        "bytes": 35565,
+        "git_object_id": "79852ef35d6486778ec6aacb72a8a3ce437113a7",
         "matches_autonomy": false,
         "matches_full_product": false,
-        "sha256": "16e2fdae6173626a7590815a3a6971dc8654c001e36ed501179dcb78f7bd32b0",
+        "sha256": "fbf6e4cef65c32a75c63f90659ae7b108824a25ed9411e232b8bc1ca4c7ae63f",
         "state": "untracked_user_or_generated_preserve",
         "tracked_by_autonomy": false
       }
@@ -18659,11 +18662,14 @@
         "mode": "100644",
         "object_type": "blob"
       },
-      "integration_status": "behavioral_resolution_required",
-      "owner": "shared_conflict_unresolved",
+      "integration_status": "resolved_authority_aligned_supersession",
+      "owner": "shared_behavior_resolved",
       "path": "src/maskfactory/steward/continuous_contract.py",
-      "resolution": null,
-      "unresolved_conflict": true,
+      "resolution": {
+        "evidence_self_sha256": "d136af14594c97d6a288d4d77d1bf796660da7b993ce048dbe2a3af45ffbb97b",
+        "kind": "authority_aligned_supersession"
+      },
+      "unresolved_conflict": false,
       "worktree": {
         "bytes": 10581,
         "git_object_id": "7a35618b492f0f3274d019ed04d69812cfbe1d80",
@@ -18717,7 +18723,7 @@
       "owner": "shared_behavior_resolved",
       "path": "src/maskfactory/steward/core.py",
       "resolution": {
-        "evidence_self_sha256": "7a4b17a3ca7ef51c05e4003f269a14e2cf67a5c66af238bb7282226f51338f10",
+        "evidence_self_sha256": "d136af14594c97d6a288d4d77d1bf796660da7b993ce048dbe2a3af45ffbb97b",
         "kind": "behavior_preserving_autonomy_superset"
       },
       "unresolved_conflict": false,
@@ -18935,11 +18941,14 @@
         "mode": "100644",
         "object_type": "blob"
       },
-      "integration_status": "behavioral_resolution_required",
-      "owner": "shared_conflict_unresolved",
+      "integration_status": "resolved_authority_aligned_supersession",
+      "owner": "shared_behavior_resolved",
       "path": "src/maskfactory/steward/goal_selector.py",
-      "resolution": null,
-      "unresolved_conflict": true,
+      "resolution": {
+        "evidence_self_sha256": "d136af14594c97d6a288d4d77d1bf796660da7b993ce048dbe2a3af45ffbb97b",
+        "kind": "authority_aligned_supersession"
+      },
+      "unresolved_conflict": false,
       "worktree": {
         "bytes": 7605,
         "git_object_id": "05974aa8116c430d4f9cfbd9d33994a3f220e415",
@@ -19254,7 +19263,7 @@
       "owner": "shared_behavior_resolved",
       "path": "src/maskfactory/steward/runtime.py",
       "resolution": {
-        "evidence_self_sha256": "7a4b17a3ca7ef51c05e4003f269a14e2cf67a5c66af238bb7282226f51338f10",
+        "evidence_self_sha256": "d136af14594c97d6a288d4d77d1bf796660da7b993ce048dbe2a3af45ffbb97b",
         "kind": "behavior_preserving_autonomy_superset"
       },
       "unresolved_conflict": false,
@@ -22453,11 +22462,11 @@
       "resolution": null,
       "unresolved_conflict": true,
       "worktree": {
-        "bytes": 17212,
-        "git_object_id": "69ce991a35db48c8902ee105a1f303f8f557012b",
+        "bytes": 22449,
+        "git_object_id": "6dadd689848118c3d9993f05d2cbd73a5f0cf313",
         "matches_autonomy": false,
         "matches_full_product": false,
-        "sha256": "98388b31fadea51eaa3b624e5262160fb93333f4694d94c4596f7734f037c638",
+        "sha256": "b33cb6583b49ffad05c334516d4a499b4d05201e8a108c8596ba9a2767f274b9",
         "state": "untracked_user_or_generated_preserve",
         "tracked_by_autonomy": false
       }
@@ -23902,11 +23911,11 @@
       "resolution": null,
       "unresolved_conflict": true,
       "worktree": {
-        "bytes": 7948,
-        "git_object_id": "db131fcc0b7279ac87c89322b374641c03b09494",
+        "bytes": 13817,
+        "git_object_id": "b4396944ebd8d14f08efb75fc6bc1ccd7b2d824e",
         "matches_autonomy": false,
         "matches_full_product": false,
-        "sha256": "26526e5f2531ed080910a42a8131641aa9b9d89b0257f97b8619b6c1b40486b3",
+        "sha256": "e77640ac641d08fe33bfb229a1211e93921a1df723f3c382bbe7ef2815382d43",
         "state": "untracked_user_or_generated_preserve",
         "tracked_by_autonomy": false
       }
@@ -23950,11 +23959,14 @@
         "mode": "100644",
         "object_type": "blob"
       },
-      "integration_status": "behavioral_resolution_required",
-      "owner": "shared_conflict_unresolved",
+      "integration_status": "resolved_authority_aligned_supersession",
+      "owner": "shared_behavior_resolved",
       "path": "tests/steward/test_continuous_contract.py",
-      "resolution": null,
-      "unresolved_conflict": true,
+      "resolution": {
+        "evidence_self_sha256": "d136af14594c97d6a288d4d77d1bf796660da7b993ce048dbe2a3af45ffbb97b",
+        "kind": "authority_aligned_supersession"
+      },
+      "unresolved_conflict": false,
       "worktree": {
         "bytes": 13054,
         "git_object_id": "ae886d9c85d7c733e43658a04c41fda29761ae72",
@@ -24200,11 +24212,14 @@
         "mode": "100644",
         "object_type": "blob"
       },
-      "integration_status": "behavioral_resolution_required",
-      "owner": "shared_conflict_unresolved",
+      "integration_status": "resolved_authority_aligned_supersession",
+      "owner": "shared_behavior_resolved",
       "path": "tests/steward/test_goal_selector.py",
-      "resolution": null,
-      "unresolved_conflict": true,
+      "resolution": {
+        "evidence_self_sha256": "d136af14594c97d6a288d4d77d1bf796660da7b993ce048dbe2a3af45ffbb97b",
+        "kind": "authority_aligned_supersession"
+      },
+      "unresolved_conflict": false,
       "worktree": {
         "bytes": 5962,
         "git_object_id": "88eb11f9319baed755a96e0b7d5b6b70c6c79d40",
@@ -41396,10 +41411,10 @@
     }
   ],
   "resolution_evidence": {
-    "path": "qa/live_verification/mf_p6_20_01_source_resolution_steward_core_20260727.json",
-    "raw_sha256": "27024c2c50de49997db5112711bfb83fec775b8c2a42fd5ee8443453a5fc0fd6",
-    "resolution_count": 3,
-    "self_sha256": "7a4b17a3ca7ef51c05e4003f269a14e2cf67a5c66af238bb7282226f51338f10"
+    "path": "qa/live_verification/mf_p6_20_01_source_resolution_authority_selector_20260727.json",
+    "raw_sha256": "33188342dfde15cb06c9a2a4328e9e3d29a436917e6ebde19231ce4c1fb7589f",
+    "resolution_count": 8,
+    "self_sha256": "d136af14594c97d6a288d4d77d1bf796660da7b993ce048dbe2a3af45ffbb97b"
   },
   "safety": {
     "completion_credit_claimed": false,
@@ -41437,7 +41452,7 @@
       "setup.cfg"
     ]
   },
-  "self_sha256": "7574f1f2b5846626ab6a834838b97f67c9a4aacb6232eeb6dad6a79bd90d5c33",
+  "self_sha256": "328e5a2f36e3cb7398d36a79af6e351346e9ba9c59ada7ac21eed42da6bff420",
   "summary": {
     "autonomy_path_count": 105,
     "classification_counts": {
@@ -41449,15 +41464,16 @@
     },
     "full_product_path_count": 1596,
     "integration_status_counts": {
-      "behavioral_resolution_required": 22,
+      "behavioral_resolution_required": 17,
       "exact_untracked_candidate_preserved": 8,
       "materialization_or_resolution_required": 1546,
       "ownership_resolution_required": 160,
       "present_exact": 80,
+      "resolved_authority_aligned_supersession": 5,
       "resolved_behavioral_autonomy_superset": 3
     },
     "union_path_count": 1819,
-    "unresolved_conflict_count": 1728
+    "unresolved_conflict_count": 1723
   },
   "tracker_item": "MF-P6-20.01"
 }

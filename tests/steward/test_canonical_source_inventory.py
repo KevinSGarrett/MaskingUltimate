@@ -196,6 +196,145 @@ def test_exact_resolution_evidence_closes_only_bound_conflict(
         )
 
 
+def test_authority_supersession_requires_exact_authority_and_test_lineage(
+    tmp_path: Path,
+) -> None:
+    repo = _repo(tmp_path)
+    authority_path = repo / "Plan/28.md"
+    _write(authority_path, "canonical authority\n")
+    full_commit = _git(repo, "rev-parse", "full-product")
+    autonomy_commit = _git(repo, "rev-parse", "HEAD")
+    test_path = repo / "tests/test_full.py"
+    test_object = _git(repo, "rev-parse", "HEAD:tests/test_full.py")
+    superseded = seal_resolution_evidence(
+        {
+            "schema_version": "maskfactory.canonical_source_resolution.v1",
+            "full_product_commit_sha": full_commit,
+            "autonomy_commit_sha": autonomy_commit,
+            "resolutions": [
+                {
+                    "path": "src/shared.py",
+                    "resolution_kind": "behavior_preserving_autonomy_superset",
+                    "full_product_git_object_id": _git(
+                        repo, "rev-parse", "full-product:src/shared.py"
+                    ),
+                    "autonomy_git_object_id": _git(
+                        repo, "rev-parse", "HEAD:src/shared.py"
+                    ),
+                    "worktree_sha256": hashlib.sha256(
+                        (repo / "src/shared.py").read_bytes()
+                    ).hexdigest(),
+                    "verification": {
+                        "commands": ["python -m pytest tests/test_full.py -q"],
+                        "passed_test_count": 1,
+                        "candidate_test_git_object_ids": {
+                            "tests/test_full.py": test_object
+                        },
+                        "result": "pass",
+                    },
+                    "limitations": ["This resolves only src/shared.py."],
+                }
+            ],
+            "self_sha256": "0" * 64,
+        }
+    )
+    superseded_raw = (
+        json.dumps(superseded, indent=2, sort_keys=True) + "\n"
+    ).encode("utf-8")
+    superseded_path = repo / "qa/old-resolution.json"
+    superseded_path.parent.mkdir(parents=True, exist_ok=True)
+    superseded_path.write_bytes(superseded_raw)
+    resolution = seal_resolution_evidence(
+        {
+            "schema_version": "maskfactory.canonical_source_resolution.v2",
+            "full_product_commit_sha": full_commit,
+            "autonomy_commit_sha": autonomy_commit,
+            "authority_file_sha256": {
+                "Plan/28.md": hashlib.sha256(authority_path.read_bytes()).hexdigest()
+            },
+            "supersedes": [
+                {
+                    "path": "qa/old-resolution.json",
+                    "raw_sha256": hashlib.sha256(superseded_raw).hexdigest(),
+                    "self_sha256": superseded["self_sha256"],
+                }
+            ],
+            "resolutions": [
+                {
+                    "path": "src/shared.py",
+                    "resolution_kind": "authority_aligned_supersession",
+                    "full_product_git_object_id": _git(
+                        repo, "rev-parse", "full-product:src/shared.py"
+                    ),
+                    "autonomy_git_object_id": _git(
+                        repo, "rev-parse", "HEAD:src/shared.py"
+                    ),
+                    "worktree_sha256": hashlib.sha256(
+                        (repo / "src/shared.py").read_bytes()
+                    ).hexdigest(),
+                    "verification": {
+                        "commands": ["python -m pytest tests/test_full.py -q"],
+                        "passed_test_count": 1,
+                        "test_lineage": {
+                            "tests/test_full.py": {
+                                "full_product_git_object_id": test_object,
+                                "autonomy_git_object_id": test_object,
+                                "worktree_sha256": hashlib.sha256(
+                                    test_path.read_bytes()
+                                ).hexdigest(),
+                            }
+                        },
+                        "result": "pass",
+                    },
+                    "limitations": ["This resolves only src/shared.py."],
+                }
+            ],
+            "self_sha256": "0" * 64,
+        }
+    )
+    inventory = build_inventory(
+        repo_root=repo,
+        full_product_ref=full_commit,
+        autonomy_ref=autonomy_commit,
+        authority_hashes={"Plan/28.md": "e" * 64},
+        resolution_evidence=resolution,
+        resolution_evidence_path="qa/resolution-v2.json",
+        resolution_evidence_raw_sha256="f" * 64,
+    )
+    row = next(row for row in inventory["paths"] if row["path"] == "src/shared.py")
+    assert row["integration_status"] == "resolved_authority_aligned_supersession"
+    assert row["unresolved_conflict"] is False
+    validate_resolution_evidence(resolution)
+    validate_inventory(inventory)
+
+    _write(authority_path, "drifted authority\n")
+    with pytest.raises(CanonicalSourceInventoryError, match="authority drift"):
+        build_inventory(
+            repo_root=repo,
+            full_product_ref=full_commit,
+            autonomy_ref=autonomy_commit,
+            authority_hashes={"Plan/28.md": "e" * 64},
+            resolution_evidence=resolution,
+            resolution_evidence_path="qa/resolution-v2.json",
+            resolution_evidence_raw_sha256="f" * 64,
+        )
+
+    _write(superseded_path, "{}\n")
+    with pytest.raises(
+        CanonicalSourceInventoryError,
+        match="superseded receipt raw binding drift",
+    ):
+        build_inventory(
+            repo_root=repo,
+            full_product_ref=full_commit,
+            autonomy_ref=autonomy_commit,
+            authority_hashes={"Plan/28.md": "e" * 64},
+            resolution_evidence=resolution,
+            resolution_evidence_path="qa/resolution-v2.json",
+            resolution_evidence_raw_sha256="f" * 64,
+        )
+
+
 def test_inventory_rejects_non_root_and_bad_authority_hash(tmp_path: Path) -> None:
     repo = _repo(tmp_path)
     with pytest.raises(CanonicalSourceInventoryError, match="worktree root"):

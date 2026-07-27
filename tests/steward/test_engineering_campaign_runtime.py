@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import hashlib
+import importlib.util
+import json
 from pathlib import Path
 
 import pytest
@@ -43,6 +45,7 @@ from maskfactory.steward.runtime import (
 )
 
 CONTRACT_PATH = Path("configs/self_hosted_steward_runtime_v1.json")
+TELEMETRY_TOOL_PATH = Path("tools/build_engineering_campaign_telemetry.py")
 
 
 def _request(contract: dict, job_id: str) -> dict:
@@ -73,6 +76,65 @@ def _request(contract: dict, job_id: str) -> dict:
         },
         "chat_template_kwargs": {"enable_thinking": False},
     }
+
+
+def _load_telemetry_tool():
+    spec = importlib.util.spec_from_file_location(
+        "build_engineering_campaign_telemetry",
+        TELEMETRY_TOOL_PATH,
+    )
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_engineering_telemetry_deployment_closure_and_short_launch(
+    tmp_path: Path,
+) -> None:
+    tool = _load_telemetry_tool()
+    required = set(tool.REQUIRED_DEPLOYMENT_PATHS)
+    assert (
+        "src/maskfactory/steward/engineering_campaign_runtime_packet.py"
+        in required
+    )
+    assert required == {
+        "src/maskfactory/steward/engineering_campaign_runtime_packet.py",
+        "src/maskfactory/steward/engineering_campaign_telemetry.py",
+        "tools/build_engineering_campaign_telemetry.py",
+    }
+    assert all(Path(path).is_file() for path in required)
+
+    manifest = {
+        "baseline_usage_units_per_accepted_artifact": 1,
+        "campaign_root": "/workspace/campaign",
+        "contract": "/workspace/maskfactory/configs/runtime.json",
+        "database": "/workspace/campaign/runtime.sqlite",
+        "launch_manifest_sha256": tool.ZERO_SHA256,
+        "limitations": ["Measured intervention units only."],
+        "output_root": "/workspace/campaign/telemetry",
+        "runtime_packet_root": "/workspace/campaign/runtime_packet",
+        "schema_version": tool.LAUNCH_MANIFEST_SCHEMA,
+        "terminal_adoption_review_seconds": 0,
+        "terminal_adoption_usage_units": 1,
+    }
+    manifest["launch_manifest_sha256"] = tool._canonical_sha256(manifest)
+    path = tmp_path / "telemetry_launch.json"
+    path.write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    assert tool._load_launch_manifest(path) == manifest
+    assert (
+        "python3 tools/build_engineering_campaign_telemetry.py "
+        "--launch-manifest telemetry_launch.json"
+    ).count(" ") == 3
+
+    tampered = dict(manifest)
+    tampered["output_root"] = "/workspace/campaign/other"
+    path.write_text(json.dumps(tampered), encoding="utf-8")
+    with pytest.raises(SystemExit, match="self hash mismatch"):
+        tool._load_launch_manifest(path)
 
 
 def _prepare_campaign(tmp_path: Path) -> tuple[Path, list[Path], Path]:

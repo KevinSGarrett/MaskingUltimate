@@ -75,6 +75,26 @@ Only then, for one eligible immutable parent, may the controller perform
 submission, V7–V11 reissue, detached child job, or retry after an ambiguous
 outcome is permitted.
 
+### Unresolved mixed-parent controller binding
+
+The present fallback dispatcher can advance Serverless and OpenRouter
+concurrently only for different `mission_id` values. Its v1 work-item and
+adapter identities bind `mission_id` and `session_id`, but do not yet bind an
+explicit immutable `parent_campaign_id`, parent-contract hash, or child role.
+Consequently, it cannot prove that a Serverless child and a consolidated
+OpenRouter child are parts of the same parent outcome rather than unrelated
+coexisting work. This is a structural implementation gap, not a reason to
+relax the current legacy-recovery one-worker caps.
+
+The campaign controller must add and test immutable parent/child binding,
+per-parent child-role admission (one active child per role), terminal
+suppression, cost and route ledger reconciliation, and a mixed-parent test
+pair. The pair may permit one Serverless and one OpenRouter child below the
+same parent only after each has a distinct immutable child identity and the
+parent can reconcile both; it must never allow two children of the same role
+or turn an admission rejection into a retry. Until this exists and is proved
+with real parent work, `FALLBACK_CAPACITY_UNPROVEN` remains binding.
+
 The RunPod browser is currently at an authorized-console sign-in page. No SSH
 or Jupyter bypass is authorized. Consequently, local tests prove the control
 plane, not the actual execution host or capacity.

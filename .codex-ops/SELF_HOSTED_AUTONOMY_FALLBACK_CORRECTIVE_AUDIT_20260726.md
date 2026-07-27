@@ -164,6 +164,16 @@ logging without admitting a real asset. These commits are executable
 prerequisites only—no tracker, GPU, provider, visual-authority, real-mask, or
 campaign credit is claimed.
 
+Package/runtime closure commit `da429fb2b` restores the exact bounded
+production command surface and matching runtime descriptors from the
+source-bound full-product lineage, plus an entrypoint regression test. The real
+`maskfactory` CLI now imports and renders its help surface; 21 focused runtime
+tests, Ruff, compile checks, and diff validation pass. Offline wheel-install
+smoke remains blocked solely by the local environment: Python 3.11 and 3.12
+both lack the declared `wheel` backend and there is no cached copy. No
+dependency was fetched or installed, and this environmental blocker is not a
+source failure, runtime result, or capacity/completion claim.
+
 - `MF-P6-19.01`: 25 completed / 0 failed engineering missions, one service
   generation, 50 real replay requests and unique responses, 25 accepted
   canonical proposals and releases, no request-binding mismatch. The immutable

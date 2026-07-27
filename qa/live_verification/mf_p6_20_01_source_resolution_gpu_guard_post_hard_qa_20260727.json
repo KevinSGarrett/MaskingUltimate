@@ -1,0 +1,105 @@
+{
+  "authority_file_sha256": {
+    "Plan/27_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS_SPEC.md": "638d8f1a0e73af20189ec0773bac360d980ac78e86a0846a104d5181f4ca4e07",
+    "Plan/28_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md": "a82a3844736b6558d7ce54b2fd2bec1ac3151d791acf700900b65b51ac65d947",
+    "Plan/Instructions/16_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS.md": "e6608e03789676f1db80640731e1edc40a3370bcec2147acfdd7e5094d4989ce",
+    "Plan/Instructions/18_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md": "66a65af8ef6fa53b36a171fec9ea6d213a2f564d6d426224296dde53c919aa05",
+    "Plan/Items/23_ITEMS_P6_SELF_HOSTED_AUTONOMOUS_LLM_OPERATIONS.md": "f03df89fc8b6de5925fd551e9df9e92c3212ca4388725caccbc47d12630e9ffb",
+    "Plan/Items/24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md": "e8a50512409a236e95a39e56b6a571e677d507fad7533e4a7fdd67802d9062c9",
+    "Plan/SELF_HOSTED_AUTONOMOUS_LLM_PURSUING_GOAL_MESSAGE.md": "47e3192565c04f0ff3f4a9881397355b230ba78abda5f5dfd1132412d81da713",
+    "configs/self_hosted_autonomy_contract_freeze_v1.json": "d4e55cd9f957d8dde7678744c91a7aa7d4bc5e6c68cb8b54cc5934abc09b9d73"
+  },
+  "autonomy_commit_sha": "3fd1760c0ccc46427ccbe9d6e53c178b6eab73c1",
+  "full_product_commit_sha": "7d66ca27781d899a43eb644c0378bcf1478045a7",
+  "resolutions": [
+    {
+      "autonomy_git_object_id": "9d605d54c047bd374d42533b328df6ff96d7a921",
+      "full_product_git_object_id": "020cba403b79cf114e264c0e79ac1aa108fc0b77",
+      "limitations": [
+        "This resolves only the current source/test lineage for tests/steward/test_completion_throughput_gate.py.",
+        "No campaign, capacity, tracker, provider, or release credit is claimed."
+      ],
+      "path": "tests/steward/test_completion_throughput_gate.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "verification": {
+        "commands": [
+          "python -m pytest tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py -q",
+          "python -m ruff check tools/run_with_shared_pod_gpu_lease.py tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py",
+          "python -m compileall -q tools/run_with_shared_pod_gpu_lease.py"
+        ],
+        "passed_test_count": 21,
+        "result": "pass",
+        "test_lineage": {
+          "tests/steward/test_completion_throughput_gate.py": {
+            "autonomy_git_object_id": "9d605d54c047bd374d42533b328df6ff96d7a921",
+            "full_product_git_object_id": "020cba403b79cf114e264c0e79ac1aa108fc0b77",
+            "worktree_sha256": "21237ea0db9e1ab8c5de3a12a3f4e34aa25d836f4a087337e51420f4c17c6c00"
+          }
+        }
+      },
+      "worktree_sha256": "21237ea0db9e1ab8c5de3a12a3f4e34aa25d836f4a087337e51420f4c17c6c00"
+    },
+    {
+      "autonomy_git_object_id": "1d5a358c99f94b15401d96600f104cd0dc9b1d9c",
+      "full_product_git_object_id": "5efaf86ddf1d1e4664f7ef2cdb9f7ddc61fcc57d",
+      "limitations": [
+        "This resolves only the current source/test lineage for tests/test_run_with_shared_pod_gpu_lease.py.",
+        "No campaign, capacity, tracker, provider, or release credit is claimed."
+      ],
+      "path": "tests/test_run_with_shared_pod_gpu_lease.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "verification": {
+        "commands": [
+          "python -m pytest tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py -q",
+          "python -m ruff check tools/run_with_shared_pod_gpu_lease.py tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py",
+          "python -m compileall -q tools/run_with_shared_pod_gpu_lease.py"
+        ],
+        "passed_test_count": 21,
+        "result": "pass",
+        "test_lineage": {
+          "tests/test_run_with_shared_pod_gpu_lease.py": {
+            "autonomy_git_object_id": "1d5a358c99f94b15401d96600f104cd0dc9b1d9c",
+            "full_product_git_object_id": "5efaf86ddf1d1e4664f7ef2cdb9f7ddc61fcc57d",
+            "worktree_sha256": "4c4c9db91fb2ad53d6fad68df89e1afe908073dee548001b3a8eef210b50ae5b"
+          }
+        }
+      },
+      "worktree_sha256": "4c4c9db91fb2ad53d6fad68df89e1afe908073dee548001b3a8eef210b50ae5b"
+    },
+    {
+      "autonomy_git_object_id": "323d839b9f8cff9e0fd8dba1b00c592f9404c8ee",
+      "full_product_git_object_id": "afbbcc028428ba8baa4df0028b110f3ee5e6e0ac",
+      "limitations": [
+        "This resolves only the mandatory shared-Pod GPU launcher source contract.",
+        "No local child was launched, no lease was acquired, and no foreign process was touched."
+      ],
+      "path": "tools/run_with_shared_pod_gpu_lease.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "verification": {
+        "commands": [
+          "python -m pytest tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py -q",
+          "python -m ruff check tools/run_with_shared_pod_gpu_lease.py tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py",
+          "python -m compileall -q tools/run_with_shared_pod_gpu_lease.py"
+        ],
+        "passed_test_count": 21,
+        "result": "pass",
+        "test_lineage": {
+          "tests/steward/test_completion_throughput_gate.py": {
+            "autonomy_git_object_id": "9d605d54c047bd374d42533b328df6ff96d7a921",
+            "full_product_git_object_id": "020cba403b79cf114e264c0e79ac1aa108fc0b77",
+            "worktree_sha256": "21237ea0db9e1ab8c5de3a12a3f4e34aa25d836f4a087337e51420f4c17c6c00"
+          },
+          "tests/test_run_with_shared_pod_gpu_lease.py": {
+            "autonomy_git_object_id": "1d5a358c99f94b15401d96600f104cd0dc9b1d9c",
+            "full_product_git_object_id": "5efaf86ddf1d1e4664f7ef2cdb9f7ddc61fcc57d",
+            "worktree_sha256": "4c4c9db91fb2ad53d6fad68df89e1afe908073dee548001b3a8eef210b50ae5b"
+          }
+        }
+      },
+      "worktree_sha256": "1a50996506c4e7672d59790ec33aaddbcecce909030a398bcf47cb808dad3aa0"
+    }
+  ],
+  "schema_version": "maskfactory.canonical_source_resolution.v2",
+  "self_sha256": "c727cbf2d28fa07ac716fdbf1cc45a001a454f9d8ec3cc857a42c94bc9b911ac",
+  "supersedes": []
+}

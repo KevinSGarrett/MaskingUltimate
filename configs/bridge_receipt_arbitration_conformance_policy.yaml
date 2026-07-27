@@ -1,0 +1,90 @@
+schema_version: "1.0.0"
+policy_id: maskfactory-bridge-receipt-arbitration-conformance-v1
+policy_version: "1.0.0"
+canonicalization:
+  algorithm: maskfactory-canonical-json-v1
+  excluded_top_level_fields:
+    - policy_sha256
+authority_rank:
+  invalid: 0
+  hypothesis: 1
+  draft: 2
+  qa_passed_noncertified: 3
+  certified: 4
+qa_status_rank:
+  fail: 0
+  not_run: 1
+  pass: 2
+allowed_artifact_kinds:
+  - atomic_visible
+  - protected_qa
+  - atomic
+  - derived_visible
+forbidden_representation_classes:
+  - latent
+  - engine_private_latent
+  - shared_latent_tensor
+dimensions:
+  authority:
+    direction: higher_better
+    weight: 1000
+  qa:
+    direction: higher_better
+    weight: 100
+  freshness:
+    direction: higher_better
+    weight: 50
+  preservation_safety:
+    direction: higher_better
+    weight: 80
+  cost_efficiency:
+    direction: higher_better
+    weight: 20
+freshness:
+  max_age_seconds: 86400
+  missing_value: ineligible
+preservation_risk:
+  minimum: 0.0
+  maximum: 1.0
+  missing_value: ineligible
+cost:
+  total_ms_missing_value: ineligible
+  peak_vram_mb_missing_value: ineligible
+  reference_total_ms: 60000
+  reference_peak_vram_mb: 24576
+ambiguity:
+  score_epsilon: 0.001
+  max_branch_alternatives: 2
+dominance:
+  wrapper_certified_mode_a_beats_uncertified_mode_b_draft: true
+  mode_a_access_alone_grants_no_rank: true
+  newness_cannot_overcome_authority: true
+  cost_cannot_overcome_authority_or_qa: true
+main_decision_outcomes:
+  - choose
+  - branch
+  - abstain
+reason_codes:
+  - eligible
+  - incompatible_scope
+  - incompatible_latent
+  - candidate_ineligible
+  - authority_insufficient
+  - qa_not_passed
+  - freshness_stale
+  - preservation_risk_missing_or_invalid
+  - preservation_risk_exceeds_budget
+  - cost_missing_or_invalid
+  - cost_exceeds_budget
+  - pass_requirement_weakened
+  - wrapper_mode_a_dominates_draft
+  - close_alternatives_branch
+  - close_alternatives_abstain
+  - no_eligible_candidates
+  - main_decision_missing_or_malformed
+  - main_decision_disagrees
+  - main_signature_missing
+  - producer_head_mismatch
+  - receipt_binding_mismatch
+  - order_dependent_claim
+policy_sha256: 80726f8dc6bd5967ad8451556a97c69653dc4598b5fcd065e9141ff7111fde24

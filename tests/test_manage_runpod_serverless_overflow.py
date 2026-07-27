@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import json
 import subprocess
 import sys
@@ -9,6 +10,7 @@ from pathlib import Path
 import yaml
 
 from maskfactory.autonomy.serverless_overflow import OverflowBroker, OverflowConfig, OverflowError
+from maskfactory.steward.continuous_contract import canonical_sha256
 
 
 PROJECT_ROOT = Path(__file__).parents[1]
@@ -36,6 +38,10 @@ def _config(tmp_path: Path) -> OverflowConfig:
     return OverflowConfig.load(config_path)
 
 
+def _sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
 def test_canonical_manager_is_installed_and_can_make_a_decision(tmp_path: Path) -> None:
     result = subprocess.run(
         [
@@ -59,6 +65,78 @@ def test_canonical_manager_is_installed_and_can_make_a_decision(tmp_path: Path) 
     assert decision["session_id"] == MASK_SESSION
     assert decision["profile"] == "maskfactory"
     assert decision["route"] in {"local_pod", "serverless_overflow"}
+
+
+def test_execution_host_preflight_is_hash_bound_and_provider_free(tmp_path: Path) -> None:
+    config = _config(tmp_path)
+    broker = OverflowBroker(config, root=config.runpod_root)
+    assert broker.db_path.is_file()
+    config_path = tmp_path / "config.yaml"
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(MANAGER_PATH),
+            "--config",
+            str(config_path),
+            "--root",
+            str(config.runpod_root),
+            "preflight",
+            "--session-id",
+            MASK_SESSION,
+            "--expected-manager-sha256",
+            _sha256(MANAGER_PATH),
+            "--expected-config-sha256",
+            _sha256(config_path),
+        ],
+        capture_output=True,
+        check=False,
+        text=True,
+    )
+
+    assert result.returncode == 0, result.stderr
+    receipt = json.loads(result.stdout)
+    assert receipt["provider_calls"] is False
+    assert receipt["broker_write"] is False
+    assert receipt["profile"] == "maskfactory"
+    assert receipt["execution_host"]["ledger_path"] == str(broker.db_path.resolve())
+    assert receipt["execution_host"]["manager_sha256"] == _sha256(MANAGER_PATH)
+    assert receipt["execution_host"]["config_sha256"] == _sha256(config_path)
+    sealed = dict(receipt)
+    sealed["receipt_sha256"] = "0" * 64
+    assert receipt["receipt_sha256"] == canonical_sha256(sealed)
+
+
+def test_execution_host_preflight_rejects_hash_drift_before_broker_write(tmp_path: Path) -> None:
+    config = _config(tmp_path)
+    broker = OverflowBroker(config, root=config.runpod_root)
+    before = broker.db_path.read_bytes()
+    config_path = tmp_path / "config.yaml"
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(MANAGER_PATH),
+            "--config",
+            str(config_path),
+            "--root",
+            str(config.runpod_root),
+            "preflight",
+            "--session-id",
+            MASK_SESSION,
+            "--expected-manager-sha256",
+            "0" * 64,
+            "--expected-config-sha256",
+            _sha256(config_path),
+        ],
+        capture_output=True,
+        check=False,
+        text=True,
+    )
+
+    assert result.returncode != 0
+    assert "preflight manager hash mismatch" in result.stderr
+    assert broker.db_path.read_bytes() == before
 
 
 def test_billing_403_uses_terminal_ledger_spend_without_relaxing_admission(

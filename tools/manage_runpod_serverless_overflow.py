@@ -9,6 +9,7 @@ decide/reserve/submit/reconcile protocol.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import sys
@@ -28,6 +29,96 @@ from maskfactory.autonomy.serverless_overflow import (  # noqa: E402
     RunPodClient,
     probe_local_gpu,
 )
+from maskfactory.steward.continuous_contract import canonical_sha256  # noqa: E402
+
+
+ZERO_SHA256 = "0" * 64
+
+
+def _file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _execution_host_preflight(
+    *,
+    config: OverflowConfig,
+    config_path: Path,
+    broker_root: Path | None,
+    session_id: str,
+    expected_manager_sha256: str,
+    expected_config_sha256: str,
+) -> dict[str, Any]:
+    """Return a sealed, provider-free receipt for one actual execution host.
+
+    This command deliberately does not instantiate ``OverflowBroker``: doing
+    so would create or change a ledger before the host mapping and source
+    binding are proven.  It also makes no provider request.  A caller may only
+    advance to the canonical ``decide`` command after this receipt is retained
+    in its immutable parent contract.
+    """
+
+    manager = Path(__file__).resolve(strict=True)
+    resolved_config = config_path.resolve(strict=True)
+    if broker_root is None:
+        raise SystemExit("preflight requires an explicit --root")
+    resolved_root = broker_root.resolve(strict=True)
+    configured_root = config.runpod_root.resolve(strict=True)
+    if resolved_root != configured_root:
+        raise SystemExit("preflight root does not match config durability.runpod_root")
+    ledger = resolved_root / config.sqlite_filename
+    if not ledger.is_file():
+        raise SystemExit("preflight ledger is missing")
+    with ledger.open("rb") as handle:
+        ledger_header = handle.read(16)
+    if ledger_header != b"SQLite format 3\x00":
+        raise SystemExit("preflight ledger is not a SQLite database")
+    profile = config.sessions.get(session_id)
+    if profile is None:
+        raise SystemExit("session is not authorized for shared overflow")
+
+    manager_sha256 = _file_sha256(manager)
+    config_sha256 = _file_sha256(resolved_config)
+    if expected_manager_sha256 != manager_sha256:
+        raise SystemExit("preflight manager hash mismatch")
+    if expected_config_sha256 != config_sha256:
+        raise SystemExit("preflight config hash mismatch")
+
+    receipt: dict[str, Any] = {
+        "schema_version": "maskfactory.serverless_execution_host_preflight.v1",
+        "session_id": session_id,
+        "profile": profile,
+        "provider_calls": False,
+        "broker_write": False,
+        "execution_host": {
+            "python": str(Path(sys.executable).resolve()),
+            "manager_path": str(manager),
+            "manager_sha256": manager_sha256,
+            "config_path": str(resolved_config),
+            "config_sha256": config_sha256,
+            "broker_root": str(resolved_root),
+            "ledger_path": str(ledger),
+            "ledger_sha256": _file_sha256(ledger),
+            "ledger_bytes": ledger.stat().st_size,
+        },
+        "canonical_decide_argv": [
+            str(Path(sys.executable).resolve()),
+            str(manager),
+            "--config",
+            str(resolved_config),
+            "--root",
+            str(resolved_root),
+            "decide",
+            "--session-id",
+            session_id,
+        ],
+        "receipt_sha256": ZERO_SHA256,
+    }
+    receipt["receipt_sha256"] = canonical_sha256(receipt)
+    return receipt
 
 
 def _read(path: Path) -> dict[str, Any]:
@@ -115,6 +206,11 @@ def main() -> None:
     parser.add_argument("--root", type=Path)
     commands = parser.add_subparsers(dest="command", required=True)
 
+    preflight = commands.add_parser("preflight")
+    preflight.add_argument("--session-id", required=True)
+    preflight.add_argument("--expected-manager-sha256", required=True)
+    preflight.add_argument("--expected-config-sha256", required=True)
+
     decide = commands.add_parser("decide")
     decide.add_argument("--session-id", required=True)
 
@@ -143,7 +239,18 @@ def main() -> None:
 
     args = parser.parse_args()
     config = OverflowConfig.load(args.config)
-    broker = OverflowBroker(config, root=args.root)
+    if args.command == "preflight":
+        output = _execution_host_preflight(
+            config=config,
+            config_path=args.config,
+            broker_root=args.root,
+            session_id=args.session_id,
+            expected_manager_sha256=args.expected_manager_sha256,
+            expected_config_sha256=args.expected_config_sha256,
+        )
+    else:
+        broker = OverflowBroker(config, root=args.root)
+        output = None
     if args.command == "decide":
         profile = config.sessions.get(args.session_id)
         if profile is None:
@@ -180,8 +287,9 @@ def main() -> None:
         output = broker.reconcile_active(_client())
     elif args.command == "cancel":
         output = broker.cancel(args.job_id, _client())
-    else:
+    elif args.command == "report":
         output = broker.report(billing_day=args.billing_day)
+    assert output is not None
     print(json.dumps(output, indent=2, sort_keys=True))
 
 

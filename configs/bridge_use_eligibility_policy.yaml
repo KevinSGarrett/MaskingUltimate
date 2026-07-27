@@ -1,0 +1,41 @@
+schema_version: "1.0.0"
+policy_id: maskfactory-bridge-use-eligibility-v1
+policy_version: "1.0.0"
+canonicalization:
+  algorithm: maskfactory-canonical-json-v1
+  excluded_top_level_fields:
+    - policy_sha256
+authority_rank:
+  invalid: 0
+  hypothesis: 1
+  draft: 2
+  qa_passed_noncertified: 3
+  certified: 4
+use_scopes:
+  production_conditioning:
+    required_authority_state: certified
+    require_active_exact_certificate: true
+  downstream_promotion_support:
+    required_authority_state: certified
+    require_active_exact_certificate: true
+  repair_seed:
+    required_authority_state: qa_passed_noncertified
+    require_active_exact_certificate: false
+  qa:
+    required_authority_state: qa_passed_noncertified
+    require_active_exact_certificate: false
+  diagnostic:
+    required_authority_state: hypothesis
+    require_active_exact_certificate: false
+reason_codes:
+  - authority_insufficient
+  - certificate_scope_incomplete
+  - eligible
+  - execution_not_succeeded
+  - global_certified_shortcut
+  - policy_observation_disagrees
+  - producer_self_assertion
+  - qa_not_passed
+  - revocation_not_current
+  - transform_not_roundtrip_validated
+policy_sha256: 2091798bde20a05cfc169631acc0ed3d2194ffc66527f86004fb2413452ae0d4

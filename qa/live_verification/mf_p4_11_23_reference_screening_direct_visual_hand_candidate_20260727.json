@@ -1,0 +1,35 @@
+{
+  "authority_boundary": {
+    "candidate_materialization_allowed": false,
+    "critic_qualification_allowed": false,
+    "mask_generation_allowed": false,
+    "promotion_allowed": false,
+    "reason": "Direct visual screening confirms only that the requested anatomy is visible in a hash-bound reference image. It does not establish an exact target mask, owner, side, neighbor, protected-region resources, qualified truth, or critic authority."
+  },
+  "reference_readiness_binding": {
+    "path": "qa/live_verification/mf_p4_11_23_visual_reference_readiness_20260727.json",
+    "raw_sha256": "a0d23229f76737470edf0321d877bc39fe3c9f56b10e0fa4042bdaca2a8ab9c2",
+    "self_sha256": "65cc4159b08e0bd83df9057df675f2cd86895097ed8be068920fe91879c4490e"
+  },
+  "review": {
+    "decision": "reference_only_visual_target_confirmed",
+    "evidence_basis": "direct_pixel_review",
+    "metadata_hint": "hands_visible",
+    "observed_content": "One hand and distinct fingers are visibly present beside a clothed torso. No exact mask boundary, owner binding, laterality, or protected-region resource is supplied.",
+    "reviewer": "codex_direct_visual_screening",
+    "target_role": "part_hand_fingers"
+  },
+  "schema_version": "maskfactory.visual_reference_direct_screening.v1",
+  "screened_image": {
+    "bytes": 110409,
+    "dimensions": {
+      "height": 900,
+      "width": 1200
+    },
+    "materialized_relative_path": "benchmark_reference/clothed__one/6e28c9b052d8b0e0__Marshall_Small010.jpg",
+    "relative_path": "Proko_-_Poses_Hand_Pack_1/Proko - Poses Hand Pack 1/Marshall/Marshall_Small010.jpg",
+    "sha256": "6e28c9b052d8b0e0443066f6b646bc994e9c5f0bde8a2f8bbacff0d369c5520e",
+    "source_group": "Proko_-_Poses_Hand_Pack_1"
+  },
+  "self_sha256": "837126d922adb9576d725ebe00360a91649b158502abbd024d959aa4649647ac"
+}

@@ -1,0 +1,37 @@
+{
+  "authority_file_sha256": {
+    "Plan/28_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md": "a82a3844736b6558d7ce54b2fd2bec1ac3151d791acf700900b65b51ac65d947",
+    "Plan/Items/24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md": "e8a50512409a236e95a39e56b6a571e677d507fad7533e4a7fdd67802d9062c9"
+  },
+  "autonomy_commit_sha": "776af97a0f7b41820e3c3a4c947d00bf86ee33ef",
+  "full_product_commit_sha": "7d66ca27781d899a43eb644c0378bcf1478045a7",
+  "resolutions": [
+    {
+      "autonomy_git_object_id": "c17ce533df979caeda97e0e0f40d406fcda82a25",
+      "full_product_git_object_id": "a898d569acec16a52a3c5cfd4762404f9ceea9af",
+      "limitations": [
+        "This resolves only an additive wheel-artifact closure verifier in the current release-packaging source path.",
+        "The 941-test current-checkout pass is not the audited 4,446-test full-product suite or a clean Linux dependency-install proof.",
+        "No tracker, campaign, provider, GPU, release, or ComfyUI adoption credit is claimed."
+      ],
+      "path": "src/maskfactory/bridge/clean_release_packaging.py",
+      "resolution_kind": "behavior_preserving_autonomy_superset",
+      "verification": {
+        "candidate_test_git_object_ids": {
+          "tests/test_integration_release.py": "394f43037cd4a0e95a1ef07fb4ae1cfcd4733b5a"
+        },
+        "commands": [
+          "python -m pytest -q tests/test_clean_release_packaging.py tests/test_package_runtime_closure.py tests/test_integration_release.py",
+          "ruff check src/maskfactory/bridge/clean_release_packaging.py tests/test_clean_release_packaging.py",
+          "python -m compileall -q src/maskfactory/bridge/clean_release_packaging.py tests/test_clean_release_packaging.py"
+        ],
+        "passed_test_count": 64,
+        "result": "pass"
+      },
+      "worktree_sha256": "70153086d8aa1c2441affd421f1116f4d4b2569b1516cc18e7e65216e9826700"
+    }
+  ],
+  "schema_version": "maskfactory.canonical_source_resolution.v2",
+  "self_sha256": "2342f2035adf637b364fadfb294a47971bbf9c65dd53c0528c07e5d004c1239c",
+  "supersedes": []
+}

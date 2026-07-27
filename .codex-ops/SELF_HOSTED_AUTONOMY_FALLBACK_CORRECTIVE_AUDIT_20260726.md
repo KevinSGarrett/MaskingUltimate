@@ -526,6 +526,12 @@ pass but do not override those failures. The defects must be repaired and the
 focused adapter/executor tests rerun before seal, admission, route, or capacity
 credit.
 
+The directory repair then exposed a Windows path-length issue in the newly
+added parent receipt filename. The admissible repair shortens only the filename
+derivation while retaining full parent/child identities inside the immutable
+receipt payload and its hash-bound validation; it must not weaken identity
+binding or discard lineage merely to make the path writable.
+
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test
 has yet exercised a real same-parent provider run across the boundary.

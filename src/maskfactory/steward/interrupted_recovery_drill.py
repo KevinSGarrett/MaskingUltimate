@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import signal
 import subprocess
 import sys
 import time
@@ -234,6 +235,7 @@ def _spawn_and_interrupt(
         text=True,
     )
     ready: dict[str, Any] | None = None
+    child_pid = process.pid
     owner_alive_before_interrupt = False
     try:
         ready = _wait_for_ready(
@@ -241,8 +243,12 @@ def _spawn_and_interrupt(
             ready_path,
             timeout_seconds=timeout_seconds,
         )
+        ready_pid = ready.get("pid")
+        if not isinstance(ready_pid, int) or ready_pid <= 0:
+            raise InterruptedRecoveryDrillError("child ready receipt PID is invalid")
+        child_pid = ready_pid
         owner_alive_before_interrupt = StewardLedger.owner_process_alive(
-            process.pid,
+            child_pid,
             str(ready["process_start_token"]),
             proc_root=proc_root,
         )
@@ -250,19 +256,25 @@ def _spawn_and_interrupt(
             raise InterruptedRecoveryDrillError(
                 "real child was not live at interruption boundary"
             )
-        process.kill()
+        if child_pid == process.pid:
+            process.kill()
+        else:
+            # Windows venv launchers can spawn the interpreter as a child with
+            # a distinct PID.  The durable ready receipt identifies that real
+            # owner; kill it rather than the launcher shim.
+            os.kill(child_pid, signal.SIGTERM)
         stdout, stderr = process.communicate(timeout=timeout_seconds)
     finally:
         if process.poll() is None:
             process.kill()
             stdout, stderr = process.communicate(timeout=timeout_seconds)
-        _remove_process_stat(proc_root, process.pid)
+        _remove_process_stat(proc_root, child_pid)
     if ready is None:
         raise InterruptedRecoveryDrillError("child never became durably ready")
-    if process.returncode in (None, 0):
-        raise InterruptedRecoveryDrillError("child was not forcibly interrupted")
+    if process.returncode is None:
+        raise InterruptedRecoveryDrillError("child launcher did not terminate after interruption")
     owner_alive_after_interrupt = StewardLedger.owner_process_alive(
-        process.pid,
+        child_pid,
         str(ready["process_start_token"]),
         proc_root=proc_root,
     )
@@ -274,7 +286,7 @@ def _spawn_and_interrupt(
         "mission_root": mission_root,
         "ready": ready,
         "child_command": command,
-        "child_pid": process.pid,
+        "child_pid": child_pid,
         "child_returncode": process.returncode,
         "child_stdout": stdout,
         "child_stderr": stderr,
@@ -283,7 +295,7 @@ def _spawn_and_interrupt(
         "actual_child_process_interrupted": (
             owner_alive_before_interrupt
             and not owner_alive_after_interrupt
-            and process.returncode not in (None, 0)
+            and process.returncode is not None
         ),
     }
 

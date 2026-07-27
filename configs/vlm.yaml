@@ -1,0 +1,258 @@
+runtime:
+  provider: ollama
+  base_url: "http://127.0.0.1:11434"
+  container_name: ollama
+  scope: local_diagnostic_optional_only
+  production_authority: false
+  production_progress_credit: false
+  # Mirrors configs/cloud_teacher.yaml. Exact-image transmission is still
+  # default-deny and separately hash/rights/provider authorized.
+  cloud_enabled: true
+  gpu_resource_governance: disabled
+  generation_options:
+    temperature: 0
+    seed: 1337
+    num_predict: 192
+
+models:
+  # S11 calibrated production path (legacy fingerprint). Autonomy STRICT gate does NOT
+  # use this alone — see strict_visual_gate below (high-end primary + qwen ensemble).
+  primary_vlm: "qwen2.5vl:7b"
+  fallback_vlm: "llava:13b"
+  strict_gate_primary_vlm: "llava:13b"
+  secondary_ensemble_vlm: "qwen2.5vl:7b"
+  alternate_high_end_vlm: "llama3.2-vision:11b"
+  text_llm: "qwen2.5:7b-instruct"
+  challengers: ["qwen3-vl:4b-instruct-q4_K_M", "qwen3-vl:8b-instruct-q4_K_M"]
+  challenger_mode: shadow_only
+  llava_retirement_requires_measured_replacement_win: true
+  # qwen2.5vl:7b MUST NOT be the sole rubber-stamp critic for MVC/CAA/gold.
+
+# Binding autonomy visual gate (STANDING_ORDERS § SELF-HOSTED STRICT VLM GATE).
+# High-end primary + secondary ensemble; fail-closed if Ollama/models unavailable.
+strict_visual_gate:
+  enabled: true
+  primary_vlm: "llava:13b"
+  alternate_high_end_vlm: "llama3.2-vision:11b"
+  secondary_ensemble_vlm: "qwen2.5vl:7b"
+  require_ensemble_for_pass: true
+  temperature: 0
+  seed: 1337
+  num_predict: 1280
+  generation_options:
+    temperature: 0
+    seed: 1337
+    num_predict: 1280
+  fail_closed_if_unavailable: true
+  allow_skip_vlm: false
+  min_pass_confidence: 0.75
+  unload_after_burst: true
+  panels_required:
+    - source
+    - mask
+    - overlay
+  rubric_dimensions:
+    - anatomy
+    - boundary
+    - leakage
+    - emptiness
+    - label_consistency
+    - overlay_contour_review
+  mandatory_for:
+    - tournament_mvc_emit_acceptance
+    - caa_admission
+    - autonomous_certified_gold
+    - package_freeze_challenger_panels
+    - mode_b_champion_visual_smoke
+    - hand_clothing_climb
+  evidence_must_log:
+    - model_id
+    - prompt_sha256
+    - response
+    - panel_sha256
+  never:
+    - cloud_llm_for_mf_vlm_qa
+    - blind_approve_without_panel_plus_vlm
+    - vlm_clears_hard_qc_block
+    - qwen_only_rubber_stamp
+
+production_runtime:
+  platform: runpod
+  persistent_root: /workspace
+  catalog: configs/visual_critic_catalog.yaml
+  catalog_sha256: 322d47c2aa48d05162186d0f616d6de4218d8cb952359d118218c25e21da828a
+  catalog_file_sha256: a17797b7a1ac33f2dd2ba6fb774a366f9e728c21b72f8a3742c860d22a00fee9
+  gpu_resource_governance: disabled
+  private_loopback_endpoints_only: true
+  primary_visual_critic: null
+  independent_family_juror: null
+  authority_status: unavailable_pending_positive_and_negative_qualification
+  certification_behavior_when_unavailable: abstain
+  qualification_protocol:
+    version: maskfactory-live-critic-calibration-v3-single-board-explicit-checks
+    prompt_sha256: cea805d38d18ee96d5c82251a665a8064a947c47e39d47688754e3904e8221a6
+    implementation_sha256: 2bc30300e143eb945954c3914a67828eea5c915dcd82e8e0a30e21fb2ec9d91d
+    runner_sha256: 24e29322f10fcb5a5c4f453a001272c89c5b1468b3de1f913cd887e5c294d486
+    frozen_corpus_sha256: 7064d190fb6535f09482ef504e18f4b2ff12c7ab5254ae96003e756ffc8cc9d0
+    qualification_scope: protocol_behavior_canary_only
+    covered_label_ids:
+      - right_arm_external_reference
+    full_role_qualification: false
+    role_certificate_issuance_allowed: false
+    one_exact_record_per_verdict: true
+    contact_sheet_authority: false
+    promotion_requires:
+      - frozen_66_class_and_required_risk_domain_regression
+      - complete_positive_and_negative_real_mask_coverage
+      - adult_anatomy_and_multi_person_ownership_strata
+      - current_independent_family_passes
+  failed_candidates:
+    qwen3_6_27b_fp8:
+      role: independent_juror
+      valid_mask_pass_rate: 0.0
+      defect_precision: 0.8333333333333334
+      defect_recall: 1.0
+      ownership_accuracy: 0.0
+      label_accuracy: 0.5
+      qualification_status: fail
+      report_sha256: 899613635fbfec84dfea2060a659204c2e85eed39cddd5f3fa9f6136873d2051
+      report_file_sha256: d73257bab986162bc65db14be18614bde21b5868f046c72ba431c1e0b9595abc
+      evidence: qa/live_verification/runpod_visual_authority_reconciliation_20260722.json
+    internvl3_5_8b_bf16:
+      role: independent_juror
+      valid_mask_pass_rate: 0.0
+      defect_precision: 0.7777777777777778
+      defect_recall: 0.7
+      qualification_status: fail
+      report_file_sha256: e2d735b1ad8da00910cd46efb0fa5747d485e29bbad5cb516337e53d8c8066ff
+      evidence: qa/live_verification/runpod_visual_authority_reconciliation_20260722.json
+  unqualified_candidates:
+    pixtral_12b_2409:
+      family: mistral_pixtral
+      lifecycle: smoked_qualification_failed
+      assigned_roles: []
+      artifact_tree_sha256: 0070c50d26443b0e3204a96220b483480bf95eee34d7e81c9a5c46efa07aea0a
+      valid_mask_pass_rate: 1.0
+      defect_recall: 0.0
+      serious_false_pass_rate: 1.0
+      report_file_sha256: b181b209679092d22ce94aece1c9043db666552ef7b7e132a6d7a6b1d935d3ee
+    qwen3_vl_30b_a3b_instruct_fp8:
+      family: qwen
+      lifecycle: downloaded_runtime_startup_incomplete_unqualified
+      assigned_roles: []
+      artifact_tree_sha256: dbb7d33b3ab68a356069bc577692fd347c4103c2c59ead3a65943d664a8c8d4a
+      startup_evidence: 2_of_4_checkpoint_shards_loaded_before_bounded_job_ended
+      qualification_report: null
+    minicpm_v_4_5_bf16:
+      family: qwen
+      independent_family_eligible_against_qwen: false
+      lifecycle: smoked_qualification_failed
+      assigned_roles: []
+      artifact_tree_sha256: 6fca3294df97b0e9fa4bc70bea9907cbb01a27816ee59880bb2aea29bda138a0
+      valid_mask_pass_rate: 1.0
+      defect_recall: 0.3
+      serious_false_pass_rate: 0.5
+      report_file_sha256: 44e0123326bcd45336f032d261a23b63834b60b39734fa9d8983b73f2a81d5f1
+    glm_4_1v_9b_thinking:
+      family: glm
+      lifecycle: smoked_qualification_failed
+      assigned_roles: []
+      artifact_tree_sha256: e62628b04ac0286c137226dc3ff14f3d2d468e488d9e7b752be51f701d2efc32
+      valid_mask_pass_rate: 1.0
+      defect_recall: 0.0
+      ownership_accuracy: 0.0
+      label_accuracy: 0.0
+      serious_false_pass_rate: 1.0
+      report_sha256: 9d269ff93e8fd43bf8a92f6a58d1aa4ecd8d58280047a1b1556aace10366e3cc
+      report_file_sha256: 410bddc9348a3c17c0cf8ea6386b49555165deb7b41320890a9e111afc20f3d7
+  enable_autonomous_approval_only_after:
+    - acceptable_valid_mask_pass_rate
+    - acceptable_defect_precision_and_recall
+    - ownership_and_label_accuracy
+    - deterministic_replay
+    - current_role_certificates
+    - independent_model_families
+    - real_adult_anatomy_batch_canary
+
+prompts:
+  p_part:
+    version: "p-part-v1-doc10"
+    max_image_long_side: 1024
+    retry_on_invalid_json: 1
+    allowed_verdicts:
+      - pass
+      - fail
+      - uncertain
+    allowed_problems:
+      - wrong_part
+      - wrong_side
+      - boundary_too_loose
+      - boundary_too_tight
+      - includes_clothing_as_skin
+      - includes_background
+      - includes_neighbor_part
+      - missing_visible_area
+      - mask_on_hidden_area
+      - finger_merge
+      - hair_edge_bad
+      - occlusion_error
+      - other
+    required_keys:
+      - verdict
+      - confidence
+      - problems
+      - evidence
+      - correction_instruction
+  p_image:
+    version: "p-image-v2-source-overlay"
+    max_image_long_side: 1024
+    retry_on_invalid_json: 1
+    required_keys: [missing, mislabeled, lr_suspect, impossible_claims, notes]
+  p_manifest:
+    version: "p-manifest-v1-doc10"
+    retry_on_invalid_json: 1
+    required_keys: [findings, overall]
+  p_workhorse:
+    version: "p-workhorse-v1-multimage-tools"
+    path: "src/maskfactory/vlm/prompts/p_workhorse.txt"
+    independent_image_long_side: 1024
+    retry_on_invalid_json: 1
+  p_compare:
+    version: "p-compare-v1-before-after"
+    path: "src/maskfactory/vlm/prompts/p_compare.txt"
+    retry_on_invalid_json: 1
+
+workhorse:
+  enabled: true
+  mode: "gated_candidate_generation"
+  max_iterations_per_part: 3
+  max_points_per_polarity: 12
+  min_failure_confidence: 0.7
+  max_changed_fraction: 0.75
+  max_protected_overlap_fraction: 0.02
+  specialist_disagreement_fraction: 0.03
+  authoritative_map_write: false
+  human_approval_required: false
+  certificate_covered_autoaccept: true
+  residual_human_review_required: true
+  quick_pass_enabled: true
+  think: false
+  generation_options:
+    temperature: 0
+    seed: 1337
+    num_predict: 768
+    num_ctx: 32768
+
+routing:
+  quick_pass_min_confidence: 0.7
+  uncertain_has_hints: false
+  machine_instruction_prefix: "MACHINE-GENERATED SUGGESTION: "
+  heatmap_pin_on_auto_vlm_disagreement: true
+
+governance:
+  role: "qa_router_only"
+  may_author_masks: false
+  may_approve_gold: false
+  may_clear_blocks: false
+  source_images_leave_machine: exact_hash_opt_in_only
+  unavailable_visual_authority_requires_abstention: true

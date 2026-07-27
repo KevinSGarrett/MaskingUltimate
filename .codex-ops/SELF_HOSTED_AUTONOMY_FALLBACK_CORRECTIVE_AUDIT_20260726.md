@@ -289,11 +289,12 @@ Current runtime checkpoint: after user-authenticated direct-Pod preflight found
 the Ada idle with no competing process or listener and admitted the bound
 model/source, the self-hosted Qwen service reached its bound loopback endpoint
 with the expected served-model identity. Exactly one sealed 60-minute local
-parent controller has been issued against it. This is `RUNTIME_IN_PROGRESS`
-only: no OpenRouter or Serverless child, external provider call,
-cross-controller capacity credit, or completion claim exists. It must retain
-durable execution receipts and terminally reconcile/release before any later
-fallback work is considered.
+parent controller was issued against it, then exited before its first monitoring
+read. Its exact logs and receipts are under preservation/inspection as the
+same-parent recovery path; no rerun or replacement identity is authorized.
+No OpenRouter or Serverless child, external provider call, cross-controller
+capacity credit, or completion claim exists. The attempt must reconcile and
+release terminally before any later fallback work is considered.
 
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test

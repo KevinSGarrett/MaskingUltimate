@@ -122,13 +122,21 @@ Ruff, compileall, and diff checks clean.
 yet be treated as one end-to-end controller, and no test has exercised a real
 same-parent provider run across that boundary.
 
+`MISSION_SIZE_GATE_OPEN`: the current controller guard can classify a
+one-second unit as an outcome-sized mission, while existing test fixtures use
+inconsistent 600/900-second contracts. Terminal labels and parent identity do
+not establish meaningful autonomous work. The integrated controller must
+enforce and negatively test a policy-bound minimum mission-size/capability-work
+threshold before admitting a paid or advisory child; otherwise a correctly
+bound route could still recreate a micro-handoff loop.
+
 This does not permit a successor from `decide` alone, relax the legacy
 owner-recovery 1/1 worker caps, execute a provider job, or grant
 `FALLBACK_CAPACITY_UNPROVEN` any credit. `NO_CAPACITY_CREDIT` remains binding
 until the CUI primary controller consumes the exact CUI manager contract and
-one real parent retains host preflight, completes its source-hash-bound child
-work, applies/tests/QAs its result, and reconciles both children to terminal
-state.
+the mission-size gate rejects below-threshold work, then one real parent
+retains host preflight, completes its source-hash-bound child work,
+applies/tests/QAs its result, and reconciles both children to terminal state.
 
 The RunPod browser is currently at an authorized-console sign-in page. No SSH
 or Jupyter bypass is authorized. Consequently, local tests prove the control

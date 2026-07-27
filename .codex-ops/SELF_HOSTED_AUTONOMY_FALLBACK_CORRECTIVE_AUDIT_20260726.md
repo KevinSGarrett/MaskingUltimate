@@ -402,6 +402,18 @@ endpoint without owning a bound model-server lifecycle. Any future repair must
 make model launch, readiness, ownership, and release part of the
 manifest-bound controller contract, not an external manual precondition.
 
+Owner-sealed lifecycle repair `181f5febe52ce618f053acc43107dae7bca42e8c`
+(`fix(wave88): bind owned self-hosted runtime lifecycle`) is now published on
+both authoritative and trace branches. It binds executable, model, config,
+served-model, and command hashes; requires exact readiness before any adapter
+request; records owned process-group launch/release receipts; and classifies a
+runtime-lifecycle failure as platform repair. The honest failure receipt is
+`Plan/Tracker/Evidence/RunPod/WAVE88_FIRST_OUTCOME_PARENT_RUNTIME_FAILURE_20260727.json`.
+Thirty-six focused tests and lint pass. The only current Pod action is a
+fast-forward of this code into the clean checkout: no model launch, provider
+call, parent retry, fallback child, capacity credit, or terminal-success claim
+is authorized by publication.
+
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test
 has yet exercised a real same-parent provider run across the boundary.

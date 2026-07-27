@@ -27,6 +27,10 @@ from maskfactory.steward.engineering_campaign_runtime_packet import (
     build_engineering_campaign_runtime_packet,
     validate_engineering_campaign_runtime_packet,
 )
+from maskfactory.steward.engineering_campaign_telemetry import (
+    build_engineering_campaign_telemetry_bundle,
+    validate_engineering_campaign_telemetry_bundle,
+)
 from maskfactory.steward.runtime import (
     LAUNCH_RECEIPT_SCHEMA,
     SHUTDOWN_RECEIPT_SCHEMA,
@@ -351,6 +355,20 @@ def test_real_runtime_emits_one_exact_adoption_packet(
         campaign_root=campaign_root,
         database=database,
     ).run()
+    atomic_write_json(
+        campaign_root / "engineering_campaign_source.json",
+        {
+            "schema_version": "maskfactory.engineering_campaign_source.v1",
+            "session_id": "session-1",
+            "tracker_item_id": "MF-P6-19.01",
+            "compatibility_key": "fixture",
+            "context_token_cap": 4096,
+            "max_packet_bytes": 12288,
+            "completed_dependency_ids": [],
+            "missions": [],
+            "source_sha256": hashlib.sha256(b"fixture-source").hexdigest(),
+        },
+    )
     binding = read_json(campaign_root / BINDING_NAME)
     atomic_write_json(
         campaign_root / "cpu_grammar_preflight_25.json",
@@ -436,6 +454,48 @@ def test_real_runtime_emits_one_exact_adoption_packet(
             database=database,
         )
         == packet
+    )
+
+    telemetry_root = tmp_path / "telemetry"
+    telemetry = build_engineering_campaign_telemetry_bundle(
+        repo_root=Path.cwd(),
+        campaign_root=campaign_root,
+        contract_path=CONTRACT_PATH,
+        database=database,
+        runtime_packet_root=output,
+        output_root=telemetry_root,
+        baseline_usage_units_per_accepted_artifact=1,
+        terminal_adoption_usage_units=1,
+        terminal_adoption_review_seconds=0,
+        limitations=[
+            "The fixture measures campaign-level intervention units, not desktop tokens."
+        ],
+    )
+    assert telemetry["telemetry"]["counts"] == {
+        "planned": 25,
+        "eligible": 25,
+        "completed": 25,
+        "autonomously_prepared": 25,
+        "accepted": 25,
+    }
+    assert telemetry["telemetry"]["routes"]["local_pod"] == 25
+    assert telemetry["telemetry"]["timing"]["local_gpu_work_cells"] == 1
+    assert telemetry["telemetry"]["timing"]["local_gpu_released_work_cells"] == 1
+    assert telemetry["telemetry"]["integrity"][
+        "duplicate_inference_submissions"
+    ] == 0
+    assert telemetry["telemetry"]["artifacts"]["accepted"] == 25
+    assert telemetry["slo"]["passed"] is True
+    assert (
+        validate_engineering_campaign_telemetry_bundle(
+            telemetry_root,
+            repo_root=Path.cwd(),
+            campaign_root=campaign_root,
+            contract_path=CONTRACT_PATH,
+            database=database,
+            runtime_packet_root=output,
+        )
+        == telemetry
     )
 
     foreign_handoff = {

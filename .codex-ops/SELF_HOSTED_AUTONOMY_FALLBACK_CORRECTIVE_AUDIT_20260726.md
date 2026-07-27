@@ -351,6 +351,32 @@ contain that increment. A normal non-force authoritative-lineage reconciliation
 is mandatory before any Pod recovery launch; this trace result grants no new
 provider, route, capacity, or runtime action.
 
+That normal reconciliation is now complete: recovery readiness is published on
+both authoritative branches at `a14c1ec3`. It remains published-but-unexecuted
+with zero runtime or capacity credit. The sole permitted next activity is to
+reattach the user-selected authorized in-app Pod terminal and, only if all
+bound recovery artifacts remain valid, execute the existing parent; no other
+surface, new parent, route, or job is authorized.
+
+Exact authoritative target and trace are
+`a14c1ec37b5986f422ebec7e8b4e6f6123e4d4e6`; recovery code
+`0a3a6a48570e89fb9ce28755827ed03a9bcccff3` is an ancestor through normal
+fast-forward/no force. Publication receipt
+`Plan/Tracker/Evidence/RunPod/WAVE88_FIRST_OUTCOME_PARENT_RECOVERY_IMPLEMENTED_20260727.json`
+uses schema `comfyui.wave88.same_parent_pre_response_recovery_implementation.v1`
+with SHA `b1a4280bf012294b0d9ba2cd75574f072496480314ea637948feb4704e4fd9e8`.
+Its bound hashes are control
+`b1368ef934663718f53b96f4e66cebf4a3c24e480518fbc68e585e59fa49c3c0`, executor
+`76662b519a69aa80f630f54651b1c388c0b127c16497ce005d5fd3eb47302f80`, adapter
+`bea54bffe04e38e83423addbe8bca7d600a62a0f73f4e885a2abd0349bbd3a5e`, and
+manifest schema `a1f8fb8d2d9576bb252b4a76a54570563825b2cefc429bd13294582c8f250084`.
+The 67 focused control-plane/adapter/executor tests and Ruff pass. Status is
+`PUBLISHED_CPU_VALIDATED_RUNTIME_UNEXECUTED`: zero post-publication recovery
+requests, model launches, OpenRouter calls, Serverless reserve/submit/reconcile,
+or terminal packet. Once the authorized terminal is attached, fresh direct
+preflight and exact remote source/failure-evidence verification still precede
+one same-parent reconciliation/request.
+
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test
 has yet exercised a real same-parent provider run across the boundary.

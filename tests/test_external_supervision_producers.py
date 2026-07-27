@@ -1,3 +1,4 @@
+import hashlib
 import json
 from pathlib import Path
 
@@ -11,6 +12,7 @@ from maskfactory.external_supervision_evidence import (
 )
 from maskfactory.external_supervision_hash_manifest import build_source_hash_manifest
 from maskfactory.external_supervision_producers import (
+    ALIGNMENT_SOURCE_KEYS,
     ExternalSupervisionProducerError,
     assess_materialize_capacity,
     build_alignment_evidence,
@@ -40,14 +42,37 @@ def _inventory() -> dict:
     return json.loads(INVENTORY.read_text(encoding="utf-8"))
 
 
-def _alignment_review_fixture(*, celeba: bool = False) -> dict:
+def _mapping_sha256(value: dict) -> str:
+    return hashlib.sha256(
+        json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+    ).hexdigest()
+
+
+def _alignment_review_fixture(*, manifest: dict, sources: tuple[str, ...]) -> dict:
     """Test-only review input; absent historical reports are never live authority."""
 
-    contact_sheet = "face_celebamask_hq_contact_sheet_sha256" if celeba else "face_contact_sheet_sha256"
+    panel_sha256_by_source = {
+        source: sorted(
+            str(record["panel_sha256"])
+            for record in manifest["records"]
+            if record["source"] in ALIGNMENT_SOURCE_KEYS[source]
+        )
+        for source in sources
+    }
     return {
+        "schema_version": "maskfactory.external_source_alignment_review.v1",
         "status": "passed",
+        "review_method": "direct_pixel_review",
+        "direct_visual_confirmation": True,
+        "qualification_granted": False,
         "checks": {"training_or_gold_admission": False},
-        contact_sheet: "0" * 64,
+        "manifest_sha256": _mapping_sha256(manifest),
+        "reviewed_sources": list(sources),
+        "panel_sha256_by_source": panel_sha256_by_source,
+        "reviewed_record_count_by_source": {
+            source: len(panel_sha256_by_source[source]) for source in sources
+        },
+        "face_contact_sheet_sha256": "0" * 64,
         "body_contact_sheet_sha256": "1" * 64,
         "fixture": True,
     }
@@ -78,17 +103,20 @@ def test_license_and_remap_evidence_seal_never_gold_for_all_eligible_sources():
 
 def test_alignment_evidence_pass_for_lapa_lv_and_celeba():
     manifest = json.loads(ALIGNMENT_MANIFEST.read_text(encoding="utf-8"))
-    review = _alignment_review_fixture()
+    lapa_review = _alignment_review_fixture(manifest=manifest, sources=("lapa",))
+    lv_review = _alignment_review_fixture(manifest=manifest, sources=("lv_mhp_v1",))
     celeba_manifest = json.loads(
         (ROOT / "qa/reports/celebamask_hq_alignment_manifest.json").read_text(encoding="utf-8")
     )
-    celeba_review = _alignment_review_fixture(celeba=True)
+    celeba_review = _alignment_review_fixture(
+        manifest=celeba_manifest, sources=("celebamask_hq",)
+    )
 
     lapa = build_alignment_evidence(
-        source="lapa", alignment_manifest=manifest, alignment_review=review
+        source="lapa", alignment_manifest=manifest, alignment_review=lapa_review
     )
     lv = build_alignment_evidence(
-        source="lv_mhp_v1", alignment_manifest=manifest, alignment_review=review
+        source="lv_mhp_v1", alignment_manifest=manifest, alignment_review=lv_review
     )
     celeba = build_alignment_evidence(
         source="celebamask_hq",
@@ -101,6 +129,32 @@ def test_alignment_evidence_pass_for_lapa_lv_and_celeba():
     assert lapa["source_masks_are_gold"] is False
     assert celeba["source_masks_are_gold"] is False
     assert celeba["status"] == "PASS"
+
+
+def test_alignment_evidence_rejects_unbound_or_nondirect_review():
+    manifest = json.loads(ALIGNMENT_MANIFEST.read_text(encoding="utf-8"))
+    review = _alignment_review_fixture(manifest=manifest, sources=("lapa",))
+
+    nondirect = {**review, "direct_visual_confirmation": False}
+    with pytest.raises(ExternalSupervisionProducerError, match="direct visual confirmation"):
+        build_alignment_evidence(
+            source="lapa", alignment_manifest=manifest, alignment_review=nondirect
+        )
+
+    wrong_manifest = {**review, "manifest_sha256": "0" * 64}
+    with pytest.raises(ExternalSupervisionProducerError, match="manifest binding mismatch"):
+        build_alignment_evidence(
+            source="lapa", alignment_manifest=manifest, alignment_review=wrong_manifest
+        )
+
+    missing_panel = {
+        **review,
+        "panel_sha256_by_source": {"lapa": review["panel_sha256_by_source"]["lapa"][1:]},
+    }
+    with pytest.raises(ExternalSupervisionProducerError, match="panel binding mismatch"):
+        build_alignment_evidence(
+            source="lapa", alignment_manifest=manifest, alignment_review=missing_panel
+        )
 
 
 def test_gold_claim_rejected_on_publish_and_bundle_verify(tmp_path: Path):
@@ -317,8 +371,19 @@ def test_produce_project_contained_evidence_writes_gap_without_claiming_admissio
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes((ROOT / relative).read_bytes())
     review_path = project / "qa" / "reports" / "maskedwarehouse_alignment_review.json"
+    copied_manifest = json.loads(
+        (project / "qa" / "reports" / "maskedwarehouse_alignment_manifest.json").read_text(
+            encoding="utf-8"
+        )
+    )
     review_path.write_text(
-        json.dumps(_alignment_review_fixture(), sort_keys=True), encoding="utf-8"
+        json.dumps(
+            _alignment_review_fixture(
+                manifest=copied_manifest, sources=("lapa", "lv_mhp_v1")
+            ),
+            sort_keys=True,
+        ),
+        encoding="utf-8",
     )
 
     result = produce_project_contained_evidence(

@@ -256,13 +256,6 @@ def build_alignment_evidence(
         raise ExternalSupervisionProducerError(
             f"{source}: alignment manifest must state external masks are never gold"
         )
-    if alignment_review.get("status") != "passed":
-        raise ExternalSupervisionProducerError(f"{source}: alignment review status is not passed")
-    checks = alignment_review.get("checks")
-    if not isinstance(checks, Mapping) or checks.get("training_or_gold_admission") is not False:
-        raise ExternalSupervisionProducerError(
-            f"{source}: alignment review must keep training/gold admission false"
-        )
     allowed = ALIGNMENT_SOURCE_KEYS[source]
     if not allowed:
         raise ExternalSupervisionProducerError(
@@ -282,6 +275,12 @@ def build_alignment_evidence(
         )
     if any(record.get("dimension_match") is not True for record in selected):
         raise ExternalSupervisionProducerError(f"{source}: alignment dimension mismatch present")
+    _validate_alignment_review(
+        source=source,
+        alignment_manifest=alignment_manifest,
+        alignment_review=alignment_review,
+        selected_records=selected,
+    )
 
     panel_bindings = [
         {
@@ -316,6 +315,68 @@ def build_alignment_evidence(
     _reject_gold_claims(evidence)
     evidence["seal_sha256"] = seal_payload(evidence)
     return evidence
+
+
+def _validate_alignment_review(
+    *,
+    source: str,
+    alignment_manifest: Mapping[str, Any],
+    alignment_review: Mapping[str, Any],
+    selected_records: list[Mapping[str, Any]],
+) -> None:
+    """Require a direct, exact-panel review before emitting a live gate artifact."""
+
+    if alignment_review.get("schema_version") != "maskfactory.external_source_alignment_review.v1":
+        raise ExternalSupervisionProducerError(
+            f"{source}: alignment review schema version is not current"
+        )
+    if alignment_review.get("status") != "passed":
+        raise ExternalSupervisionProducerError(f"{source}: alignment review status is not passed")
+    if alignment_review.get("review_method") != "direct_pixel_review":
+        raise ExternalSupervisionProducerError(
+            f"{source}: alignment review is not direct pixel review"
+        )
+    if alignment_review.get("direct_visual_confirmation") is not True:
+        raise ExternalSupervisionProducerError(
+            f"{source}: alignment review lacks direct visual confirmation"
+        )
+    if alignment_review.get("qualification_granted") is not False:
+        raise ExternalSupervisionProducerError(
+            f"{source}: alignment review must not grant qualification"
+        )
+    checks = alignment_review.get("checks")
+    if not isinstance(checks, Mapping) or checks.get("training_or_gold_admission") is not False:
+        raise ExternalSupervisionProducerError(
+            f"{source}: alignment review must keep training/gold admission false"
+        )
+    if alignment_review.get("manifest_sha256") != _mapping_sha256(alignment_manifest):
+        raise ExternalSupervisionProducerError(
+            f"{source}: alignment review manifest binding mismatch"
+        )
+    reviewed_sources = alignment_review.get("reviewed_sources")
+    if (
+        not isinstance(reviewed_sources, list)
+        or any(not isinstance(item, str) for item in reviewed_sources)
+        or len(set(reviewed_sources)) != len(reviewed_sources)
+        or source not in reviewed_sources
+    ):
+        raise ExternalSupervisionProducerError(
+            f"{source}: alignment review source binding is invalid"
+        )
+    panels_by_source = alignment_review.get("panel_sha256_by_source")
+    reviewed_panels = panels_by_source.get(source) if isinstance(panels_by_source, Mapping) else None
+    reviewed_counts = alignment_review.get("reviewed_record_count_by_source")
+    reviewed_count = reviewed_counts.get(source) if isinstance(reviewed_counts, Mapping) else None
+    expected_panels = sorted(str(record.get("panel_sha256") or "") for record in selected_records)
+    if (
+        not isinstance(reviewed_panels, list)
+        or any(not isinstance(item, str) or len(item) != 64 for item in reviewed_panels)
+        or sorted(reviewed_panels) != expected_panels
+        or reviewed_count != len(selected_records)
+    ):
+        raise ExternalSupervisionProducerError(
+            f"{source}: alignment review panel binding mismatch"
+        )
 
 
 def materialize_sealed_artifact(

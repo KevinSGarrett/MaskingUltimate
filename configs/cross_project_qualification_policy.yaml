@@ -1,0 +1,187 @@
+schema_version: "1.0.0"
+policy_id: maskfactory-bridge-cross-project-qualification-v1
+policy_version: "1.0.0"
+canonicalization:
+  algorithm: maskfactory-canonical-json-v1
+  excluded_top_level_fields:
+    - policy_sha256
+tracker_item: MF-P6-12.05
+fixture_truth_tier: synthetic_contract_fixture
+required_frozen_compatibility_checks:
+  - trust_anchor
+  - signature
+  - release_hash
+  - canonicalization
+  - signed_journal
+  - revocation_freshness
+  - artifact_security
+  - wire_schemas
+  - api_contract
+  - package_format
+  - ontology
+  - node_pack
+  - capabilities
+  - media_scope
+  - authority_policy
+  - contract_tests
+required_vertical_slices:
+  - mode_a_package_read
+  - mode_b_live_predict
+  - mode_b_live_refine
+preserved_contract_lineage:
+  maskfactory_bridge_head: 6361df208e01d183083ee6c113e016467a486706
+  maskfactory_reconciliation_seal: c948da1595f6c29ead2aeda950ac778717c6557f2ed5f6c4b0664e5052f3eb52
+  main_consumer_planning_head: a54a7ed2bad472f77168e190b9881b4f7e7cc589
+  boundary: planning_and_contract_lineage_not_production_runtime_pin
+producer_bindings_required:
+  - producer_git_commit
+  - adopted_wire_schema_manifest_sha256
+  - mode_a_vertical_slice_decision_sha256
+  - multi_person_mode_a_vertical_slice_decision_sha256
+  - mode_b_vertical_slice_decision_sha256
+  - currency_review_file_sha256
+external_main_dependencies:
+  - pinned_main_runtime_git_commit
+  - main_adoption_receipt
+  - main_qualification_bundle_signature
+  - main_adapter_execution_receipt
+  - comfyui_result_history_receipt
+required_matrix_rows:
+  - row_id: mx.compat.wire_schemas_v1
+    dimension: compatibility
+    polarity: positive
+    maps_to_frozen_check: wire_schemas
+  - row_id: mx.compat.api_contract_capabilities
+    dimension: compatibility
+    polarity: positive
+    maps_to_frozen_check: api_contract
+  - row_id: mx.compat.unknown_field_neg
+    dimension: compatibility
+    polarity: seeded_negative
+    maps_to_frozen_check: contract_tests
+  - row_id: mx.trust.canonicalization_and_roles
+    dimension: trust_canonicalization
+    polarity: positive
+    maps_to_frozen_check: canonicalization
+  - row_id: mx.trust.signature_substitution_neg
+    dimension: trust_canonicalization
+    polarity: seeded_negative
+    maps_to_frozen_check: signature
+  - row_id: mx.trust.signed_journal_integrity
+    dimension: signed_journal
+    polarity: positive
+    maps_to_frozen_check: signed_journal
+  - row_id: mx.identity.encoded_pixel_binding
+    dimension: encoded_pixel_identity
+    polarity: positive
+    maps_to_frozen_check: artifact_security
+  - row_id: mx.time.governed_frame_unsupported_video
+    dimension: image_video_time
+    polarity: positive
+    maps_to_frozen_check: media_scope
+  - row_id: mx.ownership.single_and_duo
+    dimension: ownership
+    polarity: positive
+    maps_to_frozen_check: null
+  - row_id: mx.ownership.wrong_person_neg
+    dimension: ownership
+    polarity: seeded_negative
+    maps_to_frozen_check: null
+  - row_id: mx.authority.mode_a_certified_mode_b_draft
+    dimension: authority
+    polarity: positive
+    maps_to_frozen_check: authority_policy
+  - row_id: mx.authority.training_truth_firewall
+    dimension: authority_training_truth
+    polarity: positive
+    maps_to_frozen_check: authority_policy
+  - row_id: mx.authority.parent_ceiling_inflation_neg
+    dimension: authority
+    polarity: seeded_negative
+    maps_to_frozen_check: authority_policy
+  - row_id: mx.geometry.roundtrip_side_swap
+    dimension: geometry
+    polarity: positive
+    maps_to_frozen_check: null
+  - row_id: mx.idempotency.replay_and_conflict
+    dimension: idempotency
+    polarity: positive
+    maps_to_frozen_check: null
+  - row_id: mx.fault.outage_timeout_oom
+    dimension: outage
+    polarity: positive
+    maps_to_frozen_check: null
+  - row_id: mx.restart.submitted_unknown
+    dimension: submitted_unknown_restart
+    polarity: positive
+    maps_to_frozen_check: null
+  - row_id: mx.cache.stale_refuse
+    dimension: cache
+    polarity: seeded_negative
+    maps_to_frozen_check: revocation_freshness
+  - row_id: mx.invalidation.blocking_actions
+    dimension: invalidation
+    polarity: positive
+    maps_to_frozen_check: null
+  - row_id: mx.rollback.last_compatible
+    dimension: rollback
+    polarity: positive
+    maps_to_frozen_check: release_hash
+  - row_id: mx.nofallback.silent_substitution
+    dimension: no_silent_fallback
+    polarity: seeded_negative
+    maps_to_frozen_check: null
+  - row_id: mx.slice.mode_a_single
+    dimension: integration
+    polarity: positive
+    maps_to_frozen_check: package_format
+  - row_id: mx.slice.mode_a_multi
+    dimension: integration
+    polarity: positive
+    maps_to_frozen_check: ontology
+  - row_id: mx.slice.mode_b_draft_certify
+    dimension: integration
+    polarity: positive
+    maps_to_frozen_check: capabilities
+  - row_id: mx.bind.producer_identities
+    dimension: binding
+    polarity: positive
+    maps_to_frozen_check: trust_anchor
+  - row_id: mx.bind.release_capability_requirements
+    dimension: binding
+    polarity: positive
+    maps_to_frozen_check: release_hash
+  - row_id: mx.currency.policy_not_relabelled
+    dimension: currency
+    polarity: positive
+    maps_to_frozen_check: null
+  - row_id: mx.fabricate.main_receipt_neg
+    dimension: no_silent_fallback
+    polarity: seeded_negative
+    maps_to_frozen_check: null
+reason_codes:
+  - eligible
+  - matrix_row_missing
+  - matrix_row_duplicate
+  - matrix_row_failed
+  - matrix_row_unexpected_pass
+  - frozen_projection_incomplete
+  - producer_binding_missing
+  - producer_hash_unresolved
+  - main_commit_absent
+  - adoption_receipt_absent
+  - main_qualification_signature_absent
+  - main_adapter_execution_absent
+  - comfyui_result_history_absent
+  - external_main_prerequisite_unmet
+  - fixture_evidence_claimed_as_production
+  - currency_policy_relabel_forbidden
+  - fabricated_main_receipt
+  - producer_main_disagreement
+  - release_capability_requirements_unbound
+  - vertical_slice_evidence_missing
+claim_boundary:
+  establishes_production_qualification: false
+  mf_p6_12_05_complete: false
+  notes: Producer-owned executable matrix over frozen bridge contracts and fixture/lineage bindings. Production acceptance requires accepted 12.01-12.04 inputs, pinned Main runtime commit, signed Main adoption/qualification receipts, and live adapter/ComfyUI bytes.
+policy_sha256: 1080f6aba6018eee743b3cc20795784b2d77153e9290e13433f8bea4d52bb5ab

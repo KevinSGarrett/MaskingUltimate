@@ -496,6 +496,15 @@ integration/no-duplicate credit; primary must wire the real parent execution
 path through the durable lifecycle and add parent-ledger tests before any
 route/admission/capacity claim.
 
+CPU-only adapter validation currently passes `19/19` in 16.01 seconds with a
+clean diff, but that covers only fake-manager unit behavior and is explicitly
+not integration evidence. Review also found legacy `ManagedChildRouteLedger`
+checks only a manager basename. The production migration must bind resolved
+canonical manager and policy provenance (not basename equality), validate the
+expected parent/role/model/output receipts, and add counterfeit-basename
+negative coverage. Until then the child lifecycle remains `REVIEW_OPEN` with
+no admission, provider, or capacity credit.
+
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test
 has yet exercised a real same-parent provider run across the boundary.

@@ -162,39 +162,41 @@ therefore independently proved. The local rerun passed 46
 parent-binding/producer/advisory tests and 31 supervisor/broker tests, with
 Ruff, compileall, and diff checks clean.
 
-`CROSS_CONTROLLER_INTEGRATION_OPEN`: CUI's separate primary-controller tip
-`dd93e09c` does not yet build and consume that binding. The two systems cannot
-yet be treated as one end-to-end controller, and no test has exercised a real
+`CUI_PRIMARY_CPU_ADMISSION_SEALED`: CUI commit
+`ebf5737ec4855c0efdccd3f6c8067df5cb78b7c6` (handoff
+`2c45484d65ffe5eed951db514881437d2566db4c`) seals the primary-controller
+CPU-only admission increment. Its receipt is
+`Plan/Tracker/Evidence/RunPod/WAVE88_CONTROLLER_ADMISSION_ROLE_SERVERLESS_INCREMENT_20260727.json`
+with logical self hash
+`de73b06ddd1c976a163784d0edea0fbff9ea98f40594b16149123776af7cb652`.
+The exact policy SHA-256 is
+`2750e1d94b457c1da845fec8bb39e4318f11cfd255e95a8e3769da20dfe74a0c` and
+the shared manager SHA-256 is
+`a62ac97c555d63b268f402369d96308ab747a17c478b6833ec3a8e7c607c94b7`.
+It passed 135 focused tests plus Ruff, compileall, JSON, and diff checks;
+`repair_planning` is admitted while `root_cause_analysis` is rejected.
+
+`CROSS_CONTROLLER_INTEGRATION_OPEN`: those CPU admission controls are now
+sealed, but they are not a real parent execution, actual-host proof, or
+cross-project authoritative adoption. No test has yet exercised a real
 same-parent provider run across that boundary.
 
-`MISSION_SIZE_GATE_OPEN`: the current controller guard can classify a
-one-second unit as an outcome-sized mission, while existing test fixtures use
-inconsistent 600/900-second contracts. Terminal labels and parent identity do
-not establish meaningful autonomous work. The integrated controller must
-enforce and negatively test a policy-bound minimum mission-size/capability-work
-threshold before admitting a paid or advisory child; otherwise a correctly
-bound route could still recreate a micro-handoff loop.
+`MISSION_SIZE_CPU_SEALED`: the primary controller requires a hash-bound
+30-90-minute phase plan and milestone. Any short exception is terminal-only
+and cannot create paid work, so a one-second labeled unit cannot become a
+routine child admission.
 
-`ROLE_BUDGET_GATE_OPEN`: the in-progress sizing implementation has a
-hash-bound 30–90-minute phase plan and milestone requirement, but its primary
-child ledger declares roles without yet binding each role to an immutable
-payload/contract. A different payload could therefore reuse a role under the
-same parent. The ledger must reject duplicate or replacement role use and prove
-that result with negative tests before a parent can receive route capacity.
+`ROLE_BUDGET_CPU_SEALED`: parent-contract, child-role, and work-unit bindings
+now fail closed for duplicate/replacement reuse and multi-role abuse in the
+CPU-only controller ledger tests.
 
-`CANONICAL_CALLER_PATH_GATE_OPEN`: the in-progress primary adapter canonicalizes
-the OpenRouter command shape but currently accepts any local file named
-`manage_openrouter_reasoning_fallback.py`. A same-basename substitute would
-defeat the governed-manager boundary. Before production invocation, it must
-resolve and bind the exact repository manager and policy paths (with their
-contract hashes) and negatively reject a counterfeit basename.
+`CANONICAL_CALLER_PATH_CPU_SEALED`: the manager and policy paths and hashes are
+bound, and same-basename or alternate-policy substitutes are rejected by
+negative tests.
 
-`POLICY_LINEAGE_GATE_OPEN`: the current combined controller suite has 125
-passing tests but nine manager cases require a governed work kind absent from
-the primary branch's older policy. The two policy identities cannot silently
-diverge. The controller must consume one exact reviewed policy contract and
-hash, with explicit work-kind admission tests; neither weakening the tests nor
-unreviewed expansion of admissibility is an acceptable repair.
+`POLICY_LINEAGE_CPU_SEALED`: explicit allow/deny assertions bind the primary
+to the reviewed manager policy; `repair_planning` is admitted and
+`root_cause_analysis` is rejected under the exact policy SHA above.
 
 `SERVERLESS_SUCCESSOR_GUARD_OPEN`: CUI's primary Serverless path still pins an
 obsolete manager hash and its validator treats a provider-free `decide` probe
@@ -214,11 +216,10 @@ replacement. This record is defect evidence only, not a controller repair.
 This does not permit a successor from `decide` alone, relax the legacy
 owner-recovery 1/1 worker caps, execute a provider job, or grant
 `FALLBACK_CAPACITY_UNPROVEN` any credit. `NO_CAPACITY_CREDIT` remains binding
-until the CUI primary controller consumes the exact CUI manager contract and
-the mission-size, role-budget, canonical-caller, and policy-lineage gates
-reject unsafe work, and the Serverless successor guard is sealed, then one
-real parent retains host preflight, completes its source-hash-bound child work,
-applies/tests/QAs its result, and reconciles both children to terminal state.
+until the CPU-sealed CUI admission increment is authoritatively integrated,
+the Serverless successor guard is sealed, and one real parent retains actual
+host preflight, completes its source-hash-bound child work, applies/tests/QAs
+its result, and reconciles both children to terminal state.
 
 The RunPod browser is currently at an authorized-console sign-in page. No SSH
 or Jupyter bypass is authorized. Consequently, local tests prove the control
@@ -233,9 +234,10 @@ that coarse session-only identity with the all-or-nothing immutable
 parent/contract/role binding described above: one active child for a given
 parent+contract, terminal suppression until a new contract hash, and receipt
 verification across reserve, submit, inspection, and reconciliation. The
-MaskFactory adapter supplies that exact binding; until the separate CUI primary
-controller does too, it cannot issue new OpenRouter child work. Any admission
-rejection is terminal containment, never a retry job.
+MaskFactory adapter and the CUI CPU admission increment supply that exact
+binding, but authoritative cross-controller parent execution remains open.
+No new OpenRouter child can receive capacity credit before that integration;
+any admission rejection is terminal containment, never a retry job.
 
 Neither guard can approve masks, replace strict VLM QA, or provide Serverless
 capacity credit. The last reconciled shared-manager state was zero active

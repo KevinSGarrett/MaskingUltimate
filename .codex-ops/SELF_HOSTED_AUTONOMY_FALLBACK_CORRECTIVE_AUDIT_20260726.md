@@ -159,6 +159,13 @@ enforce and negatively test a policy-bound minimum mission-size/capability-work
 threshold before admitting a paid or advisory child; otherwise a correctly
 bound route could still recreate a micro-handoff loop.
 
+`ROLE_BUDGET_GATE_OPEN`: the in-progress sizing implementation has a
+hash-bound 30–90-minute phase plan and milestone requirement, but its primary
+child ledger declares roles without yet binding each role to an immutable
+payload/contract. A different payload could therefore reuse a role under the
+same parent. The ledger must reject duplicate or replacement role use and prove
+that result with negative tests before a parent can receive route capacity.
+
 `CANONICAL_CALLER_PATH_GATE_OPEN`: the in-progress primary adapter canonicalizes
 the OpenRouter command shape but currently accepts any local file named
 `manage_openrouter_reasoning_fallback.py`. A same-basename substitute would
@@ -185,10 +192,10 @@ This does not permit a successor from `decide` alone, relax the legacy
 owner-recovery 1/1 worker caps, execute a provider job, or grant
 `FALLBACK_CAPACITY_UNPROVEN` any credit. `NO_CAPACITY_CREDIT` remains binding
 until the CUI primary controller consumes the exact CUI manager contract and
-the mission-size and canonical-caller gates reject unsafe work, and the
-Serverless successor guard is sealed, then one real parent retains host
-preflight, completes its source-hash-bound child work, applies/tests/QAs its
-result, and reconciles both children to terminal state.
+the mission-size, role-budget, and canonical-caller gates reject unsafe work,
+and the Serverless successor guard is sealed, then one real parent retains
+host preflight, completes its source-hash-bound child work, applies/tests/QAs
+its result, and reconciles both children to terminal state.
 
 The RunPod browser is currently at an authorized-console sign-in page. No SSH
 or Jupyter bypass is authorized. Consequently, local tests prove the control

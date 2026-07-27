@@ -533,8 +533,18 @@ paused.
 
 ## Control-plane verification
 
-- `python Plan/Tracker/tracker.py validate`: no structural problems; 894
-  non-orphaned items and 42 unresolved hard blockers at last check.
+- Independent CPU-only verification of the canonical Serverless control
+  surface passed `35/35` on 2026-07-26:
+  `tests/test_manage_runpod_serverless_overflow.py`,
+  `tests/test_runpod_serverless_overflow.py`,
+  `tests/steward/test_serverless_broker.py`, and
+  `tests/steward/test_serverless_work_producer.py`. This validates local
+  manager/broker/producer behavior only; it is not an actual-host preflight,
+  a Serverless submission, or capacity evidence.
+- `python Plan/Tracker/tracker.py validate`: no structural problems; 906
+  non-orphaned items and 54 unresolved hard blockers at the 2026-07-26
+  read-only validation. These are open work, not permission to claim
+  completion.
 - `python -m pytest tests/steward/test_continuous_contract.py -q`: 10 passed.
 - `validate_freeze_registry(Path('.'))`: no problems. Current freezes are
   Plan 27 `5b4cbf7de284f20c6c10f9575b3919c8d3ac9e34498f523d5f330cc563a3604f`,

@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/bridge_failure_control_evidence.schema.json",
+  "title": "Additive bridge failure-control evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "decided_at",
+    "policy_id",
+    "policy_sha256",
+    "request_id",
+    "pass_id",
+    "fault_kind",
+    "error_matrix_decision",
+    "admission",
+    "retry",
+    "circuit",
+    "scoped_dag",
+    "no_silent_fallback",
+    "external_main_prerequisites",
+    "status",
+    "rejection_reasons",
+    "decision_sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "record_type": { "const": "bridge_failure_control_evidence" },
+    "decided_at": { "type": "string", "format": "date-time" },
+    "policy_id": { "type": "string", "minLength": 1 },
+    "policy_sha256": { "$ref": "#/$defs/sha256" },
+    "request_id": { "type": "string", "minLength": 1 },
+    "pass_id": { "type": "string", "minLength": 1 },
+    "fault_kind": {
+      "type": ["string", "null"],
+      "enum": [
+        null,
+        "outage",
+        "timeout",
+        "oom",
+        "incompatible_authority"
+      ]
+    },
+    "error_matrix_decision": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "status",
+        "failure_domain",
+        "retryable",
+        "affected_scope",
+        "no_fallback_reason",
+        "decision_sha256"
+      ],
+      "properties": {
+        "status": { "enum": ["accepted", "rejected"] },
+        "failure_domain": { "type": "string", "minLength": 1 },
+        "retryable": { "type": "boolean" },
+        "affected_scope": { "type": "string", "minLength": 1 },
+        "no_fallback_reason": { "type": "string", "minLength": 1 },
+        "decision_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "admission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "deadline_met",
+        "resource_feasible",
+        "provider_invocation_permitted",
+        "detail"
+      ],
+      "properties": {
+        "deadline_met": { "type": "boolean" },
+        "resource_feasible": { "type": "boolean" },
+        "provider_invocation_permitted": { "type": "boolean" },
+        "detail": { "type": "string", "minLength": 1 }
+      }
+    },
+    "retry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "attempt_number",
+        "maximum_attempts",
+        "retry_permitted",
+        "retry_only_typed_transient_errors",
+        "detail"
+      ],
+      "properties": {
+        "attempt_number": { "type": "integer", "minimum": 1, "maximum": 10 },
+        "maximum_attempts": { "type": "integer", "minimum": 1, "maximum": 10 },
+        "retry_permitted": { "type": "boolean" },
+        "retry_only_typed_transient_errors": { "const": true },
+        "detail": { "type": "string", "minLength": 1 }
+      }
+    },
+    "circuit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "blocks_route", "evidence_valid", "detail"],
+      "properties": {
+        "state": { "enum": ["closed", "open", "half_open", "absent"] },
+        "blocks_route": { "type": "boolean" },
+        "evidence_valid": { "type": "boolean" },
+        "detail": { "type": "string", "minLength": 1 }
+      }
+    },
+    "scoped_dag": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "blocked_pass_ids",
+        "continuing_pass_ids",
+        "scope_exact",
+        "detail"
+      ],
+      "properties": {
+        "blocked_pass_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "continuing_pass_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "scope_exact": { "type": "boolean" },
+        "detail": { "type": "string", "minLength": 1 }
+      }
+    },
+    "no_silent_fallback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allow_silent_fallback",
+        "fallback_artifact_present",
+        "enforced",
+        "forbidden_kinds_observed",
+        "detail"
+      ],
+      "properties": {
+        "allow_silent_fallback": { "const": false },
+        "fallback_artifact_present": { "type": "boolean" },
+        "enforced": { "const": true },
+        "forbidden_kinds_observed": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "detail": { "type": "string", "minLength": 1 }
+      }
+    },
+    "external_main_prerequisites": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["prerequisite", "status", "detail"],
+        "properties": {
+          "prerequisite": { "type": "string", "minLength": 1 },
+          "status": {
+            "enum": ["met", "failed", "missing_external_main_evidence"]
+          },
+          "detail": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "status": { "enum": ["accepted", "rejected"] },
+    "rejection_reasons": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "decision_sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/bridge_error_decision.schema.json",
+  "title": "Closed bridge error decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "matrix_id",
+    "matrix_sha256",
+    "failure_domain",
+    "status",
+    "failure_code",
+    "category",
+    "retryable",
+    "affected_scope",
+    "completion_profile_impact",
+    "remediation",
+    "permitted_lifecycle_transition",
+    "no_fallback_reason",
+    "rejection_reasons",
+    "decision_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "record_type": {"const": "bridge_error_decision"},
+    "matrix_id": {"const": "maskfactory-bridge-error-decision-matrix-v1"},
+    "matrix_sha256": {"$ref": "#/$defs/sha256"},
+    "failure_domain": {
+      "enum": [
+        "availability",
+        "compatibility",
+        "capability",
+        "identity",
+        "transform",
+        "authority",
+        "trust",
+        "integrity",
+        "resource",
+        "invariant"
+      ]
+    },
+    "status": {"enum": ["accepted", "rejected"]},
+    "failure_code": {"type": ["string", "null"]},
+    "category": {
+      "enum": [
+        "availability",
+        "compatibility",
+        "capability",
+        "identity",
+        "transform",
+        "authority",
+        "trust",
+        "integrity",
+        "resource",
+        "invariant"
+      ]
+    },
+    "retryable": {"type": "boolean"},
+    "affected_scope": {
+      "enum": ["request", "pass", "run", "release", "consumer_adoption"]
+    },
+    "completion_profile_impact": {
+      "enum": [
+        "attempt_deferred",
+        "attempt_rejected",
+        "profile_blocked",
+        "profile_ineligible"
+      ]
+    },
+    "remediation": {
+      "enum": [
+        "retry_with_backoff",
+        "align_contract_versions",
+        "publish_required_capability_set",
+        "rebind_canonical_identity_inputs",
+        "recompute_declared_transform_chain",
+        "refresh_authority_material",
+        "rotate_and_rebind_trust_anchors",
+        "recompute_integrity_evidence",
+        "reduce_resource_envelope_then_retry",
+        "repair_invariant_inputs_before_resume",
+        "halt_and_raise_operator_review"
+      ]
+    },
+    "permitted_lifecycle_transition": {
+      "enum": [
+        "retry_pending",
+        "blocked_pending_contract_alignment",
+        "blocked_pending_capability_publication",
+        "quarantined_pending_identity_rebind",
+        "rejected_unrecoverable_request",
+        "invalidated_authority_state",
+        "invalidated_trust_state",
+        "quarantined_pending_integrity_rebuild",
+        "retry_pending_with_reduced_envelope",
+        "quarantined_pending_invariant_repair",
+        "halted_fail_closed"
+      ]
+    },
+    "no_fallback_reason": {"type": "string", "minLength": 1},
+    "rejection_reasons": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "unknown_failure_domain",
+          "contradictory_failure_domains",
+          "contradictory_failure_claims"
+        ]
+      }
+    },
+    "decision_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

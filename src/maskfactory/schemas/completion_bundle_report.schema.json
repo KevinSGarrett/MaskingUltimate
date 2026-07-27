@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/completion_bundle_report.schema.json",
+  "title": "MaskFactory legacy portfolio/research evidence report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "bundle_id", "created_at", "policy_sha256", "input_sha256", "tracker_sha256", "required_domain_count", "verified_domains", "tracker_item_count", "unresolved_item_count_excluding_bundle", "definitions_of_done_met", "goals_met", "result", "completion_scope", "blocking_for_core_completion", "core_completion_authority", "authority", "sha256"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "bundle_id": {"type": "string", "minLength": 1},
+    "created_at": {"type": "string", "format": "date-time"},
+    "policy_sha256": {"$ref": "#/$defs/sha256"},
+    "input_sha256": {"$ref": "#/$defs/sha256"},
+    "tracker_sha256": {"$ref": "#/$defs/sha256"},
+    "required_domain_count": {"type": "integer", "minimum": 15},
+    "verified_domains": {"type": "array", "minItems": 15, "uniqueItems": true, "items": {"type": "string"}},
+    "tracker_item_count": {"type": "integer", "minimum": 755},
+    "unresolved_item_count_excluding_bundle": {"const": 0},
+    "definitions_of_done_met": {"const": 11},
+    "goals_met": {"const": 9},
+    "result": {"const": "pass"},
+    "completion_scope": {"const": "legacy_portfolio_research_evidence"},
+    "blocking_for_core_completion": {"const": false},
+    "core_completion_authority": {"const": "none"},
+    "authority": {"const": "legacy_portfolio_evidence_index_verified_no_core_completion_authority"},
+    "sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {"sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
+}

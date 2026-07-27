@@ -1,0 +1,371 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/operational_invalidation_event.schema.json",
+  "title": "Operational invalidation event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "event_id",
+    "stream_id",
+    "sequence",
+    "causation_id",
+    "idempotency_key",
+    "occurred_at",
+    "effective_at",
+    "fixture_only",
+    "evidence_context",
+    "reason",
+    "target_scope",
+    "journal_position",
+    "supersession",
+    "rollback",
+    "trust_binding",
+    "event_payload_sha256",
+    "signature"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "record_type": {
+      "const": "operational_invalidation_event"
+    },
+    "event_id": {
+      "type": "string",
+      "pattern": "^mfoinv_[0-9a-f]{24}$"
+    },
+    "stream_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "causation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:-]{16,128}$"
+    },
+    "occurred_at": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "effective_at": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "fixture_only": {
+      "type": "boolean"
+    },
+    "evidence_context": {
+      "enum": [
+        "conformance_fixture",
+        "runtime_evidence"
+      ]
+    },
+    "reason": {
+      "enum": [
+        "signing_key_rotated",
+        "signing_key_revoked",
+        "certificate_revoked",
+        "certificate_superseded",
+        "package_invalidated",
+        "provider_stack_changed",
+        "ontology_changed",
+        "policy_changed",
+        "capability_changed",
+        "release_superseded",
+        "release_revoked"
+      ]
+    },
+    "target_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_kind",
+        "targets",
+        "scope_sha256"
+      ],
+      "properties": {
+        "target_kind": {
+          "enum": [
+            "signing_key",
+            "certificate",
+            "package",
+            "provider_stack",
+            "ontology",
+            "policy",
+            "capability_snapshot",
+            "release"
+          ]
+        },
+        "targets": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "target_kind",
+              "target_id",
+              "target_sha256"
+            ],
+            "properties": {
+              "target_kind": {
+                "enum": [
+                  "signing_key",
+                  "certificate",
+                  "package",
+                  "provider_stack",
+                  "ontology",
+                  "policy",
+                  "capability_snapshot",
+                  "release"
+                ]
+              },
+              "target_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "target_sha256": {
+                "$ref": "#/$defs/sha256"
+              }
+            }
+          }
+        },
+        "scope_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "journal_position": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "previous_sequence",
+        "previous_event_id",
+        "previous_event_sha256"
+      ],
+      "properties": {
+        "previous_sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "previous_event_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "previous_event_sha256": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "supersession": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "replacement_event_id",
+            "replacement_release_id",
+            "replacement_release_sha256"
+          ],
+          "properties": {
+            "replacement_event_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "replacement_release_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "replacement_release_sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        }
+      ]
+    },
+    "rollback": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "rollback_event_id",
+            "rollback_release_id",
+            "rollback_release_sha256"
+          ],
+          "properties": {
+            "rollback_event_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "rollback_release_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "rollback_release_sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        }
+      ]
+    },
+    "trust_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key_set_id",
+        "key_set_version",
+        "key_set_sha256",
+        "key_role",
+        "signing_key_id",
+        "signing_public_key_sha256",
+        "rotation_policy_sha256",
+        "revocation_policy_sha256"
+      ],
+      "properties": {
+        "key_set_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "key_set_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "key_set_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "key_role": {
+          "const": "producer_journal"
+        },
+        "signing_key_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "signing_public_key_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "rotation_policy_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "revocation_policy_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "event_payload_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "signature": {
+      "$ref": "#/$defs/signature"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "key_id",
+        "public_key_base64",
+        "signed_payload_sha256",
+        "signed_payload_format",
+        "value_base64"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "ed25519"
+        },
+        "key_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "public_key_base64": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9+/]{43}=$"
+        },
+        "signed_payload_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "signed_payload_format": {
+          "const": "sha256_digest_bytes"
+        },
+        "value_base64": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9+/]{40,}={0,2}$"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "fixture_only": {
+            "const": true
+          }
+        },
+        "required": [
+          "fixture_only"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidence_context": {
+            "const": "conformance_fixture"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "fixture_only": {
+            "const": false
+          }
+        },
+        "required": [
+          "fixture_only"
+        ]
+      },
+      "then": {
+        "properties": {
+          "evidence_context": {
+            "const": "runtime_evidence"
+          }
+        }
+      }
+    }
+  ]
+}

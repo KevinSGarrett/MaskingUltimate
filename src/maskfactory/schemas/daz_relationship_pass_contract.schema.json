@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_relationship_pass_contract.schema.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "contract_id", "contract_sha256", "scene_id", "scene_state_sha256", "plan_id", "plan_sha256", "instance_contract_id", "instance_contract_sha256", "geometry_contract_id", "geometry_contract_sha256", "policy_sha256", "policy_version", "profile", "owner_ids", "pairs", "depth_tie_epsilon_m", "contact_distance_mm", "maximum_penetration_mm", "minimum_normal_dot", "amodal_physical_root", "outputs"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"}, "contract_id": {"type": "string", "pattern": "^drpc_[0-9a-f]{24}$"}, "contract_sha256": {"$ref": "#/$defs/sha"},
+    "scene_id": {"type": "string"}, "scene_state_sha256": {"$ref": "#/$defs/sha"}, "plan_id": {"type": "string"}, "plan_sha256": {"$ref": "#/$defs/sha"},
+    "instance_contract_id": {"type": "string", "pattern": "^dipc_[0-9a-f]{24}$"}, "instance_contract_sha256": {"$ref": "#/$defs/sha"},
+    "geometry_contract_id": {"type": "string", "pattern": "^dgpc_[0-9a-f]{24}$"}, "geometry_contract_sha256": {"$ref": "#/$defs/sha"},
+    "policy_sha256": {"$ref": "#/$defs/sha"}, "policy_version": {"const": "1.0.0"}, "profile": {"enum": ["training_relationship", "diagnostic_full"]},
+    "owner_ids": {"type": "array", "minItems": 1, "maxItems": 4, "uniqueItems": true, "items": {"type": "integer", "minimum": 1, "maximum": 4}},
+    "pairs": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/pair"}},
+    "depth_tie_epsilon_m": {"const": 0.00001}, "contact_distance_mm": {"const": [0.0, 4.0]}, "maximum_penetration_mm": {"const": 2.0}, "minimum_normal_dot": {"const": 0.0},
+    "amodal_physical_root": {"const": "13_annotations/amodal_diagnostic"},
+    "outputs": {"type": "object", "additionalProperties": false, "required": ["contact_pairs", "front_owner", "boundary_pairs"], "properties": {"contact_pairs": {"$ref": "#/$defs/output"}, "front_owner": {"$ref": "#/$defs/output"}, "boundary_pairs": {"$ref": "#/$defs/output"}, "surface": {"$ref": "#/$defs/output"}, "facet": {"$ref": "#/$defs/output"}, "node": {"$ref": "#/$defs/output"}, "mapping_confidence": {"$ref": "#/$defs/output"}, "amodal_geometry": {"$ref": "#/$defs/output"}}}
+  },
+  "$defs": {
+    "sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "pair": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "integer", "minimum": 1, "maximum": 4}},
+    "output": {"type": "object", "additionalProperties": false, "required": ["role", "encoding", "resolution", "crop", "train_eligible"], "properties": {"role": {"type": "string"}, "encoding": {"type": "string"}, "resolution": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "integer", "minimum": 1}}, "crop": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"type": "integer", "minimum": 0}}, "train_eligible": {"const": false}}}
+  }
+}

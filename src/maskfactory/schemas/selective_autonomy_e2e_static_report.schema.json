@@ -1,0 +1,198 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/selective_autonomy_e2e_static_report.schema.json",
+  "title": "MaskFactory selective autonomy e2e STATIC report (MF-P9-15.08)",
+  "description": "STATIC_PASS binder for generate→critic→repair→certify→audit→sparse_owner_decision control flow with separate quality/labor headline channels. Never claims the live headline demo.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "proof_tier",
+    "authority",
+    "checked_at",
+    "items",
+    "required_pipeline_stages",
+    "stage_module_bindings",
+    "stage_order_checks",
+    "headline_channel_checks",
+    "checks",
+    "stage_order_negative_fixture_blocked",
+    "headline_conflation_negative_fixture_blocked",
+    "completion_overclaim_negative_fixture_blocked",
+    "mf_p9_15_08_complete",
+    "live_generate_critic_repair_certify_audit_demo",
+    "blinded_human_anchor_holdout_measured",
+    "production_labor_measured",
+    "doctor_green_claimed",
+    "gold_claimed",
+    "visual_qa_pass_claimed",
+    "main_complete_claimed",
+    "production_evidence_pass_claimed",
+    "honest_non_claims",
+    "report_id",
+    "seal_sha256",
+    "sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "artifact_type": { "const": "selective_autonomy_e2e_static_report" },
+    "proof_tier": { "const": "STATIC_PASS" },
+    "authority": {
+      "const": "selective_autonomy_e2e_static_only_no_live_headline_demo_or_measured_quality_labor"
+    },
+    "checked_at": { "type": "string", "minLength": 1 },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "uniqueItems": true,
+      "items": { "const": "MF-P9-15.08" }
+    },
+    "required_pipeline_stages": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "prefixItems": [
+        { "const": "generate" },
+        { "const": "critic" },
+        { "const": "repair" },
+        { "const": "certify" },
+        { "const": "audit" },
+        { "const": "sparse_owner_decision" }
+      ],
+      "items": false
+    },
+    "stage_module_bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "generate",
+        "critic",
+        "repair",
+        "certify",
+        "audit",
+        "sparse_owner_decision"
+      ],
+      "properties": {
+        "generate": { "$ref": "#/$defs/stage_binding" },
+        "critic": { "$ref": "#/$defs/stage_binding" },
+        "repair": { "$ref": "#/$defs/stage_binding" },
+        "certify": { "$ref": "#/$defs/stage_binding" },
+        "audit": { "$ref": "#/$defs/stage_binding" },
+        "sparse_owner_decision": { "$ref": "#/$defs/stage_binding" }
+      }
+    },
+    "stage_order_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required_stages", "observed_stages", "order_matches_required"],
+      "properties": {
+        "required_stages": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "observed_stages": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "order_matches_required": { "const": true }
+      }
+    },
+    "headline_channel_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required_channels",
+        "quality_keys",
+        "labor_keys",
+        "channels_separate",
+        "conflation_fields_absent",
+        "fixture_not_measured_authority"
+      ],
+      "properties": {
+        "required_channels": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "prefixItems": [{ "const": "quality" }, { "const": "labor" }],
+          "items": false
+        },
+        "quality_keys": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "labor_keys": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "channels_separate": { "const": true },
+        "conflation_fields_absent": { "const": true },
+        "fixture_not_measured_authority": { "const": true }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stage_modules_importable",
+        "stage_order_bound",
+        "headline_quality_labor_separated",
+        "live_demo_overclaim_refused"
+      ],
+      "properties": {
+        "stage_modules_importable": { "const": "pass" },
+        "stage_order_bound": { "const": "pass" },
+        "headline_quality_labor_separated": { "const": "pass" },
+        "live_demo_overclaim_refused": { "const": "pass" }
+      }
+    },
+    "stage_order_negative_fixture_blocked": { "const": true },
+    "headline_conflation_negative_fixture_blocked": { "const": true },
+    "completion_overclaim_negative_fixture_blocked": { "const": true },
+    "mf_p9_15_08_complete": { "const": false },
+    "live_generate_critic_repair_certify_audit_demo": { "const": false },
+    "blinded_human_anchor_holdout_measured": { "const": false },
+    "production_labor_measured": { "const": false },
+    "doctor_green_claimed": { "const": false },
+    "gold_claimed": { "const": false },
+    "visual_qa_pass_claimed": { "const": false },
+    "main_complete_claimed": { "const": false },
+    "production_evidence_pass_claimed": { "const": false },
+    "honest_non_claims": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "report_id": { "type": "string", "pattern": "^sae2e_[a-f0-9]{24}$" },
+    "seal_sha256": { "$ref": "#/$defs/sha256" },
+    "sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "stage_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["module", "symbols", "import_ok"],
+      "properties": {
+        "module": { "type": "string", "minLength": 1 },
+        "symbols": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "import_ok": { "const": true }
+      }
+    }
+  }
+}

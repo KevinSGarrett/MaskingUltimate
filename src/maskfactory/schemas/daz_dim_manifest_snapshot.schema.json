@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_dim_manifest_snapshot.schema.json",
+  "title": "MaskFactory deterministic DIM install-manifest snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "snapshot_id", "source_kind", "source_archive_fingerprint",
+    "manifest_count", "valid_count", "invalid_count", "entry_count",
+    "entries_by_element", "safety", "install_root_states", "unknown_elements",
+    "products", "failures", "canonical_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "snapshot_id": {"type": "string", "pattern": "^dim_[0-9a-f]{24}$"},
+    "source_kind": {"const": "daz_install_manager_manifest_archive"},
+    "source_archive_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "manifest_count": {"type": "integer", "minimum": 0},
+    "valid_count": {"type": "integer", "minimum": 0},
+    "invalid_count": {"type": "integer", "minimum": 0},
+    "entry_count": {"type": "integer", "minimum": 0},
+    "entries_by_element": {
+      "type": "object", "additionalProperties": false,
+      "required": ["File", "Application", "Desktop", "AppMenu"],
+      "properties": {
+        "File": {"type": "integer", "minimum": 0},
+        "Application": {"type": "integer", "minimum": 0},
+        "Desktop": {"type": "integer", "minimum": 0},
+        "AppMenu": {"type": "integer", "minimum": 0}
+      }
+    },
+    "safety": {
+      "type": "object", "additionalProperties": false,
+      "required": ["execute_actions", "elevated_actions", "unsafe_paths", "account_values_stored"],
+      "properties": {
+        "execute_actions": {"type": "integer", "minimum": 0},
+        "elevated_actions": {"type": "integer", "minimum": 0},
+        "unsafe_paths": {"type": "integer", "minimum": 0},
+        "account_values_stored": {"const": 0}
+      }
+    },
+    "install_root_states": {
+      "type": "object", "additionalProperties": false,
+      "required": ["expected_f", "legacy_non_f", "missing"],
+      "properties": {
+        "expected_f": {"type": "integer", "minimum": 0},
+        "legacy_non_f": {"type": "integer", "minimum": 0},
+        "missing": {"type": "integer", "minimum": 0}
+      }
+    },
+    "unknown_elements": {
+      "type": "object",
+      "propertyNames": {"type": "string", "minLength": 1},
+      "additionalProperties": {"type": "integer", "minimum": 1}
+    },
+    "products": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": [
+          "product_id", "package_id", "display_name", "store_sku", "store_download_id",
+          "global_id", "smart_content", "entry_count", "installed_size",
+          "install_root_state", "manifest_name", "manifest_sha256", "warnings"
+        ],
+        "properties": {
+          "product_id": {"type": "string", "pattern": "^prd_[0-9a-f]{24}$"},
+          "package_id": {"type": "string", "pattern": "^pkg_[0-9a-f]{24}$"},
+          "display_name": {"type": "string", "minLength": 1},
+          "store_sku": {"type": ["string", "null"], "pattern": "^[0-9]+$"},
+          "store_download_id": {"type": ["string", "null"], "pattern": "^[0-9]+$"},
+          "global_id": {"type": "string", "format": "uuid"},
+          "smart_content": {"type": ["boolean", "null"]},
+          "entry_count": {"type": "integer", "minimum": 0},
+          "installed_size": {"type": ["integer", "null"], "minimum": 0},
+          "install_root_state": {"enum": ["expected_f", "legacy_non_f", "missing"]},
+          "manifest_name": {"type": "string", "pattern": "^[^/\\\\]+\\.dsx$"},
+          "manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "warnings": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+        }
+      }
+    },
+    "failures": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["manifest_name", "reason_code", "reason"],
+        "properties": {
+          "manifest_name": {"type": "string", "minLength": 1},
+          "reason_code": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+          "reason": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "canonical_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

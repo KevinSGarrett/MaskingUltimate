@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_operating_profile.schema.json",
+  "title": "MaskFactory DAZ locked operating profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "profile_id",
+    "execution_location",
+    "commercial_deployment",
+    "public_hosting",
+    "distribution",
+    "automatic_asset_purchase",
+    "automatic_account_login",
+    "character_scope"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "profile_id": {"const": "private_personal_local_v1"},
+    "execution_location": {"const": "local_machine"},
+    "commercial_deployment": {"const": false},
+    "public_hosting": {"const": false},
+    "distribution": {"const": false},
+    "automatic_asset_purchase": {"const": false},
+    "automatic_account_login": {"const": false},
+    "character_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["person_count", "presentation", "wardrobe_states"],
+      "properties": {
+        "person_count": {"const": [1, 2, 3, 4]},
+        "presentation": {"const": ["male", "female"]},
+        "wardrobe_states": {
+          "const": ["clothed", "partially_clothed", "underwear", "swimwear", "unclothed"]
+        }
+      }
+    }
+  }
+}

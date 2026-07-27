@@ -1,0 +1,215 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_ops_static_contracts_report.schema.json",
+  "title": "MaskFactory DAZ ops STATIC contracts report (MF-P9-12)",
+  "description": "STATIC_PASS binder for Tier-A backup/restore, scheduler pause/drain, storage reservation, recovery matrix, and failure-campaign policy. Never claims soak, live DAZ activation, or gold.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "proof_tier",
+    "authority",
+    "checked_at",
+    "items",
+    "backup_checks",
+    "scheduler_checks",
+    "storage_checks",
+    "recovery_checks",
+    "failure_campaign_checks",
+    "checks",
+    "mf_p9_12_01_complete",
+    "mf_p9_12_07_soak_complete",
+    "mf_p9_12_09_activation_complete",
+    "live_daz_execution",
+    "seven_day_soak",
+    "doctor_green_claimed",
+    "gold_claimed",
+    "visual_qa_pass_claimed",
+    "main_complete_claimed",
+    "production_evidence_pass_claimed",
+    "honest_non_claims",
+    "bindings",
+    "implementation",
+    "report_id",
+    "seal_sha256",
+    "sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "artifact_type": { "const": "daz_ops_static_contracts_report" },
+    "proof_tier": { "const": "STATIC_PASS" },
+    "authority": {
+      "const": "daz_ops_static_only_no_soak_no_live_daz_activation_no_gold_or_production_authority"
+    },
+    "checked_at": { "type": "string", "minLength": 1 },
+    "items": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "MF-P9-12.01",
+          "MF-P9-12.02",
+          "MF-P9-12.03",
+          "MF-P9-12.04",
+          "MF-P9-12.05",
+          "MF-P9-12.06",
+          "MF-P9-12.08"
+        ]
+      }
+    },
+    "backup_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tier_a_policy_loads",
+        "fixture_backup_create_verify",
+        "fixture_clean_root_restore_bit_identical",
+        "restore_refuses_overclaim_semantic_replay"
+      ],
+      "properties": {
+        "tier_a_policy_loads": { "const": true },
+        "fixture_backup_create_verify": { "const": true },
+        "fixture_clean_root_restore_bit_identical": { "const": true },
+        "restore_refuses_overclaim_semantic_replay": { "const": true }
+      }
+    },
+    "scheduler_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "control_pause_drain_resume_cycle",
+        "scheduler_status_reflects_drain",
+        "leasing_blocked_while_paused"
+      ],
+      "properties": {
+        "control_pause_drain_resume_cycle": { "const": true },
+        "scheduler_status_reflects_drain": { "const": true },
+        "leasing_blocked_while_paused": { "const": true }
+      }
+    },
+    "storage_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "retention_policy_loads",
+        "reservation_bytes_deterministic",
+        "soft_floor_bound"
+      ],
+      "properties": {
+        "retention_policy_loads": { "const": true },
+        "reservation_bytes_deterministic": { "const": true },
+        "soft_floor_bound": { "const": true }
+      }
+    },
+    "recovery_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recovery_policy_loads",
+        "fixture_recovery_matrix_evaluates",
+        "non_recoverable_rows_fail_closed"
+      ],
+      "properties": {
+        "recovery_policy_loads": { "const": true },
+        "fixture_recovery_matrix_evaluates": { "const": true },
+        "non_recoverable_rows_fail_closed": { "const": true }
+      }
+    },
+    "failure_campaign_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "failure_campaign_policy_loads",
+        "fixture_campaign_plan_closed",
+        "overclaim_soak_activation_refused"
+      ],
+      "properties": {
+        "failure_campaign_policy_loads": { "const": true },
+        "fixture_campaign_plan_closed": { "const": true },
+        "overclaim_soak_activation_refused": { "const": true }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tier_a_backup_restore_binder",
+        "scheduler_pause_drain_binder",
+        "storage_reservation_binder",
+        "recovery_matrix_binder",
+        "failure_campaign_binder"
+      ],
+      "properties": {
+        "tier_a_backup_restore_binder": { "const": "pass" },
+        "scheduler_pause_drain_binder": { "const": "pass" },
+        "storage_reservation_binder": { "const": "pass" },
+        "recovery_matrix_binder": { "const": "pass" },
+        "failure_campaign_binder": { "const": "pass" }
+      }
+    },
+    "mf_p9_12_01_complete": { "const": false },
+    "mf_p9_12_07_soak_complete": { "const": false },
+    "mf_p9_12_09_activation_complete": { "const": false },
+    "live_daz_execution": { "const": false },
+    "seven_day_soak": { "const": false },
+    "doctor_green_claimed": { "const": false },
+    "gold_claimed": { "const": false },
+    "visual_qa_pass_claimed": { "const": false },
+    "main_complete_claimed": { "const": false },
+    "production_evidence_pass_claimed": { "const": false },
+    "honest_non_claims": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "backup_policy_sha256",
+        "retention_policy_sha256",
+        "recovery_policy_sha256",
+        "failure_campaign_policy_sha256",
+        "soft_floor_gib",
+        "reservation_bytes"
+      ],
+      "properties": {
+        "backup_policy_sha256": { "$ref": "#/$defs/sha256" },
+        "retention_policy_sha256": { "$ref": "#/$defs/sha256" },
+        "recovery_policy_sha256": { "$ref": "#/$defs/sha256" },
+        "failure_campaign_policy_sha256": { "$ref": "#/$defs/sha256" },
+        "soft_floor_gib": { "type": "number", "exclusiveMinimum": 0 },
+        "reservation_bytes": { "type": "integer", "exclusiveMinimum": 0 }
+      }
+    },
+    "implementation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["module", "configs", "tests"],
+      "properties": {
+        "module": { "type": "string", "minLength": 1 },
+        "configs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "tests": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "report_id": { "type": "string", "pattern": "^dos_[a-f0-9]{24}$" },
+    "seal_sha256": { "$ref": "#/$defs/sha256" },
+    "sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

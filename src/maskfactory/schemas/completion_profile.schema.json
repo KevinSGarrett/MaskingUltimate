@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/completion_profile.schema.json",
+  "title": "MaskFactory independently claim-scoped completion profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "profile_id",
+    "profile_version",
+    "profile_class",
+    "status",
+    "required_for_core_runtime",
+    "purpose",
+    "claim_scope",
+    "dependency_policy",
+    "required_gates",
+    "independent_profiles",
+    "policy_sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "profile_id": {
+      "enum": [
+        "core_autonomous_runtime",
+        "independent_real_accuracy",
+        "scale_daz_maturity"
+      ]
+    },
+    "profile_version": { "type": "string", "pattern": "^[1-9][0-9]*\\.[0-9]+\\.[0-9]+$" },
+    "profile_class": {
+      "enum": [
+        "core_autonomous_runtime",
+        "independent_real_accuracy",
+        "scale_daz_maturity"
+      ]
+    },
+    "status": { "enum": ["active", "superseded", "retired"] },
+    "required_for_core_runtime": { "type": "boolean" },
+    "purpose": { "type": "string", "minLength": 1 },
+    "claim_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ceiling", "allowed_claims", "forbidden_claims"],
+      "properties": {
+        "ceiling": {
+          "enum": [
+            "operational_policy_conformance",
+            "independently_measured_real_accuracy",
+            "expanded_asset_and_reliability_maturity"
+          ]
+        },
+        "allowed_claims": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "forbidden_claims": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "dependency_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "external_labeling",
+        "minimum_corpus_volume",
+        "asset_ecosystem_expansion",
+        "long_duration_soak"
+      ],
+      "properties": {
+        "external_labeling": { "enum": ["required", "not_required", "profile_specific"] },
+        "minimum_corpus_volume": { "enum": ["required", "not_required", "profile_specific"] },
+        "asset_ecosystem_expansion": { "enum": ["required", "not_required", "profile_specific"] },
+        "long_duration_soak": { "enum": ["required", "not_required", "profile_specific"] }
+      }
+    },
+    "required_gates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["gate_id", "category", "blocking", "evidence_types", "acceptance"],
+        "properties": {
+          "gate_id": { "type": "string", "pattern": "^[A-Z][A-Z0-9_-]+$" },
+          "category": {
+            "enum": [
+              "contract",
+              "runtime",
+              "quality",
+              "autonomy",
+              "integration",
+              "recovery",
+              "measurement",
+              "scale",
+              "reliability"
+            ]
+          },
+          "blocking": { "const": true },
+          "evidence_types": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "acceptance": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "independent_profiles": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "core_autonomous_runtime",
+          "independent_real_accuracy",
+          "scale_daz_maturity"
+        ]
+      }
+    },
+    "policy_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "profile_class": { "const": "core_autonomous_runtime" } } },
+      "then": {
+        "properties": {
+          "profile_id": { "const": "core_autonomous_runtime" },
+          "required_for_core_runtime": { "const": true },
+          "claim_scope": {
+            "properties": { "ceiling": { "const": "operational_policy_conformance" } }
+          },
+          "dependency_policy": {
+            "properties": {
+              "external_labeling": { "const": "not_required" },
+              "minimum_corpus_volume": { "const": "not_required" },
+              "asset_ecosystem_expansion": { "const": "not_required" },
+              "long_duration_soak": { "const": "not_required" }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "profile_class": { "const": "independent_real_accuracy" } } },
+      "then": {
+        "properties": {
+          "profile_id": { "const": "independent_real_accuracy" },
+          "required_for_core_runtime": { "const": false }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "profile_class": { "const": "scale_daz_maturity" } } },
+      "then": {
+        "properties": {
+          "profile_id": { "const": "scale_daz_maturity" },
+          "required_for_core_runtime": { "const": false }
+        }
+      }
+    }
+  ]
+}

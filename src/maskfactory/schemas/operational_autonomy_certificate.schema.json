@@ -1,0 +1,518 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/operational_autonomy_certificate.schema.json",
+  "title": "MaskFactory exact serving-route and output autonomy certificate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "record_type", "certificate_kind", "certificate_id",
+    "canonicalization", "certificate_payload_sha256", "status", "issued_at", "expires_at", "evidence_context", "fixture_only", "issuer_kind",
+    "authority_profile", "authority_state", "truth_tier", "access_mode", "media_scope", "release_binding",
+    "ontology_binding", "pipeline_policy_binding", "execution_binding", "subject_binding",
+    "source_binding", "coordinate_binding", "qualified_route_scope", "certified_output_scope",
+    "lineage", "bound_artifacts", "qa_evidence", "revocation", "signature",
+    "external_manual_anchor_required", "claim_limits"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "record_type": {"const": "operational_autonomy_certificate"},
+    "certificate_kind": {"const": "exact_serving_route_output"},
+    "certificate_id": {"type": "string", "pattern": "^mfac_[0-9a-f]{24}$"},
+    "canonicalization": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "excluded_top_level_fields"],
+      "properties": {
+        "algorithm": {"const": "maskfactory-canonical-json-v1"},
+        "excluded_top_level_fields": {
+          "type": "array", "prefixItems": [{"const": "certificate_payload_sha256"}, {"const": "signature"}], "minItems": 2, "maxItems": 2
+        }
+      }
+    },
+    "certificate_payload_sha256": {"$ref": "#/$defs/sha256"},
+    "status": {"enum": ["active", "expired", "revoked", "superseded"]},
+    "issued_at": {"$ref": "#/$defs/timestamp"},
+    "expires_at": {"$ref": "#/$defs/timestamp"},
+    "evidence_context": {"enum": ["conformance_fixture", "runtime_evidence"]},
+    "fixture_only": {"type": "boolean"},
+    "issuer_kind": {"const": "maskfactory_autonomous"},
+    "authority_profile": {"const": "core_autonomous_runtime"},
+    "authority_state": {"const": "certified"},
+    "truth_tier": {"const": "operationally_certified_artifact"},
+    "access_mode": {"$ref": "#/$defs/accessMode"},
+    "media_scope": {"$ref": "#/$defs/mediaScope"},
+    "release_binding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["release_id", "release_payload_sha256", "capability_snapshot_id", "capability_snapshot_sha256", "bridge_contract", "certificate_schema_sha256", "signing_key_set_id", "signing_key_set_version", "signing_key_set_sha256", "rotation_policy_sha256", "revocation_policy_sha256"],
+      "properties": {
+        "release_id": {"type": "string", "pattern": "^mfr_[0-9]{8}_[0-9a-f]{12}$"},
+        "release_payload_sha256": {"$ref": "#/$defs/sha256"},
+        "capability_snapshot_id": {"type": "string", "pattern": "^mfcap_[0-9a-f]{24}$"},
+        "capability_snapshot_sha256": {"$ref": "#/$defs/sha256"},
+        "bridge_contract": {"const": "maskfactory-comfyui-bridge/1.0"},
+        "certificate_schema_sha256": {"$ref": "#/$defs/sha256"},
+        "signing_key_set_id": {"type": "string", "minLength": 1},
+        "signing_key_set_version": {"type": "string", "minLength": 1},
+        "signing_key_set_sha256": {"$ref": "#/$defs/sha256"},
+        "rotation_policy_sha256": {"$ref": "#/$defs/sha256"},
+        "revocation_policy_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "ontology_binding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["ontology_id", "version", "sha256", "left_right_convention"],
+      "properties": {
+        "ontology_id": {"const": "maskfactory_body_parts"},
+        "version": {"type": "string", "pattern": "^body_parts_v[1-9][0-9]*(?:\\.[0-9]+)?$"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "left_right_convention": {"const": "character_perspective"}
+      }
+    },
+    "pipeline_policy_binding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["pipeline_id", "pipeline_sha256", "policy_id", "policy_sha256", "prompt_package_id", "prompt_package_sha256", "controller_id", "controller_version", "controller_sha256", "randomness_mode", "seed", "randomness_manifest_sha256", "sampler_settings_sha256"],
+      "properties": {
+        "pipeline_id": {"type": "string", "minLength": 1},
+        "pipeline_sha256": {"$ref": "#/$defs/sha256"},
+        "policy_id": {"type": "string", "minLength": 1},
+        "policy_sha256": {"$ref": "#/$defs/sha256"},
+        "prompt_package_id": {"type": "string", "minLength": 1},
+        "prompt_package_sha256": {"$ref": "#/$defs/sha256"},
+        "controller_id": {"type": "string", "minLength": 1},
+        "controller_version": {"type": "string", "minLength": 1},
+        "controller_sha256": {"$ref": "#/$defs/sha256"},
+        "randomness_mode": {"enum": ["deterministic_seeded", "stochastic_recorded"]},
+        "seed": {"type": ["integer", "null"], "minimum": 0},
+        "randomness_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "sampler_settings_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"randomness_mode": {"const": "deterministic_seeded"}}, "required": ["randomness_mode"]},
+          "then": {"properties": {"seed": {"type": "integer"}}}
+        }
+      ]
+    },
+    "execution_binding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["provider_stack_id", "provider_stack_sha256", "model_artifacts", "workflow_id", "workflow_sha256", "runtime_kind", "runtime_id", "runtime_version", "environment_lock_sha256", "interpreter_build_sha256", "venv_manifest_sha256", "container_sha256", "execution_fingerprint_sha256"],
+      "properties": {
+        "provider_stack_id": {"type": "string", "minLength": 1},
+        "provider_stack_sha256": {"$ref": "#/$defs/sha256"},
+        "model_artifacts": {
+          "type": "array", "minItems": 1,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["model_id", "sha256"],
+            "properties": {
+              "model_id": {"type": "string", "minLength": 1},
+              "sha256": {"$ref": "#/$defs/sha256"}
+            }
+          }
+        },
+        "workflow_id": {"type": "string", "minLength": 1},
+        "workflow_sha256": {"$ref": "#/$defs/sha256"},
+        "runtime_kind": {"enum": ["native_venv", "container"]},
+        "runtime_id": {"type": "string", "minLength": 1},
+        "runtime_version": {"type": "string", "minLength": 1},
+        "environment_lock_sha256": {"$ref": "#/$defs/sha256"},
+        "interpreter_build_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "venv_manifest_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "container_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "execution_fingerprint_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "allOf": [
+        {"if": {"properties": {"runtime_kind": {"const": "native_venv"}}, "required": ["runtime_kind"]}, "then": {"properties": {"interpreter_build_sha256": {"type": "string"}, "venv_manifest_sha256": {"type": "string"}, "container_sha256": {"type": "null"}}}},
+        {"if": {"properties": {"runtime_kind": {"const": "container"}}, "required": ["runtime_kind"]}, "then": {"properties": {"interpreter_build_sha256": {"type": "null"}, "venv_manifest_sha256": {"type": "null"}, "container_sha256": {"type": "string"}}}}
+      ]
+    },
+    "subject_binding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["scene_id", "shot_id", "take_id", "character_id", "character_revision", "scene_instance_id", "canonical_person_id", "person_index", "provider_person_index", "assignment_evidence_sha256"],
+      "properties": {
+        "scene_id": {"type": "string", "minLength": 1},
+        "shot_id": {"type": "string", "minLength": 1},
+        "take_id": {"type": "string", "minLength": 1},
+        "character_id": {"type": "string", "minLength": 1},
+        "character_revision": {"type": "string", "minLength": 1},
+        "scene_instance_id": {"type": "string", "minLength": 1},
+        "canonical_person_id": {"type": "string", "minLength": 1},
+        "person_index": {"type": "integer", "minimum": 0},
+        "provider_person_index": {"type": "integer", "minimum": 0},
+        "assignment_evidence_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "source_binding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["artifact_id", "encoded_sha256", "decoded_pixel_sha256", "decoder_id", "decoder_version", "decoder_binary_sha256", "exif_orientation", "orientation_applied", "width", "height", "channel_layout", "alpha_mode", "bit_depth", "dtype", "color_space", "icc_profile_sha256", "color_transform_sha256", "frame_extraction_sha256"],
+      "properties": {
+        "artifact_id": {"type": "string", "minLength": 1},
+        "encoded_sha256": {"$ref": "#/$defs/sha256"},
+        "decoded_pixel_sha256": {"$ref": "#/$defs/sha256"},
+        "decoder_id": {"type": "string", "minLength": 1},
+        "decoder_version": {"type": "string", "minLength": 1},
+        "decoder_binary_sha256": {"$ref": "#/$defs/sha256"},
+        "exif_orientation": {"type": "integer", "minimum": 1, "maximum": 8},
+        "orientation_applied": {"type": "boolean"},
+        "width": {"type": "integer", "minimum": 1},
+        "height": {"type": "integer", "minimum": 1},
+        "channel_layout": {"enum": ["GRAY", "RGB", "RGBA"]},
+        "alpha_mode": {"enum": ["none", "straight", "premultiplied", "discarded"]},
+        "bit_depth": {"enum": [8, 16, 32]},
+        "dtype": {"enum": ["uint8", "uint16", "float32"]},
+        "color_space": {"enum": ["sRGB", "linear_sRGB"]},
+        "icc_profile_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "color_transform_sha256": {"$ref": "#/$defs/sha256"},
+        "frame_extraction_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "coordinate_binding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["transform_chain_id", "source_coordinate_space", "source_width", "source_height", "output_coordinate_space", "output_width", "output_height", "transform_chain_sha256", "executed_step_sha256s", "roundtrip_checked", "roundtrip_passed", "maximum_roundtrip_error_px"],
+      "properties": {
+        "transform_chain_id": {"type": "string", "minLength": 1},
+        "source_coordinate_space": {"const": "source_pixel"},
+        "source_width": {"type": "integer", "minimum": 1},
+        "source_height": {"type": "integer", "minimum": 1},
+        "output_coordinate_space": {"enum": ["source_pixel", "crop_pixel", "output_pixel"]},
+        "output_width": {"type": "integer", "minimum": 1},
+        "output_height": {"type": "integer", "minimum": 1},
+        "transform_chain_sha256": {"$ref": "#/$defs/sha256"},
+        "executed_step_sha256s": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/sha256"}},
+        "roundtrip_checked": {"const": true},
+        "roundtrip_passed": {"const": true},
+        "maximum_roundtrip_error_px": {"type": "number", "minimum": 0}
+      }
+    },
+    "qualified_route_scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["scope_sha256", "labels", "contexts", "risk_buckets", "max_person_count", "artifact_kinds"],
+      "properties": {
+        "scope_sha256": {"$ref": "#/$defs/sha256"},
+        "labels": {"$ref": "#/$defs/nonemptyUniqueStrings"},
+        "contexts": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": {"enum": ["solo", "duo", "small_group", "frame_sequence"]}
+        },
+        "risk_buckets": {"$ref": "#/$defs/nonemptyUniqueStrings"},
+        "max_person_count": {"type": "integer", "minimum": 1},
+        "artifact_kinds": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": {"enum": ["atomic_visible", "protected_qa", "region_band", "derived_union", "inpaint_derivative", "label_map"]}
+        }
+      }
+    },
+    "certified_output_scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["scope_sha256", "labels", "artifact_identity_sha256s", "artifact_kinds", "owners", "coordinate_spaces", "permitted_uses", "exact_scope_only"],
+      "properties": {
+        "scope_sha256": {"$ref": "#/$defs/sha256"},
+        "labels": {"$ref": "#/$defs/nonemptyUniqueStrings"},
+        "artifact_identity_sha256s": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/sha256"}},
+        "artifact_kinds": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": {"enum": ["atomic_visible", "protected_qa", "region_band", "derived_union", "inpaint_derivative", "label_map"]}
+        },
+        "owners": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "coordinate_spaces": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["source_pixel", "crop_pixel", "output_pixel"]}},
+        "permitted_uses": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": {"enum": ["production_conditioning", "downstream_promotion_support", "repair_seed", "qa"]}
+        },
+        "exact_scope_only": {"const": true}
+      }
+    },
+    "lineage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["operation_kind", "parents", "package_id", "package_revision", "package_manifest_sha256", "package_certificate_kind", "package_certificate_id", "package_certificate_sha256", "package_certificate_status", "package_certificate_exact_scope_match", "input_target_regions", "input_protected_regions", "output_artifact_identity_sha256s"],
+      "properties": {
+        "operation_kind": {"enum": ["original_prediction", "package_read", "refinement", "derived_union", "inpaint_derivative", "projection"]},
+        "parents": {
+          "type": "array",
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["artifact_sha256", "authority_state", "truth_tier", "certificate_kind", "certificate_id", "certificate_sha256", "certificate_status", "certificate_exact_scope_match"],
+            "properties": {
+              "artifact_sha256": {"$ref": "#/$defs/sha256"},
+              "authority_state": {"$ref": "#/$defs/authorityState"},
+              "truth_tier": {"$ref": "#/$defs/truthTier"},
+              "certificate_kind": {"$ref": "#/$defs/certificateKind"},
+              "certificate_id": {"type": ["string", "null"], "minLength": 1},
+              "certificate_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+              "certificate_status": {"enum": ["active", "expired", "revoked", "superseded", "none"]},
+              "certificate_exact_scope_match": {"type": "boolean"}
+            },
+            "allOf": [
+              {
+                "if": {"properties": {"authority_state": {"const": "certified"}}, "required": ["authority_state"]},
+                "then": {
+                  "properties": {
+                    "certificate_kind": {"enum": ["exact_serving_route_output", "autonomous_package", "human_anchor_optional"]},
+                    "certificate_id": {"type": "string"},
+                    "certificate_sha256": {"type": "string"},
+                    "certificate_status": {"const": "active"},
+                    "certificate_exact_scope_match": {"const": true}
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "package_id": {"type": ["string", "null"], "minLength": 1},
+        "package_revision": {"type": ["string", "null"], "minLength": 1},
+        "package_manifest_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "package_certificate_kind": {"$ref": "#/$defs/certificateKind"},
+        "package_certificate_id": {"type": ["string", "null"], "minLength": 1},
+        "package_certificate_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "package_certificate_status": {"enum": ["active", "expired", "revoked", "superseded", "none"]},
+        "package_certificate_exact_scope_match": {"type": "boolean"},
+        "input_target_regions": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/inputRegionBinding"}},
+        "input_protected_regions": {"type": "array", "items": {"$ref": "#/$defs/inputRegionBinding"}},
+        "output_artifact_identity_sha256s": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/sha256"}}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"operation_kind": {"const": "original_prediction"}}, "required": ["operation_kind"]},
+          "then": {
+            "properties": {
+              "parents": {"maxItems": 0},
+              "package_id": {"type": "null"},
+              "package_revision": {"type": "null"},
+              "package_manifest_sha256": {"type": "null"},
+              "package_certificate_kind": {"const": "none"},
+              "package_certificate_id": {"type": "null"},
+              "package_certificate_sha256": {"type": "null"},
+              "package_certificate_status": {"const": "none"},
+              "package_certificate_exact_scope_match": {"const": false}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"operation_kind": {"const": "package_read"}}, "required": ["operation_kind"]},
+          "then": {
+            "properties": {
+              "parents": {"maxItems": 0},
+              "package_id": {"type": "string"},
+              "package_revision": {"type": "string"},
+              "package_manifest_sha256": {"type": "string"},
+              "package_certificate_kind": {"enum": ["autonomous_package", "human_anchor_optional"]},
+              "package_certificate_id": {"type": "string"},
+              "package_certificate_sha256": {"type": "string"},
+              "package_certificate_status": {"const": "active"},
+              "package_certificate_exact_scope_match": {"const": true}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"operation_kind": {"enum": ["refinement", "derived_union", "inpaint_derivative", "projection"]}}, "required": ["operation_kind"]},
+          "then": {
+            "properties": {
+              "parents": {"minItems": 1},
+              "package_id": {"type": "null"},
+              "package_revision": {"type": "null"},
+              "package_manifest_sha256": {"type": "null"},
+              "package_certificate_kind": {"const": "none"},
+              "package_certificate_id": {"type": "null"},
+              "package_certificate_sha256": {"type": "null"},
+              "package_certificate_status": {"const": "none"},
+              "package_certificate_exact_scope_match": {"const": false}
+            }
+          }
+        }
+      ]
+    },
+    "bound_artifacts": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["artifact_id", "intent_id", "source_decoded_pixel_sha256", "artifact_identity_sha256", "encoded_sha256", "decoded_mask_sha256", "format", "channel_layout", "dtype", "allowed_values", "mask_type", "label", "visibility", "empty_semantics", "content_summary", "owner_kind", "entity_id", "scene_instance_id", "canonical_person_id", "person_index", "artifact_kind", "width", "height", "coordinate_space", "transform_chain_sha256"],
+        "properties": {
+          "artifact_id": {"type": "string", "minLength": 1},
+          "intent_id": {"type": "string", "minLength": 1},
+          "source_decoded_pixel_sha256": {"$ref": "#/$defs/sha256"},
+          "artifact_identity_sha256": {"$ref": "#/$defs/sha256"},
+          "encoded_sha256": {"$ref": "#/$defs/sha256"},
+          "decoded_mask_sha256": {"$ref": "#/$defs/sha256"},
+          "format": {"enum": ["PNG", "TIFF", "NPY", "LABEL_MAP"]},
+          "channel_layout": {"enum": ["L", "LA", "RGBA", "LABEL_INDEX"]},
+          "dtype": {"enum": ["uint8", "uint16", "float32"]},
+          "allowed_values": {"enum": ["binary_0_1", "binary_0_255", "matte_0_1", "label_indices"]},
+          "mask_type": {"enum": ["atomic", "derived", "inpaint", "matte", "label_map"]},
+          "label": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+          "owner_kind": {"const": "character_instance"},
+          "entity_id": {"type": "string", "minLength": 1},
+          "scene_instance_id": {"type": "string", "minLength": 1},
+          "canonical_person_id": {"type": "string", "minLength": 1},
+          "person_index": {"type": "integer", "minimum": 0},
+          "visibility": {"enum": ["visible", "occluded_inferred", "complete_map"]},
+          "empty_semantics": {"enum": ["forbidden", "allowed_explicit_absence", "allowed_no_visible_pixels"]},
+          "content_summary": {"type": "object", "additionalProperties": false, "required": ["bounds", "area_pixels", "area_ppm", "is_empty"], "properties": {"bounds": {"type": ["object", "null"], "additionalProperties": false, "required": ["x", "y", "width", "height"], "properties": {"x": {"type": "integer", "minimum": 0}, "y": {"type": "integer", "minimum": 0}, "width": {"type": "integer", "minimum": 1}, "height": {"type": "integer", "minimum": 1}}}, "area_pixels": {"type": "integer", "minimum": 0}, "area_ppm": {"type": "integer", "minimum": 0, "maximum": 1000000}, "is_empty": {"type": "boolean"}}},
+          "artifact_kind": {"type": "string", "minLength": 1},
+          "width": {"type": "integer", "minimum": 1},
+          "height": {"type": "integer", "minimum": 1},
+          "coordinate_space": {"enum": ["source_pixel", "crop_pixel", "output_pixel"]},
+          "transform_chain_sha256": {"$ref": "#/$defs/sha256"}
+        }
+      }
+    },
+    "qa_evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "qa_policy_id", "qa_policy_sha256", "gate_results", "deterministic_report_sha256", "critic_report_sha256", "ownership_report_sha256", "protected_region_report_sha256", "critic_binding", "critic_independent_from_generator", "all_blocking_gates_passed", "abstention_available"],
+      "properties": {
+        "status": {"const": "pass"},
+        "qa_policy_id": {"type": "string", "minLength": 1},
+        "qa_policy_sha256": {"$ref": "#/$defs/sha256"},
+        "gate_results": {
+          "type": "array", "minItems": 19, "maxItems": 19,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["gate_id", "status", "evidence_sha256", "executor_id", "executor_sha256"],
+            "properties": {
+              "gate_id": {"enum": ["schema_conformance", "source_identity", "ontology_label", "left_right_semantics", "subject_assignment", "ownership_isolation", "contact_occlusion", "protected_region", "transform_replay", "output_identity", "deterministic_quality", "critic_quality", "critic_independence", "perturbation", "metamorphic", "stability_replay", "repair_budget", "abstention", "temporal_consistency"]},
+              "status": {"const": "pass"},
+              "evidence_sha256": {"$ref": "#/$defs/sha256"},
+              "executor_id": {"type": "string", "minLength": 1},
+              "executor_sha256": {"$ref": "#/$defs/sha256"}
+            }
+          }
+        },
+        "deterministic_report_sha256": {"$ref": "#/$defs/sha256"},
+        "critic_report_sha256": {"$ref": "#/$defs/sha256"},
+        "ownership_report_sha256": {"$ref": "#/$defs/sha256"},
+        "protected_region_report_sha256": {"$ref": "#/$defs/sha256"},
+        "critic_binding": {
+          "type": "object", "additionalProperties": false,
+          "required": ["critic_id", "critic_role", "critic_stack_id", "critic_stack_sha256", "model_artifacts", "workflow_id", "workflow_sha256", "execution_fingerprint_sha256", "qualification_scope_sha256", "qualification_certificate_sha256", "qualification_status", "qualified_until"],
+          "properties": {
+            "critic_id": {"type": "string", "minLength": 1},
+            "critic_role": {"const": "independent_quality_critic"},
+            "critic_stack_id": {"type": "string", "minLength": 1},
+            "critic_stack_sha256": {"$ref": "#/$defs/sha256"},
+            "model_artifacts": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["model_id", "sha256"], "properties": {"model_id": {"type": "string", "minLength": 1}, "sha256": {"$ref": "#/$defs/sha256"}}}},
+            "workflow_id": {"type": "string", "minLength": 1},
+            "workflow_sha256": {"$ref": "#/$defs/sha256"},
+            "execution_fingerprint_sha256": {"$ref": "#/$defs/sha256"},
+            "qualification_scope_sha256": {"$ref": "#/$defs/sha256"},
+            "qualification_certificate_sha256": {"$ref": "#/$defs/sha256"},
+            "qualification_status": {"const": "active"},
+            "qualified_until": {"$ref": "#/$defs/timestamp"}
+          }
+        },
+        "critic_independent_from_generator": {"const": true},
+        "all_blocking_gates_passed": {"const": true},
+        "abstention_available": {"const": true}
+      }
+    },
+    "revocation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["checked_at", "revocation_index_sha256", "is_revoked"],
+      "properties": {
+        "checked_at": {"$ref": "#/$defs/timestamp"},
+        "revocation_index_sha256": {"$ref": "#/$defs/sha256"},
+        "is_revoked": {"type": "boolean"}
+      }
+    },
+    "signature": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "key_id", "public_key_base64", "signed_payload_sha256", "signed_payload_format", "value_base64"],
+      "properties": {
+        "algorithm": {"const": "ed25519"},
+        "key_id": {"type": "string", "pattern": "^mf-authority-[a-z0-9-]+$"},
+        "public_key_base64": {"type": "string", "pattern": "^[A-Za-z0-9+/]{43}=$"},
+        "signed_payload_sha256": {"$ref": "#/$defs/sha256"},
+        "signed_payload_format": {"const": "sha256_digest_bytes"},
+        "value_base64": {"type": "string", "pattern": "^[A-Za-z0-9+/]{40,}={0,2}$"}
+      }
+    },
+    "external_manual_anchor_required": {"const": false},
+    "claim_limits": {
+      "type": "object", "additionalProperties": false,
+      "required": ["maximum_claim", "independent_real_accuracy_claim", "holdout_truth_claim", "training_gold_claim", "counts_toward_training_or_accuracy_gates", "promotion_transaction_required_for_training_gold"],
+      "properties": {
+        "maximum_claim": {"const": "operational_policy_conformance_for_exact_bound_artifacts"},
+        "independent_real_accuracy_claim": {"const": false},
+        "holdout_truth_claim": {"const": false},
+        "training_gold_claim": {"const": false},
+        "counts_toward_training_or_accuracy_gates": {"const": false},
+        "promotion_transaction_required_for_training_gold": {"const": true}
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "nonemptyUniqueStrings": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "accessMode": {"enum": ["mode_a_package_read", "mode_b_live_predict", "mode_b_live_refine"]},
+    "mediaScope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["scope_kind", "sequence_id", "shot_id", "take_id", "source_video_sha256", "decoded_frame_sha256", "frame_index", "pts", "timebase_numerator", "timebase_denominator", "timestamp_ns", "frame_span", "neighbor_frames"],
+      "properties": {
+        "scope_kind": {"enum": ["still_image", "video_frame", "frame_span"]}, "sequence_id": {"type": "string", "minLength": 1}, "shot_id": {"type": "string", "minLength": 1}, "take_id": {"type": "string", "minLength": 1}, "source_video_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"}, "decoded_frame_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"}, "frame_index": {"type": ["integer", "null"], "minimum": 0}, "pts": {"type": ["integer", "null"]}, "timebase_numerator": {"type": ["integer", "null"], "minimum": 1}, "timebase_denominator": {"type": ["integer", "null"], "minimum": 1}, "timestamp_ns": {"type": ["integer", "null"], "minimum": 0},
+        "frame_span": {"oneOf": [{"type": "null"}, {"type": "object", "additionalProperties": false, "required": ["start_frame", "end_frame", "frame_manifest_sha256"], "properties": {"start_frame": {"type": "integer", "minimum": 0}, "end_frame": {"type": "integer", "minimum": 0}, "frame_manifest_sha256": {"$ref": "#/$defs/sha256"}}}]},
+        "neighbor_frames": {"type": "array", "uniqueItems": true, "items": {"type": "object", "additionalProperties": false, "required": ["relation", "frame_index", "decoded_frame_sha256"], "properties": {"relation": {"enum": ["previous", "next", "span_member"]}, "frame_index": {"type": "integer", "minimum": 0}, "decoded_frame_sha256": {"$ref": "#/$defs/sha256"}}}}
+      }
+    },
+    "authorityState": {"enum": ["invalid", "hypothesis", "draft", "qa_passed_noncertified", "certified"]}
+    ,"truthTier": {"enum": ["invalid", "machine_candidate", "qa_passed_machine_candidate", "operationally_certified_artifact", "autonomous_certified_gold", "human_anchor_gold"]}
+    ,"certificateKind": {"enum": ["exact_serving_route_output", "autonomous_package", "human_anchor_optional", "none"]}
+,
+    "inputRegionBinding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["region_id", "artifact_identity_sha256", "encoded_sha256", "decoded_mask_sha256", "source_decoded_pixel_sha256", "artifact_type", "owner_identity_sha256", "coordinate_space", "width", "height", "transform_chain_sha256", "transform_step_sequence", "required_minimum_authority_state", "authority_state", "issuer_kind", "certificate_kind", "certificate_id", "certificate_sha256", "certificate_scope_sha256", "certificate_status", "certificate_exact_scope_match", "revocation_checked_at", "revocation_checkpoint_sha256"],
+      "properties": {
+        "region_id": {"type": "string", "minLength": 1},
+        "artifact_identity_sha256": {"$ref": "#/$defs/sha256"},
+        "encoded_sha256": {"$ref": "#/$defs/sha256"},
+        "decoded_mask_sha256": {"$ref": "#/$defs/sha256"},
+        "source_decoded_pixel_sha256": {"$ref": "#/$defs/sha256"},
+        "artifact_type": {"type": "string", "minLength": 1},
+        "owner_identity_sha256": {"$ref": "#/$defs/sha256"},
+        "coordinate_space": {"enum": ["source_pixel", "crop_pixel", "output_pixel"]},
+        "width": {"type": "integer", "minimum": 1},
+        "height": {"type": "integer", "minimum": 1},
+        "transform_chain_sha256": {"$ref": "#/$defs/sha256"},
+        "transform_step_sequence": {"type": ["integer", "null"], "minimum": 0},
+        "required_minimum_authority_state": {"$ref": "#/$defs/authorityState"},
+        "authority_state": {"$ref": "#/$defs/authorityState"},
+        "issuer_kind": {"type": "string", "minLength": 1},
+        "certificate_kind": {"$ref": "#/$defs/certificateKind"},
+        "certificate_id": {"type": ["string", "null"]},
+        "certificate_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "certificate_scope_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "certificate_status": {"enum": ["active", "expired", "revoked", "superseded", "none"]},
+        "certificate_exact_scope_match": {"type": "boolean"},
+        "revocation_checked_at": {"type": ["string", "null"], "format": "date-time"},
+        "revocation_checkpoint_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "active"}}, "required": ["status"]},
+      "then": {"properties": {"revocation": {"properties": {"is_revoked": {"const": false}}}}}
+    },
+    {
+      "if": {"properties": {"access_mode": {"const": "mode_a_package_read"}}, "required": ["access_mode"]},
+      "then": {"properties": {"lineage": {"properties": {"operation_kind": {"const": "package_read"}}}}}
+    },
+    {
+      "if": {"properties": {"access_mode": {"const": "mode_b_live_predict"}}, "required": ["access_mode"]},
+      "then": {"properties": {"lineage": {"properties": {"operation_kind": {"const": "original_prediction"}, "parents": {"maxItems": 0}}}}}
+    },
+    {
+      "if": {"properties": {"access_mode": {"const": "mode_b_live_refine"}}, "required": ["access_mode"]},
+      "then": {
+        "properties": {
+          "lineage": {
+            "properties": {
+              "operation_kind": {"const": "refinement"},
+              "parents": {
+                "minItems": 1,
+                "items": {"properties": {"authority_state": {"const": "certified"}, "certificate_status": {"const": "active"}, "certificate_exact_scope_match": {"const": true}}}
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

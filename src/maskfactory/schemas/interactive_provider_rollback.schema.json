@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/interactive_provider_rollback.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "action", "transaction_kind", "transaction_id", "promotion_transaction_id", "promotion_transaction_sha256", "recorded_at", "role", "candidate_key", "incumbent_key", "promotion_certificate_sha256", "files", "snapshot_manifest_sha256", "serving_smoke", "sha256"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "action": {"const": "rollback"},
+    "transaction_kind": {"const": "interactive_provider"},
+    "transaction_id": {"$ref": "#/$defs/id"},
+    "promotion_transaction_id": {"$ref": "#/$defs/id"},
+    "promotion_transaction_sha256": {"$ref": "#/$defs/sha256"},
+    "recorded_at": {"type": "string", "format": "date-time"},
+    "role": {"const": "interactive_segmenter"},
+    "candidate_key": {"$ref": "#/$defs/key"},
+    "incumbent_key": {"$ref": "#/$defs/key"},
+    "promotion_certificate_sha256": {"$ref": "#/$defs/sha256"},
+    "files": {"$ref": "#/$defs/files"},
+    "snapshot_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "serving_smoke": {"$ref": "#/$defs/smoke"},
+    "sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "id": {"type": "string", "pattern": "^[a-f0-9]{32}$"},
+    "key": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_.-]{1,79}$"},
+    "fileState": {"type": "object", "additionalProperties": false, "required": ["before_sha256", "after_sha256"], "properties": {"before_sha256": {"$ref": "#/$defs/sha256"}, "after_sha256": {"$ref": "#/$defs/sha256"}}},
+    "files": {"type": "object", "additionalProperties": false, "required": ["pipeline", "external_registry", "model_registry"], "properties": {"pipeline": {"$ref": "#/$defs/fileState"}, "external_registry": {"$ref": "#/$defs/fileState"}, "model_registry": {"$ref": "#/$defs/fileState"}}},
+    "smoke": {"type": "object", "additionalProperties": false, "required": ["result", "action", "role", "provider_key", "checkpoint_sha256", "runtime_sha256", "output_sha256"], "properties": {"result": {"const": "pass"}, "action": {"const": "rollback"}, "role": {"const": "interactive_segmenter"}, "provider_key": {"$ref": "#/$defs/key"}, "checkpoint_sha256": {"$ref": "#/$defs/sha256"}, "runtime_sha256": {"$ref": "#/$defs/sha256"}, "output_sha256": {"$ref": "#/$defs/sha256"}}}
+  }
+}

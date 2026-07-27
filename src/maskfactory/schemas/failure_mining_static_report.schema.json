@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/failure_mining_static_report.schema.json",
+  "title": "MaskFactory failure-mining STATIC binder report",
+  "description": "STATIC_PASS binder for acquisition-plan schema, priority formula, top-20 actions, and machine-side mining abstention routing. Never claims D4 or VLM calibration.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "proof_tier",
+    "authority",
+    "priority_weights",
+    "top_action_cap",
+    "action_kinds",
+    "abstention_reasons",
+    "checks",
+    "seeded_fixture_blocks",
+    "d4_complete",
+    "vlm_calibration_complete",
+    "human_anchor_authority",
+    "doctor_green_claimed",
+    "gold_claimed",
+    "production_evidence_pass_claimed",
+    "honest_non_claims",
+    "report_id",
+    "seal_sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "artifact_type": { "const": "failure_mining_static_report" },
+    "proof_tier": { "const": "STATIC_PASS" },
+    "authority": {
+      "const": "failure_mining_static_only_no_d4_vlm_calibration_or_human_anchor_authority"
+    },
+    "priority_weights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "class_error_rate",
+        "coverage_deficit",
+        "downstream_use_weight",
+        "recency"
+      ],
+      "properties": {
+        "class_error_rate": { "const": 0.4 },
+        "coverage_deficit": { "const": 0.3 },
+        "downstream_use_weight": { "const": 0.2 },
+        "recency": { "const": 0.1 }
+      }
+    },
+    "top_action_cap": { "const": 20 },
+    "action_kinds": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "collect_cell_reannotate_holdout",
+          "reannotate_skeleton_audit",
+          "reannotate_label_proposal",
+          "v2_governed_acquisition"
+        ]
+      }
+    },
+    "abstention_reasons": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "acquisition_plan_schema",
+        "priority_formula",
+        "top20_cap",
+        "abstention_routing"
+      ],
+      "properties": {
+        "acquisition_plan_schema": { "const": "pass" },
+        "priority_formula": { "const": "pass" },
+        "top20_cap": { "const": "pass" },
+        "abstention_routing": { "const": "pass" }
+      }
+    },
+    "seeded_fixture_blocks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "acquisition_plan_validates",
+        "invalid_clusterer_abstains",
+        "empty_queue_abstains",
+        "overclaim_d4_refused"
+      ],
+      "properties": {
+        "acquisition_plan_validates": { "const": true },
+        "invalid_clusterer_abstains": { "const": true },
+        "empty_queue_abstains": { "const": true },
+        "overclaim_d4_refused": { "const": true }
+      }
+    },
+    "d4_complete": { "const": false },
+    "vlm_calibration_complete": { "const": false },
+    "human_anchor_authority": { "const": false },
+    "doctor_green_claimed": { "const": false },
+    "gold_claimed": { "const": false },
+    "production_evidence_pass_claimed": { "const": false },
+    "honest_non_claims": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "report_id": {
+      "type": "string",
+      "pattern": "^fms_[a-f0-9]{24}$"
+    },
+    "seal_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

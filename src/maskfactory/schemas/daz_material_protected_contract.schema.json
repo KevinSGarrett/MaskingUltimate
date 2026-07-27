@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_material_protected_contract.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "contract_id", "contract_sha256", "scene_id", "scene_state_sha256", "plan_id", "plan_sha256", "part_contract_id", "part_contract_sha256", "ontology_snapshot_id", "ontology_snapshot_sha256", "ontology_version", "mapping_sha256", "mapping_set_sha256", "policy_sha256", "policy_version", "profile", "target_p_index", "target_instance_id", "active_material_ids", "material_labels", "protected_namespace", "protected_allowed_material_ids", "expected_material_ids", "outputs"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "contract_id": {"type": "string", "pattern": "^dmpc_[0-9a-f]{24}$"},
+    "contract_sha256": {"$ref": "#/$defs/sha"},
+    "scene_id": {"type": "string"},
+    "scene_state_sha256": {"$ref": "#/$defs/sha"},
+    "plan_id": {"type": "string"}, "plan_sha256": {"$ref": "#/$defs/sha"},
+    "part_contract_id": {"type": "string"}, "part_contract_sha256": {"$ref": "#/$defs/sha"},
+    "ontology_snapshot_id": {"type": "string"}, "ontology_snapshot_sha256": {"$ref": "#/$defs/sha"},
+    "ontology_version": {"const": "body_parts_v1"},
+    "mapping_sha256": {"$ref": "#/$defs/sha"}, "mapping_set_sha256": {"$ref": "#/$defs/sha"},
+    "policy_sha256": {"$ref": "#/$defs/sha"}, "policy_version": {"const": "1.0.0"},
+    "profile": {"enum": ["engineering_minimal", "training_standard", "training_relationship", "diagnostic_full"]},
+    "target_p_index": {"enum": ["p0", "p1", "p2", "p3"]},
+    "target_instance_id": {"type": "integer", "minimum": 1, "maximum": 4},
+    "active_material_ids": {"type": "array", "minItems": 16, "maxItems": 16, "uniqueItems": true, "items": {"type": "integer", "minimum": 0, "maximum": 15}},
+    "material_labels": {"type": "array", "minItems": 16, "maxItems": 16, "items": {"type": "object", "additionalProperties": false, "required": ["id", "name"], "properties": {"id": {"type": "integer", "minimum": 0, "maximum": 15}, "name": {"type": "string", "minLength": 1}}}},
+    "protected_namespace": {"type": "object", "additionalProperties": false, "required": ["other_person", "occluding_object", "support_surface", "accessory_or_prop"], "properties": {"other_person": {"const": 50}, "occluding_object": {"const": 51}, "support_surface": {"const": 52}, "accessory_or_prop": {"const": 53}}},
+    "protected_allowed_material_ids": {"type": "object", "additionalProperties": false, "required": ["50", "51", "52", "53"], "properties": {"50": {"const": [13]}, "51": {"const": [14]}, "52": {"const": [14]}, "53": {"const": [9, 14]}}},
+    "expected_material_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "integer", "minimum": 1, "maximum": 15}},
+    "outputs": {"type": "object", "minProperties": 1, "maxProperties": 2, "additionalProperties": false, "required": ["material"], "properties": {"material": {"$ref": "#/$defs/output"}, "protected": {"$ref": "#/$defs/output"}}}
+  },
+  "$defs": {
+    "sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "output": {"type": "object", "additionalProperties": false, "required": ["role", "encoding", "resolution", "crop", "background_value", "decode_filter"], "properties": {"role": {"enum": ["material", "protected"]}, "encoding": {"const": "uint16_png"}, "resolution": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "integer", "minimum": 1}}, "crop": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"type": "integer", "minimum": 0}}, "background_value": {"const": 0}, "decode_filter": {"const": "nearest_neighbor_exact"}}}
+  }
+}

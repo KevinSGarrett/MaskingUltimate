@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/mediapipe_vote_ablation_policy.schema.json",
+  "title": "Frozen MediaPipe handedness-vote ablation policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "policy_id",
+    "frozen_at",
+    "eligible_truth",
+    "baseline_vote_sources",
+    "full_vote_sources",
+    "mediapipe_minimum_score",
+    "decision_rule",
+    "pass_requirements",
+    "hand_landmarker_artifact_sha256",
+    "source_hashes",
+    "authority_boundary",
+    "sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "policy_id": {"const": "mediapipe_hand_vote_ablation_v1"},
+    "frozen_at": {"type": "string", "format": "date-time"},
+    "eligible_truth": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tier", "partition"],
+      "properties": {
+        "tier": {"const": "human_anchor_gold"},
+        "partition": {"const": "holdout"}
+      }
+    },
+    "baseline_vote_sources": {
+      "const": ["densepose_surface", "pose_skeleton"]
+    },
+    "full_vote_sources": {
+      "const": ["densepose_surface", "mediapipe_handedness", "pose_skeleton"]
+    },
+    "mediapipe_minimum_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "decision_rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimum_matching_votes", "on_no_majority", "perspective"],
+      "properties": {
+        "minimum_matching_votes": {"const": 2},
+        "on_no_majority": {"const": "abstain"},
+        "perspective": {"const": "character"}
+      }
+    },
+    "pass_requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "minimum_incremental_correct_decisions",
+        "maximum_incremental_wrong_side_decisions",
+        "require_side_swap_fixture"
+      ],
+      "properties": {
+        "minimum_incremental_correct_decisions": {"const": 1},
+        "maximum_incremental_wrong_side_decisions": {"const": 0},
+        "require_side_swap_fixture": {"const": true}
+      }
+    },
+    "hand_landmarker_artifact_sha256": {"$ref": "#/$defs/sha256"},
+    "source_hashes": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"$ref": "#/$defs/sha256"}
+    },
+    "authority_boundary": {"type": "string", "minLength": 1},
+    "sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

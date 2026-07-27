@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/mask_bridge_semantic_invariant_profile.schema.json",
+  "title": "Versioned MaskFactory bridge semantic-invariant profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "record_type", "profile_id", "profile_version", "status", "canonicalization", "canonicalization_spec_sha256",
+    "required_validation_layers", "authority_rank", "certificate_kind_crosswalk",
+    "invariants", "conformance_fixture_index", "profile_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "record_type": {"const": "mask_bridge_semantic_invariant_profile"},
+    "profile_id": {"const": "maskfactory-comfyui-bridge-semantics"},
+    "profile_version": {"const": "1.0.0"},
+    "status": {"const": "active"},
+    "canonicalization": {"type": "object", "additionalProperties": false, "required": ["algorithm", "excluded_top_level_fields"], "properties": {"algorithm": {"const": "maskfactory-canonical-json-v1"}, "excluded_top_level_fields": {"type": "array", "prefixItems": [{"const": "profile_sha256"}], "minItems": 1, "maxItems": 1}}},
+    "canonicalization_spec_sha256": {"$ref": "#/$defs/sha256"},
+    "required_validation_layers": {
+      "type": "array",
+      "prefixItems": [
+        {"const": "json_schema"},
+        {"const": "semantic_invariants"},
+        {"const": "cryptographic_bindings"},
+        {"const": "cross_record_bindings"}
+      ],
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "authority_rank": {
+      "type": "object", "additionalProperties": false,
+      "required": ["invalid", "hypothesis", "draft", "qa_passed_noncertified", "certified"],
+      "properties": {
+        "invalid": {"const": 0},
+        "hypothesis": {"const": 1},
+        "draft": {"const": 2},
+        "qa_passed_noncertified": {"const": 3},
+        "certified": {"const": 4}
+      }
+    },
+    "certificate_kind_crosswalk": {
+      "type": "object", "additionalProperties": false,
+      "required": ["exact_serving_route_output", "autonomous_package", "human_anchor_optional", "none"],
+      "properties": {
+        "exact_serving_route_output": {"$ref": "#/$defs/certificateCrosswalk"},
+        "autonomous_package": {"$ref": "#/$defs/certificateCrosswalk"},
+        "human_anchor_optional": {"$ref": "#/$defs/certificateCrosswalk"},
+        "none": {"$ref": "#/$defs/certificateCrosswalk"}
+      }
+    },
+    "invariants": {
+      "type": "array", "minItems": 10,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["invariant_id", "applies_to", "severity", "verifier_id", "verifier_version", "verifier_sha256", "description"],
+        "properties": {
+          "invariant_id": {"type": "string", "pattern": "^MF-BRIDGE-INV-[0-9]{3}$"},
+          "applies_to": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "severity": {"const": "blocking"},
+          "verifier_id": {"type": "string", "minLength": 1},
+          "verifier_version": {"type": "string", "minLength": 1},
+          "verifier_sha256": {"$ref": "#/$defs/sha256"},
+          "description": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "conformance_fixture_index": {
+      "type": "object", "additionalProperties": false,
+      "required": ["fixture_set_id", "fixture_set_version", "relative_path", "included_fixtures", "sha256", "positive_count", "negative_count"],
+      "properties": {
+        "fixture_set_id": {"const": "maskfactory-bridge-conformance"},
+        "fixture_set_version": {"const": "1.0.0"},
+        "relative_path": {"const": "tests/fixtures/mask_bridge_contracts"},
+        "included_fixtures": {
+          "type": "array", "minItems": 2,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["relative_path", "role", "sha256"],
+            "properties": {
+              "relative_path": {"type": "string", "pattern": "^(?:positive|negative)_[A-Za-z0-9_.-]+\\.json$"},
+              "role": {"enum": ["positive", "negative"]},
+              "sha256": {"$ref": "#/$defs/sha256"}
+            }
+          }
+        },
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "positive_count": {"type": "integer", "minimum": 1},
+        "negative_count": {"type": "integer", "minimum": 1}
+      }
+    },
+    "profile_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "certificateCrosswalk": {
+      "type": "object", "additionalProperties": false,
+      "required": ["record_types", "maximum_authority_state", "issuer_kinds"],
+      "properties": {
+        "record_types": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "maximum_authority_state": {"enum": ["invalid", "hypothesis", "draft", "qa_passed_noncertified", "certified"]},
+        "issuer_kinds": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["maskfactory_autonomous", "human_anchor_optional", "none"]}}
+      }
+    }
+  }
+}

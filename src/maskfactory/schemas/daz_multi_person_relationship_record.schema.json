@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_multi_person_relationship_record.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "record_id", "record_sha256", "policy_version", "policy_sha256", "scene_id", "relationship_report_id", "relationship_report_sha256", "assignment_id", "assignment_sha256", "duo_selection_id", "duo_selection_sha256", "duo_policy_sha256", "relationship_family", "mapping", "pair_records", "directed_relationships", "summary", "authority"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "record_id": {"type": "string", "pattern": "^dmrr_[0-9a-f]{24}$"},
+    "record_sha256": {"$ref": "#/$defs/sha"},
+    "policy_version": {"const": "1.0.0"},
+    "policy_sha256": {"$ref": "#/$defs/sha"},
+    "scene_id": {"type": "string", "minLength": 1},
+    "relationship_report_id": {"type": "string", "pattern": "^drpr_[0-9a-f]{24}$"},
+    "relationship_report_sha256": {"$ref": "#/$defs/sha"},
+    "assignment_id": {"type": "string", "pattern": "^dpia_[0-9a-f]{24}$"},
+    "assignment_sha256": {"$ref": "#/$defs/sha"},
+    "duo_selection_id": {"type": "string", "pattern": "^dcds_[0-9a-f]{24}$"},
+    "duo_selection_sha256": {"$ref": "#/$defs/sha"},
+    "duo_policy_sha256": {"$ref": "#/$defs/sha"},
+    "relationship_family": {"enum": ["no_contact", "overlap_no_contact", "contact_support"]},
+    "mapping": {"type": "array", "minItems": 2, "maxItems": 4, "items": {"$ref": "#/$defs/mapping"}},
+    "pair_records": {"type": "array", "minItems": 1, "maxItems": 6, "items": {"$ref": "#/$defs/pairRecord"}},
+    "directed_relationships": {"type": "array", "items": {"$ref": "#/$defs/directed"}},
+    "summary": {
+      "type": "object", "additionalProperties": false,
+      "required": ["passed", "acceptance_eligible", "person_count", "pair_count", "contact_pair_count", "occlusion_pair_count", "directed_relationship_count", "reciprocal_relationships_exact"],
+      "properties": {
+        "passed": {"const": true}, "acceptance_eligible": {"const": true},
+        "person_count": {"type": "integer", "minimum": 2, "maximum": 4},
+        "pair_count": {"type": "integer", "minimum": 1, "maximum": 6},
+        "contact_pair_count": {"type": "integer", "minimum": 0, "maximum": 6},
+        "occlusion_pair_count": {"type": "integer", "minimum": 0, "maximum": 6},
+        "directed_relationship_count": {"type": "integer", "minimum": 0},
+        "reciprocal_relationships_exact": {"const": true}
+      }
+    },
+    "authority": {
+      "type": "object", "additionalProperties": false,
+      "required": ["owner", "stage", "can_raise_truth_tier", "can_mutate_gold"],
+      "properties": {
+        "owner": {"const": "maskfactory"},
+        "stage": {"const": "technical_d8_relationship_record"},
+        "can_raise_truth_tier": {"const": false},
+        "can_mutate_gold": {"const": false}
+      }
+    }
+  },
+  "$defs": {
+    "sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "pIndex": {"type": "string", "pattern": "^p[0-3]$"},
+    "pPair": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"$ref": "#/$defs/pIndex"}},
+    "iPair": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "integer", "minimum": 1, "maximum": 4}},
+    "mapping": {
+      "type": "object", "additionalProperties": false,
+      "required": ["slot_id", "construction_id", "instance_id", "p_index"],
+      "properties": {
+        "slot_id": {"enum": ["a", "b"]}, "construction_id": {"type": "string", "pattern": "^c[0-9]+$"},
+        "instance_id": {"type": "integer", "minimum": 1, "maximum": 4}, "p_index": {"$ref": "#/$defs/pIndex"}
+      }
+    },
+    "region": {
+      "type": "object", "additionalProperties": false,
+      "required": ["first_part_id", "second_part_id", "area_mm2"],
+      "properties": {
+        "first_part_id": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "second_part_id": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "area_mm2": {"type": "number", "exclusiveMinimum": 0}
+      }
+    },
+    "pairRecord": {
+      "type": "object", "additionalProperties": false,
+      "required": ["pair", "instance_pair", "construction_pair", "minimum_surface_distance_mm", "maximum_penetration_mm", "minimum_normal_dot", "contact", "contact_regions", "visible_boundary_pixels", "front_owner_counts", "depth_sample_count", "depth_tie_count", "occlusion_direction", "depth_order_confidence"],
+      "properties": {
+        "pair": {"$ref": "#/$defs/pPair"}, "instance_pair": {"$ref": "#/$defs/iPair"},
+        "construction_pair": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "string", "pattern": "^c[0-9]+$"}},
+        "minimum_surface_distance_mm": {"type": "number", "minimum": 0}, "maximum_penetration_mm": {"type": "number", "minimum": 0},
+        "minimum_normal_dot": {"type": "number", "minimum": -1, "maximum": 1}, "contact": {"type": "boolean"},
+        "contact_regions": {"type": "array", "items": {"$ref": "#/$defs/region"}},
+        "visible_boundary_pixels": {"type": "integer", "minimum": 0},
+        "front_owner_counts": {"type": "object", "minProperties": 2, "maxProperties": 2, "additionalProperties": {"type": "integer", "minimum": 0}},
+        "depth_sample_count": {"type": "integer", "minimum": 0}, "depth_tie_count": {"type": "integer", "minimum": 0},
+        "occlusion_direction": {"enum": ["none", "first_front", "second_front", "mixed"]},
+        "depth_order_confidence": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "directed": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_p_index", "target_p_index", "source_instance_id", "target_instance_id", "type"],
+      "properties": {
+        "source_p_index": {"$ref": "#/$defs/pIndex"}, "target_p_index": {"$ref": "#/$defs/pIndex"},
+        "source_instance_id": {"type": "integer", "minimum": 1, "maximum": 4}, "target_instance_id": {"type": "integer", "minimum": 1, "maximum": 4},
+        "type": {"enum": ["contact", "occludes", "occluded_by"]}
+      }
+    }
+  }
+}

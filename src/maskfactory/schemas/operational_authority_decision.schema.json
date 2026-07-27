@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/operational-authority-decision-1.0.0.json",
+  "title": "MaskFactory operational authority lattice decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "decision_id",
+    "policy",
+    "inputs",
+    "result",
+    "decision_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "record_type": {"const": "operational_authority_decision"},
+    "decision_id": {"type": "string", "minLength": 1, "maxLength": 128},
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy_id", "policy_version", "policy_sha256"],
+      "properties": {
+        "policy_id": {"const": "maskfactory-operational-authority-lattice"},
+        "policy_version": {"const": "1.0.0"},
+        "policy_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "inputs": {"$ref": "#/$defs/inputs"},
+    "result": {"$ref": "#/$defs/result"},
+    "decision_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "$defs": {
+    "operational_state": {
+      "enum": ["invalid", "hypothesis", "draft", "qa_passed_noncertified", "certified"]
+    },
+    "nullable_operational_state": {
+      "anyOf": [{"$ref": "#/$defs/operational_state"}, {"type": "null"}]
+    },
+    "training_tier": {
+      "enum": ["human_anchor_gold", "autonomous_certified_gold", "weighted_pseudo_label", "machine_candidate"]
+    },
+    "nullable_training_tier": {
+      "anyOf": [{"$ref": "#/$defs/training_tier"}, {"type": "null"}]
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actor",
+        "action",
+        "access_mode",
+        "artifact_class",
+        "authority_namespace",
+        "current_operational_authority_state",
+        "requested_operational_authority_state",
+        "current_training_truth_tier",
+        "requested_training_truth_tier",
+        "intended_use",
+        "input_role",
+        "required_minimum_operational_authority_state",
+        "parent_operational_authority_states",
+        "exact_output_certificate_valid",
+        "training_promotion_evidence_valid"
+      ],
+      "properties": {
+        "actor": {
+          "enum": ["maskfactory_producer", "maskfactory_training_governance", "human_reviewer", "main_controller", "llm_vlm", "provider"]
+        },
+        "action": {
+          "enum": ["evaluate_use", "reject", "derive", "grant_operational_authority", "revoke_operational_authority", "assign_training_truth", "revoke_training_truth"]
+        },
+        "access_mode": {
+          "enum": ["none", "mode_a_package_read", "mode_b_live_predict", "mode_b_live_refine"]
+        },
+        "artifact_class": {
+          "enum": ["invalid", "machine_candidate", "qa_passed_machine_candidate", "operationally_certified_artifact", "refinement", "derived_mask", "projection", "inpaint_mask", "human_anchor_gold", "autonomous_certified_gold", "weighted_pseudo_label"]
+        },
+        "authority_namespace": {"enum": ["operational_output", "training_truth"]},
+        "current_operational_authority_state": {"$ref": "#/$defs/nullable_operational_state"},
+        "requested_operational_authority_state": {"$ref": "#/$defs/nullable_operational_state"},
+        "current_training_truth_tier": {"$ref": "#/$defs/nullable_training_tier"},
+        "requested_training_truth_tier": {"$ref": "#/$defs/nullable_training_tier"},
+        "intended_use": {"enum": ["preview", "bounded_repair", "candidate_comparison", "qa", "production_conditioning", "training", "training_governance"]},
+        "input_role": {"enum": ["standalone", "target", "protected", "parent"]},
+        "required_minimum_operational_authority_state": {"$ref": "#/$defs/nullable_operational_state"},
+        "parent_operational_authority_states": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/operational_state"}
+        },
+        "exact_output_certificate_valid": {"type": "boolean"},
+        "training_promotion_evidence_valid": {"type": "boolean"}
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "may_use",
+        "may_mutate_authority",
+        "effective_operational_authority_state",
+        "effective_training_truth_tier",
+        "operational_floor_comparison",
+        "reasons"
+      ],
+      "properties": {
+        "status": {"enum": ["allow", "reject"]},
+        "may_use": {"type": "boolean"},
+        "may_mutate_authority": {"type": "boolean"},
+        "effective_operational_authority_state": {"$ref": "#/$defs/nullable_operational_state"},
+        "effective_training_truth_tier": {"$ref": "#/$defs/nullable_training_tier"},
+        "operational_floor_comparison": {"enum": ["not_applicable", "meets_floor", "below_floor"]},
+        "reasons": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

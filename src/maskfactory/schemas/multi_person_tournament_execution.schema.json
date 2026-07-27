@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/multi_person_tournament_execution.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "image_id", "source_image_sha256", "instance_context", "pipeline_fingerprint", "evidence_manifest_sha256", "availability_snapshot_sha256", "gate", "target_count", "status_counts", "targets", "authority", "sha256"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "image_id": {"type": "string", "minLength": 1},
+    "source_image_sha256": {"$ref": "#/$defs/sha256"},
+    "instance_context": {"enum": ["duo", "small_group"]},
+    "pipeline_fingerprint": {"type": "string", "minLength": 1},
+    "evidence_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "availability_snapshot_sha256": {"$ref": "#/$defs/sha256"},
+    "gate": {"$ref": "#/$defs/gate"},
+    "target_count": {"type": "integer", "minimum": 2},
+    "status_counts": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"type": "integer", "minimum": 1},
+      "propertyNames": {"enum": ["residual_human_queue", "machine_verified_candidate", "calibrated_auto_accepted"]}
+    },
+    "targets": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/target"}},
+    "authority": {"const": "multi_person_tournament_decision_evidence_only_no_finalization_serving_training_or_gold_authority"},
+    "sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["check_id", "passed", "message"],
+      "properties": {
+        "check_id": {"type": "string", "minLength": 1},
+        "passed": {"type": "boolean"},
+        "message": {"type": "string"}
+      }
+    },
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["instance_context", "promoted_instances", "passed", "checks"],
+      "properties": {
+        "instance_context": {"enum": ["duo", "small_group"]},
+        "promoted_instances": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "passed": {"type": "boolean"},
+        "checks": {"type": "array", "items": {"$ref": "#/$defs/check"}}
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["instance_context", "risk_bucket", "pipeline_fingerprint", "blockers", "passed"],
+      "properties": {
+        "instance_context": {"enum": ["duo", "small_group"]},
+        "risk_bucket": {"type": "string", "minLength": 1},
+        "pipeline_fingerprint": {"type": "string", "minLength": 1},
+        "blockers": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "passed": {"type": "boolean"}
+      }
+    },
+    "ranking": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_id", "mask_sha256", "score", "eligible", "vetoes", "independent_sources", "source_provider_keys", "source_model_families"],
+      "properties": {
+        "candidate_id": {"type": "string", "minLength": 1},
+        "mask_sha256": {"$ref": "#/$defs/sha256"},
+        "score": {"type": "number", "minimum": 0, "maximum": 1},
+        "eligible": {"type": "boolean"},
+        "vetoes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "independent_sources": {"type": "integer", "minimum": 1},
+        "source_provider_keys": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "source_model_families": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "truth_tier", "training_loss_weight", "winner_id", "winner_score", "runner_up_score", "certificate_valid", "certificate_reason", "human_audit_required", "authoritative_gold", "reason", "ranking"],
+      "properties": {
+        "status": {"enum": ["residual_human_queue", "machine_verified_candidate", "calibrated_auto_accepted"]},
+        "truth_tier": {"enum": ["machine_candidate", "autonomous_certified_gold"]},
+        "training_loss_weight": {"type": "number", "minimum": 0, "maximum": 1},
+        "winner_id": {"type": ["string", "null"]},
+        "winner_score": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "runner_up_score": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "certificate_valid": {"type": "boolean"},
+        "certificate_reason": {"type": "string"},
+        "human_audit_required": {"type": "boolean"},
+        "authoritative_gold": {"type": "boolean"},
+        "reason": {"type": "string", "minLength": 1},
+        "ranking": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/ranking"}}
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["person_id", "instance_id", "label", "promoted_instance_id", "semantic_context", "risk_bucket", "scope", "certificate_document_sha256", "certificate_claimed_sha256", "decision"],
+      "properties": {
+        "person_id": {"type": "string", "minLength": 1},
+        "instance_id": {"type": "string", "minLength": 1},
+        "label": {"type": "string", "minLength": 1},
+        "promoted_instance_id": {"type": "string", "minLength": 1},
+        "semantic_context": {"type": "string", "minLength": 1},
+        "risk_bucket": {"type": "string", "minLength": 1},
+        "scope": {"$ref": "#/$defs/scope"},
+        "certificate_document_sha256": {"anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+        "certificate_claimed_sha256": {"anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+        "decision": {"$ref": "#/$defs/decision"}
+      }
+    }
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/maskfactory_release_publication_evidence.schema.json",
+  "title": "Observed closed MaskFactory release-publication evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "record_type", "publication_id", "decision", "published_at",
+    "release_binding", "crosswalk_binding", "repository_observation", "runtime_provenance",
+    "catalog", "installation", "rollback", "trust_checkpoint", "publication_payload_sha256",
+    "signature"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "record_type": {"const": "maskfactory_release_publication_evidence"},
+    "publication_id": {"type": "string", "pattern": "^mfrpub_[0-9]{8}_[0-9a-f]{12}$"},
+    "decision": {"const": "published"},
+    "published_at": {"type": "string", "format": "date-time"},
+    "release_binding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["release_id", "release_payload_sha256", "relative_path", "document_sha256"],
+      "properties": {
+        "release_id": {"type": "string", "pattern": "^mfr_[0-9]{8}_[0-9a-f]{12}$"},
+        "release_payload_sha256": {"$ref": "#/$defs/sha256"},
+        "relative_path": {"$ref": "#/$defs/path"},
+        "document_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "crosswalk_binding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["crosswalk_id", "relative_path", "sha256"],
+      "properties": {
+        "crosswalk_id": {"type": "string", "minLength": 1},
+        "relative_path": {"$ref": "#/$defs/path"},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "repository_observation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["repository_id", "git_commit", "git_tree", "clean"],
+      "properties": {
+        "repository_id": {"type": "string", "minLength": 1},
+        "git_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "git_tree": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "clean": {"const": true}
+      }
+    },
+    "runtime_provenance": {
+      "oneOf": [
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "python_executable_sha256", "python_version", "platform", "environment_lock", "installed_distribution", "cuda", "driver", "gpu"],
+          "properties": {
+            "kind": {"const": "native_venv"},
+            "python_executable_sha256": {"$ref": "#/$defs/sha256"},
+            "python_version": {"type": "string", "minLength": 1},
+            "platform": {"type": "string", "minLength": 1},
+            "environment_lock": {"$ref": "#/$defs/fileBinding"},
+            "installed_distribution": {"$ref": "#/$defs/fileBinding"},
+            "cuda": {"type": "string", "minLength": 1},
+            "driver": {"type": "string", "minLength": 1},
+            "gpu": {"type": "string", "minLength": 1}
+          }
+        },
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "image_digest", "config_digest", "runtime_digest"],
+          "properties": {
+            "kind": {"const": "container"},
+            "image_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+            "config_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+            "runtime_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+          }
+        }
+      ]
+    },
+    "catalog": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": {"$ref": "#/$defs/fileBinding"}
+    },
+    "installation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["installer", "manifest", "verification_workflow", "argv"],
+      "properties": {
+        "installer": {"$ref": "#/$defs/fileBinding"},
+        "manifest": {"$ref": "#/$defs/fileBinding"},
+        "verification_workflow": {"$ref": "#/$defs/fileBinding"},
+        "argv": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "rollback": {
+      "type": "object", "additionalProperties": false,
+      "required": ["target_release_id", "command", "verification_evidence", "argv"],
+      "properties": {
+        "target_release_id": {"type": ["string", "null"], "pattern": "^mfr_[0-9]{8}_[0-9a-f]{12}$"},
+        "command": {"$ref": "#/$defs/fileBinding"},
+        "verification_evidence": {"$ref": "#/$defs/fileBinding"},
+        "argv": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "trust_checkpoint": {
+      "type": "object", "additionalProperties": false,
+      "required": ["key_registry", "rotation_policy", "revocation_state", "journal_checkpoint"],
+      "properties": {
+        "key_registry": {"$ref": "#/$defs/fileBinding"},
+        "rotation_policy": {"$ref": "#/$defs/fileBinding"},
+        "revocation_state": {"$ref": "#/$defs/fileBinding"},
+        "journal_checkpoint": {"$ref": "#/$defs/fileBinding"}
+      }
+    },
+    "publication_payload_sha256": {"$ref": "#/$defs/sha256"},
+    "signature": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "key_id", "public_key_base64", "signed_payload_sha256", "signed_payload_format", "value_base64"],
+      "properties": {
+        "algorithm": {"const": "ed25519"},
+        "key_id": {"type": "string", "pattern": "^mf-release-[a-z0-9-]+$"},
+        "public_key_base64": {"type": "string", "pattern": "^[A-Za-z0-9+/]{43}=$"},
+        "signed_payload_sha256": {"$ref": "#/$defs/sha256"},
+        "signed_payload_format": {"const": "sha256_digest_bytes"},
+        "value_base64": {"type": "string", "pattern": "^[A-Za-z0-9+/]{40,}={0,2}$"}
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "path": {"type": "string", "pattern": "^(?![A-Za-z]:|/|.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\).+$"},
+    "fileBinding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["relative_path", "sha256", "size_bytes"],
+      "properties": {
+        "relative_path": {"$ref": "#/$defs/path"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "size_bytes": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

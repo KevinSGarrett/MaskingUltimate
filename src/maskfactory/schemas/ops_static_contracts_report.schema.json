@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/ops_static_contracts_report.schema.json",
+  "title": "MaskFactory P7 ops STATIC contracts report",
+  "description": "STATIC_PASS binder for backup/restore drill contracts, nightly reindex/verify-package binders, and failure-mining ops seals. Never claims D10, live B1/B2 media restore, or human-anchor packages.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "proof_tier",
+    "authority",
+    "checked_at",
+    "items",
+    "backup_restore_checks",
+    "nightly_reindex_verify_checks",
+    "failure_mining_ops_checks",
+    "checks",
+    "mf_p1_09_05_complete",
+    "mf_p7_03_01_complete",
+    "mf_p7_03_03_complete",
+    "mf_p7_03_06_d10_signed",
+    "b1_mirror_present",
+    "b2_media_present",
+    "human_anchor_package_present",
+    "d10_signed",
+    "kevin_b1_b2_restore_required",
+    "kevin_d10_signoff_required",
+    "doctor_green_claimed",
+    "gold_claimed",
+    "production_evidence_pass_claimed",
+    "honest_non_claims",
+    "implementation",
+    "report_id",
+    "seal_sha256",
+    "sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "artifact_type": { "const": "ops_static_contracts_report" },
+    "proof_tier": { "const": "STATIC_PASS" },
+    "authority": {
+      "const": "ops_static_contracts_only_no_d10_b1_b2_media_restore_or_human_anchor_package_authority"
+    },
+    "checked_at": { "type": "string", "minLength": 1 },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "backup_restore_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "nightly_b5_before_b1_ordering",
+        "nightly_verify_package_sample_wired",
+        "fixture_b5_sqlite_backup_retain7",
+        "fixture_mirror_restore_bit_identical",
+        "restore_refuses_nonempty_target",
+        "v2_ops_backup_restore_policy_bound",
+        "overclaim_b1_b2_d10_refused"
+      ],
+      "properties": {
+        "nightly_b5_before_b1_ordering": { "const": true },
+        "nightly_verify_package_sample_wired": { "const": true },
+        "fixture_b5_sqlite_backup_retain7": { "const": true },
+        "fixture_mirror_restore_bit_identical": { "const": true },
+        "restore_refuses_nonempty_target": { "const": true },
+        "v2_ops_backup_restore_policy_bound": { "const": true },
+        "overclaim_b1_b2_d10_refused": { "const": true }
+      }
+    },
+    "nightly_reindex_verify_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "nightly_verify_package_after_b5_b1",
+        "task_registration_names_nightly_integrity",
+        "fixture_reindex_rebuild_clean",
+        "fixture_ip3_copy_only_source_untouched",
+        "v2_ops_reindex_policy_bound"
+      ],
+      "properties": {
+        "nightly_verify_package_after_b5_b1": { "const": true },
+        "task_registration_names_nightly_integrity": { "const": true },
+        "fixture_reindex_rebuild_clean": { "const": true },
+        "fixture_ip3_copy_only_source_untouched": { "const": true },
+        "v2_ops_reindex_policy_bound": { "const": true }
+      }
+    },
+    "failure_mining_ops_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unresolved_builds_acquisition_plan",
+        "resolved_requires_resolution_pkg_version",
+        "fixture_resolve_without_human_anchor_package",
+        "resolved_drops_from_unresolved_plan",
+        "overclaim_mf_p7_03_03_or_d10_refused"
+      ],
+      "properties": {
+        "unresolved_builds_acquisition_plan": { "const": true },
+        "resolved_requires_resolution_pkg_version": { "const": true },
+        "fixture_resolve_without_human_anchor_package": { "const": true },
+        "resolved_drops_from_unresolved_plan": { "const": true },
+        "overclaim_mf_p7_03_03_or_d10_refused": { "const": true }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "backup_restore_drill_contracts",
+        "nightly_reindex_verify_package_binder",
+        "failure_mining_ops_seal"
+      ],
+      "properties": {
+        "backup_restore_drill_contracts": { "const": "pass" },
+        "nightly_reindex_verify_package_binder": { "const": "pass" },
+        "failure_mining_ops_seal": { "const": "pass" }
+      }
+    },
+    "mf_p1_09_05_complete": { "const": false },
+    "mf_p7_03_01_complete": { "const": false },
+    "mf_p7_03_03_complete": { "const": false },
+    "mf_p7_03_06_d10_signed": { "const": false },
+    "b1_mirror_present": { "const": false },
+    "b2_media_present": { "const": false },
+    "human_anchor_package_present": { "const": false },
+    "d10_signed": { "const": false },
+    "kevin_b1_b2_restore_required": { "const": true },
+    "kevin_d10_signoff_required": { "const": true },
+    "doctor_green_claimed": { "const": false },
+    "gold_claimed": { "const": false },
+    "production_evidence_pass_claimed": { "const": false },
+    "honest_non_claims": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "implementation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["module", "scripts", "tests"],
+      "properties": {
+        "module": { "type": "string", "minLength": 1 },
+        "scripts": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "tests": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "report_id": { "type": "string", "pattern": "^osc_[a-f0-9]{24}$" },
+    "seal_sha256": { "$ref": "#/$defs/sha256" },
+    "sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

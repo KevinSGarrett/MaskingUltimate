@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/autonomous_gold_qa_threshold_resolution.schema.json",
+  "title": "MaskFactory resolved per-label/context autonomous-gold QA threshold contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "registry_id", "registry_file_sha256", "ontology_version",
+    "ontology_sha256", "label", "label_id", "mask_type", "map", "side",
+    "parent_union", "exclusivity_group", "contexts", "expected_presence_policy",
+    "area_image_pct_range", "maximum_components", "maximum_holes",
+    "maximum_symmetric_boundary_distance_px", "maximum_p95_edge_error_px",
+    "thin_structure", "thresholds", "hard_invariants", "qualification_status",
+    "authority_eligible", "resolved_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "registry_id": {"const": "autonomous_gold_per_label_context_qa_candidate_v1"},
+    "registry_file_sha256": {"$ref": "#/$defs/sha256"},
+    "ontology_version": {"type": "string", "minLength": 1},
+    "ontology_sha256": {"$ref": "#/$defs/sha256"},
+    "label": {"type": "string", "minLength": 1},
+    "label_id": {"type": ["integer", "null"], "minimum": 0},
+    "mask_type": {"enum": ["atomic_exclusive", "derived_union", "material", "region_band", "protected_qa", "projected_amodal"]},
+    "map": {"type": "string", "minLength": 1},
+    "side": {"enum": ["left", "right", "center", "bilateral", "na"]},
+    "parent_union": {"type": ["string", "null"]},
+    "exclusivity_group": {"type": ["string", "null"]},
+    "contexts": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["default", "occlusion_contact", "multi_person_overlap", "crop_edge", "out_of_frame", "thin_structure"]}},
+    "expected_presence_policy": {"type": "array", "minItems": 1, "items": {"enum": ["target_contract_exact", "target_contract_exact_expected_empty_allowed"]}},
+    "area_image_pct_range": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "number", "minimum": 0, "maximum": 100}},
+    "maximum_components": {"type": "integer", "minimum": 0},
+    "maximum_holes": {"type": "integer", "minimum": 0},
+    "maximum_symmetric_boundary_distance_px": {"type": "number", "minimum": 0},
+    "maximum_p95_edge_error_px": {"type": "number", "minimum": 0},
+    "thin_structure": {"type": "boolean"},
+    "thresholds": {
+      "type": "object", "additionalProperties": false,
+      "required": ["minimum_owner_containment", "maximum_protected_overlap", "maximum_exclusive_overlap", "maximum_cross_person_bleed", "minimum_boundary_edge_alignment", "minimum_boundary_precision", "minimum_boundary_recall", "minimum_boundary_f_score", "maximum_underfill_fraction", "maximum_overfill_fraction", "maximum_leakage_fraction", "maximum_missing_visible_fraction", "maximum_unsupported_fraction", "minimum_thin_structure_retention"],
+      "properties": {
+        "minimum_owner_containment": {"$ref": "#/$defs/fraction"},
+        "maximum_protected_overlap": {"$ref": "#/$defs/fraction"},
+        "maximum_exclusive_overlap": {"$ref": "#/$defs/fraction"},
+        "maximum_cross_person_bleed": {"const": 0},
+        "minimum_boundary_edge_alignment": {"$ref": "#/$defs/fraction"},
+        "minimum_boundary_precision": {"$ref": "#/$defs/fraction"},
+        "minimum_boundary_recall": {"$ref": "#/$defs/fraction"},
+        "minimum_boundary_f_score": {"$ref": "#/$defs/fraction"},
+        "maximum_underfill_fraction": {"$ref": "#/$defs/fraction"},
+        "maximum_overfill_fraction": {"$ref": "#/$defs/fraction"},
+        "maximum_leakage_fraction": {"$ref": "#/$defs/fraction"},
+        "maximum_missing_visible_fraction": {"$ref": "#/$defs/fraction"},
+        "maximum_unsupported_fraction": {"$ref": "#/$defs/fraction"},
+        "minimum_thin_structure_retention": {"$ref": "#/$defs/fraction"}
+      }
+    },
+    "hard_invariants": {
+      "type": "object", "additionalProperties": false,
+      "required": ["strict_binary_values", "cross_person_bleed_ceiling", "transform_roundtrip_required", "duplicate_person_forbidden", "duplicate_mask_forbidden", "complete_map_recomposition_required"],
+      "properties": {
+        "strict_binary_values": {"const": [0, 255]},
+        "cross_person_bleed_ceiling": {"const": 0},
+        "transform_roundtrip_required": {"const": true},
+        "duplicate_person_forbidden": {"const": true},
+        "duplicate_mask_forbidden": {"const": true},
+        "complete_map_recomposition_required": {"const": true}
+      }
+    },
+    "qualification_status": {"const": "uncalibrated_no_gold_authority"},
+    "authority_eligible": {"const": false},
+    "resolved_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "fraction": {"type": "number", "minimum": 0, "maximum": 1}
+  }
+}

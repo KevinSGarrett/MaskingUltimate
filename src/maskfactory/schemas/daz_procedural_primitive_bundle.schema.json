@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_procedural_primitive_bundle.schema.json",
+  "title": "DAZ host-side procedural primitive render/decode bundle (STATIC)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "proof_tier",
+    "authority",
+    "bundle_id",
+    "canonical_sha256",
+    "primitive_kind",
+    "master_seed",
+    "resolution",
+    "depth_m",
+    "part_id",
+    "instance_id",
+    "executor",
+    "live_daz_execution",
+    "daz_assets_used",
+    "training_eligible",
+    "accepted",
+    "gold_claimed",
+    "artifacts",
+    "analytic_checks",
+    "golden_hashes"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "artifact_type": { "const": "daz_procedural_primitive_bundle" },
+    "proof_tier": { "const": "STATIC_PASS" },
+    "authority": {
+      "const": "daz_procedural_primitive_host_static_only"
+    },
+    "bundle_id": {
+      "type": "string",
+      "pattern": "^daz_proc_prim_[0-9a-f]{24}$"
+    },
+    "canonical_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "primitive_kind": {
+      "type": "string",
+      "enum": ["analytic_front_plane"]
+    },
+    "master_seed": {
+      "type": "integer",
+      "minimum": 0,
+      "exclusiveMaximum": 9223372036854775808
+    },
+    "resolution": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "type": "integer", "minimum": 8, "maximum": 512 }
+    },
+    "depth_m": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 100
+    },
+    "part_id": { "type": "integer", "minimum": 1, "maximum": 55 },
+    "instance_id": { "const": 1 },
+    "executor": { "const": "host_procedural_primitive" },
+    "live_daz_execution": { "const": false },
+    "daz_assets_used": { "const": false },
+    "training_eligible": { "const": false },
+    "accepted": { "const": false },
+    "gold_claimed": { "const": false },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rgb", "instance", "part", "depth", "normals"],
+      "properties": {
+        "rgb": { "$ref": "#/$defs/artifact" },
+        "instance": { "$ref": "#/$defs/artifact" },
+        "part": { "$ref": "#/$defs/artifact" },
+        "depth": { "$ref": "#/$defs/artifact" },
+        "normals": { "$ref": "#/$defs/artifact" }
+      }
+    },
+    "analytic_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "depth_unit",
+        "depth_quantity",
+        "depth_constant_on_visible",
+        "normals_handedness",
+        "normals_unit_length",
+        "normals_expected_vector",
+        "visible_pixel_count"
+      ],
+      "properties": {
+        "depth_unit": { "const": "meter" },
+        "depth_quantity": { "const": "camera_view_axis_z" },
+        "depth_constant_on_visible": { "const": true },
+        "normals_handedness": { "const": "right_handed" },
+        "normals_unit_length": { "const": true },
+        "normals_expected_vector": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": { "type": "number" }
+        },
+        "visible_pixel_count": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "golden_hashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rgb", "instance", "part", "depth", "normals", "bundle"],
+      "properties": {
+        "rgb": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "instance": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "part": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "depth": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "normals": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "bundle": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    }
+  },
+  "$defs": {
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["relative_path", "sha256", "bytes", "encoding"],
+      "properties": {
+        "relative_path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_./-]{0,240}$"
+        },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "bytes": { "type": "integer", "minimum": 1 },
+        "encoding": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_reconstruction_manifest_set.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "manifest_set_id", "captured_at", "source_database_sha256", "path_registry_sha256", "scene_recipes", "jobs", "packages", "manifest_set_sha256"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "manifest_set_id": {"type": "string", "pattern": "^reconstruction_[A-Za-z0-9_.-]+$"},
+    "captured_at": {"type": "string", "format": "date-time"},
+    "source_database_sha256": {"$ref": "#/$defs/sha256"},
+    "path_registry_sha256": {"$ref": "#/$defs/sha256"},
+    "scene_recipes": {"type": "array", "items": {"$ref": "#/$defs/scene"}},
+    "jobs": {"type": "array", "items": {"$ref": "#/$defs/job"}},
+    "packages": {"type": "array", "items": {"$ref": "#/$defs/package"}},
+    "manifest_set_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "scene": {
+      "type": "object", "additionalProperties": false,
+      "required": ["scene_id", "family_id", "state", "payload", "payload_sha256"],
+      "properties": {
+        "scene_id": {"type": "string", "minLength": 1}, "family_id": {"type": "string", "minLength": 1},
+        "state": {"type": "string", "minLength": 1}, "payload": {"type": "object"}, "payload_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "job": {
+      "type": "object", "additionalProperties": false,
+      "required": ["job_id", "scene_id", "initial_state", "initial_attempt", "expected_state", "expected_attempt"],
+      "properties": {
+        "job_id": {"type": "string", "minLength": 1}, "scene_id": {"type": "string", "minLength": 1},
+        "initial_state": {"const": "pending"}, "initial_attempt": {"const": 0},
+        "expected_state": {"enum": ["pending", "retry", "complete", "failed"]},
+        "expected_attempt": {"type": "integer", "minimum": 0}
+      }
+    },
+    "package": {
+      "type": "object", "additionalProperties": false,
+      "required": ["package_id", "scene_id", "state", "payload", "payload_sha256"],
+      "properties": {
+        "package_id": {"type": "string", "minLength": 1}, "scene_id": {"type": "string", "minLength": 1},
+        "state": {"type": "string", "minLength": 1}, "payload": {"type": "object"}, "payload_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

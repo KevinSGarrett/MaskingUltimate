@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/qa_report.schema.json",
+  "title": "MaskFactory QA report",
+  "description": "Per-instance automatic and VLM QA evidence (doc 04 §2; docs 09–10).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "image_id",
+    "run_id",
+    "pipeline_version",
+    "created_at",
+    "checks",
+    "metrics_per_part",
+    "consensus",
+    "vlm_review",
+    "overall",
+    "score"
+  ],
+  "properties": {
+    "image_id": { "$ref": "#/$defs/imageId" },
+    "run_id": {
+      "type": "string",
+      "pattern": "^qa_[0-9]{8}_[0-9]{4}_[a-z0-9]+$"
+    },
+    "pipeline_version": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "checks": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/check" }
+    },
+    "metrics_per_part": {
+      "type": "object",
+      "propertyNames": { "$ref": "#/$defs/labelName" },
+      "additionalProperties": { "$ref": "#/$defs/partMetrics" }
+    },
+    "consensus": { "$ref": "#/$defs/consensus" },
+    "vlm_review": { "$ref": "#/$defs/vlmReview" },
+    "overall": { "enum": ["pass", "fail", "needs_human"] },
+    "score": { "type": "number", "minimum": 0, "maximum": 1 }
+  },
+  "$defs": {
+    "imageId": { "type": "string", "pattern": "^img_[a-f0-9]{12}$" },
+    "labelName": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?![A-Za-z]:)(?![/\\\\])(?!.*(?:^|[/\\\\])\\.\\.(?:[/\\\\]|$)).+$"
+    },
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "scope", "result"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^QC-0(?:0[1-9]|[1-2][0-9]|3[0-8])$" },
+        "name": { "$ref": "#/$defs/labelName" },
+        "scope": { "type": "string", "minLength": 1 },
+        "result": { "enum": ["pass", "fail", "warn", "route", "skipped"] },
+        "severity": { "enum": ["BLOCK", "ROUTE", "WARN"] },
+        "value": { "type": ["number", "integer", "string", "boolean", "null"] },
+        "threshold": { "type": ["number", "integer", "string", "null"] },
+        "action": {
+          "enum": ["none", "block_package", "route_human", "warn", "auto_fix", "skipped"]
+        },
+        "evidence": {
+          "oneOf": [{ "$ref": "#/$defs/relativePath" }, { "type": "null" }]
+        },
+        "message": { "type": "string" },
+        "auto_fix_attempted": { "type": "boolean" },
+        "auto_fix_succeeded": { "type": "boolean" }
+      }
+    },
+    "bbox": {
+      "type": "array",
+      "prefixItems": [
+        { "type": "integer", "minimum": 0 },
+        { "type": "integer", "minimum": 0 },
+        { "type": "integer", "minimum": 1 },
+        { "type": "integer", "minimum": 1 }
+      ],
+      "items": false,
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "unitInterval": { "type": "number", "minimum": 0, "maximum": 1 },
+    "partMetrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "iou_vs_consensus": { "$ref": "#/$defs/unitInterval" },
+        "iou_vs_previous_gold_or_model": { "$ref": "#/$defs/unitInterval" },
+        "boundary_f_2px": { "$ref": "#/$defs/unitInterval" },
+        "hausdorff_95": { "type": "number", "minimum": 0 },
+        "hole_ratio": { "$ref": "#/$defs/unitInterval" },
+        "components": { "type": "integer", "minimum": 0 },
+        "mask_area_px": { "type": "integer", "minimum": 0 },
+        "mask_bbox": {
+          "oneOf": [{ "$ref": "#/$defs/bbox" }, { "type": "null" }]
+        },
+        "disagreement_score": { "$ref": "#/$defs/unitInterval" },
+        "overlap_with_protected_regions": { "$ref": "#/$defs/unitInterval" },
+        "overlap_with_mutually_exclusive_parts": { "$ref": "#/$defs/unitInterval" }
+      }
+    },
+    "consensus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "sources"],
+      "properties": {
+        "method": { "type": "string", "minLength": 1 },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/labelName" }
+        }
+      }
+    },
+    "problem": {
+      "enum": [
+        "wrong_part",
+        "wrong_side",
+        "boundary_too_loose",
+        "boundary_too_tight",
+        "includes_clothing_as_skin",
+        "includes_background",
+        "includes_neighbor_part",
+        "missing_visible_area",
+        "mask_on_hidden_area",
+        "finger_merge",
+        "hair_edge_bad",
+        "occlusion_error",
+        "other"
+      ]
+    },
+    "vlmVerdict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "panel_file",
+        "model",
+        "prompt_version",
+        "verdict",
+        "confidence",
+        "problems",
+        "evidence",
+        "correction_instruction",
+        "latency_ms"
+      ],
+      "properties": {
+        "label": { "$ref": "#/$defs/labelName" },
+        "panel_file": { "$ref": "#/$defs/relativePath" },
+        "model": { "type": "string", "minLength": 1 },
+        "prompt_version": { "type": "string", "minLength": 1 },
+        "verdict": { "enum": ["pass", "fail", "uncertain"] },
+        "confidence": { "$ref": "#/$defs/unitInterval" },
+        "problems": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/problem" }
+        },
+        "evidence": { "type": "string", "maxLength": 240 },
+        "correction_instruction": { "type": "string", "maxLength": 320 },
+        "latency_ms": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "vlmReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model", "verdicts"],
+      "properties": {
+        "model": { "type": "string", "minLength": 1 },
+        "verdicts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/vlmVerdict" }
+        }
+      }
+    }
+  }
+}

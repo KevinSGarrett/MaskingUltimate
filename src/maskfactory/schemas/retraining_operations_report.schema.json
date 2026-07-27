@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/retraining_operations_report.schema.json",
+  "title": "MaskFactory retraining operations report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "operation_id", "policy_sha256", "input_sha256",
+    "old_pipeline_fingerprint", "new_pipeline_fingerprint",
+    "reused_evidence_categories", "invalidated_evidence_categories",
+    "recertified_strata_count", "residual_abstention_strata_count",
+    "role_decision", "rollback_result", "result", "authority", "sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "operation_id": {"type": "string", "minLength": 1},
+    "policy_sha256": {"$ref": "#/$defs/sha256"},
+    "input_sha256": {"$ref": "#/$defs/sha256"},
+    "old_pipeline_fingerprint": {"$ref": "#/$defs/sha256"},
+    "new_pipeline_fingerprint": {"$ref": "#/$defs/sha256"},
+    "reused_evidence_categories": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "invalidated_evidence_categories": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "recertified_strata_count": {"type": "integer", "minimum": 0},
+    "residual_abstention_strata_count": {"type": "integer", "minimum": 0},
+    "role_decision": {"enum": ["promote", "reject"]},
+    "rollback_result": {"enum": ["pass", "not_applicable_rejected"]},
+    "result": {"const": "pass"},
+    "authority": {"const": "verified_evidence_contract_only_no_training_promotion_serving_gold_or_tracker_completion_authority"},
+    "sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {"sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
+}

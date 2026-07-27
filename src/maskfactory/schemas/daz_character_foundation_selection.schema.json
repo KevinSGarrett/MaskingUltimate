@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_character_foundation_selection.schema.json",
+  "title": "Deterministic qualified DAZ figure/preset/skin selection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "selection_id", "selection_sha256", "graph_id", "graph_sha256", "pool_report_id", "pool_report_sha256", "request", "candidate_counts", "rejection_counts", "selected", "compatibility_evidence"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "selection_id": {"type": "string", "pattern": "^dcfs_[0-9a-f]{24}$"},
+    "selection_sha256": {"$ref": "#/$defs/sha256"},
+    "graph_id": {"type": "string", "pattern": "^acg_[0-9a-f]{24}$"},
+    "graph_sha256": {"$ref": "#/$defs/sha256"},
+    "pool_report_id": {"type": "string", "pattern": "^apr_[0-9a-f]{24}$"},
+    "pool_report_sha256": {"$ref": "#/$defs/sha256"},
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["selection_seed", "figure_generation", "scene_category", "tone_band"],
+      "properties": {
+        "selection_seed": {"type": "integer", "minimum": 0, "maximum": 18446744073709551615},
+        "figure_generation": {"const": "genesis_9"},
+        "scene_category": {"enum": ["clothed", "partial_clothing", "underwear", "swimwear", "unclothed", "neutral"]},
+        "tone_band": {"type": ["string", "null"], "pattern": "^[a-z][a-z0-9_]*$"}
+      }
+    },
+    "candidate_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["base_figures", "character_presets", "skin_materials", "compatible_combinations"],
+      "properties": {
+        "base_figures": {"type": "integer", "minimum": 1},
+        "character_presets": {"type": "integer", "minimum": 1},
+        "skin_materials": {"type": "integer", "minimum": 1},
+        "compatible_combinations": {"type": "integer", "minimum": 1}
+      }
+    },
+    "rejection_counts": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+    "selected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["figure_asset_id", "character_preset_asset_id", "skin_material_asset_id"],
+      "properties": {
+        "figure_asset_id": {"$ref": "#/$defs/asset_id"},
+        "character_preset_asset_id": {"$ref": "#/$defs/asset_id"},
+        "skin_material_asset_id": {"$ref": "#/$defs/asset_id"}
+      }
+    },
+    "compatibility_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["all_assets_runtime_qualified", "all_required_dependencies_runtime_qualified", "generation_match", "scene_category_match", "preset_base_match", "skin_base_match", "tone_band_match"],
+      "properties": {
+        "all_assets_runtime_qualified": {"const": true},
+        "all_required_dependencies_runtime_qualified": {"const": true},
+        "generation_match": {"const": true},
+        "scene_category_match": {"const": true},
+        "preset_base_match": {"const": true},
+        "skin_base_match": {"const": true},
+        "tone_band_match": {"const": true}
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "asset_id": {"type": "string", "pattern": "^ast_[0-9a-f]{24}$"}
+  }
+}

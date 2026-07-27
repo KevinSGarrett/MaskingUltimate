@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/main_consumer_conformance_evidence.schema.json",
+  "title": "MaskFactory-side Main-consumer conformance harness evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "decided_at",
+    "policy_id",
+    "policy_sha256",
+    "pack_id",
+    "pack_manifest_sha256",
+    "fixture_pack_status",
+    "main_artifacts_present",
+    "main_adoption_complete",
+    "artifact_results",
+    "disagreement_vector_results",
+    "status",
+    "rejection_reasons",
+    "claim_boundary",
+    "decision_sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "record_type": { "const": "main_consumer_conformance_evidence" },
+    "decided_at": { "type": "string", "format": "date-time" },
+    "policy_id": { "type": "string", "minLength": 1 },
+    "policy_sha256": { "$ref": "#/$defs/sha256" },
+    "pack_id": { "type": "string", "minLength": 1 },
+    "pack_manifest_sha256": { "$ref": "#/$defs/sha256" },
+    "fixture_pack_status": {
+      "enum": ["ready", "invalid"]
+    },
+    "main_artifacts_present": { "type": "boolean" },
+    "main_adoption_complete": { "const": false },
+    "artifact_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["artifact", "status", "detail"],
+        "properties": {
+          "artifact": { "type": "string", "minLength": 1 },
+          "status": {
+            "enum": [
+              "met",
+              "missing_external_main_evidence",
+              "failed",
+              "not_applicable"
+            ]
+          },
+          "detail": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "disagreement_vector_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["vector_id", "status", "detail"],
+        "properties": {
+          "vector_id": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["passed", "failed"] },
+          "detail": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "status": {
+      "enum": ["producer_fixture_ready", "awaiting_main", "accepted", "rejected"]
+    },
+    "rejection_reasons": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "claim_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "producer_fixture_pack_is_not_main_adoption",
+        "fabricated_main_adoption_rejected",
+        "main_must_supply_runtime_artifacts"
+      ],
+      "properties": {
+        "producer_fixture_pack_is_not_main_adoption": { "const": true },
+        "fabricated_main_adoption_rejected": { "const": true },
+        "main_must_supply_runtime_artifacts": { "const": true }
+      }
+    },
+    "decision_sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}

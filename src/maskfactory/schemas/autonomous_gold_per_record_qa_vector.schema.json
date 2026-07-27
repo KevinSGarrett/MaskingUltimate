@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/autonomous_gold_per_record_qa_vector.schema.json",
+  "title": "MaskFactory exact per-record autonomous-gold QA vector",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "vector_id", "image_id", "person_index",
+    "character_instance_id", "package_id", "package_revision",
+    "parent_package_revision", "final_mask_set_sha256", "registry_binding",
+    "labels", "status", "authority_claim", "vector_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "vector_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"},
+    "image_id": {"type": "string", "minLength": 1},
+    "person_index": {"type": "integer", "minimum": 0},
+    "character_instance_id": {"type": "string", "minLength": 1},
+    "package_id": {"type": "string", "minLength": 1},
+    "package_revision": {"type": "integer", "minimum": 1},
+    "parent_package_revision": {"type": ["integer", "null"], "minimum": 1},
+    "final_mask_set_sha256": {"$ref": "#/$defs/sha256"},
+    "registry_binding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["registry_id", "registry_file_sha256", "resolved_registry_sha256", "ontology_sha256", "calibration_evidence_sha256", "qualification_status", "authority_eligible"],
+      "properties": {
+        "registry_id": {"type": "string", "minLength": 1},
+        "registry_file_sha256": {"$ref": "#/$defs/sha256"},
+        "resolved_registry_sha256": {"$ref": "#/$defs/sha256"},
+        "ontology_sha256": {"$ref": "#/$defs/sha256"},
+        "calibration_evidence_sha256": {"$ref": "#/$defs/sha256"},
+        "qualification_status": {"const": "qualified_for_autonomous_gold"},
+        "authority_eligible": {"const": true}
+      }
+    },
+    "labels": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["label", "target_contract_sha256", "threshold_resolution_sha256", "mask_encoded_sha256", "mask_decoded_pixel_sha256", "metrics", "hard_vetoes_passed", "status"],
+        "properties": {
+          "label": {"type": "string", "minLength": 1},
+          "target_contract_sha256": {"$ref": "#/$defs/sha256"},
+          "threshold_resolution_sha256": {"$ref": "#/$defs/sha256"},
+          "mask_encoded_sha256": {"$ref": "#/$defs/sha256"},
+          "mask_decoded_pixel_sha256": {"$ref": "#/$defs/sha256"},
+          "metrics": {"type": "array", "minItems": 33, "maxItems": 33, "items": {"$ref": "#/$defs/metricResult"}},
+          "hard_vetoes_passed": {"const": true},
+          "status": {"const": "pass"}
+        }
+      }
+    },
+    "status": {"const": "pass"},
+    "authority_claim": {"const": "qualified_deterministic_QA_only_not_gold"},
+    "vector_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "metricResult": {
+      "type": "object", "additionalProperties": false,
+      "required": ["metric", "status", "value", "evidence_sha256", "executor_sha256"],
+      "properties": {
+        "metric": {"enum": ["expected_presence", "area_image", "area_person", "area_parent", "area_proposal", "connected_components", "holes", "owner_containment", "protected_region_overlap", "mutually_exclusive_overlap", "cross_person_bleed", "laterality_consistency", "front_back_consistency", "parent_child_coverage", "atomic_map_exclusivity", "boundary_edge_alignment", "boundary_precision", "boundary_recall", "boundary_f_score", "symmetric_boundary_distance", "p95_edge_error", "underfill", "overfill", "leakage", "missing_visible_area", "unsupported_pixels", "thin_structure_preservation", "topology_plausibility", "transform_roundtrip", "perturbation_stability", "duplicate_person", "duplicate_mask", "complete_map_recomposition"]},
+        "status": {"enum": ["pass", "not_applicable"]},
+        "value": {"type": ["number", "integer", "boolean", "null"]},
+        "evidence_sha256": {"$ref": "#/$defs/sha256"},
+        "executor_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

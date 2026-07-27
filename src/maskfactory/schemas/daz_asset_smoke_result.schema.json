@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_asset_smoke_result.schema.json",
+  "title": "DAZ type-specific asset smoke result bundle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "result_id", "plan_id", "plan_sha256", "asset_id", "asset_sha256", "dependency_snapshot_sha256", "runtime_snapshot_sha256", "script_bundle_sha256", "mapping_bundle_id", "mapping_bundle_sha256", "executions"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "result_id": {"type": "string", "pattern": "^dsmr_[0-9a-f]{24}$"},
+    "plan_id": {"type": "string", "pattern": "^dsmk_[0-9a-f]{24}$"},
+    "plan_sha256": {"$ref": "#/$defs/sha256"},
+    "asset_id": {"$ref": "#/$defs/asset_id"},
+    "asset_sha256": {"$ref": "#/$defs/sha256"},
+    "dependency_snapshot_sha256": {"$ref": "#/$defs/sha256"},
+    "runtime_snapshot_sha256": {"$ref": "#/$defs/sha256"},
+    "script_bundle_sha256": {"$ref": "#/$defs/sha256"},
+    "mapping_bundle_id": {"type": ["string", "null"]},
+    "mapping_bundle_sha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "executions": {"type": "array", "minItems": 1, "maxItems": 2, "items": {"$ref": "#/$defs/execution"}}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "asset_id": {"type": "string", "pattern": "^ast_[0-9a-f]{24}$"},
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "sha256", "bytes"],
+      "properties": {
+        "role": {"enum": ["beauty_preview", "silhouette", "instance_id", "mapping_pass"]},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repetition", "process_identity", "checks", "artifacts", "dialog_count", "fatal_log_count", "duration_ms", "peak_memory_bytes", "peak_vram_bytes"],
+      "properties": {
+        "repetition": {"type": "integer", "minimum": 1, "maximum": 2},
+        "process_identity": {"type": "string", "minLength": 1},
+        "checks": {"type": "object", "additionalProperties": {"enum": ["pass", "warn", "fail"]}},
+        "artifacts": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/artifact"}},
+        "dialog_count": {"type": "integer", "minimum": 0},
+        "fatal_log_count": {"type": "integer", "minimum": 0},
+        "duration_ms": {"type": "integer", "minimum": 0},
+        "peak_memory_bytes": {"type": "integer", "minimum": 0},
+        "peak_vram_bytes": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

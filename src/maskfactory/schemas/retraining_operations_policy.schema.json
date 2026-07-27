@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/retraining_operations_policy.schema.json",
+  "title": "MaskFactory retraining compatibility policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "policy_id", "authority", "trigger_thresholds",
+    "fingerprint_components", "compatibility_rules", "role_decision",
+    "rollback", "governing_source_hashes", "sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "policy_id": {"const": "retraining_compatibility_v1"},
+    "authority": {"const": "pre_result_contract_only_no_training_promotion_serving_or_gold_authority"},
+    "trigger_thresholds": {
+      "type": "object", "additionalProperties": false,
+      "required": ["minimum_audit_failures", "minimum_new_human_corrections"],
+      "properties": {
+        "minimum_audit_failures": {"type": "integer", "minimum": 1},
+        "minimum_new_human_corrections": {"type": "integer", "minimum": 1}
+      }
+    },
+    "fingerprint_components": {
+      "type": "array", "uniqueItems": true, "minItems": 4, "maxItems": 4,
+      "items": {"enum": ["code_tree", "dataset_manifest", "model_checkpoint", "training_config"]}
+    },
+    "compatibility_rules": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "human_anchor_holdout", "human_gold_training", "immutable_audit_history",
+        "benchmark_observations", "autonomy_certificates", "serving_promotion_evidence",
+        "pseudo_labels"
+      ],
+      "properties": {
+        "human_anchor_holdout": {"$ref": "#/$defs/rule"},
+        "human_gold_training": {"$ref": "#/$defs/rule"},
+        "immutable_audit_history": {"$ref": "#/$defs/rule"},
+        "benchmark_observations": {"$ref": "#/$defs/rule"},
+        "autonomy_certificates": {"$ref": "#/$defs/rule"},
+        "serving_promotion_evidence": {"$ref": "#/$defs/rule"},
+        "pseudo_labels": {"$ref": "#/$defs/rule"}
+      }
+    },
+    "role_decision": {
+      "type": "object", "additionalProperties": false,
+      "required": ["require_frozen_holdout_pass", "require_benchmark_pass", "allow_residual_abstention"],
+      "properties": {
+        "require_frozen_holdout_pass": {"const": true},
+        "require_benchmark_pass": {"const": true},
+        "allow_residual_abstention": {"const": true}
+      }
+    },
+    "rollback": {
+      "type": "object", "additionalProperties": false,
+      "required": ["required_for_promotion", "require_exact_registry_restore", "require_serving_smoke"],
+      "properties": {
+        "required_for_promotion": {"const": true},
+        "require_exact_registry_restore": {"const": true},
+        "require_serving_smoke": {"const": true}
+      }
+    },
+    "governing_source_hashes": {
+      "type": "object", "minProperties": 1,
+      "additionalProperties": {"$ref": "#/$defs/sha256"}
+    },
+    "sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "rule": {
+      "type": "object", "additionalProperties": false,
+      "required": ["rule_id", "decision", "exact_scope_dimensions", "rationale"],
+      "properties": {
+        "rule_id": {"type": "string", "pattern": "^retraining_compatibility_v1\\."},
+        "decision": {"enum": ["reuse", "invalidate"]},
+        "exact_scope_dimensions": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "rationale": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

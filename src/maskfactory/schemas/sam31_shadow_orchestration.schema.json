@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/sam31_shadow_orchestration.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "provider_key", "lifecycle_state", "status", "reason",
+    "source_image_sha256", "source_width", "source_height", "parent_instance_key",
+    "route_policy_sha256", "requested_route_count", "requested_lanes", "exemplar_sha256",
+    "expected_provider_identities", "discovery_request_count", "discovery_result_count",
+    "candidate_count", "candidate_package_path", "candidate_package_file_sha256",
+    "candidate_package_document_sha256", "pipeline_sha256_before", "pipeline_sha256_after",
+    "authority", "sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "provider_key": {"const": "sam3_1"},
+    "lifecycle_state": {"enum": ["planned", "installed", "benchmarked", "promoted"]},
+    "status": {"enum": ["complete", "complete_no_candidates", "skipped_unavailable", "failed"]},
+    "reason": {"type": ["string", "null"], "minLength": 1},
+    "source_image_sha256": {"$ref": "#/$defs/sha256"},
+    "source_width": {"type": "integer", "minimum": 1},
+    "source_height": {"type": "integer", "minimum": 1},
+    "parent_instance_key": {"type": "string", "minLength": 1},
+    "route_policy_sha256": {"$ref": "#/$defs/sha256"},
+    "requested_route_count": {"type": "integer", "minimum": 7},
+    "requested_lanes": {
+      "type": "array", "minItems": 7, "maxItems": 7, "uniqueItems": true,
+      "items": {"enum": ["accessory", "chest_pelvic", "clothing", "foot_toe", "hair", "hand_finger", "repeated_instance"]}
+    },
+    "exemplar_sha256": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/sha256"}},
+    "expected_provider_identities": {
+      "type": "object", "additionalProperties": false,
+      "required": ["concept_detector", "interactive_segmenter"],
+      "properties": {
+        "concept_detector": {"$ref": "#/$defs/identity"},
+        "interactive_segmenter": {"$ref": "#/$defs/identity"}
+      }
+    },
+    "discovery_request_count": {"type": "integer", "minimum": 0},
+    "discovery_result_count": {"type": "integer", "minimum": 0},
+    "candidate_count": {"type": "integer", "minimum": 0},
+    "candidate_package_path": {"type": ["string", "null"], "pattern": "^candidates/sam31_shadow_candidates\\.json$"},
+    "candidate_package_file_sha256": {"anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "candidate_package_document_sha256": {"anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "pipeline_sha256_before": {"$ref": "#/$defs/sha256"},
+    "pipeline_sha256_after": {"$ref": "#/$defs/sha256"},
+    "authority": {"const": "production_orchestration_shadow_evidence_only_no_active_map_serving_semantic_mask_or_gold_authority"},
+    "sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "complete"}}},
+      "then": {
+        "properties": {
+          "reason": {"type": "null"},
+          "candidate_count": {"type": "integer", "minimum": 1},
+          "candidate_package_path": {"type": "string"},
+          "candidate_package_file_sha256": {"$ref": "#/$defs/sha256"},
+          "candidate_package_document_sha256": {"$ref": "#/$defs/sha256"}
+        }
+      },
+      "else": {
+        "properties": {
+          "reason": {"type": "string", "minLength": 1},
+          "candidate_count": {"const": 0},
+          "candidate_package_path": {"type": "null"},
+          "candidate_package_file_sha256": {"type": "null"},
+          "candidate_package_document_sha256": {"type": "null"}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "identity": {
+      "type": "object", "additionalProperties": false,
+      "required": ["provider_key", "role", "model_family", "source_commit", "runtime_fingerprint", "contract_version", "provenance_aliases"],
+      "properties": {
+        "provider_key": {"const": "sam3_1"},
+        "role": {"enum": ["concept_detector", "interactive_segmenter"]},
+        "model_family": {"const": "sam3"},
+        "source_commit": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+        "runtime_fingerprint": {"$ref": "#/$defs/sha256"},
+        "contract_version": {"const": "1.0.0"},
+        "provenance_aliases": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  }
+}

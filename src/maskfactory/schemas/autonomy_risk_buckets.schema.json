@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/autonomy_risk_buckets.schema.json",
+  "title": "MaskFactory autonomous calibration risk-bucket policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "policy_id",
+    "assignment_priority",
+    "buckets",
+    "exchangeability"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "policy_id": { "const": "body_parts_risk_v1" },
+    "assignment_priority": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/bucketName" }
+    },
+    "buckets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "large_parts",
+        "small_parts",
+        "hands_feet",
+        "hair_boundaries",
+        "clothing_materials",
+        "sensitive_anatomy",
+        "occlusion_contact",
+        "multi_person_overlap",
+        "out_of_distribution"
+      ],
+      "properties": {
+        "large_parts": { "$ref": "#/$defs/bucket" },
+        "small_parts": { "$ref": "#/$defs/bucket" },
+        "hands_feet": { "$ref": "#/$defs/bucket" },
+        "hair_boundaries": { "$ref": "#/$defs/bucket" },
+        "clothing_materials": { "$ref": "#/$defs/bucket" },
+        "sensitive_anatomy": { "$ref": "#/$defs/bucket" },
+        "occlusion_contact": { "$ref": "#/$defs/bucket" },
+        "multi_person_overlap": { "$ref": "#/$defs/bucket" },
+        "out_of_distribution": { "$ref": "#/$defs/bucket" }
+      }
+    },
+    "exchangeability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "confidence_level",
+        "minimum_records_per_stratum",
+        "maximum_false_accept_rate_delta",
+        "maximum_serious_failure_rate_delta",
+        "require_wilson_interval_overlap",
+        "sparse_action",
+        "nonexchangeable_action"
+      ],
+      "properties": {
+        "confidence_level": { "type": "number", "minimum": 0.95, "exclusiveMaximum": 1 },
+        "minimum_records_per_stratum": { "type": "integer", "minimum": 1 },
+        "maximum_false_accept_rate_delta": { "type": "number", "minimum": 0, "maximum": 1 },
+        "maximum_serious_failure_rate_delta": { "type": "number", "minimum": 0, "maximum": 1 },
+        "require_wilson_interval_overlap": { "const": true },
+        "sparse_action": { "const": "abstain" },
+        "nonexchangeable_action": { "const": "split" }
+      }
+    }
+  },
+  "$defs": {
+    "bucketName": {
+      "enum": [
+        "large_parts",
+        "small_parts",
+        "hands_feet",
+        "hair_boundaries",
+        "clothing_materials",
+        "sensitive_anatomy",
+        "occlusion_contact",
+        "multi_person_overlap",
+        "out_of_distribution"
+      ]
+    },
+    "bucket": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["description", "high_risk", "in_distribution"],
+      "properties": {
+        "description": { "type": "string", "minLength": 1 },
+        "high_risk": { "type": "boolean" },
+        "in_distribution": { "type": "boolean" }
+      }
+    }
+  }
+}

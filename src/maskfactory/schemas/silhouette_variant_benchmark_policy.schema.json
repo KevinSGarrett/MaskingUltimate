@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/silhouette_variant_benchmark_policy.schema.json",
+  "title": "Frozen silhouette-variant benchmark policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "policy_id", "frozen_at", "eligible_truth", "required_contexts",
+    "roles", "providers", "specialist_margin_sha256", "pass_requirements",
+    "source_hashes", "authority_boundary", "sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "policy_id": {"const": "silhouette_variant_benchmark_v1"},
+    "frozen_at": {"type": "string", "format": "date-time"},
+    "eligible_truth": {
+      "type": "object", "additionalProperties": false,
+      "required": ["tier", "partition"],
+      "properties": {
+        "tier": {"const": "human_anchor_gold"},
+        "partition": {"const": "holdout"}
+      }
+    },
+    "required_contexts": {
+      "const": ["hair_boundaries", "multi_person_overlap", "occlusion_contact", "small_parts", "truncation"]
+    },
+    "roles": {
+      "type": "object", "additionalProperties": false,
+      "required": ["silhouette", "hair_edge", "matting"],
+      "properties": {
+        "silhouette": {"$ref": "#/$defs/role"},
+        "hair_edge": {"$ref": "#/$defs/role"},
+        "matting": {"$ref": "#/$defs/role"}
+      }
+    },
+    "providers": {
+      "type": "object", "additionalProperties": false,
+      "required": ["birefnet_general", "vitmatte_small", "birefnet_dynamic", "birefnet_hr", "birefnet_hr_matting"],
+      "properties": {
+        "birefnet_general": {"$ref": "#/$defs/provider"},
+        "vitmatte_small": {"$ref": "#/$defs/provider"},
+        "birefnet_dynamic": {"$ref": "#/$defs/provider"},
+        "birefnet_hr": {"$ref": "#/$defs/provider"},
+        "birefnet_hr_matting": {"$ref": "#/$defs/provider"}
+      }
+    },
+    "specialist_margin_sha256": {"$ref": "#/$defs/sha256"},
+    "pass_requirements": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "max_boundary_f_2px_drop", "max_foreground_iou_drop",
+        "max_foreground_leakage_rate_increase", "max_alpha_mse_increase",
+        "max_oom_or_crash_count", "max_peak_vram_bytes", "require_deterministic_repeats"
+      ],
+      "properties": {
+        "max_boundary_f_2px_drop": {"const": 0.015},
+        "max_foreground_iou_drop": {"const": 0.01},
+        "max_foreground_leakage_rate_increase": {"const": 0.005},
+        "max_alpha_mse_increase": {"const": 0.0},
+        "max_oom_or_crash_count": {"const": 0},
+        "max_peak_vram_bytes": {"const": 8589410304},
+        "require_deterministic_repeats": {"const": 2}
+      }
+    },
+    "source_hashes": {"type": "object", "minProperties": 1, "additionalProperties": {"$ref": "#/$defs/sha256"}},
+    "authority_boundary": {"type": "string", "minLength": 1},
+    "sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "role": {
+      "type": "object", "additionalProperties": false,
+      "required": ["baseline", "challengers", "labels", "requires_alpha"],
+      "properties": {
+        "baseline": {"type": "string", "minLength": 1},
+        "challengers": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "labels": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "requires_alpha": {"type": "boolean"}
+      }
+    },
+    "provider": {
+      "type": "object", "additionalProperties": false,
+      "required": ["model_family", "capabilities", "artifact_hashes", "runtime_fingerprint", "governed_resolution", "authority"],
+      "properties": {
+        "model_family": {"type": "string", "minLength": 1},
+        "capabilities": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["silhouette", "hair_edge", "matting"]}},
+        "artifact_hashes": {"type": "object", "minProperties": 1, "additionalProperties": {"$ref": "#/$defs/sha256"}},
+        "runtime_fingerprint": {"type": "string", "minLength": 1},
+        "governed_resolution": {"oneOf": [{"type": "integer", "minimum": 1}, {"type": "string", "minLength": 1}]},
+        "authority": {"enum": ["active_and_rollback", "installed_shadow_only"]}
+      }
+    }
+  }
+}

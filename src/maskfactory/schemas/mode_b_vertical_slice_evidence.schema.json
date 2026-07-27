@@ -1,0 +1,254 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/mode_b_vertical_slice_evidence.schema.json",
+  "title": "Mode B vertical slice producer evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "decided_at",
+    "policy_id",
+    "policy_sha256",
+    "fixture_truth_tier",
+    "status",
+    "rejection_reasons",
+    "draft_runtime",
+    "service_down",
+    "self_promotion",
+    "certification_transaction",
+    "refinement_authority",
+    "live_probe",
+    "claim_boundary",
+    "decision_sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "record_type": { "const": "mode_b_vertical_slice_evidence" },
+    "decided_at": { "type": "string", "minLength": 1 },
+    "policy_id": { "const": "maskfactory-bridge-mode-b-vertical-slice-v1" },
+    "policy_sha256": { "$ref": "#/$defs/sha256" },
+    "fixture_truth_tier": { "const": "synthetic_contract_fixture" },
+    "status": { "enum": ["accepted", "rejected", "producer_partial"] },
+    "rejection_reasons": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "draft_runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actions",
+        "all_draft_only",
+        "promotion_eligible_any",
+        "predict_request_sha256",
+        "predict_raw_response_sha256",
+        "predict_mask_bytes_sha256",
+        "refine_request_sha256",
+        "refine_raw_response_sha256"
+      ],
+      "properties": {
+        "actions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["health", "capability", "predict", "refine"],
+          "properties": {
+            "health": { "$ref": "#/$defs/action_summary" },
+            "capability": { "$ref": "#/$defs/action_summary" },
+            "predict": { "$ref": "#/$defs/action_summary" },
+            "refine": { "$ref": "#/$defs/action_summary" }
+          }
+        },
+        "all_draft_only": { "type": "boolean" },
+        "promotion_eligible_any": { "const": false },
+        "predict_request_sha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+        "predict_raw_response_sha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+        "predict_mask_bytes_sha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+        "refine_request_sha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+        "refine_raw_response_sha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "service_down": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "client_error_code",
+        "client_typed",
+        "failure_control_status",
+        "failure_control_fault_kind",
+        "provider_invocation_permitted",
+        "no_silent_fallback"
+      ],
+      "properties": {
+        "client_error_code": { "type": ["string", "null"] },
+        "client_typed": { "type": "boolean" },
+        "failure_control_status": { "type": ["string", "null"] },
+        "failure_control_fault_kind": { "type": ["string", "null"] },
+        "provider_invocation_permitted": { "type": ["boolean", "null"] },
+        "no_silent_fallback": { "type": ["boolean", "null"] },
+        "failure_control_decision_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "self_promotion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["attempted", "rejected", "reason_codes"],
+      "properties": {
+        "attempted": { "const": true },
+        "rejected": { "const": true },
+        "reason_codes": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "certification_transaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "transaction_kind",
+        "independent_from_draft_path",
+        "exact_original_prediction_bound",
+        "certified_branch",
+        "abstained_branch"
+      ],
+      "properties": {
+        "transaction_kind": { "const": "independent_operational_certification" },
+        "independent_from_draft_path": { "const": true },
+        "exact_original_prediction_bound": { "type": "boolean" },
+        "bound_predict_raw_response_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "bound_mask_bytes_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "certified_branch": { "$ref": "#/$defs/cert_branch" },
+        "abstained_branch": { "$ref": "#/$defs/abstain_branch" }
+      }
+    },
+    "refinement_authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "parent_authority_state",
+        "descendant_authority_state",
+        "inflation_attempted",
+        "inflation_rejected",
+        "descendant_requires_own_wrapper"
+      ],
+      "properties": {
+        "parent_authority_state": { "const": "draft" },
+        "descendant_authority_state": { "const": "draft" },
+        "inflation_attempted": { "type": "boolean" },
+        "inflation_rejected": { "type": "boolean" },
+        "descendant_requires_own_wrapper": { "const": true }
+      }
+    },
+    "live_probe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "windows_loopback_health",
+        "champion_backed_live_prediction",
+        "live_service_used"
+      ],
+      "properties": {
+        "windows_loopback_health": {
+          "enum": ["not_probed", "unreachable", "ok", "error"]
+        },
+        "champion_backed_live_prediction": { "const": false },
+        "live_service_used": { "const": false },
+        "fixture_main_bound": { "type": "boolean" },
+        "authority_kind": {
+          "type": ["string", "null"],
+          "enum": [null, "fixture_authority"]
+        },
+        "detail": { "type": "string" }
+      }
+    },
+    "claim_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "producer_fixture_slice_complete",
+        "live_gpu_champion_complete",
+        "windows_loopback_complete",
+        "mf_p6_12_04_complete",
+        "fixture_main_bound",
+        "independent_real_accuracy_claim"
+      ],
+      "properties": {
+        "producer_fixture_slice_complete": { "type": "boolean" },
+        "live_gpu_champion_complete": { "const": false },
+        "windows_loopback_complete": { "const": false },
+        "mf_p6_12_04_complete": { "const": false },
+        "fixture_main_bound": { "type": "boolean" },
+        "independent_real_accuracy_claim": { "const": false },
+        "notes": { "type": "string" }
+      }
+    },
+    "decision_sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "action_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "authority_state", "promotion_eligible"],
+      "properties": {
+        "status": { "enum": ["ok", "error"] },
+        "authority_state": { "const": "draft" },
+        "promotion_eligible": { "const": false },
+        "error_code": { "type": ["string", "null"] }
+      }
+    },
+    "cert_branch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outcome", "complete_evidence"],
+      "properties": {
+        "outcome": { "enum": ["certified", "not_attempted", "rejected"] },
+        "complete_evidence": { "type": "boolean" },
+        "certificate_payload_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "at_use_status": {
+          "enum": ["allow", "reject", "not_exercised", "not_applicable", null]
+        },
+        "issuer_codes": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "abstain_branch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outcome", "complete_evidence"],
+      "properties": {
+        "outcome": { "enum": ["abstained", "not_attempted", "unexpected_certification"] },
+        "complete_evidence": { "type": "boolean" },
+        "certificate_payload_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "issuer_codes": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "reason": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

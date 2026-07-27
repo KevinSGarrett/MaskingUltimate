@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_geometry_pass_contract.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "contract_id", "contract_sha256", "scene_id", "scene_state_sha256", "plan_id", "plan_sha256", "coordinate_sidecar_id", "coordinate_sidecar_sha256", "policy_sha256", "policy_version", "profile", "near_clip_m", "far_clip_m", "subdivision_level", "coordinate_convention", "world_to_camera", "camera_to_world", "projection_matrix", "visibility_minimum_u16", "outputs"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"}, "contract_id": {"type": "string", "pattern": "^dgpc_[0-9a-f]{24}$"}, "contract_sha256": {"$ref": "#/$defs/sha"},
+    "scene_id": {"type": "string"}, "scene_state_sha256": {"$ref": "#/$defs/sha"}, "plan_id": {"type": "string"}, "plan_sha256": {"$ref": "#/$defs/sha"},
+    "coordinate_sidecar_id": {"type": "string", "pattern": "^dgc_[0-9a-f]{24}$"}, "coordinate_sidecar_sha256": {"$ref": "#/$defs/sha"},
+    "policy_sha256": {"$ref": "#/$defs/sha"}, "policy_version": {"const": "1.0.0"},
+    "profile": {"enum": ["training_standard", "training_relationship", "diagnostic_full"]},
+    "near_clip_m": {"type": "number", "exclusiveMinimum": 0}, "far_clip_m": {"type": "number", "exclusiveMinimum": 0},
+    "subdivision_level": {"type": "integer", "minimum": 0, "maximum": 8},
+    "coordinate_convention": {"$ref": "#/$defs/convention"},
+    "world_to_camera": {"$ref": "#/$defs/matrix"}, "camera_to_world": {"$ref": "#/$defs/matrix"}, "projection_matrix": {"$ref": "#/$defs/matrix"},
+    "visibility_minimum_u16": {"const": 257},
+    "outputs": {"type": "object", "additionalProperties": false, "required": ["depth", "normals"], "properties": {"depth": {"$ref": "#/$defs/depth"}, "normals": {"$ref": "#/$defs/normals"}}}
+  },
+  "$defs": {
+    "sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "convention": {"type": "object", "additionalProperties": false, "required": ["matrix_layout", "vector_convention", "image_origin", "pixel_center", "ndc_x_range", "ndc_y_range", "ndc_z_range", "matrix_inverse_tolerance", "rotation_orthonormal_tolerance", "rotation_determinant", "perspective_last_row", "orthographic_last_row", "depth_quantity", "depth_unit", "depth_positive_direction", "normal_coordinate_space", "normal_handedness", "normal_axes"], "properties": {"matrix_layout": {"const": "row_major"}, "vector_convention": {"const": "column_vector"}, "image_origin": {"const": "top_left"}, "pixel_center": {"const": "half_integer"}, "ndc_x_range": {"const": [-1.0, 1.0]}, "ndc_y_range": {"const": [-1.0, 1.0]}, "ndc_z_range": {"const": [0.0, 1.0]}, "matrix_inverse_tolerance": {"const": 0.000001}, "rotation_orthonormal_tolerance": {"const": 0.000001}, "rotation_determinant": {"const": 1.0}, "perspective_last_row": {"const": [0.0, 0.0, 1.0, 0.0]}, "orthographic_last_row": {"const": [0.0, 0.0, 0.0, 1.0]}, "depth_quantity": {"const": "camera_view_axis_z"}, "depth_unit": {"const": "meter"}, "depth_positive_direction": {"const": "forward"}, "normal_coordinate_space": {"const": "camera"}, "normal_handedness": {"const": "right_handed"}, "normal_axes": {"const": {"x": "right", "y": "down", "z": "forward"}}}},
+    "matrix": {"type": "array", "minItems": 16, "maxItems": 16, "items": {"type": "number"}},
+    "resolution": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "integer", "minimum": 1}},
+    "crop": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"type": "integer", "minimum": 0}},
+    "depth": {"type": "object", "additionalProperties": false, "required": ["role", "encoding", "resolution", "crop", "channels", "unit", "background_sentinel", "compression", "train_eligible"], "properties": {"role": {"const": "depth"}, "encoding": {"const": "float32_exr"}, "resolution": {"$ref": "#/$defs/resolution"}, "crop": {"$ref": "#/$defs/crop"}, "channels": {"const": ["Y"]}, "unit": {"const": "meter"}, "background_sentinel": {"const": "positive_infinity"}, "compression": {"const": "zip_scanline_16"}, "train_eligible": {"const": false}}},
+    "normals": {"type": "object", "additionalProperties": false, "required": ["role", "encoding", "resolution", "crop", "channels", "channel_semantics", "background_sentinel", "compression", "train_eligible"], "properties": {"role": {"const": "normals"}, "encoding": {"const": "float32_rgb_exr"}, "resolution": {"$ref": "#/$defs/resolution"}, "crop": {"$ref": "#/$defs/crop"}, "channels": {"const": ["R", "G", "B"]}, "channel_semantics": {"const": {"R": "x", "G": "y", "B": "z"}}, "background_sentinel": {"const": [0.0, 0.0, 0.0]}, "compression": {"const": "zip_scanline_16"}, "train_eligible": {"const": false}}}
+  }
+}

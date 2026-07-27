@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/daz_resolved_scene_state.schema.json",
+  "title": "MaskFactory fully resolved and replayed DAZ scene state",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "resolved_state_id", "resolved_state_sha256", "scene_id", "lineage", "runtime_snapshot_sha256", "script_bundle_sha256", "mapping_set_sha256", "scene_state_sha256", "state", "replay_evidence"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "resolved_state_id": {"type": "string", "pattern": "^dcrs_[0-9a-f]{24}$"},
+    "resolved_state_sha256": {"$ref": "#/$defs/sha256"},
+    "scene_id": {"type": "string", "pattern": "^daz_scene_[A-Za-z0-9_-]+$"},
+    "lineage": {"$ref": "#/$defs/lineage"},
+    "runtime_snapshot_sha256": {"$ref": "#/$defs/sha256"},
+    "script_bundle_sha256": {"$ref": "#/$defs/sha256"},
+    "mapping_set_sha256": {"$ref": "#/$defs/sha256"},
+    "scene_state_sha256": {"$ref": "#/$defs/sha256"},
+    "state": {"$ref": "#/$defs/state"},
+    "replay_evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["semantic_replay_scene_state_sha256", "annotation_restore_scene_state_sha256", "semantic_replay_matches", "annotation_restore_matches"],
+      "properties": {
+        "semantic_replay_scene_state_sha256": {"$ref": "#/$defs/sha256"},
+        "annotation_restore_scene_state_sha256": {"$ref": "#/$defs/sha256"},
+        "semantic_replay_matches": {"const": true},
+        "annotation_restore_matches": {"const": true}
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "lineage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["foundation_selection_id", "foundation_selection_sha256", "profile_id", "profile_sha256", "appearance_selection_id", "appearance_selection_sha256", "pose_selection_id", "pose_selection_sha256", "formation_selection_id", "formation_selection_sha256", "preflight_report_id", "preflight_report_sha256"],
+      "properties": {
+        "foundation_selection_id": {"type": "string"}, "foundation_selection_sha256": {"$ref": "#/$defs/sha256"},
+        "profile_id": {"type": "string"}, "profile_sha256": {"$ref": "#/$defs/sha256"},
+        "appearance_selection_id": {"type": "string"}, "appearance_selection_sha256": {"$ref": "#/$defs/sha256"},
+        "pose_selection_id": {"type": "string"}, "pose_selection_sha256": {"$ref": "#/$defs/sha256"},
+        "formation_selection_id": {"type": "string"}, "formation_selection_sha256": {"$ref": "#/$defs/sha256"},
+        "preflight_report_id": {"type": "string"}, "preflight_report_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "state": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "scene_id", "lineage", "runtime_snapshot_sha256", "script_bundle_sha256", "mapping_set_sha256", "default_scene_empty_before_load", "unexpected_renderable_node_count", "assets", "property_values", "controller_side_effects", "joint_values", "node_hierarchy", "geometry_fingerprints", "world_transforms", "material_assignments", "opacity_parameters", "camera", "lighting_environment", "visibility_flags", "renderer", "pass_profile", "unresolved_textures"],
+      "properties": {
+        "schema_version": {"const": "1.0.0"}, "scene_id": {"type": "string"}, "lineage": {"$ref": "#/$defs/lineage"},
+        "runtime_snapshot_sha256": {"$ref": "#/$defs/sha256"}, "script_bundle_sha256": {"$ref": "#/$defs/sha256"}, "mapping_set_sha256": {"$ref": "#/$defs/sha256"},
+        "default_scene_empty_before_load": {"const": true}, "unexpected_renderable_node_count": {"const": 0},
+        "assets": {"type": "array", "minItems": 7, "items": {"type": "object", "additionalProperties": false, "required": ["role", "asset_id", "node_id"], "properties": {"role": {"type": "string"}, "asset_id": {"type": "string"}, "node_id": {"type": "string"}}}},
+        "property_values": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["uri", "source_id", "requested_value", "final_value", "minimum", "maximum", "tolerance", "locked", "silently_ignored"], "properties": {"uri": {"type": "string"}, "source_id": {"type": "string"}, "requested_value": {"type": "number"}, "final_value": {"type": "number"}, "minimum": {"type": "number"}, "maximum": {"type": "number"}, "tolerance": {"type": "number", "minimum": 0}, "locked": {"const": false}, "silently_ignored": {"const": false}}}},
+        "controller_side_effects": {"type": "array", "items": {"type": "object", "required": ["uri", "cause_uri", "final_value", "declared"], "properties": {"uri": {"type": "string"}, "cause_uri": {"type": "string"}, "final_value": {"type": "number"}, "declared": {"const": true}}}},
+        "joint_values": {"type": "array", "minItems": 3, "items": {"type": "object", "additionalProperties": false, "required": ["bone", "axis", "requested_degrees", "final_degrees", "minimum_degrees", "maximum_degrees"], "properties": {"bone": {"type": "string"}, "axis": {"enum": ["bend", "twist", "side_side"]}, "requested_degrees": {"type": "number"}, "final_degrees": {"type": "number"}, "minimum_degrees": {"type": "number"}, "maximum_degrees": {"type": "number"}}}},
+        "node_hierarchy": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+        "geometry_fingerprints": {"type": "object", "minProperties": 1, "additionalProperties": {"$ref": "#/$defs/sha256"}},
+        "world_transforms": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "array", "minItems": 16, "maxItems": 16, "items": {"type": "number"}}},
+        "material_assignments": {"type": "object"}, "opacity_parameters": {"type": "object"},
+        "camera": {"type": "object"},
+        "lighting_environment": {"type": "object", "additionalProperties": false, "required": ["light_asset_id", "environment_asset_id", "prop_asset_id"], "properties": {"light_asset_id": {"type": "string"}, "environment_asset_id": {"type": "string"}, "prop_asset_id": {"type": ["string", "null"]}}},
+        "visibility_flags": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "boolean"}},
+        "renderer": {"type": "object", "additionalProperties": false, "required": ["id", "version"], "properties": {"id": {"type": "string"}, "version": {"type": "string"}}},
+        "pass_profile": {"type": "string", "minLength": 1}, "unresolved_textures": {"type": "array", "maxItems": 0}
+      }
+    }
+  }
+}

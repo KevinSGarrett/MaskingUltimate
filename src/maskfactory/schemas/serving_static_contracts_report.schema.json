@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/serving_static_contracts_report.schema.json",
+  "title": "MaskFactory serving STATIC contracts report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "proof_tier",
+    "authority",
+    "checked_at",
+    "ready_for_live_workflow_execution",
+    "mode_b_predict_complete",
+    "main_adoption_complete",
+    "production_release_installed",
+    "checks",
+    "node_pack_inventory_sha256",
+    "workflow_preflight_report_sha256",
+    "policy_sha256",
+    "required_workflows",
+    "honest_non_claims",
+    "sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "artifact_type": {"const": "serving_static_contracts_report"},
+    "proof_tier": {"const": "STATIC_PASS"},
+    "authority": {
+      "const": "serving_static_contracts_only_no_mode_b_predict_main_adoption_champion_or_production_release_authority"
+    },
+    "checked_at": {"type": "string", "minLength": 1},
+    "ready_for_live_workflow_execution": {"const": false},
+    "mode_b_predict_complete": {"const": false},
+    "main_adoption_complete": {"const": false},
+    "production_release_installed": {"const": false},
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "node_pack_inventory",
+        "serving_provenance",
+        "serving_route",
+        "workflow_preflight_contract"
+      ],
+      "properties": {
+        "node_pack_inventory": {"const": "pass"},
+        "serving_provenance": {"const": "pass"},
+        "serving_route": {"const": "pass"},
+        "workflow_preflight_contract": {"const": "pass"}
+      }
+    },
+    "node_pack_inventory_sha256": {"$ref": "#/$defs/sha256"},
+    "workflow_preflight_report_sha256": {"$ref": "#/$defs/sha256"},
+    "policy_sha256": {"$ref": "#/$defs/sha256"},
+    "required_workflows": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "honest_non_claims": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

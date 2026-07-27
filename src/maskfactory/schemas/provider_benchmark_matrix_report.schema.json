@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/provider_benchmark_matrix_report.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "matrix_id", "evaluated_at", "policy_sha256", "source_manifest_sha256", "source_observations_sha256", "shared_identity_sha256", "cell_count", "cells", "result", "authority", "sha256"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "matrix_id": {"const": "provider_benchmark_matrix_v1"},
+    "evaluated_at": {"type": "string", "format": "date-time"},
+    "policy_sha256": {"$ref": "#/$defs/sha256"},
+    "source_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "source_observations_sha256": {"$ref": "#/$defs/sha256"},
+    "shared_identity_sha256": {"$ref": "#/$defs/sha256"},
+    "cell_count": {"type": "integer", "minimum": 66},
+    "cells": {"type": "array", "minItems": 66, "items": {"type": "object"}},
+    "result": {"const": "complete_finite_measurements"},
+    "authority": {"const": "measurement_evidence_only_no_winner_promotion_serving_mask_or_gold_authority"},
+    "sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {"sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
+}

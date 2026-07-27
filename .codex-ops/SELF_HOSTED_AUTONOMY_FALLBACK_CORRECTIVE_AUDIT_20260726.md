@@ -386,7 +386,11 @@ terminally sealed after exactly one local request with no response; the Ada was
 released cleanly. No retry, new parent, OpenRouter or Serverless child,
 external provider call, capacity credit, or completion claim is authorized.
 Local end-to-end proof remains unsuccessful; subsequent work is CPU-safe
-launcher/adapter root-cause analysis, not another runtime attempt.
+launcher/adapter root-cause analysis, not another runtime attempt. The verified
+root cause is architectural: the recovery controller invoked a loopback
+endpoint without owning a bound model-server lifecycle. Any future repair must
+make model launch, readiness, ownership, and release part of the
+manifest-bound controller contract, not an external manual precondition.
 
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test

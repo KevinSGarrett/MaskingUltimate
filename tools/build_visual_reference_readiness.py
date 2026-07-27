@@ -38,6 +38,11 @@ def main() -> int:
     parser.add_argument("--library-database", type=Path, required=True)
     parser.add_argument("--dataset-registry", type=Path, required=True)
     parser.add_argument("--ontology-crosswalk", type=Path, required=True)
+    parser.add_argument(
+        "--critic-catalog",
+        type=Path,
+        default=Path("configs/visual_critic_catalog.yaml"),
+    )
     parser.add_argument("--observed-at-utc", required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -47,6 +52,7 @@ def main() -> int:
         library_database=args.library_database,
         dataset_registry=args.dataset_registry,
         ontology_crosswalk=args.ontology_crosswalk,
+        critic_catalog_path=args.critic_catalog,
         observed_at_utc=args.observed_at_utc,
     )
     validate_visual_reference_readiness(receipt)

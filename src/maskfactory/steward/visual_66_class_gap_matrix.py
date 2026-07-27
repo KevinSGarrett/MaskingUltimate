@@ -160,6 +160,7 @@ def build_visual_66_class_gap_matrix(
     ontology_git_path: str,
     ontology_git_blob: str,
     readiness_bytes: bytes,
+    critic_catalog_bytes: bytes,
     crosswalk_bytes: bytes,
     observed_at_utc: str,
 ) -> dict[str, Any]:
@@ -172,7 +173,9 @@ def build_visual_66_class_gap_matrix(
     ):
         raise Visual66ClassGapMatrixError("ontology Git provenance is invalid")
     readiness = _load_object(readiness_bytes, name="readiness receipt")
-    validate_visual_reference_readiness(readiness)
+    validate_visual_reference_readiness(
+        readiness, critic_catalog_bytes=critic_catalog_bytes
+    )
     crosswalk = _load_object(crosswalk_bytes, name="ontology crosswalk")
     if crosswalk.get("schema_version") != (
         "maskfactory.nude_external_ontology_crosswalk.v1"
@@ -241,6 +244,8 @@ def build_visual_66_class_gap_matrix(
             "readiness_receipt_bytes": len(readiness_bytes),
             "readiness_receipt_raw_sha256": _sha256_bytes(readiness_bytes),
             "readiness_receipt_self_sha256": readiness["self_sha256"],
+            "critic_catalog_bytes": len(critic_catalog_bytes),
+            "critic_catalog_sha256": _sha256_bytes(critic_catalog_bytes),
             "crosswalk_bytes": len(crosswalk_bytes),
             "crosswalk_sha256": _sha256_bytes(crosswalk_bytes),
         },

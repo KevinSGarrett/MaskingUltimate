@@ -56,6 +56,11 @@ def main() -> int:
     parser.add_argument("--ontology-revision", required=True)
     parser.add_argument("--ontology-path", required=True)
     parser.add_argument("--readiness", type=Path, required=True)
+    parser.add_argument(
+        "--critic-catalog",
+        type=Path,
+        default=Path("configs/visual_critic_catalog.yaml"),
+    )
     parser.add_argument("--crosswalk", type=Path, required=True)
     parser.add_argument("--observed-at-utc", required=True)
     parser.add_argument("--output", type=Path, required=True)
@@ -69,6 +74,7 @@ def main() -> int:
         ontology_git_path=args.ontology_path,
         ontology_git_blob=blob,
         readiness_bytes=args.readiness.read_bytes(),
+        critic_catalog_bytes=args.critic_catalog.read_bytes(),
         crosswalk_bytes=args.crosswalk.read_bytes(),
         observed_at_utc=args.observed_at_utc,
     )

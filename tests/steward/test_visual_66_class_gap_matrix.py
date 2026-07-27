@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from copy import deepcopy
 
@@ -12,6 +13,33 @@ from maskfactory.steward.visual_66_class_gap_matrix import (
     build_visual_66_class_gap_matrix,
     validate_visual_66_class_gap_matrix,
 )
+from maskfactory.vlm.critic_catalog import DEFAULT_CATALOG_PATH, load_catalog
+
+
+def _catalog_bytes() -> bytes:
+    return DEFAULT_CATALOG_PATH.read_bytes()
+
+
+def _catalog_binding() -> dict:
+    catalog = load_catalog()
+    return {
+        "catalog_id": catalog["catalog_id"],
+        "catalog_sha256": catalog["sha256"],
+        "promoted_model_ids": sorted(
+            model["model_id"]
+            for model in catalog["models"]
+            if model["lifecycle"] == "promoted"
+        ),
+        "promoted_role_assignments": {
+            role_id: sorted(
+                model["model_id"]
+                for model in catalog["models"]
+                if model["lifecycle"] == "promoted"
+                and role_id in model["assigned_roles"]
+            )
+            for role_id in ("primary_visual_critic", "independent_juror")
+        },
+    }
 
 
 def _ontology() -> bytes:
@@ -37,6 +65,7 @@ def _ontology() -> bytes:
 
 
 def _readiness() -> bytes:
+    catalog_bytes = _catalog_bytes()
     value = {
         "schema_version": "maskfactory.visual_reference_readiness.v1",
         "authority_boundary": {
@@ -54,6 +83,14 @@ def _readiness() -> bytes:
                 "part_groin_intimate": 2,
             }
         },
+        "sources": {
+            "critic_catalog": {
+                "path": str(DEFAULT_CATALOG_PATH.resolve()),
+                "bytes": len(catalog_bytes),
+                "sha256": hashlib.sha256(catalog_bytes).hexdigest(),
+            }
+        },
+        "critic_catalog": _catalog_binding(),
         "readiness": {
             "ready_for_source_bound_candidate_screening": True,
             "ready_for_source_bound_candidate_selection": False,
@@ -86,6 +123,7 @@ def _build() -> dict:
         ontology_git_path="configs/ontology_v2.yaml",
         ontology_git_blob="b" * 40,
         readiness_bytes=_readiness(),
+        critic_catalog_bytes=_catalog_bytes(),
         crosswalk_bytes=_crosswalk(),
         observed_at_utc="2026-07-27T00:00:00Z",
     )
@@ -116,6 +154,7 @@ def test_rejects_noncontiguous_part_ids() -> None:
             ontology_git_path="configs/ontology_v2.yaml",
             ontology_git_blob="b" * 40,
             readiness_bytes=_readiness(),
+            critic_catalog_bytes=_catalog_bytes(),
             crosswalk_bytes=_crosswalk(),
             observed_at_utc="2026-07-27T00:00:00Z",
         )

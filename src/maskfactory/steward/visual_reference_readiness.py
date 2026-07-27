@@ -8,6 +8,11 @@ import sqlite3
 from pathlib import Path
 from typing import Any
 
+from ..vlm.critic_catalog import (
+    DEFAULT_CATALOG_PATH,
+    CriticCatalogError,
+    load_catalog,
+)
 from .continuous_contract import canonical_sha256
 
 SCHEMA_VERSION = "maskfactory.visual_reference_readiness.v1"
@@ -43,6 +48,36 @@ STRATUM_COLUMNS = (
 
 class VisualReferenceReadinessError(RuntimeError):
     """Reference inventory cannot support a source-bound readiness receipt."""
+
+
+def _critic_catalog_snapshot(path: Path) -> tuple[dict[str, Any], dict[str, Any], bytes]:
+    raw = path.resolve(strict=True).read_bytes()
+    try:
+        catalog = load_catalog(path)
+    except (OSError, UnicodeError, CriticCatalogError) as exc:
+        raise VisualReferenceReadinessError("visual critic catalog is invalid") from exc
+    role_assignments = {
+        role_id: sorted(
+            str(model["model_id"])
+            for model in catalog["models"]
+            if model["lifecycle"] == "promoted" and role_id in model["assigned_roles"]
+        )
+        for role_id in ("primary_visual_critic", "independent_juror")
+    }
+    return (
+        _file_evidence(path),
+        {
+            "catalog_id": catalog["catalog_id"],
+            "catalog_sha256": catalog["sha256"],
+            "promoted_model_ids": sorted(
+                str(model["model_id"])
+                for model in catalog["models"]
+                if model["lifecycle"] == "promoted"
+            ),
+            "promoted_role_assignments": role_assignments,
+        },
+        raw,
+    )
 
 
 def _file_evidence(path: Path) -> dict[str, Any]:
@@ -306,6 +341,7 @@ def build_visual_reference_readiness(
     dataset_registry: Path,
     ontology_crosswalk: Path,
     observed_at_utc: str,
+    critic_catalog_path: Path = DEFAULT_CATALOG_PATH,
 ) -> dict[str, Any]:
     """Return one immutable reference-only readiness observation."""
 
@@ -313,6 +349,9 @@ def build_visual_reference_readiness(
     inventory = _read_inventory(inventory_database)
     library = _read_library(library_database)
     annotation_registry = _verify_annotation_registry(dataset_registry)
+    catalog_source, catalog_snapshot, catalog_bytes = _critic_catalog_snapshot(
+        critic_catalog_path
+    )
     if summary.get("content_hint_is_organizational_only") is not True:
         raise VisualReferenceReadinessError(
             "inventory content-hint authority boundary is unavailable"
@@ -338,7 +377,9 @@ def build_visual_reference_readiness(
             "library_database": _file_evidence(library_database),
             "dataset_registry": _file_evidence(dataset_registry),
             "ontology_crosswalk": _file_evidence(ontology_crosswalk),
+            "critic_catalog": catalog_source,
         },
+        "critic_catalog": catalog_snapshot,
         "reference_library": library,
         "source_inventory": {
             **inventory,
@@ -374,10 +415,15 @@ def build_visual_reference_readiness(
         "self_sha256": ZERO_SHA256,
     }
     receipt["self_sha256"] = canonical_sha256(receipt)
+    validate_visual_reference_readiness(receipt, critic_catalog_bytes=catalog_bytes)
     return receipt
 
 
-def validate_visual_reference_readiness(receipt: dict[str, Any]) -> None:
+def validate_visual_reference_readiness(
+    receipt: dict[str, Any],
+    *,
+    critic_catalog_bytes: bytes | None = None,
+) -> None:
     """Fail closed unless the receipt preserves the reference-only boundary."""
 
     declared = receipt.get("self_sha256")
@@ -389,8 +435,41 @@ def validate_visual_reference_readiness(receipt: dict[str, Any]) -> None:
         raise VisualReferenceReadinessError("readiness self hash mismatch")
     boundary = receipt.get("authority_boundary")
     readiness = receipt.get("readiness")
-    if not isinstance(boundary, dict) or not isinstance(readiness, dict):
+    sources = receipt.get("sources")
+    catalog = receipt.get("critic_catalog")
+    if (
+        not isinstance(boundary, dict)
+        or not isinstance(readiness, dict)
+        or not isinstance(sources, dict)
+        or not isinstance(catalog, dict)
+    ):
         raise VisualReferenceReadinessError("readiness authority fields are invalid")
+    catalog_source = sources.get("critic_catalog")
+    if (
+        not isinstance(catalog_source, dict)
+        or not isinstance(catalog_source.get("sha256"), str)
+        or not isinstance(catalog_source.get("bytes"), int)
+        or not isinstance(catalog.get("catalog_id"), str)
+        or not isinstance(catalog.get("catalog_sha256"), str)
+        or not isinstance(catalog.get("promoted_model_ids"), list)
+        or not isinstance(catalog.get("promoted_role_assignments"), dict)
+    ):
+        raise VisualReferenceReadinessError("readiness critic catalog binding is invalid")
+    if critic_catalog_bytes is not None:
+        snapshot_path = Path(catalog_source.get("path", ""))
+        try:
+            _, expected_catalog, expected_raw = _critic_catalog_snapshot(snapshot_path)
+        except (OSError, ValueError) as exc:
+            raise VisualReferenceReadinessError(
+                "readiness critic catalog source is unavailable"
+            ) from exc
+        if (
+            critic_catalog_bytes != expected_raw
+            or catalog_source["sha256"] != hashlib.sha256(critic_catalog_bytes).hexdigest()
+            or catalog_source["bytes"] != len(critic_catalog_bytes)
+            or catalog != expected_catalog
+        ):
+            raise VisualReferenceReadinessError("readiness critic catalog source drifted")
     if (
         boundary.get("classification") != "REFERENCE_COVERAGE_ONLY"
         or boundary.get("promotion_allowed") is not False

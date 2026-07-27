@@ -167,6 +167,19 @@ def test_validator_rejects_authority_escalation(tmp_path: Path) -> None:
         validate_visual_reference_readiness(receipt)
 
 
+def test_validator_rejects_critic_catalog_byte_drift(tmp_path: Path) -> None:
+    receipt = _build(tmp_path)
+    catalog_path = Path(receipt["sources"]["critic_catalog"]["path"])
+    with pytest.raises(
+        VisualReferenceReadinessError,
+        match="critic catalog source drifted",
+    ):
+        validate_visual_reference_readiness(
+            receipt,
+            critic_catalog_bytes=catalog_path.read_bytes() + b"\n# drift\n",
+        )
+
+
 def test_builder_reports_missing_declared_tag(tmp_path: Path) -> None:
     receipt = _build(tmp_path)
     assert not receipt["reference_library"]["benchmark_missing_body_part_focus_tags"]

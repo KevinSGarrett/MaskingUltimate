@@ -172,6 +172,36 @@ def test_materialize_and_gap_report_fixture_flow(tmp_path: Path):
     assert "celebamask_hq:missing_gate:" in " ".join(gap["blockers"])
 
 
+def test_shared_split_dedup_gate_is_discovered_for_every_eligible_source(
+    tmp_path: Path,
+):
+    project = tmp_path / "project"
+    project.mkdir()
+    shared = project / "qa" / "external_supervision" / "shared"
+    artifact = {
+        "schema_version": "1.0.0",
+        "artifact_type": "external_supervision_split_dedup_evidence",
+        "source": "all_eligible_external_sources",
+        "gate": "split_dedup_passed",
+        "status": "PASS",
+        "source_masks_are_gold": False,
+    }
+    artifact["seal_sha256"] = seal_payload(artifact)
+    publish_gate_artifact(artifact, shared / "split_dedup_passed.json")
+
+    gap = build_qualification_gap_report(
+        project_root=project,
+        evidence_root=Path("qa/external_supervision"),
+        live_artifact_root=Path("runtime_artifacts/external_supervision"),
+        off_project_manifest_root=tmp_path / "off",
+    )
+
+    for source in ("celebamask_hq", "lapa", "lv_mhp_v1"):
+        assert "split_dedup_passed" in gap["sources"][source]["present_gates"]
+        assert "split_dedup_passed" not in gap["sources"][source]["missing_gates"]
+    assert gap["any_source_admitted"] is False
+
+
 def test_fixture_bundle_admits_under_registry_but_live_gap_stays_honest(tmp_path: Path):
     paths = build_deterministic_fixture_gate_set(tmp_path, "lv_mhp_v1")
     bundle = build_qualification_evidence_bundle(

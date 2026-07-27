@@ -139,11 +139,17 @@ bound route could still recreate a micro-handoff loop.
 `SERVERLESS_SUCCESSOR_GUARD_OPEN`: CUI's primary Serverless path still pins an
 obsolete manager hash and its validator treats a provider-free `decide` probe
 as authority to create a successor. That is unsafe reissue semantics. The
-primary controller must bind the current canonical manager/config/root hashes,
-seal an actual-host preflight receipt, and attach one immutable source-hash
-parent contract before it may create a successor identity. Negative tests must
-prove that a stale hash, an unmounted host, or a successful `decide` alone
-cannot authorize submission or replacement.
+old primary binding is
+`a1fca642ab78b4ceaf12a6c2f90abef061fce400a0a799a788bc9c2017d22e4f`; CUI
+control record `0d653ae2` marks it ineligible. The current corrective manager
+binding is
+`5f373471d3b0ca9e9b03402a9a6a3f4b26a4cedc3599ca90414f1d7b3e8623e3`, and its
+`decide` is explicitly non-authorizing. The primary controller must consume
+that canonical manager/config/root binding, seal an actual-host preflight
+receipt, and attach one immutable source-hash parent contract before it may
+create a successor identity. Negative tests must prove that a stale hash, an
+unmounted host, or a successful `decide` alone cannot authorize submission or
+replacement. This record is defect evidence only, not a controller repair.
 
 This does not permit a successor from `decide` alone, relax the legacy
 owner-recovery 1/1 worker caps, execute a provider job, or grant

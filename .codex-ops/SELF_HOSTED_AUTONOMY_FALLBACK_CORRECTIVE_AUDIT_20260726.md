@@ -136,13 +136,23 @@ enforce and negatively test a policy-bound minimum mission-size/capability-work
 threshold before admitting a paid or advisory child; otherwise a correctly
 bound route could still recreate a micro-handoff loop.
 
+`SERVERLESS_SUCCESSOR_GUARD_OPEN`: CUI's primary Serverless path still pins an
+obsolete manager hash and its validator treats a provider-free `decide` probe
+as authority to create a successor. That is unsafe reissue semantics. The
+primary controller must bind the current canonical manager/config/root hashes,
+seal an actual-host preflight receipt, and attach one immutable source-hash
+parent contract before it may create a successor identity. Negative tests must
+prove that a stale hash, an unmounted host, or a successful `decide` alone
+cannot authorize submission or replacement.
+
 This does not permit a successor from `decide` alone, relax the legacy
 owner-recovery 1/1 worker caps, execute a provider job, or grant
 `FALLBACK_CAPACITY_UNPROVEN` any credit. `NO_CAPACITY_CREDIT` remains binding
 until the CUI primary controller consumes the exact CUI manager contract and
-the mission-size gate rejects below-threshold work, then one real parent
-retains host preflight, completes its source-hash-bound child work,
-applies/tests/QAs its result, and reconciles both children to terminal state.
+the mission-size gate rejects below-threshold work and the Serverless successor
+guard is sealed, then one real parent retains host preflight, completes its
+source-hash-bound child work, applies/tests/QAs its result, and reconciles both
+children to terminal state.
 
 The RunPod browser is currently at an authorized-console sign-in page. No SSH
 or Jupyter bypass is authorized. Consequently, local tests prove the control

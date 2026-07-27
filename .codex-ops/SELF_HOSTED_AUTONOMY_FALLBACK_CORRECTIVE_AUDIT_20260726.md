@@ -83,6 +83,29 @@ all pass. `MF-P6-20.01` remains open with zero completion credit: 17
 behavioral conflicts and 1,723 unresolved paths still require bounded evidence
 or explicit supersession, without wholesale source replacement.
 
+Parent-bound fallback delta `d423cea16` makes that receipt chain recursive:
+it byte-verifies superseded raw/self hashes and commits, inherits prior path
+entries, permits a replacement only when Git-object/worktree bindings are
+unchanged, and rejects contradictions and cycles. Its receipt
+`qa/live_verification/mf_p6_20_01_source_resolution_fallback_parent_binding_20260727.json`
+has raw `a6ba1d611873cecc4b4fa742403764aeb609a3e3fac390827752a656d0d4c5c9` and
+self `1629b07a26d07166fd9caaf03f6b59d1f0f9a13fcef8f2cf4c07f3594dae46f2`.
+It resolves 13 exact fallback-parent paths (producer, dispatcher, OpenRouter
+advisory, parent/route ledger, Serverless broker, canonical manager/supervisor,
+and focused tests). The rebuilt inventory is raw
+`7c61bfdb9b510e04733c643138ce802676869bd03a58a0cf04e163668a804e80`, self
+`a19701f9edbe01112935e725a7d7a33dbc3beed7ae91bd43ca38f71a06259d0c`:
+21 resolutions total (18 authority-aligned/3 behavior-preserving), four
+behavioral conflicts, and 1,710 unresolved paths. Inventory 5, fallback
+parent/manager/lease 94, and authority/selector 21 focused tests pass, with
+freeze [], tracker 906/54, Ruff, compile, diff, secret scan, and deterministic
+replay clean. The scoped six-entry rollback backup is
+`.codex-ops/backups/mf_p6_20_01_fallback_parent_binding_before_20260727T031000Z`
+(manifest `a2173fd1a567ff8bbe99be392e0a04d22a669083fc1893629074cf05b97d8846`).
+This is provenance/control-plane integration only: `MF-P6-20.01` remains open
+at zero credit and `CROSS_CONTROLLER_INTEGRATION_OPEN`,
+`SERVERLESS_SUCCESSOR_GUARD_OPEN`, and `NO_CAPACITY_CREDIT` remain binding.
+
 - `MF-P6-19.01`: 25 completed / 0 failed engineering missions, one service
   generation, 50 real replay requests and unique responses, 25 accepted
   canonical proposals and releases, no request-binding mismatch. The immutable

@@ -414,6 +414,15 @@ fast-forward of this code into the clean checkout: no model launch, provider
 call, parent retry, fallback child, capacity credit, or terminal-success claim
 is authorized by publication.
 
+Follow-on process-group hardening `a48d22fa` is explicitly **unvalidated and
+not admitted**. Its independent focused Windows check produced `28 passed / 1
+failed` while Ruff passed. The failure is in
+`test_owned_runtime_records_exact_readiness_and_release`: it assumes
+`os.getpgid` exists on Windows before the test can monkeypatch it. Primary must
+repair the platform-safe test/setup and rerun the focused verification before
+this hardening can affect any runtime admission. No runtime, provider, parent,
+or fallback action occurred while the defect was found.
+
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test
 has yet exercised a real same-parent provider run across the boundary.

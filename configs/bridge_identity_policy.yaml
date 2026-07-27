@@ -1,0 +1,41 @@
+policy_id: maskfactory-bridge-canonical-identity-v1
+policy_version: 1.0.0
+status: frozen
+canonicalization:
+  algorithm: maskfactory-canonical-json-v1
+  encoding: UTF-8
+  unicode_normalization: NFC
+assignment_evidence:
+  algorithm: maskfactory-canonical-json-v1
+  required_fields:
+    - mapping_id
+    - status
+    - bbox_sha256
+    - skeleton_sha256
+    - silhouette_sha256
+    - depth_sha256
+    - scene_instance_id
+    - canonical_person_id
+    - provider_person_index
+  required_status: unambiguous
+governing_scope:
+  - project_id
+  - run_id
+  - job_id
+  - pass_id
+  - source.decoded_pixel_sha256
+  - subject.scene_id
+  - subject.shot_id
+  - subject.take_id
+collision_codes:
+  - assignment_evidence_drift
+  - character_revision_collision
+  - duplicate_intent_collision
+  - provider_person_index_collision
+  - artifact_identity_collision
+  - idempotency_replay_collision
+replay_policy:
+  exact_same_body_idempotent_replay: permitted
+  same_key_different_body: rejected
+  same_intent_different_body: rejected
+frozen_v1_compatibility: additive_only

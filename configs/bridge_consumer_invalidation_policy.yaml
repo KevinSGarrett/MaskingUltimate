@@ -1,0 +1,19 @@
+schema_version: 1.0.0
+policy_id: maskfactory-bridge-consumer-invalidation-v1
+policy_version: 1.0.0
+reason_codes:
+- eligible
+- invalidation_event_invalid
+- invalidation_event_not_blocking
+- invalidation_missing_consumer_contract_actions
+- stale_cache_snapshot
+- revocation_head_drift
+- restart_recovery_marker_missing
+- invalidation_journal_binding_missing
+- journal_chain_invalid
+- rollback_contract_required
+- rollback_target_incompatible
+- rollback_target_not_last_compatible
+- compatibility_proof_artifact_missing
+- external_main_runtime_action_required
+policy_sha256: f08e3485b797d0352dd85fdc0bba885b36a46a40b75548103b1edbe497ed70b3

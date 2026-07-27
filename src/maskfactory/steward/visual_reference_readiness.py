@@ -366,7 +366,9 @@ def build_visual_reference_readiness(
                 "benchmark_missing_body_part_focus_tags"
             ],
             "reference_sources_hash_bound": True,
-            "ready_for_source_bound_candidate_selection": True,
+            "ready_for_source_bound_candidate_screening": True,
+            "ready_for_source_bound_candidate_selection": False,
+            "metadata_candidate_selection_requires_direct_visual_confirmation": True,
             "ready_for_visual_qualification": False,
         },
         "self_sha256": ZERO_SHA256,
@@ -395,6 +397,12 @@ def validate_visual_reference_readiness(receipt: dict[str, Any]) -> None:
         or boundary.get("qualified_mask_truth_present") is not False
         or boundary.get("qualified_high_end_primary_present") is not False
         or boundary.get("qualified_independent_family_juror_present") is not False
+        or readiness.get("ready_for_source_bound_candidate_screening") is not True
+        or readiness.get("ready_for_source_bound_candidate_selection") is not False
+        or readiness.get(
+            "metadata_candidate_selection_requires_direct_visual_confirmation"
+        )
+        is not True
         or readiness.get("ready_for_visual_qualification") is not False
     ):
         raise VisualReferenceReadinessError(

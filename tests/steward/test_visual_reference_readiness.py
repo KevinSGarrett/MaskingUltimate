@@ -140,6 +140,11 @@ def test_builds_hash_bound_reference_only_readiness(tmp_path: Path) -> None:
     validate_visual_reference_readiness(receipt)
     assert receipt["authority_boundary"]["promotion_allowed"] is False
     assert receipt["readiness"]["ready_for_visual_qualification"] is False
+    assert receipt["readiness"]["ready_for_source_bound_candidate_screening"]
+    assert receipt["readiness"]["ready_for_source_bound_candidate_selection"] is False
+    assert receipt["readiness"][
+        "metadata_candidate_selection_requires_direct_visual_confirmation"
+    ]
     assert receipt["readiness"]["all_declared_body_part_focus_tags_represented"]
     assert receipt["annotation_registry"]["annotation_files_verified"] == 1
     assert receipt["reference_library"]["benchmark_body_part_tag_counts"] == {

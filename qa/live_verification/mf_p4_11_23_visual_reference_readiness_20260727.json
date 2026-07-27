@@ -22,10 +22,12 @@
     "qualified_mask_truth_present": false,
     "reference_metadata_can_approve_masks": false
   },
-  "observed_at_utc": "2026-07-27T00:29:13Z",
+  "observed_at_utc": "2026-07-27T00:37:42Z",
   "readiness": {
     "all_declared_body_part_focus_tags_represented": true,
-    "ready_for_source_bound_candidate_selection": true,
+    "metadata_candidate_selection_requires_direct_visual_confirmation": true,
+    "ready_for_source_bound_candidate_screening": true,
+    "ready_for_source_bound_candidate_selection": false,
     "ready_for_visual_qualification": false,
     "reference_sources_hash_bound": true
   },
@@ -159,7 +161,7 @@
     "selection_sets_are_disjoint": true
   },
   "schema_version": "maskfactory.visual_reference_readiness.v1",
-  "self_sha256": "cac89b56b60d9c48a736456503aa838d5c0dc92ed0357843b22a152c702798c8",
+  "self_sha256": "65cc4159b08e0bd83df9057df675f2cd86895097ed8be068920fe91879c4490e",
   "source_inventory": {
     "content_hint_is_organizational_only": true,
     "invalid_images": 11,

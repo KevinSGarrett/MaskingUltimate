@@ -9,7 +9,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 from .core import (
     TERMINAL_RECEIPT_SCHEMA,
@@ -31,6 +31,7 @@ INTERRUPTED_RECOVERY_DRILL_SCHEMA = (
 )
 CHILD_READY_SCHEMA = "maskfactory_self_hosted_steward_interrupted_child_ready.v1"
 RELEASE_SCHEMA = "maskfactory_self_hosted_steward_interrupted_release.v1"
+VERIFICATION_SCHEMA = "maskfactory_self_hosted_steward_interrupted_recovery_verification.v1"
 CHILD_SCENARIOS = frozenset({"persisted_terminal", "ambiguous_without_terminal"})
 
 
@@ -468,6 +469,145 @@ def run_interrupted_recovery_drill(
     result["result_sha256"] = canonical_sha256(result)
     atomic_write_json(output_root / "interrupted_recovery_result.json", result)
     return result
+
+
+def _read_object(path: Path, *, label: str) -> dict[str, Any]:
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise InterruptedRecoveryDrillError(f"{label} is unreadable: {path}") from exc
+    if not isinstance(value, dict):
+        raise InterruptedRecoveryDrillError(f"{label} must be a JSON object")
+    return value
+
+
+def _require_file_hash(path: Path, expected: object, *, label: str) -> str:
+    if expected is not None and (not isinstance(expected, str) or len(expected) != 64):
+        raise InterruptedRecoveryDrillError(f"{label} hash is invalid")
+    if not path.is_file():
+        raise InterruptedRecoveryDrillError(f"{label} is absent: {path}")
+    actual = file_sha256(path)
+    if expected is not None and actual != expected:
+        raise InterruptedRecoveryDrillError(f"{label} hash drifted")
+    return actual
+
+
+def verify_interrupted_recovery_drill(output_root: Path) -> dict[str, Any]:
+    """Read-only replay of an existing interrupted-recovery drill artifact root."""
+
+    root = Path(output_root).resolve()
+    result_path = root / "interrupted_recovery_result.json"
+    result = _read_object(result_path, label="interrupted recovery result")
+    declared_result_sha = result.get("result_sha256")
+    zeroed_result = dict(result)
+    zeroed_result.pop("result_sha256", None)
+    if (
+        result.get("schema_version") != INTERRUPTED_RECOVERY_DRILL_SCHEMA
+        or result.get("status") != "PASS"
+        or declared_result_sha != canonical_sha256(zeroed_result)
+    ):
+        raise InterruptedRecoveryDrillError("interrupted recovery result integrity failed")
+    if result.get("model_requests_issued") != 0 or result.get("gpu_processes_started") != 0:
+        raise InterruptedRecoveryDrillError("CPU-only drill claims model or GPU work")
+    gates = result.get("acceptance_gates")
+    if not isinstance(gates, Mapping) or not gates or not all(gates.values()):
+        raise InterruptedRecoveryDrillError("interrupted recovery acceptance gate failed")
+
+    persisted = result.get("persisted_terminal_case")
+    ambiguous = result.get("ambiguous_without_terminal_case")
+    if not isinstance(persisted, Mapping) or not isinstance(ambiguous, Mapping):
+        raise InterruptedRecoveryDrillError("interrupted recovery case records are invalid")
+
+    artifact_hashes = {
+        "database": _require_file_hash(
+            root / "interrupted_recovery.sqlite",
+            result.get("database_sha256"),
+            label="interrupted recovery database",
+        ),
+        "persisted_binding": _require_file_hash(
+            root / "persisted-terminal" / "binding.json",
+            None,
+            label="persisted terminal binding",
+        ),
+        "persisted_request": _require_file_hash(
+            root / "persisted-terminal" / "request.json",
+            persisted.get("request_sha256"),
+            label="persisted terminal request",
+        ),
+        "persisted_ready": _require_file_hash(
+            root / "persisted-terminal" / "child_ready.json",
+            persisted.get("ready_receipt_sha256"),
+            label="persisted terminal ready receipt",
+        ),
+        "terminal_receipt": _require_file_hash(
+            root / "persisted-terminal" / "terminal_receipt.json",
+            persisted.get("terminal_receipt_sha256"),
+            label="persisted terminal receipt",
+        ),
+        "release": _require_file_hash(
+            root / "persisted-terminal" / "release.json",
+            persisted.get("release_sha256"),
+            label="persisted terminal release",
+        ),
+        "ambiguous_binding": _require_file_hash(
+            root / "ambiguous-without-terminal" / "binding.json",
+            None,
+            label="ambiguous binding",
+        ),
+        "ambiguous_request": _require_file_hash(
+            root / "ambiguous-without-terminal" / "request.json",
+            ambiguous.get("request_sha256"),
+            label="ambiguous request",
+        ),
+        "ambiguous_ready": _require_file_hash(
+            root / "ambiguous-without-terminal" / "child_ready.json",
+            ambiguous.get("ready_receipt_sha256"),
+            label="ambiguous ready receipt",
+        ),
+    }
+
+    persisted_binding = _read_object(
+        root / "persisted-terminal" / "binding.json", label="persisted terminal binding"
+    )
+    terminal_receipt = _read_object(
+        root / "persisted-terminal" / "terminal_receipt.json", label="terminal receipt"
+    )
+    release = _read_object(root / "persisted-terminal" / "release.json", label="release")
+    ambiguous_binding = _read_object(
+        root / "ambiguous-without-terminal" / "binding.json", label="ambiguous binding"
+    )
+    artifact_hashes["persisted_binding"] = file_sha256(
+        root / "persisted-terminal" / "binding.json"
+    )
+    artifact_hashes["ambiguous_binding"] = file_sha256(
+        root / "ambiguous-without-terminal" / "binding.json"
+    )
+    if (
+        persisted_binding.get("binding_sha256") != persisted.get("binding_sha256")
+        or persisted_binding.get("job_id") != persisted.get("job_id")
+        or terminal_receipt.get("binding_sha256") != persisted.get("binding_sha256")
+        or terminal_receipt.get("job_id") != persisted.get("job_id")
+        or terminal_receipt.get("state") != "completed"
+        or terminal_receipt.get("authority_claimed") is not False
+        or release.get("job_id") != persisted.get("job_id")
+        or release.get("released_after_reconstruction") is not True
+        or release.get("no_gpu_or_model_process_started") is not True
+        or ambiguous_binding.get("binding_sha256") != ambiguous.get("binding_sha256")
+        or ambiguous_binding.get("job_id") != ambiguous.get("job_id")
+        or (root / "ambiguous-without-terminal" / "terminal_receipt.json").exists()
+    ):
+        raise InterruptedRecoveryDrillError("interrupted recovery semantic binding failed")
+
+    verification = {
+        "schema_version": VERIFICATION_SCHEMA,
+        "status": "PASS",
+        "result_sha256": declared_result_sha,
+        "artifact_sha256": dict(sorted(artifact_hashes.items())),
+        "acceptance_gates": dict(sorted(gates.items())),
+        "verification_sha256": "0" * 64,
+    }
+    verification["verification_sha256"] = canonical_sha256(verification)
+    return verification
 
 
 def _parser() -> argparse.ArgumentParser:

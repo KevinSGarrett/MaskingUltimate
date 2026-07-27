@@ -106,6 +106,24 @@ This is provenance/control-plane integration only: `MF-P6-20.01` remains open
 at zero credit and `CROSS_CONTROLLER_INTEGRATION_OPEN`,
 `SERVERLESS_SUCCESSOR_GUARD_OPEN`, and `NO_CAPACITY_CREDIT` remain binding.
 
+GPU-guard chain delta `a8334c9dc` byte-verifies and supersedes that parent
+fallback receipt. Its receipt
+`qa/live_verification/mf_p6_20_01_source_resolution_gpu_guard_20260727.json`
+has raw `1714b388aca10c61775ac07cb469e0e208943570777ba17b4c23351c5209c147` and
+self `58674a9eb78abd2571ce7b0856c43c0c1d507614e96ff685afc7cd89efb8589f`. It
+resolves exact full/autonomy/worktree bindings for
+`test_completion_throughput_gate`, `test_run_with_shared_pod_gpu_lease`, and
+`tools/run_with_shared_pod_gpu_lease`. The inventory is raw
+`f303f98d30a6de20a7d35e8dc023dc15c76016733688467688809113eeb941e0`, self
+`7bbae86b6d6a284270dab5a1067a1afdc48c83432ec304566064c97522fc6919`: 24
+resolutions (21 authority-aligned/3 behavior-preserving), one behavioral
+conflict, and 1,707 unresolved paths. The only divergent behavioral conflict
+is the actively worktree-modified `tools/run_tournament_mvc_visual_hard_qa.py`;
+it is explicitly preserved untouched and gains neither reconciliation nor
+credit. Canonical/throughput/guarded-lease tests passed 26, with Ruff, compile,
+diff, freeze [], and tracker 906/54 clean. No GPU lease, child, broker,
+OpenRouter, provider, or tracker action occurred.
+
 - `MF-P6-19.01`: 25 completed / 0 failed engineering missions, one service
   generation, 50 real replay requests and unique responses, 25 accepted
   canonical proposals and releases, no request-binding mismatch. The immutable

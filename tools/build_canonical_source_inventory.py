@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
 import sys
 from pathlib import Path
 
@@ -31,6 +32,7 @@ def parse_args() -> argparse.Namespace:
         default="codex/fallback-dispatcher-podbase-20260726",
     )
     parser.add_argument("--autonomy-ref", default="HEAD")
+    parser.add_argument("--resolution-evidence", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     return parser.parse_args()
 
@@ -51,11 +53,28 @@ def main() -> int:
             repo_root / "Plan/SELF_HOSTED_AUTONOMOUS_LLM_PURSUING_GOAL_MESSAGE.md"
         ),
     }
+    resolution_evidence = None
+    resolution_path = None
+    resolution_raw_sha256 = None
+    if args.resolution_evidence is not None:
+        resolution_file = args.resolution_evidence.resolve()
+        try:
+            resolution_path = resolution_file.relative_to(repo_root).as_posix()
+        except ValueError as exc:
+            raise SystemExit(
+                "resolution evidence must be inside the repository"
+            ) from exc
+        raw = resolution_file.read_bytes()
+        resolution_raw_sha256 = hashlib.sha256(raw).hexdigest()
+        resolution_evidence = json.loads(raw)
     inventory = build_inventory(
         repo_root=repo_root,
         full_product_ref=args.full_product_ref,
         autonomy_ref=args.autonomy_ref,
         authority_hashes=authorities,
+        resolution_evidence=resolution_evidence,
+        resolution_evidence_path=resolution_path,
+        resolution_evidence_raw_sha256=resolution_raw_sha256,
     )
     write_inventory(args.output, inventory)
     print(

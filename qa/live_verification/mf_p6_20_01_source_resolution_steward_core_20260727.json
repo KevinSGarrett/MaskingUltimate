@@ -1,0 +1,77 @@
+{
+  "schema_version": "maskfactory.canonical_source_resolution.v1",
+  "full_product_commit_sha": "7d66ca27781d899a43eb644c0378bcf1478045a7",
+  "autonomy_commit_sha": "0d2efa6ff2b9a35b064d33bedbbdcab06517a685",
+  "resolutions": [
+    {
+      "path": "src/maskfactory/steward/__init__.py",
+      "resolution_kind": "behavior_preserving_autonomy_superset",
+      "full_product_git_object_id": "0123f09aedce0f2bfd6b0435472876e9cf018f91",
+      "autonomy_git_object_id": "d8bc2903cdbfc3f1267c75d484a80c4577860fb6",
+      "worktree_sha256": "a9355415c11227ba6afef09dbc8fbb24dc67d04ed4e082be9bd846b6c989cbca",
+      "verification": {
+        "commands": [
+          "python -m pytest tests/steward/test_core.py tests/steward/test_runtime.py -q",
+          "python -c \"from maskfactory.steward import EngineeringCampaignRuntimeController, LocalEngineeringCampaignDispatcher, StewardLedger, validate_binding; print('STEWARD_PUBLIC_IMPORT_PASS')\""
+        ],
+        "passed_test_count": 23,
+        "candidate_test_git_object_ids": {
+          "tests/steward/test_core.py": "11f997ebc2a4c0db4a55638f78d8f67ab8bc28a7",
+          "tests/steward/test_runtime.py": "ac420e8c16b96d7c8b29d9a66b0cf0ca07eef66f"
+        },
+        "result": "pass"
+      },
+      "limitations": [
+        "This resolves only the steward package export surface.",
+        "It does not claim package installation, full-suite, runtime, route, or tracker completion."
+      ]
+    },
+    {
+      "path": "src/maskfactory/steward/core.py",
+      "resolution_kind": "behavior_preserving_autonomy_superset",
+      "full_product_git_object_id": "cd80ee5592262651ce3bb5b4f41fb2d1fe5b81a9",
+      "autonomy_git_object_id": "5b89119fe5cd3744ea5a4a2897511d93d59ab318",
+      "worktree_sha256": "280b84f3c5683b11889b739798c7508f4d468d6751f031dfe1fb8fbaba8b44d6",
+      "verification": {
+        "commands": [
+          "python -m pytest tests/steward/test_core.py tests/steward/test_runtime.py -q",
+          "python -c \"from maskfactory.steward import EngineeringCampaignRuntimeController, LocalEngineeringCampaignDispatcher, StewardLedger, validate_binding; print('STEWARD_PUBLIC_IMPORT_PASS')\""
+        ],
+        "passed_test_count": 23,
+        "candidate_test_git_object_ids": {
+          "tests/steward/test_core.py": "11f997ebc2a4c0db4a55638f78d8f67ab8bc28a7",
+          "tests/steward/test_runtime.py": "ac420e8c16b96d7c8b29d9a66b0cf0ca07eef66f"
+        },
+        "result": "pass"
+      },
+      "limitations": [
+        "The accepted autonomy version adds a public validate_binding wrapper without removing candidate ledger behavior.",
+        "It does not claim package installation, full-suite, runtime, route, or tracker completion."
+      ]
+    },
+    {
+      "path": "src/maskfactory/steward/runtime.py",
+      "resolution_kind": "behavior_preserving_autonomy_superset",
+      "full_product_git_object_id": "6c97b0cb7ce0fc72145d35cff9a890fb27fcf868",
+      "autonomy_git_object_id": "fbffc80371328af5d85d4d6960e2ecc7a4513218",
+      "worktree_sha256": "8eaa788588615bc203fdcd34bce6a2ba3954e1ebd849447ac10aec89d371783c",
+      "verification": {
+        "commands": [
+          "python -m pytest tests/steward/test_core.py tests/steward/test_runtime.py -q",
+          "python -c \"from maskfactory.steward import EngineeringCampaignRuntimeController, LocalEngineeringCampaignDispatcher, StewardLedger, validate_binding; print('STEWARD_PUBLIC_IMPORT_PASS')\""
+        ],
+        "passed_test_count": 23,
+        "candidate_test_git_object_ids": {
+          "tests/steward/test_core.py": "11f997ebc2a4c0db4a55638f78d8f67ab8bc28a7",
+          "tests/steward/test_runtime.py": "ac420e8c16b96d7c8b29d9a66b0cf0ca07eef66f"
+        },
+        "result": "pass"
+      },
+      "limitations": [
+        "The accepted autonomy version permits restart-safe attachment only to the already-admitted state and retains candidate refusal for every other duplicate state.",
+        "It does not claim package installation, full-suite, runtime, route, or tracker completion."
+      ]
+    }
+  ],
+  "self_sha256": "7a4b17a3ca7ef51c05e4003f269a14e2cf67a5c66af238bb7282226f51338f10"
+}

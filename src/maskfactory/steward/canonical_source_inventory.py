@@ -14,7 +14,9 @@ from pathlib import Path
 from typing import Any
 
 SCHEMA_VERSION = "maskfactory.canonical_source_inventory.v1"
+RESOLUTION_SCHEMA_VERSION = "maskfactory.canonical_source_resolution.v1"
 SHA256_RE = re.compile(r"^[a-f0-9]{64}$")
+GIT_OBJECT_RE = re.compile(r"^[a-f0-9]{40,64}$")
 DEFAULT_PREFIXES = ("src/", "tests/", "tools/", "configs/")
 DEFAULT_ROOT_FILES = ("pyproject.toml", "setup.py", "setup.cfg")
 CLASSIFICATIONS = {
@@ -29,7 +31,10 @@ OPEN_CONTROLLER_GUARDS = (
     "MISSION_SIZE_GATE_OPEN",
     "SERVERLESS_SUCCESSOR_GUARD_OPEN",
     "CANONICAL_CALLER_PATH_GATE_OPEN",
+    "ROLE_BUDGET_GATE_OPEN",
+    "POLICY_LINEAGE_GATE_OPEN",
 )
+RESOLUTION_KINDS = {"behavior_preserving_autonomy_superset"}
 
 
 class CanonicalSourceInventoryError(RuntimeError):
@@ -71,6 +76,123 @@ def seal_inventory(value: Mapping[str, Any]) -> dict[str, Any]:
     sealed["self_sha256"] = "0" * 64
     sealed["self_sha256"] = canonical_sha256(sealed)
     return sealed
+
+
+def seal_resolution_evidence(value: Mapping[str, Any]) -> dict[str, Any]:
+    sealed = copy.deepcopy(dict(value))
+    sealed["self_sha256"] = "0" * 64
+    sealed["self_sha256"] = canonical_sha256(sealed)
+    return sealed
+
+
+def validate_resolution_evidence(value: Mapping[str, Any]) -> None:
+    required = {
+        "schema_version",
+        "full_product_commit_sha",
+        "autonomy_commit_sha",
+        "resolutions",
+        "self_sha256",
+    }
+    if set(value) != required:
+        raise CanonicalSourceInventoryError("resolution evidence schema is not closed")
+    if value.get("schema_version") != RESOLUTION_SCHEMA_VERSION:
+        raise CanonicalSourceInventoryError("resolution evidence schema is unsupported")
+    expected = value.get("self_sha256")
+    zeroed = copy.deepcopy(dict(value))
+    zeroed["self_sha256"] = "0" * 64
+    if not isinstance(expected, str) or canonical_sha256(zeroed) != expected:
+        raise CanonicalSourceInventoryError("resolution evidence self hash mismatch")
+    for name in ("full_product_commit_sha", "autonomy_commit_sha"):
+        if not isinstance(value.get(name), str) or not re.fullmatch(
+            r"[a-f0-9]{40}", str(value[name])
+        ):
+            raise CanonicalSourceInventoryError(f"resolution evidence {name} is invalid")
+    resolutions = value.get("resolutions")
+    if not isinstance(resolutions, list) or not resolutions:
+        raise CanonicalSourceInventoryError("resolution evidence entries are absent")
+    paths: list[str] = []
+    entry_keys = {
+        "path",
+        "resolution_kind",
+        "full_product_git_object_id",
+        "autonomy_git_object_id",
+        "worktree_sha256",
+        "verification",
+        "limitations",
+    }
+    for entry in resolutions:
+        if not isinstance(entry, Mapping) or set(entry) != entry_keys:
+            raise CanonicalSourceInventoryError("resolution entry schema is not closed")
+        path = entry.get("path")
+        if (
+            not isinstance(path, str)
+            or not path
+            or "\\" in path
+            or Path(path).is_absolute()
+            or ".." in Path(path).parts
+        ):
+            raise CanonicalSourceInventoryError("resolution path is invalid")
+        paths.append(path)
+        if entry.get("resolution_kind") not in RESOLUTION_KINDS:
+            raise CanonicalSourceInventoryError("resolution kind is unsupported")
+        for name in ("full_product_git_object_id", "autonomy_git_object_id"):
+            if not isinstance(entry.get(name), str) or not GIT_OBJECT_RE.fullmatch(
+                str(entry[name])
+            ):
+                raise CanonicalSourceInventoryError(f"resolution {name} is invalid")
+        if not isinstance(entry.get("worktree_sha256"), str) or not SHA256_RE.fullmatch(
+            str(entry["worktree_sha256"])
+        ):
+            raise CanonicalSourceInventoryError("resolution worktree hash is invalid")
+        verification = entry.get("verification")
+        if (
+            not isinstance(verification, Mapping)
+            or set(verification)
+            != {
+                "commands",
+                "passed_test_count",
+                "candidate_test_git_object_ids",
+                "result",
+            }
+            or verification.get("result") != "pass"
+            or not isinstance(verification.get("passed_test_count"), int)
+            or verification["passed_test_count"] < 1
+            or not isinstance(verification.get("commands"), list)
+            or not verification["commands"]
+            or any(
+                not isinstance(command, str) or not command
+                for command in verification["commands"]
+            )
+        ):
+            raise CanonicalSourceInventoryError(
+                "resolution verification binding is invalid"
+            )
+        test_objects = verification.get("candidate_test_git_object_ids")
+        if (
+            not isinstance(test_objects, Mapping)
+            or not test_objects
+            or any(
+                not isinstance(test_path, str)
+                or not test_path
+                or not isinstance(object_id, str)
+                or not GIT_OBJECT_RE.fullmatch(object_id)
+                for test_path, object_id in test_objects.items()
+            )
+        ):
+            raise CanonicalSourceInventoryError(
+                "resolution candidate test binding is invalid"
+            )
+        limitations = entry.get("limitations")
+        if (
+            not isinstance(limitations, list)
+            or not limitations
+            or any(not isinstance(item, str) or not item for item in limitations)
+        ):
+            raise CanonicalSourceInventoryError("resolution limitations are absent")
+    if paths != sorted(paths) or len(paths) != len(set(paths)):
+        raise CanonicalSourceInventoryError(
+            "resolution paths must be sorted and unique"
+        )
 
 
 def validate_inventory(value: Mapping[str, Any]) -> None:
@@ -149,6 +271,39 @@ def validate_inventory(value: Mapping[str, Any]) -> None:
         OPEN_CONTROLLER_GUARDS
     ):
         raise CanonicalSourceInventoryError("inventory open guard binding drift")
+    resolved = [
+        row
+        for row in paths
+        if row.get("integration_status") == "resolved_behavioral_autonomy_superset"
+    ]
+    resolution_binding = value.get("resolution_evidence")
+    if resolved:
+        if (
+            not isinstance(resolution_binding, Mapping)
+            or set(resolution_binding)
+            != {"path", "raw_sha256", "self_sha256", "resolution_count"}
+            or not isinstance(resolution_binding.get("path"), str)
+            or not resolution_binding["path"]
+            or not isinstance(resolution_binding.get("raw_sha256"), str)
+            or not SHA256_RE.fullmatch(resolution_binding["raw_sha256"])
+            or not isinstance(resolution_binding.get("self_sha256"), str)
+            or not SHA256_RE.fullmatch(resolution_binding["self_sha256"])
+            or resolution_binding.get("resolution_count") != len(resolved)
+            or any(
+                row.get("unresolved_conflict") is not False
+                or row.get("owner") != "shared_behavior_resolved"
+                or row.get("resolution", {}).get("evidence_self_sha256")
+                != resolution_binding["self_sha256"]
+                for row in resolved
+            )
+        ):
+            raise CanonicalSourceInventoryError(
+                "inventory resolution binding drift"
+            )
+    elif resolution_binding is not None:
+        raise CanonicalSourceInventoryError(
+            "inventory binds unused resolution evidence"
+        )
 
 
 def _resolve_commit(repo_root: Path, ref: str) -> tuple[str, str]:
@@ -299,6 +454,9 @@ def build_inventory(
     full_product_ref: str,
     autonomy_ref: str,
     authority_hashes: Mapping[str, str],
+    resolution_evidence: Mapping[str, Any] | None = None,
+    resolution_evidence_path: str | None = None,
+    resolution_evidence_raw_sha256: str | None = None,
     prefixes: Sequence[str] = DEFAULT_PREFIXES,
     root_files: Sequence[str] = DEFAULT_ROOT_FILES,
 ) -> dict[str, Any]:
@@ -316,6 +474,45 @@ def build_inventory(
             raise CanonicalSourceInventoryError("authority hash binding is invalid")
     full_commit, full_tree = _resolve_commit(root, full_product_ref)
     autonomy_commit, autonomy_tree = _resolve_commit(root, autonomy_ref)
+    resolution_entries: dict[str, Mapping[str, Any]] = {}
+    resolution_binding: dict[str, Any] | None = None
+    if resolution_evidence is not None:
+        validate_resolution_evidence(resolution_evidence)
+        if (
+            resolution_evidence.get("full_product_commit_sha") != full_commit
+            or resolution_evidence.get("autonomy_commit_sha") != autonomy_commit
+        ):
+            raise CanonicalSourceInventoryError(
+                "resolution evidence commit binding mismatch"
+            )
+        if (
+            not isinstance(resolution_evidence_path, str)
+            or not resolution_evidence_path
+            or Path(resolution_evidence_path).is_absolute()
+            or ".." in Path(resolution_evidence_path).parts
+            or not isinstance(resolution_evidence_raw_sha256, str)
+            or not SHA256_RE.fullmatch(resolution_evidence_raw_sha256)
+        ):
+            raise CanonicalSourceInventoryError(
+                "resolution evidence file binding is invalid"
+            )
+        resolution_entries = {
+            str(entry["path"]): entry
+            for entry in resolution_evidence["resolutions"]
+        }
+        resolution_binding = {
+            "path": resolution_evidence_path,
+            "raw_sha256": resolution_evidence_raw_sha256,
+            "self_sha256": resolution_evidence["self_sha256"],
+            "resolution_count": len(resolution_entries),
+        }
+    elif (
+        resolution_evidence_path is not None
+        or resolution_evidence_raw_sha256 is not None
+    ):
+        raise CanonicalSourceInventoryError(
+            "resolution evidence binding is incomplete"
+        )
     full = _tree_entries(
         root,
         full_commit,
@@ -344,7 +541,39 @@ def build_inventory(
             full_entry=full_entry,
             autonomy_entry=autonomy_entry,
         )
-        if classification == "worktree_only_untracked":
+        resolution = resolution_entries.get(relative)
+        if resolution is not None:
+            if classification != "divergent_conflict":
+                raise CanonicalSourceInventoryError(
+                    f"resolution path is not a divergent conflict: {relative}"
+                )
+            if (
+                full_entry is None
+                or autonomy_entry is None
+                or resolution["full_product_git_object_id"]
+                != full_entry["git_object_id"]
+                or resolution["autonomy_git_object_id"]
+                != autonomy_entry["git_object_id"]
+                or resolution["worktree_sha256"] != worktree["sha256"]
+            ):
+                raise CanonicalSourceInventoryError(
+                    f"resolution source binding drift: {relative}"
+                )
+            for test_path, object_id in resolution["verification"][
+                "candidate_test_git_object_ids"
+            ].items():
+                if (
+                    test_path not in full
+                    or test_path not in autonomy
+                    or full[test_path]["git_object_id"] != object_id
+                    or autonomy[test_path]["git_object_id"] != object_id
+                ):
+                    raise CanonicalSourceInventoryError(
+                        f"resolution candidate test drift: {test_path}"
+                    )
+            integration_status = "resolved_behavioral_autonomy_superset"
+            owner = "shared_behavior_resolved"
+        elif classification == "worktree_only_untracked":
             integration_status = "ownership_resolution_required"
             owner = "working_tree_user_preserved"
         elif classification == "divergent_conflict":
@@ -380,6 +609,14 @@ def build_inventory(
                 "unresolved_conflict": integration_status.endswith(
                     "resolution_required"
                 ),
+                "resolution": (
+                    {
+                        "kind": resolution["resolution_kind"],
+                        "evidence_self_sha256": resolution_evidence["self_sha256"],
+                    }
+                    if resolution is not None
+                    else None
+                ),
                 "full_product": copy.deepcopy(full_entry),
                 "autonomy": copy.deepcopy(autonomy_entry),
                 "worktree": worktree,
@@ -414,6 +651,7 @@ def build_inventory(
             "commit_sha": autonomy_commit,
             "tree_sha": autonomy_tree,
         },
+        "resolution_evidence": resolution_binding,
         "summary": {
             "full_product_path_count": len(full),
             "autonomy_path_count": len(autonomy),
@@ -464,10 +702,13 @@ def write_inventory(path: Path, value: Mapping[str, Any]) -> None:
 
 __all__ = [
     "CanonicalSourceInventoryError",
+    "RESOLUTION_SCHEMA_VERSION",
     "SCHEMA_VERSION",
     "build_inventory",
     "canonical_sha256",
     "seal_inventory",
+    "seal_resolution_evidence",
     "validate_inventory",
+    "validate_resolution_evidence",
     "write_inventory",
 ]

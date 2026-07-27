@@ -9,7 +9,7 @@ from typing import Any
 
 import yaml
 
-from .ontology_generator import DEFAULT_OUTPUT
+from .ontology_generator import DEFAULT_OUTPUT, build_ontology
 
 
 class OntologyError(ValueError):
@@ -169,5 +169,12 @@ def load_ontology(path: Path | str = DEFAULT_OUTPUT) -> Ontology:
 
 @lru_cache(maxsize=1)
 def get_ontology() -> Ontology:
-    """Return the canonical runtime ontology singleton."""
-    return load_ontology(DEFAULT_OUTPUT)
+    """Return the canonical generated runtime ontology singleton.
+
+    The generated registry is the runtime label authority.  Constructing it
+    from its in-package source keeps an installed wheel independent of a
+    repository-relative ``configs/ontology.yaml`` file at import time.  The
+    explicit :func:`load_ontology` path remains available for owner-supplied
+    configuration validation and for checking the generated repository file.
+    """
+    return Ontology(build_ontology(), source=DEFAULT_OUTPUT)

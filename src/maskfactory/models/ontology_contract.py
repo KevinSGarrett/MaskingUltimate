@@ -6,6 +6,7 @@ import hashlib
 import json
 import re
 from collections.abc import Mapping
+from functools import lru_cache
 from typing import Any
 
 from ..ontology import Ontology, get_ontology, load_ontology
@@ -17,16 +18,31 @@ V1_PART_CLASS_NAMES = tuple(
     label.name
     for label in sorted(get_ontology().labels_for_map("part"), key=lambda item: int(item.id))
 )
-V2_ONTOLOGY = load_ontology(DEFAULT_ONTOLOGY_V2)
-V2_PART_CLASS_NAMES = tuple(
-    label.name
-    for label in sorted(V2_ONTOLOGY.labels_for_map("part"), key=lambda item: int(item.id))
-)
 SHA256_PATTERN = re.compile(r"^[a-f0-9]{64}$")
 
 
 class ModelOntologyContractError(ValueError):
     """A registered model's ontology identity or vocabulary is unsafe."""
+
+
+@lru_cache(maxsize=1)
+def _v2_ontology() -> Ontology:
+    """Load v2 only for an operation that explicitly requests v2 authority.
+
+    Command discovery and v1 serving must not require a repository-relative
+    v2 configuration file merely because the model registry module imports.
+    A v2 operation remains fail-closed if its governed ontology file is absent.
+    """
+
+    return load_ontology(DEFAULT_ONTOLOGY_V2)
+
+
+def _v2_part_class_names() -> tuple[str, ...]:
+    ontology = _v2_ontology()
+    return tuple(
+        label.name
+        for label in sorted(ontology.labels_for_map("part"), key=lambda item: int(item.id))
+    )
 
 
 def class_names_sha256(class_names: tuple[str, ...] | list[str]) -> str:
@@ -40,7 +56,7 @@ def ontology_for_version(version: str) -> Ontology:
     if version == V1_ONTOLOGY_VERSION:
         return get_ontology()
     if version == V2_ONTOLOGY_VERSION:
-        return V2_ONTOLOGY
+        return _v2_ontology()
     raise ModelOntologyContractError(f"unsupported body-part ontology version: {version!r}")
 
 
@@ -63,7 +79,7 @@ def validate_bodypart_model_contract(
         version = V1_ONTOLOGY_VERSION
     if version not in {V1_ONTOLOGY_VERSION, V2_ONTOLOGY_VERSION}:
         raise ModelOntologyContractError("body-part model lacks a supported ontology_version")
-    expected = V2_PART_CLASS_NAMES if version == V2_ONTOLOGY_VERSION else V1_PART_CLASS_NAMES
+    expected = _v2_part_class_names() if version == V2_ONTOLOGY_VERSION else V1_PART_CLASS_NAMES
     if names != expected:
         raise ModelOntologyContractError(
             f"{version} body-part vocabulary must be exact {len(expected)} names in ID order"

@@ -3,7 +3,7 @@
 MaskFactory Project Tracker
 ===========================
 Canonical, machine-readable status tracker for the Ultimate Masking System
-build-out: 858 action items across phases P0-P9, three independently scoped
+build-out: 906 action items across phases P0-P9, three independently scoped
 completion profiles, Definition-of-Done (D1-D11) and Goals (G1-G9) rollups,
 plus free-form project metrics.
 
@@ -96,7 +96,7 @@ STATUS_GLYPH = {
     "not_applicable": "\u2796",  # ➖
 }
 
-EXPECTED_ITEM_COUNT = 894
+EXPECTED_ITEM_COUNT = 906
 
 CORE_EXCLUDED_DEPENDENCIES = (
     "human_anchor_masks",
@@ -163,6 +163,18 @@ COMPLETION_PROFILES = {
             "MF-P6-12.04",
             "MF-P6-12.05",
             "MF-P6-12.06",
+            "MF-P6-20.01",
+            "MF-P6-20.02",
+            "MF-P6-20.03",
+            "MF-P6-20.04",
+            "MF-P6-21.01",
+            "MF-P6-21.02",
+            "MF-P6-21.03",
+            "MF-P6-21.04",
+            "MF-P6-22.01",
+            "MF-P6-22.02",
+            "MF-P6-22.03",
+            "MF-P6-22.04",
         ],
     },
     "independent_real_accuracy": {
@@ -1207,8 +1219,8 @@ def validate_completion_track_registry(data):
             "completion track registry is missing top-level fields: "
             + ", ".join(sorted(top_missing))
         )
-    if registry.get("schema_version") != "1.1.0":
-        problems.append("completion track registry schema_version must be 1.1.0")
+    if registry.get("schema_version") != "1.2.0":
+        problems.append("completion track registry schema_version must be 1.2.0")
     if registry.get("registry_id") != "maskfactory_completion_tracks":
         problems.append("completion track registry_id must be maskfactory_completion_tracks")
     if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(registry.get("policy_version") or "")):
@@ -1234,11 +1246,11 @@ def validate_completion_track_registry(data):
         problems.append("completion track registry sha256 drifted")
     migration = registry.get("migration")
     expected_migration = {
-        "from_schema_version": "1.0.0",
+        "from_schema_version": "1.1.0",
         "from_registry_sha256": (
-            "029c3fba47b6522721c915d95c007bd58daecba45dbf682b011fd441464092fc"
+            "330301009cdabc34a7d8c80e4f73c4c44051c74037c07e89d5538c976289df1a"
         ),
-        "migration_kind": "additive_blocking_gate",
+        "migration_kind": "additive_whole_product_integration_gate",
         "preserves_profile_required_item_ids": True,
         "preserves_existing_item_evidence": True,
     }

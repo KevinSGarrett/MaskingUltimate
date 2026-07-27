@@ -5,11 +5,18 @@
 This instruction implements Plan 27. It supersedes any interpretation that
 one safe bounded self-hosted review equals continuous autonomy.
 
+For canonical product integration, full-suite proof, evidence reconstruction,
+release, and ComfyUI adoption, also follow Plan 28 and Instruction 18.
+
 The current honest state is
-`SELF_HOSTED_AUTONOMOUS_LLM_THROUGHPUT_INCOMPLETE`. The top priority is the
-last-mile executable chain and its real campaigns, not additional control
-documents. Until the first real 25-mission campaign is terminal, do not start
-non-defect Plan/schema/hygiene work.
+`SELF_HOSTED_AUTONOMOUS_LLM_THROUGHPUT_INCOMPLETE`. `MF-P6-19.01` now has one
+accepted real 25-mission campaign and `MF-P6-19.02` has accepted
+interruption/all-route reconciliation; neither may be recreated for more
+credit. The top priority is the remaining executable evidence, not additional
+control documents: satisfy the governed 100-mask campaign prerequisites, run
+`MF-P6-19.03`, then run the three sustained mixed campaigns and final packet
+in `MF-P6-19.04`. Do not start non-defect Plan/schema/hygiene work while those
+real gates are available.
 
 At session start:
 
@@ -37,25 +44,24 @@ At session start:
 9. **Consolidate:** send one campaign packet to Codex.
 10. **Continue:** immediately select the next unblocked campaign.
 
-The first integration target is:
+The completed initial integration target was:
 
 `tracker selection → campaign construction → guarded engineering runtime →
 patch/test/repair → terminal reconciliation → one Codex packet`.
 
-The runtime controller must process the 25 missions under one owned Qwen/vLLM
-lifetime with durable per-request intent and duplicate-safe recovery. It must
-be exposed by a guarded CLI, invoked through the shared-Pod lease wrapper, and
-wired into the supervisor. Before the live run, execute a CPU fake-runtime
-25-mission E2E that proves restart, terminal accounting, and one-packet
-behavior.
+The runtime controller processed those 25 missions under one owned Qwen/vLLM
+lifetime with durable per-request intent and duplicate-safe recovery. Its
+guarded CLI, shared-Pod lease invocation, supervisor wiring, and CPU
+fake-runtime E2E are prerequisite evidence, not a reason to re-run the same
+campaign.
 
-Once those prerequisites are verified and an eligible inference route is
-available, select `MF-P6-19.01` before pending mask, telemetry, or sustained
-acceptance rows. The first real campaign supplies the evidence those rows
-evaluate; they may fail closed on it but cannot preempt or block it. This
-scheduling rule never grants runtime acceptance: the guarded runtime still
-requires current prerequisite receipts, and later rows remain incomplete until
-their required real evidence exists.
+`MF-P6-19.01` and `MF-P6-19.02` are complete. The selector must choose the
+earliest dependency-ready prerequisite for `MF-P6-19.03` rather than reissue a
+completed campaign. The 100-mask parent must preserve exact outcome, visual,
+hard-QA, duplicate-promotion, route, reconciliation, and Codex-reduction
+evidence; `MF-P6-19.04` remains incomplete until three consecutive real mixed
+campaigns meet every target. A Serverless or OpenRouter result is counted only
+when it is reconciled into that immutable parent campaign.
 
 ## Last-mile anti-spin rules
 
@@ -98,6 +104,36 @@ runtime/model/storage/job preflight. Never preempt foreign work. Release in a
 - **CPU:** continue useful deterministic work when neither inference route is
   eligible.
 - **No dual submit:** one canonical mission, one active route.
+
+Fallback capacity has a production bar. Serverless is used only for material
+work of an eligible parent when local GPU admission is unavailable. On the
+actual execution host, bind the canonical manager command, config, broker root
+and ledger (not a separate jobs root), source/config hashes, and a non-secret
+availability preflight before one
+source-hash-bound successor. Historical terminal jobs and idle ledgers are not
+current capacity. The one successor remains parent-bound through terminal
+reconciliation; unknown state is never retried before reconciliation.
+
+Use the canonical manager's provider-free `preflight` command before `decide`:
+it requires explicit root and expected manager/config hashes, verifies the
+authorized session plus matching config root and existing SQLite ledger, and
+seals the exact host/command receipt without a broker write or provider call.
+Retain this receipt in the parent contract; it does not reserve, submit, or
+prove capacity by itself.
+
+OpenRouter is one consolidated, sanitized, parent-namespaced structured
+advisory batch per parent phase, with one active session and terminal-parent
+suppression. The local controller performs and validates adopted work. Choose
+the least-cost capable approved model; stronger or multimodal models require a
+bounded escalation or bound visual/audio applicability record. Record model,
+cost, input/output receipt hashes, parent binding, and terminal result; do not
+send secrets, private raw data, or GPU payloads.
+
+The legacy supervisor may be recovered only by its owner: pause intake,
+reconcile to zero, perform controlled shutdown, verify old-process and child
+submitter exit, then restart once with canonical paths and one Serverless plus
+one OpenRouter worker. Admission rejection fails closed and never becomes a
+retry job.
 
 ## Engineering worker authority
 
@@ -161,3 +197,10 @@ dual visual roles, three consecutive target-meeting campaigns, and an immutable
 acceptance packet. Otherwise report:
 
 `SELF_HOSTED_AUTONOMOUS_LLM_THROUGHPUT_INCOMPLETE`
+
+Passing Plan 27 does not by itself complete the Ultimate Masking System.
+Until the canonical integrated tree, clean full suite, evidence reconstruction,
+mask-safety semantics, immutable release, and pinned ComfyUI adoption in
+Plan 28 pass, also report:
+
+`ULTIMATE_MASKING_SYSTEM_E2E_INCOMPLETE`

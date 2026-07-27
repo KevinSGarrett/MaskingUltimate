@@ -12,6 +12,7 @@ from maskfactory.steward.continuous_contract import (
     AUTHORITY_PATHS,
     FREEZE_REGISTRY_PATH,
     ITEM_PATH,
+    ITEM_PATHS,
     TELEMETRY_SCHEMA_PATH,
     ContinuousContractError,
     canonical_sha256,
@@ -206,7 +207,7 @@ def test_frozen_authority_schemas_and_item_ids_have_no_drift() -> None:
 
     assert validate_freeze_registry(root) == []
     registry = read_json(root / FREEZE_REGISTRY_PATH)
-    assert len(registry["item_ids"]) == 28
+    assert len(registry["item_ids"]) == 40
     assert len(registry["item_ids"]) == len(set(registry["item_ids"]))
     assert {row["path"] for row in registry["authority_files"]} == {
         path.as_posix() for path in AUTHORITY_PATHS
@@ -215,6 +216,9 @@ def test_frozen_authority_schemas_and_item_ids_have_no_drift() -> None:
         TELEMETRY_SCHEMA_PATH.as_posix(),
         ACCEPTANCE_SCHEMA_PATH.as_posix(),
     }
+    assert {path.as_posix() for path in ITEM_PATHS}.issubset(
+        {row["path"] for row in registry["authority_files"]}
+    )
 
 
 def test_stale_authority_hash_fails_closed(tmp_path: Path) -> None:

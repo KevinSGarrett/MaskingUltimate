@@ -1,24 +1,36 @@
 {
   "schema_version": "maskfactory_self_hosted_autonomy_contract_freeze.v1",
   "registry_id": "maskfactory_self_hosted_autonomy_contract_v1",
-  "frozen_at": "2026-07-26T22:11:55Z",
+  "frozen_at": "2026-07-27T01:35:00Z",
   "incomplete_claim": "SELF_HOSTED_AUTONOMOUS_LLM_THROUGHPUT_INCOMPLETE",
   "authority_files": [
     {
       "path": "Plan/27_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS_SPEC.md",
-      "sha256": "777bf2cbb22157bc0e794ee27d2019597906d61b8701a11fcf9b85ad89c744ae"
+      "sha256": "638d8f1a0e73af20189ec0773bac360d980ac78e86a0846a104d5181f4ca4e07"
+    },
+    {
+      "path": "Plan/28_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md",
+      "sha256": "a82a3844736b6558d7ce54b2fd2bec1ac3151d791acf700900b65b51ac65d947"
     },
     {
       "path": "Plan/Instructions/16_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS.md",
-      "sha256": "8f3ab193b7aee0958396ae45cfbf707fa2c02f2717c09d1d50bd79725d3420f2"
+      "sha256": "e6608e03789676f1db80640731e1edc40a3370bcec2147acfdd7e5094d4989ce"
+    },
+    {
+      "path": "Plan/Instructions/18_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md",
+      "sha256": "66a65af8ef6fa53b36a171fec9ea6d213a2f564d6d426224296dde53c919aa05"
     },
     {
       "path": "Plan/SELF_HOSTED_AUTONOMOUS_LLM_PURSUING_GOAL_MESSAGE.md",
-      "sha256": "e2c911bf8b685a3421587d739d44687939556bc854a0157998c5f560ccf4955c"
+      "sha256": "47e3192565c04f0ff3f4a9881397355b230ba78abda5f5dfd1132412d81da713"
     },
     {
       "path": "Plan/Items/23_ITEMS_P6_SELF_HOSTED_AUTONOMOUS_LLM_OPERATIONS.md",
-      "sha256": "5501f1f942a813c79860c89ae215e5ef55ca793cb79668bb1f101750b8bfd1fc"
+      "sha256": "f03df89fc8b6de5925fd551e9df9e92c3212ca4388725caccbc47d12630e9ffb"
+    },
+    {
+      "path": "Plan/Items/24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md",
+      "sha256": "e8a50512409a236e95a39e56b6a571e677d507fad7533e4a7fdd67802d9062c9"
     }
   ],
   "schema_files": [
@@ -59,7 +71,19 @@
     "MF-P6-19.01",
     "MF-P6-19.02",
     "MF-P6-19.03",
-    "MF-P6-19.04"
+    "MF-P6-19.04",
+    "MF-P6-20.01",
+    "MF-P6-20.02",
+    "MF-P6-20.03",
+    "MF-P6-20.04",
+    "MF-P6-21.01",
+    "MF-P6-21.02",
+    "MF-P6-21.03",
+    "MF-P6-21.04",
+    "MF-P6-22.01",
+    "MF-P6-22.02",
+    "MF-P6-22.03",
+    "MF-P6-22.04"
   ],
-  "registry_sha256": "1050c4f44878114ace526bf77b9aa7ff6a2cf0a266fc9530c5ae30074bfd20b0"
+  "registry_sha256": "a0ef5e43ddde8a33af496b2231df34e29846a39436e91046848b3be63db7eca8"
 }

@@ -1,20 +1,24 @@
 ﻿# Current Task
 
-Task ID: MASKFACTORY-SELF-HOSTED-AUTONOMY-E2E-20260726
-Updated UTC: 2026-07-26T21:30:58Z
+Task ID: MASKFACTORY-ULTIMATE-MASKING-E2E-20260727
+Updated UTC: 2026-07-27T01:30:00Z
 
 ## Objective
 
-Finish the MaskFactory self-hosted autonomous LLM continuous-operations
-system so it performs most eligible engineering, patch/test/repair, mask
-adjustment, deterministic QA, visual-review orchestration, evidence, recovery,
-and campaign work with exception-only consolidated Codex handoffs.
+Finish the entire MaskFactory Ultimate Masking System: complete the remaining
+self-hosted campaign gates, integrate the accepted autonomy runtime with the
+full product tree, pass the clean full-product suite, qualify visual/mask
+authority, publish reconstructable evidence and one immutable release, and
+have the pinned ComfyUI session independently adopt and prove that release.
 
 Binding authorities:
 
 - `Plan/27_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS_SPEC.md`
+- `Plan/28_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md`
 - `Plan/Items/23_ITEMS_P6_SELF_HOSTED_AUTONOMOUS_LLM_OPERATIONS.md`
+- `Plan/Items/24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md`
 - `Plan/Instructions/16_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS.md`
+- `Plan/Instructions/18_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md`
 - `Plan/SELF_HOSTED_AUTONOMOUS_LLM_PURSUING_GOAL_MESSAGE.md`
 - `Plan/Tracker/tracker.py`
 
@@ -28,6 +32,11 @@ Binding authorities:
   each atomic work cell.
 - Serverless uses broker decide/reserve/submit/reconcile only; OpenRouter uses
   the governed Qwen-first advisory manager only; no dual submission occurs.
+- Fallback capacity is not credited until a real local-GPU-unavailable parent
+  selects canonical Serverless for material work, and, when external reasoning
+  is needed, one governed consolidated OpenRouter batch; both child routes must
+  be source/parent-bound, terminally reconciled, and adopted into the parent
+  campaign rather than treated as detached micro-handoffs.
 - Engineering patch/test/repair campaigns and mask hard-QA/repair/dual-critic
   campaigns produce one consolidated Codex adoption packet.
 - At least 80% of eligible work is autonomously prepared, routine handoffs are
@@ -50,6 +59,16 @@ Binding authorities:
   no standalone cron task may create repeated project sessions.
 - Local worktree/backup allocation passes the configured disk guard; repeated
   full-repository bundles are prohibited.
+- The full product and accepted autonomy work exist in one canonical,
+  reproducible source/build/runtime tree.
+- The complete collected product suite passes under an explicit external-asset
+  contract; focused steward tests alone are not whole-product proof.
+- Completion-critical evidence is discoverable and independently
+  reconstructable from a compact committed locator.
+- Provider/critic disagreement cannot be recorded as pass or promoted.
+- One immutable MaskFactory release is independently adopted and exercised by
+  ComfyUI session `019f9200-4805-7632-83d3-ee9ae614c603`; masking remains
+  deferred there until that handoff.
 
 ## Allowed paths
 
@@ -81,6 +100,8 @@ Binding authorities:
   telemetry, and schema tests
 - clean reconstruction and exact-byte runtime checks
 - real 25-mission and governed 100-mask acceptance campaigns
+- clean integrated-tree installation, complete product test suite, evidence
+  reconstruction, release validation, and pinned ComfyUI adoption tests
 
 ## Stop conditions
 
@@ -92,13 +113,38 @@ Binding authorities:
 
 ## First next action
 
-`MF-P6-13.01` through `MF-P6-16.04`, plus `MF-P6-17.01` and
-`MF-P6-17.02`, are tracker-complete. Finish the 25-mission engineering runtime
-controller and focused tests, add its guarded CLI, wire it into the supervisor,
-and run the CPU fake-runtime 25-mission E2E. Then run `MF-P6-19.01` as one real
-25-mission Qwen campaign before any non-defect Plan/schema/hygiene wave.
-Continue `MF-P6-17.03`/`17.04` into the governed 100-mask campaign, then close
-the measured sustained acceptance rows under `MF-P6-18` and `MF-P6-19`.
+`MF-P6-19.01` is tracker-complete with the accepted 25-mission campaign packet
+and `MF-P6-19.02` is tracker-complete with accepted interruption/all-route
+reconciliation. Do not recreate either gate, issue a duplicate immutable job,
+or treat a new static packet as progress. Reconstruct the tracker/DAG and
+select the earliest dependency-ready real prerequisite for `MF-P6-19.03`;
+execute one governed 100-mask parent campaign only when its stated predicates
+are met. The current chain begins with `MF-P4-11.23` -> `MF-P6-17.03` ->
+`MF-P6-17.04` -> `MF-P6-18.01`/`18.02`/`18.04`; reconcile the completed real
+25-mission telemetry into `MF-P6-18.03` in parallel. Then execute the three
+consecutive mixed campaigns and immutable operating packet required by
+`MF-P6-19.04`. Serverless and OpenRouter are policy-selected reconciled child
+routes only, never detached campaigns.
+
+In parallel CPU-safe work, execute the Plan-28 canonical integration lane:
+inventory and reconcile the full-product and autonomy source lines, preserve
+the dirty shared checkout, repair the full-suite baseline, publish the compact
+evidence locator, and make provider/critic disagreement fail closed. Do not
+claim the entire product complete or unblock ComfyUI masking until Item 24 and
+its dependency closure pass.
+
+Track B is an independent production gate: when a real eligible parent is
+locally unavailable, verify the canonical execution-host command/config/broker
+root/ledger binding (there is no separate jobs root) and source hashes, then
+run exactly one source-hash-bound
+Serverless successor through the broker sequence. When the same parent phase
+needs external reasoning, use at most one governed, sanitized,
+parent-namespaced OpenRouter batch and reconcile its receipt before the
+controller executes and validates the proposed work. Fixture tests, historical
+V12, idle ledgers, and static receipts are not fallback-capacity credit. The
+legacy supervisor is owner-recovered only: drain/reconcile, controlled
+shutdown, verify exit, then one canonical one-worker restart with admission
+rejections fail-closed.
 
 Every heartbeat records executable-integration, real-request,
 accepted-artifact, and terminal-runtime deltas. A zero production delta forces
@@ -107,11 +153,12 @@ the next action to runtime integration/execution. Static fixtures are
 a blocking defect; successor packets require a material immutable change; and
 replacement clones/worktrees cannot substitute for checkout reconciliation.
 
-Tracker/selector authority reconciliation: after the verified controller,
-guarded CLI, supervisor, and CPU fake-runtime E2E foundation, select
-`MF-P6-19.01` ahead of later mask/telemetry/acceptance rows. `MF-P6-18.04`
-consumes the first campaign's telemetry and does not block it; this scheduling
-rule does not mark any runtime or throughput acceptance row complete.
+Tracker/selector authority reconciliation: the verified controller, guarded
+CLI, supervisor, CPU fake-runtime E2E, real 25-mission packet, and
+interruption/all-route acceptance are historical prerequisites. The selector
+must not target `MF-P6-19.01` or `MF-P6-19.02` again. It must select the
+earliest unblocked work feeding `MF-P6-19.03`, then retain the overall
+incomplete status until `MF-P6-19.04` has its real sustained-campaign evidence.
 
 ## Authority-reconciliation checkpoint
 

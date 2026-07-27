@@ -1,13 +1,13 @@
 {
-  "schema_version": "1.1.0",
+  "schema_version": "1.2.0",
   "registry_id": "maskfactory_completion_tracks",
   "policy_version": "2026-07-26",
   "authoritative_spec": "Plan/24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md",
   "authoritative_spec_sha256": "9ee33527c889c94eeeb2e68b373972318248edd1b662ef1fd6d82af83451b9ce",
   "migration": {
-    "from_schema_version": "1.0.0",
-    "from_registry_sha256": "029c3fba47b6522721c915d95c007bd58daecba45dbf682b011fd441464092fc",
-    "migration_kind": "additive_blocking_gate",
+    "from_schema_version": "1.1.0",
+    "from_registry_sha256": "330301009cdabc34a7d8c80e4f73c4c44051c74037c07e89d5538c976289df1a",
+    "migration_kind": "additive_whole_product_integration_gate",
     "preserves_profile_required_item_ids": true,
     "preserves_existing_item_evidence": true
   },
@@ -16,7 +16,7 @@
       "profile_id": "core_autonomous_runtime",
       "classification": "required",
       "blocking_for_core_completion": true,
-      "purpose": "Prove a human-free autonomous MaskFactory runtime and adopted ComfyUI bridge with bounded QA, repair, abstention, certification, revocation, and recovery.",
+      "purpose": "Prove a human-free autonomous MaskFactory runtime, canonical integrated product, and adopted ComfyUI masking release with bounded QA, repair, abstention, certification, revocation, recovery, clean full-suite evidence, and rollback.",
       "completion_claim": "operational autonomous runtime complete",
       "required_item_ids": [
         "MF-P6-07.01",
@@ -61,7 +61,19 @@
         "MF-P6-12.03",
         "MF-P6-12.04",
         "MF-P6-12.05",
-        "MF-P6-12.06"
+        "MF-P6-12.06",
+        "MF-P6-20.01",
+        "MF-P6-20.02",
+        "MF-P6-20.03",
+        "MF-P6-20.04",
+        "MF-P6-21.01",
+        "MF-P6-21.02",
+        "MF-P6-21.03",
+        "MF-P6-21.04",
+        "MF-P6-22.01",
+        "MF-P6-22.02",
+        "MF-P6-22.03",
+        "MF-P6-22.04"
       ],
       "prerequisite_profile_ids": [],
       "allowed_evidence": [
@@ -196,5 +208,5 @@
       }
     }
   ],
-  "sha256": "330301009cdabc34a7d8c80e4f73c4c44051c74037c07e89d5538c976289df1a"
+  "sha256": "7f58d394cdf55f01e8b48dec77b88800e1dcf57e09c03dc941ad5f4bb4e570f1"
 }

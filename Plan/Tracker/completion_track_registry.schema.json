@@ -16,7 +16,7 @@
     "sha256"
   ],
   "properties": {
-    "schema_version": { "const": "1.1.0" },
+    "schema_version": { "const": "1.2.0" },
     "registry_id": { "const": "maskfactory_completion_tracks" },
     "policy_version": {
       "type": "string",
@@ -92,11 +92,11 @@
         "preserves_existing_item_evidence"
       ],
       "properties": {
-        "from_schema_version": { "const": "1.0.0" },
+        "from_schema_version": { "const": "1.1.0" },
         "from_registry_sha256": {
-          "const": "029c3fba47b6522721c915d95c007bd58daecba45dbf682b011fd441464092fc"
+          "const": "330301009cdabc34a7d8c80e4f73c4c44051c74037c07e89d5538c976289df1a"
         },
-        "migration_kind": { "const": "additive_blocking_gate" },
+        "migration_kind": { "const": "additive_whole_product_integration_gate" },
         "preserves_profile_required_item_ids": { "const": true },
         "preserves_existing_item_evidence": { "const": true }
       }

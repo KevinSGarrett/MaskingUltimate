@@ -34,17 +34,27 @@ order below before touching anything else.
 | 13 | `13_SELF_HOSTED_STRICT_VLM_GATE.md` | Binding STRICT self-hosted high-end VLM gate procedures (RunPod/loopback; no blind approvals; NEVER EC2). |
 | 14 | `14_SELF_HOSTED_VISUAL_AUTHORITY_AND_RUNPOD_MIGRATION.md` | Qualified visual authority and persistent RunPod operating rules. |
 | 15 | `15_ADULT_CORPUS_BATCH_OPERATION.md` | Governed adult-corpus batch processing and evidence procedures. |
-| 16 | `16_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS.md` | Continuous CPU supervision, campaign batching, shared-GPU/fallback routing, micro-handoff suppression, and throughput acceptance. |
+| 16 | `16_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS.md` | Continuous CPU supervision, last-mile runtime integration, campaign batching, shared-GPU/fallback routing, anti-spin rules, micro-handoff suppression, and throughput acceptance. |
 | 17 | `17_LOCAL_STORAGE_SESSION_AND_WORKTREE_HYGIENE.md` | Fail-closed local disk allocation, compact recovery checkpoints, main-thread heartbeat reuse, stale-session retirement, and worktree cleanup safety. |
+| 18 | `18_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md` | Canonical product/autonomy integration, full-suite proof, evidence reconstruction, immutable release, and pinned ComfyUI adoption. |
 
 After your first full read-through, you won't reread all of this every
 session — `03_SESSION_PLAYBOOK.md` is the one you'll return to every time,
 with the others as reference. For any mask/MVC/CAA/gold/champion visual claim,
 also follow `13_SELF_HOSTED_STRICT_VLM_GATE.md` and Standing Orders § SELF-HOSTED STRICT VLM GATE.
 For self-hosted autonomous engineering or mask campaigns, also follow `16`; an isolated bounded
-steward mission is not the continuous-autonomy completion gate.
+steward mission is not the continuous-autonomy completion gate. The real
+25-mission campaign and interruption/recovery gate are terminal and accepted
+(`MF-P6-19.01` / `MF-P6-19.02`); do not recreate them. Freeze non-defect
+Plan/schema work while pursuing the next real evidence: resolve the
+100-mask-campaign prerequisites, execute `MF-P6-19.03`, then complete the
+three consecutive mixed campaigns and immutable operating packet in
+`MF-P6-19.04`.
 Before any local clone, worktree, backup, or large evidence allocation, also
 follow `17` and run the storage guard.
+For any whole-product completion, release, or ComfyUI masking claim, also
+follow Plan 28 and Instruction 18. The ComfyUI masking lane remains deferred
+until the pinned MaskFactory release is independently adopted.
 
 **Binding NO-STOP:** Standing Orders § **CONTINUOUS UNTIL E2E COMPLETE (NO STOP)** —
 agents are not allowed to stop until MaskFactory is fully complete end-to-end.
@@ -140,5 +150,5 @@ and doc 27 adds the self-hosted continuous-throughput acceptance track.
    UNTIL E2E COMPLETE (NO STOP) and `02` §13 / `03` never-idle sections.
 
 Everything else you need — the complete technical specification, the
-atomized 894-item portfolio checklist, the claim-scoped live tracker, and this
+atomized 906-item portfolio checklist, the claim-scoped live tracker, and this
 operating manual — already exists on disk. Proceed to `01_PROJECT_MAP.md`.

@@ -10,6 +10,11 @@ Frozen v1 authority and evidence contracts:
 `configs/self_hosted_autonomy_campaign_telemetry_v1.schema.json`, and
 `configs/self_hosted_autonomy_acceptance_v1.schema.json`.
 
+This cluster proves continuous self-hosted throughput. It does not by itself
+prove the full product tree, full test suite, reconstructable release, or
+ComfyUI adoption. Those whole-product gates are in
+`24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md` under Plan 28.
+
 ## MF-P6-13 — Authority restoration and completion contract (spec: 27 §§1–3)
 - [x] MF-P6-13.01 Restore the committed Plan/Items/Tracker/Instructions authority pack into the active branch without overwriting newer local authority files · Verify: source-commit receipt lists every restored path and exact source/local blob equality; tracker validates and reports · Blocked by: none · HARD BLOCKER
 - [x] MF-P6-13.02 Freeze Plan 27, Instruction 16, the pursuing-goal message, this item cluster, and a closed telemetry/acceptance schema · Verify: cross-reference, schema, duplicate-ID, and stale-hash tests pass · Blocked by: MF-P6-13.01 · HARD BLOCKER

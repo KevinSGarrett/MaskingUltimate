@@ -16,19 +16,29 @@ TELEMETRY_SCHEMA_PATH = Path(
 ACCEPTANCE_SCHEMA_PATH = Path("configs/self_hosted_autonomy_acceptance_v1.schema.json")
 AUTHORITY_PATHS = (
     Path("Plan/27_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS_SPEC.md"),
+    Path("Plan/28_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md"),
     Path(
         "Plan/Instructions/"
         "16_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS.md"
     ),
+    Path(
+        "Plan/Instructions/"
+        "18_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md"
+    ),
     Path("Plan/SELF_HOSTED_AUTONOMOUS_LLM_PURSUING_GOAL_MESSAGE.md"),
     Path("Plan/Items/23_ITEMS_P6_SELF_HOSTED_AUTONOMOUS_LLM_OPERATIONS.md"),
+    Path("Plan/Items/24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md"),
 )
 ITEM_PATH = Path("Plan/Items/23_ITEMS_P6_SELF_HOSTED_AUTONOMOUS_LLM_OPERATIONS.md")
+ITEM_PATHS = (
+    ITEM_PATH,
+    Path("Plan/Items/24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md"),
+)
 INCOMPLETE_CLAIM = "SELF_HOSTED_AUTONOMOUS_LLM_THROUGHPUT_INCOMPLETE"
 
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _ITEM_ID = re.compile(
-    r"^- \[[ xX]\] (MF-P6-(?:1[3-9])\.\d{2})\b",
+    r"^- \[[ xX]\] (MF-P6-(?:1[3-9]|2[0-2])\.\d{2})\b",
     re.MULTILINE,
 )
 _REGISTRY_FIELDS = {
@@ -180,11 +190,14 @@ def validate_freeze_registry(repo_root: Path) -> list[str]:
     if len(item_ids) != len(set(item_ids)):
         problems.append("freeze item_ids contains duplicates")
     observed_item_ids: list[str] = []
-    item_file = repo_root / ITEM_PATH
-    if item_file.is_file():
-        observed_item_ids = _ITEM_ID.findall(item_file.read_text(encoding="utf-8"))
-        if len(observed_item_ids) != len(set(observed_item_ids)):
-            problems.append("P6 item authority contains duplicate item IDs")
+    for item_path in ITEM_PATHS:
+        item_file = repo_root / item_path
+        if item_file.is_file():
+            observed_item_ids.extend(
+                _ITEM_ID.findall(item_file.read_text(encoding="utf-8"))
+            )
+    if len(observed_item_ids) != len(set(observed_item_ids)):
+        problems.append("P6 item authority contains duplicate item IDs")
     if item_ids != observed_item_ids:
         problems.append("freeze item_ids differ from ordered P6 item authority")
 
@@ -264,6 +277,7 @@ __all__ = [
     "FREEZE_SCHEMA_VERSION",
     "INCOMPLETE_CLAIM",
     "ITEM_PATH",
+    "ITEM_PATHS",
     "TELEMETRY_SCHEMA_PATH",
     "canonical_sha256",
     "file_sha256",

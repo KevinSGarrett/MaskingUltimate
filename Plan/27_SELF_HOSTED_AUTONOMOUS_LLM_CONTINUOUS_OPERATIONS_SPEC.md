@@ -44,33 +44,33 @@ system waits for more work, external authority, or Codex review.
 
 ## 3. Current foundation and remaining gap
 
-The existing steward implementation, runtime contract, deterministic mission
-identity, refusal behavior, recovery drill, and bounded real engineering
-missions are reusable foundations. They establish that a self-hosted worker
-can be safe and reproducible.
+The steward implementation, runtime contract, deterministic mission identity,
+refusal behavior, routing controls, and durable recovery behavior are reusable
+foundations.
+
+`MF-P6-19.01` now has accepted real evidence for one 25-mission engineering
+campaign under one owned Qwen/vLLM lifetime. `MF-P6-19.02` has accepted
+interruption, ambiguity, stale-owner, all-route reconciliation, and release
+evidence. These immutable gates SHALL be preserved and SHALL NOT be rerun for
+additional credit.
 
 They do not by themselves establish:
 
-- continuous tracker/DAG-driven mission selection;
-- multi-mission campaign batching;
-- autonomous patch/test/repair loops;
-- automatic local/Serverless/OpenRouter/CPU routing;
-- visual mask decision authority;
-- exception-only consolidated adoption;
-- sustained mask-generation and repair throughput; or
-- a measured reduction in Codex work.
+- qualified full 66-class/risk-domain visual authority;
+- a governed 100-mask campaign;
+- three consecutive target-meeting mixed campaigns;
+- sustained mask-generation and repair throughput;
+- completion of the original core serving/bridge rows;
+- a clean integrated full-product source tree and complete test suite;
+- independently reconstructable completion evidence; or
+- final adoption by the pinned ComfyUI session.
 
-These remaining capabilities are required by this specification.
-
-The 2026-07-26 four-hour review found a material readiness split: the control
-plane was approximately 85–90% implemented, the working autonomous runtime
-45–55%, production qualification 20–30%, and end-to-end readiness 60–65%.
-Twenty-seven commits and 317 passing steward tests were substantial
-engineering, but the same window produced only three drill evidence roots and
-no real 25-mission, 100-mask, or sustained mixed campaign. These percentages
-are an audit snapshot, not completion credit. Runtime truth SHALL be based on
-real model requests, accepted project artifacts, terminal reconciliation, and
-resource release.
+The 2026-07-26 four-hour review was a historical snapshot before the accepted
+25-mission run. Its percentages and test counts remain useful audit context but
+are not current completion authority. Runtime truth SHALL be based on real
+model requests, accepted project artifacts, terminal reconciliation, and
+resource release. Whole-product truth SHALL additionally satisfy
+`Plan/28_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md`.
 
 ## 4. Components
 
@@ -229,6 +229,50 @@ difficult bounded escalation. Never bypass the manager, exceed shared daily
 limits, send secrets/private raw data, or treat advisory output as execution
 or final authority.
 
+### 5.3.1 Parent-owned fallback capacity
+
+Fallback capacity is not proven by fixture tests, historical terminal rows, or
+an idle broker ledger. When local GPU admission is unavailable and an eligible
+parent campaign has material work, the controller SHALL evaluate the canonical
+Serverless route instead of waiting or creating detached activity. Before a
+new Serverless successor, the actual execution host must record the exact
+manager command, config, broker root, and canonical ledger (there is no
+separate jobs root), plus source/config hashes,
+and a non-secret availability preflight. Only then may it issue one immutable,
+parent-bound broker sequence. The successor must produce a native-box-ready
+terminal result and a parent receipt; unknown state is reconciled, never
+reissued.
+
+The canonical manager's provider-free `preflight` command requires an explicit
+broker root and expected manager/config SHA-256 values. It fails closed unless
+the root matches `durability.runpod_root`, the existing SQLite ledger is valid,
+the session is authorized, and both deployed bytes match the parent contract.
+Its sealed receipt records the exact executable/config/root/ledger and
+canonical `decide` argv without writing the broker or calling a provider. That
+receipt is a prerequisite to, never a substitute for, `decide` and the
+subsequent terminal parent work.
+
+For a parent phase that needs external reasoning, the controller may issue one
+sanitized, structured, parent-namespaced OpenRouter advisory batch through the
+governed manager. It must remain one-active-session, suppress additional child
+advisories after the terminal parent record, and be reconciled before a new
+batch. The controller, not the advisory, executes the adopted patch/test/QA
+work and records the resulting local evidence. Select the least-cost capable
+approved model for ordinary work, use a stronger model only for a bounded
+material escalation, and use a multimodal model only when its bound visual or
+audio evidence makes it applicable. Record the model, cost, input/output
+receipt hashes, parent binding, and terminal outcome. Never send secrets,
+private raw data, or GPU payloads.
+
+The legacy externally owned supervisor may be recovered only by its owner:
+pause intake, reconcile active work to zero, perform a controlled shutdown,
+confirm the old process and child submitters are gone, then start exactly one
+canonical supervisor with one Serverless worker and one OpenRouter worker.
+Admission rejections are terminal for that parent and must not become retry
+jobs. Acceptance requires meaningful parent-owned fallback work, not
+micro-handoffs, and at least one mixed campaign where the local and child
+routes are reconciled as one parent campaign.
+
 ### 5.4 CPU-safe route
 
 If no inference route is eligible, the supervisor SHALL continue useful
@@ -298,9 +342,10 @@ truth, or required authority decision.
 
 ### 6.1 Last-mile anti-spin gate
 
-Until the first real 25-mission campaign is terminal, non-defect Plan, schema,
-dashboard, receipt-format, and hygiene work is frozen. A new wave counts as
-progress only when it delivers at least one of:
+With the first real 25-mission campaign terminal and accepted, non-defect Plan,
+schema, dashboard, receipt-format, and hygiene churn remains frozen while a
+real dependency-ready execution or integration lane exists. A new wave counts
+as progress only when it delivers at least one of:
 
 1. executable integration plus focused tests that closes a direct dependency
    of the next real campaign; or
@@ -322,13 +367,23 @@ artifacts, and newly terminal runtime outcomes. A zero production delta forces
 the next action to be runtime integration or execution, not additional
 bookkeeping.
 
-The first real 25-mission engineering campaign is the production-evidence
-producer for the later telemetry and sustained-acceptance rows. Once its
-controller, guarded CLI, supervisor integration, and CPU fake-runtime E2E
-prerequisites are verified, tracker selection SHALL prioritize that campaign
-over pending mask, telemetry, or acceptance rows. Those later rows may collect
-and fail-close on its evidence, but they SHALL NOT block the first campaign or
-be marked complete from its static prerequisites.
+The accepted first real 25-mission engineering campaign is the
+production-evidence source for later telemetry and sustained-acceptance rows.
+Those later rows SHALL consume its immutable packet without recreating it.
+Tracker selection now prioritizes the earliest real dependency of the
+100-mask campaign, the sustained mixed campaigns, or Plan-28 whole-product
+integration.
+
+### 6.1.1 Applied campaign state (2026-07-26)
+
+`MF-P6-19.01` and `MF-P6-19.02` have terminal accepted evidence. The
+anti-spin rule therefore prohibits recreating their unchanged contracts,
+packets, or fault drills. The current production delta must instead advance an
+earliest dependency-ready prerequisite of `MF-P6-19.03`, its governed 100-mask
+parent campaign, or the three sustained mixed campaigns and immutable final
+packet required by `MF-P6-19.04`. A Serverless or OpenRouter child route is
+evidence only after idempotent reconciliation into that parent; it cannot
+independently advance throughput acceptance.
 
 ## 7. Telemetry and success measures
 
@@ -346,8 +401,8 @@ The closed v1 contract is frozen by:
 - `configs/self_hosted_autonomy_acceptance_v1.schema.json`.
 
 Telemetry and acceptance artifacts SHALL validate against those exact schema
-bytes. The freeze registry binds this specification, Instruction 16, the
-pursuing-goal message, the P6 item cluster, and both schemas by SHA-256.
+bytes. The freeze registry binds Plans 27–28, Instructions 16 and 18, the
+pursuing-goal message, P6 item clusters 23–24, and both schemas by SHA-256.
 Unknown fields, duplicate item identities, missing measures, and stale
 authority or schema hashes fail closed.
 
@@ -399,6 +454,12 @@ Required sustained targets:
 13. Run restart, ambiguous-completion, stale-owner, and route fault drills.
 14. Run one governed 100-mask campaign with full outcome accounting.
 15. Repeat three mixed campaigns while meeting every sustained target.
+16. Reconcile the accepted autonomy/runtime and full-product source lines,
+    repair and pass the clean full-product suite, and publish the compact
+    evidence locator required by Plan 28.
+17. Assemble one immutable MaskFactory release and have the pinned ComfyUI
+    session independently adopt, exercise, restart, invalidate, and roll it
+    back.
 
 ## 9. End-to-end acceptance
 
@@ -417,3 +478,8 @@ substitute for the required real requests and accepted artifacts.
 Until this bundle passes, the honest state is:
 
 `SELF_HOSTED_AUTONOMOUS_LLM_THROUGHPUT_INCOMPLETE`
+
+This throughput claim is necessary but not sufficient for the entire product.
+Until Plan 28 and Item 24 also pass, the whole-product state is:
+
+`ULTIMATE_MASKING_SYSTEM_E2E_INCOMPLETE`

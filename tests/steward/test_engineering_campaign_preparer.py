@@ -20,6 +20,7 @@ from maskfactory.steward.engineering_campaign_runtime import (
     validate_engineering_campaign_runtime_binding,
 )
 from maskfactory.steward.goal_selector import PLAN27_ITEM_ORDER
+from maskfactory.steward.repository_packet import RepositoryPacketError
 from maskfactory.steward.runtime import atomic_write_json, file_sha256, read_json
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -192,6 +193,44 @@ def test_repeated_source_set_uses_one_git_packet_snapshot_per_campaign(
             campaign_root / "missions" / f"engineering-{sequence:02d}" / "repository_packet_manifest.json"
         )
         assert manifest["packet_sha256"] == preparation["mission_evidence"][0]["packet_sha256"]
+
+
+def test_reused_packet_source_drift_refuses_campaign_before_binding(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    repo = _repository(tmp_path)
+    tracker = _tracker(tmp_path / "tracker.json")
+    source = _source(tmp_path / "source.json")
+    packets = tmp_path / "packets"
+    inbox = tmp_path / "inbox"
+    packets.mkdir()
+    copied = False
+    original_copytree = engineering_campaign_preparer.shutil.copytree
+
+    def drift_after_first_reuse(*args, **kwargs):
+        nonlocal copied
+        result = original_copytree(*args, **kwargs)
+        if not copied:
+            copied = True
+            (repo / "src" / "bounded.py").write_text(
+                "VALUE = 2\n", encoding="utf-8", newline="\n"
+            )
+        return result
+
+    monkeypatch.setattr(engineering_campaign_preparer.shutil, "copytree", drift_after_first_reuse)
+    with pytest.raises(RepositoryPacketError, match="selected source has uncommitted"):
+        prepare_engineering_campaign(
+            repo_root=repo,
+            tracker_path=tracker,
+            source_path=source,
+            packet_parent=packets,
+            campaign_inbox=inbox,
+            runtime_contract_path=CONTRACT_PATH,
+        )
+
+    assert copied is True
+    assert list(packets.iterdir()) == []
+    assert list(inbox.iterdir()) == []
 
 
 def test_tracker_selection_mismatch_fails_before_packet_creation(

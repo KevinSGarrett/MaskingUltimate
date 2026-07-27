@@ -9,11 +9,14 @@ provides two boundaries:
 
 from __future__ import annotations
 
+import base64
+import csv
 import hashlib
 import json
 import os
 import shutil
 import tempfile
+import zipfile
 from pathlib import Path, PurePosixPath
 from typing import Any, Mapping
 
@@ -31,6 +34,127 @@ FORBIDDEN_SOURCE_TARGETS = {".", "./", "src", "./src"}
 
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def validate_wheel_runtime_closure(
+    wheel_path: Path,
+    *,
+    expected_entrypoint: str,
+    expected_requires: tuple[str, ...],
+) -> tuple[tuple[str, str, str], ...]:
+    """Validate a built wheel's RECORD, dependency metadata, and entry point.
+
+    This is intentionally artifact-facing: a source-level declaration alone
+    cannot prove the immutable wheel selected for a clean release retained the
+    declared runtime closure.
+    """
+
+    issues: list[tuple[str, str, str]] = []
+    if not wheel_path.is_file():
+        return (("/wheel", "wheel_missing", "wheel artifact is missing"),)
+    try:
+        with zipfile.ZipFile(wheel_path) as archive:
+            names = archive.namelist()
+            if len(set(names)) != len(names):
+                issues.append(("/wheel", "duplicate_member", "wheel has duplicate archive members"))
+            metadata_names = [name for name in names if name.endswith(".dist-info/METADATA")]
+            entrypoint_names = [name for name in names if name.endswith(".dist-info/entry_points.txt")]
+            record_names = [name for name in names if name.endswith(".dist-info/RECORD")]
+            if len(metadata_names) != 1:
+                issues.append(("/metadata", "metadata_member", "wheel must contain one METADATA file"))
+            if len(entrypoint_names) != 1:
+                issues.append(
+                    ("/entry_points", "entrypoint_member", "wheel must contain one entry_points file")
+                )
+            if len(record_names) != 1:
+                issues.append(("/record", "record_member", "wheel must contain one RECORD file"))
+            if issues:
+                return tuple(sorted(set(issues)))
+            dist_info_roots = {
+                name.rsplit("/", maxsplit=1)[0]
+                for name in (metadata_names[0], entrypoint_names[0], record_names[0])
+            }
+            if len(dist_info_roots) != 1:
+                return (
+                    (
+                        "/wheel",
+                        "dist_info_lineage",
+                        "wheel metadata, entry points, and RECORD must share one dist-info root",
+                    ),
+                )
+
+            metadata_lines = archive.read(metadata_names[0]).decode("utf-8").splitlines()
+            requires = tuple(
+                line.removeprefix("Requires-Dist: ")
+                for line in metadata_lines
+                if line.startswith("Requires-Dist: ")
+            )
+            if requires != expected_requires:
+                issues.append(
+                    (
+                        "/metadata/requires_dist",
+                        "runtime_dependency_drift",
+                        "wheel Requires-Dist entries do not exactly match the release contract",
+                    )
+                )
+
+            entrypoint_lines = archive.read(entrypoint_names[0]).decode("utf-8").splitlines()
+            in_console_scripts = False
+            maskfactory_entries: list[str] = []
+            for line in entrypoint_lines:
+                if line.startswith("[") and line.endswith("]"):
+                    in_console_scripts = line == "[console_scripts]"
+                    continue
+                if in_console_scripts and line.startswith("maskfactory") and "=" in line:
+                    key, value = line.split("=", maxsplit=1)
+                    if key.strip() == "maskfactory":
+                        maskfactory_entries.append(value.strip())
+            if maskfactory_entries != [expected_entrypoint]:
+                issues.append(
+                    (
+                        "/entry_points/console_scripts",
+                        "entrypoint_drift",
+                        "wheel console-script entry point does not match the release contract",
+                    )
+                )
+
+            record_rows = list(csv.reader(archive.read(record_names[0]).decode("utf-8").splitlines()))
+            record_by_name: dict[str, tuple[str, str]] = {}
+            for row in record_rows:
+                if len(row) != 3 or not row[0]:
+                    issues.append(("/record", "record_row", "wheel RECORD contains an invalid row"))
+                    continue
+                if row[0] in record_by_name:
+                    issues.append(("/record", "record_duplicate", "wheel RECORD has duplicate paths"))
+                    continue
+                record_by_name[row[0]] = (row[1], row[2])
+
+            for name in names:
+                digest, size = record_by_name.get(name, (None, None))
+                if digest is None:
+                    issues.append(("/record", "record_missing_member", f"wheel member missing from RECORD: {name}"))
+                    continue
+                if name == record_names[0]:
+                    if digest or size:
+                        issues.append(
+                            ("/record", "record_self_hash", "RECORD must not hash or size itself")
+                        )
+                    continue
+                if not digest.startswith("sha256="):
+                    issues.append(("/record", "record_algorithm", f"wheel RECORD lacks sha256 for: {name}"))
+                    continue
+                expected_digest = base64.urlsafe_b64encode(hashlib.sha256(archive.read(name)).digest())
+                expected_digest = expected_digest.rstrip(b"=").decode("ascii")
+                if digest.removeprefix("sha256=") != expected_digest:
+                    issues.append(("/record", "record_hash", f"wheel RECORD hash mismatch: {name}"))
+                if size != str(len(archive.read(name))):
+                    issues.append(("/record", "record_size", f"wheel RECORD size mismatch: {name}"))
+            for name in record_by_name:
+                if name not in names:
+                    issues.append(("/record", "record_unknown_member", f"RECORD names absent member: {name}"))
+    except (OSError, UnicodeDecodeError, zipfile.BadZipFile) as exc:
+        return (("/wheel", "wheel_decode", str(exc)),)
+    return tuple(sorted(set(issues)))
 
 
 def _load_manifest_schema() -> Mapping[str, Any]:

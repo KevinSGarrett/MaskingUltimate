@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import base64
 import hashlib
 import json
+import zipfile
 from pathlib import Path
 
 import pytest
@@ -10,12 +12,44 @@ from maskfactory.bridge.clean_release_packaging import (
     install_clean_release,
     rollback_clean_release,
     validate_clean_release_manifest,
+    validate_wheel_runtime_closure,
 )
 from maskfactory.validation import canonical_document_sha256
 
 
 def _sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _wheel_with_closure(
+    tmp_path: Path,
+    *,
+    requires: tuple[str, ...] = ("click", "pydantic"),
+    record_override: str | None = None,
+    entrypoints: str = "[console_scripts]\nmaskfactory = maskfactory.cli:main\n",
+) -> Path:
+    wheel_path = tmp_path / "maskfactory-1.0.0-py3-none-any.whl"
+    members = {
+        "maskfactory/__init__.py": b"__version__ = '1.0.0'\n",
+        "maskfactory/cli.py": b"def main():\n    return None\n",
+        "maskfactory-1.0.0.dist-info/METADATA": (
+            "Metadata-Version: 2.4\nName: maskfactory\nVersion: 1.0.0\n"
+            + "".join(f"Requires-Dist: {requirement}\n" for requirement in requires)
+        ).encode("utf-8"),
+        "maskfactory-1.0.0.dist-info/entry_points.txt": entrypoints.encode("utf-8"),
+    }
+    record_rows = []
+    for name, content in members.items():
+        digest = base64.urlsafe_b64encode(hashlib.sha256(content).digest()).rstrip(b"=").decode("ascii")
+        record_rows.append(f"{name},sha256={digest},{len(content)}")
+    record_rows.append("maskfactory-1.0.0.dist-info/RECORD,,")
+    if record_override is not None:
+        record_rows[0] = record_override
+    members["maskfactory-1.0.0.dist-info/RECORD"] = ("\n".join(record_rows) + "\n").encode("utf-8")
+    with zipfile.ZipFile(wheel_path, "w") as archive:
+        for name, content in members.items():
+            archive.writestr(name, content)
+    return wheel_path
 
 
 def _setup(tmp_path: Path) -> tuple[Path, Path, dict, dict[str, dict[str, object]], Path]:
@@ -107,6 +141,57 @@ def test_validate_clean_release_manifest_rejects_editable_install(tmp_path: Path
         )
     }
     assert "editable_install_forbidden" in codes
+
+
+def test_validate_wheel_runtime_closure_accepts_exact_artifact_contract(tmp_path: Path) -> None:
+    wheel_path = _wheel_with_closure(tmp_path)
+
+    assert validate_wheel_runtime_closure(
+        wheel_path,
+        expected_entrypoint="maskfactory.cli:main",
+        expected_requires=("click", "pydantic"),
+    ) == ()
+
+
+def test_validate_wheel_runtime_closure_rejects_tampered_record(tmp_path: Path) -> None:
+    wheel_path = _wheel_with_closure(
+        tmp_path,
+        record_override="maskfactory/__init__.py,sha256=invalid,1",
+    )
+
+    codes = {
+        code
+        for _, code, _ in validate_wheel_runtime_closure(
+            wheel_path,
+            expected_entrypoint="maskfactory.cli:main",
+            expected_requires=("click", "pydantic"),
+        )
+    }
+    assert "record_hash" in codes
+    assert "record_size" in codes
+
+
+def test_validate_wheel_runtime_closure_rejects_competing_console_script(
+    tmp_path: Path,
+) -> None:
+    wheel_path = _wheel_with_closure(
+        tmp_path,
+        entrypoints=(
+            "[console_scripts]\n"
+            "maskfactory = maskfactory.cli:main\n"
+            "maskfactory = attacker.module:main\n"
+        ),
+    )
+
+    codes = {
+        code
+        for _, code, _ in validate_wheel_runtime_closure(
+            wheel_path,
+            expected_entrypoint="maskfactory.cli:main",
+            expected_requires=("click", "pydantic"),
+        )
+    }
+    assert "entrypoint_drift" in codes
 
 
 def test_install_and_rollback_emit_proof_and_switch_atomically(tmp_path: Path) -> None:

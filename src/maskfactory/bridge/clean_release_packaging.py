@@ -197,6 +197,52 @@ def argv_has_editable_or_source(argv: object) -> bool:
     return False
 
 
+def validate_manifest_wheel_runtime_closure(
+    manifest: Mapping[str, Any], *, release_root: Path
+) -> tuple[tuple[str, str, str], ...]:
+    """Validate the physical release wheel against its immutable manifest closure."""
+    package = manifest.get("package")
+    runtime_closure = manifest.get("runtime_closure")
+    if not isinstance(package, Mapping) or not isinstance(runtime_closure, Mapping):
+        return (
+            (
+                "/runtime_closure",
+                "runtime_closure_missing",
+                "manifest must bind a package and runtime closure",
+            ),
+        )
+    relative_path = package.get("relative_path")
+    expected_hash = package.get("sha256")
+    expected_size = package.get("size_bytes")
+    expected_entrypoint = runtime_closure.get("console_entrypoint")
+    expected_requires = runtime_closure.get("requires_dist")
+    if not isinstance(relative_path, str):
+        return (("/package/relative_path", "package_path", "package path is invalid"),)
+    if not isinstance(expected_hash, str) or not isinstance(expected_size, int):
+        return (("/package", "package_binding", "package hash or size is invalid"),)
+    if not isinstance(expected_entrypoint, str) or not isinstance(expected_requires, list):
+        return (("/runtime_closure", "runtime_closure_binding", "runtime closure is invalid"),)
+    if not all(isinstance(requirement, str) for requirement in expected_requires):
+        return (("/runtime_closure/requires_dist", "runtime_requires", "requirements are invalid"),)
+    try:
+        wheel_path = _resolve_relative(release_root, relative_path)
+    except (OSError, ValueError) as exc:
+        return (("/package/relative_path", "package_missing", str(exc)),)
+    issues: list[tuple[str, str, str]] = []
+    if _sha256(wheel_path) != expected_hash:
+        issues.append(("/package/sha256", "package_hash", "package wheel hash mismatch"))
+    if wheel_path.stat().st_size != expected_size:
+        issues.append(("/package/size_bytes", "package_size", "package wheel size mismatch"))
+    issues.extend(
+        validate_wheel_runtime_closure(
+            wheel_path,
+            expected_entrypoint=expected_entrypoint,
+            expected_requires=tuple(expected_requires),
+        )
+    )
+    return tuple(sorted(set(issues)))
+
+
 def validate_clean_release_manifest(
     evidence: Mapping[str, Any],
     catalog_by_path: Mapping[str, Mapping[str, Any]],
@@ -289,6 +335,10 @@ def validate_clean_release_manifest(
                 "manifest package hash does not match catalog",
             )
         )
+    for pointer, code, message in validate_manifest_wheel_runtime_closure(
+        manifest, release_root=release_root
+    ):
+        issues.append((f"/installation/manifest{pointer}", code, message))
     if argv_has_editable_or_source(installation.get("argv")):
         issues.append(
             (
@@ -366,6 +416,12 @@ def install_clean_release(
 ) -> dict[str, Any]:
     """Install a release by verified wheel copy and atomic pointer switch."""
     manifest = load_clean_release_manifest(manifest_path)
+    runtime_closure_issues = validate_manifest_wheel_runtime_closure(
+        manifest, release_root=release_root
+    )
+    if runtime_closure_issues:
+        codes = ", ".join(code for _, code, _ in runtime_closure_issues)
+        raise ValueError(f"wheel runtime closure invalid: {codes}")
     package = manifest["package"]
     wheel_path = _resolve_relative(release_root, package["relative_path"])
     wheel_hash = _sha256(wheel_path)

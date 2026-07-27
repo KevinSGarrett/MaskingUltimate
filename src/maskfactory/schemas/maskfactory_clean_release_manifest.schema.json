@@ -12,6 +12,7 @@
     "publication_payload_sha256",
     "install_mode",
     "package",
+    "runtime_closure",
     "activation",
     "stale_detection",
     "proof_hooks",
@@ -33,6 +34,19 @@
         "relative_path": { "$ref": "#/$defs/relativePath" },
         "sha256": { "$ref": "#/$defs/sha256" },
         "size_bytes": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "runtime_closure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["console_entrypoint", "requires_dist"],
+      "properties": {
+        "console_entrypoint": { "type": "string", "minLength": 1 },
+        "requires_dist": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
       }
     },
     "activation": {

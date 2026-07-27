@@ -33,6 +33,7 @@ from maskfactory.bridge.clean_release_packaging import (
     install_clean_release,
     load_clean_release_manifest,
     rollback_clean_release,
+    validate_manifest_wheel_runtime_closure,
 )
 from maskfactory.bridge.release_publication import validate_release_publication
 from maskfactory.validation import canonical_document_sha256, load_canonical_json
@@ -237,6 +238,7 @@ def _evaluate_prerequisites(
     publication_issues: Sequence[Any] | None,
     capability_decision: Mapping[str, Any] | None,
     clean_manifest: Mapping[str, Any] | None,
+    clean_manifest_runtime_issues: Sequence[object],
     recovery_evidence: Mapping[str, Any] | None,
     installation_argv: Sequence[str] | None,
 ) -> tuple[dict[str, dict[str, Any]], set[str]]:
@@ -306,6 +308,7 @@ def _evaluate_prerequisites(
             clean_manifest.get("record_type") == "maskfactory_clean_release_manifest"
             and clean_manifest.get("source_authority", {}).get("allow_dirty_source") is False
             and clean_manifest.get("install_mode") == "wheel"
+            and not clean_manifest_runtime_issues
         )
         if not accepted:
             reasons.add("prerequisite_mismatch")
@@ -436,6 +439,11 @@ def run_integration_release_acceptance(
     except (OSError, ValueError):
         clean_manifest = None
         reasons.add("prerequisite_missing")
+    clean_manifest_runtime_issues: tuple[tuple[str, str, str], ...] = ()
+    if clean_manifest is not None:
+        clean_manifest_runtime_issues = validate_manifest_wheel_runtime_closure(
+            clean_manifest, release_root=release_root
+        )
 
     installation_argv = None
     if publication_evidence is not None:
@@ -446,6 +454,7 @@ def run_integration_release_acceptance(
         publication_issues=publication_issues,
         capability_decision=capability_decision,
         clean_manifest=clean_manifest,
+        clean_manifest_runtime_issues=clean_manifest_runtime_issues,
         recovery_evidence=recovery_evidence,
         installation_argv=installation_argv if isinstance(installation_argv, list) else None,
     )

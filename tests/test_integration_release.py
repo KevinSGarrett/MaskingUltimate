@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import base64
 import hashlib
 import json
+import zipfile
 from pathlib import Path
 
 import pytest
@@ -30,6 +32,33 @@ def _write(path: Path, text: str) -> None:
     path.write_text(text, encoding="utf-8", newline="\n")
 
 
+def _wheel_with_closure(tmp_path: Path) -> Path:
+    wheel_path = tmp_path / "maskfactory-1.0.0-py3-none-any.whl"
+    members = {
+        "maskfactory/__init__.py": b"__version__ = '1.0.0'\n",
+        "maskfactory/cli.py": b"def main():\n    return None\n",
+        "maskfactory-1.0.0.dist-info/METADATA": (
+            "Metadata-Version: 2.4\nName: maskfactory\nVersion: 1.0.0\n"
+            "Requires-Dist: click\nRequires-Dist: pydantic\n"
+        ).encode("utf-8"),
+        "maskfactory-1.0.0.dist-info/entry_points.txt": (
+            "[console_scripts]\nmaskfactory = maskfactory.cli:main\n"
+        ).encode("utf-8"),
+    }
+    record_rows = []
+    for name, content in members.items():
+        digest = base64.urlsafe_b64encode(hashlib.sha256(content).digest()).rstrip(b"=").decode("ascii")
+        record_rows.append(f"{name},sha256={digest},{len(content)}")
+    record_rows.append("maskfactory-1.0.0.dist-info/RECORD,,")
+    members["maskfactory-1.0.0.dist-info/RECORD"] = ("\n".join(record_rows) + "\n").encode(
+        "utf-8"
+    )
+    with zipfile.ZipFile(wheel_path, "w") as archive:
+        for name, content in members.items():
+            archive.writestr(name, content)
+    return wheel_path
+
+
 def _manifest(release_root: Path, release_id: str, publication_payload: str, wheel: Path) -> Path:
     manifest = {
         "schema_version": "1.0.0",
@@ -42,6 +71,10 @@ def _manifest(release_root: Path, release_id: str, publication_payload: str, whe
             "relative_path": wheel.name,
             "sha256": _sha(wheel),
             "size_bytes": wheel.stat().st_size,
+        },
+        "runtime_closure": {
+            "console_entrypoint": "maskfactory.cli:main",
+            "requires_dist": ["click", "pydantic"],
         },
         "activation": {
             "strategy": "atomic_pointer_switch",
@@ -119,8 +152,7 @@ def _fixture(tmp_path: Path, *, dirty: bool = False, editable_argv: bool = False
     install_target = tmp_path / "installed_pack"
     release_root.mkdir()
     runtime_root.mkdir()
-    wheel = release_root / "maskfactory-1.0.0-py3-none-any.whl"
-    wheel.write_bytes(b"immutable-wheel-bytes")
+    wheel = _wheel_with_closure(release_root)
     local = _source_tree(release_root)
     inventories = _prefix_inventories(
         local,
@@ -277,6 +309,36 @@ def test_rejects_editable_install_argv(tmp_path: Path) -> None:
     )
     assert evidence["status"] == "rejected"
     assert "editable_install_forbidden" in evidence["rejection_reasons"]
+
+
+def test_rejects_wheel_runtime_closure_drift_before_activation(tmp_path: Path) -> None:
+    fx = _fixture(tmp_path)
+    manifest = json.loads(fx["manifest_path"].read_text(encoding="utf-8"))
+    manifest["runtime_closure"]["requires_dist"] = ["click"]
+    manifest["manifest_sha256"] = canonical_document_sha256(
+        manifest, excluded_top_level_fields=("manifest_sha256",)
+    )
+    fx["manifest_path"].write_text(json.dumps(manifest), encoding="utf-8")
+    evidence = run_integration_release_acceptance(
+        release_id=fx["release_id"],
+        release_root=fx["release_root"],
+        runtime_root=fx["runtime_root"],
+        install_target=fx["install_target"],
+        source_inventories=fx["inventories"],
+        manifest_path=fx["manifest_path"],
+        publication_evidence=fx["publication"],
+        publication_issues=(),
+        capability_decision=fx["capability"],
+        recovery_evidence=fx["recovery"],
+        repository_clean=True,
+        git_commit="a" * 40,
+        git_tree="b" * 40,
+        evidence_id="mfirel_20260719_012345abcdef",
+        decided_at="2026-07-19T12:00:00Z",
+    )
+    assert evidence["status"] == "rejected"
+    assert "prerequisite_mismatch" in evidence["rejection_reasons"]
+    assert not (fx["runtime_root"] / "active_release.json").exists()
 
 
 def test_rejects_missing_prerequisites(tmp_path: Path) -> None:

@@ -57,8 +57,7 @@ def _setup(tmp_path: Path) -> tuple[Path, Path, dict, dict[str, dict[str, object
     runtime_root = tmp_path / "runtime"
     release_root.mkdir()
     runtime_root.mkdir()
-    wheel = release_root / "maskfactory-1.0.0-py3-none-any.whl"
-    wheel.write_bytes(b"immutable-wheel")
+    wheel = _wheel_with_closure(release_root)
     release = {
         "release_id": "mfr_20260719_012345abcdef",
         "release_payload_sha256": "a" * 64,
@@ -88,6 +87,10 @@ def _setup(tmp_path: Path) -> tuple[Path, Path, dict, dict[str, dict[str, object
             "relative_path": wheel.name,
             "sha256": _sha(wheel),
             "size_bytes": wheel.stat().st_size,
+        },
+        "runtime_closure": {
+            "console_entrypoint": "maskfactory.cli:main",
+            "requires_dist": ["click", "pydantic"],
         },
         "activation": {
             "strategy": "atomic_pointer_switch",

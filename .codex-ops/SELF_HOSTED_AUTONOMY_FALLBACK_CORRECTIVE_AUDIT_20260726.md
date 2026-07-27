@@ -100,10 +100,14 @@ The shared manager contract is CUI commit `4a1e3420`: new reserves require
 submit, inspection, and reconciliation receipts carry and validate the
 canonical `comfyui.openrouter_parent_binding.v1` digest. Commit `0e805e63`
 adds policy-admitted capability tiers while retaining governed model admission.
-The current shared manager SHA-256 is
-`a2ecf84d6d4fcfdcff55ce9c8a8d372a7ffaf09540a2b6fd1bceb63c3a81ff15`; its
-focused manager/Serverless-validator suite has 55 passing tests plus
-Ruff/compileall.
+Commit `dcb7719f` (with control record `f6b9ca46`) seals a reviewed global
+manager cap of four active reservations by default, configurable only through
+reviewed policy in the range 1–16. The existing one-active and terminal
+suppression rules still apply per explicit immutable parent+contract, and a
+fifth distinct parent fails closed. The current shared manager SHA-256 is
+`791de44113a74257b3baeda3ee3a56f7306b932d5e4b49beee2d7855837145ac`; its
+focused manager/Serverless-validator suite has 61 passing tests plus
+Ruff/compileall. Read-only manager ledger status is `0/4`.
 
 `MASKFACTORY_ADAPTER_SEALED`: MaskFactory's `GovernedOpenRouterAdvisory` v2
 constructs the exact manager reserve argv and validates manager

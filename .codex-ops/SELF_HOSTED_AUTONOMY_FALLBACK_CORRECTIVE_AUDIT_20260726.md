@@ -133,6 +133,23 @@ so the 1,707 count is a historical chain snapshot, not new reconciliation
 credit: the next source inventory must bind the post-repair bytes before the
 remaining divergent conflict can be considered resolved.
 
+The corrected derivation/inpainting source baseline is committed at
+`68556bd27`. Its three-path authority-aligned resolution receipt is
+`qa/live_verification/mf_p6_20_01_source_resolution_derivation_inpaint_20260727.json`
+(raw `603276deef363908f79c551253784251250f96e0e782e422f129485468baa897`, self
+`8b8f9aa1f7ac3a7a603fc2d10573d8a78f3e12742a254dad7d704b9b0f3a6833`). The
+fresh inventory is
+`qa/live_verification/mf_p6_20_01_canonical_source_inventory_derivation_inpaint_20260727.json`
+(raw `3437a4d9e814f9bb3bd7fdce6d7285a6053c171481a99179de3e911124860a9f`, self
+`0ff6a53fdbffdd1e3dbb8083a2b2f9014edeef2e4323556218deb53a4e95b239`). Within
+its source-only scope (`src/`, `tests/`, `tools/`, `configs/` and build roots),
+it records 1,678 union paths, 1,596 full-product paths, 144 autonomy paths,
+119 present-exact paths, three authority-aligned resolutions, and 1,548
+unresolved conflicts. It explicitly forbids wholesale merge/reset/replacement,
+preserves untracked/modified work, and claims zero tracker, runtime, provider,
+route, mask, release, or completion credit. This newer scoped baseline is not
+a runtime, visual-authority, or fallback-capacity result.
+
 - `MF-P6-19.01`: 25 completed / 0 failed engineering missions, one service
   generation, 50 real replay requests and unique responses, 25 accepted
   canonical proposals and releases, no request-binding mismatch. The immutable

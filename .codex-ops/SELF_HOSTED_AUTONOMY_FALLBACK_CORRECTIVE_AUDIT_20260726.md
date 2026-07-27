@@ -456,9 +456,15 @@ provider action or new parent is authorized; after the CPU integration is
 sealed, a separate non-launching immutable admission/contract decision must
 bind identity, source/manifest/input hashes, no-duplicate proof, and fresh
 direct-Pod preflight before any later parent execution. The terminal identities
-remain unretried. Separately, CUI wording drift—`AGENTS.md` says advisory/Qwen-
-only while governed policy carries multimodal/media tiers—needs reconciliation
-without weakening manager governance; it does not authorize a call.
+remain unretried. The CUI wording drift is resolved in
+`9b91c59d1dc5ca340612b5a6d3f65c0173fb1759`
+(`docs(wave88): reconcile governed route authority`): `AGENTS.md` now describes
+OpenRouter as controller-commanded, manager-governed, parent-bound immutable,
+idempotent, cost-bounded, and reconciled capability work selected by
+policy-admitted tier/work-unit capability/modality, while Codex retains final
+authority. Direct per-session Pod admission wording is also aligned. This is
+control-plane documentation only: it neither relabels W88-043/044 nor
+authorizes a route/runtime call.
 
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test

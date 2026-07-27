@@ -134,7 +134,6 @@ def validate_resolution_evidence(value: Mapping[str, Any]) -> None:
         supersedes_keys = {"path", "raw_sha256", "self_sha256"}
         if (
             not isinstance(supersedes, list)
-            or not supersedes
             or any(
                 not isinstance(entry, Mapping)
                 or set(entry) != supersedes_keys

@@ -356,6 +356,80 @@ def test_authority_supersession_requires_exact_authority_and_test_lineage(
         )
 
 
+def test_authority_aligned_resolution_can_bootstrap_without_prior_same_commit(
+    tmp_path: Path,
+) -> None:
+    repo = _repo(tmp_path)
+    full_commit = _git(repo, "rev-parse", "full-product")
+    autonomy_commit = _git(repo, "rev-parse", "HEAD")
+    path = "src/shared.py"
+    test_path = "tests/test_full.py"
+    authority_path = repo / "Plan/28.md"
+    _write(authority_path, "canonical authority\n")
+    authority_sha256 = hashlib.sha256(authority_path.read_bytes()).hexdigest()
+    resolution = seal_resolution_evidence(
+        {
+            "schema_version": "maskfactory.canonical_source_resolution.v2",
+            "full_product_commit_sha": full_commit,
+            "autonomy_commit_sha": autonomy_commit,
+            "authority_file_sha256": {"Plan/28.md": authority_sha256},
+            "supersedes": [],
+            "resolutions": [
+                {
+                    "path": path,
+                    "resolution_kind": "authority_aligned_supersession",
+                    "full_product_git_object_id": _git(
+                        repo, "rev-parse", f"full-product:{path}"
+                    ),
+                    "autonomy_git_object_id": _git(
+                        repo, "rev-parse", f"HEAD:{path}"
+                    ),
+                    "worktree_sha256": hashlib.sha256(
+                        (repo / path).read_bytes()
+                    ).hexdigest(),
+                    "verification": {
+                        "commands": ["python -m pytest tests/test_full.py -q"],
+                        "passed_test_count": 1,
+                        "test_lineage": {
+                            test_path: {
+                                "full_product_git_object_id": _git(
+                                    repo,
+                                    "rev-parse",
+                                    f"full-product:{test_path}",
+                                ),
+                                "autonomy_git_object_id": _git(
+                                    repo, "rev-parse", f"HEAD:{test_path}"
+                                ),
+                                "worktree_sha256": hashlib.sha256(
+                                    (repo / test_path).read_bytes()
+                                ).hexdigest(),
+                            }
+                        },
+                        "result": "pass",
+                    },
+                    "limitations": ["This bootstrap resolves only src/shared.py."],
+                }
+            ],
+            "self_sha256": "0" * 64,
+        }
+    )
+
+    inventory = build_inventory(
+        repo_root=repo,
+        full_product_ref=full_commit,
+        autonomy_ref=autonomy_commit,
+        authority_hashes={"Plan/28.md": authority_sha256},
+        resolution_evidence=resolution,
+        resolution_evidence_path="qa/resolution-bootstrap.json",
+        resolution_evidence_raw_sha256="f" * 64,
+    )
+
+    row = next(row for row in inventory["paths"] if row["path"] == path)
+    assert row["integration_status"] == "resolved_authority_aligned_supersession"
+    validate_resolution_evidence(resolution)
+    validate_inventory(inventory)
+
+
 def test_inventory_rejects_non_root_and_bad_authority_hash(tmp_path: Path) -> None:
     repo = _repo(tmp_path)
     with pytest.raises(CanonicalSourceInventoryError, match="worktree root"):

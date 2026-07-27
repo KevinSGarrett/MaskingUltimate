@@ -3,6 +3,8 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import subprocess
+import sys
 
 import pytest
 
@@ -200,3 +202,44 @@ def test_authority_paths_are_relative_and_cannot_escape() -> None:
     locator["authority_file_sha256"] = {"../authority.md": _sha("authority")}
     with pytest.raises(EvidenceLocatorError, match="escapes"):
         validate_evidence_locator(seal_evidence_locator(locator))
+
+
+def test_read_only_verifier_cli_checks_bound_repository_bytes(tmp_path) -> None:
+    _write_authority_files(tmp_path)
+    artifact_path = tmp_path / "qa/live_verification/campaign_packet.json"
+    artifact_path.parent.mkdir(parents=True)
+    artifact_path.write_bytes(b"output")
+    locator_path = tmp_path / "qa/live_verification/locator.json"
+    write_evidence_locator(locator_path, _locator())
+
+    command = [
+        sys.executable,
+        "tools/verify_completion_evidence_locator.py",
+        "--repository-root",
+        str(tmp_path),
+        "--locator",
+        "qa/live_verification/locator.json",
+    ]
+    passed = subprocess.run(command, check=False, capture_output=True, text=True)
+    assert passed.returncode == 0
+    assert json.loads(passed.stdout)["status"] == "PASS"
+
+    authority_path = tmp_path / next(iter(AUTHORITY_CONTENT))
+    authority_path.write_text("drift", encoding="utf-8")
+    failed = subprocess.run(command, check=False, capture_output=True, text=True)
+    assert failed.returncode == 1
+    assert json.loads(failed.stdout)["status"] == "FAIL_CLOSED"
+
+
+def test_read_only_verifier_cli_rejects_locator_escape(tmp_path) -> None:
+    command = [
+        sys.executable,
+        "tools/verify_completion_evidence_locator.py",
+        "--repository-root",
+        str(tmp_path),
+        "--locator",
+        "../locator.json",
+    ]
+    failed = subprocess.run(command, check=False, capture_output=True, text=True)
+    assert failed.returncode == 1
+    assert json.loads(failed.stdout)["status"] == "FAIL_CLOSED"

@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0.0",
+  "policy_id": "maskfactory-bridge-transform-execution-v1",
+  "canonicalization": "maskfactory-canonical-json-v1",
+  "orientation_policy": "source pixels are decoder-normalized before transform execution",
+  "permitted_interpolation": ["nearest", "bilinear", "bicubic", "lanczos"],
+  "mask_raster_interpolation": "nearest",
+  "maximum_roundtrip_error_px": 1.0,
+  "minimum_matrix_determinant": 0.000000000001,
+  "policy_sha256": "147d8fd233c4e923094d5a44317c74b276bb57c7142410db443807d4211d264f"
+}

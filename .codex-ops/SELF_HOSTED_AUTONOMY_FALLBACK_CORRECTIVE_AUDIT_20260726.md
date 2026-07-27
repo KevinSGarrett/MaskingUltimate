@@ -466,6 +466,14 @@ authority. Direct per-session Pod admission wording is also aligned. This is
 control-plane documentation only: it neither relabels W88-043/044 nor
 authorizes a route/runtime call.
 
+The primary's in-progress CPU-only OpenRouter lifecycle increment is
+**unsealed** pending secret hygiene: review found opaque credential-looking
+material in a generic manager-runner argv check. Its value is neither retained
+nor recorded here. It must be removed, the structural no-direct-provider guard
+must be rechecked for secret/token material, and focused tests must pass before
+any source/test result can be adopted. No provider, parent, or fallback action
+occurred while this was found.
+
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test
 has yet exercised a real same-parent provider run across the boundary.

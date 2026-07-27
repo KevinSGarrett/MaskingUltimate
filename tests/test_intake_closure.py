@@ -9,9 +9,17 @@ from pathlib import Path
 
 from PIL import Image, PngImagePlugin
 
-from maskfactory.intake import ingest_one
+from maskfactory.intake import SafetyVerdict, ingest_one
 
 NOW = datetime(2026, 7, 27, tzinfo=UTC)
+
+
+class _AllowedFixtureScreener:
+    """Hermetic source-policy fixture; production always supplies the local screener."""
+
+    def screen(self, image: Path) -> SafetyVerdict:
+        del image
+        return SafetyVerdict("clear_adult", 1, "fixture-source-safety")
 
 
 def _write_image(path: Path, color: tuple[int, int, int], *, private: bool = False) -> None:
@@ -34,9 +42,11 @@ def test_intake_records_governed_outcomes_without_promoting_quarantine(tmp_path:
     _write_image(root_drop, (44, 55, 66))
     corrupt.parent.mkdir(parents=True, exist_ok=True)
     corrupt.write_bytes(b"not a PNG")
+    screener = _AllowedFixtureScreener()
 
     accepted = ingest_one(
         accepted_source,
+        screener=screener,
         incoming_root=incoming,
         images_root=images,
         database=database,
@@ -45,6 +55,7 @@ def test_intake_records_governed_outcomes_without_promoting_quarantine(tmp_path:
     )
     duplicate = ingest_one(
         accepted_source,
+        screener=screener,
         incoming_root=incoming,
         images_root=images,
         database=database,
@@ -53,6 +64,7 @@ def test_intake_records_governed_outcomes_without_promoting_quarantine(tmp_path:
     )
     quarantined = ingest_one(
         root_drop,
+        screener=screener,
         incoming_root=incoming,
         images_root=images,
         database=database,
@@ -61,6 +73,7 @@ def test_intake_records_governed_outcomes_without_promoting_quarantine(tmp_path:
     )
     rejected = ingest_one(
         corrupt,
+        screener=screener,
         incoming_root=incoming,
         images_root=images,
         database=database,

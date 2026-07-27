@@ -380,10 +380,13 @@ one same-parent reconciliation/request.
 Fresh direct-Pod preflight for that recovery passed: the sole Ada had zero
 compute work, ports 8188 and 18008 were closed, the published recovery source
 hashes matched, and 86 TB was free. Exactly one self-hashed manifest-bound
-same-parent local recovery attempt is now `RUNTIME_IN_PROGRESS`. It remains
-local proof only: no OpenRouter or Serverless child, external provider call,
-capacity credit, or terminal claim exists until durable execution, validation,
-reconciliation, and resource-release evidence are complete.
+same-parent local recovery attempt reached the adapter, then its loopback
+endpoint refused it before any response. The attempted invocation is being
+terminally sealed after exactly one local request with no response; the Ada was
+released cleanly. No retry, new parent, OpenRouter or Serverless child,
+external provider call, capacity credit, or completion claim is authorized.
+Local end-to-end proof remains unsuccessful; subsequent work is CPU-safe
+launcher/adapter root-cause analysis, not another runtime attempt.
 
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test

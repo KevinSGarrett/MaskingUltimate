@@ -507,19 +507,28 @@ paused.
 ## Required execution order
 
 1. Preserve accepted `19.01`, `19.02`, and V12; do not rerun or duplicate.
-2. Owner drains and replaces the obsolete supervisor exactly once, if and when
+2. Treat the original local parent and its one same-parent recovery as terminal
+   failed evidence. Do not retry either, create a replacement parent, or change
+   its route. First finish the CPU-safe controller repair that binds model
+   launch, readiness, ownership, and release to its self-hashed manifest; test
+   it against the sealed failed lineage. A new execution decision requires
+   separate authoritative review and fresh admission, not inference from this
+   repair or a manually running loopback endpoint.
+3. Owner drains and replaces the obsolete supervisor exactly once, if and when
    it is safe; all retry-on-admission logic remains disabled.
-3. After authorized console reauthentication, retain the canonical no-write
+4. After authorized console reauthentication, retain the canonical no-write
    host preflight receipt. Run the repaired one-manifest telemetry build once;
    retain its terminal bundle or typed failure.
-4. When a real eligible parent is locally unavailable, execute exactly one
-   source-and-parent-bound fallback sequence through the broker and reconcile
-   it. OpenRouter, if needed, is at most one governed advisory batch for that
-   same parent.
-5. Build qualified real-image visual truth and independent strict critics for
+5. Seal the canonical Serverless successor guard before any fallback child:
+   canonical executable/config/root mapping, actual-host preflight, immutable
+   source-and-parent binding, non-authorizing `decide`, and exact
+   `decide -> reserve -> submit -> reconcile`. A local failure alone never
+   authorizes this sequence. OpenRouter, if needed, is one governed sanitized
+   advisory batch for the same immutable parent and must terminally reconcile.
+6. Build qualified real-image visual truth and independent strict critics for
    the 66-class/risk matrix, then run the governed 100-mask campaign
    (`19.03`) with exact outcome, visual, QA, promotion, and cost accounting.
-6. Run the three consecutive mixed campaigns and immutable final operating
+7. Run the three consecutive mixed campaigns and immutable final operating
    packet required for `19.04`. Only then evaluate overall completion.
 
 ## Control-plane verification

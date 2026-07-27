@@ -257,6 +257,11 @@ def test_repository_evidence_verification_reconstructs_declared_git_source(tmp_p
     with pytest.raises(EvidenceLocatorError, match="Git source reconstruction failed"):
         verify_repository_evidence(_locator(entries=[missing_path]), tmp_path)
 
+    directory_path = copy.deepcopy(entry)
+    directory_path["source"]["path"] = "src/maskfactory/steward"
+    with pytest.raises(EvidenceLocatorError, match="source path is not a file blob"):
+        verify_repository_evidence(_locator(entries=[directory_path]), tmp_path)
+
 
 def test_authority_paths_are_relative_and_cannot_escape() -> None:
     locator = _locator()

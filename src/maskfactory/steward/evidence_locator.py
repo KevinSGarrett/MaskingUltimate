@@ -194,7 +194,12 @@ def _verify_source_bindings(locator: Mapping[str, Any], repository_root: Path) -
             raise EvidenceLocatorError(
                 f"source tree SHA-1 mismatch for {entry['tracker_item']}"
             )
-        _git_output(repository_root, "cat-file", "-e", f"{commit}:{source_path}")
+        source_object = f"{commit}:{source_path}"
+        _git_output(repository_root, "cat-file", "-e", source_object)
+        if _git_output(repository_root, "cat-file", "-t", source_object) != "blob":
+            raise EvidenceLocatorError(
+                f"source path is not a file blob for {entry['tracker_item']}"
+            )
 
 
 def _validate_entry(entry: object) -> tuple[str, str | None]:

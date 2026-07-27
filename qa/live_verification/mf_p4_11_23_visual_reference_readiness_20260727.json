@@ -1,0 +1,197 @@
+{
+  "annotation_registry": {
+    "annotation_file_hash_mismatches": 0,
+    "annotation_files_declared": 40,
+    "annotation_files_verified": 40,
+    "bbox_annotations_declared": 210226,
+    "datasets": 16,
+    "segmentation_annotations_declared": 128048
+  },
+  "authority_boundary": {
+    "classification": "REFERENCE_COVERAGE_ONLY",
+    "limitations": [
+      "Body-part focus tags are retrieval metadata, not segmentation labels.",
+      "Benchmark selection proves reference coverage, not mask correctness.",
+      "No current source-bound qualified primary critic certificate is bound.",
+      "No current independent-family juror certificate is bound.",
+      "Historical visual receipts are not restored or counted as current authority."
+    ],
+    "promotion_allowed": false,
+    "qualified_high_end_primary_present": false,
+    "qualified_independent_family_juror_present": false,
+    "qualified_mask_truth_present": false,
+    "reference_metadata_can_approve_masks": false
+  },
+  "observed_at_utc": "2026-07-27T00:29:13Z",
+  "readiness": {
+    "all_declared_body_part_focus_tags_represented": true,
+    "ready_for_source_bound_candidate_selection": true,
+    "ready_for_visual_qualification": false,
+    "reference_sources_hash_bound": true
+  },
+  "reference_library": {
+    "benchmark_body_part_tag_counts": {
+      "part_ankle": 149,
+      "part_back": 524,
+      "part_chest_breasts": 171,
+      "part_ear": 352,
+      "part_elbow": 25,
+      "part_eye_eyebrow": 123,
+      "part_foot_toes": 70,
+      "part_forearm_wrist": 220,
+      "part_groin_intimate": 51,
+      "part_hair": 283,
+      "part_hand_fingers": 91,
+      "part_head_face": 330,
+      "part_hips_pelvis_buttocks": 179,
+      "part_knee": 86,
+      "part_lower_leg_calf": 30,
+      "part_mouth_lips_teeth": 146,
+      "part_neck_throat": 105,
+      "part_nose": 494,
+      "part_shoulder": 280,
+      "part_thigh": 698,
+      "part_torso_abdomen": 45,
+      "part_upper_arm": 726
+    },
+    "benchmark_missing_body_part_focus_tags": [],
+    "benchmark_strata": {
+      "background": {
+        "cluttered": 74,
+        "indoor": 260,
+        "outdoor": 97,
+        "plain_studio": 2069
+      },
+      "body_type": {
+        "average": 87,
+        "mixed": 348,
+        "muscular": 1096,
+        "plus_size": 384,
+        "slim": 291,
+        "unclear": 294
+      },
+      "content_state": {
+        "clothed": 860,
+        "mixed": 741,
+        "nude": 525,
+        "underwear_swimwear": 374
+      },
+      "framing": {
+        "body_part_closeup": 381,
+        "cropped_body": 179,
+        "full_body": 1219,
+        "half_body": 515,
+        "portrait": 127,
+        "three_quarter": 79
+      },
+      "lighting": {
+        "backlit": 122,
+        "colored": 1246,
+        "even": 331,
+        "high_key": 586,
+        "low_key": 215
+      },
+      "person_count": {
+        "crowd": 1,
+        "none": 150,
+        "one": 1679,
+        "small_group": 213,
+        "two": 457
+      },
+      "pose": {
+        "bent_twisted": 769,
+        "interacting": 430,
+        "jumping_action": 122,
+        "kneeling": 118,
+        "lying": 315,
+        "sitting": 143,
+        "standing": 574,
+        "walking_running": 29
+      },
+      "presentation": {
+        "female": 1051,
+        "male": 1130,
+        "mixed": 38,
+        "unclear": 281
+      },
+      "view": {
+        "back": 442,
+        "extreme_perspective": 370,
+        "front": 259,
+        "low_angle": 461,
+        "overhead": 92,
+        "profile": 253,
+        "three_quarter": 623
+      }
+    },
+    "classifier": "masking_reference_v2_body_part_coverage",
+    "content_state_is_organizational_only": true,
+    "counts": {
+      "benchmark_reference": 2500,
+      "images": 83422,
+      "retrieval_reference": 18000,
+      "visual_index": 69398
+    },
+    "declared_body_part_focus_tags": [
+      "part_ankle",
+      "part_back",
+      "part_chest_breasts",
+      "part_ear",
+      "part_elbow",
+      "part_eye_eyebrow",
+      "part_foot_toes",
+      "part_forearm_wrist",
+      "part_groin_intimate",
+      "part_hair",
+      "part_hand_fingers",
+      "part_head_face",
+      "part_hips_pelvis_buttocks",
+      "part_knee",
+      "part_lower_leg_calf",
+      "part_mouth_lips_teeth",
+      "part_neck_throat",
+      "part_nose",
+      "part_shoulder",
+      "part_thigh",
+      "part_torso_abdomen",
+      "part_upper_arm"
+    ],
+    "selection_sets_are_disjoint": true
+  },
+  "schema_version": "maskfactory.visual_reference_readiness.v1",
+  "self_sha256": "cac89b56b60d9c48a736456503aa838d5c0dc92ed0357843b22a152c702798c8",
+  "source_inventory": {
+    "content_hint_is_organizational_only": true,
+    "invalid_images": 11,
+    "source_files_modified": 0,
+    "total_images": 83422,
+    "valid_images": 83411
+  },
+  "sources": {
+    "dataset_registry": {
+      "bytes": 46138,
+      "path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Nude\\_MASKFACTORY_INTAKE\\dataset_registry.generated.json",
+      "sha256": "aa26f99ef765581eb7526838203f8a2ef36f0c3b71c21da37df213a957d6fbd7"
+    },
+    "inventory_database": {
+      "bytes": 60493824,
+      "path": "F:\\Reference_Images\\Ultimate_Masking_Reference_Images\\manifests\\reference_inventory.sqlite",
+      "sha256": "d205afc92fb35b6a83f8ee306f516977ef7d92b781700a8ff7414fbe1d5abef0"
+    },
+    "inventory_summary": {
+      "bytes": 8523,
+      "path": "F:\\Reference_Images\\Ultimate_Masking_Reference_Images\\manifests\\inventory_summary.json",
+      "sha256": "c663483c3619f91e86a37a1793e583937427b777a937bbbe71d744d794e1a259"
+    },
+    "library_database": {
+      "bytes": 446554112,
+      "path": "F:\\Reference_Images\\Ultimate_Masking_Reference_Images\\manifests\\reference_library.sqlite",
+      "sha256": "a6b3250251b1b0371eb85cb050fb24c20316ce07970d1786efec6889982e216b"
+    },
+    "ontology_crosswalk": {
+      "bytes": 4255,
+      "path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Nude\\_MASKFACTORY_INTAKE\\ontology_crosswalk.json",
+      "sha256": "567aea9a37312783f7e0f5535eec220df2942b5cb6d52b05746794af30a1ddaa"
+    }
+  }
+}

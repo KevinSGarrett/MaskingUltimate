@@ -441,6 +441,25 @@ launch/readiness/release receipt exists. The Pod remains
 fast-forward/read-only-discovery only; neither the repair nor its tests permit
 a retry, new parent, fallback child, or capacity credit.
 
+The authoritative and trace CUI refs now both resolve to
+`58845c076f73a6d769792ae41cb4a8ffe3cf553c`. A combined CPU-safe
+controller/executor/adapter/router/guard/fault, OpenRouter-manager, and
+Serverless-binding suite passes `1,190` tests in 48.71 seconds. Crucially,
+this does **not** prove W88 controller integration: exact code review finds
+`EngineeringExecutor.reserve_openrouter_child` and the adapter reserve-only;
+`run_governed_manager_reserve` explicitly rejects submit/reconcile, while the
+Serverless decide validator always raises non-authorizing after verification.
+W88-043/044 therefore remain `IMPLEMENTED_NOT_INTEGRATED`. The required CPU
+implementation is parent-ledger `reserve -> submit -> reconcile`, including
+terminal child adoption/interruption, duplicate, and concurrency tests. No
+provider action or new parent is authorized; after the CPU integration is
+sealed, a separate non-launching immutable admission/contract decision must
+bind identity, source/manifest/input hashes, no-duplicate proof, and fresh
+direct-Pod preflight before any later parent execution. The terminal identities
+remain unretried. Separately, CUI wording drift—`AGENTS.md` says advisory/Qwen-
+only while governed policy carries multimodal/media tiers—needs reconciliation
+without weakening manager governance; it does not authorize a call.
+
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test
 has yet exercised a real same-parent provider run across the boundary.

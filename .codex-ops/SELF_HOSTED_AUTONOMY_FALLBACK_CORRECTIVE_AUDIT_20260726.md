@@ -343,6 +343,14 @@ parent remains unretried. The sole next action is to prepare one existing-parent
 and source/decision-bound recovery manifest—no new version, fallback/provider
 route, capacity claim, or runtime success is implied.
 
+The complete dispatcher/executor recovery increment is trace-only at
+`0a3a6a48570e89fb9ce28755827ed03a9bcccff3`, with 67 focused
+controller/adapter/executor tests and Ruff passing. The current authoritative
+target is instead `d659cb65950584c6d4ee24bf02eb87e811e63770` and does not yet
+contain that increment. A normal non-force authoritative-lineage reconciliation
+is mandatory before any Pod recovery launch; this trace result grants no new
+provider, route, capacity, or runtime action.
+
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test
 has yet exercised a real same-parent provider run across the boundary.

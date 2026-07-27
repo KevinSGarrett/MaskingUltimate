@@ -99,6 +99,20 @@ controlled shutdown; verify parent exit and no child submitters; then restart
 once, using canonical default Serverless source/config/root and one worker per
 route. Until that happens, it is a containment risk, not evidence of work.
 
+The owner has now independently completed the read-only pre-shutdown drain
+audit. PID `52556` remains live and orphaned (recorded parent `4960` absent),
+with only `conhost.exe` as its direct child; it received no signal. Supervisor
+health is `healthy` / `cpu_safe` with `gpu_held=false`, queue count is zero,
+campaign and throughput are idle, and both `openrouter_advisory` and
+`serverless_overflow` route queues are zero. A read-only query found no active
+canonical-route attempts or missions. The authoritative OpenRouter ledger has
+zero `RESERVED`, `SUBMITTING`, or `SUBMITTED` entries (194987 bytes, SHA-256
+`97bf60a19095b0739b4be74dceaa23bffc641b795fd054d93c52cefdb892a84b`). The
+manager status command was deliberately not used because it acquires a write
+lock. This is a precondition for, not completion of, owner-led shutdown: the
+owner must still perform controlled exit and verify that PID `52556` and its
+child are gone before any canonical restart.
+
 Only the MaskFactory and ComfyUI source-task heartbeats remain active. All
 standalone fallback supervisor/delivery and shared OpenRouter cron loops remain
 paused.

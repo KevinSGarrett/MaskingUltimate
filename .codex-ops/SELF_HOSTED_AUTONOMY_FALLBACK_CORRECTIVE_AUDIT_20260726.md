@@ -218,10 +218,25 @@ the shared manager SHA-256 is
 It passed 135 focused tests plus Ruff, compileall, JSON, and diff checks;
 `repair_planning` is admitted while `root_cause_analysis` is rejected.
 
-`CROSS_CONTROLLER_INTEGRATION_OPEN`: those CPU admission controls are now
-sealed, but they are not a real parent execution, actual-host proof, or
-cross-project authoritative adoption. No test has yet exercised a real
-same-parent provider run across that boundary.
+`CROSS_CONTROLLER_CONTROL_PLANE_SEALED`: the full reconciled controller line
+is now published. The authoritative remote `codex/workflow_plan_update_improvements`
+and its trace branch both point to
+`509cc633b38ff21e1350bff233a1b45d580d596b` through a normal fast-forward;
+the publication receipt commit is `a5ef6f2f`. Its separate immutable receipt
+`Plan/Tracker/Evidence/RunPod/WAVE88_AUTHORITATIVE_APPLICATION_PUBLISHED_20260727.json`
+has raw `1d376c76870a62db42875e534e69c30ef9ca6fa2d64cc77cedc0167823de39df`,
+logical self `ab5aa32306436e3508bd2657ac12c6c58adcd3d53203fff702330b6f3a7e1e5f`,
+and links the immutable pre-publication candidate logical self
+`088f59c2534f32636fac2b7a4a34a43192ee59bba2c3b823d5110261735af7e6`.
+The reconciled evidence preserves policy
+`2750e1d94b457c1da845fec8bb39e4318f11cfd255e95a8e3769da20dfe74a0c`, manager
+`a62ac97c555d63b268f402369d96308ab747a17c478b6833ec3a8e7c607c94b7`, and
+Serverless owner manager `5f373471...`; controller/selector 150 and RealVisXL
+175 tests pass with Ruff, compileall, JSON, and diff clean and `unmerged=0`.
+
+`CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
+sealed, but it is not a real parent execution or actual-host proof. No test
+has yet exercised a real same-parent provider run across the boundary.
 
 `MISSION_SIZE_CPU_SEALED`: the primary controller requires a hash-bound
 30-90-minute phase plan and milestone. Any short exception is terminal-only
@@ -258,10 +273,9 @@ replacement. This record is defect evidence only, not a controller repair.
 This does not permit a successor from `decide` alone, relax the legacy
 owner-recovery 1/1 worker caps, execute a provider job, or grant
 `FALLBACK_CAPACITY_UNPROVEN` any credit. `NO_CAPACITY_CREDIT` remains binding
-until the CPU-sealed CUI admission increment is authoritatively integrated,
-the Serverless successor guard is sealed, and one real parent retains actual
-host preflight, completes its source-hash-bound child work, applies/tests/QAs
-its result, and reconciles both children to terminal state.
+until the Serverless successor guard is sealed and one real parent retains
+actual-host preflight, completes its source-hash-bound child work,
+applies/tests/QAs its result, and reconciles both children to terminal state.
 
 The RunPod browser is currently at an authorized-console sign-in page. No SSH
 or Jupyter bypass is authorized. Consequently, local tests prove the control

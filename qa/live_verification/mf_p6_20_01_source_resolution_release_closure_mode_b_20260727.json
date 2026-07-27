@@ -1,0 +1,74 @@
+{
+  "authority_file_sha256": {
+    "Plan/28_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md": "a82a3844736b6558d7ce54b2fd2bec1ac3151d791acf700900b65b51ac65d947",
+    "Plan/Items/24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md": "e8a50512409a236e95a39e56b6a571e677d507fad7533e4a7fdd67802d9062c9"
+  },
+  "autonomy_commit_sha": "3da9a13b75e0502951735671bbb65046049718a2",
+  "full_product_commit_sha": "7d66ca27781d899a43eb644c0378bcf1478045a7",
+  "resolutions": [
+    {
+      "autonomy_git_object_id": "c40eada6f93038cdcacd3949c208ff075f8f2f23",
+      "full_product_git_object_id": "a898d569acec16a52a3c5cfd4762404f9ceea9af",
+      "limitations": [
+        "This resolves only the additive wheel artifact closure verifier in the current release-packaging source path.",
+        "The 941-test current-checkout pass is not the audited 4,446-test full-product suite or a clean Linux dependency-install proof.",
+        "No tracker, campaign, provider, GPU, release, or ComfyUI adoption credit is claimed."
+      ],
+      "path": "src/maskfactory/bridge/clean_release_packaging.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "verification": {
+        "test_lineage": {
+          "tests/test_clean_release_packaging.py": {
+            "autonomy_git_object_id": "467323e211ea1839d5848a8275f7f1d851e3b6be",
+            "full_product_git_object_id": "98d00f26ef180424ce25bbdbd2a090f0e63abcec",
+            "worktree_sha256": "feb4a54afd9c5a30f1d61876ad60331afff74cabbca8fb2344f59430367a55ac"
+          },
+          "tests/test_integration_release.py": {
+            "autonomy_git_object_id": "e2270b75031eed8d96ce087798b104e19249a9b2",
+            "full_product_git_object_id": "394f43037cd4a0e95a1ef07fb4ae1cfcd4733b5a",
+            "worktree_sha256": "fbbc0cfb5c445b587f68096822d65fdc2653903a2144190cf9511d6a91f17b68"
+          }
+        },
+        "commands": [
+          "python -m pytest -q tests/test_clean_release_packaging.py tests/test_integration_release.py tests/test_mode_b_localhost_client.py tests/test_mode_b_vertical_slice.py",
+          "python -m ruff check src/maskfactory/bridge/clean_release_packaging.py src/maskfactory/bridge/integration_release.py src/maskfactory/bridge/mode_b_vertical_slice.py tests/test_clean_release_packaging.py tests/test_integration_release.py tests/test_mode_b_vertical_slice.py",
+          "python -m compileall -q src/maskfactory/bridge/clean_release_packaging.py src/maskfactory/bridge/integration_release.py src/maskfactory/bridge/mode_b_vertical_slice.py"
+        ],
+        "passed_test_count": 32,
+        "result": "pass"
+      },
+      "worktree_sha256": "34056170717d8b35acef2a31e64e0f95dcbe4c8437f3bc6bc5fdcf4f33371a01"
+    },
+    {
+      "autonomy_git_object_id": "ab70323c4b0ec8e50ff5e773c88b4e10f0b8c972",
+      "full_product_git_object_id": "8a984286170bc86e9aa4f7f4be54464c363aef27",
+      "limitations": [
+        "This fixture-only Mode B slice binds the runtime quorum to fixture catalog roles and does not qualify, promote, or invoke a real critic.",
+        "The real critic catalog remains unqualified; this source integration cannot clear the 66-class visual gate or authorize a mask.",
+        "No tracker, campaign, provider, GPU, release, or ComfyUI adoption credit is claimed."
+      ],
+      "path": "src/maskfactory/bridge/mode_b_vertical_slice.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "verification": {
+        "test_lineage": {
+          "tests/test_mode_b_vertical_slice.py": {
+            "autonomy_git_object_id": "c4b41dd08e72b2d110024276246956347cacd381",
+            "full_product_git_object_id": "c4b41dd08e72b2d110024276246956347cacd381",
+            "worktree_sha256": "02fbe7a00bf9304ffd38ac896f6058b15a553075afa43767b638d711ca40741e"
+          }
+        },
+        "commands": [
+          "python -m pytest -q tests/test_clean_release_packaging.py tests/test_integration_release.py tests/test_mode_b_localhost_client.py tests/test_mode_b_vertical_slice.py",
+          "python -m ruff check src/maskfactory/bridge/clean_release_packaging.py src/maskfactory/bridge/integration_release.py src/maskfactory/bridge/mode_b_vertical_slice.py tests/test_clean_release_packaging.py tests/test_integration_release.py tests/test_mode_b_vertical_slice.py",
+          "python -m compileall -q src/maskfactory/bridge/clean_release_packaging.py src/maskfactory/bridge/integration_release.py src/maskfactory/bridge/mode_b_vertical_slice.py"
+        ],
+        "passed_test_count": 32,
+        "result": "pass"
+      },
+      "worktree_sha256": "8d7e4afcb86f78543fe743db672e175940ec09fb64c03bedf8dac61890998ef2"
+    }
+  ],
+  "schema_version": "maskfactory.canonical_source_resolution.v2",
+  "self_sha256": "5be4993c2ef965b6ddf1a7a4ec00b02edef1f3d9fc1a80629997b248d3c4601b",
+  "supersedes": []
+}

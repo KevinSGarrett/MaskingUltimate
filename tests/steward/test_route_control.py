@@ -6,8 +6,8 @@ from pathlib import Path
 import pytest
 
 from maskfactory.steward.route_control import (
-    CanonicalParentChildLedger,
     CanonicalMissionRouteLedger,
+    CanonicalParentChildLedger,
     ParentChildAlreadyActive,
     ParentChildBindingError,
     RouteAlreadyActive,

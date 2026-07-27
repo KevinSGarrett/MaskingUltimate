@@ -31,7 +31,6 @@ from maskfactory.autonomy.serverless_overflow import (  # noqa: E402
 )
 from maskfactory.steward.continuous_contract import canonical_sha256  # noqa: E402
 
-
 ZERO_SHA256 = "0" * 64
 
 

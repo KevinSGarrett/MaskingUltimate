@@ -11,10 +11,10 @@ from typing import Any
 import pytest
 
 from maskfactory.steward.serverless_broker import (
+    PROJECT_ROOT,
     BrokerCommandRejected,
     BrokerCommandTimeout,
     BrokerOnlyServerlessRoute,
-    PROJECT_ROOT,
     ServerlessRouteAmbiguous,
     ServerlessRouteError,
     _default_broker_paths,

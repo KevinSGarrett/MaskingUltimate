@@ -33,7 +33,6 @@ from maskfactory.steward.patch_repair_campaign import (
     run_patch_repair_campaign,
 )
 
-
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SESSION_ID = "campaign-packet-session"
 CAMPAIGN_ID = "engineering-campaign-real-025"

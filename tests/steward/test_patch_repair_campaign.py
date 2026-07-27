@@ -13,7 +13,6 @@ from maskfactory.steward.patch_repair_campaign import (
     verify_campaign_terminal,
 )
 
-
 PACKET = "a" * 64
 SOURCE = "b" * 64
 EVIDENCE = "c" * 64

@@ -8,9 +8,9 @@ import pytest
 from PIL import Image, ImageDraw
 
 from maskfactory.steward.mask_campaign_input import (
-    MaskCampaignInputError,
     REQUIRED_RESOURCE_ROLES,
     SCHEMA_VERSION,
+    MaskCampaignInputError,
     prepare_mask_campaign_input,
     validate_mask_campaign_preparation,
 )

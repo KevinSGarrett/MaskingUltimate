@@ -25,7 +25,6 @@ from maskfactory.steward.continuous_ledger import (
     seal_continuous_binding,
 )
 
-
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SESSION_ID = "session-reconcile"
 CAMPAIGN_ID = "campaign-reconcile-001"

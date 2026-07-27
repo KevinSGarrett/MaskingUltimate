@@ -11,7 +11,6 @@ from PIL import Image, PngImagePlugin
 
 from maskfactory.intake import ingest_one
 
-
 NOW = datetime(2026, 7, 27, tzinfo=UTC)
 
 

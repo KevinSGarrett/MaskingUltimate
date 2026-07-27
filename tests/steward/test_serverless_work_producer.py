@@ -21,7 +21,6 @@ from maskfactory.steward.serverless_work_producer import (
     seal_serverless_workload,
 )
 
-
 SESSION_ID = "019f91d1-ea20-7d81-83ff-03d393eaa1f5"
 PARENT_ID = "a" * 64
 PARENT_CONTRACT = "b" * 64

@@ -9,16 +9,16 @@ import sys
 from pathlib import Path
 
 import pytest
+from tools.run_self_hosted_supervisor import (
+    _inbox_totals,
+    _validate_fallback_admission,
+    build_parser,
+)
 
 from maskfactory.steward.supervisor import (
     CpuSafeSupervisor,
     SupervisorAlreadyRunning,
     SupervisorStateError,
-)
-from tools.run_self_hosted_supervisor import (
-    _inbox_totals,
-    _validate_fallback_admission,
-    build_parser,
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]

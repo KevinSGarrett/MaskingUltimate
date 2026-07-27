@@ -15,7 +15,6 @@ from maskfactory.steward.worker_authority import (
     validate_worker_response,
 )
 
-
 PACKET = "a" * 64
 
 

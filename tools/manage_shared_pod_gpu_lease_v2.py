@@ -15,7 +15,6 @@ import time
 from pathlib import Path
 from typing import Any
 
-
 DEFAULT_DATABASE = Path(
     "/workspace/.maskfactory/shared_pod_coordination/shared_gpu_leases_v1.sqlite"
 )

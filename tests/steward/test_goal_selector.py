@@ -7,11 +7,10 @@ from pathlib import Path
 import pytest
 
 from maskfactory.steward.goal_selector import (
-    GoalSelectionError,
     PLAN27_ITEM_ORDER,
+    GoalSelectionError,
     select_next_plan27_work,
 )
-
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 TRACKER_PATH = PROJECT_ROOT / "Plan" / "Tracker" / "tracker.json"

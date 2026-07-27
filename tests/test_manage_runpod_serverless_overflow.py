@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import importlib.util
 import hashlib
+import importlib.util
 import json
 import subprocess
 import sys
@@ -11,7 +11,6 @@ import yaml
 
 from maskfactory.autonomy.serverless_overflow import OverflowBroker, OverflowConfig, OverflowError
 from maskfactory.steward.continuous_contract import canonical_sha256
-
 
 PROJECT_ROOT = Path(__file__).parents[1]
 MANAGER_PATH = PROJECT_ROOT / "tools" / "manage_runpod_serverless_overflow.py"

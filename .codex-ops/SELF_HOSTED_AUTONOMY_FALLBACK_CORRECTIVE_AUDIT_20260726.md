@@ -475,6 +475,15 @@ builders/generic runner mechanics; it does not yet persist the required
 parent-ledger submit/reconcile state machine or its lifecycle tests. No
 provider, parent, or fallback action occurred while this was found.
 
+The implementation boundary is now explicit: existing managed-child SQLite
+state has only `intent/completed/failed`, which cannot safely represent a
+reservation, submission interruption, or stale-reservation adoption. The
+increment must introduce durable immutable phases
+`intent -> reserved -> submitting/submitted -> terminal`, with recovery by
+manager inspection before any retry. A schema/state-transition migration and
+receipt validation are required; argv builders or in-memory sequencing alone
+are not acceptable evidence.
+
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test
 has yet exercised a real same-parent provider run across the boundary.

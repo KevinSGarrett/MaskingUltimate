@@ -105,9 +105,15 @@ manager cap of four active reservations by default, configurable only through
 reviewed policy in the range 1–16. The existing one-active and terminal
 suppression rules still apply per explicit immutable parent+contract, and a
 fifth distinct parent fails closed. The current shared manager SHA-256 is
-`791de44113a74257b3baeda3ee3a56f7306b932d5e4b49beee2d7855837145ac`; its
-focused manager/Serverless-validator suite has 61 passing tests plus
-Ruff/compileall. Read-only manager ledger status is `0/4`.
+`791de44113a74257b3baeda3ee3a56f7306b932d5e4b49beee2d7855837145ac` at that
+capacity checkpoint. Commit `b9008a5c` then fixes a real five-contender CPU
+lock-sentinel publication race: the fully written sentinel is fsynced and
+atomically published before any contender can observe it, yielding exactly four
+durable reservations and a fifth capacity rejection rather than a transient
+lock failure. Control record `b03ba777` binds that repair. The current manager
+SHA-256 is `a62ac97c555d63b268f402369d96308ab747a17c478b6833ec3a8e7c607c94b7`;
+the focused OpenRouter/Serverless-validator suite has 63 passing tests plus
+Ruff/compileall. Read-only manager ledger status remains `0/4`.
 
 `MASKFACTORY_ADAPTER_SEALED`: MaskFactory's `GovernedOpenRouterAdvisory` v2
 constructs the exact manager reserve argv and validates manager

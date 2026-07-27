@@ -419,18 +419,27 @@ independent Windows `28 passed / 1 failed` test result because
 `test_owned_runtime_records_exact_readiness_and_release` assumed `os.getpgid`
 existed before monkeypatching. Its successor
 `9a6659b20a572afe3dbcbee71d67963826ddc167`
-(`fix(wave88): fail closed without process groups`) has matching authoritative
+(`fix(wave88): fail closed without process groups`) had matching authoritative
 and trace refs and a real independent Windows `30/30` focused test result,
-Ruff, and `compileall` pass. However it is now **REVIEW_OPEN, not sealed**:
-read-only code review found a pre-recording race after
+Ruff, and `compileall` pass. It correctly remained review-open after read-only
+code review found a pre-recording race after
 `Popen(start_new_session=True)`. An unguarded `os.getpgid(self.process.pid)`
 can raise if the wrapper exits before lookup, leaving `pgid=None`; a child that
 retains the port may then be neither group-signalled nor durably captured in a
-failure/release receipt. Primary must add fail-closed cleanup plus a negative
-race test and independently retest before this can affect runtime admission.
-No runtime/process/provider request occurred. The Pod remains
-fast-forward/read-only-discovery only; neither the current code nor its tests
-permit a retry, new parent, fallback child, or capacity credit.
+failure/release receipt. The sealed successor is `0a0b08f0`, published to both
+authoritative and trace refs after fail-closed, descendant-safe cleanup and
+negative coverage for post-`Popen` lookup failure, wrong process-group
+identity, wrapper exit before port open, and malformed readiness cleanup. The
+exact published executor SHA-256 is
+`a921eaaeabf61e3e083ea05bfa369c35e4d5bb8388de1adf791c2d371d5e37fc`; focused
+test SHA-256 is
+`7037c5bdaa8242b8af824e3003e42591727bdb8c411aadb3fc7a5f21d6a1ff0c`.
+Independent exact-head validation passes `34/34` in 28.43 seconds, with Ruff,
+compile, and `git diff --check` also passing. This seals CPU lifecycle safety
+only: no runtime/process/provider request occurred and no
+launch/readiness/release receipt exists. The Pod remains
+fast-forward/read-only-discovery only; neither the repair nor its tests permit
+a retry, new parent, fallback child, or capacity credit.
 
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test

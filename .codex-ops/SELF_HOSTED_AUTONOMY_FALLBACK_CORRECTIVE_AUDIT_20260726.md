@@ -124,6 +124,15 @@ credit. Canonical/throughput/guarded-lease tests passed 26, with Ruff, compile,
 diff, freeze [], and tracker 906/54 clean. No GPU lease, child, broker,
 OpenRouter, provider, or tracker action occurred.
 
+Subsequent Plan-28 hard-QA repair `7b0b99a5d` corrects a real fail-open path:
+two independently passing masks whose pairwise IoU produces `DISAGREE` now
+yield durable `ABSTAIN` with `provider_disagreement`; an unrelated record still
+advances. The focused hard-QA, outcome-accounting, and visual-quorum tests pass
+locally. This changes the previously preserved visual-hard-QA worktree path,
+so the 1,707 count is a historical chain snapshot, not new reconciliation
+credit: the next source inventory must bind the post-repair bytes before the
+remaining divergent conflict can be considered resolved.
+
 - `MF-P6-19.01`: 25 completed / 0 failed engineering missions, one service
   generation, 50 real replay requests and unique responses, 25 accepted
   canonical proposals and releases, no request-binding mismatch. The immutable

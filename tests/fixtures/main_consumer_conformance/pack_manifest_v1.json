@@ -1,0 +1,49 @@
+{
+  "claim_boundary": {
+    "awaiting_main_supplied_artifacts": true,
+    "main_adoption_complete": false,
+    "pack_is_not_main_adoption": true
+  },
+  "manifest_sha256": "5fe1f8a40ec97dbf231a638337c4fb52260885e72a5b534d23e15dfd112bbfa1",
+  "members": [
+    {
+      "path": "adapter_observations/accepted_observation_template_v1.json",
+      "record_type": "main_consumer_adapter_observation_template",
+      "sha256": "c352d8d62db36f9fd3a3e3653ce622e58c73a7722faed15d7037317b088276ed"
+    },
+    {
+      "path": "adapter_observations/rejected_dirty_worktree_template_v1.json",
+      "record_type": "main_consumer_adapter_observation_template",
+      "sha256": "1bfab6d0180e3fbba6e10a5d705c2235647b047f8527aa93e4c8f2bd2ab23520"
+    },
+    {
+      "path": "adapter_observations/rejected_internal_dependency_template_v1.json",
+      "record_type": "main_consumer_adapter_observation_template",
+      "sha256": "de78ab7cbda1a0f108c2dceb000c7770b26ac8e5f3618b0201484d4a56440175"
+    },
+    {
+      "path": "disagreement_vectors/requirements_capability_disagreement_v1.json",
+      "record_type": "main_consumer_requirements_capability_disagreement_vectors",
+      "sha256": "522008e418b531a64404b3f0281fbb729665ffca13915d8937eb89c5780ae82a"
+    },
+    {
+      "path": "receipt_shapes/adopted_receipt_shape_v1.json",
+      "record_type": "main_consumer_receipt_shape",
+      "sha256": "aed5efce244e3a47ac81fe5c7eebf20d4adb62ae67e224645e33dce50cb666b0"
+    },
+    {
+      "path": "receipt_shapes/partially_adopted_receipt_shape_v1.json",
+      "record_type": "main_consumer_receipt_shape",
+      "sha256": "39ffceb7cc9f9bd89be2ac7195b8c058b2cce58aac6725ddd2043412bab270e1"
+    },
+    {
+      "path": "receipt_shapes/rejected_receipt_shape_v1.json",
+      "record_type": "main_consumer_receipt_shape",
+      "sha256": "02842c639bb04d7ffc1f4838b625b609501a4e73b053525451d4d053becf2c62"
+    }
+  ],
+  "pack_id": "maskfactory-main-consumer-conformance-pack-v1",
+  "policy_id": "maskfactory-bridge-main-consumer-conformance-v1",
+  "record_type": "main_consumer_conformance_pack_manifest",
+  "schema_version": "1.0.0"
+}

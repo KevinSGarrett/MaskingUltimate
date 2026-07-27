@@ -1,0 +1,64 @@
+schema_version: "1.0.0"
+policy_id: maskfactory-bridge-external-adapter-conformance-v1
+policy_version: "1.0.0"
+canonicalization:
+  algorithm: maskfactory-canonical-json-v1
+  excluded_top_level_fields:
+    - policy_sha256
+required_release_states:
+  - published
+  - adopted
+required_adoption_decisions:
+  - adopted
+  - partially_adopted
+adopted_contract_versions:
+  bridge_contract: maskfactory-comfyui-bridge/1.0
+  api_contract: maskfactory-api/1.0
+  package_format: maskfactory-package/1.0
+  ontology_version: body_parts_v1
+  node_pack_version: 1.0.0
+adopted_wire_schema_versions:
+  maskfactory_release_snapshot: "1.0.0"
+  maskfactory_capability_snapshot: "1.0.0"
+  maskfactory_consumer_requirements: "1.0.0"
+  mask_acquisition_request: "1.0.0"
+  mask_acquisition_receipt: "1.0.0"
+  mask_bridge_error: "1.0.0"
+  maskfactory_adoption_receipt: "1.0.0"
+  mask_authority_invalidation_event: "1.0.0"
+  mask_repair_feedback: "1.0.0"
+  mask_bridge_event: "1.0.0"
+  operational_autonomy_certificate: "1.0.0"
+  mask_bridge_semantic_invariant_profile: "1.0.0"
+allowed_openapi_paths:
+  - /health
+  - /models
+  - /predict
+  - /refine
+allowed_maskfactory_import_prefixes:
+  - maskfactory.contracts
+forbidden_maskfactory_import_prefixes:
+  - maskfactory.bridge
+  - maskfactory.serve
+  - maskfactory.stages
+  - maskfactory.providers
+  - maskfactory.autonomy
+forbidden_comfyui_node_ids:
+  - NODE_CLASS_MAPPINGS
+  - COMFY_NODE_ID
+forbidden_path_fragments:
+  - src/maskfactory
+  - \src\maskfactory
+  - .git
+rejection_reason_codes:
+  - adapter_dirty_worktree
+  - adapter_editable_install
+  - adapter_internal_dependency
+  - adapter_node_id_coupling
+  - adapter_mutable_path_dependency
+  - adopted_contract_version_mismatch
+  - adopted_wire_schema_version_mismatch
+  - endpoint_not_published
+  - producer_release_not_adopted
+  - producer_dirty_worktree
+policy_sha256: f6ba7385895e45be1b0cd3195b2dbf732df9750255451555f7a17d5f22830c43

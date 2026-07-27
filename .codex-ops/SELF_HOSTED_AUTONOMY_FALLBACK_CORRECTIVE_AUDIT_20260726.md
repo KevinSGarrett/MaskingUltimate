@@ -136,6 +136,13 @@ enforce and negatively test a policy-bound minimum mission-size/capability-work
 threshold before admitting a paid or advisory child; otherwise a correctly
 bound route could still recreate a micro-handoff loop.
 
+`CANONICAL_CALLER_PATH_GATE_OPEN`: the in-progress primary adapter canonicalizes
+the OpenRouter command shape but currently accepts any local file named
+`manage_openrouter_reasoning_fallback.py`. A same-basename substitute would
+defeat the governed-manager boundary. Before production invocation, it must
+resolve and bind the exact repository manager and policy paths (with their
+contract hashes) and negatively reject a counterfeit basename.
+
 `SERVERLESS_SUCCESSOR_GUARD_OPEN`: CUI's primary Serverless path still pins an
 obsolete manager hash and its validator treats a provider-free `decide` probe
 as authority to create a successor. That is unsafe reissue semantics. The
@@ -155,10 +162,10 @@ This does not permit a successor from `decide` alone, relax the legacy
 owner-recovery 1/1 worker caps, execute a provider job, or grant
 `FALLBACK_CAPACITY_UNPROVEN` any credit. `NO_CAPACITY_CREDIT` remains binding
 until the CUI primary controller consumes the exact CUI manager contract and
-the mission-size gate rejects below-threshold work and the Serverless successor
-guard is sealed, then one real parent retains host preflight, completes its
-source-hash-bound child work, applies/tests/QAs its result, and reconciles both
-children to terminal state.
+the mission-size and canonical-caller gates reject unsafe work, and the
+Serverless successor guard is sealed, then one real parent retains host
+preflight, completes its source-hash-bound child work, applies/tests/QAs its
+result, and reconciles both children to terminal state.
 
 The RunPod browser is currently at an authorized-console sign-in page. No SSH
 or Jupyter bypass is authorized. Consequently, local tests prove the control

@@ -56,6 +56,26 @@ def test_supervisor_rejects_fallback_worker_fanout() -> None:
         _validate_fallback_admission(args)
 
 
+def test_supervisor_rejects_openrouter_mode_micro_fanout() -> None:
+    args = build_parser().parse_args(
+        [
+            "--state-root",
+            "state",
+            "--supervisor-id",
+            "maskfactory-test",
+            "--no-auto-produce-serverless",
+            "--openrouter-work-kinds",
+            "implementation_review,test_strategy",
+        ]
+    )
+
+    with pytest.raises(
+        SystemExit,
+        match="exactly one consolidated advisory mode",
+    ):
+        _validate_fallback_admission(args)
+
+
 def test_supervisor_rejects_stale_serverless_manager_path() -> None:
     args = build_parser().parse_args(
         [

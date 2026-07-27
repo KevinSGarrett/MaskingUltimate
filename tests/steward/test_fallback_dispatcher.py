@@ -7,12 +7,15 @@ from pathlib import Path
 from typing import Any
 
 from maskfactory.steward.fallback_dispatcher import (
+    LEGACY_WORK_ITEM_SCHEMA,
     TERMINAL_NAME,
     WORK_ITEM_NAME,
     WORK_ITEM_SCHEMA,
     FallbackWorkDispatcher,
+    fallback_child_mission_id,
     seal_fallback_work_item,
 )
+from maskfactory.steward.openrouter_advisory import OpenRouterOutcomeUnknown
 
 SESSION = "019f91d1-ea20-7d81-83ff-03d393eaa1f5"
 
@@ -31,9 +34,25 @@ def write_json(path: Path, value: Any) -> None:
 def write_item(
     inbox: Path,
     *,
-    mission_id: str,
     route: str,
+    parent_campaign_id: str,
+    parent_contract_sha256: str = "b" * 64,
+    required_child_roles: tuple[str, ...] | None = None,
 ) -> Path:
+    child_role = (
+        "serverless_execution"
+        if route == "serverless_overflow"
+        else "consolidated_advisory"
+    )
+    required_child_roles = required_child_roles or (child_role,)
+    mission_id = fallback_child_mission_id(
+        session_id=SESSION,
+        parent_campaign_id=parent_campaign_id,
+        parent_contract_sha256=parent_contract_sha256,
+        required_child_roles=required_child_roles,
+        child_role=child_role,
+        route=route,
+    )
     root = inbox / mission_id
     root.mkdir(parents=True)
     if route == "serverless_overflow":
@@ -43,6 +62,10 @@ def write_item(
             "schema_version": WORK_ITEM_SCHEMA,
             "mission_id": mission_id,
             "session_id": SESSION,
+            "parent_campaign_id": parent_campaign_id,
+            "parent_contract_sha256": parent_contract_sha256,
+            "required_child_roles": list(required_child_roles),
+            "child_role": child_role,
             "route": route,
             "payload_sha256": canonical_sha(payload),
             "payload_file": "payload.json",
@@ -58,6 +81,10 @@ def write_item(
             "schema_version": WORK_ITEM_SCHEMA,
             "mission_id": mission_id,
             "session_id": SESSION,
+            "parent_campaign_id": parent_campaign_id,
+            "parent_contract_sha256": parent_contract_sha256,
+            "required_child_roles": list(required_child_roles),
+            "child_role": child_role,
             "route": route,
             "payload_sha256": hashlib.sha256((root / "request.json").read_bytes()).hexdigest(),
             "request_file": "request.json",
@@ -155,6 +182,47 @@ class CpuFallbackOpenRouter(FakeOpenRouter):
         )
 
 
+class OutcomeUnknownThenFailedOpenRouter:
+    def __init__(self, **kwargs: Any) -> None:
+        self.state_path = kwargs["mission_root"] / "fake_openrouter_state.json"
+        self.output_path = kwargs["mission_root"] / "openrouter_advisory_output.json"
+        if self.state_path.is_file():
+            self._state = json.loads(self.state_path.read_text(encoding="utf-8"))
+        else:
+            self._state = {"state": "intent_persisted", "last_error": None}
+            write_json(self.state_path, self._state)
+
+    @property
+    def state(self) -> dict[str, Any]:
+        return dict(self._state)
+
+    def _save(self) -> None:
+        write_json(self.state_path, self._state)
+
+    def decide(self, *, pod_state: str, serverless_state: str) -> None:
+        self._state["state"] = "decided"
+        self._save()
+
+    def reserve(self) -> None:
+        self._state["state"] = "reserved"
+        self._save()
+
+    def submit(self) -> None:
+        self._state.update(
+            state="outcome_unknown",
+            last_error="provider acknowledgement interrupted",
+        )
+        self._save()
+        raise OpenRouterOutcomeUnknown("provider acknowledgement interrupted")
+
+    def reconcile_unknown(self) -> None:
+        self._state.update(
+            state="failed",
+            last_error="manager proved terminal failure",
+        )
+        self._save()
+
+
 def build(
     tmp_path: Path,
     *,
@@ -191,13 +259,21 @@ def test_serverless_and_openrouter_advance_concurrently_and_terminalize(
     )
     serverless = write_item(
         dispatcher.inbox_root,
-        mission_id="1" * 64,
         route="serverless_overflow",
+        parent_campaign_id="a" * 64,
+        required_child_roles=(
+            "consolidated_advisory",
+            "serverless_execution",
+        ),
     )
     openrouter = write_item(
         dispatcher.inbox_root,
-        mission_id="2" * 64,
         route="openrouter_advisory",
+        parent_campaign_id="a" * 64,
+        required_child_roles=(
+            "consolidated_advisory",
+            "serverless_execution",
+        ),
     )
 
     results = dispatcher.poll_once()
@@ -213,6 +289,12 @@ def test_serverless_and_openrouter_advance_concurrently_and_terminalize(
     )
     assert dispatcher.pending_ids() == []
     assert list((dispatcher.state_root / "route_tokens").iterdir()) == []
+    parent = dispatcher.parent_ledger.inspect_parent("a" * 64)
+    assert parent["state"] == "completed"
+    assert [child["child_role"] for child in parent["children"]] == [
+        "consolidated_advisory",
+        "serverless_execution",
+    ]
 
 
 def test_serverless_semantic_false_is_terminal_failure(tmp_path: Path) -> None:
@@ -227,8 +309,8 @@ def test_serverless_semantic_false_is_terminal_failure(tmp_path: Path) -> None:
     )
     serverless = write_item(
         dispatcher.inbox_root,
-        mission_id="9" * 64,
         route="serverless_overflow",
+        parent_campaign_id="9" * 64,
     )
 
     results = dispatcher.poll_once()
@@ -254,8 +336,8 @@ def test_openrouter_cap_rejection_is_not_retried_on_next_poll(tmp_path: Path) ->
     )
     write_item(
         dispatcher.inbox_root,
-        mission_id="3" * 64,
         route="openrouter_advisory",
+        parent_campaign_id="3" * 64,
     )
 
     first = dispatcher.poll_once()
@@ -275,8 +357,8 @@ def test_work_item_hash_drift_fails_before_route_claim(tmp_path: Path) -> None:
     )
     root = write_item(
         dispatcher.inbox_root,
-        mission_id="4" * 64,
         route="serverless_overflow",
+        parent_campaign_id="4" * 64,
     )
     write_json(root / "payload.json", {"input": {"prompt": "drifted"}})
 
@@ -289,3 +371,64 @@ def test_work_item_hash_drift_fails_before_route_claim(tmp_path: Path) -> None:
 
     assert not (dispatcher.state_root / "canonical_routes.sqlite-wal").exists()
     assert list((dispatcher.state_root / "route_tokens").iterdir()) == []
+
+
+def test_manager_proven_openrouter_failure_is_terminal_and_not_repolled(
+    tmp_path: Path,
+) -> None:
+    dispatcher = build(
+        tmp_path,
+        serverless_factory=lambda **kwargs: FakeServerless(
+            threading.Barrier(1), **kwargs
+        ),
+        openrouter_factory=OutcomeUnknownThenFailedOpenRouter,
+    )
+    root = write_item(
+        dispatcher.inbox_root,
+        route="openrouter_advisory",
+        parent_campaign_id="5" * 64,
+    )
+
+    first = dispatcher.poll_once()
+    second = dispatcher.poll_once()
+    third = dispatcher.poll_once()
+
+    assert first[0]["state"] == "outcome_unknown"
+    assert second[0]["disposition"] == "failed"
+    assert third == []
+    assert (root / TERMINAL_NAME).is_file()
+    assert not (root / "openrouter_advisory_output.json").exists()
+    assert dispatcher.parent_ledger.inspect_parent("5" * 64)["state"] == "failed"
+    assert list((dispatcher.state_root / "route_tokens").iterdir()) == []
+
+
+def test_legacy_unbound_work_item_is_preserved_but_not_dispatched(
+    tmp_path: Path,
+) -> None:
+    dispatcher = build(
+        tmp_path,
+        serverless_factory=lambda **kwargs: FakeServerless(
+            threading.Barrier(1), **kwargs
+        ),
+        openrouter_factory=lambda **kwargs: FakeOpenRouter(
+            threading.Barrier(1), **kwargs
+        ),
+    )
+    root = dispatcher.inbox_root / ("6" * 64)
+    root.mkdir(parents=True)
+    write_json(
+        root / WORK_ITEM_NAME,
+        seal_fallback_work_item(
+            {
+                "schema_version": LEGACY_WORK_ITEM_SCHEMA,
+                "mission_id": "6" * 64,
+                "session_id": SESSION,
+                "route": "serverless_overflow",
+                "payload_sha256": "7" * 64,
+            }
+        ),
+    )
+
+    assert dispatcher.poll_once() == []
+    assert (root / WORK_ITEM_NAME).is_file()
+    assert not (root / TERMINAL_NAME).exists()

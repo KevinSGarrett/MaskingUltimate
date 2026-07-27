@@ -167,6 +167,16 @@ def _validate_fallback_admission(args: argparse.Namespace) -> None:
         raise SystemExit("--max-serverless-workers must be exactly 1")
     if args.max_openrouter_workers != 1:
         raise SystemExit("--max-openrouter-workers must be exactly 1")
+    work_kinds = tuple(
+        value.strip()
+        for value in args.openrouter_work_kinds.split(",")
+        if value.strip()
+    )
+    if len(work_kinds) != 1:
+        raise SystemExit(
+            "--openrouter-work-kinds must select exactly one consolidated "
+            "advisory mode"
+        )
     for actual, expected, label in (
         (args.serverless_manager, SERVERLESS_MANAGER_PATH, "Serverless manager"),
         (args.serverless_config, CONFIG_PATH, "Serverless config"),

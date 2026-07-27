@@ -7,8 +7,10 @@ import pytest
 
 from maskfactory.steward.fallback_dispatcher import (
     WORK_ITEM_NAME,
+    fallback_child_mission_id,
 )
 from maskfactory.steward.serverless_work_producer import (
+    LEGACY_WORKLOAD_SCHEMA,
     PAYLOAD_NAME,
     WORKLOAD_NAME,
     WORKLOAD_SCHEMA,
@@ -21,6 +23,9 @@ from maskfactory.steward.serverless_work_producer import (
 
 
 SESSION_ID = "019f91d1-ea20-7d81-83ff-03d393eaa1f5"
+PARENT_ID = "a" * 64
+PARENT_CONTRACT = "b" * 64
+REQUIRED_ROLES = ("consolidated_advisory", "serverless_execution")
 
 
 def write_prepared(root: Path, *, payload: dict | None = None) -> dict:
@@ -31,17 +36,26 @@ def write_prepared(root: Path, *, payload: dict | None = None) -> dict:
         json.dumps(payload, sort_keys=True, indent=2) + "\n",
         encoding="utf-8",
     )
-    identity = {
-        "schema_version": WORKLOAD_SCHEMA,
-        "session_id": SESSION_ID,
-        "profile": "maskfactory",
-        "payload_sha256": canonical_sha256(payload),
-        "requested_seconds": 180,
-    }
+    mission_id = fallback_child_mission_id(
+        session_id=SESSION_ID,
+        parent_campaign_id=PARENT_ID,
+        parent_contract_sha256=PARENT_CONTRACT,
+        required_child_roles=REQUIRED_ROLES,
+        child_role="serverless_execution",
+        route="serverless_overflow",
+    )
     manifest = seal_serverless_workload(
         {
-            **identity,
-            "mission_id": canonical_sha256(identity),
+            "schema_version": WORKLOAD_SCHEMA,
+            "session_id": SESSION_ID,
+            "parent_campaign_id": PARENT_ID,
+            "parent_contract_sha256": PARENT_CONTRACT,
+            "required_child_roles": list(REQUIRED_ROLES),
+            "child_role": "serverless_execution",
+            "profile": "maskfactory",
+            "payload_sha256": canonical_sha256(payload),
+            "requested_seconds": 180,
+            "mission_id": mission_id,
             "payload_file": PAYLOAD_NAME,
             "payload_raw_sha256": file_sha256(payload_path),
         }
@@ -87,6 +101,10 @@ def test_prepared_workload_materializes_once_and_dispatcher_accepts_it(
     assert item["route"] == "serverless_overflow"
     assert item["payload_sha256"] == manifest["payload_sha256"]
     assert item["requested_seconds"] == 180
+    assert item["parent_campaign_id"] == PARENT_ID
+    assert item["parent_contract_sha256"] == PARENT_CONTRACT
+    assert item["required_child_roles"] == list(REQUIRED_ROLES)
+    assert item["child_role"] == "serverless_execution"
 
 
 def test_payload_drift_fails_closed_before_inbox_creation(tmp_path: Path) -> None:
@@ -121,3 +139,31 @@ def test_manifest_identity_mismatch_fails_closed(tmp_path: Path) -> None:
             ready_root=ready,
             inbox_root=tmp_path / "inbox",
         ).produce()
+
+
+def test_legacy_unbound_workload_is_preserved_without_inbox_dispatch(
+    tmp_path: Path,
+) -> None:
+    ready = tmp_path / "ready"
+    inbox = tmp_path / "inbox"
+    root = ready / "legacy"
+    root.mkdir(parents=True)
+    (root / PAYLOAD_NAME).write_text('{"legacy":true}\n', encoding="utf-8")
+    (root / WORKLOAD_NAME).write_text(
+        json.dumps({"schema_version": LEGACY_WORKLOAD_SCHEMA}) + "\n",
+        encoding="utf-8",
+    )
+
+    receipts = ServerlessWorkProducer(
+        ready_root=ready,
+        inbox_root=inbox,
+    ).produce()
+
+    assert receipts == [
+        {
+            "source_root": "legacy",
+            "created": False,
+            "legacy_unbound": True,
+        }
+    ]
+    assert list(inbox.iterdir()) == []

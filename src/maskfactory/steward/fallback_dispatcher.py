@@ -26,6 +26,8 @@ from .openrouter_advisory import (
     OpenRouterOutcomeUnknown,
 )
 from .route_control import (
+    PARENT_CHILD_ROUTES,
+    CanonicalParentChildLedger,
     CanonicalMissionRouteLedger,
     RouteAlreadyActive,
     RouteControlError,
@@ -36,7 +38,9 @@ from .serverless_broker import (
     ServerlessRouteError,
 )
 
-WORK_ITEM_SCHEMA = "maskfactory.steward.fallback_work_item.v1"
+LEGACY_WORK_ITEM_SCHEMA = "maskfactory.steward.fallback_work_item.v1"
+WORK_ITEM_SCHEMA = "maskfactory.steward.fallback_work_item.v2"
+CHILD_BINDING_SCHEMA = "maskfactory.steward.fallback_child_binding.v1"
 STATUS_SCHEMA = "maskfactory.steward.fallback_dispatch_status.v1"
 TERMINAL_SCHEMA = "maskfactory.steward.fallback_terminal_receipt.v1"
 WORK_ITEM_NAME = "fallback_work_item.json"
@@ -50,6 +54,10 @@ RouteFactory = Callable[..., Any]
 
 class FallbackDispatchError(RuntimeError):
     """A fallback work item is malformed or cannot advance safely."""
+
+
+class LegacyFallbackWorkItem(FallbackDispatchError):
+    """A historical unbound item is preserved but is not eligible for dispatch."""
 
 
 def _canonical_bytes(value: Any) -> bytes:
@@ -154,6 +162,29 @@ def seal_fallback_work_item(value: Mapping[str, Any]) -> dict[str, Any]:
     return _seal(value)
 
 
+def fallback_child_mission_id(
+    *,
+    session_id: str,
+    parent_campaign_id: str,
+    parent_contract_sha256: str,
+    required_child_roles: tuple[str, ...],
+    child_role: str,
+    route: str,
+) -> str:
+    """Derive one child mission identity without circular payload binding."""
+    return _canonical_sha256(
+        {
+            "schema_version": CHILD_BINDING_SCHEMA,
+            "session_id": session_id,
+            "parent_campaign_id": parent_campaign_id,
+            "parent_contract_sha256": parent_contract_sha256,
+            "required_child_roles": list(required_child_roles),
+            "child_role": child_role,
+            "route": route,
+        }
+    )
+
+
 class FallbackWorkDispatcher:
     """Discover and advance governed fallback missions without dual submission."""
 
@@ -187,7 +218,9 @@ class FallbackWorkDispatcher:
         self.state_root.mkdir(parents=True, exist_ok=True)
         self.token_root = self.state_root / "route_tokens"
         self.token_root.mkdir(exist_ok=True)
-        self.ledger = CanonicalMissionRouteLedger(self.state_root / "canonical_routes.sqlite")
+        ledger_path = self.state_root / "canonical_routes.sqlite"
+        self.ledger = CanonicalMissionRouteLedger(ledger_path)
+        self.parent_ledger = CanonicalParentChildLedger(ledger_path)
         self.serverless_manager_path = Path(serverless_manager_path)
         self.serverless_config_path = Path(serverless_config_path)
         self.serverless_broker_root = Path(serverless_broker_root)
@@ -211,6 +244,10 @@ class FallbackWorkDispatcher:
             raise FallbackDispatchError(f"unreadable fallback work item: {path}") from exc
         if not isinstance(item, dict):
             raise FallbackDispatchError("fallback work item must be an object")
+        if item.get("schema_version") == LEGACY_WORK_ITEM_SCHEMA:
+            raise LegacyFallbackWorkItem(
+                "legacy fallback work item has no immutable parent binding"
+            )
         declared = item.get("self_sha256")
         zeroed = copy.deepcopy(item)
         zeroed["self_sha256"] = "0" * 64
@@ -228,6 +265,45 @@ class FallbackWorkDispatcher:
             raise FallbackDispatchError("fallback work item session_id is invalid")
         if item.get("route") not in ROUTE_NAMES:
             raise FallbackDispatchError("fallback work item route is invalid")
+        for field in ("parent_campaign_id", "parent_contract_sha256"):
+            if not isinstance(item.get(field), str) or not SHA256_RE.fullmatch(
+                item[field]
+            ):
+                raise FallbackDispatchError(
+                    f"fallback work item {field} is invalid"
+                )
+        required_roles = item.get("required_child_roles")
+        if (
+            not isinstance(required_roles, list)
+            or not required_roles
+            or any(not isinstance(role, str) for role in required_roles)
+            or required_roles != sorted(set(required_roles))
+            or any(role not in PARENT_CHILD_ROUTES for role in required_roles)
+        ):
+            raise FallbackDispatchError(
+                "fallback work item required_child_roles are invalid"
+            )
+        child_role = item.get("child_role")
+        if child_role not in required_roles:
+            raise FallbackDispatchError(
+                "fallback work item child_role is not required by its parent"
+            )
+        if PARENT_CHILD_ROUTES.get(child_role) != item["route"]:
+            raise FallbackDispatchError(
+                "fallback work item child_role does not match its route"
+            )
+        expected_mission_id = fallback_child_mission_id(
+            session_id=item["session_id"],
+            parent_campaign_id=item["parent_campaign_id"],
+            parent_contract_sha256=item["parent_contract_sha256"],
+            required_child_roles=tuple(required_roles),
+            child_role=child_role,
+            route=item["route"],
+        )
+        if item["mission_id"] != expected_mission_id:
+            raise FallbackDispatchError(
+                "fallback child mission identity mismatch"
+            )
         if mission_root.name != item["mission_id"]:
             raise FallbackDispatchError("mission directory identity mismatch")
         if item["route"] == "serverless_overflow":
@@ -281,7 +357,11 @@ class FallbackWorkDispatcher:
                     status = {}
                 if status.get("state") == "route_unavailable":
                     continue
-            discovered.append((mission_root, self._load_item(mission_root)))
+            try:
+                item = self._load_item(mission_root)
+            except LegacyFallbackWorkItem:
+                continue
+            discovered.append((mission_root, item))
         return discovered
 
     def pending_ids(self) -> list[str]:
@@ -322,6 +402,10 @@ class FallbackWorkDispatcher:
             {
                 "schema_version": STATUS_SCHEMA,
                 "mission_id": item["mission_id"],
+                "parent_campaign_id": item["parent_campaign_id"],
+                "parent_contract_sha256": item["parent_contract_sha256"],
+                "required_child_roles": item["required_child_roles"],
+                "child_role": item["child_role"],
                 "route": item["route"],
                 "state": state,
                 "detail": detail,
@@ -352,15 +436,28 @@ class FallbackWorkDispatcher:
             mission_id=item["mission_id"],
             owner_token=owner_token,
         )
+        parent_state = self.parent_ledger.mark_child(
+            parent_campaign_id=item["parent_campaign_id"],
+            child_role=item["child_role"],
+            owner_token=owner_token,
+            state=disposition,
+            terminal_disposition=disposition,
+            result_sha256=result_sha256,
+        )
         receipt = _seal(
             {
                 "schema_version": TERMINAL_SCHEMA,
                 "mission_id": item["mission_id"],
+                "parent_campaign_id": item["parent_campaign_id"],
+                "parent_contract_sha256": item["parent_contract_sha256"],
+                "required_child_roles": item["required_child_roles"],
+                "child_role": item["child_role"],
                 "route": item["route"],
                 "disposition": disposition,
                 "result_file": result_path.name,
                 "result_sha256": result_sha256,
                 "ledger_state": ledger_state["state"],
+                "parent_reconciliation": parent_state,
                 "work_item_sha256": _file_sha256(mission_root / WORK_ITEM_NAME),
                 "self_sha256": "0" * 64,
             }
@@ -382,13 +479,23 @@ class FallbackWorkDispatcher:
             owner_token=owner_token,
             reason=reason,
         )
-        self._release_token(item["mission_id"])
-        return self._status(
+        status = self._status(
             mission_root,
             item,
             state="route_unavailable",
             detail=reason,
         )
+        self.parent_ledger.mark_child(
+            parent_campaign_id=item["parent_campaign_id"],
+            child_role=item["child_role"],
+            owner_token=owner_token,
+            state="unavailable",
+            terminal_disposition="unavailable",
+            result_sha256=_file_sha256(mission_root / STATUS_NAME),
+            reason=reason,
+        )
+        self._release_token(item["mission_id"])
+        return status
 
     def _serverless(
         self,
@@ -548,6 +655,12 @@ class FallbackWorkDispatcher:
                             route=item["route"],
                             owner_token=owner_token,
                         )
+                        self.parent_ledger.mark_child(
+                            parent_campaign_id=item["parent_campaign_id"],
+                            child_role=item["child_role"],
+                            owner_token=owner_token,
+                            state="active",
+                        )
                     elif route.state["state"] == "terminal":
                         durable = self.ledger.reconcile_unknown(
                             mission_id=item["mission_id"],
@@ -555,15 +668,33 @@ class FallbackWorkDispatcher:
                             resolution="completed",
                             reason="manager and persisted output prove completion",
                         )
+                        result_sha256 = _file_sha256(route.output_path)
+                        parent_state = self.parent_ledger.mark_child(
+                            parent_campaign_id=item["parent_campaign_id"],
+                            child_role=item["child_role"],
+                            owner_token=owner_token,
+                            state="completed",
+                            terminal_disposition="completed",
+                            result_sha256=result_sha256,
+                        )
                         receipt = _seal(
                             {
                                 "schema_version": TERMINAL_SCHEMA,
                                 "mission_id": item["mission_id"],
+                                "parent_campaign_id": item["parent_campaign_id"],
+                                "parent_contract_sha256": item[
+                                    "parent_contract_sha256"
+                                ],
+                                "required_child_roles": item[
+                                    "required_child_roles"
+                                ],
+                                "child_role": item["child_role"],
                                 "route": item["route"],
                                 "disposition": "completed",
                                 "result_file": route.output_path.name,
-                                "result_sha256": _file_sha256(route.output_path),
+                                "result_sha256": result_sha256,
                                 "ledger_state": durable["state"],
+                                "parent_reconciliation": parent_state,
                                 "work_item_sha256": _file_sha256(mission_root / WORK_ITEM_NAME),
                                 "self_sha256": "0" * 64,
                             }
@@ -579,12 +710,57 @@ class FallbackWorkDispatcher:
                             reason=route.state.get("last_error")
                             or "manager proved terminal failure",
                         )
-                        return self._status(
+                        self._status(
                             mission_root,
                             item,
                             state="failed",
                             detail=f"OpenRouter terminal failure: {durable['state']}",
                         )
+                        status_sha256 = _file_sha256(
+                            mission_root / STATUS_NAME
+                        )
+                        parent_state = self.parent_ledger.mark_child(
+                            parent_campaign_id=item["parent_campaign_id"],
+                            child_role=item["child_role"],
+                            owner_token=owner_token,
+                            state="failed",
+                            terminal_disposition="failed",
+                            result_sha256=status_sha256,
+                            reason=route.state.get("last_error")
+                            or "manager proved terminal failure",
+                        )
+                        receipt = _seal(
+                            {
+                                "schema_version": TERMINAL_SCHEMA,
+                                "mission_id": item["mission_id"],
+                                "parent_campaign_id": item[
+                                    "parent_campaign_id"
+                                ],
+                                "parent_contract_sha256": item[
+                                    "parent_contract_sha256"
+                                ],
+                                "required_child_roles": item[
+                                    "required_child_roles"
+                                ],
+                                "child_role": item["child_role"],
+                                "route": item["route"],
+                                "disposition": "failed",
+                                "result_file": STATUS_NAME,
+                                "result_sha256": status_sha256,
+                                "ledger_state": durable["state"],
+                                "parent_reconciliation": parent_state,
+                                "work_item_sha256": _file_sha256(
+                                    mission_root / WORK_ITEM_NAME
+                                ),
+                                "self_sha256": "0" * 64,
+                            }
+                        )
+                        _atomic_json(
+                            mission_root / TERMINAL_NAME,
+                            receipt,
+                        )
+                        self._release_token(item["mission_id"])
+                        return receipt
                     else:
                         raise FallbackDispatchError("unsupported OpenRouter reconciliation result")
                 elif state == "terminal":
@@ -609,6 +785,13 @@ class FallbackWorkDispatcher:
                 owner_token=owner_token,
                 reason=str(exc),
             )
+            self.parent_ledger.mark_child(
+                parent_campaign_id=item["parent_campaign_id"],
+                child_role=item["child_role"],
+                owner_token=owner_token,
+                state="outcome_unknown",
+                reason=str(exc),
+            )
             return self._status(
                 mission_root,
                 item,
@@ -625,6 +808,18 @@ class FallbackWorkDispatcher:
             if item["route"] == "serverless_overflow"
             else mission_root / "openrouter_advisory_output.json"
         )
+        token = self._owner_token(mission_id)
+        self.parent_ledger.bind_child(
+            parent_campaign_id=item["parent_campaign_id"],
+            parent_contract_sha256=item["parent_contract_sha256"],
+            required_child_roles=tuple(item["required_child_roles"]),
+            child_role=item["child_role"],
+            mission_id=mission_id,
+            session_id=item["session_id"],
+            route=item["route"],
+            payload_sha256=item["payload_sha256"],
+            owner_token=token,
+        )
         try:
             durable = self.ledger.inspect(mission_id)
         except RouteControlError:
@@ -634,7 +829,6 @@ class FallbackWorkDispatcher:
             "completed",
             "failed_final",
         }:
-            token = self._owner_token(mission_id)
             if durable["state"] == "terminal_pending_release":
                 durable = self.ledger.release_terminal(
                     mission_id=mission_id,
@@ -642,15 +836,34 @@ class FallbackWorkDispatcher:
                 )
             if not result_path.is_file():
                 raise FallbackDispatchError("terminal route result is absent during reconstruction")
+            disposition = (
+                "completed" if durable["state"] == "completed" else "failed"
+            )
+            result_sha256 = _file_sha256(result_path)
+            parent_state = self.parent_ledger.mark_child(
+                parent_campaign_id=item["parent_campaign_id"],
+                child_role=item["child_role"],
+                owner_token=token,
+                state=disposition,
+                terminal_disposition=disposition,
+                result_sha256=result_sha256,
+            )
             receipt = _seal(
                 {
                     "schema_version": TERMINAL_SCHEMA,
                     "mission_id": mission_id,
+                    "parent_campaign_id": item["parent_campaign_id"],
+                    "parent_contract_sha256": item[
+                        "parent_contract_sha256"
+                    ],
+                    "required_child_roles": item["required_child_roles"],
+                    "child_role": item["child_role"],
                     "route": item["route"],
-                    "disposition": ("completed" if durable["state"] == "completed" else "failed"),
+                    "disposition": disposition,
                     "result_file": result_path.name,
-                    "result_sha256": _file_sha256(result_path),
+                    "result_sha256": result_sha256,
                     "ledger_state": durable["state"],
+                    "parent_reconciliation": parent_state,
                     "work_item_sha256": _file_sha256(mission_root / WORK_ITEM_NAME),
                     "self_sha256": "0" * 64,
                 }
@@ -659,13 +872,11 @@ class FallbackWorkDispatcher:
             self._release_token(mission_id)
             return receipt
         if durable and durable["state"] == "outcome_unknown":
-            token = self._owner_token(mission_id)
             if item["route"] != "openrouter_advisory":
                 raise FallbackDispatchError(
                     "unknown Serverless route requires broker reconciliation"
                 )
             return self._openrouter(mission_root, item, token)
-        token = self._owner_token(mission_id)
         try:
             self.ledger.claim_route(
                 mission_id=mission_id,
@@ -677,6 +888,12 @@ class FallbackWorkDispatcher:
         except (RouteAlreadyActive, RouteControlError):
             # Preserve the token and durable route state for explicit recovery.
             raise
+        self.parent_ledger.mark_child(
+            parent_campaign_id=item["parent_campaign_id"],
+            child_role=item["child_role"],
+            owner_token=token,
+            state="active",
+        )
         if item["route"] == "serverless_overflow":
             return self._serverless(mission_root, item, token)
         return self._openrouter(mission_root, item, token)
@@ -684,16 +901,38 @@ class FallbackWorkDispatcher:
     def poll_once(self) -> list[dict[str, Any]]:
         """Advance bounded batches on both routes concurrently."""
         selected: list[tuple[Path, dict[str, Any]]] = []
+        parent_bindings: dict[str, tuple[str, str, tuple[str, ...]]] = {}
+        selected_roles: set[tuple[str, str]] = set()
         route_counts = {route: 0 for route in ROUTE_NAMES}
         limits = {
             "serverless_overflow": self.max_serverless_workers,
             "openrouter_advisory": self.max_openrouter_workers,
         }
         for mission_root, item in self.discover():
+            parent_campaign_id = item["parent_campaign_id"]
+            parent_binding = (
+                item["session_id"],
+                item["parent_contract_sha256"],
+                tuple(item["required_child_roles"]),
+            )
+            prior_binding = parent_bindings.setdefault(
+                parent_campaign_id,
+                parent_binding,
+            )
+            if prior_binding != parent_binding:
+                raise FallbackDispatchError(
+                    "fallback parent binding is contradictory"
+                )
+            role_key = (parent_campaign_id, item["child_role"])
+            if role_key in selected_roles:
+                raise FallbackDispatchError(
+                    "fallback parent child role is duplicated"
+                )
             route = item["route"]
             if route_counts[route] >= limits[route]:
                 continue
             selected.append((mission_root, item))
+            selected_roles.add(role_key)
             route_counts[route] += 1
         if not selected:
             return []

@@ -21,10 +21,13 @@ from .fallback_dispatcher import (
     TERMINAL_NAME,
     WORK_ITEM_NAME,
     WORK_ITEM_SCHEMA,
+    fallback_child_mission_id,
     seal_fallback_work_item,
 )
+from .route_control import PARENT_CHILD_ROUTES
 
-WORKLOAD_SCHEMA = "maskfactory.steward.serverless_prepared_workload.v1"
+LEGACY_WORKLOAD_SCHEMA = "maskfactory.steward.serverless_prepared_workload.v1"
+WORKLOAD_SCHEMA = "maskfactory.steward.serverless_prepared_workload.v2"
 WORKLOAD_NAME = "serverless_workload.json"
 PAYLOAD_NAME = "payload.json"
 SHA256_RE = re.compile(r"^[a-f0-9]{64}$")
@@ -32,6 +35,10 @@ SHA256_RE = re.compile(r"^[a-f0-9]{64}$")
 
 class ServerlessWorkProducerError(RuntimeError):
     """A prepared workload is malformed, contradictory, or unsafe."""
+
+
+class LegacyServerlessWorkload(ServerlessWorkProducerError):
+    """A historical unbound workload is preserved but cannot be reissued."""
 
 
 def canonical_bytes(value: Any) -> bytes:
@@ -101,6 +108,10 @@ class ServerlessWorkProducer:
             ) from exc
         if not isinstance(manifest, dict) or not isinstance(payload, dict) or not payload:
             raise ServerlessWorkProducerError("prepared workload JSON is invalid")
+        if manifest.get("schema_version") == LEGACY_WORKLOAD_SCHEMA:
+            raise LegacyServerlessWorkload(
+                "legacy Serverless workload has no immutable parent binding"
+            )
         declared = manifest.get("self_sha256")
         zeroed = copy.deepcopy(manifest)
         zeroed["self_sha256"] = "0" * 64
@@ -121,17 +132,38 @@ class ServerlessWorkProducer:
             raise ServerlessWorkProducerError("prepared workload profile is invalid")
         if not isinstance(manifest.get("session_id"), str) or not manifest["session_id"]:
             raise ServerlessWorkProducerError("prepared workload session is invalid")
+        for field in ("parent_campaign_id", "parent_contract_sha256"):
+            if not isinstance(manifest.get(field), str) or not SHA256_RE.fullmatch(
+                manifest[field]
+            ):
+                raise ServerlessWorkProducerError(
+                    f"prepared workload {field} is invalid"
+                )
+        required_roles = manifest.get("required_child_roles")
+        if (
+            not isinstance(required_roles, list)
+            or required_roles != sorted(set(required_roles))
+            or any(role not in PARENT_CHILD_ROUTES for role in required_roles)
+            or "serverless_execution" not in required_roles
+        ):
+            raise ServerlessWorkProducerError(
+                "prepared workload required_child_roles are invalid"
+            )
+        if manifest.get("child_role") != "serverless_execution":
+            raise ServerlessWorkProducerError(
+                "prepared workload child_role is invalid"
+            )
         seconds = manifest.get("requested_seconds")
         if isinstance(seconds, bool) or not isinstance(seconds, int) or seconds <= 0:
             raise ServerlessWorkProducerError("requested_seconds must be positive")
-        identity = {
-            "schema_version": WORKLOAD_SCHEMA,
-            "session_id": manifest["session_id"],
-            "profile": manifest["profile"],
-            "payload_sha256": manifest["payload_sha256"],
-            "requested_seconds": seconds,
-        }
-        mission_id = canonical_sha256(identity)
+        mission_id = fallback_child_mission_id(
+            session_id=manifest["session_id"],
+            parent_campaign_id=manifest["parent_campaign_id"],
+            parent_contract_sha256=manifest["parent_contract_sha256"],
+            required_child_roles=tuple(required_roles),
+            child_role="serverless_execution",
+            route="serverless_overflow",
+        )
         if manifest.get("mission_id") != mission_id:
             raise ServerlessWorkProducerError("prepared workload mission mismatch")
         return manifest, payload_path, payload
@@ -141,7 +173,17 @@ class ServerlessWorkProducer:
         for root in sorted(self.ready_root.iterdir()):
             if not root.is_dir() or not (root / WORKLOAD_NAME).is_file():
                 continue
-            manifest, payload_path, payload = self._load(root)
+            try:
+                manifest, payload_path, payload = self._load(root)
+            except LegacyServerlessWorkload:
+                receipts.append(
+                    {
+                        "source_root": root.name,
+                        "created": False,
+                        "legacy_unbound": True,
+                    }
+                )
+                continue
             mission_id = manifest["mission_id"]
             mission_root = self.inbox_root / mission_id
             if mission_root.exists():
@@ -162,6 +204,14 @@ class ServerlessWorkProducer:
                         "schema_version": WORK_ITEM_SCHEMA,
                         "mission_id": mission_id,
                         "session_id": manifest["session_id"],
+                        "parent_campaign_id": manifest["parent_campaign_id"],
+                        "parent_contract_sha256": manifest[
+                            "parent_contract_sha256"
+                        ],
+                        "required_child_roles": manifest[
+                            "required_child_roles"
+                        ],
+                        "child_role": manifest["child_role"],
                         "route": "serverless_overflow",
                         "profile": manifest["profile"],
                         "payload_sha256": canonical_sha256(payload),

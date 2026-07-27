@@ -27,8 +27,10 @@ POLICY_PATH = Path(
     r"C:\Comfy_UI_Main\Plan\10_REGISTRIES" r"\openrouter_reasoning_fallback_policy.json"
 )
 STATE_ROOT = Path.home() / ".codex/openrouter_fallback"
-STATE_SCHEMA = "maskfactory.steward.openrouter_advisory_state.v1"
-REQUEST_SCHEMA = "maskfactory.openrouter_advisory_request.v1"
+STATE_SCHEMA = "maskfactory.steward.openrouter_advisory_state.v2"
+LEGACY_REQUEST_SCHEMA = "maskfactory.openrouter_advisory_request.v1"
+REQUEST_SCHEMA = "maskfactory.openrouter_advisory_request.v2"
+PARENT_BINDING_SCHEMA = "comfyui.openrouter_parent_binding.v1"
 SHA256_RE = re.compile(r"^[a-f0-9]{64}$")
 SAFE_JOB_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")
 FORBIDDEN_AUTHORITY = frozenset(
@@ -102,6 +104,20 @@ def _seal(value: Mapping[str, Any]) -> dict[str, Any]:
     sealed.pop("self_sha256", None)
     sealed["self_sha256"] = _sha256_bytes(_canonical_bytes(sealed))
     return sealed
+
+
+def _parent_binding_sha256(request: Mapping[str, Any]) -> str:
+    return _sha256_bytes(
+        _canonical_bytes(
+            {
+                "schema_version": PARENT_BINDING_SCHEMA,
+                "session_id": request["session_id"],
+                "parent_campaign_id": request["parent_campaign_id"],
+                "parent_contract_sha256": request["parent_contract_sha256"],
+                "child_role": request["child_role"],
+            }
+        )
+    )
 
 
 def _validate_seal(value: Mapping[str, Any]) -> dict[str, Any]:
@@ -247,6 +263,10 @@ class GovernedOpenRouterAdvisory:
             "mission_id": request["mission_id"],
             "session_id": request["session_id"],
             "job_id": request["job_id"],
+            "parent_campaign_id": request["parent_campaign_id"],
+            "parent_contract_sha256": request["parent_contract_sha256"],
+            "child_role": request["child_role"],
+            "parent_binding_sha256": _parent_binding_sha256(request),
             "work_kind": request["work_kind"],
             "model_tier": request["model_tier"],
             "prompt_sha256": request["prompt_sha256"],
@@ -292,14 +312,25 @@ class GovernedOpenRouterAdvisory:
         return copy.deepcopy(self._state)
 
     def _validate_request(self, request: Mapping[str, Any]) -> None:
+        if request.get("schema_version") == LEGACY_REQUEST_SCHEMA:
+            raise OpenRouterAdvisoryError(
+                "legacy advisory request has no immutable parent binding"
+            )
         if request.get("schema_version") != REQUEST_SCHEMA:
             raise OpenRouterAdvisoryError("unsupported advisory request schema")
-        for field in ("mission_id", "prompt_sha256"):
+        for field in (
+            "mission_id",
+            "parent_campaign_id",
+            "parent_contract_sha256",
+            "prompt_sha256",
+        ):
             if not isinstance(request.get(field), str) or not SHA256_RE.fullmatch(request[field]):
                 raise OpenRouterAdvisoryError(f"invalid {field}")
-        for field in ("session_id", "work_kind"):
+        for field in ("session_id", "work_kind", "child_role"):
             if not isinstance(request.get(field), str) or not request[field]:
                 raise OpenRouterAdvisoryError(f"invalid {field}")
+        if request["child_role"] != "consolidated_advisory":
+            raise OpenRouterAdvisoryError("unsupported advisory child_role")
         if not isinstance(request.get("job_id"), str) or not SAFE_JOB_RE.fullmatch(
             request["job_id"]
         ):
@@ -359,6 +390,23 @@ class GovernedOpenRouterAdvisory:
             system_prompt_sha256
         ):
             raise OpenRouterAdvisoryError("system_prompt_sha256 is invalid")
+
+    def _validate_parent_binding_result(
+        self,
+        result: Mapping[str, Any],
+        *,
+        context: str,
+    ) -> None:
+        expected = {
+            "parent_campaign_id": self.request["parent_campaign_id"],
+            "parent_contract_sha256": self.request["parent_contract_sha256"],
+            "child_role": self.request["child_role"],
+            "parent_binding_sha256": _parent_binding_sha256(self.request),
+        }
+        if any(result.get(key) != value for key, value in expected.items()):
+            raise OpenRouterManagerProtocolError(
+                f"{context} parent binding contradicts immutable request"
+            )
 
     def _request_paths(self, values: list[str], *, label: str) -> list[Path]:
         paths: list[Path] = []
@@ -475,6 +523,12 @@ class GovernedOpenRouterAdvisory:
             self.request["session_id"],
             "--job-id",
             self.request["job_id"],
+            "--parent-campaign-id",
+            self.request["parent_campaign_id"],
+            "--parent-contract-sha256",
+            self.request["parent_contract_sha256"],
+            "--child-role",
+            self.request["child_role"],
             "--work-kind",
             self.request["work_kind"],
             "--model-tier",
@@ -510,6 +564,19 @@ class GovernedOpenRouterAdvisory:
                 error=str(exc),
             )
             raise OpenRouterOutcomeUnknown("reservation outcome is unknown; do not retry") from exc
+        try:
+            self._validate_parent_binding_result(result, context="reservation")
+        except OpenRouterManagerProtocolError as exc:
+            self._transition(
+                self._state,
+                "outcome_unknown",
+                "reservation_parent_binding_contradiction",
+                result=result,
+                error=str(exc),
+            )
+            raise OpenRouterOutcomeUnknown(
+                "reservation parent binding contradicts immutable request"
+            ) from exc
         if (
             result.get("status") != "RESERVED"
             or result.get("session_id") != self.request["session_id"]
@@ -569,6 +636,19 @@ class GovernedOpenRouterAdvisory:
             )
             raise OpenRouterOutcomeUnknown(
                 "submission outcome is unknown; do not retry or change route"
+            ) from exc
+        try:
+            self._validate_parent_binding_result(result, context="submission")
+        except OpenRouterManagerProtocolError as exc:
+            self._transition(
+                self._state,
+                "outcome_unknown",
+                "submit_parent_binding_contradiction",
+                result=result,
+                error=str(exc),
+            )
+            raise OpenRouterOutcomeUnknown(
+                "submission parent binding contradicts immutable request"
             ) from exc
         if (
             result.get("status") not in {"COMPLETED", "SUBMITTED"}
@@ -635,6 +715,12 @@ class GovernedOpenRouterAdvisory:
         ) as exc:
             raise OpenRouterOutcomeUnknown(
                 "reservation inspection is unavailable; submission remains unknown"
+            ) from exc
+        try:
+            self._validate_parent_binding_result(result, context="inspection")
+        except OpenRouterManagerProtocolError as exc:
+            raise OpenRouterOutcomeUnknown(
+                "reservation inspection parent binding contradicts immutable request"
             ) from exc
         if (
             result.get("reservation_id") != reservation_id
@@ -711,6 +797,19 @@ class GovernedOpenRouterAdvisory:
             )
             raise OpenRouterOutcomeUnknown(
                 "video reconciliation is unknown; do not retry submission"
+            ) from exc
+        try:
+            self._validate_parent_binding_result(result, context="video reconciliation")
+        except OpenRouterManagerProtocolError as exc:
+            self._transition(
+                self._state,
+                "outcome_unknown",
+                "video_reconcile_parent_binding_contradiction",
+                result=result,
+                error=str(exc),
+            )
+            raise OpenRouterOutcomeUnknown(
+                "video reconciliation parent binding contradicts immutable request"
             ) from exc
         if (
             result.get("reservation_id") != reservation_id

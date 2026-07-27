@@ -4,8 +4,14 @@ import hashlib
 import json
 from pathlib import Path
 
-from maskfactory.steward.fallback_campaign_producer import FallbackCampaignProducer
+import pytest
+
+from maskfactory.steward.fallback_campaign_producer import (
+    FallbackCampaignProducer,
+    FallbackCampaignProducerError,
+)
 from maskfactory.steward.fallback_dispatcher import WORK_ITEM_NAME
+from maskfactory.steward.openrouter_advisory import GovernedOpenRouterAdvisory
 
 
 def _tracker(path: Path) -> None:
@@ -46,13 +52,32 @@ def _tracker(path: Path) -> None:
     path.write_text(json.dumps({"items": items}, sort_keys=True), encoding="utf-8")
 
 
+def _policy(path: Path) -> None:
+    path.write_text(
+        json.dumps(
+            {
+                "models": {
+                    "routine": {
+                        "id": "qwen/qwen3-coder-next",
+                        "api_kind": "chat",
+                    }
+                },
+                "work_profiles": {"implementation_review": "routine"},
+            },
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
 def test_produces_one_bounded_unblocked_cluster_and_is_idempotent(tmp_path: Path) -> None:
     tracker = tmp_path / "tracker.json"
     inbox = tmp_path / "inbox"
     manager = tmp_path / "manager.py"
     policy = tmp_path / "policy.json"
     manager.write_text("# manager\n", encoding="utf-8")
-    policy.write_text("{}\n", encoding="utf-8")
+    _policy(policy)
     _tracker(tracker)
     producer = FallbackCampaignProducer(
         tracker_path=tracker,
@@ -75,6 +100,7 @@ def test_produces_one_bounded_unblocked_cluster_and_is_idempotent(tmp_path: Path
         {
             "mission_id": first[0]["mission_id"],
             "campaign_id": first[0]["campaign_id"],
+            "parent_campaign_id": first[0]["parent_campaign_id"],
             "work_kind": "implementation_review",
             "item_ids": first[0]["item_ids"],
             "created": False,
@@ -88,7 +114,32 @@ def test_produces_one_bounded_unblocked_cluster_and_is_idempotent(tmp_path: Path
     assert request["authority"]["execute_tools"] is False
     assert request["authority"]["final_acceptance"] is False
     assert request["attachments"] == []
+    assert request["parent_campaign_id"] == work_item["parent_campaign_id"]
+    assert request["parent_contract_sha256"] == work_item["parent_contract_sha256"]
+    assert request["child_role"] == work_item["child_role"]
     assert work_item["tracker_item_ids"] == first[0]["item_ids"]
+    assert work_item["parent_campaign_id"] == first[0]["parent_campaign_id"]
+    assert len(work_item["parent_campaign_id"]) == 64
+    assert work_item["child_role"] == "consolidated_advisory"
+    assert work_item["required_child_roles"] == ["consolidated_advisory"]
+    route = GovernedOpenRouterAdvisory(
+        mission_root=root,
+        request_path=root / "request.json",
+        prompt_path=root / "prompt.txt",
+        manager_path=manager,
+        policy_path=policy,
+        manager_state_root=tmp_path / "manager-state",
+        command_runner=lambda _command, _timeout: {
+            "session_id": request["session_id"],
+            "route": "continue_cpu",
+        },
+    )
+    assert (
+        route.decide(pod_state="unavailable", serverless_state="unavailable")[
+            "state"
+        ]
+        == "cpu_fallback"
+    )
 
 
 def test_new_tracker_snapshot_gets_new_identity_without_reissue(
@@ -118,7 +169,7 @@ def test_new_tracker_snapshot_gets_new_identity_without_reissue(
     assert second["created"] is True
 
 
-def test_production_modes_create_distinct_useful_advisory_jobs(
+def test_multiple_advisory_modes_are_rejected_before_micro_fanout(
     tmp_path: Path,
 ) -> None:
     tracker = tmp_path / "tracker.json"
@@ -128,35 +179,20 @@ def test_production_modes_create_distinct_useful_advisory_jobs(
     manager.write_text("# manager\n", encoding="utf-8")
     policy.write_text("{}\n", encoding="utf-8")
     _tracker(tracker)
-    producer = FallbackCampaignProducer(
-        tracker_path=tracker,
-        inbox_root=inbox,
-        advisory_work_kinds=(
-            "implementation_review",
-            "test_strategy",
-            "root_cause_analysis",
-            "dependency_analysis",
-        ),
-        openrouter_manager_path=manager,
-        openrouter_policy_path=policy,
-    )
-
-    receipts = producer.produce()
-
-    assert {item["work_kind"] for item in receipts} == {
-        "implementation_review",
-        "test_strategy",
-        "root_cause_analysis",
-        "dependency_analysis",
-    }
-    assert len({item["mission_id"] for item in receipts}) == len(receipts)
-    assert all(item["created"] is True for item in receipts)
-    blocked = [
-        item
-        for item in receipts
-        if item["work_kind"] in {"root_cause_analysis", "dependency_analysis"}
-    ]
-    assert all("MF-P6-15.04" in item["item_ids"] for item in blocked)
+    with pytest.raises(
+        FallbackCampaignProducerError,
+        match="exactly one governed consolidated advisory",
+    ):
+        FallbackCampaignProducer(
+            tracker_path=tracker,
+            inbox_root=inbox,
+            advisory_work_kinds=(
+                "implementation_review",
+                "test_strategy",
+            ),
+            openrouter_manager_path=manager,
+            openrouter_policy_path=policy,
+        )
 
 
 def test_manager_change_forces_material_successor_identity(tmp_path: Path) -> None:

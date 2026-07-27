@@ -16,6 +16,28 @@ from maskfactory.steward.openrouter_advisory import (
     OpenRouterOutcomeUnknown,
 )
 
+PARENT_CAMPAIGN_ID = "2" * 64
+PARENT_CONTRACT_SHA256 = "3" * 64
+CHILD_ROLE = "consolidated_advisory"
+
+
+def parent_binding() -> dict[str, str]:
+    canonical = {
+        "schema_version": "comfyui.openrouter_parent_binding.v1",
+        "session_id": "019f91d1-ea20-7d81-83ff-03d393eaa1f5",
+        "parent_campaign_id": PARENT_CAMPAIGN_ID,
+        "parent_contract_sha256": PARENT_CONTRACT_SHA256,
+        "child_role": CHILD_ROLE,
+    }
+    return {
+        "parent_campaign_id": PARENT_CAMPAIGN_ID,
+        "parent_contract_sha256": PARENT_CONTRACT_SHA256,
+        "child_role": CHILD_ROLE,
+        "parent_binding_sha256": hashlib.sha256(
+            json.dumps(canonical, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest(),
+    }
+
 
 class FakeManager:
     def __init__(self, *results: dict[str, Any] | BaseException) -> None:
@@ -32,10 +54,13 @@ class FakeManager:
 
 def request_body(prompt: str) -> dict[str, Any]:
     return {
-        "schema_version": "maskfactory.openrouter_advisory_request.v1",
+        "schema_version": "maskfactory.openrouter_advisory_request.v2",
         "mission_id": "1" * 64,
         "session_id": "019f91d1-ea20-7d81-83ff-03d393eaa1f5",
         "job_id": "mf-p6-15-03-test",
+        "parent_campaign_id": PARENT_CAMPAIGN_ID,
+        "parent_contract_sha256": PARENT_CONTRACT_SHA256,
+        "child_role": CHILD_ROLE,
         "work_kind": "coding_advice",
         "model_tier": "routine",
         "materially_difficult": False,
@@ -143,6 +168,7 @@ def openrouter_decision() -> dict[str, Any]:
 
 def reservation(prompt: str) -> dict[str, Any]:
     return {
+        **parent_binding(),
         "reservation_id": "or-reservation-1",
         "session_id": "019f91d1-ea20-7d81-83ff-03d393eaa1f5",
         "job_id": "mf-p6-15-03-test",
@@ -228,6 +254,19 @@ def test_secret_and_tool_authority_requests_fail_before_manager(tmp_path: Path) 
     assert manager.commands == []
 
 
+def test_legacy_unbound_request_fails_before_manager(tmp_path: Path) -> None:
+    manager = FakeManager()
+    with pytest.raises(OpenRouterAdvisoryError, match="no immutable parent binding"):
+        build(
+            tmp_path,
+            manager,
+            request_updates={
+                "schema_version": "maskfactory.openrouter_advisory_request.v1"
+            },
+        )
+    assert manager.commands == []
+
+
 def test_escalation_requires_material_difficulty(tmp_path: Path) -> None:
     with pytest.raises(OpenRouterAdvisoryError, match="materially difficult"):
         build(
@@ -257,6 +296,7 @@ def test_success_is_terminal_read_only_advice(tmp_path: Path) -> None:
     )
     manager.results.append(
         {
+            **parent_binding(),
             "status": "COMPLETED",
             "reservation_id": "or-reservation-1",
             "output": str(output),
@@ -273,6 +313,17 @@ def test_success_is_terminal_read_only_advice(tmp_path: Path) -> None:
         "decide",
         "reserve",
         "submit",
+    ]
+    reserve_command = manager.commands[1]
+    assert reserve_command[
+        reserve_command.index("--job-id") + 2 : reserve_command.index("--work-kind")
+    ] == [
+        "--parent-campaign-id",
+        PARENT_CAMPAIGN_ID,
+        "--parent-contract-sha256",
+        PARENT_CONTRACT_SHA256,
+        "--child-role",
+        CHILD_ROLE,
     ]
 
 
@@ -340,6 +391,7 @@ def test_async_video_reconciles_without_second_submit(tmp_path: Path) -> None:
     )
     manager.results.append(
         {
+            **parent_binding(),
             "status": "SUBMITTED",
             "reservation_id": "or-reservation-1",
             "output": str(route.output_path),
@@ -355,6 +407,7 @@ def test_async_video_reconciles_without_second_submit(tmp_path: Path) -> None:
     )
     manager.results.append(
         {
+            **parent_binding(),
             "status": "COMPLETED",
             "reservation_id": "or-reservation-1",
             "output": str(route.output_path),
@@ -446,6 +499,26 @@ def test_unknown_submit_stays_blocked_when_manager_reports_submitting(
     with pytest.raises(OpenRouterOutcomeUnknown, match="remains SUBMITTING"):
         route.reconcile_unknown()
     assert route.state["state"] == "outcome_unknown"
+
+
+def test_reservation_parent_binding_mismatch_fails_unknown_without_submit(
+    tmp_path: Path,
+) -> None:
+    prompt = "Review this bounded implementation and return advice only."
+    manager = FakeManager(
+        openrouter_decision(),
+        {
+            **reservation(prompt),
+            "parent_contract_sha256": "4" * 64,
+        },
+    )
+    route = build(tmp_path, manager, prompt=prompt)
+    route.decide(pod_state="unavailable", serverless_state="rejected")
+
+    with pytest.raises(OpenRouterOutcomeUnknown, match="parent binding"):
+        route.reserve()
+    assert route.state["state"] == "outcome_unknown"
+    assert [command[6] for command in manager.commands] == ["decide", "reserve"]
 
 
 def test_source_has_no_direct_provider_client() -> None:

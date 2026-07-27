@@ -9,6 +9,7 @@ requires an explicit release or reconciliation before a route can change.
 from __future__ import annotations
 
 import hashlib
+import json
 import os
 import re
 import sqlite3
@@ -18,9 +19,15 @@ from pathlib import Path
 from typing import Any
 
 SCHEMA_VERSION = "maskfactory.steward.canonical_route_ledger.v1"
+PARENT_SCHEMA_VERSION = "maskfactory.steward.parent_child_route_ledger.v1"
 ROUTES = frozenset({"local_pod", "serverless_overflow", "openrouter_advisory"})
+PARENT_CHILD_ROUTES = {
+    "serverless_execution": "serverless_overflow",
+    "consolidated_advisory": "openrouter_advisory",
+}
 SHA256_RE = re.compile(r"^[a-f0-9]{64}$")
 FINAL_STATES = frozenset({"completed", "failed_final"})
+PARENT_FINAL_STATES = frozenset({"completed", "failed", "unavailable"})
 
 
 class RouteControlError(RuntimeError):
@@ -37,6 +44,14 @@ class RouteAlreadyActive(RouteControlError):
 
 class RouteOutcomeUnknown(RouteControlError):
     """The prior route must reconcile before any route change."""
+
+
+class ParentChildBindingError(RouteControlError):
+    """A parent or child-role binding conflicts with durable state."""
+
+
+class ParentChildAlreadyActive(ParentChildBindingError):
+    """Another mission or owner already controls this parent's child role."""
 
 
 def _token_sha256(owner_token: str) -> str:
@@ -57,6 +72,390 @@ def _validate_identity(
         raise RouteControlError("session_id is required")
     if not SHA256_RE.fullmatch(payload_sha256):
         raise RouteControlError("payload_sha256 must be 64 lowercase hexadecimal characters")
+
+
+def _validate_parent_identity(
+    *,
+    parent_campaign_id: str,
+    parent_contract_sha256: str,
+    required_child_roles: tuple[str, ...],
+    child_role: str,
+    route: str,
+) -> None:
+    if not SHA256_RE.fullmatch(parent_campaign_id):
+        raise ParentChildBindingError(
+            "parent_campaign_id must be 64 lowercase hexadecimal characters"
+        )
+    if not SHA256_RE.fullmatch(parent_contract_sha256):
+        raise ParentChildBindingError(
+            "parent_contract_sha256 must be 64 lowercase hexadecimal characters"
+        )
+    if (
+        not required_child_roles
+        or tuple(sorted(set(required_child_roles))) != required_child_roles
+        or any(role not in PARENT_CHILD_ROUTES for role in required_child_roles)
+    ):
+        raise ParentChildBindingError(
+            "required_child_roles must be a sorted unique governed role tuple"
+        )
+    if child_role not in required_child_roles:
+        raise ParentChildBindingError("child_role is absent from required_child_roles")
+    if PARENT_CHILD_ROUTES.get(child_role) != route:
+        raise ParentChildBindingError("child_role does not match the governed route")
+
+
+class CanonicalParentChildLedger:
+    """Bind exactly one immutable mission to each required parent child role."""
+
+    def __init__(
+        self,
+        database: Path,
+        *,
+        clock: Callable[[], float] = time.time,
+    ) -> None:
+        self.database = Path(database)
+        self.database.parent.mkdir(parents=True, exist_ok=True)
+        self.clock = clock
+        with self._connect() as connection:
+            connection.executescript(
+                """
+                CREATE TABLE IF NOT EXISTS route_meta (
+                    key TEXT PRIMARY KEY,
+                    value TEXT NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS parent_campaigns (
+                    parent_campaign_id TEXT PRIMARY KEY,
+                    session_id TEXT NOT NULL,
+                    parent_contract_sha256 TEXT NOT NULL,
+                    required_child_roles_json TEXT NOT NULL,
+                    created_at REAL NOT NULL,
+                    updated_at REAL NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS parent_route_children (
+                    parent_campaign_id TEXT NOT NULL,
+                    child_role TEXT NOT NULL,
+                    mission_id TEXT NOT NULL UNIQUE,
+                    route TEXT NOT NULL,
+                    payload_sha256 TEXT NOT NULL,
+                    state TEXT NOT NULL,
+                    owner_token_sha256 TEXT NOT NULL,
+                    terminal_disposition TEXT,
+                    result_sha256 TEXT,
+                    reason TEXT,
+                    created_at REAL NOT NULL,
+                    updated_at REAL NOT NULL,
+                    PRIMARY KEY(parent_campaign_id, child_role),
+                    FOREIGN KEY(parent_campaign_id)
+                        REFERENCES parent_campaigns(parent_campaign_id)
+                );
+                """
+            )
+            connection.execute(
+                "INSERT OR IGNORE INTO route_meta(key, value) "
+                "VALUES('parent_schema_version', ?)",
+                (PARENT_SCHEMA_VERSION,),
+            )
+            existing = connection.execute(
+                "SELECT value FROM route_meta WHERE key='parent_schema_version'"
+            ).fetchone()
+            if (
+                existing is None
+                or existing["value"] != PARENT_SCHEMA_VERSION
+            ):
+                raise ParentChildBindingError(
+                    "unsupported canonical parent-child ledger schema"
+                )
+
+    def _connect(self) -> sqlite3.Connection:
+        connection = sqlite3.connect(
+            self.database,
+            timeout=30,
+            isolation_level=None,
+        )
+        connection.row_factory = sqlite3.Row
+        connection.execute("PRAGMA foreign_keys=ON")
+        connection.execute("PRAGMA busy_timeout=30000")
+        return connection
+
+    @staticmethod
+    def _roles_json(required_child_roles: tuple[str, ...]) -> str:
+        return json.dumps(list(required_child_roles), separators=(",", ":"))
+
+    @staticmethod
+    def _child_value(row: sqlite3.Row) -> dict[str, Any]:
+        return {
+            "child_role": row["child_role"],
+            "mission_id": row["mission_id"],
+            "route": row["route"],
+            "payload_sha256": row["payload_sha256"],
+            "state": row["state"],
+            "terminal_disposition": row["terminal_disposition"],
+            "result_sha256": row["result_sha256"],
+            "reason": row["reason"],
+        }
+
+    def bind_child(
+        self,
+        *,
+        parent_campaign_id: str,
+        parent_contract_sha256: str,
+        required_child_roles: tuple[str, ...],
+        child_role: str,
+        mission_id: str,
+        session_id: str,
+        route: str,
+        payload_sha256: str,
+        owner_token: str,
+    ) -> dict[str, Any]:
+        """Bind or reconstruct one exact child role before route admission."""
+        _validate_identity(
+            mission_id=mission_id,
+            session_id=session_id,
+            payload_sha256=payload_sha256,
+        )
+        _validate_parent_identity(
+            parent_campaign_id=parent_campaign_id,
+            parent_contract_sha256=parent_contract_sha256,
+            required_child_roles=required_child_roles,
+            child_role=child_role,
+            route=route,
+        )
+        token_sha256 = _token_sha256(owner_token)
+        roles_json = self._roles_json(required_child_roles)
+        now = self.clock()
+        with self._connect() as connection:
+            connection.execute("BEGIN IMMEDIATE")
+            parent = connection.execute(
+                "SELECT * FROM parent_campaigns WHERE parent_campaign_id=?",
+                (parent_campaign_id,),
+            ).fetchone()
+            if parent is None:
+                connection.execute(
+                    """
+                    INSERT INTO parent_campaigns(
+                        parent_campaign_id, session_id,
+                        parent_contract_sha256, required_child_roles_json,
+                        created_at, updated_at
+                    ) VALUES(?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        parent_campaign_id,
+                        session_id,
+                        parent_contract_sha256,
+                        roles_json,
+                        now,
+                        now,
+                    ),
+                )
+            elif (
+                parent["session_id"] != session_id
+                or parent["parent_contract_sha256"] != parent_contract_sha256
+                or parent["required_child_roles_json"] != roles_json
+            ):
+                raise ParentChildBindingError(
+                    "parent campaign identity conflicts with durable state"
+                )
+            child = connection.execute(
+                "SELECT * FROM parent_route_children "
+                "WHERE parent_campaign_id=? AND child_role=?",
+                (parent_campaign_id, child_role),
+            ).fetchone()
+            if child is None:
+                attached = connection.execute(
+                    "SELECT parent_campaign_id, child_role "
+                    "FROM parent_route_children WHERE mission_id=?",
+                    (mission_id,),
+                ).fetchone()
+                if attached is not None:
+                    raise ParentChildBindingError(
+                        "child mission is already attached to another parent role"
+                    )
+                canonical = connection.execute(
+                    "SELECT mission_id FROM canonical_missions WHERE mission_id=?",
+                    (mission_id,),
+                ).fetchone()
+                if canonical is not None:
+                    raise ParentChildBindingError(
+                        "existing canonical mission cannot be attached retroactively"
+                    )
+                connection.execute(
+                    """
+                    INSERT INTO parent_route_children(
+                        parent_campaign_id, child_role, mission_id, route,
+                        payload_sha256, state, owner_token_sha256,
+                        created_at, updated_at
+                    ) VALUES(?, ?, ?, ?, ?, 'bound', ?, ?, ?)
+                    """,
+                    (
+                        parent_campaign_id,
+                        child_role,
+                        mission_id,
+                        route,
+                        payload_sha256,
+                        token_sha256,
+                        now,
+                        now,
+                    ),
+                )
+            else:
+                if (
+                    child["mission_id"] != mission_id
+                    or child["route"] != route
+                    or child["payload_sha256"] != payload_sha256
+                ):
+                    raise ParentChildAlreadyActive(
+                        "parent child role is already bound to another mission"
+                    )
+                if child["state"] in PARENT_FINAL_STATES:
+                    connection.commit()
+                    return self.inspect_parent(parent_campaign_id)
+                if child["owner_token_sha256"] != token_sha256:
+                    raise ParentChildAlreadyActive(
+                        "parent child role has another active owner"
+                    )
+            connection.execute(
+                "UPDATE parent_campaigns SET updated_at=? "
+                "WHERE parent_campaign_id=?",
+                (now, parent_campaign_id),
+            )
+            connection.commit()
+        return self.inspect_parent(parent_campaign_id)
+
+    def mark_child(
+        self,
+        *,
+        parent_campaign_id: str,
+        child_role: str,
+        owner_token: str,
+        state: str,
+        terminal_disposition: str | None = None,
+        result_sha256: str | None = None,
+        reason: str | None = None,
+    ) -> dict[str, Any]:
+        """Persist a parent-child transition after the route ledger transition."""
+        allowed = {
+            "active",
+            "outcome_unknown",
+            "terminal_pending_release",
+            "completed",
+            "failed",
+            "unavailable",
+        }
+        if state not in allowed:
+            raise ParentChildBindingError("parent child state is invalid")
+        if state in PARENT_FINAL_STATES:
+            if terminal_disposition != state or not (
+                isinstance(result_sha256, str)
+                and SHA256_RE.fullmatch(result_sha256)
+            ):
+                raise ParentChildBindingError(
+                    "terminal parent child state requires matching disposition and result"
+                )
+        elif terminal_disposition is not None or result_sha256 is not None:
+            raise ParentChildBindingError(
+                "nonterminal parent child state cannot bind a terminal result"
+            )
+        token_sha256 = _token_sha256(owner_token)
+        now = self.clock()
+        with self._connect() as connection:
+            connection.execute("BEGIN IMMEDIATE")
+            child = connection.execute(
+                "SELECT * FROM parent_route_children "
+                "WHERE parent_campaign_id=? AND child_role=?",
+                (parent_campaign_id, child_role),
+            ).fetchone()
+            if child is None:
+                raise ParentChildBindingError("parent child role is absent")
+            if child["state"] in PARENT_FINAL_STATES:
+                if (
+                    child["state"] != state
+                    or child["terminal_disposition"] != terminal_disposition
+                    or child["result_sha256"] != result_sha256
+                ):
+                    raise ParentChildBindingError(
+                        "terminal parent child role cannot be rewritten"
+                    )
+                connection.commit()
+                return self.inspect_parent(parent_campaign_id)
+            if child["owner_token_sha256"] != token_sha256:
+                raise ParentChildAlreadyActive(
+                    "parent child owner token does not match"
+                )
+            connection.execute(
+                """
+                UPDATE parent_route_children
+                SET state=?, terminal_disposition=?, result_sha256=?,
+                    reason=?, updated_at=?
+                WHERE parent_campaign_id=? AND child_role=?
+                """,
+                (
+                    state,
+                    terminal_disposition,
+                    result_sha256,
+                    reason,
+                    now,
+                    parent_campaign_id,
+                    child_role,
+                ),
+            )
+            connection.execute(
+                "UPDATE parent_campaigns SET updated_at=? "
+                "WHERE parent_campaign_id=?",
+                (now, parent_campaign_id),
+            )
+            connection.commit()
+        return self.inspect_parent(parent_campaign_id)
+
+    def inspect_parent(self, parent_campaign_id: str) -> dict[str, Any]:
+        """Return a reconciled non-secret parent view across required child roles."""
+        if not SHA256_RE.fullmatch(parent_campaign_id):
+            raise ParentChildBindingError("parent_campaign_id is invalid")
+        with self._connect() as connection:
+            parent = connection.execute(
+                "SELECT * FROM parent_campaigns WHERE parent_campaign_id=?",
+                (parent_campaign_id,),
+            ).fetchone()
+            if parent is None:
+                raise ParentChildBindingError("parent campaign is absent")
+            required_value = json.loads(parent["required_child_roles_json"])
+            if not isinstance(required_value, list) or not all(
+                isinstance(role, str) for role in required_value
+            ):
+                raise ParentChildBindingError(
+                    "parent required child roles are unreadable"
+                )
+            required = tuple(required_value)
+            children = [
+                self._child_value(row)
+                for row in connection.execute(
+                    "SELECT * FROM parent_route_children "
+                    "WHERE parent_campaign_id=? ORDER BY child_role",
+                    (parent_campaign_id,),
+                )
+            ]
+        by_role = {child["child_role"]: child for child in children}
+        missing = [role for role in required if role not in by_role]
+        child_states = {child["state"] for child in children}
+        if "outcome_unknown" in child_states:
+            state = "outcome_unknown"
+        elif missing:
+            state = "awaiting_children"
+        elif any(child["state"] not in PARENT_FINAL_STATES for child in children):
+            state = "in_progress"
+        elif any(child["state"] in {"failed", "unavailable"} for child in children):
+            state = "failed"
+        else:
+            state = "completed"
+        return {
+            "schema_version": PARENT_SCHEMA_VERSION,
+            "parent_campaign_id": parent["parent_campaign_id"],
+            "session_id": parent["session_id"],
+            "parent_contract_sha256": parent["parent_contract_sha256"],
+            "required_child_roles": list(required),
+            "state": state,
+            "missing_child_roles": missing,
+            "children": children,
+        }
 
 
 class CanonicalMissionRouteLedger:
@@ -112,15 +511,15 @@ class CanonicalMissionRouteLedger:
                 );
                 """
             )
+            connection.execute(
+                "INSERT OR IGNORE INTO route_meta(key, value) "
+                "VALUES('schema_version', ?)",
+                (SCHEMA_VERSION,),
+            )
             existing = connection.execute(
                 "SELECT value FROM route_meta WHERE key='schema_version'"
             ).fetchone()
-            if existing is None:
-                connection.execute(
-                    "INSERT INTO route_meta(key, value) VALUES('schema_version', ?)",
-                    (SCHEMA_VERSION,),
-                )
-            elif existing["value"] != SCHEMA_VERSION:
+            if existing is None or existing["value"] != SCHEMA_VERSION:
                 raise RouteControlError("unsupported canonical route ledger schema")
         try:
             os.chmod(self.database, 0o600)

@@ -23,6 +23,7 @@ from .campaign_builder import CampaignCandidate, build_campaigns
 from .fallback_dispatcher import (
     WORK_ITEM_NAME,
     WORK_ITEM_SCHEMA,
+    fallback_child_mission_id,
     seal_fallback_work_item,
 )
 from .goal_selector import (
@@ -34,7 +35,7 @@ from .goal_selector import (
 from .openrouter_advisory import MANAGER_PATH, POLICY_PATH
 
 PRODUCER_SCHEMA = "maskfactory.steward.fallback_campaign_producer.v1"
-REQUEST_SCHEMA = "maskfactory.openrouter_advisory_request.v1"
+REQUEST_SCHEMA = "maskfactory.openrouter_advisory_request.v2"
 SESSION_ID = "019f91d1-ea20-7d81-83ff-03d393eaa1f5"
 DEFAULT_ADVISORY_WORK_KINDS = (
     "implementation_review",
@@ -210,12 +211,11 @@ class FallbackCampaignProducer:
         self.engineering_mission_cap = int(engineering_mission_cap)
         self.max_output_tokens = int(max_output_tokens)
         if (
-            not advisory_work_kinds
-            or len(set(advisory_work_kinds)) != len(advisory_work_kinds)
-            or any(kind not in DEFAULT_ADVISORY_WORK_KINDS for kind in advisory_work_kinds)
+            len(advisory_work_kinds) != 1
+            or advisory_work_kinds[0] not in DEFAULT_ADVISORY_WORK_KINDS
         ):
             raise FallbackCampaignProducerError(
-                "advisory_work_kinds must be unique governed producer modes"
+                "exactly one governed consolidated advisory work kind is required"
             )
         self.advisory_work_kinds = tuple(advisory_work_kinds)
         self.openrouter_manager_path = Path(openrouter_manager_path)
@@ -352,7 +352,7 @@ class FallbackCampaignProducer:
         include_blocked: bool,
     ) -> dict[str, Any]:
             prior_terminal = self._terminal_campaign(
-                campaign_id=f"{campaign.campaign_id}:{work_kind}",
+                campaign_id=campaign.campaign_id,
                 tracker_sha256=tracker_sha256,
             )
             if prior_terminal is not None:
@@ -369,7 +369,7 @@ class FallbackCampaignProducer:
                 "tracker_sha256": tracker_sha256,
                 "openrouter_manager_sha256": manager_sha256,
                 "openrouter_policy_sha256": policy_sha256,
-                "campaign_id": f"{campaign.campaign_id}:{work_kind}",
+                "campaign_id": campaign.campaign_id,
                 "campaign_kind": "plan27_engineering",
                 "advisory_work_kind": work_kind,
                 "blocked_dependency_analysis": include_blocked,
@@ -378,21 +378,27 @@ class FallbackCampaignProducer:
                 "items": [packets[item_id] for item_id in campaign.item_ids],
                 "authority": AUTHORITY,
             }
+            parent_contract_sha256 = _canonical_sha256(packet)
+            parent_campaign_id = _canonical_sha256(
+                {
+                    "schema_version": "maskfactory.steward.fallback_parent_identity.v1",
+                    "session_id": self.session_id,
+                    "source_campaign_id": campaign.campaign_id,
+                    "parent_contract_sha256": parent_contract_sha256,
+                }
+            )
             prompt = _prompt(packet, work_kind=work_kind)
             prompt_bytes = prompt.encode("utf-8")
             prompt_sha256 = hashlib.sha256(prompt_bytes).hexdigest()
-            identity = {
-                "schema_version": PRODUCER_SCHEMA,
-                "session_id": self.session_id,
-                "tracker_sha256": tracker_sha256,
-                "openrouter_manager_sha256": manager_sha256,
-                "openrouter_policy_sha256": policy_sha256,
-                "campaign_id": campaign.campaign_id,
-                "work_kind": work_kind,
-                "item_ids": list(campaign.item_ids),
-                "prompt_sha256": prompt_sha256,
-            }
-            mission_id = _canonical_sha256(identity)
+            required_child_roles = ("consolidated_advisory",)
+            mission_id = fallback_child_mission_id(
+                session_id=self.session_id,
+                parent_campaign_id=parent_campaign_id,
+                parent_contract_sha256=parent_contract_sha256,
+                required_child_roles=required_child_roles,
+                child_role="consolidated_advisory",
+                route="openrouter_advisory",
+            )
             if not SHA256_RE.fullmatch(mission_id):
                 raise FallbackCampaignProducerError("derived mission identity is invalid")
             mission_root = self.inbox_root / mission_id
@@ -400,6 +406,7 @@ class FallbackCampaignProducer:
                 return {
                     "mission_id": mission_id,
                     "campaign_id": campaign.campaign_id,
+                    "parent_campaign_id": parent_campaign_id,
                     "work_kind": work_kind,
                     "item_ids": list(campaign.item_ids),
                     "created": False,
@@ -415,6 +422,9 @@ class FallbackCampaignProducer:
                     "mission_id": mission_id,
                     "session_id": self.session_id,
                     "job_id": f"mf-plan27-{mission_id[:20]}",
+                    "parent_campaign_id": parent_campaign_id,
+                    "parent_contract_sha256": parent_contract_sha256,
+                    "child_role": "consolidated_advisory",
                     "work_kind": work_kind,
                     "model_tier": "routine",
                     "materially_difficult": False,
@@ -432,6 +442,10 @@ class FallbackCampaignProducer:
                         "schema_version": WORK_ITEM_SCHEMA,
                         "mission_id": mission_id,
                         "session_id": self.session_id,
+                        "parent_campaign_id": parent_campaign_id,
+                        "parent_contract_sha256": parent_contract_sha256,
+                        "required_child_roles": list(required_child_roles),
+                        "child_role": "consolidated_advisory",
                         "route": "openrouter_advisory",
                         "payload_sha256": _file_sha256(temporary / "request.json"),
                         "request_file": "request.json",
@@ -451,6 +465,7 @@ class FallbackCampaignProducer:
             return {
                 "mission_id": mission_id,
                 "campaign_id": campaign.campaign_id,
+                "parent_campaign_id": parent_campaign_id,
                 "work_kind": work_kind,
                 "item_ids": list(campaign.item_ids),
                 "created": True,

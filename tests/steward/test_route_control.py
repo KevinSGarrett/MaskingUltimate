@@ -6,7 +6,10 @@ from pathlib import Path
 import pytest
 
 from maskfactory.steward.route_control import (
+    CanonicalParentChildLedger,
     CanonicalMissionRouteLedger,
+    ParentChildAlreadyActive,
+    ParentChildBindingError,
     RouteAlreadyActive,
     RouteControlError,
     RouteIdentityMismatch,
@@ -17,6 +20,9 @@ MISSION = "1" * 64
 PAYLOAD = "a" * 64
 SESSION = "019f91d1-ea20-7d81-83ff-03d393eaa1f5"
 TOKEN = "maskfactory-owner-token-" + "x" * 32
+PARENT = "b" * 64
+PARENT_CONTRACT = "c" * 64
+REQUIRED_ROLES = ("consolidated_advisory", "serverless_execution")
 
 
 def claim(
@@ -183,3 +189,306 @@ def test_reconciled_completed_unknown_never_reopens(tmp_path: Path) -> None:
     )
     with pytest.raises(RouteControlError, match="already terminal"):
         claim(ledger, "openrouter_advisory")
+
+
+def parent_ledger(path: Path) -> CanonicalParentChildLedger:
+    CanonicalMissionRouteLedger(path)
+    return CanonicalParentChildLedger(path)
+
+
+def bind_parent_child(
+    ledger: CanonicalParentChildLedger,
+    *,
+    role: str,
+    mission_id: str,
+    payload_sha256: str,
+    token: str = TOKEN,
+    parent_contract_sha256: str = PARENT_CONTRACT,
+    session_id: str = SESSION,
+) -> dict[str, object]:
+    return ledger.bind_child(
+        parent_campaign_id=PARENT,
+        parent_contract_sha256=parent_contract_sha256,
+        required_child_roles=REQUIRED_ROLES,
+        child_role=role,
+        mission_id=mission_id,
+        session_id=session_id,
+        route=(
+            "serverless_overflow"
+            if role == "serverless_execution"
+            else "openrouter_advisory"
+        ),
+        payload_sha256=payload_sha256,
+        owner_token=token,
+    )
+
+
+def test_parent_allows_one_concurrent_child_per_declared_role(
+    tmp_path: Path,
+) -> None:
+    ledger = parent_ledger(tmp_path / "routes.sqlite")
+    bind_parent_child(
+        ledger,
+        role="serverless_execution",
+        mission_id="2" * 64,
+        payload_sha256="d" * 64,
+    )
+    bind_parent_child(
+        ledger,
+        role="consolidated_advisory",
+        mission_id="3" * 64,
+        payload_sha256="e" * 64,
+    )
+    ledger.mark_child(
+        parent_campaign_id=PARENT,
+        child_role="serverless_execution",
+        owner_token=TOKEN,
+        state="active",
+    )
+    parent = ledger.mark_child(
+        parent_campaign_id=PARENT,
+        child_role="consolidated_advisory",
+        owner_token=TOKEN,
+        state="active",
+    )
+
+    assert parent["state"] == "in_progress"
+    assert len(parent["children"]) == 2
+
+
+def test_parent_role_rejects_replacement_mission_payload_or_contract(
+    tmp_path: Path,
+) -> None:
+    ledger = parent_ledger(tmp_path / "routes.sqlite")
+    bind_parent_child(
+        ledger,
+        role="serverless_execution",
+        mission_id="2" * 64,
+        payload_sha256="d" * 64,
+    )
+    with pytest.raises(ParentChildAlreadyActive):
+        bind_parent_child(
+            ledger,
+            role="serverless_execution",
+            mission_id="4" * 64,
+            payload_sha256="f" * 64,
+        )
+    with pytest.raises(ParentChildAlreadyActive):
+        bind_parent_child(
+            ledger,
+            role="serverless_execution",
+            mission_id="2" * 64,
+            payload_sha256="f" * 64,
+        )
+    with pytest.raises(ParentChildBindingError, match="parent campaign identity"):
+        bind_parent_child(
+            ledger,
+            role="consolidated_advisory",
+            mission_id="3" * 64,
+            payload_sha256="e" * 64,
+            parent_contract_sha256="9" * 64,
+        )
+    with pytest.raises(ParentChildBindingError, match="parent campaign identity"):
+        bind_parent_child(
+            ledger,
+            role="consolidated_advisory",
+            mission_id="3" * 64,
+            payload_sha256="e" * 64,
+            session_id="different-session",
+        )
+
+
+def test_child_mission_cannot_be_reused_for_another_parent_role(
+    tmp_path: Path,
+) -> None:
+    ledger = parent_ledger(tmp_path / "routes.sqlite")
+    bind_parent_child(
+        ledger,
+        role="serverless_execution",
+        mission_id="2" * 64,
+        payload_sha256="d" * 64,
+    )
+
+    with pytest.raises(
+        ParentChildBindingError,
+        match="already attached to another parent role",
+    ):
+        bind_parent_child(
+            ledger,
+            role="consolidated_advisory",
+            mission_id="2" * 64,
+            payload_sha256="e" * 64,
+        )
+
+
+def test_existing_unbound_canonical_mission_cannot_be_attached(
+    tmp_path: Path,
+) -> None:
+    database = tmp_path / "routes.sqlite"
+    route_ledger = CanonicalMissionRouteLedger(database)
+    route_ledger.claim_route(
+        mission_id="2" * 64,
+        session_id=SESSION,
+        payload_sha256="d" * 64,
+        route="serverless_overflow",
+        owner_token=TOKEN,
+    )
+    ledger = CanonicalParentChildLedger(database)
+
+    with pytest.raises(
+        ParentChildBindingError,
+        match="cannot be attached retroactively",
+    ):
+        bind_parent_child(
+            ledger,
+            role="serverless_execution",
+            mission_id="2" * 64,
+            payload_sha256="d" * 64,
+        )
+
+
+def test_parent_closes_only_after_all_declared_roles_have_final_results(
+    tmp_path: Path,
+) -> None:
+    ledger = parent_ledger(tmp_path / "routes.sqlite")
+    bind_parent_child(
+        ledger,
+        role="serverless_execution",
+        mission_id="2" * 64,
+        payload_sha256="d" * 64,
+    )
+    bind_parent_child(
+        ledger,
+        role="consolidated_advisory",
+        mission_id="3" * 64,
+        payload_sha256="e" * 64,
+    )
+    parent = ledger.mark_child(
+        parent_campaign_id=PARENT,
+        child_role="serverless_execution",
+        owner_token=TOKEN,
+        state="terminal_pending_release",
+    )
+    assert parent["state"] == "in_progress"
+    parent = ledger.mark_child(
+        parent_campaign_id=PARENT,
+        child_role="serverless_execution",
+        owner_token=TOKEN,
+        state="completed",
+        terminal_disposition="completed",
+        result_sha256="6" * 64,
+    )
+    assert parent["state"] == "in_progress"
+    parent = ledger.mark_child(
+        parent_campaign_id=PARENT,
+        child_role="consolidated_advisory",
+        owner_token=TOKEN,
+        state="unavailable",
+        terminal_disposition="unavailable",
+        result_sha256="7" * 64,
+        reason="governed manager rejected admission",
+    )
+
+    assert parent["state"] == "failed"
+    assert parent["missing_child_roles"] == []
+
+
+def test_parent_outcome_unknown_blocks_closure(tmp_path: Path) -> None:
+    ledger = parent_ledger(tmp_path / "routes.sqlite")
+    bind_parent_child(
+        ledger,
+        role="serverless_execution",
+        mission_id="2" * 64,
+        payload_sha256="d" * 64,
+    )
+    bind_parent_child(
+        ledger,
+        role="consolidated_advisory",
+        mission_id="3" * 64,
+        payload_sha256="e" * 64,
+    )
+    ledger.mark_child(
+        parent_campaign_id=PARENT,
+        child_role="serverless_execution",
+        owner_token=TOKEN,
+        state="completed",
+        terminal_disposition="completed",
+        result_sha256="6" * 64,
+    )
+    parent = ledger.mark_child(
+        parent_campaign_id=PARENT,
+        child_role="consolidated_advisory",
+        owner_token=TOKEN,
+        state="outcome_unknown",
+        reason="provider acknowledgement is ambiguous",
+    )
+
+    assert parent["state"] == "outcome_unknown"
+
+
+def test_parent_terminal_reconstruction_is_exact_and_token_independent(
+    tmp_path: Path,
+) -> None:
+    ledger = parent_ledger(tmp_path / "routes.sqlite")
+    bind_parent_child(
+        ledger,
+        role="serverless_execution",
+        mission_id="2" * 64,
+        payload_sha256="d" * 64,
+    )
+    ledger.mark_child(
+        parent_campaign_id=PARENT,
+        child_role="serverless_execution",
+        owner_token=TOKEN,
+        state="completed",
+        terminal_disposition="completed",
+        result_sha256="6" * 64,
+    )
+    reconstructed = ledger.mark_child(
+        parent_campaign_id=PARENT,
+        child_role="serverless_execution",
+        owner_token="reconstructed-owner-" + "x" * 32,
+        state="completed",
+        terminal_disposition="completed",
+        result_sha256="6" * 64,
+    )
+    assert reconstructed["children"][0]["result_sha256"] == "6" * 64
+
+    with pytest.raises(
+        ParentChildBindingError,
+        match="cannot be rewritten",
+    ):
+        ledger.mark_child(
+            parent_campaign_id=PARENT,
+            child_role="serverless_execution",
+            owner_token="reconstructed-owner-" + "x" * 32,
+            state="completed",
+            terminal_disposition="completed",
+            result_sha256="7" * 64,
+        )
+
+
+def test_parent_role_race_admits_exactly_one_child_identity(
+    tmp_path: Path,
+) -> None:
+    database = tmp_path / "routes.sqlite"
+
+    def compete(index: int) -> str:
+        CanonicalMissionRouteLedger(database)
+        ledger = CanonicalParentChildLedger(database)
+        try:
+            bind_parent_child(
+                ledger,
+                role="serverless_execution",
+                mission_id=str(index + 2) * 64,
+                payload_sha256=str(index + 4) * 64,
+                token=f"parent-race-{index}-" + "x" * 32,
+            )
+        except ParentChildAlreadyActive:
+            return "blocked"
+        return "admitted"
+
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        results = list(executor.map(compete, range(2)))
+
+    assert sorted(results) == ["admitted", "blocked"]

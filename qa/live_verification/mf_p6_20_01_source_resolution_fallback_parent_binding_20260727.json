@@ -1,0 +1,147 @@
+{
+  "schema_version": "maskfactory.canonical_source_resolution.v2",
+  "full_product_commit_sha": "7d66ca27781d899a43eb644c0378bcf1478045a7",
+  "autonomy_commit_sha": "0d2efa6ff2b9a35b064d33bedbbdcab06517a685",
+  "authority_file_sha256": {
+    "Plan/27_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS_SPEC.md": "638d8f1a0e73af20189ec0773bac360d980ac78e86a0846a104d5181f4ca4e07",
+    "Plan/28_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md": "a82a3844736b6558d7ce54b2fd2bec1ac3151d791acf700900b65b51ac65d947",
+    "Plan/Instructions/16_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS.md": "e6608e03789676f1db80640731e1edc40a3370bcec2147acfdd7e5094d4989ce",
+    "Plan/Instructions/18_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md": "66a65af8ef6fa53b36a171fec9ea6d213a2f564d6d426224296dde53c919aa05",
+    "Plan/Items/23_ITEMS_P6_SELF_HOSTED_AUTONOMOUS_LLM_OPERATIONS.md": "f03df89fc8b6de5925fd551e9df9e92c3212ca4388725caccbc47d12630e9ffb",
+    "Plan/Items/24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md": "e8a50512409a236e95a39e56b6a571e677d507fad7533e4a7fdd67802d9062c9",
+    "Plan/SELF_HOSTED_AUTONOMOUS_LLM_PURSUING_GOAL_MESSAGE.md": "47e3192565c04f0ff3f4a9881397355b230ba78abda5f5dfd1132412d81da713",
+    "configs/self_hosted_autonomy_contract_freeze_v1.json": "d4e55cd9f957d8dde7678744c91a7aa7d4bc5e6c68cb8b54cc5934abc09b9d73"
+  },
+  "supersedes": [
+    {
+      "path": "qa/live_verification/mf_p6_20_01_source_resolution_authority_selector_20260727.json",
+      "raw_sha256": "33188342dfde15cb06c9a2a4328e9e3d29a436917e6ebde19231ce4c1fb7589f",
+      "self_sha256": "d136af14594c97d6a288d4d77d1bf796660da7b993ce048dbe2a3af45ffbb97b"
+    }
+  ],
+  "resolutions": [
+    {
+      "path": "src/maskfactory/steward/fallback_campaign_producer.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "full_product_git_object_id": "a3d08f573fd7d89990ceddabce8a839fc38d11e7",
+      "autonomy_git_object_id": "3984ae549f3fa6446403494a3ebad8b280d357df",
+      "worktree_sha256": "ddb1dd1b5ba4d16806a44576d781c609b314641addbacbe7e23e8ca5c96dc355",
+      "verification": {
+        "commands": ["python -m pytest tests/steward/test_fallback_campaign_producer.py tests/steward/test_fallback_dispatcher.py tests/steward/test_openrouter_advisory.py tests/steward/test_route_control.py tests/steward/test_serverless_broker.py tests/steward/test_supervisor.py tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py -q", "python -m ruff check src/maskfactory/steward/fallback_campaign_producer.py src/maskfactory/steward/fallback_dispatcher.py src/maskfactory/steward/openrouter_advisory.py src/maskfactory/steward/route_control.py src/maskfactory/steward/serverless_broker.py tools/manage_runpod_serverless_overflow.py tools/run_self_hosted_supervisor.py", "python -m compileall -q src/maskfactory/steward/fallback_campaign_producer.py src/maskfactory/steward/fallback_dispatcher.py src/maskfactory/steward/openrouter_advisory.py src/maskfactory/steward/route_control.py src/maskfactory/steward/serverless_broker.py tools/manage_runpod_serverless_overflow.py tools/run_self_hosted_supervisor.py"],
+        "passed_test_count": 94,
+        "test_lineage": {"tests/steward/test_fallback_campaign_producer.py": {"full_product_git_object_id": "ae79748719e8f17e5da4a50ef98898d7c70f2061", "autonomy_git_object_id": "9bffaabca76db17969790827b2359ef819fd2596", "worktree_sha256": "e611f51ca089bbcfd1984be68e8c131386ed3911989750d5ef946770fe98d73d"}},
+        "result": "pass"
+      },
+      "limitations": ["This resolves only the parent-bound fallback source/test/CLI group.", "CROSS_CONTROLLER_INTEGRATION_OPEN and NO_CAPACITY_CREDIT remain binding; no provider route ran."]
+    },
+    {
+      "path": "src/maskfactory/steward/fallback_dispatcher.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "full_product_git_object_id": "4e8397e165a34d6831ddb60facfc96b1cdf4e7c7",
+      "autonomy_git_object_id": "eb4ba291e5f35600e6911954db280487128c1e15",
+      "worktree_sha256": "2b363a73092faf84c521a7158e66436813fe8c63465a7b9f54ca106b0e111825",
+      "verification": {"commands": ["python -m pytest tests/steward/test_fallback_campaign_producer.py tests/steward/test_fallback_dispatcher.py tests/steward/test_openrouter_advisory.py tests/steward/test_route_control.py tests/steward/test_serverless_broker.py tests/steward/test_supervisor.py tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py -q"], "passed_test_count": 94, "test_lineage": {"tests/steward/test_fallback_dispatcher.py": {"full_product_git_object_id": "befd2eb93e4be06e5a14f0b0cd7416312dcdaa67", "autonomy_git_object_id": "73a6d2e65a96a632e109ecc6152d6766b3b13fc9", "worktree_sha256": "10df1bf3f6540ffed0512603d8f71cdb6bef6a4ba8dd69bff20c84d326b702d2"}}, "result": "pass"},
+      "limitations": ["This resolves only the parent-bound fallback source/test/CLI group.", "No capacity, provider, GPU, or cross-controller integration credit is claimed."]
+    },
+    {
+      "path": "src/maskfactory/steward/openrouter_advisory.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "full_product_git_object_id": "11b0a809db1a9005b281a687c780d39f6ae449d0",
+      "autonomy_git_object_id": "849529c4d5d21d71e0df2c83f626144900c08da0",
+      "worktree_sha256": "81e2c86516caf82443d866f1db179519162c2d7fe6ef4d4aa5be873c5f046d3d",
+      "verification": {"commands": ["python -m pytest tests/steward/test_fallback_campaign_producer.py tests/steward/test_fallback_dispatcher.py tests/steward/test_openrouter_advisory.py tests/steward/test_route_control.py tests/steward/test_serverless_broker.py tests/steward/test_supervisor.py tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py -q"], "passed_test_count": 94, "test_lineage": {"tests/steward/test_openrouter_advisory.py": {"full_product_git_object_id": "d525396ea417c551600784735f9a417f92f07222", "autonomy_git_object_id": "b9fcafb12c1821e9a7f4c5707bab9da58f60075c", "worktree_sha256": "1ab62f2a1323da42e8381bb29196f3e638e73ce9e0b02d942d009860f8abfd3a"}}, "result": "pass"},
+      "limitations": ["This resolves only the governed parent-bound advisory adapter.", "The separate CUI primary-controller binding remains open and no advisory was submitted."]
+    },
+    {
+      "path": "src/maskfactory/steward/route_control.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "full_product_git_object_id": "5049980553d5fe412d051b15f142f35fe99121a3",
+      "autonomy_git_object_id": "1b539dc93c71ac37706d498464bb3cfad6038ea5",
+      "worktree_sha256": "611e8eb6bffb3cee581b552e4889f5c44f03a4b707543f74080e06d67d7fa124",
+      "verification": {"commands": ["python -m pytest tests/steward/test_fallback_campaign_producer.py tests/steward/test_fallback_dispatcher.py tests/steward/test_openrouter_advisory.py tests/steward/test_route_control.py tests/steward/test_serverless_broker.py tests/steward/test_supervisor.py tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py -q"], "passed_test_count": 94, "test_lineage": {"tests/steward/test_route_control.py": {"full_product_git_object_id": "2d3189e31eabc85063d174b7d345a4921c7c0360", "autonomy_git_object_id": "104239d31f8550421bdbbdeead3d7aa1d3720fdc", "worktree_sha256": "d784c42b3346edea1c301500911f68e527afe00ad44ad6bfd26fa9dde38a55a0"}}, "result": "pass"},
+      "limitations": ["This resolves only the parent-child ledger and route-control behavior.", "A parent cannot receive fallback capacity credit without actual host preflight and terminal parent work."]
+    },
+    {
+      "path": "src/maskfactory/steward/serverless_broker.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "full_product_git_object_id": "f9f45f91c8133740216cd88c4d85a362011042b5",
+      "autonomy_git_object_id": "29a6d447fb2d20b14018f803fa933ddfaa002a79",
+      "worktree_sha256": "dfcbcb8b90b8082b64864808e680c16c3161b3df9c088331fe96455f08dcf5da",
+      "verification": {"commands": ["python -m pytest tests/steward/test_fallback_campaign_producer.py tests/steward/test_fallback_dispatcher.py tests/steward/test_openrouter_advisory.py tests/steward/test_route_control.py tests/steward/test_serverless_broker.py tests/steward/test_supervisor.py tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py -q"], "passed_test_count": 94, "test_lineage": {"tests/steward/test_serverless_broker.py": {"full_product_git_object_id": "4a9efe0f92e5ba5367f22b912ff44a750b31b95f", "autonomy_git_object_id": "131f1b81b06ef792130829524072959565d5158b", "worktree_sha256": "04b2126b210b5ae3254dea48104b2f7ad72f9f2a6371b0d55cbc10ce5aafd279"}}, "result": "pass"},
+      "limitations": ["This resolves only broker semantic-failure classification and parent binding.", "Historical or fixture broker states receive no capacity credit."]
+    },
+    {
+      "path": "tests/steward/test_fallback_campaign_producer.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "full_product_git_object_id": "ae79748719e8f17e5da4a50ef98898d7c70f2061",
+      "autonomy_git_object_id": "9bffaabca76db17969790827b2359ef819fd2596",
+      "worktree_sha256": "e611f51ca089bbcfd1984be68e8c131386ed3911989750d5ef946770fe98d73d",
+      "verification": {"commands": ["python -m pytest tests/steward/test_fallback_campaign_producer.py tests/steward/test_fallback_dispatcher.py tests/steward/test_openrouter_advisory.py tests/steward/test_route_control.py tests/steward/test_serverless_broker.py tests/steward/test_supervisor.py tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py -q"], "passed_test_count": 94, "test_lineage": {"tests/steward/test_fallback_campaign_producer.py": {"full_product_git_object_id": "ae79748719e8f17e5da4a50ef98898d7c70f2061", "autonomy_git_object_id": "9bffaabca76db17969790827b2359ef819fd2596", "worktree_sha256": "e611f51ca089bbcfd1984be68e8c131386ed3911989750d5ef946770fe98d73d"}}, "result": "pass"},
+      "limitations": ["This test resolution covers producer request parent fields only.", "It does not prove a provider submission or parent capacity."]
+    },
+    {
+      "path": "tests/steward/test_fallback_dispatcher.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "full_product_git_object_id": "befd2eb93e4be06e5a14f0b0cd7416312dcdaa67",
+      "autonomy_git_object_id": "73a6d2e65a96a632e109ecc6152d6766b3b13fc9",
+      "worktree_sha256": "10df1bf3f6540ffed0512603d8f71cdb6bef6a4ba8dd69bff20c84d326b702d2",
+      "verification": {"commands": ["python -m pytest tests/steward/test_fallback_campaign_producer.py tests/steward/test_fallback_dispatcher.py tests/steward/test_openrouter_advisory.py tests/steward/test_route_control.py tests/steward/test_serverless_broker.py tests/steward/test_supervisor.py tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py -q"], "passed_test_count": 94, "test_lineage": {"tests/steward/test_fallback_dispatcher.py": {"full_product_git_object_id": "befd2eb93e4be06e5a14f0b0cd7416312dcdaa67", "autonomy_git_object_id": "73a6d2e65a96a632e109ecc6152d6766b3b13fc9", "worktree_sha256": "10df1bf3f6540ffed0512603d8f71cdb6bef6a4ba8dd69bff20c84d326b702d2"}}, "result": "pass"},
+      "limitations": ["This test resolution covers terminal child-role reconciliation and no-rediscovery behavior.", "It does not create an external child route."]
+    },
+    {
+      "path": "tests/steward/test_openrouter_advisory.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "full_product_git_object_id": "d525396ea417c551600784735f9a417f92f07222",
+      "autonomy_git_object_id": "b9fcafb12c1821e9a7f4c5707bab9da58f60075c",
+      "worktree_sha256": "1ab62f2a1323da42e8381bb29196f3e638e73ce9e0b02d942d009860f8abfd3a",
+      "verification": {"commands": ["python -m pytest tests/steward/test_fallback_campaign_producer.py tests/steward/test_fallback_dispatcher.py tests/steward/test_openrouter_advisory.py tests/steward/test_route_control.py tests/steward/test_serverless_broker.py tests/steward/test_supervisor.py tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py -q"], "passed_test_count": 94, "test_lineage": {"tests/steward/test_openrouter_advisory.py": {"full_product_git_object_id": "d525396ea417c551600784735f9a417f92f07222", "autonomy_git_object_id": "b9fcafb12c1821e9a7f4c5707bab9da58f60075c", "worktree_sha256": "1ab62f2a1323da42e8381bb29196f3e638e73ce9e0b02d942d009860f8abfd3a"}}, "result": "pass"},
+      "limitations": ["This test resolution covers exact parent/contract/role receipt validation.", "It does not prove CUI primary-controller integration."]
+    },
+    {
+      "path": "tests/steward/test_route_control.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "full_product_git_object_id": "2d3189e31eabc85063d174b7d345a4921c7c0360",
+      "autonomy_git_object_id": "104239d31f8550421bdbbdeead3d7aa1d3720fdc",
+      "worktree_sha256": "d784c42b3346edea1c301500911f68e527afe00ad44ad6bfd26fa9dde38a55a0",
+      "verification": {"commands": ["python -m pytest tests/steward/test_fallback_campaign_producer.py tests/steward/test_fallback_dispatcher.py tests/steward/test_openrouter_advisory.py tests/steward/test_route_control.py tests/steward/test_serverless_broker.py tests/steward/test_supervisor.py tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py -q"], "passed_test_count": 94, "test_lineage": {"tests/steward/test_route_control.py": {"full_product_git_object_id": "2d3189e31eabc85063d174b7d345a4921c7c0360", "autonomy_git_object_id": "104239d31f8550421bdbbdeead3d7aa1d3720fdc", "worktree_sha256": "d784c42b3346edea1c301500911f68e527afe00ad44ad6bfd26fa9dde38a55a0"}}, "result": "pass"},
+      "limitations": ["This test resolution covers atomic parent-child claim and terminal-state invariants.", "It does not grant runtime or capacity credit."]
+    },
+    {
+      "path": "tests/steward/test_serverless_broker.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "full_product_git_object_id": "4a9efe0f92e5ba5367f22b912ff44a750b31b95f",
+      "autonomy_git_object_id": "131f1b81b06ef792130829524072959565d5158b",
+      "worktree_sha256": "04b2126b210b5ae3254dea48104b2f7ad72f9f2a6371b0d55cbc10ce5aafd279",
+      "verification": {"commands": ["python -m pytest tests/steward/test_fallback_campaign_producer.py tests/steward/test_fallback_dispatcher.py tests/steward/test_openrouter_advisory.py tests/steward/test_route_control.py tests/steward/test_serverless_broker.py tests/steward/test_supervisor.py tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py -q"], "passed_test_count": 94, "test_lineage": {"tests/steward/test_serverless_broker.py": {"full_product_git_object_id": "4a9efe0f92e5ba5367f22b912ff44a750b31b95f", "autonomy_git_object_id": "131f1b81b06ef792130829524072959565d5158b", "worktree_sha256": "04b2126b210b5ae3254dea48104b2f7ad72f9f2a6371b0d55cbc10ce5aafd279"}}, "result": "pass"},
+      "limitations": ["This test resolution covers semantic false terminal classification only.", "It does not submit a Serverless successor."]
+    },
+    {
+      "path": "tests/steward/test_supervisor.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "full_product_git_object_id": "e12e099e0c2603866986c7ae73497282ee86366d",
+      "autonomy_git_object_id": "e9ec1d58b0a151a0b8f96615d87a8c0eda4a4d3a",
+      "worktree_sha256": "cdd21d14129dcb1f3075906db2cf897f8cf671f171f103332abcbd7d37d5ee54",
+      "verification": {"commands": ["python -m pytest tests/steward/test_fallback_campaign_producer.py tests/steward/test_fallback_dispatcher.py tests/steward/test_openrouter_advisory.py tests/steward/test_route_control.py tests/steward/test_serverless_broker.py tests/steward/test_supervisor.py tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py -q"], "passed_test_count": 94, "test_lineage": {"tests/steward/test_supervisor.py": {"full_product_git_object_id": "e12e099e0c2603866986c7ae73497282ee86366d", "autonomy_git_object_id": "e9ec1d58b0a151a0b8f96615d87a8c0eda4a4d3a", "worktree_sha256": "cdd21d14129dcb1f3075906db2cf897f8cf671f171f103332abcbd7d37d5ee54"}}, "result": "pass"},
+      "limitations": ["This test resolution covers contained one-mode supervisor behavior.", "The orphan legacy daemon remains owner-only and was not restarted."]
+    },
+    {
+      "path": "tools/manage_runpod_serverless_overflow.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "full_product_git_object_id": "c5e5010eb6918f70e2f883f4807d37831e08b216",
+      "autonomy_git_object_id": "7e0e43c1682ad833e7ccf06f2774240bdcb6748b",
+      "worktree_sha256": "5f373471d3b0ca9e9b03402a9a6a3f4b26a4cedc3599ca90414f1d7b3e8623e3",
+      "verification": {"commands": ["python -m pytest tests/steward/test_fallback_campaign_producer.py tests/steward/test_fallback_dispatcher.py tests/steward/test_openrouter_advisory.py tests/steward/test_route_control.py tests/steward/test_serverless_broker.py tests/steward/test_supervisor.py tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py -q"], "passed_test_count": 94, "test_lineage": {"tests/steward/test_serverless_broker.py": {"full_product_git_object_id": "4a9efe0f92e5ba5367f22b912ff44a750b31b95f", "autonomy_git_object_id": "131f1b81b06ef792130829524072959565d5158b", "worktree_sha256": "04b2126b210b5ae3254dea48104b2f7ad72f9f2a6371b0d55cbc10ce5aafd279"}}, "result": "pass"},
+      "limitations": ["This resolves the canonical broker manager and provider-free host-preflight contract.", "A decide receipt alone remains non-authorizing and no provider call occurred."]
+    },
+    {
+      "path": "tools/run_self_hosted_supervisor.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "full_product_git_object_id": "28fc3aca087f3443b834666193a73d1b033c909c",
+      "autonomy_git_object_id": "eb4fff2e85c3578edd116e854ef5e0c88d7c3428",
+      "worktree_sha256": "3b2189b6dc7bf364cc9985577f7f4b9a7813ad3badfd3dee1d3a68ede17ada5d",
+      "verification": {"commands": ["python -m pytest tests/steward/test_fallback_campaign_producer.py tests/steward/test_fallback_dispatcher.py tests/steward/test_openrouter_advisory.py tests/steward/test_route_control.py tests/steward/test_serverless_broker.py tests/steward/test_supervisor.py tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py -q"], "passed_test_count": 94, "test_lineage": {"tests/steward/test_supervisor.py": {"full_product_git_object_id": "e12e099e0c2603866986c7ae73497282ee86366d", "autonomy_git_object_id": "e9ec1d58b0a151a0b8f96615d87a8c0eda4a4d3a", "worktree_sha256": "cdd21d14129dcb1f3075906db2cf897f8cf671f171f103332abcbd7d37d5ee54"}}, "result": "pass"},
+      "limitations": ["This resolves only the canonical supervisor source contract.", "The owner-only legacy process was not signaled, restarted, or otherwise modified."]
+    }
+  ],
+  "self_sha256": "1629b07a26d07166fd9caaf03f6b59d1f0f9a13fcef8f2cf4c07f3594dae46f2"
+}

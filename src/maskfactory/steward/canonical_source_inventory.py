@@ -461,6 +461,86 @@ def _file_sha256(path: Path) -> tuple[str, int]:
     return digest.hexdigest(), size
 
 
+def _read_resolution_chain(
+    *,
+    root: Path,
+    top_level: Mapping[str, Any],
+    full_commit: str,
+    autonomy_commit: str,
+) -> dict[str, Mapping[str, Any]]:
+    """Resolve a hash-bound supersession chain into its latest path entries."""
+    documents: list[Mapping[str, Any]] = [top_level]
+    seen_paths: set[str] = set()
+    position = 0
+    while position < len(documents):
+        document = documents[position]
+        position += 1
+        if (
+            document.get("full_product_commit_sha") != full_commit
+            or document.get("autonomy_commit_sha") != autonomy_commit
+        ):
+            raise CanonicalSourceInventoryError(
+                "resolution evidence commit binding mismatch"
+            )
+        if document.get("schema_version") != RESOLUTION_SCHEMA_V2:
+            continue
+        for superseded in document["supersedes"]:
+            receipt_path = str(superseded["path"])
+            if receipt_path in seen_paths:
+                raise CanonicalSourceInventoryError(
+                    "resolution supersession chain contains a cycle"
+                )
+            seen_paths.add(receipt_path)
+            receipt_file = root / receipt_path
+            if (
+                not receipt_file.is_file()
+                or _file_sha256(receipt_file)[0] != superseded["raw_sha256"]
+            ):
+                raise CanonicalSourceInventoryError(
+                    "resolution superseded receipt raw binding drift: "
+                    f"{receipt_path}"
+                )
+            try:
+                value = json.loads(receipt_file.read_text(encoding="utf-8"))
+            except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+                raise CanonicalSourceInventoryError(
+                    "resolution superseded receipt is unreadable: "
+                    f"{receipt_path}"
+                ) from exc
+            if not isinstance(value, Mapping):
+                raise CanonicalSourceInventoryError(
+                    "resolution superseded receipt is not an object: "
+                    f"{receipt_path}"
+                )
+            validate_resolution_evidence(value)
+            if value["self_sha256"] != superseded["self_sha256"]:
+                raise CanonicalSourceInventoryError(
+                    "resolution superseded receipt self binding drift: "
+                    f"{receipt_path}"
+                )
+            documents.append(value)
+
+    entries: dict[str, Mapping[str, Any]] = {}
+    source_fields = {
+        "full_product_git_object_id",
+        "autonomy_git_object_id",
+        "worktree_sha256",
+    }
+    for document in reversed(documents):
+        for entry in document["resolutions"]:
+            path = str(entry["path"])
+            previous = entries.get(path)
+            if previous is not None and any(
+                previous[field] != entry[field] for field in source_fields
+            ):
+                raise CanonicalSourceInventoryError(
+                    "resolution supersession source binding contradiction: "
+                    f"{path}"
+                )
+            entries[path] = entry
+    return entries
+
+
 def _worktree_entry(
     repo_root: Path,
     relative: str,
@@ -578,13 +658,6 @@ def build_inventory(
     if resolution_evidence is not None:
         validate_resolution_evidence(resolution_evidence)
         if (
-            resolution_evidence.get("full_product_commit_sha") != full_commit
-            or resolution_evidence.get("autonomy_commit_sha") != autonomy_commit
-        ):
-            raise CanonicalSourceInventoryError(
-                "resolution evidence commit binding mismatch"
-            )
-        if (
             not isinstance(resolution_evidence_path, str)
             or not resolution_evidence_path
             or Path(resolution_evidence_path).is_absolute()
@@ -595,42 +668,12 @@ def build_inventory(
             raise CanonicalSourceInventoryError(
                 "resolution evidence file binding is invalid"
             )
-        if resolution_evidence.get("schema_version") == RESOLUTION_SCHEMA_V2:
-            for superseded in resolution_evidence["supersedes"]:
-                superseded_file = root / str(superseded["path"])
-                if (
-                    not superseded_file.is_file()
-                    or _file_sha256(superseded_file)[0]
-                    != superseded["raw_sha256"]
-                ):
-                    raise CanonicalSourceInventoryError(
-                        "resolution superseded receipt raw binding drift: "
-                        f"{superseded['path']}"
-                    )
-                try:
-                    superseded_value = json.loads(
-                        superseded_file.read_text(encoding="utf-8")
-                    )
-                except (OSError, UnicodeError, json.JSONDecodeError) as exc:
-                    raise CanonicalSourceInventoryError(
-                        "resolution superseded receipt is unreadable: "
-                        f"{superseded['path']}"
-                    ) from exc
-                if not isinstance(superseded_value, Mapping):
-                    raise CanonicalSourceInventoryError(
-                        "resolution superseded receipt is not an object: "
-                        f"{superseded['path']}"
-                    )
-                validate_resolution_evidence(superseded_value)
-                if superseded_value["self_sha256"] != superseded["self_sha256"]:
-                    raise CanonicalSourceInventoryError(
-                        "resolution superseded receipt self binding drift: "
-                        f"{superseded['path']}"
-                    )
-        resolution_entries = {
-            str(entry["path"]): entry
-            for entry in resolution_evidence["resolutions"]
-        }
+        resolution_entries = _read_resolution_chain(
+            root=root,
+            top_level=resolution_evidence,
+            full_commit=full_commit,
+            autonomy_commit=autonomy_commit,
+        )
         resolution_binding = {
             "path": resolution_evidence_path,
             "raw_sha256": resolution_evidence_raw_sha256,

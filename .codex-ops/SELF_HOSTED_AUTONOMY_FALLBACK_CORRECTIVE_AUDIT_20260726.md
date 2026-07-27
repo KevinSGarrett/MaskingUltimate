@@ -301,6 +301,17 @@ bounds and explicit recovery state, with focused tests. No new mission,
 version, route, job, OpenRouter or Serverless child, external provider call,
 cross-controller capacity credit, or completion claim is authorized.
 
+Recovery-control increment
+`5df900a9796ebeccc73edc8c8775201b74d150fb` is committed and pushed. It keeps
+the complete context bound while projecting a deterministic <=8 KiB model
+envelope; requires an exact self-hashed recovery-decision schema; preserves the
+immutable failed ledger row and adds a separate recovery-invocation row/root;
+and requires launcher/executor recovery-decision path plus SHA. Thirty-nine
+focused adapter/executor tests, Ruff, and compile checks pass. The original
+parent remains unretried. The sole next action is to prepare one existing-parent
+and source/decision-bound recovery manifest—no new version, fallback/provider
+route, capacity claim, or runtime success is implied.
+
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test
 has yet exercised a real same-parent provider run across the boundary.

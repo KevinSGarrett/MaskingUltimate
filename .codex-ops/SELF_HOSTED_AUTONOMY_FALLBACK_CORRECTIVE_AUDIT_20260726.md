@@ -417,20 +417,20 @@ is authorized by publication.
 The initial follow-on hardening `a48d22fa` was correctly blocked by an
 independent Windows `28 passed / 1 failed` test result because
 `test_owned_runtime_records_exact_readiness_and_release` assumed `os.getpgid`
-existed before monkeypatching. Its repaired, sealed successor is
+existed before monkeypatching. Its successor
 `9a6659b20a572afe3dbcbee71d67963826ddc167`
-(`fix(wave88): fail closed without process groups`), now independently verified
-at both `origin/codex/wave88-authoritative-apply-20260727` and
-`origin/codex/workflow_plan_update_improvements`. Exact source SHA-256 is
-executor `a541d483b9e15877406a76b69d996da650d46eb6aeab60703bffb6e3f9eb2f4c` and
-focused test `6fd20aee375d8565d52ff80190fa9ed845de14ba1fb4dcceecb1d991c80570ce`.
-Independent Windows validation now passes `30/30` for
-`Plan\\Instructions\\QA\\Scripts\\test_run_wave88_engineering_executor.py`,
-with Ruff and `compileall` also passing. This is sealed CPU-only
-process-group admission hardening: no runtime/process/provider request was
-made and no launch/readiness/release receipt exists. The Pod remains
-fast-forward/read-only-discovery only; neither this repair nor its tests permit
-a retry, a new parent, a fallback child, or capacity credit.
+(`fix(wave88): fail closed without process groups`) has matching authoritative
+and trace refs and a real independent Windows `30/30` focused test result,
+Ruff, and `compileall` pass. However it is now **REVIEW_OPEN, not sealed**:
+read-only code review found a pre-recording race after
+`Popen(start_new_session=True)`. An unguarded `os.getpgid(self.process.pid)`
+can raise if the wrapper exits before lookup, leaving `pgid=None`; a child that
+retains the port may then be neither group-signalled nor durably captured in a
+failure/release receipt. Primary must add fail-closed cleanup plus a negative
+race test and independently retest before this can affect runtime admission.
+No runtime/process/provider request occurred. The Pod remains
+fast-forward/read-only-discovery only; neither the current code nor its tests
+permit a retry, new parent, fallback child, or capacity credit.
 
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test

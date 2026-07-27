@@ -484,6 +484,18 @@ manager inspection before any retry. A schema/state-transition migration and
 receipt validation are required; argv builders or in-memory sequencing alone
 are not acceptable evidence.
 
+The held primary diff now contains adapter-only `OpenRouterChildLifecycle`
+scaffolding: a separate SQLite ledger and fake-manager coverage for
+`reserve -> inspect -> submit -> terminal` plus ambiguity. This is not
+integration evidence. Production `EngineeringExecutor.reserve_openrouter_child()`
+still uses `ManagedChildRouteAdapter` and the reserve-only runner, returns
+`intent`, and never invokes lifecycle submit/reconcile/adoption. Further, the
+new lifecycle rejects only its own old DB name rather than binding or migrating
+the live `managed_child_routes_v2.sqlite3` parent ledger. It therefore earns no
+integration/no-duplicate credit; primary must wire the real parent execution
+path through the durable lifecycle and add parent-ledger tests before any
+route/admission/capacity claim.
+
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test
 has yet exercised a real same-parent provider run across the boundary.

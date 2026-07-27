@@ -252,6 +252,16 @@ The reconciled evidence preserves policy
 Serverless owner manager `5f373471...`; controller/selector 150 and RealVisXL
 175 tests pass with Ruff, compileall, JSON, and diff clean and `unmerged=0`.
 
+Further authoritative publication
+`e2aac1e5485fe1ef1b0856de9e094fdb99e2da50` reconciles W88-002 through
+W88-007 as complete/integrated-static-tested and makes only W88-008 selectable
+as the next runtime proof. Its selector preserves the no-idle CPU-safe and
+Serverless-evidence-only branch; 94 controller/route tests plus Ruff,
+compileall, JSON, and diff pass. One outcome-sized parent was compiled and
+input-verified only (mission `ed59cac5…`, contract SHA `55c15fb4…`): no GPU,
+model, OpenRouter, Serverless, or provider call occurred. Direct Pod is blocked
+only by the unauthenticated RunPod console, with no bypass authorized.
+
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test
 has yet exercised a real same-parent provider run across the boundary.

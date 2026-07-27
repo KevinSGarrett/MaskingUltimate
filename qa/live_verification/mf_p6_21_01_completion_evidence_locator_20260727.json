@@ -61,8 +61,12 @@
         "compact_recovery_relative": [],
         "pod_relative": [],
         "repository_relative": [
-          "runtime_artifacts/self_hosted_llm_all_route_fault_drill_20260726T203135Z",
-          "runtime_artifacts/self_hosted_llm_interrupted_recovery_drill_20260726T203051Z"
+          "runtime_artifacts/self_hosted_llm_all_route_fault_drill_20260726T203135Z/route_fault_drill_receipt.json",
+          "runtime_artifacts/self_hosted_llm_interrupted_recovery_drill_20260726T203051Z/interrupted_recovery.sqlite",
+          "runtime_artifacts/self_hosted_llm_interrupted_recovery_drill_20260726T203051Z/interrupted_recovery_result.json",
+          "runtime_artifacts/self_hosted_llm_interrupted_recovery_drill_20260726T203051Z/persisted-terminal/binding.json",
+          "runtime_artifacts/self_hosted_llm_interrupted_recovery_drill_20260726T203051Z/persisted-terminal/release.json",
+          "runtime_artifacts/self_hosted_llm_interrupted_recovery_drill_20260726T203051Z/persisted-terminal/terminal_receipt.json"
         ]
       },
       "parent_campaign_id": null,
@@ -81,6 +85,6 @@
     "Only entries whose current source, artifacts, and replay path are reconstructable are included."
   ],
   "schema_version": "maskfactory.completion_evidence_locator.v1",
-  "self_sha256": "18938365fca25588b990fc2c3a178b15dc69c4c75e49d3491c9f4a967d7f04a5",
+  "self_sha256": "65410da40b3a4c559003524b60cabcca871f6f7ab9730a9cdf74b3a309838461",
   "tracker_item": "MF-P6-21.01"
 }

@@ -11,6 +11,7 @@ from maskfactory.steward.evidence_locator import (
     build_evidence_locator,
     seal_evidence_locator,
     validate_evidence_locator,
+    verify_repository_evidence,
     write_evidence_locator,
 )
 
@@ -50,8 +51,10 @@ def _entry(*, disposition: str = "accepted", parent: str | None = "campaign-25")
             "location": "qa/live_verification/terminal_receipt.json",
         },
     ]
+    repository_locations = ["qa/live_verification/campaign_packet.json"]
     if disposition != "accepted":
         artifacts = artifacts[:1]
+        repository_locations = [artifacts[0]["location"]]
     return {
         "tracker_item": "MF-P6-19.01",
         "parent_campaign_id": parent,
@@ -63,7 +66,7 @@ def _entry(*, disposition: str = "accepted", parent: str | None = "campaign-25")
         },
         "artifacts": artifacts,
         "locations": {
-            "repository_relative": ["qa/live_verification/campaign_packet.json"],
+            "repository_relative": repository_locations,
             "pod_relative": [],
             "compact_recovery_relative": ["manifests/campaign_packet.json"],
         },
@@ -135,3 +138,33 @@ def test_tampering_relative_paths_hashes_and_duplicate_parent_are_rejected() -> 
     changed["self_sha256"] = "f" * 64
     with pytest.raises(EvidenceLocatorError, match="self hash"):
         validate_evidence_locator(changed)
+
+
+def test_repository_locations_require_exact_artifact_bindings() -> None:
+    changed = _locator()
+    changed["entries"][0]["locations"]["repository_relative"] = [
+        "qa/live_verification/unbound.json"
+    ]
+    with pytest.raises(EvidenceLocatorError, match="lacks an exact artifact binding"):
+        validate_evidence_locator(seal_evidence_locator(changed))
+
+
+def test_repository_evidence_verification_checks_exact_bytes_and_hashes(tmp_path) -> None:
+    locator = _locator()
+    location = "qa/live_verification/campaign_packet.json"
+    artifact_path = tmp_path / location
+    artifact_path.parent.mkdir(parents=True)
+
+    with pytest.raises(EvidenceLocatorError, match="absent or not a regular file"):
+        verify_repository_evidence(locator, tmp_path)
+
+    artifact_path.write_bytes(b"output")
+    verify_repository_evidence(locator, tmp_path)
+
+    artifact_path.write_bytes(b"tampered")
+    with pytest.raises(EvidenceLocatorError, match="byte mismatch"):
+        verify_repository_evidence(locator, tmp_path)
+
+    artifact_path.write_bytes(b"x" * 6)
+    with pytest.raises(EvidenceLocatorError, match="SHA-256 mismatch"):
+        verify_repository_evidence(locator, tmp_path)

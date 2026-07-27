@@ -55,6 +55,16 @@ def _require_sha256(value: object, *, field: str) -> str:
     return value
 
 
+def _file_sha256(path: Path) -> str:
+    """Hash a bound artifact without loading a potentially large file at once."""
+
+    hasher = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            hasher.update(block)
+    return hasher.hexdigest()
+
+
 def seal_evidence_locator(value: Mapping[str, Any]) -> dict[str, Any]:
     """Return a copy with a zero-self canonical hash."""
 
@@ -114,6 +124,28 @@ def _validate_locations(value: object) -> None:
         raise EvidenceLocatorError("an entry must retain at least one evidence location")
 
 
+def _repository_artifacts(entry: Mapping[str, Any]) -> dict[str, Mapping[str, Any]]:
+    """Return the exact artifacts which a locator declares repository-resident."""
+
+    repository_locations = entry["locations"]["repository_relative"]
+    artifacts_by_location: dict[str, Mapping[str, Any]] = {}
+    for artifact in entry["artifacts"]:
+        location = artifact["location"]
+        if location not in repository_locations:
+            continue
+        if location in artifacts_by_location:
+            raise EvidenceLocatorError(
+                f"repository location binds multiple artifacts: {location}"
+            )
+        artifacts_by_location[location] = artifact
+    missing = sorted(set(repository_locations) - set(artifacts_by_location))
+    if missing:
+        raise EvidenceLocatorError(
+            "repository location lacks an exact artifact binding: " + ", ".join(missing)
+        )
+    return artifacts_by_location
+
+
 def _validate_entry(entry: object) -> tuple[str, str | None]:
     required = {
         "tracker_item",
@@ -147,6 +179,7 @@ def _validate_entry(entry: object) -> tuple[str, str | None]:
     _safe_relative_path(source.get("path"), field="source path")
     _validate_artifacts(entry.get("artifacts"), disposition=str(disposition))
     _validate_locations(entry.get("locations"))
+    _repository_artifacts(entry)
     command = entry.get("replay_command")
     if not isinstance(command, str) or not command.strip() or "\x00" in command:
         raise EvidenceLocatorError("replay command is invalid")
@@ -258,6 +291,40 @@ def write_evidence_locator(path: Path, value: Mapping[str, Any]) -> None:
         temporary.unlink(missing_ok=True)
 
 
+def verify_repository_evidence(locator: Mapping[str, Any], repository_root: Path) -> None:
+    """Verify bytes and hashes for all repository-resident locator artifacts.
+
+    Pod-only and compact-recovery artifacts remain identities in the locator;
+    they are not silently treated as local files.  Every artifact explicitly
+    declared under ``repository_relative`` must exist below ``repository_root``
+    as a regular, non-symlink file with its recorded byte count and SHA-256.
+    """
+
+    validate_evidence_locator(locator)
+    root = Path(repository_root).resolve()
+    if not root.is_dir():
+        raise EvidenceLocatorError("repository root is not a directory")
+    for entry in locator["entries"]:
+        for location, artifact in _repository_artifacts(entry).items():
+            candidate = root.joinpath(*PurePosixPath(location).parts)
+            if candidate.is_symlink() or not candidate.is_file():
+                raise EvidenceLocatorError(
+                    f"repository artifact is absent or not a regular file: {location}"
+                )
+            resolved = candidate.resolve()
+            try:
+                resolved.relative_to(root)
+            except ValueError as error:
+                raise EvidenceLocatorError(
+                    f"repository artifact escapes root: {location}"
+                ) from error
+            if candidate.stat().st_size != artifact["bytes"]:
+                raise EvidenceLocatorError(f"repository artifact byte mismatch: {location}")
+            digest = _file_sha256(candidate)
+            if digest != artifact["sha256"]:
+                raise EvidenceLocatorError(f"repository artifact SHA-256 mismatch: {location}")
+
+
 __all__ = [
     "EvidenceLocatorError",
     "SCHEMA_VERSION",
@@ -265,5 +332,6 @@ __all__ = [
     "canonical_sha256",
     "seal_evidence_locator",
     "validate_evidence_locator",
+    "verify_repository_evidence",
     "write_evidence_locator",
 ]

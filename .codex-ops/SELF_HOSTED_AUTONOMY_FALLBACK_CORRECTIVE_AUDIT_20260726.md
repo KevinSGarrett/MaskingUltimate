@@ -377,6 +377,14 @@ or terminal packet. Once the authorized terminal is attached, fresh direct
 preflight and exact remote source/failure-evidence verification still precede
 one same-parent reconciliation/request.
 
+Fresh direct-Pod preflight for that recovery passed: the sole Ada had zero
+compute work, ports 8188 and 18008 were closed, the published recovery source
+hashes matched, and 86 TB was free. Exactly one self-hashed manifest-bound
+same-parent local recovery attempt is now `RUNTIME_IN_PROGRESS`. It remains
+local proof only: no OpenRouter or Serverless child, external provider call,
+capacity credit, or terminal claim exists until durable execution, validation,
+reconciliation, and resource-release evidence are complete.
+
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test
 has yet exercised a real same-parent provider run across the boundary.

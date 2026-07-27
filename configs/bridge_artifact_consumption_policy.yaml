@@ -1,0 +1,16 @@
+{
+  "policy_id": "maskfactory-bridge-artifact-consumption-v1",
+  "schema_version": "1.0.0",
+  "required_evidence": [
+    "source_encoded",
+    "source_decoded_pixels",
+    "output_encoded",
+    "output_decoded_pixels",
+    "qa_report",
+    "selection_evidence",
+    "revocation_identity"
+  ],
+  "cache_reuse_requires_exact_key": true,
+  "require_active_authority": true,
+  "policy_sha256": "81393b30399b9ef8484864339bc1583b280b790e2cfcacda449a0588b8f50a0b"
+}

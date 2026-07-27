@@ -52,6 +52,11 @@ extend-exclude = ["Plan", "cvat", "env", "build", "dist"]
 select = ["E", "F", "I", "W"]
 ignore = ["E501"]  # long spec-reference lines in docstrings; black owns code width
 
+[tool.ruff.lint.per-file-ignores]
+# This Pod-resident lease client is hash-pinned by the guarded GPU launcher.
+# Preserve its deployed bytes; the two-line import separation is intentional.
+"tools/manage_shared_pod_gpu_lease_v2.py" = ["I001"]
+
 [tool.ruff.lint.isort]
 known-first-party = ["maskfactory"]
 

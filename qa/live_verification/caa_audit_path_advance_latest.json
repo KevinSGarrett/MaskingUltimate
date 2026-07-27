@@ -1,0 +1,199 @@
+{
+  "artifact_type": "caa_audit_path_advance_from_mvc",
+  "authority": "autonomous_certified_gold_profile",
+  "claim_boundary": {
+    "caa_raised": false,
+    "certificate_minted": false,
+    "did_not_rebind_glue_fingerprints_to_canonical": true,
+    "glue_prove_emit_not_counted_as_canonical_cert_volume": true,
+    "no_fabricated_wilson_samples": true,
+    "no_force_registered_champions": true,
+    "wilson_math_unchanged": true
+  },
+  "fingerprint_fragmentation_top": [
+    [
+      "emit-path-cli-prove-batch-v1-20260720T171637Z",
+      96
+    ],
+    [
+      "emit-path-cli-prove-batch-v1-20260720T171547Z",
+      50
+    ],
+    [
+      "tournament-emit-batch-v1-20260720T171603Z",
+      40
+    ],
+    [
+      "tournament-emit-batch-v1-20260720T171637Z",
+      36
+    ],
+    [
+      "multiprovider-local-cuda-tournament-20260720-v1",
+      33
+    ],
+    [
+      "emit-path-cli-prove-batch-v1-20260720T171454Z",
+      32
+    ],
+    [
+      "tournament-emit-batch-v1-20260720T171548Z",
+      30
+    ],
+    [
+      "tournament-emit-batch-v1-20260720T171640Z",
+      24
+    ],
+    [
+      "emit-path-cli-prove-batch-v1-20260720T171247Z",
+      21
+    ],
+    [
+      "emit-path-cli-prove-batch-v1-20260720T171322Z",
+      21
+    ],
+    [
+      "tournament-emit-critic-routed-v1-20260720T172126Z",
+      20
+    ],
+    [
+      "emit-path-cli-prove-batch-v1-20260720T171640Z",
+      16
+    ]
+  ],
+  "git_head": "6a3da1123702793d0109e6dadbf5f7e575940b4b",
+  "git_head_short": "6a3da112",
+  "lane": "GOLD_FACTORY",
+  "model": "cursor-grok-4.5-high-fast",
+  "next_agent_step": "Grow genuine multiprovider tournament MVC envelopes under single canonical fingerprint multiprovider-local-cuda-tournament-20260720-v1 until image-disjoint cert samples >= 598 (binding=exact_zero_failure_serious). Do not rebind glue prove-emit fingerprints. After certificate passes, set MASKFACTORY_AUTONOMY_ALLOW_AUTONOMOUS_PROFILE=1 and re-run S11 to raise calibrated_auto_accepted; then weekly audit queue population > 0.",
+  "pipeline_fingerprint": "multiprovider-local-cuda-tournament-20260720-v1",
+  "profile_id": "maskfactory-autonomous-certified-gold-admission-v1",
+  "profile_sha256": "789d9e0af3a72cd8ff5fa4b0229cbcf662a3f904e9b336f6483a2fbfc287c823",
+  "recorded_at": "2026-07-20T17:24:16.631608Z",
+  "schema_version": "1.0.0",
+  "self_sha256": "17e7e38ce3c43e7d1772ba15249b63db9e6b9e6d3cbd5915b414aaefb6dbbd35",
+  "stage_counts": {
+    "admission_certificate_sample_count": 31,
+    "audit_queue_population_count": 0,
+    "autonomous_certified_gold": 0,
+    "calibrated_auto_accepted": 0,
+    "canonical_fp_corpus_records_solo_all_labels": 31,
+    "canonical_fp_corpus_records_torso": 31,
+    "champions": 0,
+    "corpus_record_envelopes": 518,
+    "lifecycle_sidecars_seen": 565,
+    "machine_verified_candidate": 565
+  },
+  "stages": [
+    {
+      "pool": {
+        "calibrated_auto_accepted_count": 0,
+        "corpus_record_envelopes_seen": 470,
+        "lifecycle_sidecars_seen": 517,
+        "machine_root": "C:\\Comfy_UI_Main_Masking\\runs",
+        "machine_verified_candidate_count": 517
+      },
+      "stage": "0_discover"
+    },
+    {
+      "exit_code": 0,
+      "output": "qa/live_verification/corpus_envelope_repair_caa_seal_20260720T172218Z.json",
+      "pool": {
+        "calibrated_auto_accepted_count": 0,
+        "corpus_record_envelopes_seen": 480,
+        "lifecycle_sidecars_seen": 527,
+        "machine_root": "C:\\Comfy_UI_Main_Masking\\runs",
+        "machine_verified_candidate_count": 527
+      },
+      "stage": "1_repair_envelopes"
+    },
+    {
+      "error": null,
+      "stage": "2a_assemble_corpus_torso_canonical_fp",
+      "summary": {
+        "context_filter": "solo",
+        "corpus_path": "C:\\Comfy_UI_Main_Masking\\qa\\autonomy\\corpora\\autonomous_verification_caa_torso_20260720T172218Z.json",
+        "deduped_from": 33,
+        "image_count": 31,
+        "independent_family_counts": [
+          3
+        ],
+        "label_filter": "torso",
+        "max_independent_family_count": 3,
+        "pipeline_fingerprint_filter": "multiprovider-local-cuda-tournament-20260720-v1",
+        "raw_envelope_count": 33,
+        "record_count": 31
+      }
+    },
+    {
+      "error": null,
+      "stage": "2b_assemble_corpus_solo_all_labels_canonical_fp",
+      "summary": {
+        "context_filter": "solo",
+        "corpus_path": "C:\\Comfy_UI_Main_Masking\\qa\\autonomy\\corpora\\autonomous_verification_caa_solo_20260720T172218Z.json",
+        "deduped_from": 33,
+        "image_count": 31,
+        "independent_family_counts": [
+          3
+        ],
+        "label_filter": null,
+        "max_independent_family_count": 3,
+        "pipeline_fingerprint_filter": "multiprovider-local-cuda-tournament-20260720-v1",
+        "raw_envelope_count": 33,
+        "record_count": 31
+      }
+    },
+    {
+      "certificate_passed": false,
+      "corpus": "qa/autonomy/corpora/autonomous_verification_caa_solo_20260720T172218Z.json",
+      "exit_code": 1,
+      "failures": [
+        "false_accept_upper_bound_exceeded",
+        "serious_false_accept_upper_bound_exceeded"
+      ],
+      "false_accept_upper_bound": 0.08026998460298293,
+      "output": "qa/live_verification/autonomous_gold_admission_caa_seal_20260720T172218Z.json",
+      "sample_count": 31,
+      "serious_false_accept_upper_bound": 0.09211405994732369,
+      "stage": "3_autonomous_gold_admission",
+      "status": "fail_closed"
+    },
+    {
+      "outcomes_status": "empty",
+      "output": "qa/autonomy/audit_queues/2026-W30_caa_path_seal_20260720T172218Z.json",
+      "population_count": 0,
+      "selected_count": 0,
+      "stage": "4_weekly_audit_queue"
+    },
+    {
+      "exit_code": 0,
+      "output": "qa/live_verification/measured_champions_path_caa_seal_20260720T172218Z.json",
+      "stage": "5_measured_champions_path",
+      "summary": {
+        "audit_queue_population_count": 0,
+        "caa": 0,
+        "champions": 0,
+        "envelopes": 498,
+        "git_head": "6a3da1123702793d0109e6dadbf5f7e575940b4b",
+        "mode_b_predict_status": "AWAITING_RUNTIME",
+        "mvc": 545,
+        "output": "C:/Comfy_UI_Main_Masking/qa/live_verification/measured_champions_path_caa_seal_20260720T172218Z.json",
+        "self_sha256": "4b77300492c4e21ffd95d66a0490093864522432129414385e6f8d396eb5c3da",
+        "status": "e2e_ready_partial"
+      }
+    }
+  ],
+  "wilson_floors_unchanged": {
+    "binding_constraint": "exact_zero_failure_serious",
+    "binding_n": 598,
+    "confidence_level": 0.95,
+    "gap_cert_samples_to_binding": 567,
+    "gap_mvc_to_binding": 33,
+    "maximum_false_accept_upper_bound": 0.01,
+    "maximum_serious_false_accept_upper_bound": 0.005,
+    "n_for_exact_serious_le_0_005": 598,
+    "n_for_wilson_false_accept_le_0_01": 268,
+    "observed_exact_serious_upper_at_mvc_0_defect": 0.005288149263963149,
+    "observed_wilson_upper_at_cert_samples_0_defect": 0.08026998460298293,
+    "observed_wilson_upper_at_mvc_0_defect": 0.0047657513393898725
+  }
+}

@@ -1,0 +1,228 @@
+{
+  "envelope_accepted": {
+    "True": 444
+  },
+  "envelope_contexts": [
+    [
+      "solo",
+      444
+    ]
+  ],
+  "envelope_count": 444,
+  "envelope_family_counts": {
+    "3": 337,
+    "5": 107
+  },
+  "envelope_fps_top": [
+    [
+      "emit-path-cli-prove-batch-v1-20260720T171637Z",
+      96
+    ],
+    [
+      "emit-path-cli-prove-batch-v1-20260720T171547Z",
+      50
+    ],
+    [
+      "tournament-emit-batch-v1-20260720T171603Z",
+      40
+    ],
+    [
+      "tournament-emit-batch-v1-20260720T171637Z",
+      36
+    ],
+    [
+      "multiprovider-local-cuda-tournament-20260720-v1",
+      33
+    ],
+    [
+      "emit-path-cli-prove-batch-v1-20260720T171454Z",
+      32
+    ],
+    [
+      "tournament-emit-batch-v1-20260720T171548Z",
+      30
+    ],
+    [
+      "tournament-emit-batch-v1-20260720T171640Z",
+      24
+    ],
+    [
+      "emit-path-cli-prove-batch-v1-20260720T171247Z",
+      21
+    ],
+    [
+      "emit-path-cli-prove-batch-v1-20260720T171322Z",
+      21
+    ],
+    [
+      "emit-path-cli-prove-batch-v1-20260720T171640Z",
+      16
+    ],
+    [
+      "emit-path-cli-prove-batch-v1-20260720T171447Z",
+      8
+    ],
+    [
+      "emit-path-cli-prove-batch-v1-20260720T172050Z",
+      8
+    ],
+    [
+      "emit-path-cli-prove-batch-v1-20260720T170619Z",
+      7
+    ],
+    [
+      "tournament-emit-critic-routed-v1-20260720T171927Z",
+      7
+    ]
+  ],
+  "envelope_labels": [
+    [
+      "torso",
+      87
+    ],
+    [
+      "face",
+      54
+    ],
+    [
+      "hair",
+      53
+    ],
+    [
+      "left_hand",
+      52
+    ],
+    [
+      "right_hand",
+      51
+    ],
+    [
+      "left_foot",
+      51
+    ],
+    [
+      "right_foot",
+      48
+    ],
+    [
+      "skin",
+      48
+    ]
+  ],
+  "lifecycle_fps_top": [
+    [
+      "emit-path-cli-prove-batch-v1-20260720T171637Z",
+      96
+    ],
+    [
+      "emit-path-cli-prove-batch-v1-20260720T171547Z",
+      50
+    ],
+    [
+      "None",
+      50
+    ],
+    [
+      "tournament-emit-batch-v1-20260720T171603Z",
+      40
+    ],
+    [
+      "tournament-emit-batch-v1-20260720T171637Z",
+      36
+    ],
+    [
+      "multiprovider-local-cuda-tournament-20260720-v1",
+      35
+    ],
+    [
+      "emit-path-cli-prove-batch-v1-20260720T171454Z",
+      32
+    ],
+    [
+      "tournament-emit-batch-v1-20260720T171548Z",
+      30
+    ],
+    [
+      "emit-path-cli-prove-batch-v1-20260720T171247Z",
+      24
+    ],
+    [
+      "emit-path-cli-prove-batch-v1-20260720T171322Z",
+      24
+    ],
+    [
+      "tournament-emit-batch-v1-20260720T171640Z",
+      24
+    ],
+    [
+      "emit-path-cli-prove-batch-v1-20260720T171640Z",
+      16
+    ],
+    [
+      "tournament-emit-batch-v1-20260720T171248Z",
+      16
+    ],
+    [
+      "tournament-emit-batch-v1-20260720T171323Z",
+      16
+    ],
+    [
+      "emit-path-cli-prove-batch-v1-20260720T170619Z",
+      8
+    ]
+  ],
+  "lifecycle_labels_top": [
+    [
+      "torso",
+      103
+    ],
+    [
+      "face",
+      59
+    ],
+    [
+      "hair",
+      58
+    ],
+    [
+      "left_hand",
+      58
+    ],
+    [
+      "right_hand",
+      56
+    ],
+    [
+      "left_foot",
+      56
+    ],
+    [
+      "right_foot",
+      52
+    ],
+    [
+      "skin",
+      52
+    ],
+    [
+      "None",
+      50
+    ]
+  ],
+  "lifecycle_status": {
+    "None": 50,
+    "machine_verified_candidate": 492,
+    "residual_human_queue": 2
+  },
+  "mvc_with_envelope": 445,
+  "mvc_without_envelope": 47,
+  "pool": {
+    "calibrated_auto_accepted_count": 0,
+    "corpus_record_envelopes_seen": 444,
+    "lifecycle_sidecars_seen": 491,
+    "machine_root": "C:\\Comfy_UI_Main_Masking\\runs",
+    "machine_verified_candidate_count": 491
+  },
+  "target_pipeline_fingerprint": "multiprovider-local-cuda-tournament-20260720-v1",
+  "target_torso_solo_ge3_family_envelopes": 33
+}

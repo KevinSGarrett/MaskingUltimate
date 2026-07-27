@@ -1,0 +1,112 @@
+{
+  "artifact_type": "measured_champions_path_production",
+  "claim_boundary": {
+    "audit_queue_root_is_production_runs": true,
+    "does_not_mutate_model_registry_roles": true,
+    "no_champion_force_registered": true,
+    "no_champion_registered_by_this_tool": true,
+    "promotion_requires_mark_benchmarked_plus_matrix_bundle": true,
+    "wilson_math_unchanged": true
+  },
+  "corpus_summary": {
+    "context_filter": "solo",
+    "corpus_path": "C:\\Comfy_UI_Main_Masking\\qa\\autonomy\\corpora\\autonomous_verification_20260720T171848Z.json",
+    "deduped_from": 25,
+    "image_count": 23,
+    "independent_family_counts": [
+      3
+    ],
+    "label_filter": "torso",
+    "max_independent_family_count": 3,
+    "pipeline_fingerprint_filter": "multiprovider-local-cuda-tournament-20260720-v1",
+    "raw_envelope_count": 25,
+    "record_count": 23
+  },
+  "evidence_tier": "RUNTIME_PASS_BOUNDED",
+  "git_head": "2d0b40efbeef980e33e6bcac7342d86723ab4830",
+  "measured_path_stages": [
+    {
+      "pool": {
+        "calibrated_auto_accepted_count": 0,
+        "corpus_record_envelopes_seen": 394,
+        "lifecycle_sidecars_seen": 443,
+        "machine_root": "runs",
+        "machine_verified_candidate_count": 443
+      },
+      "role": "scan production runs/ autonomy lifecycle + corpus envelopes",
+      "stage": "1_discover",
+      "tier": "RUNTIME_PASS_BOUNDED"
+    },
+    {
+      "role": "frozen image-disjoint autonomous-verification corpus",
+      "stage": "2_assemble_corpus",
+      "summary": {
+        "context_filter": "solo",
+        "corpus_path": "C:\\Comfy_UI_Main_Masking\\qa\\autonomy\\corpora\\autonomous_verification_20260720T171848Z.json",
+        "deduped_from": 25,
+        "image_count": 23,
+        "independent_family_counts": [
+          3
+        ],
+        "label_filter": "torso",
+        "max_independent_family_count": 3,
+        "pipeline_fingerprint_filter": "multiprovider-local-cuda-tournament-20260720-v1",
+        "raw_envelope_count": 25,
+        "record_count": 23
+      },
+      "tier": "RUNTIME_PASS_BOUNDED"
+    },
+    {
+      "outcomes_status": "empty",
+      "output": "qa/autonomy/audit_queues/2026-W30_measured_path_probe.json",
+      "population_count": 0,
+      "role": "build_weekly_audit_queue from production runs/",
+      "selected_count": 0,
+      "stage": "3_audit_queue",
+      "tier": "EMPTY_POPULATION"
+    },
+    {
+      "execute_e2e": false,
+      "note": "CLI: maskfactory models register-training-candidate <run> <key>. Refuses champion_* (no force-register).",
+      "role": "register_training_candidate -> challenger_bodypart only",
+      "stage": "4_p5_register",
+      "tier": "READY_WHEN_TRAINING_COMPLETE"
+    },
+    {
+      "execute_e2e": false,
+      "note": "CLI: maskfactory models mark-benchmarked <key> --certificate <cert.json>. Requires validated custom-segmenter certificate; never assigns champion_*.",
+      "role": "mark-benchmarked (installed -> benchmarked)",
+      "stage": "5_shadow_benchmark",
+      "tier": "READY_WHEN_CERTIFICATE_EXISTS"
+    },
+    {
+      "execute_e2e": false,
+      "note": "CLI: maskfactory models promote-custom-segmenter <key> --matrix-bundle <dir>. Not executed by this orchestrator; force-register forbidden.",
+      "role": "promote_custom_segmenter_role (smoke-first, transactional)",
+      "stage": "6_promote",
+      "tier": "READY_WHEN_BENCHMARKED_PLUS_MATRIX_BUNDLE"
+    }
+  ],
+  "next_agent_step": "Corpus + audit path live with >=3-family envelopes. Complete admission sample floor, S11 CAA raise, P5 train/register, mark-benchmarked, then promote-custom-segmenter. champions remain 0 until promote succeeds.",
+  "production_honest_state": {
+    "mode_b_predict_reason": "champion prediction provider is not configured (champions=0)",
+    "mode_b_predict_status": "AWAITING_RUNTIME",
+    "production_audit_queue_population_count": 0,
+    "production_autonomy_lifecycle_sidecars_in_runs": 443,
+    "production_champion_count": 0,
+    "production_champion_history_rows": 0,
+    "production_champions": {},
+    "production_corpus_record_envelopes": 394
+  },
+  "recorded_at": "2026-07-20T17:18:48.470365Z",
+  "schema_version": "1.0.0",
+  "scope": {
+    "context": "solo",
+    "label": "torso",
+    "machine_root": "runs",
+    "period_id": "2026-W30",
+    "pipeline_fingerprint": "multiprovider-local-cuda-tournament-20260720-v1"
+  },
+  "self_sha256": "934df2e0a64021931d77ab764021440c3e06212d069633b7bf71cb9ff6d3be1b",
+  "status": "e2e_ready_partial"
+}

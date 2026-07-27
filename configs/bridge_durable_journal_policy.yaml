@@ -1,0 +1,59 @@
+schema_version: "1.0.0"
+policy_id: maskfactory-bridge-durable-journal-v1
+policy_version: "1.0.0"
+canonicalization:
+  algorithm: maskfactory-canonical-json-v1
+  excluded_top_level_fields:
+    - policy_sha256
+journal_states:
+  - admit
+  - route
+  - lease
+  - submit
+  - submit_known
+  - submit_unknown
+  - reconcile
+  - result
+  - validate
+  - cache
+  - decision
+  - feedback
+  - adoption
+  - invalidation
+  - retry
+  - repair
+  - recovery
+  - rollback
+required_start_state: admit
+terminal_states:
+  - rollback
+submit_unknown_must_reconcile_before_retry: true
+idempotency:
+  same_key_same_body: replay_safe
+  same_key_different_body: reject
+integrity_detections:
+  - journal_fork_detected
+  - journal_delete_detected
+  - journal_reorder_detected
+  - checkpoint_fork_detected
+  - checkpoint_reorder_detected
+reconstruction:
+  requires_valid_history: true
+  materializes_exact_head_state: true
+  retains_idempotency_index: true
+rejection_reason_codes:
+  - unknown_state
+  - illegal_transition
+  - same_key_different_body
+  - journal_fork_detected
+  - journal_delete_detected
+  - journal_reorder_detected
+  - signature_verification
+  - reconstruction_history_invalid
+  - external_main_prerequisite_unmet
+external_main_prerequisites:
+  - main_atomic_append_side_effect_commit
+  - main_durable_append_only_retention
+  - main_idempotency_key_namespace
+  - main_trusted_journal_key_lifecycle
+policy_sha256: 80f7f2d29424cf420c7df4e3a5c13234a0b85753469a66ff909471a695b0570a

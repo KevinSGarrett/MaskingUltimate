@@ -103,7 +103,7 @@ replay clean. The scoped six-entry rollback backup is
 `.codex-ops/backups/mf_p6_20_01_fallback_parent_binding_before_20260727T031000Z`
 (manifest `a2173fd1a567ff8bbe99be392e0a04d22a669083fc1893629074cf05b97d8846`).
 This is provenance/control-plane integration only: `MF-P6-20.01` remains open
-at zero credit and `CROSS_CONTROLLER_INTEGRATION_OPEN`,
+ at zero credit and `CROSS_CONTROLLER_RUNTIME_OPEN`,
 `SERVERLESS_SUCCESSOR_GUARD_OPEN`, and `NO_CAPACITY_CREDIT` remain binding.
 
 GPU-guard chain delta `a8334c9dc` byte-verifies and supersedes that parent

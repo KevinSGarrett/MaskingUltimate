@@ -9,8 +9,8 @@ import hashlib
 import importlib.util
 import json
 import os
-import signal
 import shutil
+import signal
 import socket
 import stat
 import subprocess
@@ -21,7 +21,6 @@ import urllib.request
 from pathlib import Path
 from types import ModuleType
 from typing import Any, Callable
-
 
 SESSION_ID = "019f91d1-ea20-7d81-83ff-03d393eaa1f5"
 DEFAULT_DATABASE = Path(

@@ -9,7 +9,6 @@ from pathlib import Path
 import pytest
 from jsonschema import Draft202012Validator
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 TRACKER_MODULE_PATH = PROJECT_ROOT / "Plan" / "Tracker" / "tracker.py"
 REGISTRY_PATH = PROJECT_ROOT / "Plan" / "Tracker" / "completion_track_registry.json"

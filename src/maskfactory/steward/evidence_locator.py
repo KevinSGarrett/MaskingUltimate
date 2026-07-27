@@ -13,6 +13,7 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 from collections.abc import Mapping, Sequence
 from pathlib import Path, PurePosixPath
 from typing import Any
@@ -144,6 +145,56 @@ def _repository_artifacts(entry: Mapping[str, Any]) -> dict[str, Mapping[str, An
             "repository location lacks an exact artifact binding: " + ", ".join(missing)
         )
     return artifacts_by_location
+
+
+def _git_output(repository_root: Path, *arguments: str) -> str:
+    """Return one read-only Git query or fail closed with its stderr."""
+
+    try:
+        completed = subprocess.run(
+            [
+                "git",
+                "--no-optional-locks",
+                "-C",
+                str(repository_root),
+                *arguments,
+            ],
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
+    except OSError as error:
+        raise EvidenceLocatorError("Git source reconstruction is unavailable") from error
+    if completed.returncode:
+        detail = completed.stderr.strip() or completed.stdout.strip() or "unknown Git error"
+        raise EvidenceLocatorError(f"Git source reconstruction failed: {detail}")
+    return completed.stdout.strip()
+
+
+def _verify_source_bindings(locator: Mapping[str, Any], repository_root: Path) -> None:
+    """Prove each declared source commit, tree, and path remain reconstructable.
+
+    The compact locator is also used by temporary fixture roots without Git
+    metadata, so source reconstruction is mandatory only when the caller
+    supplied a repository root.  The production verifier always does.
+    """
+
+    if not repository_root.joinpath(".git").exists():
+        return
+    for entry in locator["entries"]:
+        source = entry["source"]
+        commit = source["commit_sha"]
+        declared_tree = source["tree_sha"]
+        source_path = source["path"]
+        _git_output(repository_root, "cat-file", "-e", f"{commit}^{{commit}}")
+        observed_tree = _git_output(repository_root, "rev-parse", f"{commit}^{{tree}}")
+        if observed_tree != declared_tree:
+            raise EvidenceLocatorError(
+                f"source tree SHA-1 mismatch for {entry['tracker_item']}"
+            )
+        _git_output(repository_root, "cat-file", "-e", f"{commit}:{source_path}")
 
 
 def _validate_entry(entry: object) -> tuple[str, str | None]:
@@ -307,6 +358,7 @@ def verify_repository_evidence(locator: Mapping[str, Any], repository_root: Path
     root = Path(repository_root).resolve()
     if not root.is_dir():
         raise EvidenceLocatorError("repository root is not a directory")
+    _verify_source_bindings(locator, root)
     for location, expected_sha256 in locator["authority_file_sha256"].items():
         candidate = root.joinpath(*PurePosixPath(location).parts)
         if candidate.is_symlink() or not candidate.is_file():

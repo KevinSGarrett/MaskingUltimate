@@ -35,6 +35,40 @@ def _write_authority_files(root) -> None:
         path.write_text(content, encoding="utf-8")
 
 
+def _commit_source_fixture(root) -> tuple[str, str]:
+    source = root / "src/maskfactory/steward/engineering_campaign_runtime.py"
+    source.parent.mkdir(parents=True, exist_ok=True)
+    source.write_text("SOURCE = 'fixture'\n", encoding="utf-8")
+    subprocess.run(["git", "init", "--quiet"], cwd=root, check=True)
+    subprocess.run(["git", "add", "src"], cwd=root, check=True)
+    subprocess.run(
+        [
+            "git",
+            "-c",
+            "user.name=MaskFactory Test",
+            "-c",
+            "user.email=maskfactory-test@example.invalid",
+            "commit",
+            "--quiet",
+            "-m",
+            "source fixture",
+        ],
+        cwd=root,
+        check=True,
+    )
+    commit = subprocess.run(
+        ["git", "rev-parse", "HEAD"], cwd=root, check=True, capture_output=True, text=True
+    ).stdout.strip()
+    tree = subprocess.run(
+        ["git", "rev-parse", "HEAD^{tree}"],
+        cwd=root,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    return commit, tree
+
+
 def _entry(*, disposition: str = "accepted", parent: str | None = "campaign-25") -> dict:
     artifacts = [
         {
@@ -195,6 +229,33 @@ def test_repository_evidence_verification_requires_current_authority_files(tmp_p
     authority_path.write_text("drift", encoding="utf-8")
     with pytest.raises(EvidenceLocatorError, match="authority SHA-256 mismatch"):
         verify_repository_evidence(locator, tmp_path)
+
+
+def test_repository_evidence_verification_reconstructs_declared_git_source(tmp_path) -> None:
+    _write_authority_files(tmp_path)
+    artifact_path = tmp_path / "qa/live_verification/campaign_packet.json"
+    artifact_path.parent.mkdir(parents=True)
+    artifact_path.write_bytes(b"output")
+    commit, tree = _commit_source_fixture(tmp_path)
+    entry = _entry()
+    entry["source"] = {
+        "commit_sha": commit,
+        "tree_sha": tree,
+        "path": "src/maskfactory/steward/engineering_campaign_runtime.py",
+    }
+    locator = _locator(entries=[entry])
+
+    verify_repository_evidence(locator, tmp_path)
+
+    wrong_tree = copy.deepcopy(entry)
+    wrong_tree["source"]["tree_sha"] = "c" * 40
+    with pytest.raises(EvidenceLocatorError, match="source tree SHA-1 mismatch"):
+        verify_repository_evidence(_locator(entries=[wrong_tree]), tmp_path)
+
+    missing_path = copy.deepcopy(entry)
+    missing_path["source"]["path"] = "src/maskfactory/steward/missing.py"
+    with pytest.raises(EvidenceLocatorError, match="Git source reconstruction failed"):
+        verify_repository_evidence(_locator(entries=[missing_path]), tmp_path)
 
 
 def test_authority_paths_are_relative_and_cannot_escape() -> None:

@@ -271,6 +271,20 @@ input-verified only (mission `ed59cac5…`, contract SHA `55c15fb4…`): no GPU,
 model, OpenRouter, Serverless, or provider call occurred. Direct Pod is blocked
 only by the unauthenticated RunPod console, with no bypass authorized.
 
+The first outcome-parent pointer is separate recovery-integrity evidence, not
+runtime evidence. It was introduced on trace
+`codex/wave88-authoritative-apply-20260727` at
+`ef74e93bb1d23483c48faf953fd6d84e2f228d32`; the authoritative target
+`codex/workflow_plan_update_improvements` then advanced through reconciled
+handoff to `4fd949e5dc41536f3012bbf66d8392467ff15cd1`. Its unchanged repository
+record is
+`Plan/Tracker/Evidence/RunPod/WAVE88_FIRST_OUTCOME_PARENT_PREPARED_20260727.json`
+(raw `65cffc393827568969e16b24ff88dea81db30762d1d241891a36d6b1812558b9`,
+self `e5b6f0a909c576752ff77789bb16bef401112e120a00206772499a0c98a21e29`),
+binding source commit `e2aac1e5...`. The named contract-schema and source-input
+checks both pass. It is explicitly `PREPARED_NOT_EXECUTED`, non-terminal, and
+has no provider, Pod, model, or child action; it grants no capacity credit.
+
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test
 has yet exercised a real same-parent provider run across the boundary.

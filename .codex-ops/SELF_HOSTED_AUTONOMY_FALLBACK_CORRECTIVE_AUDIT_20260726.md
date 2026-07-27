@@ -48,6 +48,22 @@ until each conflict is resolved or superseded with behavior and evidence. The
 baseline prohibits a wholesale merge, reset, or replacement worktree while that
 work proceeds.
 
+Production delta `cc3f1fe9d2d44677b0b2261f04211b8fd35c8190` resolves exactly
+three steward paths (`src/maskfactory/steward/__init__.py`, `core.py`, and
+`runtime.py`) as `resolved_behavioral_autonomy_superset`. Its closed-schema
+receipt binds full-product/autonomy Git objects, current worktree SHA-256, and
+byte-identical candidate test blobs:
+`qa/live_verification/mf_p6_20_01_source_resolution_steward_core_20260727.json`
+(raw `27024c2c50de49997db5112711bfb83fec775b8c2a42fd5ee8443453a5fc0fd6`, self
+`7a4b17a3ca7ef51c05e4003f269a14e2cf67a5c66af238bb7282226f51338f10`). The
+updated inventory is raw
+`f98eadb84642b9e9c3d6c12d96a776dc5ba563e784acdc45225ae12376f3af98`, self
+`7574f1f2b5846626ab6a834838b97f67c9a4aacb6232eeb6dad6a79bd90d5c33`, reducing
+unresolved paths from 1,731 to 1,728. Candidate-identical core/runtime
+regressions passed 23 tests; the relevant wave passed 37, with public-import,
+replay, Ruff, compile, diff, secret, and tracker validation clean. This is a
+bounded reconciliation, not `MF-P6-20.01` completion or route capacity credit.
+
 - `MF-P6-19.01`: 25 completed / 0 failed engineering missions, one service
   generation, 50 real replay requests and unique responses, 25 accepted
   canonical proposals and releases, no request-binding mismatch. The immutable

@@ -129,6 +129,27 @@ def test_inventory_replay_is_deterministic_and_tamper_fails(tmp_path: Path) -> N
         validate_inventory(seal_inventory(changed))
 
 
+def test_inventory_excludes_generated_python_bytecode_from_source_scope(
+    tmp_path: Path,
+) -> None:
+    repo = _repo(tmp_path)
+    _write(repo / "src/__pycache__/shared.cpython-311.pyc", "generated\n")
+    _write(repo / "tests/__pycache__/test_full.cpython-311.pyo", "generated\n")
+    _write(repo / "tools/user_owned.py", "preserve\n")
+
+    inventory = build_inventory(
+        repo_root=repo,
+        full_product_ref="full-product",
+        autonomy_ref="HEAD",
+        authority_hashes={"Plan/28.md": "c" * 64},
+    )
+
+    assert all("__pycache__" not in row["path"] for row in inventory["paths"])
+    assert all(not row["path"].endswith((".pyc", ".pyo")) for row in inventory["paths"])
+    user_row = next(row for row in inventory["paths"] if row["path"] == "tools/user_owned.py")
+    assert user_row["integration_status"] == "ownership_resolution_required"
+
+
 def test_exact_resolution_evidence_closes_only_bound_conflict(
     tmp_path: Path,
 ) -> None:

@@ -10,7 +10,7 @@ import re
 import subprocess
 from collections import Counter
 from collections.abc import Mapping, Sequence
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 SCHEMA_VERSION = "maskfactory.canonical_source_inventory.v1"
@@ -426,6 +426,12 @@ def _in_scope(
     return path in root_files or any(path.startswith(prefix) for prefix in prefixes)
 
 
+def _is_generated_worktree_path(path: str) -> bool:
+    """Exclude Python bytecode caches from a source-path reconciliation inventory."""
+    parts = PurePosixPath(path).parts
+    return "__pycache__" in parts or path.endswith((".pyc", ".pyo"))
+
+
 def _tree_entries(
     repo_root: Path,
     commit_sha: str,
@@ -597,15 +603,16 @@ def _worktree_scope_paths(
         "--exclude-standard",
         "-z",
     )
-    return {
+    paths = (
         raw.decode("utf-8", errors="surrogateescape")
         for raw in output.split(b"\0")
         if raw
-        and _in_scope(
-            raw.decode("utf-8", errors="surrogateescape"),
-            prefixes=prefixes,
-            root_files=root_files,
-        )
+    )
+    return {
+        path
+        for path in paths
+        if _in_scope(path, prefixes=prefixes, root_files=root_files)
+        and not _is_generated_worktree_path(path)
     }
 
 

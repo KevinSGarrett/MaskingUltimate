@@ -173,6 +173,13 @@ defeat the governed-manager boundary. Before production invocation, it must
 resolve and bind the exact repository manager and policy paths (with their
 contract hashes) and negatively reject a counterfeit basename.
 
+`POLICY_LINEAGE_GATE_OPEN`: the current combined controller suite has 125
+passing tests but nine manager cases require a governed work kind absent from
+the primary branch's older policy. The two policy identities cannot silently
+diverge. The controller must consume one exact reviewed policy contract and
+hash, with explicit work-kind admission tests; neither weakening the tests nor
+unreviewed expansion of admissibility is an acceptable repair.
+
 `SERVERLESS_SUCCESSOR_GUARD_OPEN`: CUI's primary Serverless path still pins an
 obsolete manager hash and its validator treats a provider-free `decide` probe
 as authority to create a successor. That is unsafe reissue semantics. The
@@ -192,10 +199,10 @@ This does not permit a successor from `decide` alone, relax the legacy
 owner-recovery 1/1 worker caps, execute a provider job, or grant
 `FALLBACK_CAPACITY_UNPROVEN` any credit. `NO_CAPACITY_CREDIT` remains binding
 until the CUI primary controller consumes the exact CUI manager contract and
-the mission-size, role-budget, and canonical-caller gates reject unsafe work,
-and the Serverless successor guard is sealed, then one real parent retains
-host preflight, completes its source-hash-bound child work, applies/tests/QAs
-its result, and reconciles both children to terminal state.
+the mission-size, role-budget, canonical-caller, and policy-lineage gates
+reject unsafe work, and the Serverless successor guard is sealed, then one
+real parent retains host preflight, completes its source-hash-bound child work,
+applies/tests/QAs its result, and reconciles both children to terminal state.
 
 The RunPod browser is currently at an authorized-console sign-in page. No SSH
 or Jupyter bypass is authorized. Consequently, local tests prove the control

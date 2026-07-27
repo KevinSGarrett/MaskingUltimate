@@ -150,6 +150,20 @@ preserves untracked/modified work, and claims zero tracker, runtime, provider,
 route, mask, release, or completion credit. This newer scoped baseline is not
 a runtime, visual-authority, or fallback-capacity result.
 
+The ensuing CPU-safe product closures are committed as
+`e857e1cf1` (deterministic mask derivation: `configs/derived.yaml`,
+`src/maskfactory/derive.py`, and `tests/test_derive.py`), `ce6fc19ed`
+(governed inpaint derivatives: `configs/inpaint.yaml`,
+`src/maskfactory/inpaint.py`, and `tests/test_inpaint.py`), and `c16299902`
+(governed image intake: `src/maskfactory/intake.py` and
+`tests/test_intake_closure.py`). They were materialized from exact upstream
+closures after dependency/hash checks. The inpaint derivatives are explicitly
+non-gold; S00 intake's 54 focused synthetic tests prove metadata stripping,
+duplicate suppression, quarantine/rejection, state accounting, and event
+logging without admitting a real asset. These commits are executable
+prerequisites only—no tracker, GPU, provider, visual-authority, real-mask, or
+campaign credit is claimed.
+
 - `MF-P6-19.01`: 25 completed / 0 failed engineering missions, one service
   generation, 50 real replay requests and unique responses, 25 accepted
   canonical proposals and releases, no request-binding mismatch. The immutable

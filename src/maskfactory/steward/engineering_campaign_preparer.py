@@ -15,16 +15,17 @@ import shutil
 import tempfile
 from collections.abc import Mapping, Sequence
 from copy import deepcopy
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 from .campaign_builder import CampaignCandidate, build_campaigns
 from .core import (
     AUTHORITY_KEYS,
-    BINDING_SCHEMA as MISSION_BINDING_SCHEMA,
     canonical_sha256,
     seal_binding,
 )
+from .core import BINDING_SCHEMA as MISSION_BINDING_SCHEMA
 from .engineering_campaign_runtime import (
     BINDING_NAME,
     CAMPAIGN_SIZE,
@@ -34,6 +35,8 @@ from .engineering_campaign_runtime import (
 from .goal_selector import GoalSelection, select_next_plan27_work
 from .repository_packet import (
     MANIFEST_NAME as REPOSITORY_MANIFEST_NAME,
+)
+from .repository_packet import (
     build_repository_packet,
     verify_repository_packet,
 )
@@ -61,6 +64,14 @@ _IDENTITY_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$")
 
 class EngineeringCampaignPreparationError(RuntimeError):
     """A campaign source cannot be materialized without weakening authority."""
+
+
+@dataclass(frozen=True)
+class _RepositoryPacketCacheEntry:
+    """One immutable packet reused only within one campaign materialization."""
+
+    packet_root: Path
+    manifest: Mapping[str, Any]
 
 
 def _json_bytes(value: Mapping[str, Any]) -> bytes:
@@ -363,6 +374,90 @@ def _prompt(
     return prompt
 
 
+def _packet_cache_key(
+    *,
+    mission: Mapping[str, Any],
+    source: Mapping[str, Any],
+) -> tuple[tuple[str, ...], tuple[str, ...], str, int]:
+    """Return the exact packet inputs that may safely share immutable bytes."""
+
+    return (
+        tuple(sorted(str(path) for path in mission["source_paths"])),
+        tuple(sorted(str(root) for root in mission["scope_roots"])),
+        str(source["tracker_item_id"]),
+        int(source["max_packet_bytes"]),
+    )
+
+
+def _materialize_repository_packet(
+    *,
+    repo_root: Path,
+    packet_root: Path,
+    mission: Mapping[str, Any],
+    source: Mapping[str, Any],
+    packet_cache: dict[tuple[tuple[str, ...], tuple[str, ...], str, int], _RepositoryPacketCacheEntry],
+) -> dict[str, Any]:
+    """Build once per exact source set, then copy immutable packet bytes per mission.
+
+    The initial build validates tracked Git bytes.  Reused packet copies verify
+    their own manifest and file hashes immediately; the caller performs one
+    final current-source verification for each distinct cache entry before the
+    campaign binding is sealed.  This removes redundant Git probes without
+    allowing a cached packet to outlive the campaign materialization.
+    """
+
+    key = _packet_cache_key(mission=mission, source=source)
+    cached = packet_cache.get(key)
+    if cached is None:
+        manifest = build_repository_packet(
+            repo_root=repo_root,
+            packet_root=packet_root,
+            source_paths=mission["source_paths"],
+            scope_roots=mission["scope_roots"],
+            tracker_item_ids=[source["tracker_item_id"]],
+            max_packet_bytes=source["max_packet_bytes"],
+            minimum_free_bytes=0,
+        )
+        packet_cache[key] = _RepositoryPacketCacheEntry(
+            packet_root=packet_root,
+            manifest=manifest,
+        )
+        return manifest
+
+    if packet_root.exists() or not packet_root.parent.is_dir():
+        raise EngineeringCampaignPreparationError("repository packet destination is unavailable")
+    temporary = Path(
+        tempfile.mkdtemp(prefix=f".{packet_root.name}.tmp-", dir=packet_root.parent)
+    )
+    try:
+        shutil.copytree(cached.packet_root, temporary, dirs_exist_ok=True)
+        manifest = verify_repository_packet(temporary)
+        if manifest != cached.manifest:
+            raise EngineeringCampaignPreparationError("reused repository packet drifted")
+        os.replace(temporary, packet_root)
+    except Exception:
+        shutil.rmtree(temporary, ignore_errors=True)
+        raise
+    return manifest
+
+
+def _verify_cached_packet_sources(
+    *,
+    packet_cache: Mapping[
+        tuple[tuple[str, ...], tuple[str, ...], str, int], _RepositoryPacketCacheEntry
+    ],
+    repo_root: Path,
+) -> None:
+    """Prove each reused source set still matches its original Git bytes."""
+
+    for cached in packet_cache.values():
+        verify_repository_packet(
+            cached.packet_root,
+            repo_root=repo_root,
+            require_current_source=True,
+        )
+
+
 def _prepare_mission(
     *,
     repo_root: Path,
@@ -371,20 +466,16 @@ def _prepare_mission(
     mission: Mapping[str, Any],
     source: Mapping[str, Any],
     contract: Mapping[str, Any],
+    packet_cache: dict[
+        tuple[tuple[str, ...], tuple[str, ...], str, int], _RepositoryPacketCacheEntry
+    ],
 ) -> dict[str, Any]:
-    manifest = build_repository_packet(
+    manifest = _materialize_repository_packet(
         repo_root=repo_root,
         packet_root=packet_root,
-        source_paths=mission["source_paths"],
-        scope_roots=mission["scope_roots"],
-        tracker_item_ids=[source["tracker_item_id"]],
-        max_packet_bytes=source["max_packet_bytes"],
-        minimum_free_bytes=0,
-    )
-    verify_repository_packet(
-        packet_root,
-        repo_root=repo_root,
-        require_current_source=True,
+        mission=mission,
+        source=source,
+        packet_cache=packet_cache,
     )
     mission_root.mkdir(parents=True)
     prompt = _prompt(
@@ -638,6 +729,9 @@ def prepare_engineering_campaign(
         tempfile.mkdtemp(prefix=f".{batch.campaign_id}.tmp-", dir=inbox)
     )
     created_packets: list[Path] = []
+    packet_cache: dict[
+        tuple[tuple[str, ...], tuple[str, ...], str, int], _RepositoryPacketCacheEntry
+    ] = {}
     try:
         missions_root = temporary / "missions"
         missions_root.mkdir()
@@ -658,10 +752,12 @@ def prepare_engineering_campaign(
                     mission=mission,
                     source=source,
                     contract=contract,
+                    packet_cache=packet_cache,
                 )
             )
             created_packets.append(packet_root)
             mission_roots.append(mission_root)
+        _verify_cached_packet_sources(packet_cache=packet_cache, repo_root=Path(repo_root))
         (temporary / SOURCE_NAME).write_bytes(source_file.read_bytes())
         binding = build_engineering_campaign_runtime_binding(
             campaign_root=temporary,

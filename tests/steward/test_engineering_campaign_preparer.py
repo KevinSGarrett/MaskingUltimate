@@ -8,19 +8,19 @@ from pathlib import Path
 
 import pytest
 
+from maskfactory.steward import engineering_campaign_preparer
+from maskfactory.steward.core import canonical_sha256
 from maskfactory.steward.engineering_campaign_preparer import (
     EngineeringCampaignPreparationError,
     prepare_engineering_campaign,
     seal_engineering_campaign_source,
 )
-from maskfactory.steward.core import canonical_sha256
 from maskfactory.steward.engineering_campaign_runtime import (
     CAMPAIGN_SIZE,
     validate_engineering_campaign_runtime_binding,
 )
 from maskfactory.steward.goal_selector import PLAN27_ITEM_ORDER
 from maskfactory.steward.runtime import atomic_write_json, file_sha256, read_json
-
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CONTRACT_PATH = PROJECT_ROOT / "configs" / "self_hosted_steward_runtime_v1.json"
@@ -169,6 +169,29 @@ def test_exact_replay_and_evidence_drift_refusal(tmp_path: Path) -> None:
             campaign_inbox=tmp_path / "inbox",
             runtime_contract_path=CONTRACT_PATH,
         )
+
+
+def test_repeated_source_set_uses_one_git_packet_snapshot_per_campaign(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    calls = 0
+    original = engineering_campaign_preparer.build_repository_packet
+
+    def counted_build(**kwargs):
+        nonlocal calls
+        calls += 1
+        return original(**kwargs)
+
+    monkeypatch.setattr(engineering_campaign_preparer, "build_repository_packet", counted_build)
+    preparation, campaign_root, _repo, _source_path = _prepare(tmp_path)
+
+    assert calls == 1
+    assert preparation["mission_count"] == CAMPAIGN_SIZE
+    for sequence in range(1, CAMPAIGN_SIZE + 1):
+        manifest = read_json(
+            campaign_root / "missions" / f"engineering-{sequence:02d}" / "repository_packet_manifest.json"
+        )
+        assert manifest["packet_sha256"] == preparation["mission_evidence"][0]["packet_sha256"]
 
 
 def test_tracker_selection_mismatch_fails_before_packet_creation(

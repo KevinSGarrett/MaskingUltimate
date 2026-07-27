@@ -4,6 +4,7 @@ import base64
 import hashlib
 import json
 import subprocess
+import zipfile
 from pathlib import Path
 
 from cryptography.hazmat.primitives import serialization
@@ -30,6 +31,31 @@ def _binding(root: Path, name: str) -> dict[str, object]:
     return {"relative_path": name, "sha256": _sha(path), "size_bytes": path.stat().st_size}
 
 
+def _write_wheel(path: Path) -> None:
+    """Create the smallest byte-valid wheel required by the publication fixture."""
+
+    members = {
+        "maskfactory/__init__.py": b"__version__ = '1.0.0'\n",
+        "maskfactory/cli.py": b"def main():\n    return None\n",
+        "maskfactory-1.0.0.dist-info/METADATA": (
+            b"Metadata-Version: 2.4\nName: maskfactory\nVersion: 1.0.0\n"
+            b"Requires-Dist: click\nRequires-Dist: pydantic\n"
+        ),
+        "maskfactory-1.0.0.dist-info/entry_points.txt": (
+            b"[console_scripts]\nmaskfactory = maskfactory.cli:main\n"
+        ),
+    }
+    record_rows = []
+    for name, content in members.items():
+        digest = base64.urlsafe_b64encode(hashlib.sha256(content).digest()).rstrip(b"=").decode("ascii")
+        record_rows.append(f"{name},sha256={digest},{len(content)}")
+    record_name = "maskfactory-1.0.0.dist-info/RECORD"
+    members[record_name] = ("\n".join((*record_rows, f"{record_name},,")) + "\n").encode("utf-8")
+    with zipfile.ZipFile(path, "w") as archive:
+        for name, content in members.items():
+            archive.writestr(name, content)
+
+
 def _publication(tmp_path: Path) -> tuple[dict, Path, Path, dict]:
     repository = tmp_path / "repository"
     release_root = tmp_path / "release"
@@ -48,7 +74,6 @@ def _publication(tmp_path: Path) -> tuple[dict, Path, Path, dict]:
     names = (
         "crosswalk.json",
         "environment.lock",
-        "maskfactory-1.0.0-py3-none-any.whl",
         "installer.py",
         "verify.py",
         "rollback.py",
@@ -65,6 +90,8 @@ def _publication(tmp_path: Path) -> tuple[dict, Path, Path, dict]:
             (release_root / name).write_bytes(governance.read_bytes())
         else:
             (release_root / name).write_text(f"{name}\n", encoding="utf-8")
+    wheel_name = "maskfactory-1.0.0-py3-none-any.whl"
+    _write_wheel(release_root / wheel_name)
     snapshot = {
         "release_id": "mfr_20260719_012345abcdef",
         "release_payload_sha256": "a" * 64,
@@ -76,7 +103,7 @@ def _publication(tmp_path: Path) -> tuple[dict, Path, Path, dict]:
         },
     }
     (release_root / "release.json").write_text(json.dumps(snapshot), encoding="utf-8")
-    rows = [_binding(release_root, name) for name in (*names, "release.json")]
+    rows = [_binding(release_root, name) for name in (*names, wheel_name, "release.json")]
     bindings = {row["relative_path"]: row for row in rows}
     private_key = Ed25519PrivateKey.generate()
     public_key = private_key.public_key().public_bytes(
@@ -111,7 +138,7 @@ def _publication(tmp_path: Path) -> tuple[dict, Path, Path, dict]:
             "python_version": "3.11.0",
             "platform": "test",
             "environment_lock": bindings["environment.lock"],
-            "installed_distribution": bindings["maskfactory-1.0.0-py3-none-any.whl"],
+            "installed_distribution": bindings[wheel_name],
             "cuda": "none",
             "driver": "none",
             "gpu": "none",
@@ -153,9 +180,13 @@ def _publication(tmp_path: Path) -> tuple[dict, Path, Path, dict]:
         "publication_payload_sha256": evidence["publication_payload_sha256"],
         "install_mode": "wheel",
         "package": {
-            "relative_path": "maskfactory-1.0.0-py3-none-any.whl",
-            "sha256": bindings["maskfactory-1.0.0-py3-none-any.whl"]["sha256"],
-            "size_bytes": bindings["maskfactory-1.0.0-py3-none-any.whl"]["size_bytes"],
+            "relative_path": wheel_name,
+            "sha256": bindings[wheel_name]["sha256"],
+            "size_bytes": bindings[wheel_name]["size_bytes"],
+        },
+        "runtime_closure": {
+            "console_entrypoint": "maskfactory.cli:main",
+            "requires_dist": ["click", "pydantic"],
         },
         "activation": {
             "strategy": "atomic_pointer_switch",

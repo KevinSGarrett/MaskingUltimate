@@ -414,14 +414,23 @@ fast-forward of this code into the clean checkout: no model launch, provider
 call, parent retry, fallback child, capacity credit, or terminal-success claim
 is authorized by publication.
 
-Follow-on process-group hardening `a48d22fa` is explicitly **unvalidated and
-not admitted**. Its independent focused Windows check produced `28 passed / 1
-failed` while Ruff passed. The failure is in
-`test_owned_runtime_records_exact_readiness_and_release`: it assumes
-`os.getpgid` exists on Windows before the test can monkeypatch it. Primary must
-repair the platform-safe test/setup and rerun the focused verification before
-this hardening can affect any runtime admission. No runtime, provider, parent,
-or fallback action occurred while the defect was found.
+The initial follow-on hardening `a48d22fa` was correctly blocked by an
+independent Windows `28 passed / 1 failed` test result because
+`test_owned_runtime_records_exact_readiness_and_release` assumed `os.getpgid`
+existed before monkeypatching. Its repaired, sealed successor is
+`9a6659b20a572afe3dbcbee71d67963826ddc167`
+(`fix(wave88): fail closed without process groups`), now independently verified
+at both `origin/codex/wave88-authoritative-apply-20260727` and
+`origin/codex/workflow_plan_update_improvements`. Exact source SHA-256 is
+executor `a541d483b9e15877406a76b69d996da650d46eb6aeab60703bffb6e3f9eb2f4c` and
+focused test `6fd20aee375d8565d52ff80190fa9ed845de14ba1fb4dcceecb1d991c80570ce`.
+Independent Windows validation now passes `30/30` for
+`Plan\\Instructions\\QA\\Scripts\\test_run_wave88_engineering_executor.py`,
+with Ruff and `compileall` also passing. This is sealed CPU-only
+process-group admission hardening: no runtime/process/provider request was
+made and no launch/readiness/release receipt exists. The Pod remains
+fast-forward/read-only-discovery only; neither this repair nor its tests permit
+a retry, a new parent, a fallback child, or capacity credit.
 
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test

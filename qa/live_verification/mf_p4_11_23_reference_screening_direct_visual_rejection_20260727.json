@@ -1,0 +1,36 @@
+{
+  "authority_boundary": {
+    "candidate_selection_allowed": false,
+    "critic_qualification_allowed": false,
+    "mask_generation_allowed": false,
+    "promotion_allowed": false,
+    "reason": "A direct screening rejection is negative reference evidence only; it cannot establish mask truth or visual authority."
+  },
+  "reference_readiness_binding": {
+    "path": "qa/live_verification/mf_p4_11_23_visual_reference_readiness_20260727.json",
+    "raw_sha256": "a0d23229f76737470edf0321d877bc39fe3c9f56b10e0fa4042bdaca2a8ab9c2",
+    "self_sha256": "65cc4159b08e0bd83df9057df675f2cd86895097ed8be068920fe91879c4490e"
+  },
+  "review": {
+    "decision": "rejected_for_hand_finger_candidate_selection",
+    "evidence_basis": "direct_pixel_review",
+    "metadata_hint": "hands_visible",
+    "observed_content": "The image is a face/forehead/hair close-up with decorative stones. No hand or fingers are visible.",
+    "reason": "metadata_tag_not_visually_confirmed",
+    "reviewer": "codex_direct_visual_screening",
+    "target_role": "part_hand_fingers"
+  },
+  "schema_version": "maskfactory.visual_reference_direct_screening.v1",
+  "screened_image": {
+    "bytes": 4138073,
+    "dimensions": {
+      "height": 5184,
+      "width": 3456
+    },
+    "materialized_relative_path": "benchmark_reference/clothed__one/0db78b1951418889__246_EM_Eye_References.jpg",
+    "relative_path": "1000 Eye & Mouth & Nose & Ear Image Reference Pack \u2013 Vol 1/file/Eye/246_EM_Eye_References.jpg",
+    "sha256": "0db78b19514188899111fe178a0e4284860c57094aab81404e971bfc2e0de384",
+    "source_group": "1000 Eye & Mouth & Nose & Ear Image Reference Pack \u2013 Vol 1"
+  },
+  "self_sha256": "e3b8ef3f73ac2f8d604e50ae3902e37d568aae699faa0e5f3cd40e958c7d03d8"
+}

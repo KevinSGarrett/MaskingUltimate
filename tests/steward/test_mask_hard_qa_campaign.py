@@ -221,6 +221,50 @@ def test_provider_disagreement_is_measured_deterministically() -> None:
             "status": "DISAGREE",
         }
     ]
+    assert record["record_outcome"] == "ABSTAIN"
+    assert record["reason"] == "provider_disagreement"
+
+
+def test_provider_disagreement_abstains_without_blocking_unrelated_records() -> None:
+    disagreement = {
+        "record_id": "disagreement",
+        "candidates": [
+            {"provider_id": "a", "label_id": 1, "mask": _valid_mask()},
+            {
+                "provider_id": "b",
+                "label_id": 1,
+                "mask": np.pad(
+                    np.ones((4, 4), dtype=np.uint8) * 255,
+                    ((3, 9), (4, 8)),
+                ),
+            },
+        ],
+        "resources": _resources(),
+        "target_label_id": 1,
+        "ontology_label_ids": [1, 2],
+    }
+    independent = {
+        "record_id": "independent",
+        "candidates": [
+            {"provider_id": "c", "label_id": 1, "mask": _valid_mask()}
+        ],
+        "resources": _resources(),
+        "target_label_id": 1,
+        "ontology_label_ids": [1, 2],
+    }
+    limits = MaskHardQALimits(
+        max_components=1,
+        max_repair_attempts=0,
+        disagreement_iou_floor=0.75,
+    )
+
+    campaign = evaluate_mask_campaign([disagreement, independent], limits=limits)
+
+    assert campaign["records"][0]["record_outcome"] == "ABSTAIN"
+    assert campaign["records"][0]["reason"] == "provider_disagreement"
+    assert campaign["records"][1]["record_outcome"] == "PASS"
+    assert campaign["passed_record_count"] == 1
+    assert validate_mask_campaign(campaign, records=[disagreement, independent], limits=limits) == campaign
 
 
 def test_bad_record_does_not_block_unrelated_record() -> None:

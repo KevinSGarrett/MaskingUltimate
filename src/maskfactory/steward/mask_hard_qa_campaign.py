@@ -537,16 +537,24 @@ def evaluate_mask_record(
                     ),
                 }
             )
+    has_disagreement = any(row["status"] == "DISAGREE" for row in disagreements)
+    record_outcome = "ABSTAIN" if has_disagreement else "PASS" if passed_masks else "VETO"
+    record: dict[str, Any] = {
+        "schema_version": SCHEMA_VERSION,
+        "record_id": _identifier(record_id, field="record_id"),
+        "candidate_results": results,
+        "disagreement": disagreements,
+        "passed_candidate_count": len(passed_masks),
+        "record_outcome": record_outcome,
+        "record_sha256": ZERO_SHA256,
+    }
+    if has_disagreement:
+        # Independent masks below the IoU floor are neither a provider pass nor
+        # a repairable winner.  Preserve both candidate evidence and abstain so
+        # a later promotion path cannot reinterpret this record as hard-QA PASS.
+        record["reason"] = "provider_disagreement"
     return _seal(
-        {
-            "schema_version": SCHEMA_VERSION,
-            "record_id": _identifier(record_id, field="record_id"),
-            "candidate_results": results,
-            "disagreement": disagreements,
-            "passed_candidate_count": len(passed_masks),
-            "record_outcome": "PASS" if passed_masks else "VETO",
-            "record_sha256": ZERO_SHA256,
-        },
+        record,
         "record_sha256",
     )
 

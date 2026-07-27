@@ -1,0 +1,28 @@
+schema_version: "1.0.0"
+source: swimsuit_preview
+source_root: C:/Comfy_UI_Main/MaskedWarehouse/Body/UniDataPro_swimsuit-human-segmentation-dataset
+source_encoding: RGB color map; 16 exact colors observed across all 10 preview masks
+status: blocked_label_semantics
+source_authority: external_source_maps_never_gold
+license: CC-BY-NC-ND-4.0 limited preview; training prohibited pending legal review
+training_allowed: false
+normalization: exact RGB lookup only; no nearest-color assignment
+unresolved_reason: color legend is not available in plain-text source metadata
+observed_colors:
+  - [0, 0, 0]
+  - [0, 50, 0]
+  - [0, 255, 0]
+  - [0, 255, 255]
+  - [25, 0, 0]
+  - [50, 0, 0]
+  - [50, 50, 50]
+  - [125, 0, 0]
+  - [125, 125, 0]
+  - [150, 150, 150]
+  - [175, 175, 175]
+  - [205, 205, 205]
+  - [255, 0, 0]
+  - [255, 0, 255]
+  - [255, 255, 0]
+  - [255, 255, 255]
+mapping_default: {action: ambiguous_do_not_use, part: [], material: []}

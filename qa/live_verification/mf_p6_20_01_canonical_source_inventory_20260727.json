@@ -3589,18 +3589,37 @@
         "mode": "100644",
         "object_type": "blob"
       },
-      "integration_status": "materialization_or_resolution_required",
+      "integration_status": "exact_untracked_candidate_preserved",
       "owner": "full_product_candidate",
       "path": "src/maskfactory/__init__.py",
       "resolution": null,
+      "unresolved_conflict": false,
+      "worktree": {
+        "bytes": 134,
+        "git_object_id": "8e1f4bd411eb2d1ee6aceaa1636ddd8e30c2443f",
+        "matches_autonomy": false,
+        "matches_full_product": true,
+        "sha256": "1fbde37b9c844ff91cb1f1317e5672f6abfd582a51bea7e205e1c6a95109b1d5",
+        "state": "untracked_full_product_exact_preserve",
+        "tracked_by_autonomy": false
+      }
+    },
+    {
+      "autonomy": null,
+      "classification": "worktree_only_untracked",
+      "full_product": null,
+      "integration_status": "ownership_resolution_required",
+      "owner": "working_tree_user_preserved",
+      "path": "src/maskfactory/__pycache__/__init__.cpython-311.pyc",
+      "resolution": null,
       "unresolved_conflict": true,
       "worktree": {
-        "bytes": null,
-        "git_object_id": null,
+        "bytes": 340,
+        "git_object_id": "3cd734459293df498974770ba182e36770cb51e7",
         "matches_autonomy": false,
         "matches_full_product": false,
-        "sha256": null,
-        "state": "absent",
+        "sha256": "e72a1c180351dfe52a85e4348bdb8ae1cd8f4419680744f9bfdc63dbda4b23db",
+        "state": "untracked_user_or_generated_preserve",
         "tracked_by_autonomy": false
       }
     },
@@ -8557,18 +8576,56 @@
         "mode": "100644",
         "object_type": "blob"
       },
-      "integration_status": "materialization_or_resolution_required",
+      "integration_status": "exact_untracked_candidate_preserved",
       "owner": "full_product_candidate",
       "path": "src/maskfactory/io/__init__.py",
       "resolution": null,
+      "unresolved_conflict": false,
+      "worktree": {
+        "bytes": 121,
+        "git_object_id": "1e467b212aed07cb703d4ebb5d67aaeec1060b03",
+        "matches_autonomy": false,
+        "matches_full_product": true,
+        "sha256": "cda79d0a44cf108f6f5d0da8443c5d6dd7f66e760640905e5b9897275aec09e5",
+        "state": "untracked_full_product_exact_preserve",
+        "tracked_by_autonomy": false
+      }
+    },
+    {
+      "autonomy": null,
+      "classification": "worktree_only_untracked",
+      "full_product": null,
+      "integration_status": "ownership_resolution_required",
+      "owner": "working_tree_user_preserved",
+      "path": "src/maskfactory/io/__pycache__/__init__.cpython-311.pyc",
+      "resolution": null,
       "unresolved_conflict": true,
       "worktree": {
-        "bytes": null,
-        "git_object_id": null,
+        "bytes": 326,
+        "git_object_id": "773af8b504c0ec485369e03d9883145f4024b293",
         "matches_autonomy": false,
         "matches_full_product": false,
-        "sha256": null,
-        "state": "absent",
+        "sha256": "4a2c735e723adc4688a480be72d9283cf5809147fe028228afe89354c7d571fd",
+        "state": "untracked_user_or_generated_preserve",
+        "tracked_by_autonomy": false
+      }
+    },
+    {
+      "autonomy": null,
+      "classification": "worktree_only_untracked",
+      "full_product": null,
+      "integration_status": "ownership_resolution_required",
+      "owner": "working_tree_user_preserved",
+      "path": "src/maskfactory/io/__pycache__/png_strict.cpython-311.pyc",
+      "resolution": null,
+      "unresolved_conflict": true,
+      "worktree": {
+        "bytes": 13177,
+        "git_object_id": "86db410534d94cb217840e5cae7c04cbdd47f8fe",
+        "matches_autonomy": false,
+        "matches_full_product": false,
+        "sha256": "19a270f4160406ae584ddf12d782b07da731bc2afa6e2ee32d23d5adf1a3df33",
+        "state": "untracked_user_or_generated_preserve",
         "tracked_by_autonomy": false
       }
     },
@@ -8603,18 +8660,18 @@
         "mode": "100644",
         "object_type": "blob"
       },
-      "integration_status": "materialization_or_resolution_required",
+      "integration_status": "exact_untracked_candidate_preserved",
       "owner": "full_product_candidate",
       "path": "src/maskfactory/io/png_strict.py",
       "resolution": null,
-      "unresolved_conflict": true,
+      "unresolved_conflict": false,
       "worktree": {
-        "bytes": null,
-        "git_object_id": null,
+        "bytes": 7639,
+        "git_object_id": "5bd01a332380b741d8ac1c50382afeca4769d8ef",
         "matches_autonomy": false,
-        "matches_full_product": false,
-        "sha256": null,
-        "state": "absent",
+        "matches_full_product": true,
+        "sha256": "e5c5e259f789c7e8472b737892725e0815f6aa05c683ebf1f087fe1b52c67a7d",
+        "state": "untracked_full_product_exact_preserve",
         "tracked_by_autonomy": false
       }
     },
@@ -18024,6 +18081,25 @@
       "full_product": null,
       "integration_status": "ownership_resolution_required",
       "owner": "working_tree_user_preserved",
+      "path": "src/maskfactory/steward/__pycache__/evidence_locator.cpython-311.pyc",
+      "resolution": null,
+      "unresolved_conflict": true,
+      "worktree": {
+        "bytes": 18265,
+        "git_object_id": "3e322d28b16aecb390077958d1174da31b0090f2",
+        "matches_autonomy": false,
+        "matches_full_product": false,
+        "sha256": "6203e78454ec42b27dfb83cc5d9240fa3a26953bf950749ad6d9d308d352dca9",
+        "state": "untracked_user_or_generated_preserve",
+        "tracked_by_autonomy": false
+      }
+    },
+    {
+      "autonomy": null,
+      "classification": "worktree_only_untracked",
+      "full_product": null,
+      "integration_status": "ownership_resolution_required",
+      "owner": "working_tree_user_preserved",
       "path": "src/maskfactory/steward/__pycache__/exception_escalation.cpython-311.pyc",
       "resolution": null,
       "unresolved_conflict": true,
@@ -18180,11 +18256,11 @@
       "resolution": null,
       "unresolved_conflict": true,
       "worktree": {
-        "bytes": 30584,
-        "git_object_id": "7c4cf513cffbeda54707f0bd4e40afa39266c830",
+        "bytes": 31037,
+        "git_object_id": "9bb0b8b5539c64b79131f1d689b272923b888725",
         "matches_autonomy": false,
         "matches_full_product": false,
-        "sha256": "19ee9a2a90787748ac1251454a4c5bde84bb6fce41b5164a0f98d19110426d90",
+        "sha256": "b4992e35bf4fde1751eed06319d4b8ba4443f0ad39dffdf9b775bd15dcffb91e",
         "state": "untracked_user_or_generated_preserve",
         "tracked_by_autonomy": false
       }
@@ -18853,6 +18929,25 @@
       }
     },
     {
+      "autonomy": null,
+      "classification": "worktree_only_untracked",
+      "full_product": null,
+      "integration_status": "ownership_resolution_required",
+      "owner": "working_tree_user_preserved",
+      "path": "src/maskfactory/steward/evidence_locator.py",
+      "resolution": null,
+      "unresolved_conflict": true,
+      "worktree": {
+        "bytes": 11205,
+        "git_object_id": "c199c18f74db0791684f80d34e93107232b70900",
+        "matches_autonomy": false,
+        "matches_full_product": false,
+        "sha256": "fd1844c81ec78bda1fa42f8f6335b3d19366a1a8a1b02b18fbd4e25758afad81",
+        "state": "untracked_user_or_generated_preserve",
+        "tracked_by_autonomy": false
+      }
+    },
+    {
       "autonomy": {
         "git_object_id": "eefb9195e06650c26cf36b538046524c5a755d80",
         "mode": "100644",
@@ -19065,18 +19160,18 @@
       },
       "classification": "autonomy_only",
       "full_product": null,
-      "integration_status": "present_exact",
+      "integration_status": "autonomy_worktree_resolution_required",
       "owner": "autonomy",
       "path": "src/maskfactory/steward/mask_hard_qa_campaign.py",
       "resolution": null,
-      "unresolved_conflict": false,
+      "unresolved_conflict": true,
       "worktree": {
-        "bytes": 23542,
-        "git_object_id": "c5e40d0f98cdef7afdfbcba970269071fbbad5d0",
-        "matches_autonomy": true,
+        "bytes": 24015,
+        "git_object_id": "c8dcb55b82d74c860484a0bd2675e7901a25720c",
+        "matches_autonomy": false,
         "matches_full_product": false,
-        "sha256": "405bb44798a7d0e529fc651f06536fd2fc34c140767037198dcb52ebd0718d2c",
-        "state": "tracked_clean",
+        "sha256": "50f1ae49da3871ed89394a5a4694cb7638e4201062f3e31651fb1576002d7d83",
+        "state": "tracked_modified_preserve",
         "tracked_by_autonomy": true
       }
     },
@@ -21483,6 +21578,44 @@
       "full_product": null,
       "integration_status": "ownership_resolution_required",
       "owner": "working_tree_user_preserved",
+      "path": "tests/__pycache__/test_png_strict.cpython-311-pytest-9.0.3.pyc",
+      "resolution": null,
+      "unresolved_conflict": true,
+      "worktree": {
+        "bytes": 7755,
+        "git_object_id": "dfa449600335fd70c4fe92c8fcc599cbcdd78a1d",
+        "matches_autonomy": false,
+        "matches_full_product": false,
+        "sha256": "29e2b9d6a77fe40ffa6f5344cdd3c1fbdae5208c51cbcccc92533563fc22c1ce",
+        "state": "untracked_user_or_generated_preserve",
+        "tracked_by_autonomy": false
+      }
+    },
+    {
+      "autonomy": null,
+      "classification": "worktree_only_untracked",
+      "full_product": null,
+      "integration_status": "ownership_resolution_required",
+      "owner": "working_tree_user_preserved",
+      "path": "tests/__pycache__/test_png_strict.cpython-311.pyc",
+      "resolution": null,
+      "unresolved_conflict": true,
+      "worktree": {
+        "bytes": 3271,
+        "git_object_id": "6693beddbcd2350cc88313539c81d8fc626199a8",
+        "matches_autonomy": false,
+        "matches_full_product": false,
+        "sha256": "7193f765b6f7950687064bdf0c83ef997f7f975281461d2b9f031f1b8d285835",
+        "state": "untracked_user_or_generated_preserve",
+        "tracked_by_autonomy": false
+      }
+    },
+    {
+      "autonomy": null,
+      "classification": "worktree_only_untracked",
+      "full_product": null,
+      "integration_status": "ownership_resolution_required",
+      "owner": "working_tree_user_preserved",
       "path": "tests/__pycache__/test_reconcile_untracked_gpu_process.cpython-311-pytest-9.0.3.pyc",
       "resolution": null,
       "unresolved_conflict": true,
@@ -22815,6 +22948,44 @@
       "full_product": null,
       "integration_status": "ownership_resolution_required",
       "owner": "working_tree_user_preserved",
+      "path": "tests/steward/__pycache__/test_evidence_locator.cpython-311-pytest-9.0.3.pyc",
+      "resolution": null,
+      "unresolved_conflict": true,
+      "worktree": {
+        "bytes": 11095,
+        "git_object_id": "e82b35916a981c27fd05c2f18d2878058fe0fee7",
+        "matches_autonomy": false,
+        "matches_full_product": false,
+        "sha256": "87e2fe9d97f333aa51d73217fdcd5684e80dd1d1326e78657a2174bcf0c943b5",
+        "state": "untracked_user_or_generated_preserve",
+        "tracked_by_autonomy": false
+      }
+    },
+    {
+      "autonomy": null,
+      "classification": "worktree_only_untracked",
+      "full_product": null,
+      "integration_status": "ownership_resolution_required",
+      "owner": "working_tree_user_preserved",
+      "path": "tests/steward/__pycache__/test_evidence_locator.cpython-311.pyc",
+      "resolution": null,
+      "unresolved_conflict": true,
+      "worktree": {
+        "bytes": 7581,
+        "git_object_id": "22dee26c0d1c03558f62fd2750c3f06a0ebfab49",
+        "matches_autonomy": false,
+        "matches_full_product": false,
+        "sha256": "dbdbcdf5dec6461e7c3c2bebc4d252372a2b90399873b4d572203867d9df2ebe",
+        "state": "untracked_user_or_generated_preserve",
+        "tracked_by_autonomy": false
+      }
+    },
+    {
+      "autonomy": null,
+      "classification": "worktree_only_untracked",
+      "full_product": null,
+      "integration_status": "ownership_resolution_required",
+      "owner": "working_tree_user_preserved",
       "path": "tests/steward/__pycache__/test_exception_escalation.cpython-311-pytest-9.0.3.pyc",
       "resolution": null,
       "unresolved_conflict": true,
@@ -23123,11 +23294,11 @@
       "resolution": null,
       "unresolved_conflict": true,
       "worktree": {
-        "bytes": 27685,
-        "git_object_id": "ef87a1994e472600a1218752c75984ef2dccbc14",
+        "bytes": 32941,
+        "git_object_id": "0a1d9c25f4acaa3470dc45be7670002e5dc24306",
         "matches_autonomy": false,
         "matches_full_product": false,
-        "sha256": "460b7ca7611ccc6b3057c97687eb7791c7fd7972535293601d59bec738cf20f0",
+        "sha256": "4e0f8d42516b3ebea5e7ee12f37baae7cf50d65d8228d25cdeadeca8004f5b01",
         "state": "untracked_user_or_generated_preserve",
         "tracked_by_autonomy": false
       }
@@ -23142,11 +23313,11 @@
       "resolution": null,
       "unresolved_conflict": true,
       "worktree": {
-        "bytes": 13704,
-        "git_object_id": "f72512393a7cb195c9e61238568721f78fd867c2",
+        "bytes": 15231,
+        "git_object_id": "cfa7eb43ce13bec5f96d3f05031c7777d1d7ad98",
         "matches_autonomy": false,
         "matches_full_product": false,
-        "sha256": "c78ba38697fa1aaa22a134622b1db940c382edd3b1291b908ac15894048c03f3",
+        "sha256": "50513a5d60df7a8d46e8160a84f1aee88153b5e0a228dee51dc4e1e6221bd0f7",
         "state": "untracked_user_or_generated_preserve",
         "tracked_by_autonomy": false
       }
@@ -24142,6 +24313,25 @@
       }
     },
     {
+      "autonomy": null,
+      "classification": "worktree_only_untracked",
+      "full_product": null,
+      "integration_status": "ownership_resolution_required",
+      "owner": "working_tree_user_preserved",
+      "path": "tests/steward/test_evidence_locator.py",
+      "resolution": null,
+      "unresolved_conflict": true,
+      "worktree": {
+        "bytes": 4800,
+        "git_object_id": "695147223946559685e51913bbf174916474cae9",
+        "matches_autonomy": false,
+        "matches_full_product": false,
+        "sha256": "9407d1906ef1cb4669f260dfbd5fe8615b2470e6d3c5bd8a7bebfe37648322a3",
+        "state": "untracked_user_or_generated_preserve",
+        "tracked_by_autonomy": false
+      }
+    },
+    {
       "autonomy": {
         "git_object_id": "60047d5d8083052a794e6c88577182aa9a25d914",
         "mode": "100644",
@@ -24354,18 +24544,18 @@
       },
       "classification": "autonomy_only",
       "full_product": null,
-      "integration_status": "present_exact",
+      "integration_status": "autonomy_worktree_resolution_required",
       "owner": "autonomy",
       "path": "tests/steward/test_mask_hard_qa_campaign.py",
       "resolution": null,
-      "unresolved_conflict": false,
+      "unresolved_conflict": true,
       "worktree": {
-        "bytes": 8450,
-        "git_object_id": "fbde3f273945188e5ef6c0761d957f25ed45aa36",
-        "matches_autonomy": true,
+        "bytes": 10000,
+        "git_object_id": "350c1772bf2daa1bf81005821f26826ae7aca01d",
+        "matches_autonomy": false,
         "matches_full_product": false,
-        "sha256": "6194967919a32dacd9751647b268f6e351c20f3354d3efa757636a91990e20c7",
-        "state": "tracked_clean",
+        "sha256": "ca1d81edc26e146791db9bbaef5f3e5c9c43867d3b4e8abff7683a7303cd9268",
+        "state": "tracked_modified_preserve",
         "tracked_by_autonomy": true
       }
     },
@@ -32160,18 +32350,18 @@
         "mode": "100644",
         "object_type": "blob"
       },
-      "integration_status": "materialization_or_resolution_required",
+      "integration_status": "exact_untracked_candidate_preserved",
       "owner": "full_product_candidate",
       "path": "tests/test_png_strict.py",
       "resolution": null,
-      "unresolved_conflict": true,
+      "unresolved_conflict": false,
       "worktree": {
-        "bytes": null,
-        "git_object_id": null,
+        "bytes": 1173,
+        "git_object_id": "d55825dd2b4e5147409d3b86d636dc165b05f290",
         "matches_autonomy": false,
-        "matches_full_product": false,
-        "sha256": null,
-        "state": "absent",
+        "matches_full_product": true,
+        "sha256": "cde75fb2a1adc623331a2e040fc0fa34b81103d44d28bed1779750951eca343f",
+        "state": "untracked_full_product_exact_preserve",
         "tracked_by_autonomy": false
       }
     },
@@ -41500,7 +41690,7 @@
       "setup.cfg"
     ]
   },
-  "self_sha256": "7bbae86b6d6a284270dab5a1067a1afdc48c83432ec304566064c97522fc6919",
+  "self_sha256": "fcb45be1f98aac98cc4ec33de683e127bf6ff7c4d212f4a74c7638473a8309c3",
   "summary": {
     "autonomy_path_count": 105,
     "classification_counts": {
@@ -41508,20 +41698,21 @@
       "divergent_conflict": 25,
       "full_product_only": 1554,
       "identical": 17,
-      "worktree_only_untracked": 160
+      "worktree_only_untracked": 170
     },
     "full_product_path_count": 1596,
     "integration_status_counts": {
+      "autonomy_worktree_resolution_required": 2,
       "behavioral_resolution_required": 1,
-      "exact_untracked_candidate_preserved": 8,
-      "materialization_or_resolution_required": 1546,
-      "ownership_resolution_required": 160,
-      "present_exact": 80,
+      "exact_untracked_candidate_preserved": 12,
+      "materialization_or_resolution_required": 1542,
+      "ownership_resolution_required": 170,
+      "present_exact": 78,
       "resolved_authority_aligned_supersession": 21,
       "resolved_behavioral_autonomy_superset": 3
     },
-    "union_path_count": 1819,
-    "unresolved_conflict_count": 1707
+    "union_path_count": 1829,
+    "unresolved_conflict_count": 1715
   },
   "tracker_item": "MF-P6-20.01"
 }

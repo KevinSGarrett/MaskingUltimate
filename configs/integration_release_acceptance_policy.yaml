@@ -1,0 +1,62 @@
+schema_version: "1.0.0"
+policy_id: maskfactory-integration-release-acceptance-v1
+policy_version: "1.0.0"
+canonicalization:
+  algorithm: maskfactory-canonical-json-v1
+  excluded_top_level_fields:
+    - policy_sha256
+    - evidence_sha256
+    - signature
+required_prerequisites:
+  - release_publication
+  - capability_decision
+  - clean_installation
+  - recovery_evidence
+required_inventories:
+  - nodes
+  - workflows
+  - schemas
+  - api_openapi
+  - policies
+activation:
+  strategy: atomic_pointer_switch
+  commit_order:
+    - stage_bytes
+    - verify_inventories
+    - switch_pointer
+    - write_receipt_last
+source_authority:
+  allow_dirty_source: false
+  allow_editable_install: false
+  require_clean_git_observation: true
+stale_detection:
+  policy: fail_on_detected
+  reject:
+    - extra_file
+    - missing_file
+    - changed_hash
+    - case_collision
+    - symlink
+    - hardlink
+    - path_escape
+rejection_reason_codes:
+  - prerequisite_missing
+  - prerequisite_stale
+  - prerequisite_mismatch
+  - dirty_source_authority
+  - editable_install_forbidden
+  - inventory_parity_failure
+  - stale_node_detected
+  - openapi_drift
+  - schema_drift
+  - catalog_closure_failure
+  - unsafe_path
+  - activation_incomplete
+  - receipt_before_verification
+  - rollback_incomplete
+  - publication_invalid
+status_values:
+  - accepted
+  - rejected
+  - rolled_back
+policy_sha256: 5e35496edd2dc54ab916645376de47aba2280bac7da1c321fe4ce619cf08d8e3

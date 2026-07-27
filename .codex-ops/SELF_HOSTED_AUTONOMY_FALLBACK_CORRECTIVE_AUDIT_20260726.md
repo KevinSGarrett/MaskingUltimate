@@ -25,6 +25,29 @@ child route and terminal reconciliation before capacity can be credited.
 
 ## Accepted evidence — do not recreate
 
+### MF-P6-20.01 source-integration baseline — evidence only
+
+Commit `ff5d0e949346fecfa3868e5b63751642e1c9d6a2` adds exactly four owned
+inventory paths and no tracker, authority, provider, route, or GPU mutation.
+Its durable artifact is
+`qa/live_verification/mf_p6_20_01_canonical_source_inventory_20260727.json`
+(1,277,971 bytes; raw SHA-256
+`8f13f384c495b8c1131a8a4ae542a5166f2026c30e82706ea916fe81d944bb76`; canonical
+zero-self SHA-256
+`0bbc2af0d842eb54e85291787313cb01074c9c38c899ae5d0d74834a9b1ff429`). It
+compares full-product candidate `7d66ca27781d899a43eb644c0378bcf1478045a7`
+(1,596 paths) with autonomy `0d2efa6ff2b9a35b064d33bedbbdcab06517a685`
+(105 paths) and the preserved dirty-worktree union (1,819 paths).
+
+Replay is object-equal and the focused inventory/continuous-contract wave
+passed 13 tests, Ruff, compileall, diff, and secret checks. Classification is
+1,554 full-only, 63 autonomy-only, 25 divergent, 17 identical, and 160
+worktree-only paths. Crucially, 1,731 paths remain unresolved. The artifact
+sets `completion_credit_claimed=false`; therefore `MF-P6-20.01` remains open
+until each conflict is resolved or superseded with behavior and evidence. The
+baseline prohibits a wholesale merge, reset, or replacement worktree while that
+work proceeds.
+
 - `MF-P6-19.01`: 25 completed / 0 failed engineering missions, one service
   generation, 50 real replay requests and unique responses, 25 accepted
   canonical proposals and releases, no request-binding mismatch. The immutable

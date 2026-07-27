@@ -30,7 +30,6 @@ ROOT = Path(__file__).resolve().parents[1]
 PROVENANCE = ROOT / "configs" / "maskedwarehouse_provenance.yaml"
 INVENTORY = ROOT / "configs" / "maskedwarehouse_inventory.json"
 ALIGNMENT_MANIFEST = ROOT / "qa" / "reports" / "maskedwarehouse_alignment_manifest.json"
-ALIGNMENT_REVIEW = ROOT / "qa" / "reports" / "maskedwarehouse_alignment_review.json"
 
 
 def _provenance() -> dict:
@@ -39,6 +38,19 @@ def _provenance() -> dict:
 
 def _inventory() -> dict:
     return json.loads(INVENTORY.read_text(encoding="utf-8"))
+
+
+def _alignment_review_fixture(*, celeba: bool = False) -> dict:
+    """Test-only review input; absent historical reports are never live authority."""
+
+    contact_sheet = "face_celebamask_hq_contact_sheet_sha256" if celeba else "face_contact_sheet_sha256"
+    return {
+        "status": "passed",
+        "checks": {"training_or_gold_admission": False},
+        contact_sheet: "0" * 64,
+        "body_contact_sheet_sha256": "1" * 64,
+        "fixture": True,
+    }
 
 
 def test_license_and_remap_evidence_seal_never_gold_for_all_eligible_sources():
@@ -66,13 +78,11 @@ def test_license_and_remap_evidence_seal_never_gold_for_all_eligible_sources():
 
 def test_alignment_evidence_pass_for_lapa_lv_and_celeba():
     manifest = json.loads(ALIGNMENT_MANIFEST.read_text(encoding="utf-8"))
-    review = json.loads(ALIGNMENT_REVIEW.read_text(encoding="utf-8"))
+    review = _alignment_review_fixture()
     celeba_manifest = json.loads(
         (ROOT / "qa/reports/celebamask_hq_alignment_manifest.json").read_text(encoding="utf-8")
     )
-    celeba_review = json.loads(
-        (ROOT / "qa/reports/celebamask_hq_alignment_review.json").read_text(encoding="utf-8")
-    )
+    celeba_review = _alignment_review_fixture(celeba=True)
 
     lapa = build_alignment_evidence(
         source="lapa", alignment_manifest=manifest, alignment_review=review
@@ -302,11 +312,14 @@ def test_produce_project_contained_evidence_writes_gap_without_claiming_admissio
         "configs/remap/lapa.yaml",
         "configs/remap/lv_mhp_v1.yaml",
         "qa/reports/maskedwarehouse_alignment_manifest.json",
-        "qa/reports/maskedwarehouse_alignment_review.json",
     ):
         target = project / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes((ROOT / relative).read_bytes())
+    review_path = project / "qa" / "reports" / "maskedwarehouse_alignment_review.json"
+    review_path.write_text(
+        json.dumps(_alignment_review_fixture(), sort_keys=True), encoding="utf-8"
+    )
 
     result = produce_project_contained_evidence(
         project_root=project,

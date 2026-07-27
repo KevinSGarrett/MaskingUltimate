@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-14T21:12:00Z",
+  "source": {
+    "repository": "https://github.com/ZhengPeng7/BiRefNet",
+    "license": "MIT",
+    "license_source": "https://github.com/ZhengPeng7/BiRefNet/blob/main/LICENSE",
+    "license_snapshot_sha256": "92a7089e0915fc32bc40067560b398f1e6a7a5958abd7d04eda393629a5acefb",
+    "remote_code_sha256": "2a45b4e0ece72d7c4212bca1a988e7d7e52bfe9f98ec59c58b8809c8a8b7a831"
+  },
+  "runtime": {
+    "python": "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe",
+    "torch": "2.11.0+cu128",
+    "torchvision": "0.26.0+cu128",
+    "transformers": "5.13.0",
+    "cuda": "12.8",
+    "device": "NVIDIA GeForce RTX 5060 Laptop GPU",
+    "capability": [12, 0],
+    "precision": "fp16 autocast",
+    "runtime_fingerprint": "5b6d1c9cddec6e897d7ba9f16d40e0986ab66c677bef3ac830564f5553e16d1a"
+  },
+  "variants": {
+    "birefnet_dynamic": {
+      "hf_repo": "ZhengPeng7/BiRefNet_dynamic",
+      "hf_revision": "280306042f57b7a33854319da62fd86aaa89ec4c",
+      "local_path": "models/bv/dyn",
+      "checkpoint_bytes": 444473596,
+      "checkpoint_sha256": "e3d2e4884e51ff30f0cd630edc6b1e41b06b7f23a0a2a5169f7b7cb33a711c2d",
+      "governed_resolution": "native_divisible_by_32",
+      "output_contract": "strict_silhouette_and_soft_matte"
+    },
+    "birefnet_hr": {
+      "hf_repo": "ZhengPeng7/BiRefNet_HR",
+      "hf_revision": "a7a562f6fd16021180f2f4348f4de003a2d3d1e1",
+      "local_path": "models/bv/hr",
+      "checkpoint_bytes": 444473596,
+      "checkpoint_sha256": "9d678bafec0b0019fbb073b7fd02f05ede25dc4b15254f23b2fb0be333200c0d",
+      "governed_resolution": 1024,
+      "official_high_memory_resolution": 2048,
+      "output_contract": "strict_silhouette"
+    },
+    "birefnet_hr_matting": {
+      "hf_repo": "ZhengPeng7/BiRefNet_HR-matting",
+      "hf_revision": "5d6b6f8adcb5b417c871b1d84ceaae9871355b7f",
+      "local_path": "models/bv/hrm",
+      "checkpoint_bytes": 444473596,
+      "checkpoint_sha256": "a5a4de698739ea5e0e8bbab28e1b293dde95092b87a442d566cbc585c53cef55",
+      "governed_resolution": 1024,
+      "official_high_memory_resolution": 2048,
+      "output_contract": "soft_alpha_and_thresholded_strict_silhouette"
+    }
+  },
+  "memory_policy": {
+    "available_dedicated_gpu_bytes": 8589410304,
+    "dynamic_peak_reserved_bytes": 1046478848,
+    "hr_2048_peak_allocated_bytes": 10133235200,
+    "hr_2048_peak_reserved_bytes": 15334375424,
+    "hr_matting_2048_peak_allocated_bytes": 10133235200,
+    "hr_matting_2048_peak_reserved_bytes": 15334375424,
+    "decision": "HR and HR-matting default to official 1024 evaluation mode; 2048 remains explicit high-memory shadow-only and is ineligible for 8 GB promotion without an approved alternate runtime"
+  },
+  "authority": {
+    "lifecycle_state": "installed",
+    "shadow_only": true,
+    "incumbent": "birefnet_general",
+    "rollback": "birefnet_general",
+    "promotion_claimed": false
+  },
+  "reproduction": {
+    "setup_script": "tools/setup_birefnet_variants.py",
+    "setup_script_sha256": "6f2d433a60a32afab47b7781a8c87e1cac5bbad0786a143be014223beacf190d",
+    "smoke_script": "tools/smoke_birefnet_variants.py",
+    "smoke_script_sha256": "318350255ff93c0986b81d5e8a7157766c387e62943d27d4366809ab62c87601",
+    "runner": "tools/run_birefnet_variant.py",
+    "runner_sha256": "db249d9990d9fe1affa75287ba83f190615e41f22b654c88a3958f525037ca85",
+    "provider_adapter": "src/maskfactory/providers/birefnet_variants.py",
+      "provider_adapter_sha256": "6916f277e99ac43dd9fcf61362dc8aeffa039cfb16d824a52c7c99a3bcdaaf83",
+    "integration_script": "tools/verify_birefnet_provider.py",
+    "integration_script_sha256": "5449f5830ed2e4a2ac2824ea3f1e219dc3fc059783c969841edf28c4b25a0fe9",
+    "contract_tests": "tests/test_birefnet_variant_provider.py",
+      "contract_tests_sha256": "a127d46585680dff5b01b8d798ac898a51e3c5fe0afca924f058aa0f15f7299c"
+  },
+  "evidence": {
+    "installation": "qa/live_verification/birefnet_variant_install_20260714.json",
+    "installation_sha256": "1ca9e23d60315bb51626aeff0cbca9e03d870118b0165fd94a7ce03f9663e689",
+    "runtime": "qa/live_verification/birefnet_variants_runtime_20260714.json",
+    "runtime_sha256": "f06542ba63ef61af4d37c4ae0d8a02352ab096564d04c864c59cf9e937cb9295",
+    "provider_integration": "qa/live_verification/birefnet_provider_integration_20260714.json",
+    "provider_integration_sha256": "af0ee34c1d498a14f0721a89b6d1af88a5d204fb4ced6ed6ffc23eb8da77d94a"
+  }
+}

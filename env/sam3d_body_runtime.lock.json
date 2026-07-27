@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0.0",
+  "provider": "sam3d_body",
+  "status": "checkpoint_installed_runtime_pending",
+  "source": {
+    "repository": "https://github.com/facebookresearch/sam-3d-body",
+    "commit": "b5c765a0d89d789985e186d396315e7590887b94",
+    "tree": "7b5a2a23619659a679d64f096201c6504cbebe30",
+    "local_path": "models/runtime_cache/sam-3d-body_b5c765a",
+    "install_guide_sha256": "5b85f64e085a2f180e1852163f8c7ab019f6deccce5e9c981625eb6efb7bda22",
+    "readme_sha256": "5df8c7ac86a89e4146307765d3c504dcdc4166db8c6254e3879bb4df07ca3522"
+  },
+  "checkpoint": {
+    "repository": "facebook/sam-3d-body-dinov3",
+    "repository_revision": "11aaa346c7204874a1cbafe3d39a979080b2c55a",
+    "access_status": "accepted_access_verified",
+    "downloaded": true,
+    "local_root": "models/runtime_cache/sam3d_body_checkpoint_11aaa346",
+    "installed_at": "2026-07-17T09:23:19Z",
+    "total_size_bytes": 2805241082,
+    "assets": [
+      {
+        "filename": "model.ckpt",
+        "size_bytes": 2109129346,
+        "sha256": "b5a2f9d305dd02626b967aa2e86021fba07065df66ce7a7e00ffb9664f150abf",
+        "git_blob_id": "245c34983d39a78fa4c1b42d2f5f60cf918fb102"
+      },
+      {
+        "filename": "model_config.yaml",
+        "size_bytes": 1488,
+        "sha256": "1012fc3f39cb5e90e3f8fbadf7bded31604bfafdce0321d17a7c1a2d3f08b88d",
+        "git_blob_id": "c43c46e52f41c76094a6fdfe12aee0348213a82b"
+      },
+      {
+        "filename": "assets/mhr_model.pt",
+        "size_bytes": 696110248,
+        "sha256": "352e271a6c42729c68554ceaea0c955e866970160c31e35506d782dc0f7377bc",
+        "git_blob_id": "6e67294a1b91c304465a0e3392ea8ab9c4d81af9"
+      }
+    ]
+  },
+  "license_review": {
+    "license": "SAM License, last updated 2025-11-19",
+    "license_snapshot_sha256": "b3a5a0e2d973ab80e6610ccf1cffc40756050d0ace3cd4fec879b3ec290b2e9b",
+    "checkpoint_terms_status": "accepted_access_verified",
+    "project_profile": "private-personal-noncommercial",
+    "content_compatibility": {
+      "minor_content": "forbidden",
+      "adult_nonexplicit": "allowed",
+      "consensual_explicit_adult": "allowed"
+    }
+  },
+  "runtime": {
+    "platform": "planned isolated WSL Ubuntu-22.04 linux-64",
+    "python": "3.11 required by upstream INSTALL.md",
+    "requirements_lock": "not_created_wsl_filesystem_io_error",
+    "checkpoint_inference": "not_run_wsl_filesystem_io_error",
+    "subprocess_contract": {
+      "status": "offline_verified_live_pending",
+      "host_adapter": "src/maskfactory/providers/sam3d_body.py",
+      "host_adapter_sha256": "ab8d65a59fdbd306f4a331959e779d86a1fa67aaa24b69d438a7d5b965d079cd",
+      "isolated_runner": "tools/run_sam3d_body.py",
+      "isolated_runner_sha256": "d438f80c60e2b8c08202f55aae4b1e1dc6c5f9a7c43091afe8cd48ca3941edd3",
+      "runtime_python": "/home/kevin/mfenvs/sam3d-body-b5c765a/bin/python",
+      "invocation": "wsl.exe argv only; shell disabled",
+      "person_selection": "exactly one explicit full-image xyxy person box",
+      "inference_type": "full",
+      "determinism_repeats": 2,
+      "artifact_format": "NPZ with allow_pickle=false",
+      "evidence_fields": [
+        "exact source/runtime/checkpoint/image hashes",
+        "tracked source tree clean",
+        "requested person box",
+        "geometry payload and artifact hashes",
+        "array shapes",
+        "model-load/cold/warm latency",
+        "model and peak inference VRAM",
+        "shadow-only non-gold authority"
+      ],
+      "densepose_fallback": "only explicit CUDA/GPU out-of-memory"
+    }
+  },
+  "authority": {
+    "lifecycle_state": "planned",
+    "active_provider": "densepose_r50_fpn_s1x",
+    "rollback_provider": "densepose_r50_fpn_s1x",
+    "live_smoke_passed": false,
+    "benchmark_passed": false,
+    "promoted": false,
+    "may_author_gold": false
+  },
+  "evidence": "qa/live_verification/sam3d_body_checkpoint_install_20260717.json"
+}

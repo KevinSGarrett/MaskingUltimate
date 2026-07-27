@@ -285,6 +285,16 @@ binding source commit `e2aac1e5...`. The named contract-schema and source-input
 checks both pass. It is explicitly `PREPARED_NOT_EXECUTED`, non-terminal, and
 has no provider, Pod, model, or child action; it grants no capacity credit.
 
+Current runtime checkpoint: after user-authenticated direct-Pod preflight found
+the Ada idle with no competing process or listener and admitted the bound
+model/source, the self-hosted Qwen service reached its bound loopback endpoint
+with the expected served-model identity. Exactly one sealed 60-minute local
+parent controller has been issued against it. This is `RUNTIME_IN_PROGRESS`
+only: no OpenRouter or Serverless child, external provider call,
+cross-controller capacity credit, or completion claim exists. It must retain
+durable execution receipts and terminally reconcile/release before any later
+fallback work is considered.
+
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test
 has yet exercised a real same-parent provider run across the boundary.

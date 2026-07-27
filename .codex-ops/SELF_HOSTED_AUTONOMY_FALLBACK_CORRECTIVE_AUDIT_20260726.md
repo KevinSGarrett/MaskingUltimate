@@ -505,6 +505,18 @@ expected parent/role/model/output receipts, and add counterfeit-basename
 negative coverage. Until then the child lifecycle remains `REVIEW_OPEN` with
 no admission, provider, or capacity credit.
 
+The primary has now changed production wiring in its uncommitted diff:
+`reserve_openrouter_child` uses lifecycle reserve, while
+`execute_openrouter_child` and optional
+`execute_outcome_loop(managed_openrouter_child=...)` invoke lifecycle execute.
+It fails closed if legacy live `managed_child_routes_v2.sqlite3` exists, so it
+does not silently split ledger ownership. This is still unvalidated integration:
+there is no executor-level fake-manager parent-reconciliation test, and the
+code currently writes a `parent_openrouter_child_reconciliation` receipt even
+for nonterminal `recovery_required`. Reconciliation must be terminal-only, with
+a separate durable recovery record; focused executor and parent-ledger tests
+must prove that distinction before any route/admission/capacity claim.
+
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test
 has yet exercised a real same-parent provider run across the boundary.

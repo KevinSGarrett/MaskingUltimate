@@ -1,0 +1,57 @@
+{
+  "artifact_type": "mf_p4_11_23_external_source_screening",
+  "gold_or_promotion_authorized": false,
+  "limitations": [
+    "No model or provider request was issued.",
+    "No mask, source, or external dataset artifact was modified.",
+    "This five-record inspection is a negative eligibility result and cannot qualify a critic, source, campaign, or tracker completion."
+  ],
+  "observations": [
+    "Each bounded panel has a visually aligned composited source-mask map and one-pixel contour overlay after the declared 512-to-1024 resize policy.",
+    "The panel set does not provide governed real-adult provenance, intended target, owner, side, neighbor, or protected-region bindings for any selected mask.",
+    "The five face-only records do not establish full 66-class/risk-domain coverage, critic calibration, independent-family adjudication, or hard-QA authority."
+  ],
+  "qualification_granted": false,
+  "required_before_reconsideration": [
+    "governed real-adult source/provenance evidence for every candidate used by an adult-only gate",
+    "exact target, owner, side, neighbor, and protected-region bindings for selected instance masks",
+    "source-bound 66-class/risk-domain coverage with direct visual confirmation",
+    "qualified primary and independent-family juror calibration with disagreement-abstention behavior"
+  ],
+  "review_method": "direct pixel review of the freshly generated source/composited-label/overlay contact sheet",
+  "schema_version": "maskfactory.visual_alignment_screening.v1",
+  "scope": "screening of bounded CelebAMask-HQ source-mask alignment inputs only; external masks are never gold",
+  "screening_date_utc": "2026-07-27",
+  "screening_disposition": "BLOCKED",
+  "self_sha256": "86f89a3046cc3939418e5fb2a2047b9981be78db0c8cfd9d47106482e9269262",
+  "source_manifest": {
+    "contact_sheet": {
+      "path": "work/celebamask_hq_alignment/face_celebamask_hq_contact_sheet.jpg",
+      "rows": 5,
+      "sha256": "0e72194b7824414777906d5bcf6b0ce263cb820c33760d3209afdc7069cb0527"
+    },
+    "external_source_hash_manifest": {
+      "path": "runtime_artifacts/external_supervision/celebamask_hq/source_hash_manifested.json",
+      "raw_sha256": "524bc606ff01c2fa2e57f7b0aaebae098c9d1fcb5a030f350ff222b48f183eb3"
+    },
+    "path": "qa/reports/celebamask_hq_alignment_manifest.json",
+    "raw_sha256": "ce280120b0eed99bd68dac0c16f4326e86cd69f7d52d763a1173b2c4e5817e37",
+    "record_count": 5,
+    "record_image_sha256": [
+      "92583489fae83d937ed33b51459e41bf52104b87b4214ea9390512d860c88c2d",
+      "18b35dd98b31c0390f04d6bbc0ddaaec6432474679ac0b8454afb7343ecb779d",
+      "b764542cc120974f53fe5aae9d2eb870986be3e370c37d4fa5907dac3dc0c88b",
+      "3bdef2e7880e0e2570884a01d79ac00627c294e90c9a282b84a79e1433c4723a",
+      "cda5d71ff5729f21492efadb6f4d574624de9b6ce7ddbea7800708189306efe6"
+    ],
+    "record_mask_sha256": [
+      "2fcc3ea013e72587a976e5e4a3354585a6c46b8c42d14f0da6d9002f97dc54c3",
+      "c70742b1244f45d2162a858ea92e2030c15b2df639a68e3475598db8ee80a0fa",
+      "2ed7afb003172a8215b121a1ff463c95c179e644673859912b450afaba2b7a05",
+      "55d2aeb3feaa3ea8bd727f55074924d0c83cdb30b4ff777597620a118af5db3a",
+      "167edd2eb2b589c6594db83824a97a51ba3917d878008e4f59d874a5b5680c41"
+    ]
+  },
+  "tracker_item": "MF-P4-11.23",
+  "training_admission_granted": false
+}

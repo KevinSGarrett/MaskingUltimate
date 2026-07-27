@@ -517,6 +517,15 @@ for nonterminal `recovery_required`. Reconciliation must be terminal-only, with
 a separate durable recovery record; focused executor and parent-ledger tests
 must prove that distinction before any route/admission/capacity claim.
 
+The held adapter/executor increment is currently **UNVALIDATED**: its focused
+suite is `19 passed / 3 failed`. Reserve returns a raw lifecycle row lacking
+the required `direct_provider_submission: false` contract field, and the
+parent-reconciliation/recovery receipt directories are not created before
+immutable write, causing the executor-level tests to fail. Ruff and compile
+pass but do not override those failures. The defects must be repaired and the
+focused adapter/executor tests rerun before seal, admission, route, or capacity
+credit.
+
 `CROSS_CONTROLLER_RUNTIME_OPEN`: authoritative control-plane publication is
 sealed, but it is not a real parent execution or actual-host proof. No test
 has yet exercised a real same-parent provider run across the boundary.

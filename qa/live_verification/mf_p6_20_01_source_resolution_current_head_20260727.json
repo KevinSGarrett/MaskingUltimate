@@ -1,0 +1,105 @@
+{
+  "authority_file_sha256": {
+    "Plan/27_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS_SPEC.md": "638d8f1a0e73af20189ec0773bac360d980ac78e86a0846a104d5181f4ca4e07",
+    "Plan/28_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md": "a82a3844736b6558d7ce54b2fd2bec1ac3151d791acf700900b65b51ac65d947",
+    "Plan/Instructions/16_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS.md": "e6608e03789676f1db80640731e1edc40a3370bcec2147acfdd7e5094d4989ce",
+    "Plan/Instructions/18_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md": "66a65af8ef6fa53b36a171fec9ea6d213a2f564d6d426224296dde53c919aa05",
+    "Plan/Items/23_ITEMS_P6_SELF_HOSTED_AUTONOMOUS_LLM_OPERATIONS.md": "f03df89fc8b6de5925fd551e9df9e92c3212ca4388725caccbc47d12630e9ffb",
+    "Plan/Items/24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md": "e8a50512409a236e95a39e56b6a571e677d507fad7533e4a7fdd67802d9062c9",
+    "Plan/SELF_HOSTED_AUTONOMOUS_LLM_PURSUING_GOAL_MESSAGE.md": "47e3192565c04f0ff3f4a9881397355b230ba78abda5f5dfd1132412d81da713",
+    "configs/self_hosted_autonomy_contract_freeze_v1.json": "d4e55cd9f957d8dde7678744c91a7aa7d4bc5e6c68cb8b54cc5934abc09b9d73"
+  },
+  "autonomy_commit_sha": "d541eb58ecc58d0967eb0bb2c125dd52f5e2a3bb",
+  "full_product_commit_sha": "7d66ca27781d899a43eb644c0378bcf1478045a7",
+  "resolutions": [
+    {
+      "autonomy_git_object_id": "b03a402fb3a2f77fee30571f5a8e2ae652b2a815",
+      "full_product_git_object_id": "020cba403b79cf114e264c0e79ac1aa108fc0b77",
+      "limitations": [
+        "Current-head revalidation only; no tracker, runtime, provider, route, mask, capacity, or release credit is claimed.",
+        "The older-commit resolution receipt remains historical evidence and is not used as a same-commit chain entry."
+      ],
+      "path": "tests/steward/test_completion_throughput_gate.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "verification": {
+        "commands": [
+          "python -m pytest -q tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py",
+          "ruff check tools/run_with_shared_pod_gpu_lease.py tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py",
+          "python -m compileall -q tools/run_with_shared_pod_gpu_lease.py tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py"
+        ],
+        "passed_test_count": 21,
+        "result": "pass",
+        "test_lineage": {
+          "tests/steward/test_completion_throughput_gate.py": {
+            "autonomy_git_object_id": "b03a402fb3a2f77fee30571f5a8e2ae652b2a815",
+            "full_product_git_object_id": "020cba403b79cf114e264c0e79ac1aa108fc0b77",
+            "worktree_sha256": "affdaaa14026b07c00198ade8cf86b1b580c085e4525689b924dcfd5a9659ec0"
+          }
+        }
+      },
+      "worktree_sha256": "affdaaa14026b07c00198ade8cf86b1b580c085e4525689b924dcfd5a9659ec0"
+    },
+    {
+      "autonomy_git_object_id": "9044411be68df33e0a09e3e3ab8af79cdbede601",
+      "full_product_git_object_id": "5efaf86ddf1d1e4664f7ef2cdb9f7ddc61fcc57d",
+      "limitations": [
+        "Current-head revalidation only; no tracker, runtime, provider, route, mask, capacity, or release credit is claimed.",
+        "The older-commit resolution receipt remains historical evidence and is not used as a same-commit chain entry."
+      ],
+      "path": "tests/test_run_with_shared_pod_gpu_lease.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "verification": {
+        "commands": [
+          "python -m pytest -q tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py",
+          "ruff check tools/run_with_shared_pod_gpu_lease.py tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py",
+          "python -m compileall -q tools/run_with_shared_pod_gpu_lease.py tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py"
+        ],
+        "passed_test_count": 21,
+        "result": "pass",
+        "test_lineage": {
+          "tests/test_run_with_shared_pod_gpu_lease.py": {
+            "autonomy_git_object_id": "9044411be68df33e0a09e3e3ab8af79cdbede601",
+            "full_product_git_object_id": "5efaf86ddf1d1e4664f7ef2cdb9f7ddc61fcc57d",
+            "worktree_sha256": "f2ed232c5371b5f8edc6e691425748d9128374c5d92413f81dd0fe0535498f21"
+          }
+        }
+      },
+      "worktree_sha256": "f2ed232c5371b5f8edc6e691425748d9128374c5d92413f81dd0fe0535498f21"
+    },
+    {
+      "autonomy_git_object_id": "e0df86a2112129a967a90a47427cc1d9b20f0518",
+      "full_product_git_object_id": "afbbcc028428ba8baa4df0028b110f3ee5e6e0ac",
+      "limitations": [
+        "Current-head revalidation only; no tracker, runtime, provider, route, mask, capacity, or release credit is claimed.",
+        "The older-commit resolution receipt remains historical evidence and is not used as a same-commit chain entry."
+      ],
+      "path": "tools/run_with_shared_pod_gpu_lease.py",
+      "resolution_kind": "authority_aligned_supersession",
+      "verification": {
+        "commands": [
+          "python -m pytest -q tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py",
+          "ruff check tools/run_with_shared_pod_gpu_lease.py tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py",
+          "python -m compileall -q tools/run_with_shared_pod_gpu_lease.py tests/steward/test_completion_throughput_gate.py tests/test_run_with_shared_pod_gpu_lease.py"
+        ],
+        "passed_test_count": 21,
+        "result": "pass",
+        "test_lineage": {
+          "tests/steward/test_completion_throughput_gate.py": {
+            "autonomy_git_object_id": "b03a402fb3a2f77fee30571f5a8e2ae652b2a815",
+            "full_product_git_object_id": "020cba403b79cf114e264c0e79ac1aa108fc0b77",
+            "worktree_sha256": "affdaaa14026b07c00198ade8cf86b1b580c085e4525689b924dcfd5a9659ec0"
+          },
+          "tests/test_run_with_shared_pod_gpu_lease.py": {
+            "autonomy_git_object_id": "9044411be68df33e0a09e3e3ab8af79cdbede601",
+            "full_product_git_object_id": "5efaf86ddf1d1e4664f7ef2cdb9f7ddc61fcc57d",
+            "worktree_sha256": "f2ed232c5371b5f8edc6e691425748d9128374c5d92413f81dd0fe0535498f21"
+          }
+        }
+      },
+      "worktree_sha256": "fbbac51d2142e71a64301955bd5f9eb297b33c1dc57b346bff86918727fc7a85"
+    }
+  ],
+  "schema_version": "maskfactory.canonical_source_resolution.v2",
+  "self_sha256": "4f363038d22cef7913ce40a5e18d9b23de15112507696470e36e6080883c0723",
+  "supersedes": []
+}

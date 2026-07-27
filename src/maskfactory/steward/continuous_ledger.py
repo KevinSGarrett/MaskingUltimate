@@ -11,7 +11,6 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
-
 CONTINUOUS_BINDING_SCHEMA = "maskfactory_continuous_work_binding.v1"
 WORK_KINDS = frozenset({"campaign", "mission"})
 STATES = (

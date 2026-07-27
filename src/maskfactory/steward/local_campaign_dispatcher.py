@@ -16,7 +16,7 @@ import sys
 import time
 from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
-from typing import Any, IO
+from typing import IO, Any
 
 from .core import canonical_sha256
 from .engineering_campaign_runtime import (

@@ -20,7 +20,6 @@ from collections.abc import Callable, Iterable, Mapping
 from pathlib import Path, PurePosixPath
 from typing import Any
 
-
 SCHEMA_VERSION = "maskfactory_repository_packet.v1"
 STAGING_SCHEMA_VERSION = "maskfactory_patch_staging.v1"
 MANIFEST_NAME = "packet_manifest.json"

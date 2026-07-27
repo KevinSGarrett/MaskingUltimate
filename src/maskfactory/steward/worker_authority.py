@@ -10,7 +10,6 @@ from copy import deepcopy
 from pathlib import PurePosixPath
 from typing import Any
 
-
 SCHEMA_VERSION = "maskfactory_worker_authority.v1"
 ZERO_SHA256 = "0" * 64
 MAX_TASK_BYTES = 64 * 1024

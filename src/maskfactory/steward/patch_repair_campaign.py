@@ -19,7 +19,6 @@ from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from typing import Any
 
-
 SCHEMA_VERSION = "maskfactory_patch_repair_campaign.v1"
 BINDING_NAME = "campaign_binding.json"
 TERMINAL_NAME = "campaign_terminal.json"

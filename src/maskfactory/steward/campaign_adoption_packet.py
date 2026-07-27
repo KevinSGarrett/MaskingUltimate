@@ -19,7 +19,6 @@ from maskfactory.steward.patch_repair_campaign import (
     verify_campaign_terminal,
 )
 
-
 SCHEMA_VERSION = "maskfactory_campaign_adoption_packet.v1"
 PACKET_NAME = "adoption_packet.json"
 ZERO_SHA256 = "0" * 64

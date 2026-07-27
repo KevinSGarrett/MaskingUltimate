@@ -13,7 +13,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
-
 SCHEMA_VERSION = "maskfactory_local_workspace_hygiene.v1"
 ALLOCATION_KINDS = frozenset(
     {"incremental_backup", "worktree", "runtime_evidence", "full_repository_bundle"}

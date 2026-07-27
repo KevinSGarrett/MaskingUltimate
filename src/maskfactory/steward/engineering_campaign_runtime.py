@@ -29,7 +29,6 @@ from typing import Any
 
 from .core import (
     AUTHORITY_KEYS,
-    BINDING_SCHEMA as MISSION_BINDING_SCHEMA,
     TERMINAL_RECEIPT_SCHEMA,
     AmbiguousMissionError,
     MissionBindingError,
@@ -37,6 +36,9 @@ from .core import (
     canonical_sha256,
     seal_binding,
     validate_binding,
+)
+from .core import (
+    BINDING_SCHEMA as MISSION_BINDING_SCHEMA,
 )
 from .runtime import (
     LAUNCH_RECEIPT_SCHEMA,

@@ -25,7 +25,6 @@ from .recovery_drill import (
 )
 from .runtime import atomic_write_json, file_sha256
 
-
 INTERRUPTED_RECOVERY_DRILL_SCHEMA = (
     "maskfactory_self_hosted_steward_interrupted_recovery_drill.v1"
 )

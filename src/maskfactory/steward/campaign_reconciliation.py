@@ -16,7 +16,6 @@ from .campaign_slo import evaluate_campaign_slo, validate_campaign_slo_replay
 from .campaign_telemetry import validate_campaign_telemetry_replay
 from .continuous_ledger import canonical_sha256, validate_continuous_binding
 
-
 ARTIFACT_MANIFEST_SCHEMA = "maskfactory_campaign_artifact_manifest.v1"
 RECONCILIATION_SCHEMA = "maskfactory_closed_campaign_reconciliation.v1"
 RECONCILED_SLO_SCHEMA = "maskfactory_reconciled_campaign_slo_gate.v1"

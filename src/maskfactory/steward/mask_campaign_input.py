@@ -13,7 +13,6 @@ from typing import Any
 import numpy as np
 from PIL import Image
 
-
 SCHEMA_VERSION = "maskfactory_mask_campaign_input.v1"
 ZERO_SHA256 = "0" * 64
 REQUIRED_RESOURCE_ROLES = (

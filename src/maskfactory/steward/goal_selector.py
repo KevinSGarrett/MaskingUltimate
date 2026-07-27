@@ -12,7 +12,6 @@ import re
 from dataclasses import dataclass
 from typing import Iterable, Mapping
 
-
 PLAN27_ITEM_ORDER = tuple(
     f"MF-P6-{cluster}.{item:02d}" for cluster in range(13, 20) for item in range(1, 5)
 )

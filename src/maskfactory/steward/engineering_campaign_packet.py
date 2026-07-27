@@ -30,7 +30,6 @@ from .patch_repair_campaign import (
     verify_campaign_terminal,
 )
 
-
 SCHEMA_VERSION = "maskfactory.engineering_campaign_packet.v1"
 PACKET_NAME = "engineering_campaign_packet.json"
 ENGINEERING_MISSION_COUNT = 25

@@ -7,7 +7,6 @@ import json
 from dataclasses import dataclass
 from typing import Iterable
 
-
 CAMPAIGN_KINDS = frozenset({"engineering", "mask"})
 ACTIONABLE_STATUSES = frozenset({"open", "in_progress", "partially_complete", "failed"})
 

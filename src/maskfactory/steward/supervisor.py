@@ -13,7 +13,6 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, BinaryIO
 
-
 OWNER_SCHEMA = "maskfactory_self_hosted_supervisor_owner.v1"
 HEALTH_SCHEMA = "maskfactory_self_hosted_supervisor_health.v1"
 QUEUE_SCHEMA = "maskfactory_self_hosted_supervisor_queue.v1"

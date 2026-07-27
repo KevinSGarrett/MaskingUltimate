@@ -13,7 +13,6 @@ from typing import Any
 import numpy as np
 from scipy import ndimage
 
-
 SCHEMA_VERSION = "maskfactory_mask_hard_qa_campaign.v1"
 ZERO_SHA256 = "0" * 64
 CHECK_NAMES = (

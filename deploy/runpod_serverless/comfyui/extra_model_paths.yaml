@@ -1,0 +1,17 @@
+maskfactory_us_wa_volume:
+  base_path: /runpod-volume/ComfyUI/models
+  checkpoints: checkpoints/
+  clip: clip/
+  clip_vision: clip_vision/
+  configs: configs/
+  controlnet: controlnet/
+  diffusion_models: diffusion_models/
+  embeddings: embeddings/
+  ipadapter: ipadapter/
+  loras: loras/
+  pulid: pulid/
+  style_models: style_models/
+  text_encoders: text_encoders/
+  unet: unet/
+  upscale_models: upscale_models/
+  vae: vae/

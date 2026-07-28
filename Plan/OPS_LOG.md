@@ -11011,3 +11011,27 @@ Consumer-protection, Git-repair, and cleanup receipts.
 **Result:** RUNTIME_PASS_BOUNDED. Frozen feed **512** (preserved 128 + MW/ref top-up; counts={'characters': 7, 'daz': 3, 'maskedwarehouse': 432, 'reference_library': 30, 'ultimate_masking_reference_images': 40}). Pool **MVC=714** (envelopes=667); feed_covered_any=209/512 (40.82%); real multiprovider FP unique=31. Glue-proof emits included; no Wilson fabrication; certificate_minted=false; external labels not gold.
 
 Evidence: `qa/live_verification/gold_factory_feed256_mvc_maximize_20260720T173136Z.json` (self_sha256 dca228c0c56782b1…); `qa/live_verification/tournament_sample_set_gold_volume_20260720T1730.json`; `qa/live_verification/tournament_sample_set_sibling_feed_latest.json`.
+## 2026-07-28 11:15 UTC - Repository normalization and main-promotion gate
+
+**Authority:** user-directed no-loss cleanup and full-product convergence.
+
+**Verified state:** `origin/main` at `d6a3c0e0` is an ancestor of clean
+reconciliation `43162970` and is 0 ahead / 621 behind. The clean line is not
+yet the complete product. The fallback product tip (`7d66ca27`), divergent
+serverless tip (`966b95a3`), and historical product reservoir (`8550209f`)
+contain non-equivalent source/test/config work. Object-only merge-tree audits
+found 122, 89, and 123 conflict paths respectively.
+
+**Disposition:** no branch deletion and no `main` promotion yet. The binding
+procedure is recorded in
+`.codex-ops/BRANCH_NORMALIZATION_STRATEGY_20260728.md`. It requires rollback
+refs, semantic full-product integration, dirty-checkout reconciliation, clean
+full validation, a non-forced `main` fast-forward, and receipt-backed branch
+retirement.
+
+**Preservation:** the verified primary checkpoint remains
+`F:\CodexRecovery\maskfactory_reconciliation_checkpoint_20260728T042648Z`
+(registry digest
+`903b960291b049ef26c4c36fa55d568158a0918763aea4a830fce5d1f11f2b0a`).
+No dirty checkout, worktree, recovery archive, VHDX, branch, or shared path was
+removed in this audit phase.

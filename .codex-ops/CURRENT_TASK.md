@@ -1,7 +1,27 @@
 ﻿# Current Task
 
 Task ID: MASKFACTORY-ULTIMATE-MASKING-E2E-20260727
-Updated UTC: 2026-07-27T01:30:00Z
+Updated UTC: 2026-07-28T11:15:00Z
+
+## Current blocking phase
+
+Normalize the repository and promote one complete, validated product authority
+to `main` without losing dirty, divergent, or historical work.
+
+- `origin/main`: `d6a3c0e00d01536504f737aff84891cf8bd4efb3`
+- clean reconciliation authority:
+  `4316297024734d8741370905ad185a7fcccfeb8f`
+- topology: `main` is 0 ahead / 621 behind reconciliation and is its ancestor
+- inventory: 20 local branches, 26 remote branches, two registered Masking
+  worktrees
+- destructive boundary: the dirty canonical checkout, Consumer repository,
+  recovery archives, VHDX files, foreign Main worktrees, and shared `C:\w`
+  remain no-touch except through separately proven, receipt-backed
+  dispositions
+
+The clean reconciliation line is necessary but not sufficient. It must absorb
+the non-superseded full-product content from the fallback/serverless lines and
+the relevant historical candidate cohort before `main` is fast-forwarded.
 
 ## Objective
 
@@ -74,6 +94,9 @@ Binding authorities:
 
 - `.codex-ops/`
 - `Plan/`
+- repository source, tests, configurations, package/build definitions,
+  workflows, schemas, tools, and runtime entrypoints required for the
+  whole-product normalization merge
 - `src/maskfactory/steward/`
 - `tests/steward/`
 - `tools/` paths explicitly required by Plan 27
@@ -113,7 +136,15 @@ Binding authorities:
 
 ## First next action
 
-`MF-P6-19.01` is tracker-complete with the accepted 25-mission campaign packet
+Complete the receipt-backed repository-normalization phase in
+`.codex-ops/BRANCH_NORMALIZATION_STRATEGY_20260728.md`. Create verified
+rollback refs, integrate and validate the complete product on a dedicated
+normalization branch, reconcile the protected dirty checkout, and only then
+fast-forward `origin/main`. Retire branches only after their unique work is
+merged or durably archived and dispositioned.
+
+After that blocking phase, `MF-P6-19.01` is tracker-complete with the accepted
+25-mission campaign packet
 and `MF-P6-19.02` is tracker-complete with accepted interruption/all-route
 reconciliation. Do not recreate either gate, issue a duplicate immutable job,
 or treat a new static packet as progress. Reconstruct the tracker/DAG and

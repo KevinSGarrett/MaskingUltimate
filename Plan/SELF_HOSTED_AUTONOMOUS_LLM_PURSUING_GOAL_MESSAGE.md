@@ -1,6 +1,58 @@
 # MaskFactory — fully updated pursuing goal
 
-Updated authority: 2026-07-27
+Updated authority: 2026-07-28
+
+## 0. Immediate blocking phase: repository normalization and main promotion
+
+Continue autonomously until the MaskFactory repository and workspace are one
+lossless, clean, validated authority. Repository normalization is a product
+integration gate, not optional housekeeping.
+
+The verified topology at the start of this phase is:
+
+- `origin/main` is `d6a3c0e00d01536504f737aff84891cf8bd4efb3`;
+- the clean reconciliation authority is
+  `4316297024734d8741370905ad185a7fcccfeb8f`, 621 commits ahead and zero
+  commits behind `origin/main`;
+- `origin/main` is an ancestor of the clean reconciliation authority, so the
+  eventual update must be a non-forced fast-forward;
+- the clean reconciliation authority is not yet the complete product tree;
+- the maximal current product/steward line is rooted at
+  `codex/fallback-dispatcher-podbase-20260726`;
+- `codex/runpod-serverless-overflow-20260724` contains a small divergent
+  post-split serverless cohort requiring semantic reconciliation;
+- `agent/maskfactory-build-progress-20260711` is a historical product-feature
+  reservoir whose unique paths require explicit adopt/supersede/archive
+  disposition; and
+- the dirty canonical checkout is a checkpoint-protected recovery source, not
+  a disposable working tree.
+
+The immediate execution order is binding:
+
+1. preserve the old `main`, reconciliation tip, maximal product tips, and
+   dirty-checkout boundary with verified refs and a SHA disposition ledger;
+2. merge the maximal current product line into a dedicated normalization
+   branch, retaining reconciliation-side safety/control authority where
+   conflicts occur and reviewing every conflict cohort semantically;
+3. reconcile the serverless post-split cohort and the historical agent-only
+   source/test/config candidates without bulk importing obsolete state;
+4. classify every remaining dirty canonical-checkout byte as adopted,
+   superseded, generated/runtime-only, or independently preserved;
+5. prove package/install closure, focused tests, the complete collected suite,
+   tracker structure, evidence reconstruction, and full Git integrity from a
+   clean tree;
+6. push the validated normalization tip and fast-forward `origin/main`
+   without force or history rewrite; and
+7. retire only branches proven merged or protected by a durable archival ref
+   and disposition receipt. Recovery refs remain until the final rollback gate
+   is independently verified.
+
+Do not mistake fewer branches for correctness. No branch or worktree may be
+deleted because of age, naming, or apparent duplication. No `git clean`,
+`reset --hard`, bulk garbage collection, bulk `C:\w` deletion, or wholesale
+ours/theirs branch merge is permitted. `main` is not current until the
+integrated full product—not merely the smaller clean reconciliation line—is
+validated and promoted.
 
 ## 1. Mission and session relationship
 

@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "artifact_type": "maskfactory_opaque_nested_directory_retirement",
+  "created_at_utc": "2026-07-28T17:21:53Z",
+  "project_root": "C:\\Comfy_UI_Main_Masking",
+  "classification_authority": "C:\\MaskFactory_TierA_Backups\\opaque_nested_repos_20260728T171012Z\\opaque_directory_classification.json",
+  "classification_sha256": "9124cee38e67cea00ac7cb294b78aa33fb223f14ff780bbb06f7c0ed73072649",
+  "classified_directory_count": 28,
+  "classified_file_count": 72981,
+  "classified_logical_bytes": 2849108209,
+  "dispositions": {
+    "GENERATED_RUNTIME_ONLY": 22,
+    "SUPERSEDED": 5,
+    "FOREIGN_OWNED": 1,
+    "BLOCKED_REVIEW_REQUIRED": 0
+  },
+  "dirty_candidate_checkpoint": {
+    "path": "C:\\MaskFactory_TierA_Backups\\opaque_nested_repos_20260728T171012Z",
+    "dirty_file_count": 40,
+    "dirty_logical_bytes": 2034941,
+    "archive": "dirty_files.tar",
+    "archive_bytes": 2109440,
+    "archive_sha256": "432e4f7d7881474ef8b95af4359d14aaebe359ab8bb45c68f4480e882d4f332c",
+    "manifest_sha256": "56e93807c502796bd095e71d7475331da356996b0c306f884188b7342f3e15f3",
+    "readback_seen": 40,
+    "readback_failures": 0
+  },
+  "historical_maskfactory_clone_protection": {
+    "protected_head": "8550209f2607369ab3e32053be86f2fa40a7db90",
+    "remote_ref": "refs/heads/codex/recovery-historical-agent-20260728-8550209",
+    "remote_ref_exact": true,
+    "other_heads_ancestor_contained": true,
+    "semantic_disposition": "SUPERSEDED",
+    "basis": "Current main contains the later 66-class ontology and current P0-P9 authority; the archived candidate used obsolete 65-class and P0-P8 contracts."
+  },
+  "main_inspect_clone": {
+    "source_path": "C:\\Comfy_UI_Main_Masking\\tmp\\comfy_commit_inspect",
+    "owner": "Comfy_UI_Main",
+    "physical_file_count": 45,
+    "physical_logical_bytes": 532815333,
+    "remote_url": "https://github.com/KevinSGarrett/Comfy_UI_Main.git",
+    "head": null,
+    "status_count_including_untracked": 0,
+    "sole_ref": "refs/remotes/origin/codex/wave88-autonomous-completion-20260726",
+    "sole_ref_oid": "cb856abe617241e3e3beb374e849bbc16ca4b43e",
+    "fsck_full_no_dangling": "PASS_WITH_EXPECTED_UNBORN_MASTER_NOTICE",
+    "verify_pack": "PASS",
+    "contained_by_main_local_main": true,
+    "contained_by_main_origin_main": true,
+    "main_commit_tree_oid": "ca2b9c6ffbda166da2094f4dae7668457db8382b",
+    "main_commit_tree_entries": 13511,
+    "main_commit_tree_logical_bytes": 1126512037,
+    "main_commit_tree_manifest_sha256": "0e4e7a367b90c0b954e8edf1b2ea497a4ad422c651b8f900df7d0ce45da06668",
+    "physical_directory_registry_sha256": "9124cee38e67cea00ac7cb294b78aa33fb223f14ff780bbb06f7c0ed73072649",
+    "physical_per_file_manifest_limitation": "A 45-row physical .git-file manifest was not captured before deletion. The classification registry binds the exact physical count and logical bytes; the independently retained Main commit/tree and deterministic ls-tree manifest bind all semantic Git content.",
+    "independent_main_recovery": [
+      "F:\\Codex_Recovery\\comfyui_exhaustive_recovery_20260726T144916Z\\refs.json",
+      "F:\\Codex_Recovery\\comfyui_reconciliation_checkpoint_20260728T035843Z"
+    ],
+    "semantic_disposition": "FOREIGN_OWNED_ANCESTOR_CONTAINED_NO_UNIQUE_WORK",
+    "post_path_absent": true
+  },
+  "execution": {
+    "first_pass_removed": 17,
+    "first_pass_stop": "Windows open handle on the empty SAM2 cache directory; no process was terminated.",
+    "second_pass_removed": 11,
+    "already_removed_revalidated": 17,
+    "total_removed": 28,
+    "post_untracked_count": 0,
+    "all_exact_target_paths_absent": true,
+    "parent_git_metadata_untouched": true
+  },
+  "completion_effect": "PRESERVATION_AND_LOCAL_HYGIENE_ONLY_NO_PRODUCT_COMPLETION_CREDIT",
+  "verified": true
+}

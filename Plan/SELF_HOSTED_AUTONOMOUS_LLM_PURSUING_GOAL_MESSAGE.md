@@ -2,28 +2,32 @@
 
 Updated authority: 2026-07-28
 
-## 0A. Active blocking phase: physical consolidation and authority convergence
+## 0A. Completed foundation phase: physical consolidation and authority convergence
 
-Repository promotion alone did not finish the local consolidation requirement.
-Continue autonomously until `C:\Comfy_UI_Main_Masking` itself is the clean,
-canonical `main` checkout and every meaningful byte currently retained in the
-dirty recovery checkout, shared `C:\w`, recovery roots, evidence collections,
-Consumer repository, and original user-supplied directory list has an exact,
-independently verifiable disposition.
+This no-loss local-consolidation phase is complete. Continue the broader
+MaskFactory E2E pursuing goal below from the clean physical canonical root;
+reopen this foundation only if a newly discovered byte is not covered by the
+committed path ledger, preservation receipts, or explicit retained authority.
 
-The starting discrepancy for this phase is:
+Current phase state:
 
-- the clean nested `main` worktree is valid and remote-equal, but the physical
-  canonical root still has 7,083 untracked paths plus 11 tracked
-  modifications;
-- after excluding caches, bytecode, generated egg metadata, and tracker
-  backups, 137 unique meaningful source/control files remain: 99 exact in
-  `main`, 37 different, and one absent from `main`;
-- shared `C:\w` still contains approximately 5.03 billion bytes requiring
-  git-common-dir ownership, semantic-value, and preservation classification;
-- F: remains below the 50 GiB allocation floor; and
-- previous “clean by explicit role” wording proved preservation/classification,
-  not physical consolidation or exhaustive semantic adoption.
+- the 137 meaningful source/control files have exact semantic dispositions
+  with zero unresolved rows;
+- the 65 missing historical tracker events were restored without stale-state
+  replay;
+- 33,308 hash-listed dirty-root files, 3,679 empty directories, and 28
+  separately classified opaque directories were safely retired after
+  independent preservation;
+- `C:\Comfy_UI_Main_Masking` itself is now the sole registered MaskFactory
+  worktree and a clean checkout of local/remote `main`;
+- the former dirty state remains reconstructable from an exact remote ref and
+  independently readback-verified Tier-A checkpoints;
+- coordinated Main cleanup left shared `C:\w` with zero direct children after
+  5,654/5,654 checkpoint readback and 84/84 semantic dispositions, after which
+  the exact empty parent was removed non-recursively under joint authority; and
+- F: remains below the 50 GiB allocation floor, so retained recovery/runtime/
+  VHDX authorities remain explicit external authorities and no new large local
+  allocation is allowed.
 
 The verified pre-change rollback authority is:
 
@@ -173,7 +177,7 @@ The terminal conditions applied to this phase were:
 All eight conditions passed. The local two-branch end state is intentional:
 the dirty checkout's branch remains checked out and is not deletion-eligible.
 Repository normalization completion does not mean the entire MaskFactory
-product is complete. Continue from the honest tracker/DAG; 54 hard blockers
+product is complete. Continue from the honest tracker/DAG; 53 hard blockers
 remain, including real visual-authority, 100-mask, sustained-campaign, release,
 and ComfyUI adoption gates.
 

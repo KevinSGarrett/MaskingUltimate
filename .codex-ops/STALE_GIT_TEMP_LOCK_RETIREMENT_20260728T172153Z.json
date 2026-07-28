@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "artifact_type": "maskfactory_stale_git_temp_lock_retirement",
+  "created_at_utc": "2026-07-28T17:21:53Z",
+  "git_root": "C:\\Comfy_UI_Main_Masking\\.git",
+  "active_standard_locks_before": 0,
+  "active_git_processes_before": 0,
+  "removed": [
+    {
+      "path": "C:\\Comfy_UI_Main_Masking\\.git\\next-index-51372.lock",
+      "bytes": 276249,
+      "sha256": "336f2dad60938ad2953337143f5de840f52a47cacac10bdc5f2f958f2909d953",
+      "last_write_local": "2026-07-20T03:22:01-05:00"
+    },
+    {
+      "path": "C:\\Comfy_UI_Main_Masking\\.git\\next-index-51372.lock.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "last_write_local": "2026-07-20T03:22:21-05:00"
+    },
+    {
+      "path": "C:\\Comfy_UI_Main_Masking\\.git\\next-index-6476.lock.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "last_write_local": "2026-07-20T10:26:14-05:00"
+    }
+  ],
+  "removed_count": 3,
+  "removed_bytes": 276249,
+  "all_exact_targets_absent": true,
+  "standard_git_lock_names_untouched": true,
+  "verified": true
+}

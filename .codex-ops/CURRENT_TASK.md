@@ -1,18 +1,30 @@
 ﻿# Current Task
 
 Task ID: MASKFACTORY-ULTIMATE-MASKING-E2E-20260727
-Updated UTC: 2026-07-28T16:42:00Z
+Updated UTC: 2026-07-28T17:21:53Z
 
-## Active blocking phase: second-phase local consolidation
+## Completed foundation phase: second-phase local consolidation
 
-The repository-promotion phase below is complete, but the physical canonical
-root and all discovered work/authority records are not yet fully converged.
+The repository-promotion, physical-root, and shared-directory transitions are
+complete. The repaired fail-closed hash authorities and the 5,148-node
+complete suite now pass; terminal tracker/receipt commit and parity are the
+remaining mechanical closeout.
 
-- dirty canonical root: 7,083 untracked paths plus 11 tracked modifications;
-- meaningful source/control set: 137 unique files (99 exact in `main`, 37
-  different, one absent); ten tracked files overlap the 136-file archive and
-  `.codex-ops\CURRENT_TASK.md` is the additional file;
-- shared `C:\w`: 5,034,979,803 bytes pending exact owner/disposition mapping;
+- physical canonical root: clean `main`, one registered worktree, zero status
+  rows, local/remote equality at
+  `f54519796a48920e59f529759a8c3687292ce34e` before this receipt commit;
+- meaningful source/control set: 137 unique files, all dispositioned with zero
+  unresolved rows;
+- retired verified dirty-root residue: 33,308 hash-listed files, 3,679 empty
+  directories, and 28 separately classified opaque directories;
+- rollback: exact remote dirty ref plus baseline, incremental, full-untracked,
+  tracked-supplement, opaque-dirty, and snapshot-move Tier-A checkpoints;
+- shared `C:\w`: 5,654/5,654 checkpoint readback, 84/84 non-equivalent
+  candidate dispositions, exact nine-path retirement, and zero direct
+  children under Main receipt SHA-256
+  `d4586b0608dace04eb30200429e3dee172c508d01ffc663cabdb821609a6625d`;
+  the exact empty shared parent was then removed non-recursively after joint
+  no-dependency confirmation;
 - pre-change checkpoint:
   `C:\MaskFactory_TierA_Backups\second_phase_preconsolidation_20260728T162424Z`;
 - checkpoint registry SHA-256:
@@ -25,12 +37,13 @@ root and all discovered work/authority records are not yet fully converged.
 
 Plan 29 and
 `Plan/LOCAL_AUTHORITY_RECONCILIATION_LEDGER_20260728.md` now govern this
-phase. `MF-P6-20.01` is `in_progress` at 60%. Sixty-five missing historical
+phase. `MF-P6-20.01` is complete at 100% after the terminal gates passed,
+without advancing any product/runtime/visual successor. Sixty-five missing historical
 tracker changelog records were restored without stale-state replay; executable
 differences are parsed/AST-equivalent or superseded by current shared-FIFO
 authority; the absent SAM3.1 handoff is archive-only with both cited commits
-already ancestors of `main`. Main-owned `C:\w` receipts and the physical
-canonical-root transition remain open.
+already ancestors of `main`. The physical-root, opaque-directory, stale-lock,
+and coordinated shared-`C:\w` receipts are now durable authorities.
 
 Every file/artifact must be bound to a governing Plan section, affected Item
 IDs, tracker rows/dependencies/verification/evidence, canonical location, and
@@ -365,7 +378,7 @@ incomplete status until `MF-P6-19.04` has its real sustained-campaign evidence.
   `903b960291b049ef26c4c36fa55d568158a0918763aea4a830fce5d1f11f2b0a`.
 - The standalone Consumer is remotely protected. Both MaskFactory VHDX
   backups remain no-touch. `F:` remains below the 50 GiB floor.
-- Tracker structure remains honest at 906 non-orphaned items and 54 unresolved
+- Tracker structure remains honest at 906 non-orphaned items and 53 unresolved
   hard blockers. Consumer static credit is 84%/79%; both items remain blocked
   and no E2E or production-completion tier changed.
 - Never clean/reset/delete the dirty canonical recovery checkout or bulk-delete

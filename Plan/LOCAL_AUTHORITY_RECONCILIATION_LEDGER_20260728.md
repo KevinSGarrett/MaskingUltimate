@@ -177,13 +177,14 @@ implementation is already canonical.
 
 ## Tracker state
 
-`MF-P6-20.01` is the non-duplicative governing row. Its metadata now explicitly
+`MF-P6-20.01` is the non-duplicative governing row. Its metadata explicitly
 requires scattered-directory, Plan/Item/Instruction/tracker, physical-root,
 and rollback convergence. `tracker.py rebuild` preserved 906 items with zero
-new or orphaned rows. `tracker.py set` records this phase as in progress at
-60%, without completion credit. `tracker.py report` and `tracker.py validate`
-pass with 906 non-orphaned items, 54 unresolved hard blockers, and zero
-structural problems.
+new or orphaned rows. After physical/root/shared-path convergence and the
+5,148-node suite passed, `tracker.py set` closed only this repository-
+reconciliation row at 100%. `tracker.py report` and `tracker.py validate` pass
+with 906 non-orphaned items, 53 unresolved hard blockers, and zero structural
+problems. No successor product/runtime/visual/campaign row advanced.
 
 ## Shared `C:\w`
 
@@ -200,5 +201,82 @@ Main task `019fa6cc-eb76-74c1-8fd1-f062cec56dad`.
   gates.
 - No task may remove any unassigned shared path or `C:\w` itself.
 
-The final shared-directory counts and receipts are appended only after Main
-returns its exact post-disposition authority.
+Main returned its exact post-disposition authority:
+
+- checkpoint:
+  `F:\Codex_Recovery\main_shared_cw_checkpoint_20260728T162954Z`;
+- source manifest: 5,654 files / 1,832,370,752 bytes, SHA-256
+  `aae95e1fb8706b66eb58c62eefe0ccabafb09faeaa12856a193403378ce769bd`;
+- archive SHA-256:
+  `4d04f897a58a0b0c07475b15590f19e6e7c0881c79fc4b341c06bd119330e196`;
+- readback: 5,654/5,654 exact;
+- semantic review: all 84 non-equivalent candidates dispositioned with zero
+  unresolved and all 5,654 files Plan/Item/Tracker-bound;
+- retirement: exactly nine assigned paths, 17,936 files including standalone
+  Git objects, and 5,034,979,803 logical bytes;
+- post-state: all nine paths absent and `C:\w` has zero direct children; and
+- receipt SHA-256:
+  `d4586b0608dace04eb30200429e3dee172c508d01ffc663cabdb821609a6625d`.
+
+After both tasks confirmed that no process, worktree, ref, or dependency used
+the parent, the exact empty non-reparse `C:\w` root was removed
+non-recursively. Its receipt is
+`.codex-ops/EMPTY_SHARED_CW_ROOT_RETIREMENT_20260728T172928Z.json`.
+
+Main's terminal repository authority is clean local/remote `main`
+`ee2717ab4d8985182e73b0a79c131b2076443952`, with one local branch, one
+worktree, zero stashes, three intentional remote heads, zero open pull
+requests, and full/connectivity fsck passing. Its committed final shared-path
+receipt is `.codex-ops/SHARED_CW_SECOND_PHASE_FINAL_20260728T171508Z.json`,
+SHA-256
+`9a332e7fab8f0da346f2ca7cafa3152c12158fd8437e964083bb4bcf0c17a599`.
+
+## Opaque nested repositories and runtime caches
+
+After all hash-listed ordinary untracked/ignored files were removed, 28 nested
+directories remained because their internal Git metadata made them
+intentionally opaque to the first cleanup pass. The exact classification at
+`C:\MaskFactory_TierA_Backups\opaque_nested_repos_20260728T171012Z\
+opaque_directory_classification.json` covers 72,981 files and
+2,849,108,209 logical bytes:
+
+| Disposition | Directories | Result |
+|---|---:|---|
+| `GENERATED_RUNTIME_ONLY` | 22 | pre-commit and third-party runtime source caches retired |
+| `SUPERSEDED` | 5 | four historical MaskFactory publish clones and one CVAT clone retired after ref/source review |
+| `FOREIGN_OWNED` | 1 | Main inspect clone retired after Main containment confirmation |
+| `BLOCKED_REVIEW_REQUIRED` | 0 | none |
+
+Forty dirty files in the historical MaskFactory/CVAT candidates are retained
+and readback-verified in `dirty_files.tar`, SHA-256
+`432e4f7d7881474ef8b95af4359d14aaebe359ab8bb45c68f4480e882d4f332c`.
+The current 66-class/P0-P9 authority semantically supersedes the historical
+65-class/P0-P8 ontology candidate; no stale implementation was adopted.
+
+The late Main-owned clone
+`C:\Comfy_UI_Main_Masking\tmp\comfy_commit_inspect` contained 45 physical
+files and 532,815,333 logical bytes. It was clean, had no HEAD, and had the
+sole ref
+`cb856abe617241e3e3beb374e849bbc16ca4b43e` at
+`refs/remotes/origin/codex/wave88-autonomous-completion-20260726`. Main proved
+that commit is contained by current local and remote Main and separately
+preserved by its recovery authorities. Full fsck/pack checks passed, the exact
+path is absent, and no product status changed. The deterministic Main commit
+tree manifest SHA-256 is
+`0e4e7a367b90c0b954e8edf1b2ea497a4ad422c651b8f900df7d0ce45da06668`.
+The retirement receipt explicitly records that a physical 45-row `.git`-file
+manifest was not captured; the directory registry binds its count/bytes and
+the Main commit/tree binds its semantic content.
+
+## Physical canonical root
+
+`C:\Comfy_UI_Main_Masking` is now the sole registered MaskFactory worktree and
+is checked out on clean `main`. The former dirty branch was made clean only
+after all 11 tracked file bytes rehashed to the independent Tier-A supplement;
+it remains remotely reconstructable at
+`codex/recovery-maskfactory-20260728-61b4ffe`.
+
+No `git clean`, hard reset, bulk Git garbage collection, directory
+replacement, or bulk `C:\w` deletion was used. The exact transition is
+recorded in
+`.codex-ops/PHYSICAL_CANONICAL_ROOT_CONVERGENCE_20260728T172153Z.json`.

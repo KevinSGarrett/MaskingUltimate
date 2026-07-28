@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "artifact_type": "empty_wsl_vhd_backup_shell_retirement",
+  "created_at_utc": "2026-07-28T17:31:00Z",
+  "path": "F:\\MaskFactory_WSL_VHD_BACKUPS",
+  "preconditions": {
+    "file_count_recursive": 0,
+    "logical_bytes_recursive": 0,
+    "subdirectories": [
+      "F:\\MaskFactory_WSL_VHD_BACKUPS\\Ubuntu-22.04"
+    ],
+    "subdirectory_count_recursive": 1,
+    "reparse_points": 0
+  },
+  "retained_vhdx_authorities": [
+    {
+      "path": "F:\\MaskFactory_Offload_20260714\\DockerDesktop\\wsl\\disk\\docker_data.vhdx",
+      "bytes": 73131884544
+    },
+    {
+      "path": "F:\\MaskFactory_Offload_20260714\\WSL\\Ubuntu-22.04\\ext4.vhdx",
+      "bytes": 57564725248
+    },
+    {
+      "path": "F:\\MaskFactory_Offload_20260714\\WSL_BACKUPS\\Ubuntu-22.04\\ext4_before_repair_20260720T145315Z.vhdx",
+      "bytes": 57511247872
+    },
+    {
+      "path": "F:\\MaskFactory_Offload_20260714\\WSL_VHD_BACKUPS_from_runtime_artifacts\\Ubuntu-22.04\\ext4_before_repair_20260720T151204Z.vhdx",
+      "bytes": 57511247872
+    }
+  ],
+  "operation": "REMOVE_EXACT_EMPTY_CHILD_THEN_EXACT_EMPTY_PARENT_NON_RECURSIVELY",
+  "post_path_absent": true,
+  "vhdx_removed": 0,
+  "verified": true
+}

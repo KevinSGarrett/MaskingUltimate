@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "artifact_type": "empty_shared_cw_root_retirement",
+  "created_at_utc": "2026-07-28T17:29:28Z",
+  "path": "C:\\w",
+  "owner_coordination": {
+    "main_thread": "019fa6cc-eb76-74c1-8fd1-f062cec56dad",
+    "main_confirmed_no_ownership_or_dependency_conflict": true,
+    "main_assigned_paths_already_absent": true,
+    "masking_child_mfw_already_absent": true
+  },
+  "preconditions": {
+    "exists": true,
+    "type": "directory",
+    "file_count": 0,
+    "subdirectory_count": 0,
+    "logical_bytes": 0,
+    "reparse_point": false,
+    "process_current_working_directory_users": 0
+  },
+  "operation": "NON_RECURSIVE_EXACT_LITERAL_DIRECTORY_REMOVAL",
+  "postconditions": {
+    "path_absent": true,
+    "other_paths_touched": 0
+  },
+  "verified": true
+}

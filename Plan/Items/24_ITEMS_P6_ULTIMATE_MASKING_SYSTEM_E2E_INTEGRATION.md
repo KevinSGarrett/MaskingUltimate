@@ -12,6 +12,12 @@ Frozen authority and evidence contracts:
 
 ## MF-P6-20 — Canonical product/autonomy source integration (spec: 28 §§2–5; 29)
 - [ ] MF-P6-20.01 Inventory and reconcile the full-product and accepted autonomy source lines plus every scattered local checkout, worktree, standalone repository, recovery/evidence root, and meaningful Plan/Item/Instruction/Tracker file by exact commit/tree/path ownership, preserving unrelated staged, dirty, untracked, recovery, runtime, dataset, VHDX, Consumer, and foreign-owned work · Verify: an exhaustive path-to-owner/hash/disposition/Plan/Item/tracker/test/canonical/rollback ledger has no unexplained deletion, overwrite, reset, replacement worktree, stale tracker replay, missing history, or unresolved conflict, and the physical canonical root is clean `main` · Blocked by: MF-P6-19.01, MF-P6-19.02 · HARD BLOCKER
+  - 2026-07-28 reconciliation evidence: the 137-row meaningful-file matrix has
+    zero unresolved rows; the 28-row opaque-directory receipt includes the
+    Main-owned 45-file inspect clone with zero product-completion effect; the
+    physical root is clean `main`; shared `C:\w` has zero direct children
+    under the coordinated 5,654-file receipt. Terminal quality results are
+    bound by the final convergence receipt.
 - [ ] MF-P6-20.02 Produce one canonical integrated source tree containing product code, autonomy/runtime code, package metadata, configs, schemas, CLIs, services, tests, and operating procedures · Verify: clean diff/secret/schema/import/package checks prove both source lines' required behavior survives · Blocked by: MF-P6-20.01 · HARD BLOCKER
 - [ ] MF-P6-20.03 Classify and repair the complete product test baseline, including completion-policy drift and every external-asset dependency · Verify: each collected test is passing or has a governed explicit environment prerequisite that cannot be misreported as pass; no unexplained collection/runtime failure remains · Blocked by: MF-P6-20.02 · HARD BLOCKER
 - [ ] MF-P6-20.04 Prove clean-export installation, exact-byte runtime closure, focused/integration/full-suite execution, bounded service health, and owned shutdown · Verify: an independent reconstruction receipt binds source, environment, commands, results, processes, ports, and zero leaked resources · Blocked by: MF-P6-20.03 · HARD BLOCKER

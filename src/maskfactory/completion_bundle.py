@@ -18,10 +18,10 @@ from typing import Any
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_POLICY = PROJECT_ROOT / "qa/governance/completion/modernization_completion_v1.json"
 # Canonical payload seal stored inside the JSON document.
-POLICY_SHA256 = "7a973b95b200bac5c6a1998acfa9fffe519756fbc65e103474ff87b2b479b885"
+POLICY_SHA256 = "9ed3b56e84ee8279bb097f7aa2bf0e314637557d9030e5fc245d8e86062bd359"
 # Exact on-disk bytes of the frozen legacy policy. This is intentionally distinct
 # from ``POLICY_SHA256`` so whitespace/encoding substitution also fails closed.
-POLICY_DOCUMENT_SHA256 = "cb67d8076fdec3b4132ed4fd900700b05ecf7d2a60eb3e8d4896059b952958a2"
+POLICY_DOCUMENT_SHA256 = "78138aef5b7fde98870f4787e73a4c3f585c9304f45de2cb137d540d5315fbf7"
 
 
 class CompletionBundleError(ValueError):

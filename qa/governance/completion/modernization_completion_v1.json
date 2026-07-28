@@ -6,7 +6,7 @@
   "governing_source_hashes": {
     "Plan/20_PROGRESSIVE_AUTONOMOUS_MASK_FACTORY_SPEC.md": "8e5fa8ed276449159d73c551839fafd5ea8cf19de2cff61f93ddfb93edacc8f6",
     "Plan/22_TECHNOLOGY_CURRENCY_AND_MODEL_CHALLENGE_SPEC.md": "30971a9072af824d58f1b7bb8f427bbe0c4040622340a87b3337d4c83684a7f3",
-    "Plan/Items/00_ITEMS_MASTER_INDEX.md": "ae78c1f18b4d2985e4e374e448881c1f6e48cf2f027f2fa7320e741312287e50",
+    "Plan/Items/00_ITEMS_MASTER_INDEX.md": "f7af37620ff65f34242ee9f35255985b98a1783ca21e11e128411ee9b105ae5a",
     "Plan/23_EXTERNAL_SUPERVISION_REFERENCE_DAZ_AND_MINIMAL_REVIEW_SPEC.md": "b4d04cff2cc0edc7b292d8df40ee822c21d24e0880bc14b81ebd8e91e8b87edc",
     "Plan/Items/20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md": "b4b6dd7ea79bfaef960058517a3402a3db4e9ed40595227a9d3017c4e39179a5",
     "Plan/Items/18_ITEMS_P7_CURRENCY_OPERATIONS.md": "9759b88f5bace1c263ad8a2303348a42c39b861dd0311b3ce3f8260d44d693b0",
@@ -182,7 +182,7 @@
     }
   },
   "schema_version": "1.0.0",
-  "sha256": "7a973b95b200bac5c6a1998acfa9fffe519756fbc65e103474ff87b2b479b885",
+  "sha256": "9ed3b56e84ee8279bb097f7aa2bf0e314637557d9030e5fc245d8e86062bd359",
   "tracker_requirements": {
     "allowed_terminal_statuses": ["complete", "not_applicable"],
     "excluded_item_ids": ["MF-P7-07.09"],

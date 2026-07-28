@@ -130,6 +130,49 @@ Registry SHA-256:
 Shared `C:\w` measured 5,034,979,803 bytes at phase start. Its ownership and
 disposition remain path-specific and jointly coordinated.
 
+The physical-root transition completed without replacing the checkout:
+
+- the nested clean-main worktree was removed through `git worktree remove`;
+- 33,308 hash-verified files, 3,679 empty directories, and 28 separately
+  classified opaque nested directories were retired only after rollback and
+  ownership gates;
+- the 11 tracked modifications rehashed exactly to the Tier-A tracked
+  supplement and were restored only in the protected dirty branch;
+- the physical root then switched normally to `main`, with zero status rows,
+  one registered worktree, and local/remote equality at
+  `f54519796a48920e59f529759a8c3687292ce34e`; and
+- the old dirty commit remains exact at remote recovery ref
+  `codex/recovery-maskfactory-20260728-61b4ffe`.
+
+Main's coordinated shared-`C:\w` receipt records 5,654/5,654 checkpoint
+readbacks, 84/84 non-equivalent candidate dispositions, exact retirement of
+its nine assigned paths, and zero remaining direct children. After both owners
+confirmed no dependency, the exact zero-file/zero-directory/non-reparse
+`C:\w` shell was removed non-recursively under
+`.codex-ops/EMPTY_SHARED_CW_ROOT_RETIREMENT_20260728T172928Z.json`. The Main
+receipt is
+`F:\Codex_Recovery\main_shared_cw_checkpoint_20260728T162954Z\
+retirement_receipt.json`, SHA-256
+`d4586b0608dace04eb30200429e3dee172c508d01ffc663cabdb821609a6625d`.
+
+The Masking governing receipts are:
+
+- `.codex-ops/PHYSICAL_CANONICAL_ROOT_CONVERGENCE_20260728T172153Z.json`;
+- `.codex-ops/OPAQUE_NESTED_DIRECTORY_RETIREMENT_20260728T172153Z.json`; and
+- `.codex-ops/STALE_GIT_TEMP_LOCK_RETIREMENT_20260728T172153Z.json`.
+
+The opaque-directory receipt includes the late Main-owned
+`tmp\comfy_commit_inspect` clone as a zero-product-credit recovery row: its
+sole commit is ancestor-contained by Main, its physical path is absent, and
+its semantic tree remains independently reconstructable. The receipt states
+the limitation that no 45-row physical `.git`-file manifest was captured.
+
+The coordinated Main repository closed clean local/remote `main` at
+`ee2717ab4d8985182e73b0a79c131b2076443952`. Its final shared-`C:\w`
+authority is `.codex-ops/SHARED_CW_SECOND_PHASE_FINAL_20260728T171508Z.json`,
+SHA-256
+`9a332e7fab8f0da346f2ca7cafa3152c12158fd8437e964083bb4bcf0c17a599`.
+
 ## 9. Terminal verification
 
 This phase is complete only when:

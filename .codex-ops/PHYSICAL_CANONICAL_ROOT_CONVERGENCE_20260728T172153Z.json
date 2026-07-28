@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "artifact_type": "maskfactory_physical_canonical_root_convergence",
+  "created_at_utc": "2026-07-28T17:21:53Z",
+  "physical_root": "C:\\Comfy_UI_Main_Masking",
+  "before": {
+    "branch": "codex/maskfactory-runtime-implementation",
+    "head": "61b4ffed850ab9570253acde5704a5bf44d4f7b6",
+    "tracked_modification_count": 11,
+    "untracked_entry_count_before_phase": 7083,
+    "clean_main_worktree": "C:\\Comfy_UI_Main_Masking\\.codex-ops\\worktrees\\canonical-reconciliation-20260728",
+    "registered_worktree_count": 2
+  },
+  "rollback": {
+    "remote_dirty_ref": "refs/remotes/origin/codex/recovery-maskfactory-20260728-61b4ffe",
+    "remote_dirty_ref_oid": "61b4ffed850ab9570253acde5704a5bf44d4f7b6",
+    "remote_dirty_ref_exact": true,
+    "baseline_checkpoint": "F:\\CodexRecovery\\maskfactory_reconciliation_checkpoint_20260728T042648Z",
+    "baseline_registry_sha256": "903b960291b049ef26c4c36fa55d568158a0918763aea4a830fce5d1f11f2b0a",
+    "incremental_checkpoint": "C:\\MaskFactory_TierA_Backups\\second_phase_preconsolidation_20260728T162424Z",
+    "incremental_registry_sha256": "b2882e7cd50a8bd5f560d85846e6409b754a585b5496dd746aab6cf1ac654197",
+    "full_untracked_checkpoint": "C:\\MaskFactory_TierA_Backups\\dirty_root_full_untracked_20260728T164707Z",
+    "full_untracked_archive_sha256": "ec62c54e33a3de0b1a54c2b3d0f062bb642bc1b32ca2cbb5be6d6aaab61a9054",
+    "full_tracked_supplement_path_count": 11,
+    "full_tracked_supplement_tar_sha256": "2afc4e39b16e307db1d2ccbff65cca6ccb135163d8f9c3e0694682809fe71a7e",
+    "full_tracked_supplement_readback": "11_OF_11_PASS",
+    "opaque_dirty_checkpoint": "C:\\MaskFactory_TierA_Backups\\opaque_nested_repos_20260728T171012Z",
+    "snapshot_zip_checkpoint": "C:\\MaskFactory_TierA_Backups\\snapshot_zip_preservation_20260728T165908Z"
+  },
+  "transition": {
+    "verified_generated_and_archived_files_removed": 33308,
+    "verified_empty_directories_removed": 3679,
+    "classified_opaque_directories_removed": 28,
+    "tracked_files_rehashed_to_checkpoint_before_restore": 11,
+    "tracked_files_restored_from_protected_dirty_head": 11,
+    "pre_switch_dirty_branch_status_count": 0,
+    "nested_clean_main_worktree_removed_by_git": true,
+    "nested_clean_main_worktree_post_absent": true,
+    "git_switch_main": "PASS"
+  },
+  "after": {
+    "physical_branch": "main",
+    "local_main": "f54519796a48920e59f529759a8c3687292ce34e",
+    "origin_main": "f54519796a48920e59f529759a8c3687292ce34e",
+    "local_remote_equal": true,
+    "status_count_including_untracked": 0,
+    "registered_worktree_count": 1,
+    "local_branch_count": 2,
+    "remote_head_count": 7
+  },
+  "destructive_methods_not_used": [
+    "git clean",
+    "git reset --hard",
+    "bulk git gc",
+    "bulk C:\\w deletion",
+    "worktree replacement"
+  ],
+  "verified": true
+}

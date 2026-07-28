@@ -3,12 +3,40 @@
 Task ID: MASKFACTORY-ULTIMATE-MASKING-E2E-20260727
 Updated UTC: 2026-07-28T15:23:59Z
 
+## Active blocking phase: second-phase local consolidation
+
+The repository-promotion phase below is complete, but the physical canonical
+root and all discovered work/authority records are not yet fully converged.
+
+- dirty canonical root: 7,094 untracked paths;
+- meaningful source/control set: 136 files (99 exact in `main`, 36 different,
+  one absent);
+- shared `C:\w`: 5,034,979,803 bytes pending exact owner/disposition mapping;
+- pre-change checkpoint:
+  `C:\MaskFactory_TierA_Backups\second_phase_preconsolidation_20260728T162424Z`;
+- checkpoint registry SHA-256:
+  `b2882e7cd50a8bd5f560d85846e6409b754a585b5496dd746aab6cf1ac654197`;
+- checkpoint verification: 11 artifacts, zero missing/size/hash failures; 136
+  meaningful and 110 post-baseline archive entries read back; and
+- destructive boundary: no dirty-root move, shared-path removal, source
+  adoption, branch/ref change, or tracker advancement before exact ownership,
+  semantic review, independent coverage, and coordination.
+
+Every file/artifact must be bound to a governing Plan section, affected Item
+IDs, tracker rows/dependencies/verification/evidence, canonical location, and
+rollback location. Adopted work requires synchronized Plan, Items,
+Instructions, tracker/DAG, tests, and reports. Superseded or archived work must
+be recorded without false completion credit. Tracker state changes only
+through `Plan/Tracker/tracker.py`.
+
 ## Repository-normalization phase
 
 **Status:** COMPLETE / POST-PROMOTION RECEIPT RECORDED.
 
 - promoted `origin/main` content authority:
   `752c0ebfbe97d080ed5ae16fed6f0bd885ff69dd`
+- current clean local/remote `main` after receipt and directory-ledger commits:
+  `55859a98147b18384ab5d8aa2a0757e13dfc69aa`
 - validation: the 5,148-node complete suite, changed-file Ruff, tracker
   validate/report, clean-export wheel build/install/import/focused suite,
   diff/credential checks, and full/connectivity Git fsck all pass

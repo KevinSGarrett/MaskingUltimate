@@ -2,7 +2,94 @@
 
 Updated authority: 2026-07-28
 
-## 0. Repository-normalization gate: complete
+## 0A. Active blocking phase: physical consolidation and authority convergence
+
+Repository promotion alone did not finish the local consolidation requirement.
+Continue autonomously until `C:\Comfy_UI_Main_Masking` itself is the clean,
+canonical `main` checkout and every meaningful byte currently retained in the
+dirty recovery checkout, shared `C:\w`, recovery roots, evidence collections,
+Consumer repository, and original user-supplied directory list has an exact,
+independently verifiable disposition.
+
+The starting discrepancy for this phase is:
+
+- the clean nested `main` worktree is valid and remote-equal, but the physical
+  canonical root still has 7,094 untracked paths;
+- after excluding caches, bytecode, generated egg metadata, and tracker
+  backups, 136 meaningful source/control files remain: 99 exact in `main`, 36
+  different, and one absent from `main`;
+- shared `C:\w` still contains approximately 5.03 billion bytes requiring
+  git-common-dir ownership, semantic-value, and preservation classification;
+- F: remains below the 50 GiB allocation floor; and
+- previous “clean by explicit role” wording proved preservation/classification,
+  not physical consolidation or exhaustive semantic adoption.
+
+The verified pre-change rollback authority is:
+
+- checkpoint:
+  `C:\MaskFactory_TierA_Backups\second_phase_preconsolidation_20260728T162424Z`;
+- registry SHA-256:
+  `b2882e7cd50a8bd5f560d85846e6409b754a585b5496dd746aab6cf1ac654197`;
+- coverage: all 136 meaningful source/control files, all 110 post-baseline
+  files, live status/refs/worktrees/origin heads, and the existing verified
+  baseline checkpoint; and
+- verification: 11 registered artifacts with zero missing, size-mismatched, or
+  hash-mismatched entries.
+
+### Required file-to-authority convergence
+
+Every discovered path must receive one row in the durable reconciliation
+matrix binding:
+
+1. exact path, owner, repository/common-dir, size, and SHA-256;
+2. current and candidate source commit/checkpoint/archive identities;
+3. semantic disposition: `ADOPT`, `ALREADY_PRESENT`, `SUPERSEDED`,
+   `ARCHIVE_ONLY`, `GENERATED_RUNTIME_ONLY`, `FOREIGN_OWNED`, or
+   `BLOCKED_REVIEW_REQUIRED`;
+4. governing Plan/spec/Instruction section;
+5. affected Item IDs and dependency relationships;
+6. affected tracker row IDs, status, verification clause, evidence locator,
+   limitations, and completion authority;
+7. tests/reconstruction commands and exact result; and
+8. final canonical location plus rollback location.
+
+This is not complete when code alone is copied. For every adopted capability,
+update the governing Plan, Items, Instructions, tracker rows, dependency DAG,
+verification language, evidence locators, and generated reports so they
+describe the same implementation and exact commit. For superseded,
+archive-only, generated, or foreign-owned bytes, record the disposition and
+reason without granting implementation or completion credit.
+
+Tracker state may be changed only through `Plan/Tracker/tracker.py`. Never
+hand-edit tracker JSON. Run `validate` and `report`, review the generated
+dashboard/phase files, and prove that no orphan, stale dependency, false
+completion, missing evidence locator, or unreported adopted capability remains.
+Preservation receipts and passing static tests alone never raise a production,
+runtime, visual-authority, campaign, or E2E completion tier.
+
+### Terminal conditions for this phase
+
+This phase is complete only when:
+
+1. all 136 meaningful files and any later arrivals have exact semantic and
+   preservation dispositions;
+2. every useful capability is present in clean `main` and fully represented in
+   Plan, Items, Instructions, tracker/DAG, evidence, and tests;
+3. shared `C:\w` has no unowned or unclassified byte and only intentionally
+   retained, independently recoverable paths remain;
+4. `C:\Comfy_UI_Main_Masking` itself is the clean canonical `main` checkout,
+   while the former dirty state remains independently restorable;
+5. the standalone Consumer and every original listed directory have a current,
+   exact role or receipt-backed removal;
+6. local/remote `main`, refs, worktrees, control files, pursuing goal, tracker,
+   and coordinating Main task agree on the same final authority;
+7. clean install/export, focused and complete applicable suites, tracker
+   validation/report, full/connectivity Git fsck, and rollback restoration pass;
+   and
+8. storage constraints and any retained recovery/VHD/data/evidence roots are
+   explicit external authorities, not unreviewed clutter.
+
+## 0B. Repository-normalization gate: complete
 
 The lossless repository-normalization and `main`-promotion phase completed on
 2026-07-28. Its immutable validation/branch plan is

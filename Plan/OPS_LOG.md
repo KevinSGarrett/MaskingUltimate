@@ -11220,3 +11220,29 @@ it is retained because no independent exact-byte replacement is proven.
 Recovery roots, non-equivalent VHDX files, active data/offload roots,
 evidence collections, the Consumer repository, shared `C:\w`, and foreign
 Main-owned recovery data were not deleted.
+
+## 2026-07-28 16:24 UTC - Second-phase consolidation goal and checkpoint
+
+**Result:** `CHECKPOINT_VERIFIED / CONSOLIDATION_INCOMPLETE`.
+
+The live audit invalidated the broader physical-cleanliness interpretation of
+the first-phase receipt. Clean nested `main` remains valid, but the canonical
+root has 7,094 untracked paths. Filtering caches, bytecode, egg metadata, and
+tracker backups leaves 136 meaningful source/control files: 99 exact in
+`main`, 36 different, and one absent. Shared `C:\w` still contains
+5,034,979,803 bytes requiring exact ownership and disposition.
+
+Before mutation, an incremental Tier-A checkpoint was created at
+`C:\MaskFactory_TierA_Backups\second_phase_preconsolidation_20260728T162424Z`.
+Its registry SHA-256 is
+`b2882e7cd50a8bd5f560d85846e6409b754a585b5496dd746aab6cf1ac654197`.
+All 11 registered artifacts re-hashed with zero missing, size, or hash
+failures; both tar archives read back at exactly 136 meaningful and 110
+post-baseline entries. The earlier 86-entry baseline checkpoint also
+revalidated without error.
+
+The pursuing goal now requires more than source adoption. Every discovered
+artifact must map to governing Plan/Instruction text, Item IDs, tracker
+rows/dependencies/verification/evidence, tests, canonical location, and
+rollback authority. Tracker changes are CLI-only and preserved/superseded
+bytes receive no false implementation or completion credit.

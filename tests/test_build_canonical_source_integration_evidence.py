@@ -56,6 +56,31 @@ def test_hygiene_detects_tracked_model_and_secret() -> None:
     assert result["high_confidence_secret_candidates"][0]["pattern"] == ("github_token")
 
 
+def test_hygiene_accepts_only_hash_pinned_test_secret_shape(monkeypatch) -> None:
+    path = "tests/example_secret_shape.py"
+    payload = b"AKIAABCDEFGHIJKLMNOP"
+    approved = dict(MODULE.APPROVED_TEST_FIXTURE_SECRET_SHAPES)
+    approved[(path, "aws_access_key")] = MODULE.sha256_bytes(payload)
+    monkeypatch.setattr(MODULE, "APPROVED_TEST_FIXTURE_SECRET_SHAPES", approved)
+
+    result = MODULE.scan_hygiene(
+        [{"path": path, "oid": "a"}],
+        {"a": payload},
+        [],
+        [],
+    )
+    assert result["status"] == "PASS"
+    assert result["high_confidence_secret_candidates"] == []
+    assert result["approved_test_fixture_secret_shapes"] == [
+        {
+            "path": path,
+            "pattern": "aws_access_key",
+            "sha256": MODULE.sha256_bytes(payload),
+            "classification": "STATIC_NON_PRODUCTION_TEST_FIXTURE",
+        }
+    ]
+
+
 def test_canonical_json_is_stable_and_newline_terminated() -> None:
     first = MODULE.canonical_json_bytes({"b": 2, "a": 1})
     second = MODULE.canonical_json_bytes({"a": 1, "b": 2})

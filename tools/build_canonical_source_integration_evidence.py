@@ -16,6 +16,7 @@ import io
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tarfile
@@ -54,6 +55,40 @@ HIGH_CONFIDENCE_SECRET_PATTERNS = {
     "aws_access_key": re.compile(rb"AKIA[0-9A-Z]{16}"),
     "github_token": re.compile(rb"gh[pousr]_[A-Za-z0-9]{30,}"),
     "private_key": re.compile(rb"-----BEGIN (?:RSA |OPENSSH |EC |DSA )?PRIVATE KEY-----"),
+}
+APPROVED_TEST_FIXTURE_SECRET_SHAPES = {
+    (
+        "qa/autonomous_gold_demonstration_fixtures/abstained_single/issuer.pem",
+        "private_key",
+    ): "b1e80344de5339d59b92d899349e48cbd5983e5142ed197e1a3f33e383c82a37",
+    (
+        "qa/autonomous_gold_demonstration_fixtures/accepted_single/issuer.pem",
+        "private_key",
+    ): "b1e80344de5339d59b92d899349e48cbd5983e5142ed197e1a3f33e383c82a37",
+    (
+        "qa/autonomous_gold_demonstration_fixtures/repaired_multi/issuer.pem",
+        "private_key",
+    ): "b1e80344de5339d59b92d899349e48cbd5983e5142ed197e1a3f33e383c82a37",
+    (
+        "qa/autonomous_gold_demonstration_fixtures/revoked_multi/issuer.pem",
+        "private_key",
+    ): "b1e80344de5339d59b92d899349e48cbd5983e5142ed197e1a3f33e383c82a37",
+    (
+        "qa/autonomous_gold_demonstration_fixtures/veto_duo/issuer.pem",
+        "private_key",
+    ): "b1e80344de5339d59b92d899349e48cbd5983e5142ed197e1a3f33e383c82a37",
+    (
+        "qa/autonomous_gold_demonstration_fixtures/veto_solo/issuer.pem",
+        "private_key",
+    ): "b1e80344de5339d59b92d899349e48cbd5983e5142ed197e1a3f33e383c82a37",
+    (
+        "tests/steward/test_worker_authority.py",
+        "aws_access_key",
+    ): "349b920221f696ce812a5fe61e099c1af837687d29e78a8f134c4af44cdb1cb3",
+    (
+        "tests/steward/test_worker_authority.py",
+        "private_key",
+    ): "349b920221f696ce812a5fe61e099c1af837687d29e78a8f134c4af44cdb1cb3",
 }
 GENERATED_PATTERNS = (
     "__pycache__/",
@@ -403,6 +438,17 @@ def build_and_inspect_package(
             cwd=temporary,
             env=environment,
         )
+        deployment_configs = temporary / "configs"
+        shutil.copytree(export / "configs", deployment_configs)
+        deployment_config_rows = [
+            {
+                "path": path.relative_to(deployment_configs).as_posix(),
+                "bytes": path.stat().st_size,
+                "sha256": sha256_file(path),
+            }
+            for path in sorted(deployment_configs.rglob("*"))
+            if path.is_file()
+        ]
         source_imports = isolated_imports(Path(sys.executable), export / "src", modules)
         installed_imports = isolated_imports(Path(sys.executable), install_root, modules)
         pyproject = tomllib.loads((export / "pyproject.toml").read_text("utf-8"))
@@ -466,6 +512,13 @@ def build_and_inspect_package(
             "missing_package_data": missing_package_data,
             "unexpected_package_data": unexpected_package_data,
             "entry_point_metadata": entry_points,
+            "deployment_config_bundle": {
+                "source": "configs/ from the same clean Git archive",
+                "installation_location": "<temporary-parent>/configs",
+                "file_count": len(deployment_config_rows),
+                "logical_bytes": sum(row["bytes"] for row in deployment_config_rows),
+                "manifest_sha256": sha256_bytes(canonical_json_bytes(deployment_config_rows)),
+            },
             "source_imports": source_imports,
             "installed_imports": installed_imports,
             "temporary_export_retained": False,
@@ -496,6 +549,7 @@ def scan_hygiene(
     tracked_dataset_payloads: list[str] = []
     tracked_environment_files: list[str] = []
     secret_candidates: list[dict[str, str]] = []
+    approved_test_fixture_secret_shapes: list[dict[str, str]] = []
     runtime_evidence_extensions: Counter[str] = Counter()
     runtime_evidence_bytes = 0
     for entry in entries:
@@ -515,7 +569,24 @@ def scan_hygiene(
             runtime_evidence_bytes += len(payload)
         for pattern_name, pattern in HIGH_CONFIDENCE_SECRET_PATTERNS.items():
             if pattern.search(payload):
-                secret_candidates.append({"path": path, "pattern": pattern_name})
+                payload_sha256 = sha256_bytes(payload)
+                if APPROVED_TEST_FIXTURE_SECRET_SHAPES.get((path, pattern_name)) == payload_sha256:
+                    approved_test_fixture_secret_shapes.append(
+                        {
+                            "path": path,
+                            "pattern": pattern_name,
+                            "sha256": payload_sha256,
+                            "classification": "STATIC_NON_PRODUCTION_TEST_FIXTURE",
+                        }
+                    )
+                else:
+                    secret_candidates.append(
+                        {
+                            "path": path,
+                            "pattern": pattern_name,
+                            "sha256": payload_sha256,
+                        }
+                    )
     failures = (
         tracked_model_binaries
         + tracked_dataset_payloads
@@ -531,6 +602,7 @@ def scan_hygiene(
         "tracked_dataset_payloads": tracked_dataset_payloads,
         "tracked_environment_files": tracked_environment_files,
         "high_confidence_secret_candidates": secret_candidates,
+        "approved_test_fixture_secret_shapes": approved_test_fixture_secret_shapes,
         "generated_python_cache_files": cache_files,
         "tracked_runtime_evidence": {
             "classification": "TRACKED_ACCEPTANCE_EVIDENCE_NOT_RUNTIME_AUTHORITY",
@@ -711,7 +783,7 @@ def main() -> int:
             "tracker_dashboard": "python Plan/Tracker/tracker.py report",
             "tracker_state": "python Plan/Tracker/tracker.py rebuild",
             "python_bytecode": "not retained; imports and tests use PYTHONDONTWRITEBYTECODE=1",
-            "build_outputs": "python -I -B -m build --no-isolation --wheel --sdist",
+            "build_outputs": "python -I -B -m build --wheel --sdist",
         },
         "repository_python_cache_files_before_generation": cache_files,
         "status": "PASS" if not cache_files else "FAIL",

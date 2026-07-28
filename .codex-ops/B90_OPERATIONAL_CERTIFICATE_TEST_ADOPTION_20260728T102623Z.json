@@ -1,0 +1,60 @@
+{
+  "schema": "maskfactory.semantic_worktree_adoption_receipt.v1",
+  "created_at_utc": "2026-07-28T10:26:23Z",
+  "source_worktree": "C:\\w\\mfw\\b90c7f19654319e1",
+  "source_common_dir": "C:\\Comfy_UI_Main_Masking\\.git",
+  "source_head": "093b9b1d74fb21ec5653d9dae395af878a8f0909",
+  "source_checkpoint": {
+    "root": "F:\\CodexRecovery\\maskfactory_reconciliation_checkpoint_20260728T042648Z",
+    "binary_patch": {
+      "path": "worktree_patches\\w_mfw_b90c7f19654319e1.patch",
+      "bytes": 3701,
+      "sha256": "54d0f18a28b93daf5ee2f08a6831e7bbd9bd0b7091d8524da60179023b3538af"
+    },
+    "status": {
+      "path": "worktree_patches\\w_mfw_b90c7f19654319e1.status.txt",
+      "bytes": 585,
+      "sha256": "c4d8b6628874b5fc3a9561befd8e6fd69cf5708603cb6b692e8f040f61776ec3"
+    },
+    "untracked_manifest": {
+      "path": "worktree_untracked_manifests\\w_mfw_b90c7f19654319e1.all_untracked.txt",
+      "bytes": 423,
+      "sha256": "ca0531539f6d635ac70a9c256e49f4b70f038e0b82a25fddc9f39090c94dce55"
+    }
+  },
+  "integration_branch": "codex/reconcile-maskfactory-canonical-20260728",
+  "integration_base": "48669bf69ded029685f9939c25dffded4d3db81d",
+  "disposition": {
+    "src/maskfactory/authority/__init__.py": "REJECTED_SUPERSEDED_BY_CURRENT_AUTHORITY_EXPORTS",
+    "src/maskfactory/authority/operational_certificate.py": "REJECTED_SECURITY_REGRESSION_REMOVES_CURRENT_CATALOG_BOUND_CRITIC_AUTHORITY",
+    "tests/test_operational_certificate_issuance.py": "SEMANTIC_INTENT_ADAPTED_AND_ADOPTED"
+  },
+  "adopted_file": {
+    "path": "tests/test_operational_certificate_issuance.py",
+    "bytes": 30398,
+    "sha256": "0d18fb066520b312a6d424cef920a424d198e697954978ea59326780f70f4cf9",
+    "adaptations": [
+      "bind the promoted critic catalog and exact signed critic role certificates",
+      "derive family verdict identity from the role certificates",
+      "expect the current certified-output-scope rejection code",
+      "expect the current catalog-bound runtime-quorum mismatch code",
+      "retain operational-policy failure precedence over advisory critic failure"
+    ]
+  },
+  "validation": {
+    "ruff_format": "PASS",
+    "ruff_check": "PASS",
+    "pytest": {
+      "command": "python -m pytest -q tests/test_operational_certificate_issuance.py",
+      "result": "25 passed"
+    },
+    "git_diff_check": "PASS"
+  },
+  "remaining_source_worktree_state": "PRESERVED_PENDING_COMPLETE_UNTRACKED_ARCHIVE_READBACK_AND_EXACT_RETIREMENT",
+  "authority_accounting": {
+    "qwen_openrouter_units": 0,
+    "claude_units": 0,
+    "cursor_units": 0,
+    "codex_units": "semantic comparison, fixture adaptation, implementation, validation, Git authority"
+  }
+}

@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-from collections.abc import Mapping
+from collections.abc import Iterator, Mapping, Sequence
 from functools import lru_cache
 from typing import Any
 
@@ -43,6 +43,30 @@ def _v2_part_class_names() -> tuple[str, ...]:
         label.name
         for label in sorted(ontology.labels_for_map("part"), key=lambda item: int(item.id))
     )
+
+
+class _LazyV2PartClassNames(Sequence[str]):
+    """Preserve the public vocabulary API without loading v2 at import time."""
+
+    def __getitem__(self, index: int | slice) -> str | tuple[str, ...]:
+        return _v2_part_class_names()[index]
+
+    def __iter__(self) -> Iterator[str]:
+        return iter(_v2_part_class_names())
+
+    def __len__(self) -> int:
+        return len(_v2_part_class_names())
+
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, Sequence):
+            return tuple(self) == tuple(other)
+        return False
+
+    def __repr__(self) -> str:
+        return repr(_v2_part_class_names())
+
+
+V2_PART_CLASS_NAMES: Sequence[str] = _LazyV2PartClassNames()
 
 
 def class_names_sha256(class_names: tuple[str, ...] | list[str]) -> str:

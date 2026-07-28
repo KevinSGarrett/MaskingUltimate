@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "artifact_type": "maskfactory_historical_agent_disposition",
+  "created_at_utc": "2026-07-28T11:42:00Z",
+  "historical_tip": "8550209f2607369ab3e32053be86f2fa40a7db90",
+  "branch_point": "d6a3c0e00d01536504f737aff84891cf8bd4efb3",
+  "historical_commit_count": 95,
+  "historical_changed_paths": 846,
+  "comparison_to_normalization": {
+    "exact_paths": 256,
+    "different_paths": 196,
+    "absent_paths": 394,
+    "executable_source_config_tool_test_candidates": 150,
+    "absent_executable_source_config_tool_test_candidates": 0,
+    "dominant_absent_evidence_groups": {
+      "qa/hand_audit": 300,
+      "qa/vlm_eval": 83
+    }
+  },
+  "integration_defects_found_and_repaired": [
+    {
+      "area": "ontology_v2_public_vocabulary",
+      "repair": "restored the V2_PART_CLASS_NAMES API as a lazy sequence so imports remain compatible without repository-relative v2 loading at module import"
+    },
+    {
+      "area": "ontology_v2_class_count",
+      "repair": "corrected the training contract from stale IDs 0..64 / 65 classes to governed IDs 0..65 / 66 classes"
+    },
+    {
+      "area": "model_registry_test_authority",
+      "repair": "bound governed fixture registries and model rows to explicit allowed adult-content compatibility"
+    },
+    {
+      "area": "active_learning_external_assets",
+      "repair": "CivitAI cache absence now emits explicit BLOCKED_EXTERNAL_ASSETS state instead of aborting unrelated CPU-safe active-learning work"
+    },
+    {
+      "area": "workspace_hygiene",
+      "repair": "restored DVC descriptor exceptions and model/run/log payload ignores"
+    },
+    {
+      "area": "gpu_and_intake_tests",
+      "repair": "updated historical compatibility tests to the current exclusive ownership contract and injected a deterministic mandatory intake safety screener"
+    },
+    {
+      "area": "external_evidence_tests",
+      "repair": "missing ViTMatte payloads now produce an explicit EXTERNAL_ASSET_NOT_PROVISIONED skip while retaining the tracked audit"
+    }
+  ],
+  "validation": {
+    "historical_test_modules": 108,
+    "tests_collected": 824,
+    "tests_passed": 820,
+    "explicit_environment_or_evidence_skips": 4,
+    "tests_failed": 0,
+    "pre_commit_hooks": "PASS",
+    "focused_repair_cohort": "PASS"
+  },
+  "disposition": "SUPERSEDED_PRESERVED_CAPABILITY_VERIFIED",
+  "preservation": {
+    "local_ref": "refs/codex-recovery/normalization-20260728/historical-agent",
+    "remote_ref": "refs/heads/agent/maskfactory-build-progress-20260711",
+    "historical_qa_evidence_remains_reachable": true
+  },
+  "branch_policy": {
+    "whole_branch_merge_performed": false,
+    "branch_deletion_authorized_now": false,
+    "eligible_after_main_promotion_and_archival_receipt": true
+  }
+}

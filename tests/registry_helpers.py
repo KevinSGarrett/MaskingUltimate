@@ -11,6 +11,10 @@ FIXTURE_LICENSE_REVIEW = {
     "reviewed_at": "2026-07-14T00:00:00Z",
 }
 FIXTURE_TIMESTAMP = "2026-07-14T00:00:00Z"
+FIXTURE_CONTENT_COMPATIBILITY = {
+    "adult_nonexplicit": "allowed",
+    "consensual_explicit_adult": "allowed",
+}
 
 
 def governed_registry(models: list[dict[str, Any]]) -> dict[str, Any]:
@@ -19,6 +23,7 @@ def governed_registry(models: list[dict[str, Any]]) -> dict[str, Any]:
         "use_profile": "private_personal_noncommercial",
         "distribution_allowed": False,
         "commercial_deployment": False,
+        "content_compatibility": dict(FIXTURE_CONTENT_COMPATIBILITY),
         "models": models,
     }
 
@@ -39,6 +44,7 @@ def governed_file_model(
         "key": key,
         "role": role,
         "lifecycle_state": "promoted",
+        "content_compatibility": dict(FIXTURE_CONTENT_COMPATIBILITY),
         "license_review": dict(FIXTURE_LICENSE_REVIEW),
         "source_url": f"https://example.invalid/maskfactory-fixtures/{key}",
         "file": relative,
@@ -71,6 +77,7 @@ def governed_ollama_model(
         "key": key,
         "role": role,
         "lifecycle_state": "installed",
+        "content_compatibility": dict(FIXTURE_CONTENT_COMPATIBILITY),
         "license_review": {"status": "pending"},
         "managed": True,
         "manager": "ollama",

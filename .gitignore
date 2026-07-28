@@ -9,3 +9,17 @@ __pycache__/
 data/.doctor_roundtrip_*
 .codex-ops/temp/
 .pre-commit-home/
+
+# DVC descriptors are project authority; payload bytes stay outside Git.
+/data/*
+!/data/.gitignore
+!/data/*.dvc
+!/data/packages.dvc
+/datasets/*
+!/datasets/.gitignore
+!/datasets/*.dvc
+/models/*
+!/models/model_sources.yaml
+!/models/model_registry.json
+/runs/
+/logs/

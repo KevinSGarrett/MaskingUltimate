@@ -350,7 +350,7 @@ def write_candidate_artifact(
     vocabulary = tuple(class_names)
     if vocabulary == V1_PART_CLASS_NAMES:
         ontology_version = V1_ONTOLOGY_VERSION
-    elif vocabulary == V2_PART_CLASS_NAMES:
+    elif vocabulary == tuple(V2_PART_CLASS_NAMES):
         ontology_version = V2_ONTOLOGY_VERSION
     else:
         raise TrainingLaunchError("compiled body-part class_names are not exact v1 or v2 authority")

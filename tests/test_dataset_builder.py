@@ -713,6 +713,8 @@ def test_active_learning_combines_failure_priority_coverage_and_retrain_trigger(
     assert result["unresolved_failure_count"] == 1
     assert result["retrain_requested"] is True
     assert result["retrain_triggers"]["new_certified_plus_50"] is True
+    assert result["civitai_pose_stress_status"]["status"] == "BLOCKED_EXTERNAL_ASSETS"
+    assert result["civitai_pose_stress_plan"] is None
     task = json.loads(Path(result["retrain_task"]).read_text())
     assert task["status"] == "waiting_for_p5_entry_gate"
     assert task["steps"][-1] == "record_champion_history"

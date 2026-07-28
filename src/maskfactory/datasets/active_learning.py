@@ -26,7 +26,7 @@ from ..reference_library import (
 )
 from ..vlm.client import OllamaClient
 from ..vlm.text import cluster_failure_reasons
-from .civitai_stress import DEFAULT_REGISTRY, build_civitai_stress_plan
+from .civitai_stress import DEFAULT_REGISTRY, CivitaiStressError, build_civitai_stress_plan
 from .coverage import build_coverage_matrix, coverage_deficit_report
 
 
@@ -154,11 +154,22 @@ def run_active_learning(
         "class_error_increase_two_weeks": error_trigger,
     }
     retrain_requested = any(triggers.values())
-    stress_plan = build_civitai_stress_plan(
-        output_path=Path(output_dir) / f"civitai_pose_stress_plan_{date}.json",
-        registry_path=stress_fixture_registry,
-        verify_archives=verify_stress_archives,
-    )
+    try:
+        stress_plan = build_civitai_stress_plan(
+            output_path=Path(output_dir) / f"civitai_pose_stress_plan_{date}.json",
+            registry_path=stress_fixture_registry,
+            verify_archives=verify_stress_archives,
+        )
+        stress_plan_status = {
+            "status": "READY",
+            "reason": None,
+        }
+    except CivitaiStressError as exc:
+        stress_plan = None
+        stress_plan_status = {
+            "status": "BLOCKED_EXTERNAL_ASSETS",
+            "reason": str(exc),
+        }
     retrain_task = (
         _write_retrain_task(
             output_dir / "retrain_tasks" / f"p5_retrain_{date}.json",
@@ -191,7 +202,8 @@ def run_active_learning(
         "human_edit_harvest": {
             key: value for key, value in harvest.items() if key != "new_records"
         },
-        "civitai_pose_stress_plan": str(stress_plan),
+        "civitai_pose_stress_plan": str(stress_plan) if stress_plan else None,
+        "civitai_pose_stress_status": stress_plan_status,
         "reference_acquisition_context": (str(reference_context) if reference_context else None),
         "reference_benchmark_drift": (
             str(reference_benchmark_drift) if reference_benchmark_drift else None

@@ -11083,3 +11083,24 @@ existing remote branch and the normalization recovery namespace. It is not
 eligible for branch-name retirement until `main` promotion and the final
 archival receipt. Evidence:
 `.codex-ops/SERVERLESS_SPLIT_DISPOSITION_20260728T112700Z.json`.
+
+## 2026-07-28 11:42 UTC - Historical agent line capability-verified
+
+**Result:** PASS /
+`SUPERSEDED_PRESERVED_CAPABILITY_VERIFIED`. The 95-commit historical line
+changed 846 paths. Against normalization, 256 are exact, 196 differ, and 394
+are absent historical evidence paths; none of the 150 executable
+source/config/tool/test candidates is absent.
+
+Running all 108 current Python test modules touched by that historical line
+collected 824 tests and passed 820 with four explicit
+environment/evidence skips. The audit found and repaired real convergence
+defects in lazy ontology-v2 compatibility, the 66-class training contract,
+registry fixture authority, CivitAI external-asset reporting, DVC ignores,
+GPU ownership tests, and deterministic intake screening.
+
+The historical branch was not merged wholesale. Its evidence remains
+reachable by its remote branch and namespaced recovery ref. Branch-name
+retirement remains gated on validated `main` promotion and a final archival
+receipt. Evidence:
+`.codex-ops/HISTORICAL_AGENT_DISPOSITION_20260728T114200Z.json`.

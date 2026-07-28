@@ -10,12 +10,18 @@ from PIL import Image, PngImagePlugin
 from maskfactory.cli import main
 from maskfactory.intake import (
     DecodeRejected,
+    SafetyVerdict,
     ingest_one,
     inspect_image,
     perceptual_hash64,
     source_origin,
     write_metadata_stripped,
 )
+
+
+class _AllowedFixtureScreener:
+    def screen(self, _image: Path) -> SafetyVerdict:
+        return SafetyVerdict("clear_adult", 1, "fixture-source-safety")
 
 
 def _pattern(size: tuple[int, int] = (640, 768)) -> Image.Image:
@@ -135,6 +141,7 @@ def test_required_ten_image_mixed_batch_routes_every_outcome(tmp_path: Path) -> 
     results = [
         ingest_one(
             path,
+            screener=_AllowedFixtureScreener(),
             incoming_root=incoming,
             images_root=images,
             database=database,
@@ -169,7 +176,7 @@ def test_required_ten_image_mixed_batch_routes_every_outcome(tmp_path: Path) -> 
     assert sum(event["outcome"] == "duplicate_skipped" for event in events) == 1
 
 
-def test_cli_uses_configured_min_side_for_uniform_admission(tmp_path: Path) -> None:
+def test_cli_uses_configured_min_side_for_uniform_admission(tmp_path: Path, monkeypatch) -> None:
     incoming = tmp_path / "incoming"
     owned = incoming / "owned"
     owned.mkdir(parents=True)
@@ -179,6 +186,10 @@ def test_cli_uses_configured_min_side_for_uniform_admission(tmp_path: Path) -> N
     config.write_text(
         "intake:\n  min_side: 256\nstages: {}\n",
         encoding="utf-8",
+    )
+    monkeypatch.setattr(
+        "maskfactory.intake.LocalAgeSafetyScreener",
+        lambda: _AllowedFixtureScreener(),
     )
     result = CliRunner().invoke(
         main,

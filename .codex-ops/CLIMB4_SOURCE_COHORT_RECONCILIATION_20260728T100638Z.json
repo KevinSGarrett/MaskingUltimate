@@ -1,0 +1,89 @@
+{
+  "artifact_type": "maskfactory_climb4_source_cohort_reconciliation_receipt",
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-07-28T10:06:38Z",
+  "source_worktree": "C:\\Comfy_UI_Main_Masking\\.wt_climb4",
+  "source_head": "6b1ad4ef965be08f7db13411f7d206d26d68f788",
+  "source_disposition": "PARTIALLY_INTEGRATED_REMAINDER_PRESERVED_PENDING_SEMANTIC_REVIEW",
+  "preservation_authority": {
+    "checkpoint": "F:\\CodexRecovery\\maskfactory_reconciliation_checkpoint_20260728T042648Z",
+    "checkpoint_digest_sha256": "903b960291b049ef26c4c36fa55d568158a0918763aea4a830fce5d1f11f2b0a",
+    "source_worktree_retained": true
+  },
+  "integration": {
+    "repository": "C:\\Comfy_UI_Main_Masking",
+    "worktree": "C:\\Comfy_UI_Main_Masking\\.codex-ops\\worktrees\\canonical-reconciliation-20260728",
+    "branch": "codex/reconcile-maskfactory-canonical-20260728",
+    "commit": "fd677bd4482dc986d7283504e94a60848fef243e",
+    "remote_ref": "refs/heads/codex/reconcile-maskfactory-canonical-20260728",
+    "remote_oid": "fd677bd4482dc986d7283504e94a60848fef243e",
+    "local_remote_equal": true,
+    "files_committed": 24,
+    "insertions": 4455,
+    "deletions": 96
+  },
+  "accepted_cohorts": [
+    "model registry backward-compatible schema, alternate governed smoke hashes, and specialist genesis transactions",
+    "OpenMMLab runtime lock, training dataset/augmentation/MMseg compile contracts, and governed body-part class contract",
+    "native-Linux and WSL doctor behavior with current provider governance API",
+    "autonomous certified training pseudo-manifest import closure",
+    "fixed production specialist smoke fixture"
+  ],
+  "semantic_resolution": {
+    "model_registry_content_compatibility": "optional schema property: accepts governed new records while preserving validation of the existing 17-model registry",
+    "doctor_provider_activation": "ported to the current one-argument provider_activation_issues contract",
+    "strict_vlm_files": "newer canonical strict-gate implementation retained; five older worktree files were not overwritten"
+  },
+  "rejected_or_deferred": [
+    {
+      "cohort": "autonomous-gold profile and builder strict-VLM amendment",
+      "disposition": "PRESERVED_REMEDIATION_REQUIRED_NOT_ADOPTABLE",
+      "reason": "profile declares enabled operational authority while the newer canonical calibration contract requires fail-closed disabled, non-per-record authority; deterministic loader returned autonomous-gold profile identity is invalid"
+    },
+    {
+      "cohort": "old configs/vlm.yaml and tests/test_vlm_config.py expectations",
+      "disposition": "SUPERSEDED_NOT_ADOPTED",
+      "reason": "would remove the newer RunPod production visual-critic authority contract and restore obsolete gpu_slot expectations"
+    },
+    {
+      "cohort": "Plan/tracker/runtime-evidence scripts and remaining source candidates",
+      "disposition": "PRESERVED_PENDING_INDIVIDUAL_SEMANTIC_REVIEW",
+      "reason": "not required by the validated registry/training cohort and not bulk-integrated"
+    }
+  ],
+  "validation": {
+    "ruff": "PASS",
+    "git_diff_check": "PASS",
+    "focused_pytest": {
+      "result": "48 passed",
+      "files": [
+        "tests/test_doctor.py",
+        "tests/test_specialist_role_transaction.py",
+        "tests/test_training_runtime.py",
+        "tests/test_model_registry.py"
+      ]
+    },
+    "live_model_registry": "PASS: 17 models",
+    "training_contracts": "PASS",
+    "import_closure": "PASS",
+    "gpu_or_external_runtime_used": false
+  },
+  "prevention": {
+    "minimal_gitignore_added": true,
+    "ignored_reproducible_state": [
+      "__pycache__",
+      "*.pyc",
+      ".pytest_cache",
+      ".ruff_cache",
+      ".mypy_cache",
+      "data/.doctor_roundtrip_*",
+      ".codex-ops/temp",
+      ".pre-commit-home"
+    ]
+  },
+  "destructive_actions": {
+    "source_worktree_removed": false,
+    "source_files_deleted": false,
+    "git_reset_or_clean_or_gc": false
+  }
+}

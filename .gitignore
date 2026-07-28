@@ -1,0 +1,11 @@
+# Python/test caches are reproducible local state, never project work.
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Doctor probes and bounded reconciliation scratch are non-authoritative.
+data/.doctor_roundtrip_*
+.codex-ops/temp/
+.pre-commit-home/

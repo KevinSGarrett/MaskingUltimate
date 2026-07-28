@@ -1,0 +1,53 @@
+{
+  "schema": "maskfactory.semantic_worktree_disposition_receipt.v1",
+  "created_at_utc": "2026-07-28T10:37:00Z",
+  "source_worktree": "C:\\w\\mfw\\a1fed8eb1622c878",
+  "source_common_dir": "C:\\Comfy_UI_Main_Masking\\.git",
+  "source_head": "093b9b1d74fb21ec5653d9dae395af878a8f0909",
+  "disposition": "PRESERVED_INCOMPLETE_REMEDIATION_REQUIRED_NOT_ADOPTABLE",
+  "candidate_files": {
+    "configs/autonomous_repair_policy.yaml": {
+      "sha256": "b0da1aadc24f41ef0a77098d1a25d8152a05216bb750eb7cfc33b234192f4d42",
+      "classification": "PRESERVED_POLICY_DRAFT_NOT_ADOPTED"
+    },
+    "src/maskfactory/autonomy/repair_controller.py": {
+      "sha256": "a7fbba793ef3d2bb1572918f5f6406b441ad122fd76db41d049497dca7b1fe77",
+      "classification": "PRESERVED_CONTROLLER_DRAFT_NOT_ADOPTED"
+    },
+    "runtime_artifacts/agent_handoffs/cursor/20260718T150931-0500_mf_cursor_08_06_repair_r3/work_order.md": {
+      "sha256": "444f504844b1f22f3e7999860de0a4ee6651344a9d49889215355f6d18f763cc",
+      "classification": "PRESERVED_WORK_ORDER_EVIDENCE"
+    }
+  },
+  "acceptance_analysis": {
+    "python_compile": "PASS",
+    "yaml_parse": "PASS",
+    "ruff_check": "PASS",
+    "required_work_order_output_operational_repair_evidence_schema": "ABSENT",
+    "required_work_order_output_test_bounded_operational_repair": "ABSENT",
+    "focused_candidate_tests": "ABSENT",
+    "current_integration_contract": "src/maskfactory/autonomy/operational_repair.py::DurableRepairExecutor",
+    "migration_or_compatibility_contract_with_current_executor": "ABSENT",
+    "production_completion_claim": false
+  },
+  "remediation_required": [
+    "define and validate the closed operational-repair evidence schema",
+    "supply focused bounded-repair positive and negative tests",
+    "reconcile the proposal with DurableRepairExecutor rather than introducing an unversioned second controller",
+    "bind immutable parent identity, rollback, complete-map QA, policy identity, and terminal abstention in one versioned contract",
+    "rerun focused and integrated repair/bridge authority suites before adoption"
+  ],
+  "preservation": {
+    "original_checkpoint": "F:\\CodexRecovery\\maskfactory_reconciliation_checkpoint_20260728T042648Z",
+    "tier_a_backup": "C:\\MaskFactory_TierA_Backups\\a1_repair_controller_20260728T103700Z",
+    "tier_a_archive_sha256": "65ed830d4999c2876c039286b6f0443e9b170e1c60019a4c16d8787b698ddcf6",
+    "tier_a_readback": "3_OF_3_EXACT_SHA256_MATCH"
+  },
+  "retirement_state": "PENDING_EXACT_MAIN_COORDINATION_AND_FINAL_REVALIDATION",
+  "authority_accounting": {
+    "qwen_openrouter_units": 0,
+    "claude_units": 0,
+    "cursor_units": 0,
+    "codex_units": "semantic comparison, preservation, validation, disposition, Git authority"
+  }
+}

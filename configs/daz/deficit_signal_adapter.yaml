@@ -1,0 +1,28 @@
+schema_version: 1.0.0
+adapter_version: 1.0.0
+vocabulary_version: 1.0.0
+supported_sources:
+  coverage_matrix_v1:
+    schema_version: 1.0.0
+    ontology_version: body_parts_v1
+    authority_namespace: real_certified_coverage
+    target_per_cell: 8
+    target_per_attribute: 40
+    production_activation_granted: true
+  coverage_matrix_v2:
+    schema_version: 2.0.0
+    ontology_version: body_parts_v2
+    authority_namespace: real_certified_coverage
+    production_activation_granted: false
+actionability:
+  canonical_minimum_deficit: eligible
+  inactive_ontology_minimum_deficit: inactive_ontology_observation
+  maximum_constraint_violation: source_gate_only
+authority:
+  source_counts_are_read_only: true
+  source_authority_is_preserved: true
+  synthetic_counts_close_real_deficits: false
+  imported_signals_create_gold: false
+  imported_signals_create_recipes: false
+  inactive_ontology_grants_production_activation: false
+publication: {immutable: true, atomic: true}

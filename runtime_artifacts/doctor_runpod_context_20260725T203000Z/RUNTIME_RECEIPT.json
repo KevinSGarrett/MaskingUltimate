@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_runpod_doctor_context_runtime_receipt.v1",
+  "recorded_at_utc": "2026-07-25T19:23:10Z",
+  "execution_identity": {
+    "pod_id": "68psfqtaogg7s7",
+    "pod_name": "vitreous_beige_centipede",
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "network_volume_id": "o9qv2ld91c",
+    "volume_mount": "/workspace"
+  },
+  "scope": "bounded Pod-aware doctor execution context; validates exact Ada/cu128 interpreter and hash-bound provider matrix without host-only WSL/CVAT/Ollama claims",
+  "source_bindings": {
+    "src/maskfactory/runpod_doctor.py": "e1273a53abb95f99ef671a2a7858482cc69757bd8d64f669f910f68f0b3c529e",
+    "src/maskfactory/doctor.py": "0e0a3251e83c0d1b172b7396fd79370fd4f30768986188c621dfd3ea019b21aa",
+    "src/maskfactory/cli.py": "5afc5407991d06a72c0caeaed267fcade8f689e3801f01ba8fe55aad28579033",
+    "tests/test_doctor.py": "34bd890e3f32a599872069242c9a7c5c5ecf3da0491791edbf5a6e349a8fff20"
+  },
+  "validation": {
+    "focused_command": "PYTHONPATH=src .train_cu128_ada/bin/python -m pytest tests/test_doctor.py -q -k 'runpod or default_doctor_battery'",
+    "focused_result": "4 passed",
+    "compatible_command": "PYTHONPATH=src .train_cu128_ada/bin/python -m pytest tests/test_doctor.py -q -k 'not data_junction'",
+    "compatible_result": "19 passed",
+    "known_platform_scoped_exclusions": "3 Windows-drive tests patch os.name but construct PosixPath on Linux; they remain preserved and were not weakened",
+    "py_compile": "pass",
+    "git_diff_check": "pass",
+    "ruff_black": "not available in the selected isolated RunPod interpreter; no dependency installation performed"
+  },
+  "runtime_doctor": {
+    "command": "PYTHONPATH=src .train_cu128_ada/bin/python -c 'from maskfactory.cli import main; main()' doctor",
+    "result": "PASS=4 WARN=1 SKIP=0 FAIL=0",
+    "torch_cuda": {
+      "torch": "2.11.0+cu128",
+      "cuda": "12.8",
+      "gpu": "NVIDIA RTX 6000 Ada Generation",
+      "capability": [
+        8,
+        9
+      ]
+    },
+    "runtime_matrix": {
+      "qualified_runtime_count": 8,
+      "pending_runtime_count": 2,
+      "artifact_count": 22,
+      "status": "pass_with_explicit_pending_runtimes",
+      "authority": "pending rows remain unqualified"
+    }
+  },
+  "authority": {
+    "provider_promotion": false,
+    "production_route_change": false,
+    "visual_critic_qualification": false,
+    "certificate_gold_training_authority": false,
+    "serverless_submission": false
+  },
+  "status": "RUNTIME_PASS_BOUNDED_WITH_EXPLICIT_PROVIDER_PENDING"
+}

@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-17T10:16:34.7488898Z",
+  "result": "OFFLINE_SUBPROCESS_CONTRACT_PASS_LIVE_RUNTIME_PENDING",
+  "provider": "sam3d_body",
+  "source": {
+    "repository": "https://github.com/facebookresearch/sam-3d-body",
+    "commit": "b5c765a0d89d789985e186d396315e7590887b94",
+    "tracked_tree_clean": true
+  },
+  "installed_checkpoint": {
+    "repository": "facebook/sam-3d-body-dinov3",
+    "revision": "11aaa346c7204874a1cbafe3d39a979080b2c55a",
+    "assets": {
+      "model.ckpt": "b5a2f9d305dd02626b967aa2e86021fba07065df66ce7a7e00ffb9664f150abf",
+      "model_config.yaml": "1012fc3f39cb5e90e3f8fbadf7bded31604bfafdce0321d17a7c1a2d3f08b88d",
+      "assets/mhr_model.pt": "352e271a6c42729c68554ceaea0c955e866970160c31e35506d782dc0f7377bc"
+    }
+  },
+  "contract": {
+    "execution": "wsl.exe exact argv; shell disabled",
+    "runtime_python": "/home/kevin/mfenvs/sam3d-body-b5c765a/bin/python",
+    "person_selection": "one immutable person instance and exactly one explicit full-image xyxy box",
+    "upstream_api": "SAM3DBodyEstimator.process_one_image with explicit bboxes and full inference",
+    "repeats": 2,
+    "determinism": "canonical float64 geometry hash must match across both runs",
+    "artifact": "closed-field compressed NPZ loaded with allow_pickle=false",
+    "report": "closed-field JSON binds source/runtime/checkpoint/image/person/artifact identities, array shapes, model-load/cold/warm latency, and model/peak inference VRAM",
+    "coordinate_frames": "upstream-native camera frame retained; no implicit axis conversion",
+    "failure_behavior": "timeout, missing input, provenance drift, ambiguous identity, malformed/non-finite output, report drift, artifact drift, and nondeterminism fail closed",
+    "fallback": "DensePose is invoked only when the isolated failure explicitly identifies CUDA/GPU out-of-memory"
+  },
+  "files": {
+    "src/maskfactory/providers/sam3d_body.py": {
+      "size_bytes": 19300,
+      "sha256": "ab8d65a59fdbd306f4a331959e779d86a1fa67aaa24b69d438a7d5b965d079cd"
+    },
+    "tools/run_sam3d_body.py": {
+      "size_bytes": 8182,
+      "sha256": "d438f80c60e2b8c08202f55aae4b1e1dc6c5f9a7c43091afe8cd48ca3941edd3"
+    },
+    "env/sam3d_body_runtime.lock.json": {
+      "size_bytes": 3887,
+      "sha256": "2c29e1f1d74fc2b0547f709134ee930700f3c04a3884548723963dba8375e075"
+    },
+    "env/provider_runtime_matrix.json": {
+      "size_bytes": 5494,
+      "sha256": "b797cde04a08571c377212ffa059a38bb5424e4095415a03236c11ee766b277a",
+      "canonical_manifest_sha256": "a1705b464cb18798c91002f28914de910880010045b66007e2fa9f09c9749189"
+    },
+    "tests/test_sam3d_body_geometry_provider.py": {
+      "sha256": "b404d7424efe032e9f80a6600744342cad00697d63cfd291991ca8258c2b640d"
+    },
+    "tests/test_sam3d_body_runner.py": {
+      "sha256": "b95f2d7f70e0ad040b26c47bfab091f51d828aa957432bbc5ff7a4d7c8c25b35"
+    },
+    "tests/test_sam3d_body_runtime_lock.py": {
+      "sha256": "2f9d66b5830107ccf0ebfe7dddd6453c26a0b3afdf3486ab2737099d3a4801e3"
+    }
+  },
+  "verification": {
+    "focused_provider_runner_lock_and_matrix_tests": "32 passed",
+    "broader_provider_multi_person_benchmark_and_doctor_tests": "123 passed",
+    "ruff": "PASS",
+    "ruff_format": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "runtime_boundary": {
+    "subprocess_executed": false,
+    "dependencies_installed": false,
+    "checkpoint_loaded": false,
+    "cuda_inference_run": false,
+    "latency_or_vram_measured": false,
+    "reason": "Ubuntu-22.04 root ext4 remains emergency_ro; live execution is deferred until the guarded offline VHD repair succeeds."
+  },
+  "authority": {
+    "lifecycle_state": "planned",
+    "active_provider": "densepose_r50_fpn_s1x",
+    "rollback_provider": "densepose_r50_fpn_s1x",
+    "benchmark_passed": false,
+    "promoted": false,
+    "may_author_gold": false,
+    "production_route_changed": false
+  }
+}

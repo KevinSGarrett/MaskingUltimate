@@ -1,0 +1,209 @@
+{
+  "schema_version": "1.0.0",
+  "experiment": "task23_four_reviewer_autonomy_95",
+  "image_id": "img_cdab0311dc96",
+  "instance_id": "p0",
+  "cvat_task_id": 23,
+  "cvat_job_id": 23,
+  "authority": "shadow_experiment_only_no_cvat_write_no_gold_approval",
+  "target_gate": {
+    "reviewers": [
+      "qwen2.5vl:7b",
+      "gemini-3.5-flash",
+      "gpt-5.6-luna",
+      "claude-sonnet-5"
+    ],
+    "minimum_each_confidence": 0.95,
+    "require_unanimous_pass": true,
+    "require_deterministic_full_map_qa": true,
+    "calibrated_accuracy_claim": false
+  },
+  "baseline": {
+    "qa_overall": "fail",
+    "qa_score": 0.8587051878870733,
+    "blocking": [
+      "QC-014 left_right_consistency"
+    ],
+    "target_label": "right_foot_base",
+    "components": 220,
+    "area_px": 1008882
+  },
+  "initial_reviews": {
+    "qwen": {
+      "verdict": "fail",
+      "confidence": 0.99,
+      "reason": "component_count_exceeds_ontology"
+    },
+    "gemini": {
+      "verdict": "fail",
+      "confidence": 1.0,
+      "reason": "wrong_part/includes_neighbor_part"
+    },
+    "openai": {
+      "verdict": "fail",
+      "confidence": 0.99,
+      "reason": "wrong_side/wrong_part/includes_neighbor_part/missing_visible_area"
+    },
+    "anthropic": {
+      "verdict": "fail",
+      "confidence": 0.97,
+      "reason": "catastrophic contamination; requested human re-annotation"
+    }
+  },
+  "round_1_candidates": [
+    {
+      "candidate": "openai_rear_character_right",
+      "status": "generated_shadow_only",
+      "path": "qa\\live_verification\\cvat_task23_autonomy_95_20260713\\round_1\\openai_rear_character_right.png",
+      "area_px": 6694476,
+      "components": 30,
+      "bbox": [
+        5,
+        0,
+        1871,
+        5632
+      ],
+      "changed_fraction_vs_current": 7.63553914134656,
+      "protected_overlap_fraction": 0.0,
+      "positive_points_px": [
+        [
+          225,
+          5058
+        ],
+        [
+          319,
+          5238
+        ],
+        [
+          469,
+          5350
+        ],
+        [
+          638,
+          5384
+        ],
+        [
+          807,
+          5373
+        ],
+        [
+          732,
+          5266
+        ],
+        [
+          544,
+          5210
+        ]
+      ],
+      "negative_points_px": [
+        [
+          1163,
+          5350
+        ],
+        [
+          1313,
+          5238
+        ],
+        [
+          938,
+          3942
+        ],
+        [
+          938,
+          1690
+        ],
+        [
+          563,
+          563
+        ]
+      ],
+      "passes_production_change_limit": false,
+      "passes_production_collision_limit": true
+    },
+    {
+      "candidate": "gemini_foreground_claimed_right",
+      "status": "generated_shadow_only",
+      "path": "qa\\live_verification\\cvat_task23_autonomy_95_20260713\\round_1\\gemini_foreground_claimed_right.png",
+      "area_px": 6796088,
+      "components": 7,
+      "bbox": [
+        6,
+        0,
+        1870,
+        5632
+      ],
+      "changed_fraction_vs_current": 7.735784759763778,
+      "protected_overlap_fraction": 5.091164210940176e-05,
+      "positive_points_px": [
+        [
+          807,
+          5210
+        ],
+        [
+          1032,
+          5238
+        ],
+        [
+          1313,
+          5322
+        ]
+      ],
+      "negative_points_px": [
+        [
+          469,
+          1690
+        ],
+        [
+          938,
+          1690
+        ],
+        [
+          657,
+          3041
+        ]
+      ],
+      "passes_production_change_limit": false,
+      "passes_production_collision_limit": true
+    },
+    {
+      "candidate": "qwen_remove_small_components",
+      "status": "generated_shadow_only",
+      "path": "qa\\live_verification\\cvat_task23_autonomy_95_20260713\\round_1\\qwen_remove_small_components.png",
+      "area_px": 789155,
+      "components": 1,
+      "bbox": [
+        273,
+        1059,
+        1296,
+        2518
+      ],
+      "changed_fraction_vs_current": 0.21779256642501305,
+      "protected_overlap_fraction": 0.0,
+      "passes_production_change_limit": true,
+      "passes_production_collision_limit": true
+    }
+  ],
+  "qwen_candidate_full_map_qa": {
+    "overall": "fail",
+    "score": 0.8588185351457298,
+    "blocking": [
+      "QC-014 left_right_consistency"
+    ],
+    "routes": [
+      "QC-015 area_sanity: right_foot_base=10.0229% not [0.2,4.0]",
+      "QC-025 chain_integrity: right_ankle<->right_foot_base break"
+    ],
+    "tournament_status": "hard_veto_no_winner"
+  },
+  "gate_reached": false,
+  "iterations_completed": 1,
+  "stop_reason": "No candidate passed deterministic pre-QA/full-map safety gates; further reviewer calls on invalid candidates are prohibited.",
+  "job23_modified": false,
+  "gold_approved": false,
+  "evidence": {
+    "initial_committee": "qa/live_verification/cvat_task23_review_20260713/committee/committee_result.json",
+    "gemini_retry": "qa/live_verification/cvat_task23_review_20260713/committee/gemini_retry_result.json",
+    "candidate_generation": "qa/live_verification/cvat_task23_autonomy_95_20260713/round_1/candidate_generation.json",
+    "qwen_full_map_qa": "data/packages/img_cdab0311dc96/instances/p0/annotations/autonomy/candidate_full_qa/right_foot_base_local_r1/qa_report.json"
+  }
+}

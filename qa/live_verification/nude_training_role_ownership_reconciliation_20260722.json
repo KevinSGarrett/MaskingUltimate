@@ -1,0 +1,50 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_training_role_ownership_reconciliation.v1",
+  "captured_at_utc": "2026-07-22T19:42:00Z",
+  "item_id": "MF-P4-12.02",
+  "status": "HARD_QA_PASS_BOUNDED_OWNERSHIP_RECONCILIATION",
+  "input_polygon_records": "runtime_artifacts/nude_polygon_hard_qc_20260722_v9/records.jsonl",
+  "input_polygon_records_sha256": "fd9b16cd08f031bbc0d631f895764d23ca92d38fb27030fdeb1aad28530ce584",
+  "ownership_stage_receipts": "runtime_artifacts/nude_person_ownership_queue_20260722_v1/stage_receipts.json",
+  "ownership_stage_receipts_sha256": "8a58790cc7cc3623b2a2f53f28e8be084d1d3dc5b9b6f3a6f14913b2361099d0",
+  "output_summary": "runtime_artifacts/nude_training_role_population_20260722_v6/summary.json",
+  "output_summary_file_sha256": "80bfcc9ee098d0535a4b3036c8e51db80bc43afc9783bec9f5d44a0483b4a69e",
+  "output_population": "runtime_artifacts/nude_training_role_population_20260722_v6/role_eligible_masks.jsonl",
+  "output_population_sha256": "cc94942372110dca15ae9bb76bad1c7dfcc6a30ffeb733e157536aced5a3fdbe",
+  "output_self_sha256": "a4e5fb103d104b754c5b82ea1c3f8982c5224873676f3662dcc0f3af7d0c607c",
+  "counts": {
+    "input_records": 39354,
+    "input_masks": 125976,
+    "role_eligible_masks": 96514,
+    "matched_ownership_bindings": 13,
+    "verified": 4,
+    "ambiguous": 9,
+    "unresolved": 96501,
+    "training_authority_granted": 0
+  },
+  "compatibility": {
+    "queue_envelope_count": 4,
+    "allowed_extra_field": "sample_index",
+    "inner_receipt_bytes_changed": false,
+    "inner_evidence_sha256_recomputed_and_matched": true,
+    "unknown_extra_fields_allowed": false
+  },
+  "validation": {
+    "focused_and_adjacent_pytest": "66 passed",
+    "ruff": "PASS",
+    "black": "PASS",
+    "exact_match_key": [
+      "sample_id",
+      "mask_sha256",
+      "candidate_label"
+    ],
+    "tampered_receipt_rejected": true,
+    "unmatched_records_preserved_unresolved": true
+  },
+  "honest_non_claims": [
+    "Verified person ownership is one prerequisite and does not grant mask truth, training authority, gold, or an operational certificate.",
+    "Ambiguous ownership remains non-authoritative and retains the ownership gate.",
+    "The other 96,501 eligible masks remain ownership-unresolved.",
+    "No provider comparison, strict visual review, terminal outcome, or immutable training export is claimed."
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_polygon_shape_bound_identity.v1",
+  "artifact_type": "adult_polygon_shape_bound_mask_identity_and_collapse_qc",
+  "recorded_at": "2026-07-22T12:06:02Z",
+  "status": "PASS",
+  "tracker_items": [
+    "MF-P4-12.02",
+    "MF-P4-12.06",
+    "MF-P5-11.01"
+  ],
+  "product_correction": {
+    "mask_identity_schema": "MASKFACTORY_BOOL_MASK_V1",
+    "height_bound": true,
+    "width_bound": true,
+    "binary_payload_bound": true,
+    "duplicate_same_label_masks_quarantined": true,
+    "cross_label_collapsed_masks_quarantined": true
+  },
+  "full_corpus_result": {
+    "record_count": 39354,
+    "mask_count": 125976,
+    "hard_qc_pass_candidate_records": 37536,
+    "quarantined_input_records": 1818,
+    "newly_quarantined_record_count": 200,
+    "failure_reason_counts": {
+      "annotation_bbox_invalid": 45,
+      "cross_label_mask_collapse": 22,
+      "duplicate_annotation_mask": 225,
+      "polygon_annotation_missing_or_count_mismatch": 51,
+      "polygon_bbox_alignment_failed": 1991
+    },
+    "records_sha256": "5f0619637d23885df379119568d54c1160c04ba183aa8d99b82f960c73818ad6",
+    "summary_sha256": "b88b23b3459ff910a06e5d4c717606123b63611d96f95a72f25d6516ce4a4e56"
+  },
+  "training_role_result": {
+    "previous_candidate_mask_count": 97833,
+    "corrected_candidate_mask_count": 96514,
+    "removed_candidate_mask_count": 1319,
+    "candidate_stream_sha256": "0d4e4763a132f4c10c506100a71ff99e7b92343a0e761c117a9074da57a30a95",
+    "summary_sha256": "ed08c25b9a4cfd83ea933278d7ce7fd4cd823ed1e20ced3045330038da18a8df",
+    "training_authority_granted": false
+  },
+  "refinement_canary": {
+    "record_count": 12,
+    "shape_bound_identity_used": true,
+    "report_sha256": "50a01882070154b61b51db52dfaf50e4befa4b12250e6ef86006227fead1630e"
+  },
+  "implementation_sha256": {
+    "src/maskfactory/nude_polygon_hard_qc.py": "1fbdaed29b7dae8e7c09e026426e7f65c0285c266369da25bae7aa086993e8d4",
+    "src/maskfactory/nude_polygon_refinement.py": "40d13cd8cd7d237e65c27a16c45595f9f981a0a0ce3580664041bf2e15e53043",
+    "tests/test_nude_polygon_hard_qc.py": "94d4760fbfd3a6d22d62fe1de9a95515ce06b4b915b0a0d73be11169676b9274",
+    "tests/test_nude_polygon_refinement.py": "bcfb020471567bfa17a59ce19008e8b2b1793f39f10a16de1692becae614dafd"
+  },
+  "authority": {
+    "external_annotations_are_human_gold": false,
+    "production_mask_authority_granted": false,
+    "strict_visual_review_completed": false,
+    "operational_certificates_issued": false
+  },
+  "remaining": "The 96,514 shape-bound train-role candidates still require external qualification, independent providers, hard-QC integration, strict per-record review, terminal receipts, and immutable weighted export."
+}

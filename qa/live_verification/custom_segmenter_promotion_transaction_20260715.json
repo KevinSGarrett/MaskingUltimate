@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0.0",
+  "item_id": "MF-P5-10.11",
+  "generated_at": "2026-07-15T05:24:29Z",
+  "result": "control_plane_pass_real_winner_pending",
+  "authority_boundary": {
+    "real_benchmark_winner_claimed": false,
+    "real_registry_role_changed": false,
+    "production_serving_changed": false,
+    "gold_authority_changed": false,
+    "remaining": "First image-disjoint human-anchor winner, its current certificate, and observed live promotion/rollback inference on that winner."
+  },
+  "implemented": {
+    "strict_role_mapping": "custom_segmenter -> champion_bodypart",
+    "legacy_bodypart_promotion_bypass_blocked": true,
+    "candidate_lifecycle_required": "benchmarked",
+    "incumbent_lifecycle_required": "promoted",
+    "certificate_identity_hash_count": 12,
+    "candidate_smoke_before_activation": "production fixed-image inference",
+    "rollback_smoke_before_restoration": "production fixed-image inference",
+    "registry_before_after_hashes_recorded": true,
+    "promotion_and_rollback_records_hash_sealed": true,
+    "concurrent_transactions_serialized": true,
+    "history_failure_restores_registry": true,
+    "rollback_reconstructs_exact_pre_promotion_hash": true,
+    "one_command_rollback": "maskfactory models rollback-custom-segmenter TRANSACTION_ID"
+  },
+  "negative_evidence": [
+    "legacy champion_bodypart promotion is rejected",
+    "installed rather than benchmarked candidate is rejected",
+    "wrong incumbent or checkpoint identity is rejected",
+    "candidate serving-smoke failure leaves registry/history untouched",
+    "history append failure restores the original registry",
+    "tampered transaction record is rejected",
+    "intervening registry change blocks rollback",
+    "failed incumbent serving smoke leaves promoted state untouched",
+    "a transaction cannot be rolled back twice"
+  ],
+  "verification": {
+    "dedicated_tests_passed": 8,
+    "focused_registry_serving_tests_passed": 101,
+    "full_repository_tests_passed": 1195,
+    "full_repository_tests_failed": 0,
+    "ruff": "pass",
+    "ci_yaml_parse": "pass",
+    "diff_check": "pass"
+  },
+  "runtime_incident_boundary": "No WSL, Docker Desktop, Ubuntu VHD, or external Seagate operation was attempted while physical reconnect remains pending."
+}

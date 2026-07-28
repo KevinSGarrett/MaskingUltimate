@@ -1,0 +1,153 @@
+{
+  "authority_claimed": false,
+  "evaluator_sha256": "3ae65109a163790f4c6feeb06e6ede57dc174906671f14ee4cb4b85595bb1c7e",
+  "reason": "binary defect precision corrected; every live candidate still fails valid-mask pass rate",
+  "results": [
+    {
+      "recomputed_report": {
+        "authority_claimed": false,
+        "catalog_sha256": "fd0cc8c3af27f41f42f8ce08260ac6a007f44bc2ff2504625c408598bf656ead",
+        "corpus_sha256": "ba983fe792a2c83a004099b1f9f2a5403ad8260f16b32e7d2455e16670d30e74",
+        "evidence_sha256": "91fe3f438eede954600e0063d66ead48b9e6f134b2a19e510608a8b0a91c6e7a",
+        "failures": [
+          "valid_mask_pass_rate_below_minimum"
+        ],
+        "family_id": "internvl",
+        "metrics": {
+          "abstention_rate": 0.0,
+          "context_binding_rate": 1.0,
+          "defect_recall": 1.0,
+          "deterministic_replay_rate": 1.0,
+          "p95_latency_ms": 2744.4727420806885,
+          "peak_vram_fraction": 0.3727309727309727,
+          "precision": 0.8333333333333334,
+          "schema_compliance_rate": 1.0,
+          "serious_false_pass_rate": 0.0,
+          "valid_mask_pass_rate": 0.0
+        },
+        "model_id": "internvl3_5_8b_bf16",
+        "per_defect_exact_hits": {
+          "boundary": 1
+        },
+        "report_sha256": "8a7d3b69425b5f7c3da301245b78ac737d68d29dc4cfc053a7b3c2fbdb55c3ba",
+        "role_id": "independent_juror",
+        "schema_version": "1.0.0",
+        "status": "fail",
+        "thresholds": {
+          "maximum_abstention_rate": 0.05,
+          "maximum_p95_latency_ms": 12000.0,
+          "maximum_peak_vram_fraction": 0.98,
+          "maximum_serious_false_pass_rate": 0.0,
+          "minimum_context_binding_rate": 1.0,
+          "minimum_defect_recall": 0.95,
+          "minimum_deterministic_replay_rate": 1.0,
+          "minimum_precision": 0.8,
+          "minimum_schema_compliance_rate": 1.0,
+          "minimum_valid_mask_pass_rate": 0.9
+        },
+        "thresholds_sha256": "bf186b337f0bff1f369aabdbe548aeb657849ae327fc158efe34b0b25e8d5695"
+      },
+      "recorded_report_sha256": "402f7994f67c55bc3d9d633b030e7e7d06fdb2ecfd2e8e94bbd70279123e05e2",
+      "remote_result_sha256": "e9f055e6ea3072212efdd1702914384354dbd87035a568fd202e45e42ce9cac6",
+      "result_path": "qa/live_verification/internvl3_5_8b_visual_calibration_20260722.json"
+    },
+    {
+      "recomputed_report": {
+        "authority_claimed": false,
+        "catalog_sha256": "fd0cc8c3af27f41f42f8ce08260ac6a007f44bc2ff2504625c408598bf656ead",
+        "corpus_sha256": "ba983fe792a2c83a004099b1f9f2a5403ad8260f16b32e7d2455e16670d30e74",
+        "evidence_sha256": "d5bf59e76c9b6e111f6dadf7267fa643d3e79ab0f275492138cd571836192acc",
+        "failures": [
+          "valid_mask_pass_rate_below_minimum"
+        ],
+        "family_id": "qwen",
+        "metrics": {
+          "abstention_rate": 0.0,
+          "context_binding_rate": 1.0,
+          "defect_recall": 1.0,
+          "deterministic_replay_rate": 1.0,
+          "p95_latency_ms": 3026.6015380620956,
+          "peak_vram_fraction": 0.8797720797720797,
+          "precision": 0.8333333333333334,
+          "schema_compliance_rate": 1.0,
+          "serious_false_pass_rate": 0.0,
+          "valid_mask_pass_rate": 0.0
+        },
+        "model_id": "qwen3_6_27b_fp8",
+        "per_defect_exact_hits": {
+          "wrong_side": 1
+        },
+        "report_sha256": "66c4390d1d27df3b49741457ac53d193e63f366f1ed3ebfafe25c6d8303d2dd0",
+        "role_id": "primary_visual_critic",
+        "schema_version": "1.0.0",
+        "status": "fail",
+        "thresholds": {
+          "maximum_abstention_rate": 0.05,
+          "maximum_p95_latency_ms": 6000.0,
+          "maximum_peak_vram_fraction": 0.98,
+          "maximum_serious_false_pass_rate": 0.0,
+          "minimum_context_binding_rate": 1.0,
+          "minimum_defect_recall": 0.95,
+          "minimum_deterministic_replay_rate": 1.0,
+          "minimum_precision": 0.8,
+          "minimum_schema_compliance_rate": 1.0,
+          "minimum_valid_mask_pass_rate": 0.9
+        },
+        "thresholds_sha256": "d398179c383ed200b7bc00a6a07bf5650a697a54ad03eb33561bcd7f283beeea"
+      },
+      "recorded_report_sha256": "c117ff13a11ee04381f7b94af3985918dc8fd4097388b0e0fa620dc7aec363d9",
+      "remote_result_sha256": "ee3dc15aac68f51f7fccbfd6ca4363c2956dd7aa865f2a83fb797e42fcb3590c",
+      "result_path": "qa/live_verification/qwen3_6_27b_visual_calibration_20260722.json"
+    },
+    {
+      "recomputed_report": {
+        "authority_claimed": false,
+        "catalog_sha256": "fd0cc8c3af27f41f42f8ce08260ac6a007f44bc2ff2504625c408598bf656ead",
+        "corpus_sha256": "2b5cd3bd8eb09c3d5804fd27bad0fff04ddbbc45ca26125f986b60b3b1b66c7a",
+        "evidence_sha256": "3b25d6dffc5399793ec28c081497da1f0472dc8730d720aef35858f1906cfd85",
+        "failures": [
+          "valid_mask_pass_rate_below_minimum"
+        ],
+        "family_id": "qwen",
+        "metrics": {
+          "abstention_rate": 0.0,
+          "context_binding_rate": 1.0,
+          "defect_recall": 1.0,
+          "deterministic_replay_rate": 1.0,
+          "p95_latency_ms": 2668.5574278235435,
+          "peak_vram_fraction": 0.8815221815221815,
+          "precision": 0.8333333333333334,
+          "schema_compliance_rate": 1.0,
+          "serious_false_pass_rate": 0.0,
+          "valid_mask_pass_rate": 0.0
+        },
+        "model_id": "qwen3_6_27b_fp8",
+        "per_defect_exact_hits": {
+          "missing_area": 1
+        },
+        "report_sha256": "3c27882c2bfedfe654636e1c8a698c727f4358756cfa2eb5a4bd9601ab59c698",
+        "role_id": "primary_visual_critic",
+        "schema_version": "1.0.0",
+        "status": "fail",
+        "thresholds": {
+          "maximum_abstention_rate": 0.05,
+          "maximum_p95_latency_ms": 6000.0,
+          "maximum_peak_vram_fraction": 0.98,
+          "maximum_serious_false_pass_rate": 0.0,
+          "minimum_context_binding_rate": 1.0,
+          "minimum_defect_recall": 0.95,
+          "minimum_deterministic_replay_rate": 1.0,
+          "minimum_precision": 0.8,
+          "minimum_schema_compliance_rate": 1.0,
+          "minimum_valid_mask_pass_rate": 0.9
+        },
+        "thresholds_sha256": "d398179c383ed200b7bc00a6a07bf5650a697a54ad03eb33561bcd7f283beeea"
+      },
+      "recorded_report_sha256": "03115df04f5adc15c977baa0f678d65cd98bd80bf44258c50a36aef160c3f707",
+      "remote_result_sha256": "06a1dc59a6954739fab1331c2788cfad025c2646ef532d912b82f55d794863e6",
+      "result_path": "qa/live_verification/qwen3_6_27b_visual_calibration_v2_20260722.json"
+    }
+  ],
+  "schema_version": "1.0.0",
+  "status": "fail"
+}

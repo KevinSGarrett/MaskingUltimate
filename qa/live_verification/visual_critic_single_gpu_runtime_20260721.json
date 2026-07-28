@@ -1,0 +1,79 @@
+{
+  "authority_claimed": false,
+  "hardware": {
+    "gpu_count": 1,
+    "gpu_name": "NVIDIA RTX 6000 Ada Generation",
+    "tier_id": "runpod_single_gpu_48gb",
+    "vram_bytes": 51527024640
+  },
+  "models": [
+    {
+      "artifact_tree_sha256": "8349ee8e70b8a08bdf1b94c6165dffd6ee57117cfc6b7a9211a45c1abb91ee48",
+      "context_token_budget": 8192,
+      "downloaded_bytes": 30890040900,
+      "endpoint": "http://127.0.0.1:18001",
+      "family_id": "qwen",
+      "file_count": 80,
+      "image_budget": 3,
+      "model_id": "qwen3_6_27b_fp8",
+      "process_runs": [
+        {
+          "cold_latency_ms": 2260.4902908205986,
+          "peak_vram_bytes": 45141196800,
+          "pid": 2818860,
+          "response_sha256": "e9993af5f5423855578123129b4935eb0a8fcc4c0860924bfa224680ab68a144",
+          "status": "pass",
+          "warm_latency_ms": 1290.4390469193459
+        },
+        {
+          "cold_latency_ms": 7488.201312720776,
+          "peak_vram_bytes": 50132418560,
+          "pid": 2865707,
+          "response_sha256": "e9993af5f5423855578123129b4935eb0a8fcc4c0860924bfa224680ab68a144",
+          "status": "pass",
+          "warm_latency_ms": 1791.9976860284805
+        }
+      ],
+      "prompt_sha256": "bf2a4a140a3cdf38ea9cce94379d4a25cb77798db24dbd2195cea0d1850dcee2",
+      "quantization": "fp8",
+      "repository": "Qwen/Qwen3.6-27B-FP8",
+      "revision": "e89b16ebf1988b3d6befa7de50abc2d76f26eb09"
+    },
+    {
+      "artifact_tree_sha256": "e1a117fa9589a7f7bf67ff0eaf1b0c75dfd6ff24bf99142e48aa5d79897eed65",
+      "context_token_budget": 8192,
+      "downloaded_bytes": 17072800269,
+      "endpoint": "local-process://isolated",
+      "family_id": "internvl",
+      "file_count": 24,
+      "image_budget": 3,
+      "model_id": "internvl3_5_8b_bf16",
+      "process_runs": [
+        {
+          "cold_latency_ms": 2504.435673356056,
+          "load_latency_ms": 44578.01591604948,
+          "peak_vram_bytes": 17716740096,
+          "pid": 2613506,
+          "response_sha256": "de569d019dcbc223f21eee20e639474bfdfa88aead2a02bfcbb31b3a90e39c4c",
+          "status": "pass",
+          "warm_latency_ms": 1713.1472676992416
+        },
+        {
+          "cold_latency_ms": 2294.040009379387,
+          "load_latency_ms": 6016.145050525665,
+          "peak_vram_bytes": 17716740096,
+          "pid": 2618189,
+          "response_sha256": "de569d019dcbc223f21eee20e639474bfdfa88aead2a02bfcbb31b3a90e39c4c",
+          "status": "pass",
+          "warm_latency_ms": 1680.0335720181465
+        }
+      ],
+      "prompt_sha256": "bf2a4a140a3cdf38ea9cce94379d4a25cb77798db24dbd2195cea0d1850dcee2",
+      "quantization": "bf16",
+      "repository": "OpenGVLab/InternVL3_5-8B",
+      "revision": "9bb6a56ad9cc69db95e2d4eeb15a52bbcac4ef79"
+    }
+  ],
+  "schema_version": "1.0.0",
+  "status": "RUNTIME_PASS_BOUNDED"
+}

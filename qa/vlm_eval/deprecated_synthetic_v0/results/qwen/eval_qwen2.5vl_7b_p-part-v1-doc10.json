@@ -1,0 +1,14 @@
+{
+  "defect_count": 20,
+  "false_negatives": 20,
+  "false_positives": 0,
+  "fingerprint": "79a65b617d7b0ed34ebd6d3cc033e4b590e5da05163061f785a2e65ad516e394",
+  "good_count": 20,
+  "model": "qwen2.5vl:7b",
+  "passed": false,
+  "precision": 0.0,
+  "prompt_version": "p-part-v1-doc10",
+  "recall": 0.0,
+  "total": 40,
+  "true_positives": 0
+}

@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "nude_corpus_split_grouping_evidence",
+  "status": "RUNTIME_PASS_FULL_CORPUS",
+  "adopted_lineage": {
+    "record_count": 81910,
+    "registry_sha256": "785bfbcca98262a00519b53a360a67d22f23ec9e4b41c9bc38029f402eb9bbcf",
+    "shard_index_sha256": "16a958ffdc6c304174fa8ff5b9b656a607e8e8a9e9610dac9be4a8dbff3c994a"
+  },
+  "accepted_algorithm": {
+    "exact": "global SHA-256 identity",
+    "source_family": "lineage-scoped normalized pre-Roboflow-augmentation filename",
+    "near_duplicate": "fixed-anchor dHash64 Hamming <=3 AND DCT pHash64 Hamming <=6",
+    "transitive_perceptual_chain_merging": false,
+    "partition_precedence": [
+      "train",
+      "validation",
+      "test",
+      "holdout"
+    ]
+  },
+  "full_corpus_result": {
+    "source_hashes_verified": 81910,
+    "records_grouped": 81910,
+    "unique_sample_ids": 81910,
+    "split_groups": 42219,
+    "duplicate_records": 39691,
+    "maximum_group_size": 25,
+    "cross_dataset_groups": 3632,
+    "cross_partition_groups_resolved_to_strictest_partition": 439,
+    "post_assignment_partition_leaks": 0,
+    "exact_duplicate_groups": 18,
+    "perceptual_or_family_groups": 16541,
+    "partition_counts": {
+      "train": 70399,
+      "validation": 7607,
+      "test": 3854,
+      "holdout": 50
+    }
+  },
+  "required_correlated_versions": {
+    "main_v3_v4_v5": {
+      "records": 9415,
+      "cross_version_groups": 1175,
+      "cross_version_records": 8658
+    },
+    "mange_v2_v3": {
+      "records": 9885,
+      "cross_version_groups": 2110,
+      "cross_version_records": 9861
+    },
+    "original_holdout": {
+      "records": 50,
+      "assigned_holdout": 50,
+      "non_holdout_contamination": 0
+    }
+  },
+  "mapping": {
+    "local_path": "runtime_artifacts/nude_corpus_split_groups_20260722_v3/split_groups.jsonl",
+    "runpod_path": "/workspace/maskfactory/runtime_artifacts/nude_corpus_split_groups/split_groups.jsonl",
+    "mapping_sha256": "cab2b74545177264bfad8b07ff51cf692c3eff4fe37612276a6e5381a7d2527a",
+    "summary_sha256": "75b1f7efb927321b894c60f06bc022c94dc493bfb17fa3b13d808726facd2515",
+    "summary_self_sha256": "190a00c8f6fa2a109bc2bb3ef5ab1a97daa9ade72d9d01d214b5108cca3c5b24",
+    "local_runpod_hash_match": true
+  },
+  "corrective_iterations": [
+    {
+      "result": "REJECTED",
+      "reason": "transitive dHash graph collapsed 18256 visually underconstrained records"
+    },
+    {
+      "result": "REJECTED",
+      "reason": "fixed-anchor dHash alone still produced visually underconstrained groups up to 389 records"
+    },
+    {
+      "result": "ACCEPTED",
+      "reason": "dual anchored dHash+pHash rule bounded maximum group to 25 while retaining correlated-version matches"
+    }
+  ],
+  "verification": {
+    "focused_tests": "12 passed",
+    "downstream_fail_closed_loader_records": 81910,
+    "ruff": "pass",
+    "black": "pass"
+  },
+  "claim_boundary": "This proves deterministic full-corpus grouping and partition isolation. It does not qualify external annotations, masks, providers, visual critics, training exports, or operational certificates."
+}

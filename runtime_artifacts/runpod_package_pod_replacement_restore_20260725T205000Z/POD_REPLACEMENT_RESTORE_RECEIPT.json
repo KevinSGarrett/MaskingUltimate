@@ -1,0 +1,58 @@
+{
+  "artifact_type": "maskfactory.runpod_package_pod_replacement_restore_receipt.v1",
+  "recorded_at_utc": "2026-07-25T19:36:06.3245477Z",
+  "status": "RUNTIME_PASS_POD_REPLACEMENT_RESTORE",
+  "scope": "read-only verification of an existing 15-file persistent package on a distinct, user-authorized Pod using the unchanged network volume",
+  "prior_proof": {
+    "path": "qa/live_verification/runpod_package_persistence_and_restore_20260722.json",
+    "sha256": "0954318c66c5a5f97ea1a1da4774bdc8339564df0160f78e9ffb30de6541a9db",
+    "pod_id": "1q4ji0gg1fkhvt"
+  },
+  "current_pod": {
+    "id": "68psfqtaogg7s7",
+    "name": "vitreous_beige_centipede",
+    "desired_status": "RUNNING",
+    "gpu_count": 1,
+    "gpu_name": "NVIDIA RTX 6000 Ada Generation",
+    "network_volume_id": "o9qv2ld91c",
+    "volume_mount_path": "/workspace"
+  },
+  "exact_package": {
+    "descriptor_path": "data/packages.dvc",
+    "descriptor_sha256": "1a15b90a1741874d8e5c1dedfca3f6599bca92d9e4d09af2351cfeaba4ff892c",
+    "manifest_sha256": "3b7f659cce57672467be14457b367e13b90599817ab74bc3fd1c3d3219a2105a",
+    "archive_sha256": "20525ba54c02e788f72d76ce50adf51ba0bba4c9aafc49c60895984148701cce",
+    "chunk_count": 5,
+    "restored_file_count": 15,
+    "persistent_root": "/workspace/maskfactory/releases/package_sync/3b7f659cce57672467be14457b367e13b90599817ab74bc3fd1c3d3219a2105a"
+  },
+  "replay_verifier": {
+    "path": "runtime_artifacts/runpod_package_pod_replacement_restore_20260725T205000Z/verify_exact_package_restore.py",
+    "sha256": "0eb9dfe828a54ab28112c1f89e93a3ebc2f8d710a23175a0aaf27baed862d489",
+    "py_compile_passed": true,
+    "result": {
+      "archive_claim": true,
+      "chunk_000000": true,
+      "chunk_000001": true,
+      "chunk_000002": true,
+      "chunk_000003": true,
+      "chunk_000004": true,
+      "chunk_count": true,
+      "descriptor_hash": true,
+      "file_count": true,
+      "manifest_directory_binding": true,
+      "manifest_self_hash": true,
+      "prior_receipt_hash": true,
+      "reconstructed_archive": true,
+      "separate_process_restore_tree": true
+    }
+  },
+  "authority": {
+    "sync_performed": false,
+    "fault_seeded": false,
+    "files_deleted": false,
+    "package_or_model_authority_granted": false,
+    "gold_or_production_authority_granted": false,
+    "claim": "This closes only the P0-17.25 persistent-transport proof after a distinct Pod lifecycle; it does not alter dataset, model, mask, role, gold, or production authority."
+  }
+}

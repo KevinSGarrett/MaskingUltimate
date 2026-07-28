@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-16T14:55:45Z",
+  "items": ["MF-P9-04.07", "MF-P9-04.08"],
+  "status": "partially_complete",
+  "dependency_plugin_graph": {
+    "required_dependency_resolution": true,
+    "missing_required_dependency_ineligible": true,
+    "required_dependency_cycle_rejected": true,
+    "plugin_state_closed": true,
+    "available_plugin_requires_version_and_sha256": true,
+    "missing_or_incompatible_plugin_ineligible": true,
+    "static_pass_is_not_runtime_qualification": true
+  },
+  "pool_contract": {
+    "policy": "configs/daz/asset_pools.yaml",
+    "policy_sha256": "1ae20a388c944fc3f11a9ac2f8213289703aaeedc4929f4a4c3d47f766dcb9ab",
+    "pool_count": 12,
+    "pool_ids": [
+      "g9_adult_base_figures",
+      "g9_adult_character_presets",
+      "g9_bounded_body_morphs",
+      "g9_age_appearance_profiles",
+      "g9_skin_materials_by_tone_band",
+      "g9_hair_by_length_texture_construction",
+      "g9_wardrobe_by_region_layer_fit",
+      "g9_poses_by_taxonomy",
+      "multi_person_pose_templates",
+      "lights_by_profile",
+      "environments_by_context_complexity",
+      "props_by_occlusion_support_role"
+    ],
+    "query_dimensions": [
+      "primary_asset_class",
+      "figure_generation",
+      "character_scope",
+      "capability",
+      "scene_category",
+      "facet"
+    ],
+    "source_assets_copied": false,
+    "static_candidates_separate_from_qualified_members": true,
+    "runtime_qualification_required_for_generation": true,
+    "ineligible_override_include_rejected": true,
+    "versioned_include_exclude_overrides": true,
+    "deterministic_report_fingerprint": true,
+    "immutable_report_publication": true,
+    "active_certificate_projection_hash_bound": true,
+    "nonempty_qualified_members_require_certificate_projection_lineage": true,
+    "pool_identity_counts_and_membership_reverified": true
+  },
+  "live_boundary": {
+    "pool_report_published": false,
+    "reason": "A live pool report requires the final immutable compatibility graph, which remains downstream of the incomplete live asset identity snapshot. Publishing fixture-derived membership as live authority is prohibited.",
+    "identity_hashes_complete": 2859,
+    "identity_hashes_pending": 38235,
+    "identity_hash_failures": 0
+  },
+  "lineage": {
+    "vocabulary_sha256": "a297ab89e6517c34b0c9e33853b200aeb8f7c92f3c97dbc864c2b436b43b0e01",
+    "catalog_implementation_sha256": "bf1c8e5d93c3524dbf57662c9fa12dcc11d3539053ed41f6b401513ac3567730",
+    "pool_implementation_sha256": "761bcaeea8d8b2bf7b1e06965768e645e23f585e53044991256c3e7930be5ace",
+    "catalog_schema_sha256": "4f0b0798bf2050e87f1f82c5a114910131d573b05f2f43c4631dba3579687048",
+    "pool_schema_sha256": "7c6658a88a315ef49664677b2597b2b95e7d9485fe84fb497d5e01ae9f35ed8f",
+    "catalog_test_sha256": "a6680ea5379ad610659ff8dc0f7b69183f405c9f9a674400c9273e7283826f3d",
+    "pool_test_sha256": "bb8dbd424dedcfd4362264c1a4b2daa1a40682c3389e268218eeffbf0585fd19"
+  },
+  "verification": {
+    "focused_catalog_and_pool_tests_passed": 12,
+    "focused_tests_failed": 0,
+    "full_repository_tests_collected": 1880,
+    "full_repository_tests_passed": 1880,
+    "full_repository_tests_failed": 0,
+    "ruff_lint": "pass",
+    "black_precommit": "pass"
+  },
+  "not_claimed": [
+    "a final live dependency/plugin graph",
+    "a final live pool membership report",
+    "runtime qualification of any asset",
+    "completion of MF-P9-04.07 or MF-P9-04.08"
+  ]
+}

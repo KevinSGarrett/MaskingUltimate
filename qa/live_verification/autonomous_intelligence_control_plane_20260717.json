@@ -1,0 +1,114 @@
+{
+  "artifact_kind": "maskfactory_live_verification",
+  "artifact_version": "1.0.0",
+  "created_at": "2026-07-17T20:09:55.8616483Z",
+  "tracker_item": "MF-P6-08.04",
+  "branch": "codex/maskfactory-runtime-implementation",
+  "parent_commit": "5610a0b078899ce7f77279c6b19635f4d143bdd0",
+  "result": "pass",
+  "implementation": {
+    "control_plane": "src/maskfactory/intelligence/control_plane.py",
+    "certificate_issuer": "src/maskfactory/authority/operational_certificate.py",
+    "control_version": "1.0.0",
+    "roles": [
+      "request_normalizer",
+      "planner_diagnostician",
+      "router_adviser",
+      "repair_proposer",
+      "visual_critic",
+      "evidence_summarizer"
+    ],
+    "exact_stack_identity_fields": [
+      "model_family",
+      "model_revision",
+      "runtime_sha256",
+      "prompt_sha256",
+      "parser_sha256",
+      "tool_policy_sha256",
+      "qualification_scope_sha256",
+      "qualification_certificate_sha256",
+      "qualified_until",
+      "lifecycle_state"
+    ],
+    "closed_role_output": true,
+    "hash_cited_registry_retrieval": true,
+    "nonauthoritative_conversation_memory_rejected": true,
+    "context_compaction_manifest_hash_bound": true,
+    "required_authority_cannot_be_compacted_out": true,
+    "closed_tool_contract_and_argument_types": true,
+    "tool_policy_hash_bound_to_stack": true,
+    "model_output_never_executes_tool_directly": true,
+    "critic_family_deduplication": true,
+    "missing_malformed_timeout_critics_excluded": true,
+    "explicit_uncertainty_abstains": true,
+    "append_only_hash_chained_event_memory": true,
+    "event_authority_effect": "none_observation_only",
+    "certificate_critic_report_hash_bound": true,
+    "critic_may_clear_hard_veto": false,
+    "critic_may_issue_certificate": false
+  },
+  "adversarial_verification": [
+    "free-form and malformed model output",
+    "unknown output fields",
+    "missing and nonauthoritative citations",
+    "citation hash mismatch",
+    "required authority dropped during compaction",
+    "unallowlisted tool",
+    "unknown or wrongly typed tool arguments",
+    "tool-policy hash mismatch",
+    "expired role qualification",
+    "correlated critic variants",
+    "missing critic",
+    "unexpected critic",
+    "malformed critic",
+    "timeout critic",
+    "critic disagreement and failure",
+    "critic citation drift",
+    "critic report hash mismatch",
+    "critic authority escalation",
+    "event stream switch",
+    "event payload tamper"
+  ],
+  "validation": [
+    {
+      "command": "python -m pytest tests/test_intelligence_control_plane.py tests/test_operational_certificate_issuance.py -q",
+      "result": "36 passed"
+    },
+    {
+      "command": "python -m pytest tests/test_intelligence_control_plane.py tests/test_provider_contracts.py tests/test_vlm_client_router.py tests/test_vlm_workhorse.py tests/test_autonomy.py tests/test_operational_certificate_issuance.py tests/test_mask_bridge_contracts_v1.py tests/test_tracker_completion_profiles.py -q",
+      "result": "147 passed"
+    },
+    {
+      "command": "python -m pytest -q",
+      "result": "3185 collected tests passed; exit code 0"
+    },
+    {
+      "command": "python -m ruff check src/maskfactory/intelligence src/maskfactory/authority tests/test_intelligence_control_plane.py tests/test_operational_certificate_issuance.py",
+      "result": "pass"
+    },
+    {
+      "command": "black src/maskfactory/intelligence src/maskfactory/authority tests/test_intelligence_control_plane.py tests/test_operational_certificate_issuance.py",
+      "result": "pass"
+    }
+  ],
+  "file_sha256": {
+    "src/maskfactory/intelligence/__init__.py": "f3efa63eaab5deda3473269306ce40750bcedf8a5f715fa43a14ee28edeab549",
+    "src/maskfactory/intelligence/control_plane.py": "c6c2cb8ac401f6a91698089ecb05ebafa2848beff600a7a4847afcca1df1acf9",
+    "src/maskfactory/authority/operational_certificate.py": "eed8d924bc82ff185c9eb0c5f15750918d473d7d21c6cd959cd0011507f2ad50",
+    "tests/test_intelligence_control_plane.py": "1a4fadc92615b61c3a626ce164232d3b30589a442fc885756b57696d4cf0d661",
+    "tests/test_operational_certificate_issuance.py": "42bae34feb2da27956133daa73e5e0bb750facf877fe992f6e4d1271e131527a"
+  },
+  "frozen_contract": {
+    "path": "src/maskfactory/schemas/operational_autonomy_certificate.schema.json",
+    "sha256": "9846b5afb7898a0af6f9b8f7169fe1eb5cc71ded1a3c0c37b28ed281d849bee8",
+    "changed": false
+  },
+  "completion_boundary": {
+    "production_role_certificates_present": false,
+    "production_operational_certificate_created": false,
+    "runtime_release_certified": false,
+    "currency_policy_relabelled": false,
+    "bridge_pr_merged": false,
+    "next_tracker_item": "MF-P6-08.05"
+  }
+}

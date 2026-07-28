@@ -1,0 +1,35 @@
+{
+  "authority": {
+    "gold_authority": false,
+    "mask_promotion": false,
+    "shadow_only": true,
+    "visual_acceptance": false
+  },
+  "captured_at": "2026-07-25T17:48:36.782679+00:00",
+  "compatibility": {
+    "gpu_execution": false,
+    "platform": "manylinux x86_64",
+    "python": "CPython 3.11",
+    "torch": "2.11.0+cu128"
+  },
+  "prior_failure": {
+    "binding_self_sha256": "2939a21e2d622b20fb1029532e23a1b6b7b5bc9270b69be9d8b232a687923a7d",
+    "failure_receipt_self_sha256": "2b381a42a50c40c8475c4ea2c5a5107941359602d8d28e3ffb1c6eadd6ddf4d6"
+  },
+  "reason": "EoMT V5 GPU runner reached processor initialization but Transformers requires Torchvision.",
+  "result": "candidate_staged",
+  "schema_version": "maskfactory.eomt_dinov3_torchvision_dependency_recovery.v1",
+  "self_sha256": "e08c88b751f7924a0b7b26ad767536a1f0d946016d984a1c2e9e66b366835dc5",
+  "source": {
+    "binary_only": true,
+    "index": "https://download.pytorch.org/whl/cu128",
+    "no_dependencies": true,
+    "requirement": "torchvision==0.26.0+cu128"
+  },
+  "wheel": {
+    "bytes": 8055039,
+    "filename": "torchvision-0.26.0+cu128-cp311-cp311-manylinux_2_28_x86_64.whl",
+    "path": "runtime_artifacts/eomt_dinov3_torchvision_dependency_recovery_20260725T174811Z/wheels/torchvision-0.26.0+cu128-cp311-cp311-manylinux_2_28_x86_64.whl",
+    "sha256": "8f2629d056570c929b0a1d5473d9cb0320b90bda1764bda353553a72cc6b2069"
+  }
+}

@@ -1,0 +1,172 @@
+# Model acquisition catalog. Each model-specific item MF-P0-06.02 through .13
+# adds its authoritative source, exact hash, and one-image smoke runner here.
+schema_version: 1.0.0
+models:
+  yolo11m:
+    url: https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo11m.pt
+    sha256: d5ffc1a674953a08e11a8d21e022781b1b23a19b730afc309290bd9fb5305b95
+    family: detect
+    filename: yolo11m.pt
+    version_tag: ultralytics-assets-v8.4.0-yolo11m
+    license: AGPL-3.0-or-Ultralytics-Enterprise
+    role: person_detector
+    runtime: ultralytics-8.4.87+torch-2.12.1-cpu-smoke
+    vram_note: production CUDA inference; CPU smoke supported; spec budget 1.2 GB
+    smoke_test: yolo11_person_detector
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg
+  birefnet_general:
+    url: https://huggingface.co/ZhengPeng7/BiRefNet/resolve/e2bf8e4460fc8fa32bba5ea4d94b3233d367b0e4/model.safetensors
+    sha256: 9ab37426bf4de0567af6b5d21b16151357149139362e6e8992021b8ce356a154
+    family: silhouette
+    filename: BiRefNet-general.safetensors
+    version_tag: ZhengPeng7/BiRefNet@e2bf8e4460fc8fa32bba5ea4d94b3233d367b0e4
+    license: MIT
+    role: primary_person_silhouette
+    runtime: WSL-maskfactory-torch-2.11.0+cu128-transformers-4.47.1
+    vram_note: bf16/fp16 production; official model card reports about 3.5 GB FP16 inference
+    smoke_test: birefnet_general_wsl
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg
+  sapiens_0_6b_seg:
+    url: https://huggingface.co/facebook/sapiens-seg-0.6b-torchscript/resolve/ea5545c735d1fc994d0d1aafede27df892761322/sapiens_0.6b_goliath_best_goliath_mIoU_7777_epoch_178_torchscript.pt2
+    sha256: 86aa2cb9d7310ba1cb1971026889f1d10d80ddf655d6028aea060aae94d82082
+    family: parsing
+    filename: sapiens_0.6b_seg.pt2
+    version_tag: facebook/sapiens-seg-0.6b-torchscript@ea5545c735d1fc994d0d1aafede27df892761322
+    license: CC-BY-NC-4.0
+    role: primary_human_parsing_28_class_goliath
+    runtime: WSL-maskfactory-torch-2.11.0+cu128-torchscript-fp32
+    vram_note: 0.664B TorchScript model; one 1024x768 image per smoke/inference slot
+    smoke_test: sapiens_seg_0_6b_wsl
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg
+  schp_atr:
+    url: https://drive.google.com/file/d/1ruJg4lqR_jgQPj-9K0PP-L2vJERYOxLP/view?usp=sharing
+    sha256: e9d7c91ce3b4e7133df56b599fc817b533e3439c5e8d282a59126d2fda339a2a
+    family: parsing_fallback
+    filename: exp-schp-201908301523-atr.pth
+    version_tag: GoGoDuck912/Self-Correction-Human-Parsing@eb84c432cc697f494d99662a05f2335eb2f26095-ATR
+    license: MIT
+    role: fallback_human_parsing_atr_18_class
+    runtime: WSL-maskfactory-torch-2.11.0+cu128-pure-batchnorm-compat
+    vram_note: ResNet-101 SCHP fallback; single 512x512 smoke image
+    smoke_test: schp_atr_wsl
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg
+  schp_lip:
+    url: https://drive.google.com/file/d/1k4dllHpu0bdx38J7H28rVVLpU-kOHmnH/view?usp=sharing
+    sha256: 24fa3254ceeb74c8435458994a64b522fb439a3635b7b86ff470457e0413da00
+    family: parsing_fallback
+    filename: exp-schp-201908261155-lip.pth
+    version_tag: GoGoDuck912/Self-Correction-Human-Parsing@eb84c432cc697f494d99662a05f2335eb2f26095-LIP
+    license: MIT
+    role: fallback_human_parsing_lip_20_class
+    runtime: WSL-maskfactory-torch-2.11.0+cu128-pure-batchnorm-compat
+    vram_note: ResNet-101 SCHP fallback; single 473x473 smoke image
+    smoke_test: schp_lip_wsl
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg
+  dwpose_yolox_l:
+    url: https://huggingface.co/yzd-v/DWPose/resolve/f7c16a3d45ad3783db41471848c80fbc281cabac/yolox_l.onnx
+    sha256: 7860ae79de6c89a3c1eb72ae9a2756c0ccfbe04b7791bb5880afabd97855a411
+    family: pose
+    filename: yolox_l.onnx
+    version_tag: yzd-v/DWPose@f7c16a3d45ad3783db41471848c80fbc281cabac-yolox_l
+    license: Apache-2.0
+    role: dwpose_person_detector
+    runtime: WSL-onnxruntime-gpu-1.20.2
+    vram_note: paired detector for DWPose; 640x640 input
+    smoke_test: dwpose_yolox_cuda_wsl
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg
+  dwpose_133:
+    url: https://huggingface.co/yzd-v/DWPose/resolve/f7c16a3d45ad3783db41471848c80fbc281cabac/dw-ll_ucoco_384.onnx
+    sha256: 724f4ff2439ed61afb86fb8a1951ec39c6220682803b4a8bd4f598cd913b1843
+    family: pose
+    filename: dw-ll_ucoco_384.onnx
+    version_tag: yzd-v/DWPose@f7c16a3d45ad3783db41471848c80fbc281cabac-dw-ll-ucoco-384
+    license: Apache-2.0
+    role: wholebody_pose_133_keypoints
+    runtime: WSL-onnxruntime-gpu-1.20.2
+    vram_note: paired with yolox_l.onnx; 384x288 pose crops
+    smoke_test: dwpose_133_cuda_wsl
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg
+  mediapipe_hand_landmarker:
+    url: https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task
+    sha256: fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1
+    family: hand
+    filename: hand_landmarker.task
+    version_tag: mediapipe-hand-landmarker-float16-v1
+    license: Apache-2.0
+    role: hand_21_landmarks_and_handedness
+    runtime: WSL-mediapipe-0.10.35-cpu
+    vram_note: CPU-capable crop-lane landmark source
+    smoke_test: mediapipe_hand_landmarker_wsl
+    smoke_image: qa/fixtures/smoke/mediapipe_thumb_up.jpg
+  sam2_1_hiera_base_plus:
+    url: https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_base_plus.pt
+    sha256: a2345aede8715ab1d5d31b4a509fb160c5a4af1970f199d9054ccfb746c004c5
+    family: sam2
+    filename: sam2.1_hiera_base_plus.pt
+    version_tag: SAM-2.1-2024-09-29-source-2b90b9f5ceec907a1c18123530e92e794ad901a4
+    license: Apache-2.0
+    role: boundary_refiner_oom_fallback
+    runtime: WSL-SAM-2-1.0+torch-2.11.0+cu128-bfloat16
+    vram_note: base-plus OOM fallback; point/box/mask prompts only
+    smoke_test: sam2_1_base_plus_cuda_wsl
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg
+  sam2_1_hiera_large:
+    url: https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_large.pt
+    sha256: 2647878d5dfa5098f2f8649825738a9345572bae2d4350a2468587ece47dd318
+    family: sam2
+    filename: sam2.1_hiera_large.pt
+    version_tag: SAM-2.1-2024-09-29-source-2b90b9f5ceec907a1c18123530e92e794ad901a4
+    license: Apache-2.0
+    role: primary_boundary_refiner
+    runtime: WSL-SAM-2-1.0+torch-2.11.0+cu128-bfloat16
+    vram_note: primary large checkpoint; auto-fallback to base-plus on OOM
+    smoke_test: sam2_1_large_cuda_wsl
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg
+  groundingdino_swint_ogc:
+    url: https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth
+    sha256: 3b3ca2563c77c69f651d7bd133e97139c186df06231157a64c507099c52bc799
+    family: gdino
+    filename: groundingdino_swint_ogc.pth
+    version_tag: GroundingDINO-v0.1.0-alpha-source-856dde20aee659246248e20734ef9ba5214f5e44
+    license: Apache-2.0
+    role: open_vocabulary_boxes_only
+    runtime: WSL-GroundingDINO-0.1.0+torch-2.11.0-cpu-fallback
+    vram_note: boxes only; CPU PyTorch deformable-attention fallback because nvcc is unavailable
+    smoke_test: groundingdino_person_boxes_wsl
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg
+  densepose_rcnn_r50_fpn_s1x:
+    url: https://dl.fbaipublicfiles.com/densepose/densepose_rcnn_R_50_FPN_s1x/165712039/model_final_162be9.pkl
+    sha256: b8a7382001b16e453bad95ca9dbc68ae8f2b839b304cf90eaf5c27fbdb4dae91
+    family: densepose
+    filename: densepose_rcnn_R_50_FPN_s1x.pkl
+    version_tag: detectron2-densepose-model-165712039-source-02b5c4e295e990042a714712c21dc79b731e8833
+    license: Apache-2.0
+    role: dense_human_surface_prior
+    runtime: WSL-detectron2-densepose-0.6+torch-2.11.0+cu128-sm_120
+    vram_note: R50-FPN chart-based DensePose referee; one image per GPU slot
+    smoke_test: densepose_r50_cuda_wsl
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg
+  faceparse_bisenet:
+    url: https://drive.google.com/file/d/154JgKpzCPW82qINcVieuPH3fZ2e0P812/view?usp=sharing
+    sha256: 468e13ca13a9b43cc0881a9f99083a430e9c0a38abd935431d1c28ee94b26567
+    family: faceparse
+    filename: 79999_iter.pth
+    version_tag: zllrunning/face-parsing.PyTorch@d2e684cf1588b46145635e8fe7bcc29544e5537e
+    license: MIT
+    role: hair_and_face_detail_fallback
+    runtime: local-face-parsing-PyTorch@d2e684c+torch-2.11.0+cu128
+    vram_note: 19-class 512x512 BiSeNet face crop; specialist fallback only
+    smoke_test: faceparse_bisenet_cuda_local
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg
+  vitmatte_small_composition_1k:
+    url: https://huggingface.co/hustvl/vitmatte-small-composition-1k/resolve/6a58ad7646403c1df626fbd746900aec7361ea1d/pytorch_model.bin
+    sha256: 6ec6aed44bc8d8ab7f4d0ff46da3520a534cf5a97a8262404ff6efa9ae33b1e5
+    family: matting
+    filename: vitmatte_s.pth
+    version_tag: hustvl/vitmatte-small-composition-1k@6a58ad7646403c1df626fbd746900aec7361ea1d
+    license: Apache-2.0
+    role: trimap_seeded_hair_and_material_alpha_matte
+    runtime: WSL-transformers-4.47.1+torch-2.11.0+cu128
+    vram_note: small ViTMatte; RGB plus three-state trimap, padded to multiples of 32
+    smoke_test: vitmatte_small_cuda_wsl
+    smoke_image: qa/fixtures/smoke/ultralytics_bus_adults.jpg

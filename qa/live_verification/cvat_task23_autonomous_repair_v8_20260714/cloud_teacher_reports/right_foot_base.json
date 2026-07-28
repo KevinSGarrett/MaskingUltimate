@@ -1,0 +1,103 @@
+{
+  "authority": "shadow_advisory_human_approval_required",
+  "image_id": "img_cdab0311dc96",
+  "instance_id": "p0",
+  "judgments": [
+    {
+      "confidence": 0.99,
+      "correction": {
+        "negative_points": [
+          [
+            90,
+            650
+          ],
+          [
+            120,
+            400
+          ],
+          [
+            760,
+            700
+          ],
+          [
+            830,
+            780
+          ],
+          [
+            920,
+            800
+          ],
+          [
+            850,
+            560
+          ],
+          [
+            900,
+            300
+          ]
+        ],
+        "polygon": [],
+        "positive_points": [
+          [
+            235,
+            260
+          ],
+          [
+            300,
+            420
+          ],
+          [
+            430,
+            500
+          ],
+          [
+            560,
+            570
+          ],
+          [
+            650,
+            610
+          ]
+        ],
+        "rationale": "Use SAM point refinement rather than a polygon because the ankle-to-midfoot boundary and MTP line are curved and partially ambiguous. Positive points cover only the ankle, heel, midfoot, and proximal forefoot. Negative points suppress the rear foot/background and the distal toe region; the toe negatives are placed beyond the MTP line so the resulting mask stops before the visible toes.",
+        "tool": "points"
+      },
+      "defects": [
+        "boundary_too_loose",
+        "includes_background",
+        "other"
+      ],
+      "evidence": "Fail: the proposal is a whole-foot mask (about 12.8% versus the 0.2\u20134.0% contract), includes visible toes beyond the MTP boundary, and has background contamination and fragmented topology. Semantic side evidence supports right, so wrong_side is not assigned.",
+      "latency_ms": 12221,
+      "model": "gpt-5.6-luna",
+      "observations": {
+        "contour": "The contour is not anatomically clean: it includes the toes, has abrupt block-like steps and internal gaps, and appears to include background above and around the ankle.",
+        "full_context": "The visible target is the character's semantic right foot, consistent with the supplied COCO pose-chain evidence. The foot is planted in front while the other foot is partially visible behind it.",
+        "mask": "The mask substantially covers the whole foot including all toes, greatly exceeding the expected foot-base area. It also contains large holes and blocky regions that appear to be background around the ankle and upper foot.",
+        "neighbor_overlap": "The main contamination is background around the upper ankle/foot boundary; the visible rear foot is a neighboring part and should not be included, though the dominant mask error is the oversized whole-foot coverage.",
+        "overlay": "The red overlay extends over the distal toes and follows a broad whole-foot silhouette rather than stopping at the MTP line. Several rectangular and curved gaps expose inconsistent segmentation near the ankle.",
+        "source_crop": "The crop clearly shows one continuous bare foot and ankle, with toes distinctly visible at the distal end. The metatarsophalangeal split should exclude the toes from right_foot_base."
+      },
+      "provider": "openai",
+      "response_sha256": "d54680b8edcd3267f48f040285d3cc6abddeb17c64c631c79876aa35dfd67224",
+      "usage": {
+        "cost_usd": 0.015302,
+        "input_tokens": 9896,
+        "output_tokens": 901
+      },
+      "verdict": "fail"
+    }
+  ],
+  "label": "right_foot_base",
+  "local_audit": {
+    "deterministic_overrides": [
+      "component_count_exceeds_ontology"
+    ],
+    "final_verdict": "fail",
+    "model": "qwen2.5vl:7b",
+    "model_verdict": "uncertain"
+  },
+  "schema_version": "1.0.0",
+  "sha256": "5735ac506ebef90e7f974846c6a7ada5b40503348090083a53f33141df7de3b1",
+  "source_sha256": "d962e914116cdd97d00187c313fe94c99e9e725ab50d38b79d203f1ed47bae43"
+}

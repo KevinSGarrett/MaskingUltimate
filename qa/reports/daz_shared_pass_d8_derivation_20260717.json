@@ -1,0 +1,155 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-17T06:27:06Z",
+  "item": "MF-P9-09.03",
+  "status": "partially_complete",
+  "percent_complete": 85,
+  "result": {
+    "offline_implementation_complete": true,
+    "exact_complements_verify_clause_passed": true,
+    "qualified_live_shared_pass_evidence_available": false
+  },
+  "d8_authority_binding": {
+    "accepted_p_index_assignment_required_for_d8_binding": true,
+    "assignment_id_and_sha256_bound": true,
+    "assignment_policy_sha256_bound": true,
+    "duo_selection_id_and_sha256_bound": true,
+    "final_camera_expected_and_observed_hashes_bound": true,
+    "resolution_and_crop_bound": true,
+    "construction_map_sha256_and_bytes_bound": true,
+    "slot_construction_source_id_p_index_instance_id_mapping_bound": true,
+    "resolved_state_and_scene_state_lineage_match_required": true,
+    "historical_and_solo_contract_compatibility_preserved": true
+  },
+  "exact_raster_remap": {
+    "source": "uint16_final_camera_construction_ownership_raster",
+    "destination": "uint16_shared_instance_pass",
+    "rule": "each construction source ID maps to its assigned contiguous p-index instance ID",
+    "unknown_missing_or_extra_source_ids_rejected": true,
+    "pixel_for_pixel_remap_equality_required_at_contract_build": true,
+    "pixel_for_pixel_remap_replayed_before_package_publication": true,
+    "missing_original_construction_raster_rejected": true,
+    "tampered_original_construction_raster_rejected": true,
+    "seeded_final_instance_owner_swap_rejected": true
+  },
+  "per_person_derivation": {
+    "shared_pass_rerender_forbidden": true,
+    "target_equation": "instance_map == target_instance_id",
+    "other_person_equation": "visible_person_union AND NOT target",
+    "full_body_binary_values": [0, 255],
+    "part_equation": "where(target, shared_part_map, 0)",
+    "material_equation": "where(target, shared_material_map, 0)",
+    "protected_other_person_equation": "protected_id_50 == other_person",
+    "target_and_other_disjoint": true,
+    "target_masks_pairwise_disjoint": true,
+    "target_union_equals_visible_instance_union": true,
+    "shared_rgb_bytes_identical_for_every_person": true,
+    "all_declared_people_nonempty": true,
+    "one_shared_pass_set_only": true
+  },
+  "lineage_and_publication": {
+    "d8_binding_in_contract_and_report": true,
+    "package_ids_derive_from_assignment_bound_contract_sha256": true,
+    "synthetic_lineage_preserves_contract_id_and_sha256": true,
+    "closed_contract_schema": true,
+    "closed_report_schema": true,
+    "atomic_scene_directory": true,
+    "immutable_idempotent_replay": true,
+    "conflicting_publication_rejected": true,
+    "cli_plan_accepts_p_index_assignment_and_construction_map": true,
+    "cli_derivation_requires_construction_map_for_bound_contract": true
+  },
+  "negative_fixtures": {
+    "final_instance_owner_swap": "rejected",
+    "missing_construction_map_at_build": "rejected",
+    "missing_construction_map_at_derivation": "rejected",
+    "construction_map_byte_tamper": "rejected",
+    "construction_namespace_mismatch": "rejected",
+    "assignment_instance_owner_mismatch": "rejected",
+    "assignment_scene_or_state_lineage_mismatch": "rejected",
+    "source_pass_hash_tamper": "rejected",
+    "duplicate_target_ownership": "rejected",
+    "target_union_gap": "rejected",
+    "protected_other_person_mismatch": "rejected"
+  },
+  "authority_boundary": {
+    "owner": "maskfactory",
+    "truth_tier": "weighted_pseudo_label",
+    "truth_partition": "train",
+    "evaluation_eligible": false,
+    "training_loss_weight": 0.2,
+    "human_gold_created_or_mutated": false,
+    "autonomous_certified_gold_created_or_mutated": false,
+    "p_index_binding_can_raise_mask_authority": false,
+    "mode_b_or_inferred_authority_allowed": false
+  },
+  "wave64_integration_boundary": {
+    "main_repository_modified": false,
+    "main_side_files_preserved": true,
+    "versioned_assignment_mapping_and_transform_lineage_available": true,
+    "provider_tier_ontology_owner_certificate_authority_unchanged": true,
+    "downstream_selector_may_not_infer_stronger_mask_authority": true
+  },
+  "verification_hardening": {
+    "eomt_large_checkpoint_hashing_changed_to_streaming": true,
+    "reason": "A monolithic verification attempt exposed whole-file checkpoint hashing MemoryError under cumulative live-machine pressure.",
+    "eomt_contract_tests_passed": 12,
+    "dependent_runtime_and_governance_hash_seals_recomputed": true,
+    "runtime_semantics_or_model_bytes_changed": false,
+    "historical_live_evidence_rewritten": false
+  },
+  "lineage_hashes": {
+    "package_derivation_implementation_sha256": "f8e38e3a97a95362e2df1e913f635e0a2f6816cbcdb21b6cab91acab4bbd605a",
+    "package_contract_schema_sha256": "110031a4d819bbb1bedb13dfb00542d83a7e10ca7b29888e69a1b8738d47e046",
+    "package_report_schema_sha256": "3809edf8d28fe2bfaf698a49b8f0f59022deb72907f1ad664624afcdeb776ecb",
+    "package_derivation_tests_sha256": "0c457ffb94c233603f14fb1c1d955ce5a1eee34c2adeb14f343e1dfbecd5564f",
+    "cli_sha256": "2ae63ed7f2c8044b4a51d58968193c42b20af570668f97ff822ba9f23cbc8304",
+    "eomt_contract_sha256": "7ad329e9ef7e36d28ec7ecd1a343ff82bb184dfb9bd1f05b6d7fd0791e823467",
+    "eomt_runtime_lock_file_sha256": "660d0eb3f6bd00a1722f2fb5dfa2a2f1700e61480c484c96e351ebd62e985a17",
+    "provider_runtime_matrix_file_sha256": "c4aa01f10e48f41223a1d1ab7a854b87f7eabefb1e9a953f556ca8cb4459b0b2",
+    "custom_tournament_policy_file_sha256": "a626c5a166d98f2455e353e92da67fd252dc5d9b79a6a303254921b01ac81430",
+    "provider_benchmark_policy_file_sha256": "8490872407c49a47eb333bf90d1007b71060ce0975e9dbe0d28056abaf5761b8"
+  },
+  "verification": {
+    "focused_p_index_and_derivation_tests_collected": 37,
+    "focused_p_index_and_derivation_tests_passed": 37,
+    "daz_tests_collected": 1197,
+    "daz_tests_passed": 1197,
+    "bounded_downstream_tests_collected": 210,
+    "bounded_downstream_tests_passed": 210,
+    "sam31_tests_collected": 32,
+    "sam31_tests_passed": 32,
+    "full_repository_tests_collected": 2958,
+    "immediately_preceding_clean_baseline_tests_passed": 2955,
+    "immediately_preceding_clean_baseline_commit": "775f7ed217faa1dee24202371ede384d7feb85b4",
+    "final_monolithic_repository_pass_claimed": false,
+    "monolithic_reason": "The live machine had about 1.3 GB free RAM while ComfyUI and WSL/Docker remained active. Intermediate full runs exposed one whole-file EoMT MemoryError and expected fail-closed hash cascades while locks were being updated. All affected files pass in bounded fresh processes after repair; another monolithic run was not launched to avoid repeating the laptop-crash risk.",
+    "ruff_repository_lint": "pass",
+    "black_changed_surface_format": "pass",
+    "maskfactory_json_schemas_parsed": 127,
+    "daz_yaml_documents_parsed": 34,
+    "git_diff_check": "pass"
+  },
+  "asset_and_storage_boundary": {
+    "download_install_daz_launch_render_or_live_validation_started_by_this_task": false,
+    "assets_moved_or_relabelled_by_this_task": false,
+    "f_drive_soft_hold_respected": true,
+    "main_repository_modified_by_this_task": false,
+    "wsl_docker_or_live_comfyui_process_terminated_by_this_task": false
+  },
+  "remaining_live_dependency": {
+    "software_and_exact_complements_verify_clause_complete": true,
+    "qualified_live_d6_authority_available": false,
+    "qualified_live_d8_02_assignment_available": false,
+    "live_shared_pass_derivation_available": false,
+    "reason": "The D8 assignment binding, exact construction-to-instance remap, per-person vectorized equations, runtime replay, schemas, CLI, publication, and seeded complements/owner-swap fixtures pass. Qualified live D6 pass bytes and a live D8-02 final-camera assignment have not run through the contract."
+  },
+  "not_claimed": [
+    "live DAZ duo render or shared-pass derivation",
+    "live final-camera p-index result",
+    "live identity, exclusivity, or bleed acceptance",
+    "dataset or training admission",
+    "human or autonomous-certified gold",
+    "one-process pass of all 2,958 repository tests under current live-machine memory pressure"
+  ]
+}

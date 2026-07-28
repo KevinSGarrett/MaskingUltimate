@@ -1,0 +1,138 @@
+// MaskFactory DAZ worker bundle 1.0.0.
+// API references:
+// https://docs.daz3d.com/public/software/dazstudio/4/referenceguide/scripting/api_reference/object_index/app_dz
+// https://docs.daz3d.com/public/software/dazstudio/4/referenceguide/scripting/api_reference/object_index/contentmgr_dz
+// https://docs.daz3d.com/public/software/dazstudio/4/referenceguide/scripting/api_reference/object_index/file_dz
+
+(function(){
+    var EXPECTED_INSTANCE = "MaskFactoryDAZ";
+    var BUNDLE_VERSION = "1.0.0";
+    var args = App.getScriptArgs();
+    var recipePath = args.length > 0 ? String(args[0]) : "";
+    var partialPath = args.length > 1 ? String(args[1]) : "";
+    var resultPath = args.length > 2 ? String(args[2]) : "";
+    var startedAt = new Date().toISOString();
+    var recipe = undefined;
+
+    function readJson(path){
+        var file = new DzFile(path);
+        if( !file.open(DzFile.ReadOnly | DzFile.Text) ){
+            throw new Error("open_failed:" + path + ":" + file.errorString());
+        }
+        var value = file.read();
+        file.close();
+        return JSON.parse(value);
+    }
+
+    function writeJson(path, value){
+        var file = new DzFile(path);
+        if( !file.open(DzFile.WriteOnly | DzFile.Truncate | DzFile.Text) ){
+            throw new Error("write_open_failed:" + path + ":" + file.errorString());
+        }
+        if( file.writeUtf8(JSON.stringify(value, null, 2) + "\n") < 0 ){
+            var reason = file.errorString();
+            file.close();
+            throw new Error("write_failed:" + path + ":" + reason);
+        }
+        file.close();
+    }
+
+    function atomicWriteJson(path, value){
+        var temporary = path + ".tmp";
+        var existingTemporary = new DzFileInfo(temporary);
+        if( existingTemporary.exists() ){
+            existingTemporary.remove();
+        }
+        if( new DzFileInfo(path).exists() ){
+            throw new Error("terminal_result_already_exists:" + path);
+        }
+        writeJson(temporary, value);
+        var temporaryFile = new DzFile(temporary);
+        if( !temporaryFile.rename(path) ){
+            throw new Error("atomic_rename_failed:" + path + ":" + temporaryFile.errorString());
+        }
+    }
+
+    function normalizePath(path){
+        return String(path).replace(/\\/g, "/").replace(/\/$/, "").toLowerCase();
+    }
+
+    function configureContentDirectories(paths){
+        if( !paths || paths.length !== 2 ){
+            throw new Error("content_directory_contract_invalid");
+        }
+        var content = App.getContentMgr();
+        content.removeAllContentDirectories();
+        content.removeAllPoserDirectories();
+        content.removeAllImportDirectories();
+        for( var index = 0; index < paths.length; index += 1 ){
+            content.addContentDirectory(String(paths[index]), false);
+        }
+        content.saveAllMappedDirectories();
+        if( content.getNumContentDirectories() !== paths.length ){
+            throw new Error("content_directory_count_mismatch");
+        }
+        for( var verify = 0; verify < paths.length; verify += 1 ){
+            if( normalizePath(content.getContentDirectoryPath(verify)) !== normalizePath(paths[verify]) ){
+                throw new Error("content_directory_mismatch:" + verify);
+            }
+        }
+        return paths;
+    }
+
+    function result(status, reason, contentDirectories){
+        return {
+            schema_version: "1.0.0",
+            job_id: recipe && recipe.job_id ? String(recipe.job_id) : "unknown",
+            recipe_id: recipe && recipe.recipe_id ? String(recipe.recipe_id) : "unknown",
+            bundle_version: BUNDLE_VERSION,
+            instance_name: EXPECTED_INSTANCE,
+            status: status,
+            started_at: startedAt,
+            finished_at: new Date().toISOString(),
+            reason: reason,
+            artifacts: [],
+            runtime: {
+                daz_version: String(App.versionString),
+                content_directories: contentDirectories || ["unknown_primary", "unknown_user"]
+            }
+        };
+    }
+
+    try{
+        if( !recipePath || !partialPath || !resultPath ){
+            throw new Error("three_script_arguments_required");
+        }
+        recipe = readJson(recipePath);
+        if( recipe.bundle_version !== BUNDLE_VERSION ){
+            throw new Error("bundle_version_mismatch");
+        }
+        if( String(App.getInstanceName()) !== EXPECTED_INSTANCE ){
+            throw new Error("instance_name_mismatch:" + String(App.getInstanceName()));
+        }
+        if( App.showPrompts !== false ){
+            throw new Error("prompts_not_disabled");
+        }
+        if( Scene.getNumNodes() !== 0 ){
+            throw new Error("startup_scene_not_empty");
+        }
+        writeJson(partialPath, {
+            schema_version: "1.0.0",
+            job_id: String(recipe.job_id),
+            state: "configuring_runtime",
+            updated_at: new Date().toISOString()
+        });
+        var mapped = configureContentDirectories(recipe.content_directories);
+        if( recipe.operation !== "runtime_probe" ){
+            throw new Error("unsupported_operation_in_bundle_1.0.0:" + String(recipe.operation));
+        }
+        atomicWriteJson(resultPath, result("success", "runtime_probe_passed", mapped));
+    } catch(error){
+        try{
+            atomicWriteJson(resultPath, result("failed", String(error), recipe && recipe.content_directories));
+        } catch(resultError){
+            print("MASKFACTORY_TERMINAL_RESULT_FAILURE:" + String(resultError));
+        }
+    }
+    App.quit();
+})();

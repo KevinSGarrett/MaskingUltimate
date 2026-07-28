@@ -1,0 +1,221 @@
+{
+  "schema_version": "1.0.0",
+  "manifest_id": "maskfactory_autonomous_core_bridge_integration_reconciliation_v1",
+  "generated_at": "2026-07-17T15:31:49.586629Z",
+  "authority": "integration_reconciliation_only_no_runtime_release_or_artifact_authority",
+  "runtime_completion_claimed": false,
+  "source_preservation_manifest": {
+    "path": "Plan/Instructions/10_AUTONOMOUS_CORE_BRIDGE_PLANNING_PRESERVATION_MANIFEST.json",
+    "manifest_sha256": "13fda3eab823e4a544f171c5570ceed99e77cd246ccbc13e686879616682bde2",
+    "entry_count": 113,
+    "entries_sha256": "5f96ee5441f209579d11e6ab5a96474fc7717b72dbe6d770a6f812f35a3ec1fe"
+  },
+  "git_lineage": {
+    "immutable_producer_packet_commit": "938b46949e277d92f26d9411fd5710005c506677",
+    "integrated_base_commit": "85d4c19b7974c1b64f48176d91211defbaba35a0",
+    "integration_strategy": "non_rewriting_merge_commit"
+  },
+  "reconciliation": {
+    "source_entry_count": 113,
+    "unchanged_entry_count": 105,
+    "reconciled_change_count": 8,
+    "base_owned_supersession_count": 6,
+    "integration_protocol_update_count": 2,
+    "reconciled_changes": [
+      {
+        "path": "Plan/Instructions/09_CROSS_PROJECT_BRIDGE_RELEASE_AND_SESSION_HANDOFF.md",
+        "classification": "integration_reconciliation_protocol_update",
+        "producer_exists": true,
+        "producer_size_bytes": 7840,
+        "producer_sha256": "f91b293e2958967585d276cd2a012ddb7a523038bff4cd1d46f38d90613f427c",
+        "integration_exists": true,
+        "integration_size_bytes": 9953,
+        "integration_sha256": "6ff575650c117b02ad01d1e6a3b843bac3a136e1b9e4bd9fec73958e814af194"
+      },
+      {
+        "path": "Plan/Tracker/DASHBOARD.md",
+        "classification": "base_owned_supersession_after_packet_freeze",
+        "producer_exists": true,
+        "producer_size_bytes": 80121,
+        "producer_sha256": "1404bae1e3fe1f7fc8b87624d2b6b67832165ed4698c546977a6a0311c2d5b44",
+        "integration_exists": true,
+        "integration_size_bytes": 79647,
+        "integration_sha256": "4170b33561fade53c1c7a31a651443a7582560de2e8d6134b794d935b8d7a56f"
+      },
+      {
+        "path": "Plan/Tracker/phases/P0.md",
+        "classification": "base_owned_supersession_after_packet_freeze",
+        "producer_exists": true,
+        "producer_size_bytes": 82866,
+        "producer_sha256": "6d0b0ac707318f2925974c659f7892bc8cca001a3701b513c85e96380f43d748",
+        "integration_exists": true,
+        "integration_size_bytes": 82951,
+        "integration_sha256": "f15d155c505654b8327a8a7ababc6e8cae224458dc1215d198c298f7da39cad8"
+      },
+      {
+        "path": "Plan/Tracker/phases/P2.md",
+        "classification": "base_owned_supersession_after_packet_freeze",
+        "producer_exists": true,
+        "producer_size_bytes": 69220,
+        "producer_sha256": "8dd2cdc74a859c9b60836d86d7d491a3dc03526536ccc763ff79571271306eea",
+        "integration_exists": true,
+        "integration_size_bytes": 69420,
+        "integration_sha256": "851b03c861b48a2aceaeeeb6bf7a70d44ea138b984180478601952d666fd7516"
+      },
+      {
+        "path": "Plan/Tracker/phases/P3.md",
+        "classification": "base_owned_supersession_after_packet_freeze",
+        "producer_exists": true,
+        "producer_size_bytes": 36335,
+        "producer_sha256": "8172b07559f4afd1c16c8fcd62457321122fad1336653e59616ce58d23521ef1",
+        "integration_exists": true,
+        "integration_size_bytes": 36514,
+        "integration_sha256": "8eca31b468cf974f6445988f680f6ccb13f4261d3df1d9edc2aa0d9dff0549a3"
+      },
+      {
+        "path": "Plan/Tracker/tracker.json",
+        "classification": "base_owned_supersession_after_packet_freeze",
+        "producer_exists": true,
+        "producer_size_bytes": 1128669,
+        "producer_sha256": "ae8d365ab9c15048bcd7ba7d4cb23e9253eee570882427be5ba3f56acfdcb629",
+        "integration_exists": true,
+        "integration_size_bytes": 1130248,
+        "integration_sha256": "201973514097e05dfc8828dfd69fb4856a2a5e14551b98078b21ad3ebd9b7d5d"
+      },
+      {
+        "path": "src/maskfactory/validation.py",
+        "classification": "base_owned_supersession_after_packet_freeze",
+        "producer_exists": true,
+        "producer_size_bytes": 277452,
+        "producer_sha256": "c88ff3b5f84de83c7d7ad4c20922f9a44044f6d868ee0e5ec8d3becd1e69bd24",
+        "integration_exists": true,
+        "integration_size_bytes": 277485,
+        "integration_sha256": "b115a6a5145f9235a8fa54714249a1aee74672d5eeed694bf506a13be9496286"
+      },
+      {
+        "path": "tests/test_tracker_completion_profiles.py",
+        "classification": "integration_reconciliation_protocol_update",
+        "producer_exists": true,
+        "producer_size_bytes": 28815,
+        "producer_sha256": "fc4029c8ab4c9f193604c47a95e01c77790abd722ac58e1140045fdedca6994a",
+        "integration_exists": true,
+        "integration_size_bytes": 32160,
+        "integration_sha256": "cc173fdfc2aee89623d827a0d3abfc294d351297d0278e00614a6d37caed64b7"
+      }
+    ],
+    "unaccounted_drift_count": 0
+  },
+  "wire_contract_freeze": {
+    "contract_count": 12,
+    "all_exactly_unchanged": true,
+    "contracts": [
+      {
+        "path": "src/maskfactory/schemas/mask_acquisition_receipt.schema.json",
+        "sha256": "2a16bf9fe3f9e46e14c02a1cee287f09a821eca20023124d852a4aaf5dc5f18d",
+        "size_bytes": 36138
+      },
+      {
+        "path": "src/maskfactory/schemas/mask_acquisition_request.schema.json",
+        "sha256": "2160fd336a8ab25c25dd86babe418c7f2cf072a341c7e7bd94c00743e9103f72",
+        "size_bytes": 35768
+      },
+      {
+        "path": "src/maskfactory/schemas/mask_authority_invalidation_event.schema.json",
+        "sha256": "72b072a1d239057a574ea9ff6dd8536e072d47f13b3b16f2edd6890a0ecb0920",
+        "size_bytes": 8208
+      },
+      {
+        "path": "src/maskfactory/schemas/mask_bridge_error.schema.json",
+        "sha256": "c65a4fc9e8c4c1df8c63911c653e91e364ae23387758c4c9ed617f86e69e7219",
+        "size_bytes": 3766
+      },
+      {
+        "path": "src/maskfactory/schemas/mask_bridge_event.schema.json",
+        "sha256": "d1d707b460bfcb273c8e6929d1811d04b3eacf346f2c20dc9e46ecef81aa4407",
+        "size_bytes": 11020
+      },
+      {
+        "path": "src/maskfactory/schemas/mask_bridge_semantic_invariant_profile.schema.json",
+        "sha256": "0cd46afbdf7a2fdc07f4e693bd83e47f14683bb8778e10802f054e5640253bf4",
+        "size_bytes": 5154
+      },
+      {
+        "path": "src/maskfactory/schemas/mask_repair_feedback.schema.json",
+        "sha256": "602413b3bcd84b4656218c3a9a27dd4157466674b3221989b5862003c837df26",
+        "size_bytes": 12691
+      },
+      {
+        "path": "src/maskfactory/schemas/maskfactory_adoption_receipt.schema.json",
+        "sha256": "9edaf568c39b8bcf69e064d260425a411b8ac2addf19ae06b3b5a4269c56d5cc",
+        "size_bytes": 11416
+      },
+      {
+        "path": "src/maskfactory/schemas/maskfactory_capability_snapshot.schema.json",
+        "sha256": "68244dc62eae41b1ed6f045d43ac4f26e5c9b3beff2a65b3981dcd3afee9dc58",
+        "size_bytes": 14892
+      },
+      {
+        "path": "src/maskfactory/schemas/maskfactory_consumer_requirements.schema.json",
+        "sha256": "8d16b7d3829d810ad904b9427a3011bdc217d6030750bc978f62f53b41a6d3e8",
+        "size_bytes": 13890
+      },
+      {
+        "path": "src/maskfactory/schemas/maskfactory_release_snapshot.schema.json",
+        "sha256": "3f5e267c79c18c79212e2b69947f204d08335ae652f31cd859dae5c250b89f5b",
+        "size_bytes": 19274
+      },
+      {
+        "path": "src/maskfactory/schemas/operational_autonomy_certificate.schema.json",
+        "sha256": "9846b5afb7898a0af6f9b8f7169fe1eb5cc71ded1a3c0c37b28ed281d849bee8",
+        "size_bytes": 33161
+      }
+    ]
+  },
+  "post_integration_validation": {
+    "classification": "hermetic_ci_governed_asset_partition_no_release_authority",
+    "path_count": 8,
+    "paths": [
+      {
+        "path": ".github/workflows/ci.yml",
+        "sha256": "d96f11a8cf4391197e290ac183da7ace89c4d0ac5601997b69f4eee3ee5a2c42",
+        "size_bytes": 4422
+      },
+      {
+        "path": "configs/governance/currency_review_key_history.json",
+        "sha256": "d1d2820db30d7a54473967258c843357e1b054f91724c9c0bf6327c105da27c6",
+        "size_bytes": 1181
+      },
+      {
+        "path": "pyproject.toml",
+        "sha256": "0062f9474868e1a9acfc997410b91a12b36962651ba05c4e489680c3f916902e",
+        "size_bytes": 1651
+      },
+      {
+        "path": "qa/governance/currency/current_review.json",
+        "sha256": "9988cfdfe57839086385b0a245dfea6af718d60fae1f9a1bc7392b0a6a930bf0",
+        "size_bytes": 6401
+      },
+      {
+        "path": "qa/governance/currency/reviews/ce335737788e738f0f2a61d3.json",
+        "sha256": "19783e3e9ff288a5800ba337aac23f4ad1768fd453b9e792c7a5b7b02525058a",
+        "size_bytes": 6401
+      },
+      {
+        "path": "tests/conftest.py",
+        "sha256": "696cbff9bc0a5edd3ffff9f1002b1fe45cdbfcc194e358ef431ee8a428632a40",
+        "size_bytes": 2321
+      },
+      {
+        "path": "tests/test_ci_test_partition.py",
+        "sha256": "4abee69f50a390110bbc6dcae4299ee50b8055e7bad0c9c8de0810e534974cab",
+        "size_bytes": 1040
+      },
+      {
+        "path": "tools/build_maskfactory_bridge_integration_reconciliation_manifest.py",
+        "sha256": "0e03c05f4200033e8e92c3c5b2a67e3236200cf9d9772585eabe2e83707e9993",
+        "size_bytes": 9494
+      }
+    ]
+  },
+  "manifest_sha256": "c948da1595f6c29ead2aeda950ac778717c6557f2ed5f6c4b0664e5052f3eb52"
+}

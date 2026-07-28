@@ -1,0 +1,15 @@
+{
+  "authoritative_gold": false,
+  "converged": false,
+  "enabled": true,
+  "final_votes": [],
+  "publication_target": "reversible_non_gold_review_draft",
+  "remaining_uncertainties": [
+    "no_eligible_candidate_for_committee"
+  ],
+  "round_count": 0,
+  "rounds": [],
+  "rounds_report": "autonomy/convergence_right_foot_base.json",
+  "stop_reason": "no_eligible_candidate_for_committee",
+  "target_confidence": 0.95
+}

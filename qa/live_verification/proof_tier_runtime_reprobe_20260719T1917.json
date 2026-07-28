@@ -1,0 +1,174 @@
+﻿{
+    "ts":  "2026-07-20T00:50:37Z",
+    "artifact_type":  "proof_tier_runtime_reprobe",
+    "authority":  [
+                      "maskfactory-full-completion proof tiers",
+                      "Plan/DOCKER_RUNTIME_AND_SESSION_USE.md"
+                  ],
+    "branch":  "codex/maskfactory-runtime-implementation",
+    "project_head":  "34df5cac06c4b2bb0ad8e3378329e7cfea044297",
+    "related_static_seal":  "qa/live_verification/residual_blocker_inventory_20260719.json",
+    "live_probe":  {
+                       "docker":  {
+                                      "server":  "29.4.3",
+                                      "context":  "docker-desktop",
+                                      "os":  "Docker Desktop"
+                                  },
+                       "cvat_production":  {
+                                               "url":  "http://localhost:8080/api/server/about",
+                                               "version":  "2.24.0",
+                                               "tier":  "RUNTIME_PASS_BOUNDED"
+                                           },
+                       "nuclio":  {
+                                      "dashboard":  "http://127.0.0.1:8070",
+                                      "pth_sam2_state":  "ready",
+                                      "container":  "nuclio-nuclio-pth-sam2 healthy after non-destructive restart + 90s cold wait",
+                                      "prior_failures":  [
+                                                             "504 Gateway Timeout before restart",
+                                                             "503 Service Unavailable immediately after restart"
+                                                         ]
+                                  },
+                       "ollama":  {
+                                      "url":  "http://127.0.0.1:11434/api/version",
+                                      "version":  "0.32.1",
+                                      "provider":  "native_windows_exe",
+                                      "path":  "C:\\Users\\kevin\\AppData\\Local\\Programs\\Ollama\\ollama.exe",
+                                      "pid":  33256
+                                  },
+                       "wsl":  {
+                                   "Ubuntu-22.04":  "Running (warmed via wsl -d Ubuntu-22.04 -- echo / true)",
+                                   "docker-desktop":  "Running",
+                                   "note":  "Warm-first applied before doctor/smokes; does not skip WSL-dependent doctor checks."
+                               },
+                       "disk_free_gib_c":  4.48,
+                       "disk_free_gib_observed_during_wave":  [
+                                                                  29.48,
+                                                                  5.8,
+                                                                  5.56,
+                                                                  5.34,
+                                                                  5.25,
+                                                                  5.21,
+                                                                  4.79,
+                                                                  4.66,
+                                                                  4.48
+                                                              ]
+                   },
+    "doctor":  {
+                   "full_cli":  {
+                                    "command":  "uv run maskfactory doctor",
+                                    "result":  "NOT_RUN_TO_COMPLETION",
+                                    "reason":  "C: free collapsed to ~4.7–5.8 GiB during wave; full doctor would exercise WSL registered_models under unsafe disk headroom",
+                                    "tier":  "RUNTIME_BLOCKED"
+                                },
+                   "host_only_subset":  {
+                                            "method":  "run_doctor(non_wsl_checks, preflight_wsl=False)",
+                                            "summary":  "PASS=5 FAIL=4 WARN=0 SKIP=0",
+                                            "pass":  [
+                                                         "cvat_api",
+                                                         "cvat_project",
+                                                         "wsl_backing_store",
+                                                         "png_strict",
+                                                         "sqlite_writable"
+                                                     ],
+                                            "fail":  [
+                                                         "nuclio_interactor: timed out (45s doctor LOCAL_INFERENCE_TIMEOUT; later smoke pass after cold wait)",
+                                                         "ollama_image: timed out (45s doctor timeout; host smoke later pass 43.149s)",
+                                                         "disk_free: 5.8 GiB free at doctor sample (BLOCK ingest \u003c75)",
+                                                         "gpu_lock: stale lock pid=467 age\u003e7200s while Mode B serve still alive (WARN/FAIL semantics; process retained)"
+                                                     ],
+                                            "honesty":  "Host-only subset is NOT doctor all-green and does NOT credit torch_cuda/registered_models/wsl_roundtrip."
+                                        }
+               },
+    "smokes":  {
+                   "tools/smoke_cvat_sam2.py":  {
+                                                    "result":  "pass",
+                                                    "latency_seconds":  14.603,
+                                                    "foreground_pixels":  21491,
+                                                    "tier":  "RUNTIME_PASS_BOUNDED",
+                                                    "surface":  "CVAT lambda pth-sam2 via localhost:8080",
+                                                    "note":  "Initial 504 then 503 after restart; pass after 90s cold wait"
+                                                },
+                   "tools/smoke_ollama_vlm.py":  {
+                                                     "result":  "pass",
+                                                     "model":  "qwen2.5vl:7b",
+                                                     "latency_seconds":  43.149,
+                                                     "verdict":  "pass",
+                                                     "confidence":  1,
+                                                     "evidence":  "qa/reports/ollama_vlm_smoke.json",
+                                                     "tier":  "RUNTIME_PASS_BOUNDED",
+                                                     "surface":  "host Ollama VLM only; advisory; not gold"
+                                                 },
+                   "wsl_registered_model_smokes":  {
+                                                       "result":  "NOT_RUN",
+                                                       "reason":  "disk headroom ~4.7–5.8 GiB; unsafe to load WSL model smokes",
+                                                       "tier":  "RUNTIME_BLOCKED"
+                                                   }
+               },
+    "mode_b":  {
+                   "health_models":  {
+                                         "tier":  "RUNTIME_PASS_BOUNDED",
+                                         "url":  "http://127.0.0.1:8765",
+                                         "health_status":  "ok",
+                                         "configured_models":  [
+
+                                                               ],
+                                         "loaded_models":  [
+
+                                                           ],
+                                         "champions":  0,
+                                         "claim":  "draft-service health only; not champion-backed prediction"
+                                     },
+                   "predict_draft":  {
+                                         "tier":  "AWAITING_RUNTIME",
+                                         "http_status":  503,
+                                         "exact_blocker":  "champion prediction provider is not configured; champions=0; no invented champions"
+                                     },
+                   "refine_draft":  {
+                                        "tier":  "AWAITING_RUNTIME",
+                                        "attempted":  false,
+                                        "exact_blocker":  "Mode B /refine longer-timeout retry SKIPPED: C: free collapsed to ~4.7 GiB (started wave ~29.5 GiB); unsafe under disk pressure; prior 30s timeout under ~32 GiB still stands",
+                                        "prior_bounded_probe":  "qa/live_verification/mode_b_runtime_loopback_health_20260719T214045Z.json"
+                                    },
+                   "service_retained_running":  true
+               },
+    "disk_reclaim_candidates_kevin_decision":  {
+                                                   "no_wipe_performed":  true,
+                                                   "do_not_touch":  [
+                                                                        "MaskedWarehouse",
+                                                                        "models/",
+                                                                        "packages / draft gold",
+                                                                        "Docker volumes / docker_data.vhdx without explicit Kevin prune authorization",
+                                                                        "C:\\Users\\kevin\\.ollama (managed models; prior ~26 GiB)"
+                                                                    ],
+                                                   "ephemeral_candidates_approx_gib":  {
+                                                                                           "LocalAppData/pip/Cache":  6,
+                                                                                           "LocalAppData/uv/cache":  "~11.3 (prior wave; re-measure hung under disk pressure)",
+                                                                                           "LocalAppData/Temp":  "~6.0 (prior wave; re-measure hung under disk pressure)",
+                                                                                           "UserProfile/.cache/huggingface":  "~3.3 (prior wave)",
+                                                                                           "Docker_image_reclaimable_only_via_prune_MB":  921.5,
+                                                                                           "docker_data.vhdx_GiB":  68.11
+                                                                                       },
+                                                   "note":  "No destructive wipe. Doctor-green blocked primarily by Kevin disk reclaim above 75 GiB ingest floor. Wave observed free collapse 29.5→~4.7 GiB during Docker/Nuclio/Ollama activity."
+                                               },
+    "tiers":  {
+                  "CVAT_API_2_24":  "RUNTIME_PASS_BOUNDED",
+                  "Nuclio_pth_sam2_smoke":  "RUNTIME_PASS_BOUNDED",
+                  "Ollama_VLM_smoke":  "RUNTIME_PASS_BOUNDED",
+                  "Mode_B_health_models":  "RUNTIME_PASS_BOUNDED",
+                  "Mode_B_predict":  "AWAITING_RUNTIME",
+                  "Mode_B_refine":  "AWAITING_RUNTIME",
+                  "doctor_all_green":  "RUNTIME_BLOCKED",
+                  "disk_ingest_gate":  "RUNTIME_BLOCKED"
+              },
+    "exact_kevin_disk_blocker":  "Free C: disk above 75 GiB ingest floor (currently ~4.48 GiB after wave collapse from ~29.5 GiB) — without destructive prune of governed data (MaskedWarehouse/models/packages/Docker volumes).",
+    "honest_non_claims":  [
+                              "PRODUCTION_EVIDENCE_PASS",
+                              "gold",
+                              "visual-pass",
+                              "VISUAL_QA_PASS_BOUNDED",
+                              "Main-complete",
+                              "doctor_all_green",
+                              "Mode B refine RUNTIME_PASS",
+                              "invented champions"
+                          ]
+}

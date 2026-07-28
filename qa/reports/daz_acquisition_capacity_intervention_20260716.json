@@ -1,0 +1,115 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-16T07:44:15Z",
+  "event": "daz_acquisition_hard_floor_intervention",
+  "trigger": {
+    "free_bytes": 106758086656,
+    "free_gib": 99.426,
+    "hard_floor_gib": 100,
+    "soft_floor_gib": 150,
+    "state": "hard",
+    "required_action": "drain acquisition queue and preserve metadata"
+  },
+  "documented_stop": {
+    "command": "F:\\DAZ\\00_control\\render_state_ingest\\stop_pool_background.ps1",
+    "stopped_pids": [49732, 32368, 45500, 29992, 9240, 2564, 46672, 15804],
+    "all_stopped": true,
+    "pool_pid_file_exists_after": false,
+    "install_lock_exists_after": false,
+    "recovery_command_ran": true
+  },
+  "queue_after_recovery": {
+    "database": "F:\\DAZ\\00_control\\render_state_ingest\\queue.sqlite3",
+    "quick_check": "ok",
+    "total_jobs": 1360,
+    "states": {
+      "complete": 458,
+      "paused": 209,
+      "queued": 693
+    },
+    "running_or_leased": 0
+  },
+  "capacity_recovery": {
+    "immediate_after_stop_free_bytes": 119333564416,
+    "immediate_after_stop_free_gib": 111.138,
+    "later_reclaimed_free_bytes": 174314881024,
+    "later_reclaimed_free_gib": 162.343,
+    "later_state": "healthy",
+    "asset_content_deleted": false,
+    "explanation": "Documented worker interruption recovery released job-private temporary download/extraction work; installed assets and manifest/source records were not deleted."
+  },
+  "deployed_policy": {
+    "schema_version": "1.0.0",
+    "new_work_allowed_states": ["healthy"],
+    "active_job_allowed_states": ["healthy", "soft"],
+    "soft_floor_gib": 150,
+    "hard_floor_gib": 100,
+    "emergency_floor_gib": 60,
+    "refused_exit_code": 76,
+    "worker_version": "0.3.7",
+    "source_guard_sha256": "d4c0ad6d70b07bf4cab1651e4ccc6601c5647eeacb37b9fb22b6d3297d318dd5",
+    "live_guard_sha256": "d4c0ad6d70b07bf4cab1651e4ccc6601c5647eeacb37b9fb22b6d3297d318dd5",
+    "live_worker_sha256": "64f8f0ea21876f097fcd52bdef53b3d972525df68e23161fcc4be07c25bfd597",
+    "live_config_sha256": "6e4c3e6975a07e77c61735801db7e3f614dab32c2348791f13085b0bda07e0f1",
+    "start_pool_sha256": "85b44055842e90f0d73b75dabdd32bc0cf6cf942803b484a8c122d267c522158",
+    "scale_pool_sha256": "fc3d4ffa0b1edc315da3dbb3bc74cb1f7ed7de6932bb43fe85a050ae058aa495",
+    "start_single_sha256": "d2964e843b8f3b6219cc0033bd0bdd9b85650bec744aebb58b618cafe4794dcf"
+  },
+  "live_refusal_proof": {
+    "observed_state": "soft",
+    "observed_free_gib": 111.096,
+    "guard_exit": 76,
+    "direct_worker_exit": 76,
+    "pool_launcher_refused": true,
+    "pool_launcher_message": "DAZ acquisition capacity preflight refused pool startup (exit 76).",
+    "workers_created": 0,
+    "leases_created": 0,
+    "pool_file_created": false,
+    "install_lock_created": false
+  },
+  "subsequent_supervisor_restart": {
+    "observed_start_at": "2026-07-16T07:49:02Z",
+    "captured_at": "2026-07-16T08:08:20Z",
+    "initiated_by_this_task": false,
+    "reason_restart_was_allowed": "F storage had recovered to the healthy state, so the deployed >=150 GiB new-work guard correctly allowed the external supervisor to resume acquisition.",
+    "worker_pids": [52480, 44576, 43156, 17788, 36736, 17176, 2116, 31992],
+    "all_workers_alive_at_capture": true,
+    "worker_version": "0.3.7",
+    "guard_sha256": "d4c0ad6d70b07bf4cab1651e4ccc6601c5647eeacb37b9fb22b6d3297d318dd5",
+    "free_bytes_at_capture": 223943946240,
+    "free_gib_at_capture": 208.563,
+    "capacity_state_at_capture": "healthy",
+    "doctor_passed_checks_after_restart": 12,
+    "doctor_failed_checks_after_restart": 0,
+    "doctor_free_gib_after_restart": 207.319,
+    "current_inventory_freeze_eligible": false,
+    "inventory_boundary": "The filesystem and acquisition-manifest populations are live again. Their resumable observations remain partial and cannot be published as a stable final inventory while workers mutate them."
+  },
+  "doctor": {
+    "passed_checks": 12,
+    "failed_checks": 0,
+    "storage_level_at_verification": "soft",
+    "acquisition_capacity_guard_deployed": true,
+    "acquisition_pool_capacity_safe": true
+  },
+  "verification": {
+    "capacity_tests_passed": 8,
+    "capacity_tests_failed": 0,
+    "typed_config_schema": "pass",
+    "live_python_compile": "pass",
+    "ruff": "pass",
+    "ruff_format": "pass",
+    "source_live_guard_bytes_identical": true
+  },
+  "mutation_boundary": {
+    "asset_move": false,
+    "asset_delete": false,
+    "asset_redownload": false,
+    "daz_launch": false,
+    "dim_launch": false,
+    "cms_write": false,
+    "wsl_or_docker_action": false,
+    "elevation_or_uac": false,
+    "credential_change": false
+  }
+}

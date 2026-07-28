@@ -1,0 +1,88 @@
+{
+  "acceptance": {
+    "next_after_pass": "Run static 66-class contract test and then prepare?not execute?a new runtime closure binding; do not infer or promote.",
+    "pass_status": "ASSET_RECOVERY_PASS_EXACT_BOUND_BYTES",
+    "terminal_receipt": "ASSET_RECOVERY_RECEIPT.json"
+  },
+  "artifact_type": "eomt_dinov3_66class_asset_recovery_binding.v1",
+  "controls": {
+    "exact_snapshot_only": true,
+    "gold_authority": false,
+    "gpu_execution": false,
+    "no_overwrite": true,
+    "no_substitution": true,
+    "preserve_staging_on_failure": true,
+    "provider_promotion": false,
+    "runtime_installation": false,
+    "sha256_and_size_validation_required": true
+  },
+  "created_at_utc": "2026-07-25T16:05:37.277566+00:00",
+  "current_66class_contract": {
+    "class_count": 66,
+    "class_names_sha256": "69591268cb7314d19d71af6fa9c7d4076b6f8c4caaee88670b2854b14f386b2e",
+    "provider": "src/maskfactory/providers/eomt_dinov3.py",
+    "provider_sha256": "d039ddcc8beac7d98e2e43cd9a710fd527502c15ed54030812d5a30d67471bd6",
+    "test": "tests/test_eomt_dinov3_contract.py",
+    "test_sha256": "542ec68c3ad87fc35243de24dcbd60f4ea9b9134543f5a8c7c7568be8bda127b",
+    "training_config": "configs/training/eomt_dinov3_small_v2.yaml",
+    "training_config_sha256": "a0d21b8b8c1da900b6f354e1a244537db5f85a6b2650aae007ddb3195644466f"
+  },
+  "download_helper": {
+    "interpreter": "runtime_artifacts/sam3d_body_runpod_env/bin/python",
+    "interpreter_sha256": "45c68b7ca1e3765a06756734c15af204ca9c0588a3f6d7a6d8bb8ed58e3e2a1a",
+    "purpose": "hash-bound snapshot transfer only; this does not constitute EoMT runtime installation or inference."
+  },
+  "execution_identity": {
+    "network_volume_id": "o9qv2ld91c",
+    "pod_id": "68psfqtaogg7s7",
+    "pod_name": "vitreous_beige_centipede",
+    "volume_mount": "/workspace"
+  },
+  "historical_lock": {
+    "limitations": "The historical lock binds the same snapshot but its 65-class target/reproduction metadata does not prove the current 66-class contract and remains preserved rather than modified.",
+    "path": "env/eomt_dinov3_runtime.lock.json",
+    "sha256": "ac988f5a3d5e94259d7f52064c2d228ec4c34b7f594f9e9a3c817f38aa66b6b8"
+  },
+  "launch": {
+    "command": "PYTHONPATH=src runtime_artifacts/sam3d_body_runpod_env/bin/python runtime_artifacts/eomt_dinov3_66class_asset_recovery_20260725T174500Z/recover_eomt_snapshot.py",
+    "pid_file": "runtime_artifacts/eomt_dinov3_66class_asset_recovery_20260725T174500Z/recovery.pid",
+    "single_launch_only": true,
+    "stderr_log": "runtime_artifacts/eomt_dinov3_66class_asset_recovery_20260725T174500Z/recovery.stderr.log",
+    "stdout_log": "runtime_artifacts/eomt_dinov3_66class_asset_recovery_20260725T174500Z/recovery.stdout.log"
+  },
+  "preflight": {
+    "durable_free_bytes": 89715716653056,
+    "minimum_free_bytes": 186921770,
+    "target_exists": false
+  },
+  "script_sha256": "bfcbcdd5205c9b929712e1341184ce15318d1b14674130f39a4690a2a3e00852",
+  "self_sha256": "62029afe78dbef62103d56875d6d55ffd91cf7c5370d19c3e5bbe2657086aafd",
+  "snapshot": {
+    "assets": [
+      {
+        "filename": "model.safetensors",
+        "sha256": "1fed3231445cce739e368c1828f49215459ca33ba56b6712d48e3058274c5d6f",
+        "size_bytes": 93450628
+      },
+      {
+        "filename": "config.json",
+        "sha256": "8baa79f9cc2d41a4e01f575efb97b0aad1353ce955c9e95b7da4c8f61f1034d3",
+        "size_bytes": 6703
+      },
+      {
+        "filename": "preprocessor_config.json",
+        "sha256": "ce1554014d6dcea56b2f352e564275c9ec4a07c5efee704742fe3ed128550e2e",
+        "size_bytes": 436
+      },
+      {
+        "filename": "README.md",
+        "sha256": "1e13062ee2842cd1e92206b7a7ecd3944a243b169d0da8f43e04d94a31794165",
+        "size_bytes": 3118
+      }
+    ],
+    "license": "MIT",
+    "repository": "tue-mps/eomt-dinov3-coco-panoptic-small-640",
+    "revision": "602edaa2839daf6cb3de3ad46c176098c3be9090",
+    "target": "models/runtime_cache/eomt_dinov3_small_602edaa"
+  }
+}

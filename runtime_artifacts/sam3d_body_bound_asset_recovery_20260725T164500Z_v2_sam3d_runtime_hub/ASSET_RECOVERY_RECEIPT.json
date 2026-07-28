@@ -1,0 +1,65 @@
+{
+  "artifact_type": "sam3d_body_bound_asset_recovery_receipt.v2",
+  "authority": {
+    "may_author_gold": false,
+    "may_promote_provider": false,
+    "overwrite_allowed": false,
+    "provider_lifecycle_state": "installed_unqualified",
+    "replacement_model_allowed": false
+  },
+  "bindings": {
+    "checkpoint_assets": [
+      {
+        "filename": "model.ckpt",
+        "git_blob_id": "245c34983d39a78fa4c1b42d2f5f60cf918fb102",
+        "sha256": "b5a2f9d305dd02626b967aa2e86021fba07065df66ce7a7e00ffb9664f150abf",
+        "size_bytes": 2109129346
+      },
+      {
+        "filename": "model_config.yaml",
+        "git_blob_id": "c43c46e52f41c76094a6fdfe12aee0348213a82b",
+        "sha256": "1012fc3f39cb5e90e3f8fbadf7bded31604bfafdce0321d17a7c1a2d3f08b88d",
+        "size_bytes": 1488
+      },
+      {
+        "filename": "assets/mhr_model.pt",
+        "git_blob_id": "6e67294a1b91c304465a0e3392ea8ab9c4d81af9",
+        "sha256": "352e271a6c42729c68554ceaea0c955e866970160c31e35506d782dc0f7377bc",
+        "size_bytes": 696110248
+      }
+    ],
+    "checkpoint_repository": "facebook/sam-3d-body-dinov3",
+    "checkpoint_revision": "11aaa346c7204874a1cbafe3d39a979080b2c55a",
+    "host_adapter_v2_failure_receipt": "runtime_artifacts/sam3d_body_v3_host_adapter_runtime_20260725T162500Z_v2_numeric_pid_preflight/HOST_ADAPTER_RUNTIME_RECEIPT.json",
+    "runtime_lock": "env/sam3d_body_runtime.lock.json",
+    "runtime_lock_sha256": "61a8d53e5a08309ca5cf2c879a7bed509ff81422283b5ea31133d6859e4987a3",
+    "source_commit": "b5c765a0d89d789985e186d396315e7590887b94",
+    "source_repository": "https://github.com/facebookresearch/sam-3d-body",
+    "source_tree": "7b5a2a23619659a679d64f096201c6504cbebe30"
+  },
+  "ended_at_utc": "2026-07-25T15:50:47.693949+00:00",
+  "error": {
+    "message": "401 Client Error. (Request ID: Root=1-6a64db57-27914d426d8cec8d5f4b7782;5e42c5e2-b31e-48f6-b8d3-e2c90e2c0fae)\n\nCannot access gated repo for url https://huggingface.co/facebook/sam-3d-body-dinov3/resolve/11aaa346c7204874a1cbafe3d39a979080b2c55a/model.ckpt.\nAccess to model facebook/sam-3d-body-dinov3 is restricted. You must have access to it and be authenticated to access it. Please log in.",
+    "traceback": "Traceback (most recent call last):\n  File \"/workspace/maskfactory/runtime_artifacts/sam3d_body_runpod_env/lib/python3.11/site-packages/huggingface_hub/utils/_http.py\", line 795, in hf_raise_for_status\n    response.raise_for_status()\n  File \"/workspace/maskfactory/runtime_artifacts/sam3d_body_runpod_env/lib/python3.11/site-packages/httpx/_models.py\", line 829, in raise_for_status\n    raise HTTPStatusError(message, request=request, response=self)\nhttpx.HTTPStatusError: Client error '401 Unauthorized' for url 'https://huggingface.co/facebook/sam-3d-body-dinov3/resolve/11aaa346c7204874a1cbafe3d39a979080b2c55a/model.ckpt'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/workspace/maskfactory/runtime_artifacts/sam3d_body_bound_asset_recovery_20260725T164500Z_v2_sam3d_runtime_hub/recover_bound_assets.py\", line 110, in main\n    hf_hub_download(\n  File \"/workspace/maskfactory/runtime_artifacts/sam3d_body_runpod_env/lib/python3.11/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/maskfactory/runtime_artifacts/sam3d_body_runpod_env/lib/python3.11/site-packages/huggingface_hub/file_download.py\", line 992, in hf_hub_download\n    return _hf_hub_download_to_local_dir(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/maskfactory/runtime_artifacts/sam3d_body_runpod_env/lib/python3.11/site-packages/huggingface_hub/file_download.py\", line 1366, in _hf_hub_download_to_local_dir\n    _raise_on_head_call_error(head_call_error, force_download, local_files_only)\n  File \"/workspace/maskfactory/runtime_artifacts/sam3d_body_runpod_env/lib/python3.11/site-packages/huggingface_hub/file_download.py\", line 1864, in _raise_on_head_call_error\n    raise head_call_error\n  File \"/workspace/maskfactory/runtime_artifacts/sam3d_body_runpod_env/lib/python3.11/site-packages/huggingface_hub/file_download.py\", line 1707, in _get_metadata_or_catch_error\n    metadata = get_hf_file_metadata(\n               ^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/maskfactory/runtime_artifacts/sam3d_body_runpod_env/lib/python3.11/site-packages/huggingface_hub/utils/_validators.py\", line 88, in _inner_fn\n    return fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/maskfactory/runtime_artifacts/sam3d_body_runpod_env/lib/python3.11/site-packages/huggingface_hub/file_download.py\", line 1615, in get_hf_file_metadata\n    response = _httpx_follow_relative_redirects_with_backoff(\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/maskfactory/runtime_artifacts/sam3d_body_runpod_env/lib/python3.11/site-packages/huggingface_hub/utils/_http.py\", line 726, in _httpx_follow_relative_redirects_with_backoff\n    hf_raise_for_status(response)\n  File \"/workspace/maskfactory/runtime_artifacts/sam3d_body_runpod_env/lib/python3.11/site-packages/huggingface_hub/utils/_http.py\", line 821, in hf_raise_for_status\n    raise _format(GatedRepoError, message, response, repo_type=repo_type, repo_id=repo_id) from e\nhuggingface_hub.errors.GatedRepoError: 401 Client Error. (Request ID: Root=1-6a64db57-27914d426d8cec8d5f4b7782;5e42c5e2-b31e-48f6-b8d3-e2c90e2c0fae)\n\nCannot access gated repo for url https://huggingface.co/facebook/sam-3d-body-dinov3/resolve/11aaa346c7204874a1cbafe3d39a979080b2c55a/model.ckpt.\nAccess to model facebook/sam-3d-body-dinov3 is restricted. You must have access to it and be authenticated to access it. Please log in.\n",
+    "type": "GatedRepoError"
+  },
+  "execution_identity": {
+    "network_volume_id": "o9qv2ld91c",
+    "pod_id": "68psfqtaogg7s7",
+    "pod_name": "vitreous_beige_centipede",
+    "volume_mount": "/workspace"
+  },
+  "preflight": {
+    "checkpoint_target": "models/runtime_cache/sam3d_body_checkpoint_11aaa346",
+    "checkpoint_target_exists": false,
+    "free_bytes": 89510094700544,
+    "required_checkpoint_bytes": 2805241082,
+    "source_target": "models/runtime_cache/sam-3d-body_b5c765a",
+    "source_target_exists": false
+  },
+  "runtime_interpreter": "runtime_artifacts/sam3d_body_runpod_env/bin/python",
+  "self_sha256": "7dacec2fc4af7a0f21d1fb57ae86146952fa908f43ca4553422e706b2a4fc08f",
+  "staging_preserved": "runtime_artifacts/sam3d_body_bound_asset_recovery_20260725T164500Z_v2_sam3d_runtime_hub/staging",
+  "started_at_utc": "2026-07-25T15:50:43.417410+00:00",
+  "status": "ASSET_RECOVERY_FAIL"
+}

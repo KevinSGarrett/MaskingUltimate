@@ -1,0 +1,34 @@
+{
+  "acceptance": {
+    "pass_status": "SCIPY_ARTIFACT_STAGE_PASS",
+    "terminal_receipt": "SCIPY_STAGE_RECEIPT.json",
+    "next_safe_action": "Construct a new 54-package hash-bound clean closure. Do not modify or reuse the sealed V2 runtime environment."
+  },
+  "artifact_type": "eomt_dinov3_scipy_dependency_recovery_binding.v1",
+  "controls": {
+    "gpu_execution": false,
+    "model_load": false,
+    "network_download": true,
+    "package_install": false,
+    "provider_promotion": false,
+    "single_launch_only": true
+  },
+  "execution_identity": {
+    "network_volume_id": "o9qv2ld91c",
+    "pod_id": "68psfqtaogg7s7",
+    "pod_name": "vitreous_beige_centipede",
+    "volume_mount": "/workspace"
+  },
+  "package_target": {
+    "constraint": "scipy==1.17.1",
+    "download_mode": "wheel_only_no_deps",
+    "reason": "The sealed CPU-only shadow-load receipt established that EomtDinov3Loss requires SciPy."
+  },
+  "predecessor": {
+    "receipt": "runtime_artifacts/eomt_dinov3_cpu_shadow_load_20260725T194500Z/EOMT_CPU_SHADOW_LOAD_RECEIPT.json",
+    "receipt_sha256": "8403e4c796ae2a518b259fd367220f5c933304ee0a9905f1fa95d4c15fb0cfa8",
+    "receipt_self_sha256": "dcd62448bc202f4bd80839387e279e3a8e3e803e5aefed1dd26d8786464c764e",
+    "retry_prohibited": true
+  },
+  "self_sha256": "bb21de4cc4e3cad2a1f1da2d973f443e582a8ea0ff16a926b5efa48e6d550075"
+}

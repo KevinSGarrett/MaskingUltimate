@@ -1,0 +1,42 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_corpus_video_frame_dedup.v1",
+  "artifact_type": "adult_corpus_correlated_video_frame_leakage_correction",
+  "recorded_at": "2026-07-22T11:46:36Z",
+  "status": "PASS",
+  "tracker_items": [
+    "MF-P0-18.05",
+    "MF-P0-18.06"
+  ],
+  "registry_sha256": "785bfbcca98262a00519b53a360a67d22f23ec9e4b41c9bc38029f402eb9bbcf",
+  "shard_index_sha256": "16a958ffdc6c304174fa8ff5b9b656a607e8e8a9e9610dac9be4a8dbff3c994a",
+  "prior_mapping_sha256": "cab2b74545177264bfad8b07ff51cf692c3eff4fe37612276a6e5381a7d2527a",
+  "corrected_mapping_sha256": "544672f6d9afb8ae9232323f234593ed47ca48dfb3722416f0a26994b68bfbad",
+  "corrected_summary_sha256": "067e395b5e7b256d800f5094a203a36d014a83eb4124e899600d17ae69574e8d",
+  "correction": {
+    "failure_found": "Explicit video frame suffixes such as clip-05_mp4-0000 and clip-05_mp4-0001 were previously treated as distinct source families.",
+    "normalization": "roboflow_suffix_plus_explicit_video_frame_collapse_v2",
+    "record_count": 81910,
+    "split_group_count": 41984,
+    "duplicate_record_count": 39926,
+    "cross_partition_group_count": 451,
+    "additional_correlated_records_grouped": 235,
+    "additional_cross_partition_groups_resolved": 12,
+    "partition_counts": {
+      "holdout": 50,
+      "test": 4164,
+      "train": 70021,
+      "validation": 7675
+    }
+  },
+  "implementation_sha256": {
+    "src/maskfactory/nude_corpus_dedup.py": "d163b2357cac5e6afaac48dca2fa9f467bd66cac19ea7981c168ee77e20b5d7c",
+    "tests/test_nude_corpus_dedup.py": "47aa7819a92e5e651c555a5b3f25ef6ea52d272abdfc92488091631349d37ea0"
+  },
+  "validation": {
+    "source_hashes_verified": true,
+    "every_record_has_one_group": true,
+    "correlated_partitions_assigned_atomically": true,
+    "video_frame_regression_fixture": "pass"
+  },
+  "claim_boundary": "This proves deterministic grouping and strictest-partition assignment for the corrected full-corpus mapping. It does not certify masks, grant training authority, or complete provider and strict-visual qualification."
+}

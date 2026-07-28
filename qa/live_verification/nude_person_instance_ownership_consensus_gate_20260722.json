@@ -1,0 +1,56 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_person_instance_ownership_consensus_gate.v1",
+  "artifact_type": "adult_anatomy_multi_provider_person_instance_ownership_contract",
+  "recorded_at": "2026-07-22T13:16:35Z",
+  "status": "FAIL_CLOSED_CONTRACT_PASS_LIVE_EXECUTION_OPEN",
+  "tracker_items": [
+    "MF-P4-12.02",
+    "MF-P4-12.05",
+    "MF-P4-12.06"
+  ],
+  "product_behavior": {
+    "minimum_independent_detector_families": 2,
+    "source_hash_bound": true,
+    "shape_bound_mask_hash_recomputed": true,
+    "canonical_candidate_label_bound": true,
+    "detector_boxes_must_spatially_agree_for_same_person_index": true,
+    "minimum_anatomy_containment": 0.95,
+    "maximum_runner_up_containment": 0.20,
+    "minimum_cross_provider_person_box_iou": 0.50,
+    "ambiguous_multi_person_overlap_has_no_owner": true,
+    "ambiguous_records_can_continue_to_nonacceptance": true,
+    "terminal_receipt_recomputes_ownership_from_pixels_and_detector_evidence": true
+  },
+  "adversarial_coverage": [
+    "single detector cannot claim verified ownership",
+    "same-family detectors cannot form an independent quorum",
+    "source-hash drift fails closed",
+    "mask-hash drift fails closed",
+    "matching person index without spatial agreement remains ambiguous",
+    "cross-person anatomy overlap abstains without guessing",
+    "detector-box drift after receipt creation fails terminal replay"
+  ],
+  "validation": {
+    "focused_and_neighbor_tests": "71 passed",
+    "ruff": "PASS",
+    "black": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "implementation_sha256": {
+    "src/maskfactory/nude_person_ownership.py": "5fe903a8011cfab54c70393c2b7b6a10902e30dec5539bc2b1bcb75316919794",
+    "src/maskfactory/nude_record_qualification.py": "6189d59c620389835d054698011c7adfe12a19c420a111ecc677ce880d9fa986",
+    "tests/test_nude_person_ownership.py": "5a34f10e9e2d10e5ab197f1d75106ab205d3ed1aba1c88e43d5d683374803c4e",
+    "tests/test_nude_record_qualification.py": "e2fa634b95a99ac53267bb7941d683c75e770fb0edd8c7b6ecaccb0902446361",
+    "tests/test_nude_batch_queue.py": "b58d195f7a14268ee3a81183f655fab71d65bf227a390d1935c18dc1c1fb4afc"
+  },
+  "authority_boundary": {
+    "live_adult_person_detection_completed": false,
+    "live_adult_ownership_verified_count": 0,
+    "live_adult_provider_comparison_completed": false,
+    "live_strict_visual_reviews_completed": false,
+    "training_authority_granted": false,
+    "production_mask_authority_granted": false,
+    "operational_certificates_issued": false
+  },
+  "remaining": "Run the exact YOLO11M and RF-DETR person routes over representative adult records, then feed verified or ambiguous receipts into provider comparison and strict per-record review."
+}

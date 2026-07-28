@@ -1,0 +1,231 @@
+{
+  "autonomy": {
+    "authoritative_gold": false,
+    "authority": "uncalibrated_shadow_candidate_proposals_only",
+    "context": "solo",
+    "convergence": {
+      "right_foot_base": {
+        "authoritative_gold": false,
+        "calibrated_95_claim": false,
+        "converged": false,
+        "enabled": true,
+        "final_votes": [
+          {
+            "candidate_id": "civitai_specialist_raw",
+            "confidence": 0.98,
+            "defects": [],
+            "model": "qwen2.5vl:7b",
+            "participated": true,
+            "provider": "self_hosted_qwen",
+            "round": 3,
+            "verdict": "pass"
+          },
+          {
+            "candidate_id": "civitai_specialist_raw",
+            "confidence": null,
+            "defects": [],
+            "model": "gemini-3.5-flash",
+            "participated": false,
+            "provider": "gemini",
+            "reason": "CloudBudgetError:daily cloud hard limit would be exceeded: available=0.072270 requested=1.000000",
+            "round": 3,
+            "verdict": "not_run"
+          },
+          {
+            "candidate_id": "civitai_specialist_raw",
+            "confidence": null,
+            "defects": [],
+            "model": "gpt-5.6-luna",
+            "participated": false,
+            "provider": "openai",
+            "reason": "CloudBudgetError:daily cloud hard limit would be exceeded: available=0.072270 requested=1.000000",
+            "round": 3,
+            "verdict": "not_run"
+          },
+          {
+            "candidate_id": "civitai_specialist_raw",
+            "confidence": null,
+            "defects": [],
+            "model": "claude-sonnet-5",
+            "participated": false,
+            "provider": "anthropic",
+            "reason": "CloudBudgetError:daily cloud hard limit would be exceeded: available=0.072270 requested=1.000000",
+            "round": 3,
+            "verdict": "not_run"
+          }
+        ],
+        "minimum_advisory_pass_confidence": 0.8,
+        "publication_target": "reversible_non_gold_review_draft",
+        "remaining_uncertainties": [
+          "candidate_not_converged:gemini",
+          "candidate_not_converged:openai",
+          "candidate_not_converged:anthropic"
+        ],
+        "round_count": 3,
+        "rounds_report": "autonomy/convergence_right_foot_base.json",
+        "stop_reason": "reviewers_produced_no_novel_safe_candidate",
+        "target_confidence": 0.95,
+        "target_confidence_kind": "requires_gold_calibration_not_raw_provider_scores"
+      },
+      "right_toes": {
+        "authoritative_gold": false,
+        "calibrated_95_claim": false,
+        "converged": false,
+        "enabled": true,
+        "final_votes": [
+          {
+            "candidate_id": "civitai_specialist_raw",
+            "confidence": 0.0,
+            "defects": [],
+            "model": "qwen2.5vl:7b",
+            "participated": true,
+            "provider": "self_hosted_qwen",
+            "round": 3,
+            "verdict": "uncertain"
+          },
+          {
+            "candidate_id": "civitai_specialist_raw",
+            "confidence": null,
+            "defects": [],
+            "model": "gemini-3.5-flash",
+            "participated": false,
+            "provider": "gemini",
+            "reason": "CloudBudgetError:daily cloud hard limit would be exceeded: available=0.072270 requested=1.000000",
+            "round": 3,
+            "verdict": "not_run"
+          },
+          {
+            "candidate_id": "civitai_specialist_raw",
+            "confidence": null,
+            "defects": [],
+            "model": "gpt-5.6-luna",
+            "participated": false,
+            "provider": "openai",
+            "reason": "CloudBudgetError:daily cloud hard limit would be exceeded: available=0.072270 requested=1.000000",
+            "round": 3,
+            "verdict": "not_run"
+          },
+          {
+            "candidate_id": "civitai_specialist_raw",
+            "confidence": null,
+            "defects": [],
+            "model": "claude-sonnet-5",
+            "participated": false,
+            "provider": "anthropic",
+            "reason": "CloudBudgetError:daily cloud hard limit would be exceeded: available=0.072270 requested=1.000000",
+            "round": 3,
+            "verdict": "not_run"
+          }
+        ],
+        "minimum_advisory_pass_confidence": 0.8,
+        "publication_target": "reversible_non_gold_review_draft",
+        "remaining_uncertainties": [
+          "candidate_not_converged:self_hosted_qwen",
+          "candidate_not_converged:gemini",
+          "candidate_not_converged:openai",
+          "candidate_not_converged:anthropic"
+        ],
+        "round_count": 3,
+        "rounds_report": "autonomy/convergence_right_toes.json",
+        "stop_reason": "reviewers_produced_no_novel_safe_candidate",
+        "target_confidence": 0.95,
+        "target_confidence_kind": "requires_gold_calibration_not_raw_provider_scores"
+      }
+    },
+    "decision_count": 2,
+    "enabled": true,
+    "lifecycle_dir": "autonomy",
+    "mode": "autonomous_certified_gold",
+    "pipeline_fingerprint": "58304edffd48e771b568f51d8d2260f1624c776f5fde99a6b8aebc1953ad18d4",
+    "review_draft": {
+      "applied": [],
+      "authoritative_human_gold": false,
+      "authority": "machine_generated_review_draft_non_gold",
+      "base_part_map": "C:\\Comfy_UI_Main_Masking\\data\\packages\\img_cdab0311dc96\\instances\\p0\\label_map_part.png",
+      "base_part_map_sha256": "c1b5cf0fc559f073d322a24cbe1310a294ad38b48f29f3346ff2b659c0a82787",
+      "changed_labels": [],
+      "changed_pixel_count": 0,
+      "changed_pixel_fraction": 0.0,
+      "human_gold_approval_required": true,
+      "promoted_for_human_review": false,
+      "proposed_part_map": "autonomy_review_draft/proposed_label_map_part.png",
+      "proposed_part_map_sha256": "c1b5cf0fc559f073d322a24cbe1310a294ad38b48f29f3346ff2b659c0a82787",
+      "qa": {
+        "block_qc_ids": [],
+        "overall": "no_selection",
+        "report_path": null
+      },
+      "review_part_map": "autonomy_review_draft/label_map_part.png",
+      "review_part_map_sha256": "c1b5cf0fc559f073d322a24cbe1310a294ad38b48f29f3346ff2b659c0a82787",
+      "rolled_back": [],
+      "schema_version": "1.0.0",
+      "skipped": []
+    },
+    "status_counts": {
+      "residual_human_queue": 2
+    }
+  },
+  "cloud_teacher": {
+    "candidate_created_count": 0,
+    "enabled": true,
+    "errors": [
+      "right_toes:CloudBudgetError:cloud request has no active reservation: teach_8f332f21fa034734b6a510f2291c0fdb"
+    ],
+    "judgment_count": 1,
+    "may_approve_gold": false,
+    "may_write_authoritative_masks": false,
+    "mode": "shadow_only",
+    "provider_count": 3
+  },
+  "enabled": false,
+  "manifest_review": {
+    "status": "skipped_until_draft_manifest"
+  },
+  "model": "qwen2.5vl:7b",
+  "reason": "VLM production gate unavailable",
+  "routes": {
+    "right_foot_base": {
+      "may_approve_gold": false,
+      "may_clear_block": false,
+      "may_edit_mask": false,
+      "priority": "highest",
+      "queue": "careful",
+      "reason": "vlm_calibration_gate_unavailable"
+    },
+    "right_toes": {
+      "may_approve_gold": false,
+      "may_clear_block": false,
+      "may_edit_mask": false,
+      "priority": "highest",
+      "queue": "careful",
+      "reason": "vlm_calibration_gate_unavailable"
+    }
+  },
+  "shadow_enabled": true,
+  "whole_image_review": {
+    "authority": "uncalibrated_shadow_only",
+    "impossible_claims": [],
+    "latency_ms": 5473,
+    "lr_suspect": [],
+    "mislabeled": [],
+    "missing": [
+      "right_toes"
+    ],
+    "model": "qwen2.5vl:7b",
+    "notes": "",
+    "prompt_version": "p-image-v2-source-overlay",
+    "status": "complete"
+  },
+  "workhorse": {
+    "audit_count": 2,
+    "authoritative_map_write": false,
+    "authority": "uncalibrated_shadow_candidate_proposals_only",
+    "candidate_better_count": 0,
+    "candidate_created_count": 0,
+    "enabled": true,
+    "human_approval_required": true,
+    "mode": "gated_candidate_generation",
+    "non_gold_review_draft_write": false,
+    "report": "workhorse_report.json"
+  }
+}

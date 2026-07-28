@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0.0",
+  "verified_at": "2026-07-15T09:26:26Z",
+  "item_id": "MF-P2-10.08",
+  "result": "pass",
+  "dependency_status": {
+    "MF-P2-10.01": "complete",
+    "MF-P2-10.02": "complete",
+    "MF-P2-10.03": "complete",
+    "MF-P2-10.04": "complete",
+    "MF-P2-10.05": "complete",
+    "MF-P2-10.06": "complete",
+    "MF-P2-10.07": "complete"
+  },
+  "named_contexts": {
+    "exposed": "pass",
+    "clothed": "pass",
+    "partial": "pass",
+    "distant": "pass",
+    "hair_occluded": "pass",
+    "side_view": "pass",
+    "cropped": "pass"
+  },
+  "hard_qa": {
+    "active_ids": [
+      "QC-V2-001",
+      "QC-V2-002",
+      "QC-V2-003",
+      "QC-V2-004",
+      "QC-V2-005",
+      "QC-V2-006",
+      "QC-V2-007",
+      "QC-V2-008",
+      "QC-V2-009",
+      "QC-V2-010",
+      "QC-V2-012"
+    ],
+    "retired_id_absent": "QC-V2-011",
+    "clothed_false_positive_sweep": "pass",
+    "canonical_prompt_and_provenance": "pass"
+  },
+  "content_policy": {
+    "general": "allowed",
+    "adult_nonexplicit": "allowed",
+    "consensual_explicit_adult": "allowed",
+    "adult_nsfw_training_eligibility": true,
+    "adult_nsfw_may_seed_human_reviewed_gold": true,
+    "owner_rejected_v2_age_eligibility_gate_present": false,
+    "separate_apparent_minor_intake_safety_boundary_changed": false
+  },
+  "artifact_hashes": {
+    "drafting_config": "83f8d851ca4efb43643f19aac8ddc217ba4e6c544b220d41c88e3d0ed3757129",
+    "qa_config": "aee3bfac0ca9949cd6bede328355e64f1a95538ae5e36e2814ac44bf47f50430",
+    "drafting_implementation": "4b68e4d44e6648d8e587d3c97e6e04a77924f9ea4f50b33a5b12f44962c2b7cc",
+    "qa_implementation": "31f6c8b0a9c69e05509d241da63a77658082c76f896793983eb1cd23987b827d",
+    "cloud_teacher_implementation": "7f44903d0dc3a44e52d676e0b711f45a47040977c23370adecd550fd59e12078",
+    "drafting_tests": "0d38ce0ce22aaa4dfa9a8c232a1751b4447f03d3865aa79d6944efc32bf109d9",
+    "qa_tests": "7bc4f149f74faf38f462b8dd878ba23378cc7afb01165e05e98b3d8774aabdf8"
+  },
+  "verification": {
+    "focused_tests_passed": 76,
+    "focused_tests_exit_code": 0,
+    "focused_anatomy_tracker_tests_passed": 33,
+    "full_repository_tests_passed": 1376,
+    "full_repository_exit_code": 0,
+    "ruff_changed_authority_surface": "pass",
+    "wsl_docker_cvat_external_vhd_or_external_drive_file_accessed": false
+  },
+  "tracker_correction": "The prior blocked reason was stale: it claimed MF-P2-10.02 still needed to remove the obsolete age gate even though MF-P2-10.02 and all other MF-P2-10.01..07 dependencies were already complete. The exact named-context and hard-QA suite has now been rerun successfully.",
+  "authority_boundary": "This closes the fixture/context verification item. It permits governed adult and NSFW sources in training and as inputs to the human-reviewed gold workflow under the approved content lanes and normal provenance, rights, consent, intake, annotation, and QA controls. It does not make fixtures gold or weaken the separate apparent-minor intake quarantine."
+}

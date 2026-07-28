@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_bridge_crosswalk_completion",
+  "recorded_at": "2026-07-19T20:25:00Z",
+  "tracker_item": "MF-P6-09.07",
+  "status": "complete",
+  "percent_complete": 100,
+  "prerequisite_context": {
+    "MF-P6-09.01": "complete",
+    "MF-P6-09.02": "complete",
+    "MF-P6-09.03": "complete",
+    "MF-P6-09.04": "complete",
+    "MF-P6-09.05": "complete",
+    "MF-P6-09.06": "complete"
+  },
+  "focused_pytest": {
+    "command": "python -m pytest tests/test_bridge_crosswalk.py -q",
+    "passed": 12,
+    "failed": 0
+  },
+  "verify_clause_coverage": [
+    "unknown_unmapped_source_field",
+    "removed_source_field",
+    "order_sensitive_reorder",
+    "missing_required_source",
+    "incompatible_major_version",
+    "declared_minor_addition_only",
+    "unknown_enum_value",
+    "use_eligibility_preserve_only_observation",
+    "maskfactory_side_independent_consumer_recomputation"
+  ],
+  "additive_closures": [
+    "compatibility_matrix.removed_source_paths",
+    "compatibility_matrix.order_sensitive_sequences",
+    "tests/test_bridge_crosswalk.py::test_crosswalk_observation_requires_independent_consumer_recomputation"
+  ],
+  "crosswalk_identity": {
+    "crosswalk_id": "maskfactory-main-crosswalk-v1",
+    "crosswalk_sha256": "802eebdb76e62b5845a136238bde525f0893cd710c0cdc609cc11f141d98558b"
+  },
+  "truth_boundary": [
+    "no_main_consumer_runtime_fabricated",
+    "no_main_adoption_claim",
+    "maskfactory_side_consumer_recomputation_fixtures_only",
+    "no_reset_clean_stage_commit"
+  ]
+}

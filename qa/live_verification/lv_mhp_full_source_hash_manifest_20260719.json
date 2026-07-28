@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_live_verification",
+  "item_id": "MF-P9-13.04",
+  "verified_at": "2026-07-19T02:30:00-05:00",
+  "status": "PASS_WITH_REMAINING_SOURCES",
+  "source": "lv_mhp_v1",
+  "manifest": {
+    "path": "C:\\MaskFactory_ExternalSupervision\\manifests\\lv_mhp_v1_source_hash_manifest_v1.json",
+    "file_sha256": "5a70bd698b51800a993310945b261c98757f86e1228ff4fdfb9699a8f7d6a348",
+    "seal_sha256": "5acd2eb40aa336c16ebc5d21e0f2aacba28438a85135072c6d25ef6c73373441",
+    "file_count": 19953,
+    "unique_path_count": 19953,
+    "total_source_bytes": 908863959,
+    "manifest_bytes": 2667748,
+    "inventory_count_match": true,
+    "schema_valid": true,
+    "self_seal_valid": true
+  },
+  "repeatability": {
+    "runs": 2,
+    "identical_file_sha256": true,
+    "identical_seal_sha256": true,
+    "second_run_used_scan_consistency_guard": true,
+    "immutable_publication_idempotent": true
+  },
+  "implementation_sha256": {
+    "src/maskfactory/external_supervision_hash_manifest.py": "01db2a44ecefad39c428246f8fa607708082e4d82d4135dfc6b12adba43c32b7",
+    "src/maskfactory/schemas/external_supervision_source_hash_manifest.schema.json": "4bb4ffb412512a03e844da30eecdeb6a8de860427a75d4b83a44f399f8aa2a42",
+    "tests/test_external_supervision_hash_manifest.py": "947fbb0b583a8a360834ecb19d372eddcff9d1247849944164d9815cdbe46f49"
+  },
+  "validation": [
+    {
+      "command": "python -m pytest -q tests/test_external_supervision_hash_manifest.py tests/test_external_supervision_qualification.py tests/test_maskedwarehouse_inventory.py",
+      "status": "PASS",
+      "tests_passed": 17
+    },
+    {
+      "command": "ruff check src/maskfactory/external_supervision_hash_manifest.py tests/test_external_supervision_hash_manifest.py",
+      "status": "PASS"
+    },
+    {
+      "command": "python -m json.tool src/maskfactory/schemas/external_supervision_source_hash_manifest.schema.json",
+      "status": "PASS"
+    }
+  ],
+  "guards": [
+    "all paths are UTF-8 POSIX-style and relative to the governed source root",
+    "symbolic links, non-regular entries, escapes, case-fold collisions and empty manifests fail closed",
+    "file identity/size/mtime is stable across each hash read",
+    "the full relative-file set is identical before publication",
+    "an existing output path is idempotent only for byte-identical content"
+  ],
+  "remaining": [
+    "build complete manifests for CelebAMask-HQ and LaPa",
+    "produce LV-MHP instance-identity and cross-source exact/perceptual split-dedup evidence",
+    "bind every gate into the final source-specific qualification bundle"
+  ],
+  "truth_boundary": {
+    "source_admitted": false,
+    "gold_authority_granted": false,
+    "holdout_authority_granted": false
+  }
+}

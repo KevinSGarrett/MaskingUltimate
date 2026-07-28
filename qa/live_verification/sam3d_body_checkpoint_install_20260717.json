@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-17T09:23:19.7235666Z",
+  "result": "CHECKPOINT_INSTALL_PASS_RUNTIME_PENDING",
+  "provider": "sam3d_body",
+  "source": {
+    "repository": "https://github.com/facebookresearch/sam-3d-body",
+    "commit": "b5c765a0d89d789985e186d396315e7590887b94",
+    "tree": "7b5a2a23619659a679d64f096201c6504cbebe30"
+  },
+  "checkpoint": {
+    "repository": "facebook/sam-3d-body-dinov3",
+    "revision": "11aaa346c7204874a1cbafe3d39a979080b2c55a",
+    "local_root": "models/runtime_cache/sam3d_body_checkpoint_11aaa346",
+    "asset_count": 3,
+    "total_size_bytes": 2805241082,
+    "assets": [
+      {
+        "filename": "model.ckpt",
+        "size_bytes": 2109129346,
+        "sha256": "b5a2f9d305dd02626b967aa2e86021fba07065df66ce7a7e00ffb9664f150abf"
+      },
+      {
+        "filename": "model_config.yaml",
+        "size_bytes": 1488,
+        "sha256": "1012fc3f39cb5e90e3f8fbadf7bded31604bfafdce0321d17a7c1a2d3f08b88d"
+      },
+      {
+        "filename": "assets/mhr_model.pt",
+        "size_bytes": 696110248,
+        "sha256": "352e271a6c42729c68554ceaea0c955e866970160c31e35506d782dc0f7377bc"
+      }
+    ]
+  },
+  "installation": {
+    "atomic_per_asset_promotion": true,
+    "resumable_transfers": true,
+    "credential_redacted": true,
+    "first_downloaded_bytes": 2805241082,
+    "idempotent_replay_downloaded_bytes": 0,
+    "idempotent_replay_reused_asset_count": 3,
+    "destination_drive": "C:",
+    "free_gib_after_install": 59.95,
+    "f_drive_written": false
+  },
+  "runtime": {
+    "isolated_environment": "not_created_wsl_filesystem_io_error",
+    "checkpoint_inference": "not_run_wsl_filesystem_io_error",
+    "wsl_terminated_or_restarted": false,
+    "docker_or_comfyui_terminated": false
+  },
+  "authority": {
+    "provider_lifecycle_state": "planned",
+    "checkpoint_installed": true,
+    "active_provider": "densepose_r50_fpn_s1x",
+    "live_smoke_passed": false,
+    "benchmark_passed": false,
+    "promoted": false,
+    "production_route_changed": false,
+    "may_author_gold": false
+  },
+  "claims_not_made": [
+    "SAM 3D Body model loaded",
+    "SAM 3D Body inference passed",
+    "coordinate, frame, or person identity mapping passed",
+    "peak VRAM, latency, or deterministic output hash measured",
+    "OOM fallback passed",
+    "SAM 3D Body beat or replaced DensePose"
+  ]
+}

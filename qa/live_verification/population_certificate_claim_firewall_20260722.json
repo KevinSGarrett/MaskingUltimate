@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_id": "population_certificate_claim_firewall_20260722",
+  "tracker_item": "MF-P4-11.11",
+  "status": "PARTIAL_PASS_EXACT_PER_RECORD_ADMISSION_STILL_OPEN",
+  "legacy_population_profile": {
+    "schema_version": "2.0.0-autonomous",
+    "authority": "machine_verified_population_risk_evidence",
+    "enabled": false,
+    "profile_sha256": "269e02c8cc345ea94654efcb8175c3fb573c848e1d20ba94c6db87fdcabb1d5d",
+    "profile_file_sha256": "bf9ec82b7b63ac5d3334e779a8f82a622d5749b05566099abad1e8006d14b773",
+    "per_record_authority": false,
+    "autonomous_certified_gold_authority": false
+  },
+  "implementation_sha256": "ced9c4eecdc109cbae7397714f9971d7efdced276e08b68169c1e9b9fe3a5172",
+  "lifecycle_slice_driver_sha256": "0e3c1a230d5f421515040e4d5662db819ce8e6681e12ca052770e008ad9c70c1",
+  "verified_behavior": {
+    "statistically_passing_population_may_remain_diagnostic": true,
+    "population_certificate_verification_result": "population_certificate_not_per_record_authority",
+    "controller_outcome": "machine_verified_candidate",
+    "controller_truth_tier": "machine_candidate",
+    "gold_audit_population_count": 0,
+    "required_missing_bindings": [
+      "per_record_target_contract_sha256",
+      "qualified_critic_quorum_sha256",
+      "semantic_alignment_report_sha256",
+      "qualified_per_label_context_qa_registry_sha256"
+    ]
+  },
+  "validation": {
+    "focused_and_adjacent_tests_passed": 54,
+    "ruff": "PASS",
+    "black": "PASS",
+    "diff_integrity": "PASS"
+  },
+  "open_requirements": [
+    "qualify_primary_visual_critic",
+    "qualify_independent_family_juror",
+    "publish_qualified_per_label_context_qa_registry",
+    "bind_complete_per_record_qa_vector",
+    "bind_current_semantic_alignment_and_critic_quorum",
+    "prove_exact_package_certificate_revocation_and_stale_rejection"
+  ],
+  "claim_limits": [
+    "no_autonomous_certified_gold_created",
+    "no_operational_certificate_issued",
+    "no_visual_role_promoted",
+    "MF-P4-11.11_remains_materially_open"
+  ]
+}

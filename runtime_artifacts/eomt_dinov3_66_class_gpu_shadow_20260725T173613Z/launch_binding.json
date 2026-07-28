@@ -1,0 +1,84 @@
+{
+  "admission_basis": {
+    "admission_must_be_rechecked_immediately_before_execution": true,
+    "required_broker_route": "local_pod",
+    "required_compute_processes": 0,
+    "required_gpu": "NVIDIA RTX 6000 Ada Generation",
+    "required_pod_id": "68psfqtaogg7s7",
+    "required_volume_id": "o9qv2ld91c"
+  },
+  "authority": {
+    "gold_authority": false,
+    "mask_promotion": false,
+    "semantic_mask_claim": false,
+    "shadow_only": true,
+    "visual_acceptance": false
+  },
+  "code": {
+    "path": "tools/eomt_dinov3_66_class_shadow.py",
+    "sha256": "36e03e32ffe17e852dd33f08f8dba552dd71994221ff3201375750cd67e70b91"
+  },
+  "created_at_utc": "2026-07-25T17:36:13Z",
+  "execution": {
+    "cuda_visible_devices": "0",
+    "offline": true,
+    "repeats": 2,
+    "seed": 1337
+  },
+  "fixture": {
+    "content_lane": "adult_nonexplicit_allowed",
+    "path": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+    "sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63",
+    "use_scope": "governed_smoke_shadow_only"
+  },
+  "git_head": "010f3664a6def58f7daa6e6f6f8086ef6deaf630",
+  "model_directory": "models/runtime_cache/eomt_dinov3_small_602edaa",
+  "outputs": {
+    "failure_receipt": "runtime_artifacts/eomt_dinov3_66_class_gpu_shadow_20260725T173613Z/EOMT_DINOV3_66_CLASS_GPU_SHADOW_FAILURE.json",
+    "success_receipt": "runtime_artifacts/eomt_dinov3_66_class_gpu_shadow_20260725T173613Z/EOMT_DINOV3_66_CLASS_GPU_SHADOW_RECEIPT.json"
+  },
+  "runtime": {
+    "clean_closure_receipt": {
+      "path": "runtime_artifacts/eomt_dinov3_clean_isolated_runtime_closure_20260725T172623Z/CLEAN_ISOLATED_RUNTIME_RECEIPT.json",
+      "sha256": "e35271ca9836a31449ba721977ed22139123b9be875126db276cdf17ac47f833"
+    },
+    "clean_closure_receipt_self_sha256": "8195700de224a8aa879e85db985d892a1bc2bbed5d5fb846eb0693b8df624fa0",
+    "python_executable": "/workspace/maskfactory/runtime_artifacts/eomt_dinov3_clean_isolated_runtime_closure_20260725T172623Z/venv/bin/python"
+  },
+  "schema_version": "maskfactory.eomt_dinov3_66_class_shadow_binding.v1",
+  "session_id": "019f91d1-ea20-7d81-83ff-03d393eaa1f5",
+  "snapshot": {
+    "README.md": {
+      "path": "models/runtime_cache/eomt_dinov3_small_602edaa/README.md",
+      "sha256": "1e13062ee2842cd1e92206b7a7ecd3944a243b169d0da8f43e04d94a31794165"
+    },
+    "config.json": {
+      "path": "models/runtime_cache/eomt_dinov3_small_602edaa/config.json",
+      "sha256": "8baa79f9cc2d41a4e01f575efb97b0aad1353ce955c9e95b7da4c8f61f1034d3"
+    },
+    "model.safetensors": {
+      "path": "models/runtime_cache/eomt_dinov3_small_602edaa/model.safetensors",
+      "sha256": "1fed3231445cce739e368c1828f49215459ca33ba56b6712d48e3058274c5d6f"
+    },
+    "preprocessor_config.json": {
+      "path": "models/runtime_cache/eomt_dinov3_small_602edaa/preprocessor_config.json",
+      "sha256": "ce1554014d6dcea56b2f352e564275c9ec4a07c5efee704742fe3ed128550e2e"
+    }
+  },
+  "supersedes": {
+    "binding_path": "runtime_artifacts/eomt_dinov3_66_class_gpu_shadow_20260725T171921Z/launch_binding.json",
+    "binding_raw_sha256": "a34beae3ed6977ea84d78dbd88bdbfe9ecf5c049c79604cea61b8bdb3e26b452",
+    "binding_self_sha256": "9eab3a97b8fcc8027729b2afaa93c4e28d5238609ca07568b0468546126c58bb",
+    "failure_receipt": "runtime_artifacts/eomt_dinov3_66_class_gpu_shadow_20260725T171921Z/EOMT_DINOV3_66_CLASS_GPU_SHADOW_PREIMPORT_FAILURE.json",
+    "failure_receipt_raw_sha256": "db95d2b8a4c14a09b18ef750fdcb4ac70fe891ae76c07c1fb566a67a76bfa16c",
+    "reason": "The sealed V4 clean runtime omitted Pillow. V5 adds only the hash-bound CP311 Pillow wheel and passes isolated import plus governed-fixture decode."
+  },
+  "target_head": {
+    "class_count": 66,
+    "class_names_sha256": "69591268cb7314d19d71af6fa9c7d4076b6f8c4caaee88670b2854b14f386b2e",
+    "initialization": "random_new_segmentation_head",
+    "ontology_version": "body_parts_v2",
+    "pretrained_head_disposition": "discard_coco_panoptic_head"
+  },
+  "self_sha256": "e00354f0c99cb8a237a1362e14b19a2d125c4aace4413c106edec5aaccf9eae0"
+}

@@ -1,0 +1,345 @@
+{
+  "access_limitations": [
+    {
+      "error_code": "UnauthorizedOperation",
+      "operation": "ec2 describe-regions",
+      "scope": "regions"
+    },
+    {
+      "error_code": "REGION_ENABLEMENT_UNVERIFIED",
+      "operation": "region selection",
+      "scope": "ec2:us-east-1"
+    },
+    {
+      "error_code": "UnauthorizedOperation",
+      "operation": "ec2 describe-snapshots",
+      "scope": "ec2:us-east-1:snapshots"
+    },
+    {
+      "error_code": "AccessDenied",
+      "operation": "s3api list-buckets",
+      "scope": "s3:buckets"
+    },
+    {
+      "error_code": "NoSuchBucket",
+      "operation": "s3api get-bucket-location",
+      "scope": "s3:d47819942f19e40dcddb99f11b59324c97304af3083add77e86c96d01bf789a2:location"
+    },
+    {
+      "error_code": "NoSuchBucket",
+      "operation": "s3api list-objects-v2",
+      "scope": "s3:d47819942f19e40dcddb99f11b59324c97304af3083add77e86c96d01bf789a2:objects"
+    }
+  ],
+  "authority": {
+    "allowlisted_operations": [
+      "ec2 describe-images",
+      "ec2 describe-instances",
+      "ec2 describe-regions",
+      "ec2 describe-snapshots",
+      "ec2 describe-volumes",
+      "s3api get-bucket-location",
+      "s3api list-buckets",
+      "s3api list-objects-v2",
+      "sts get-caller-identity"
+    ],
+    "credentials_read_or_emitted": false,
+    "inventory_only": true,
+    "maskfactory_workload_executed_on_ec2": false,
+    "mutating_calls_attempted": false
+  },
+  "call_evidence": [
+    {
+      "finished_at": "2026-07-21T21:53:05.142909Z",
+      "operation": "get-caller-identity",
+      "scope": "account",
+      "service": "sts",
+      "started_at": "2026-07-21T21:53:02.550413Z",
+      "status": "pass"
+    },
+    {
+      "error_code": "UnauthorizedOperation",
+      "finished_at": "2026-07-21T21:53:07.872935Z",
+      "operation": "describe-regions",
+      "scope": "regions",
+      "service": "ec2",
+      "started_at": "2026-07-21T21:53:05.142909Z",
+      "status": "inaccessible"
+    },
+    {
+      "finished_at": "2026-07-21T21:53:10.831410Z",
+      "operation": "describe-instances",
+      "scope": "ec2:us-east-1:instances",
+      "service": "ec2",
+      "started_at": "2026-07-21T21:53:07.872935Z",
+      "status": "pass"
+    },
+    {
+      "finished_at": "2026-07-21T21:53:13.756389Z",
+      "operation": "describe-volumes",
+      "scope": "ec2:us-east-1:volumes",
+      "service": "ec2",
+      "started_at": "2026-07-21T21:53:10.831410Z",
+      "status": "pass"
+    },
+    {
+      "finished_at": "2026-07-21T21:53:16.566082Z",
+      "operation": "describe-images",
+      "scope": "ec2:us-east-1:images",
+      "service": "ec2",
+      "started_at": "2026-07-21T21:53:13.756389Z",
+      "status": "pass"
+    },
+    {
+      "error_code": "UnauthorizedOperation",
+      "finished_at": "2026-07-21T21:53:19.503980Z",
+      "operation": "describe-snapshots",
+      "scope": "ec2:us-east-1:snapshots",
+      "service": "ec2",
+      "started_at": "2026-07-21T21:53:16.566082Z",
+      "status": "inaccessible"
+    },
+    {
+      "error_code": "AccessDenied",
+      "finished_at": "2026-07-21T21:53:22.344124Z",
+      "operation": "list-buckets",
+      "scope": "s3:buckets",
+      "service": "s3api",
+      "started_at": "2026-07-21T21:53:19.503980Z",
+      "status": "inaccessible"
+    },
+    {
+      "error_code": "NoSuchBucket",
+      "finished_at": "2026-07-21T21:53:25.173229Z",
+      "operation": "get-bucket-location",
+      "scope": "s3:d47819942f19e40dcddb99f11b59324c97304af3083add77e86c96d01bf789a2:location",
+      "service": "s3api",
+      "started_at": "2026-07-21T21:53:22.344124Z",
+      "status": "inaccessible"
+    },
+    {
+      "error_code": "NoSuchBucket",
+      "finished_at": "2026-07-21T21:53:27.941399Z",
+      "operation": "list-objects-v2",
+      "scope": "s3:d47819942f19e40dcddb99f11b59324c97304af3083add77e86c96d01bf789a2:objects",
+      "service": "s3api",
+      "started_at": "2026-07-21T21:53:25.173229Z",
+      "status": "inaccessible"
+    }
+  ],
+  "completeness": {
+    "all_enabled_regions_inventoried": false,
+    "all_requested_s3_object_listings_accessible": false,
+    "s3_bucket_listing_accessible": false,
+    "s3_object_listings_truncated": false
+  },
+  "ec2": [
+    {
+      "accessibility": {
+        "images": true,
+        "instances": true,
+        "snapshots": false,
+        "volumes": true
+      },
+      "images": {
+        "count": 1,
+        "creation_dates": {
+          "earliest": "2026-06-28T18:21:29.000Z",
+          "latest": "2026-06-28T18:21:29.000Z"
+        },
+        "id_sha256": [
+          "a6e2c985ea30185e9c853c1e33aa2dfc57953c9570669f722af1c423e41d8dc7"
+        ],
+        "resources": [
+          {
+            "architecture": "x86_64",
+            "block_device_mapping_count": 3,
+            "creation_date": "2026-06-28T18:21:29.000Z",
+            "id_sha256": "a6e2c985ea30185e9c853c1e33aa2dfc57953c9570669f722af1c423e41d8dc7",
+            "name_sha256": "64b289314facc3bdd05332aac7fd117d46ae8df51ca2ff1f7560ed5f9f1dee0b",
+            "root_device_type": "ebs",
+            "state": "available"
+          }
+        ],
+        "states": {
+          "available": 1
+        }
+      },
+      "instances": {
+        "count": 3,
+        "id_sha256": [
+          "0647d9654b5b65dd445b81bcacce6acf2bb42e229ed1dab0b531dc5fe8428465",
+          "807cb1b06d120b530b33989d68372c183cc4ca1db717f1783fa72efd6cbbb930",
+          "c9ff7c573de94a9e9fe2a9de941898c0d8ed8e6545ab6091abba96f448db5caa"
+        ],
+        "launch_times": {
+          "earliest": "2025-12-04T21:20:37+00:00",
+          "latest": "2026-07-21T04:35:12+00:00"
+        },
+        "resources": [
+          {
+            "availability_zone": "us-east-1f",
+            "id_sha256": "0647d9654b5b65dd445b81bcacce6acf2bb42e229ed1dab0b531dc5fe8428465",
+            "image_id_sha256": "0500831d3c5cbe7f7856686b9fc6782644b01b53cf6f246d6e51f0b360d9d208",
+            "instance_type": "t3.medium",
+            "launch_time": "2025-12-04T21:20:37+00:00",
+            "state": "stopped",
+            "volume_id_sha256": [
+              "4274aeb62311bc31fa92acdf3445d815cd4383d8eda812ea9ac1b0aab5bb58c6"
+            ]
+          },
+          {
+            "availability_zone": "us-east-1f",
+            "id_sha256": "807cb1b06d120b530b33989d68372c183cc4ca1db717f1783fa72efd6cbbb930",
+            "image_id_sha256": "0500831d3c5cbe7f7856686b9fc6782644b01b53cf6f246d6e51f0b360d9d208",
+            "instance_type": "t3.small",
+            "launch_time": "2025-12-17T22:25:46+00:00",
+            "state": "running",
+            "volume_id_sha256": [
+              "8a261db73a1cffc02d88c07d8917aa757b1524d863ae9505176bcf83c4a2c210"
+            ]
+          },
+          {
+            "availability_zone": "us-east-1d",
+            "id_sha256": "c9ff7c573de94a9e9fe2a9de941898c0d8ed8e6545ab6091abba96f448db5caa",
+            "image_id_sha256": "69c7f9ba201d67f98df734764b60665772ef6726d51fbc58e839aa8f1dd46ee1",
+            "instance_type": "g5.2xlarge",
+            "launch_time": "2026-07-21T04:35:12+00:00",
+            "state": "stopped",
+            "volume_id_sha256": [
+              "9bf2b0a44e65cd7b2324aa2869d3ba749388bae373ecb0dfd6c61e18b437ea3e"
+            ]
+          }
+        ],
+        "states": {
+          "running": 1,
+          "stopped": 2
+        },
+        "types": {
+          "g5.2xlarge": 1,
+          "t3.medium": 1,
+          "t3.small": 1
+        }
+      },
+      "region": "us-east-1",
+      "snapshots": {
+        "count": 0,
+        "id_sha256": [],
+        "resources": [],
+        "start_times": {
+          "earliest": null,
+          "latest": null
+        },
+        "states": {},
+        "total_volume_gib": 0
+      },
+      "volumes": {
+        "count": 3,
+        "create_times": {
+          "earliest": "2025-12-04T21:20:38.482000+00:00",
+          "latest": "2026-06-25T14:34:07.980000+00:00"
+        },
+        "id_sha256": [
+          "4274aeb62311bc31fa92acdf3445d815cd4383d8eda812ea9ac1b0aab5bb58c6",
+          "8a261db73a1cffc02d88c07d8917aa757b1524d863ae9505176bcf83c4a2c210",
+          "9bf2b0a44e65cd7b2324aa2869d3ba749388bae373ecb0dfd6c61e18b437ea3e"
+        ],
+        "resources": [
+          {
+            "attached_instance_id_sha256": [
+              "0647d9654b5b65dd445b81bcacce6acf2bb42e229ed1dab0b531dc5fe8428465"
+            ],
+            "availability_zone": "us-east-1f",
+            "create_time": "2025-12-04T21:20:38.482000+00:00",
+            "encrypted": false,
+            "id_sha256": "4274aeb62311bc31fa92acdf3445d815cd4383d8eda812ea9ac1b0aab5bb58c6",
+            "size_gib": 8,
+            "state": "in-use",
+            "volume_type": "gp3"
+          },
+          {
+            "attached_instance_id_sha256": [
+              "c9ff7c573de94a9e9fe2a9de941898c0d8ed8e6545ab6091abba96f448db5caa"
+            ],
+            "availability_zone": "us-east-1d",
+            "create_time": "2026-06-25T14:34:07.980000+00:00",
+            "encrypted": false,
+            "id_sha256": "9bf2b0a44e65cd7b2324aa2869d3ba749388bae373ecb0dfd6c61e18b437ea3e",
+            "size_gib": 1024,
+            "state": "in-use",
+            "volume_type": "gp3"
+          },
+          {
+            "attached_instance_id_sha256": [
+              "807cb1b06d120b530b33989d68372c183cc4ca1db717f1783fa72efd6cbbb930"
+            ],
+            "availability_zone": "us-east-1f",
+            "create_time": "2025-12-17T22:25:47.163000+00:00",
+            "encrypted": false,
+            "id_sha256": "8a261db73a1cffc02d88c07d8917aa757b1524d863ae9505176bcf83c4a2c210",
+            "size_gib": 8,
+            "state": "in-use",
+            "volume_type": "gp3"
+          }
+        ],
+        "states": {
+          "in-use": 3
+        },
+        "total_gib": 1040,
+        "types": {
+          "gp3": 3
+        }
+      }
+    }
+  ],
+  "identity": {
+    "account_sha256": "927141c6853a478133a071582c2ee9f2a491a16bfa6a7b2995a9a234a24d4c27",
+    "principal_arn_sha256": "e137c974fceadeca7f8cf2ef73166c8eb7634547001cda69ee37a1767ea31d1a",
+    "principal_type": "assumed-role"
+  },
+  "known_bucket_sources": [
+    {
+      "bucket_reference_count": "1",
+      "path": "Plan/OPS_LOG.md",
+      "sha256": "137062b56bb0a5a1fbe0156d61d3a65ff16931d5a0014882d242d2db8eb5f25d"
+    }
+  ],
+  "private_inventory": {
+    "committed": false,
+    "sha256": "14975013b39783dbf27c0e20d4cfebd0531b1035b54bdd78c0554c2772c05585"
+  },
+  "recorded_at": "2026-07-21T21:53:27.942399Z",
+  "regions": {
+    "enabled_count": 0,
+    "inventoried": [
+      "us-east-1"
+    ],
+    "inventoried_count": 1,
+    "listing_accessible": false
+  },
+  "s3": [
+    {
+      "bucket_name_sha256": "d47819942f19e40dcddb99f11b59324c97304af3083add77e86c96d01bf789a2",
+      "checksum_metadata_count": 0,
+      "creation_date": null,
+      "etag_present_count": 0,
+      "last_modified": {
+        "earliest": null,
+        "latest": null
+      },
+      "location_accessible": false,
+      "object_count": 0,
+      "objects_accessible": false,
+      "region": "us-east-1",
+      "top_level_prefixes_by_sha256": {},
+      "total_bytes": 0,
+      "truncated": false
+    }
+  ],
+  "schema_version": "1.0.0",
+  "scope": "maskfactory_aws_readonly_inventory",
+  "tool": {
+    "path": "tools/inventory_aws_readonly.py",
+    "sha256": "2ba98c095a5b043e25bcc48928f9f1477f7b6dcd8f4a49d9f939da959d1ae2c3"
+  }
+}

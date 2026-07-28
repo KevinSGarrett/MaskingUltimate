@@ -1,0 +1,18 @@
+{
+  "clusters": {
+    "qc_fail": "general_boundary"
+  },
+  "coverage_targets": [
+    "cropped_out"
+  ],
+  "input_reasons": [
+    "qc_fail"
+  ],
+  "model": "qwen2.5:7b-instruct",
+  "model_called": true,
+  "prompt_sha256": "4514a0246663b4943d050de3d2a0d1aacad1c5753c1a2bdc81732b623fadff80",
+  "prompt_version": "failure-cluster-v1-doc10",
+  "response_sha256": "93a7a9e64eb69182211c3f220ef3097c5ac42b42a6c04b467f94f797b705173d",
+  "schema_version": "1.0.0",
+  "weekly_summary": "This week, we encountered a single instance of quality control failure due to cropping issues. Ensuring proper framing and boundary handling remains critical."
+}

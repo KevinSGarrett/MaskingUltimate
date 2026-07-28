@@ -1,0 +1,634 @@
+{
+  "artifact_type": "local_multi_person_source_runtime_report",
+  "authority": "local_external_supervision_lv_mhp_duo_gate_runtime_only_no_kevin_governed_demo_gold_champions_or_production_authority",
+  "champions_claimed": false,
+  "checked_at": "2026-07-20T07:56:41Z",
+  "clean_gate_pass_count": 12,
+  "contact_clean_pass_count": 10,
+  "contact_dilation_iterations": 5,
+  "doctor_green_claimed": false,
+  "duo_count_processed": 12,
+  "duo_count_requested": 12,
+  "gate_families_exercised": [
+    "QC-035",
+    "QC-036",
+    "AUT-MP-001",
+    "AUT-MP-002",
+    "AUT-MP-003"
+  ],
+  "gold_claimed": false,
+  "honest_non_claims": [
+    "mf_p8_11_07_real_governed_demo",
+    "kevin_governed_multi_person_sources",
+    "autonomous_certified_gold",
+    "champions",
+    "doctor_green",
+    "production_evidence_pass",
+    "independent_real_accuracy"
+  ],
+  "kevin_governed_multi_person_sources_used": false,
+  "mf_p8_11_07_demo_complete": false,
+  "noncontact_clean_pass_count": 2,
+  "production_evidence_pass_claimed": false,
+  "proof_tier": "RUNTIME_PASS_BOUNDED",
+  "records": [
+    {
+      "clean_gate_blockers": [],
+      "clean_gate_passed": true,
+      "contact_band_px": {
+        "p0->p1": 1218,
+        "p1->p0": 1324
+      },
+      "contact_detected": true,
+      "image_id": "0001",
+      "p0_annotation": "0001_02_01.png",
+      "p0_annotation_sha256": "34e7062a7452be2598d8babe97d325d9b49d9c859f9c6d34ef53b7fad95f4d7d",
+      "p0_pixels": 78292,
+      "p1_annotation": "0001_02_02.png",
+      "p1_annotation_sha256": "7760a41119a5f33d18d6c115ec98b65ebd62c99531a38d67c78c87872532d1e4",
+      "p1_pixels": 95636,
+      "raw_silhouette_intersection_px": 287,
+      "raw_silhouette_iou": 0.001653,
+      "seeded_faults": {
+        "contact_nonreciprocity": {
+          "blocked": true,
+          "blockers": [
+            "AUT-MP-002",
+            "AUT-MP-003"
+          ],
+          "injected": true
+        },
+        "cross_instance_bleed": {
+          "blocked": true,
+          "blockers": [
+            "QC-036",
+            "AUT-MP-001"
+          ],
+          "containment_also_blocked": true,
+          "injected": true
+        },
+        "exclusivity_overlap": {
+          "blocked": true,
+          "blockers": [
+            "QC-035",
+            "QC-036"
+          ],
+          "injected": true
+        }
+      },
+      "shape": [
+        900,
+        600
+      ],
+      "status": "processed"
+    },
+    {
+      "clean_gate_blockers": [],
+      "clean_gate_passed": true,
+      "contact_band_px": {
+        "p0->p1": 1613,
+        "p1->p0": 1696
+      },
+      "contact_detected": true,
+      "image_id": "0002",
+      "p0_annotation": "0002_02_01.png",
+      "p0_annotation_sha256": "e4b90b350e848d39efe73122eb16f25eb86d0908f63d7473c6e73680935d0ca5",
+      "p0_pixels": 50926,
+      "p1_annotation": "0002_02_02.png",
+      "p1_annotation_sha256": "086deec9f8a5fa8ff67afce690f415d7fbebcd78aaf389f9868e59bc5a0ab6dc",
+      "p1_pixels": 71889,
+      "raw_silhouette_intersection_px": 631,
+      "raw_silhouette_iou": 0.005164,
+      "seeded_faults": {
+        "contact_nonreciprocity": {
+          "blocked": true,
+          "blockers": [
+            "AUT-MP-002",
+            "AUT-MP-003"
+          ],
+          "injected": true
+        },
+        "cross_instance_bleed": {
+          "blocked": true,
+          "blockers": [
+            "QC-036",
+            "AUT-MP-001"
+          ],
+          "containment_also_blocked": true,
+          "injected": true
+        },
+        "exclusivity_overlap": {
+          "blocked": true,
+          "blockers": [
+            "QC-035",
+            "QC-036"
+          ],
+          "injected": true
+        }
+      },
+      "shape": [
+        672,
+        447
+      ],
+      "status": "processed"
+    },
+    {
+      "clean_gate_blockers": [],
+      "clean_gate_passed": true,
+      "contact_band_px": {
+        "p0->p1": 796,
+        "p1->p0": 899
+      },
+      "contact_detected": true,
+      "image_id": "0004",
+      "p0_annotation": "0004_02_01.png",
+      "p0_annotation_sha256": "fc094b77cd25a9e99addae5a73f6151f96f237d597e627e0e7e8ba8273a0c9f9",
+      "p0_pixels": 62807,
+      "p1_annotation": "0004_02_02.png",
+      "p1_annotation_sha256": "4fc3084c08f79c902b5f37d42ff3f3de26cf8d9195b3c64465ec28ec83c1c6a0",
+      "p1_pixels": 46028,
+      "raw_silhouette_intersection_px": 89,
+      "raw_silhouette_iou": 0.000818,
+      "seeded_faults": {
+        "contact_nonreciprocity": {
+          "blocked": true,
+          "blockers": [
+            "AUT-MP-002",
+            "AUT-MP-003"
+          ],
+          "injected": true
+        },
+        "cross_instance_bleed": {
+          "blocked": true,
+          "blockers": [
+            "QC-036",
+            "AUT-MP-001"
+          ],
+          "containment_also_blocked": true,
+          "injected": true
+        },
+        "exclusivity_overlap": {
+          "blocked": true,
+          "blockers": [
+            "QC-035",
+            "QC-036"
+          ],
+          "injected": true
+        }
+      },
+      "shape": [
+        640,
+        400
+      ],
+      "status": "processed"
+    },
+    {
+      "clean_gate_blockers": [],
+      "clean_gate_passed": true,
+      "contact_band_px": {
+        "p0->p1": 829,
+        "p1->p0": 1004
+      },
+      "contact_detected": true,
+      "image_id": "0005",
+      "p0_annotation": "0005_02_01.png",
+      "p0_annotation_sha256": "c869bd5a57cceac7b2f86702c746171d5f03872d1222cbbe8ff9b0fd8ee56011",
+      "p0_pixels": 29385,
+      "p1_annotation": "0005_02_02.png",
+      "p1_annotation_sha256": "9b985bfce88bfcfc3a9bbc8a6be7f4a22b1fce990026abbc12fb24393c2c7ae8",
+      "p1_pixels": 26306,
+      "raw_silhouette_intersection_px": 557,
+      "raw_silhouette_iou": 0.010103,
+      "seeded_faults": {
+        "contact_nonreciprocity": {
+          "blocked": true,
+          "blockers": [
+            "AUT-MP-002",
+            "AUT-MP-003"
+          ],
+          "injected": true
+        },
+        "cross_instance_bleed": {
+          "blocked": true,
+          "blockers": [
+            "QC-036",
+            "AUT-MP-001"
+          ],
+          "containment_also_blocked": true,
+          "injected": true
+        },
+        "exclusivity_overlap": {
+          "blocked": true,
+          "blockers": [
+            "QC-035",
+            "QC-036"
+          ],
+          "injected": true
+        }
+      },
+      "shape": [
+        355,
+        630
+      ],
+      "status": "processed"
+    },
+    {
+      "clean_gate_blockers": [],
+      "clean_gate_passed": true,
+      "contact_band_px": {
+        "p0->p1": 791,
+        "p1->p0": 784
+      },
+      "contact_detected": true,
+      "image_id": "0007",
+      "p0_annotation": "0007_02_01.png",
+      "p0_annotation_sha256": "ef6dbf7a3fefe67d902c61c85b53f8160f5b323ce1d8c2a8e873bfb2b335f606",
+      "p0_pixels": 12522,
+      "p1_annotation": "0007_02_02.png",
+      "p1_annotation_sha256": "4e95b2fcf9ee12ab4f87adeb2714fd1f68a76f041201f1b0e50e878ad7aa7222",
+      "p1_pixels": 15361,
+      "raw_silhouette_intersection_px": 61,
+      "raw_silhouette_iou": 0.002193,
+      "seeded_faults": {
+        "contact_nonreciprocity": {
+          "blocked": true,
+          "blockers": [
+            "AUT-MP-002",
+            "AUT-MP-003"
+          ],
+          "injected": true
+        },
+        "cross_instance_bleed": {
+          "blocked": true,
+          "blockers": [
+            "QC-036",
+            "AUT-MP-001"
+          ],
+          "containment_also_blocked": true,
+          "injected": true
+        },
+        "exclusivity_overlap": {
+          "blocked": true,
+          "blockers": [
+            "QC-035",
+            "QC-036"
+          ],
+          "injected": true
+        }
+      },
+      "shape": [
+        533,
+        800
+      ],
+      "status": "processed"
+    },
+    {
+      "clean_gate_blockers": [],
+      "clean_gate_passed": true,
+      "contact_band_px": {
+        "p0->p1": 3092,
+        "p1->p0": 2940
+      },
+      "contact_detected": true,
+      "image_id": "0008",
+      "p0_annotation": "0008_02_01.png",
+      "p0_annotation_sha256": "357846971398541d586f9910ab0380b3309d9e12101093c4a9ed197706cec5d0",
+      "p0_pixels": 256717,
+      "p1_annotation": "0008_02_02.png",
+      "p1_annotation_sha256": "0de50f3bd86661d2e7aaaee1ac9723ac136cc1ae8e091808488b698a17d0bf77",
+      "p1_pixels": 231743,
+      "raw_silhouette_intersection_px": 485,
+      "raw_silhouette_iou": 0.000994,
+      "seeded_faults": {
+        "contact_nonreciprocity": {
+          "blocked": true,
+          "blockers": [
+            "AUT-MP-002",
+            "AUT-MP-003"
+          ],
+          "injected": true
+        },
+        "cross_instance_bleed": {
+          "blocked": true,
+          "blockers": [
+            "QC-036",
+            "AUT-MP-001"
+          ],
+          "containment_also_blocked": true,
+          "injected": true
+        },
+        "exclusivity_overlap": {
+          "blocked": true,
+          "blockers": [
+            "QC-035",
+            "QC-036"
+          ],
+          "injected": true
+        }
+      },
+      "shape": [
+        1493,
+        2000
+      ],
+      "status": "processed"
+    },
+    {
+      "clean_gate_blockers": [],
+      "clean_gate_passed": true,
+      "contact_band_px": {
+        "p0->p1": 0,
+        "p1->p0": 0
+      },
+      "contact_detected": false,
+      "image_id": "0009",
+      "p0_annotation": "0009_02_01.png",
+      "p0_annotation_sha256": "d6aa1ff84a1a99689e3be6d2bec9798718862a73dd4ab598fca3f679dc5553b6",
+      "p0_pixels": 26695,
+      "p1_annotation": "0009_02_02.png",
+      "p1_annotation_sha256": "f58af55357e4dc8247c9d9f1dc53b1b1e73e89fa2c29da00452ff28d50f37b48",
+      "p1_pixels": 18856,
+      "raw_silhouette_intersection_px": 0,
+      "raw_silhouette_iou": 0.0,
+      "seeded_faults": {
+        "cross_instance_bleed": {
+          "blocked": true,
+          "blockers": [
+            "QC-036",
+            "AUT-MP-001"
+          ],
+          "containment_also_blocked": true,
+          "injected": true
+        },
+        "exclusivity_overlap": {
+          "blocked": true,
+          "blockers": [
+            "QC-035",
+            "QC-036"
+          ],
+          "injected": true
+        }
+      },
+      "shape": [
+        431,
+        600
+      ],
+      "status": "processed"
+    },
+    {
+      "clean_gate_blockers": [],
+      "clean_gate_passed": true,
+      "contact_band_px": {
+        "p0->p1": 2818,
+        "p1->p0": 2817
+      },
+      "contact_detected": true,
+      "image_id": "0014",
+      "p0_annotation": "0014_02_01.png",
+      "p0_annotation_sha256": "dca4d42a4b3072c5678bbe181ad4c4067be7e674b2bd63914095aa065c078c5b",
+      "p0_pixels": 92792,
+      "p1_annotation": "0014_02_02.png",
+      "p1_annotation_sha256": "c5ccfca9897bf19e075f8ba9cdcf5bb9a056889353a9280bf32702cd767d2c44",
+      "p1_pixels": 120560,
+      "raw_silhouette_intersection_px": 269,
+      "raw_silhouette_iou": 0.001262,
+      "seeded_faults": {
+        "contact_nonreciprocity": {
+          "blocked": true,
+          "blockers": [
+            "AUT-MP-002",
+            "AUT-MP-003"
+          ],
+          "injected": true
+        },
+        "cross_instance_bleed": {
+          "blocked": true,
+          "blockers": [
+            "QC-036",
+            "AUT-MP-001"
+          ],
+          "containment_also_blocked": true,
+          "injected": true
+        },
+        "exclusivity_overlap": {
+          "blocked": true,
+          "blockers": [
+            "QC-035",
+            "QC-036"
+          ],
+          "injected": true
+        }
+      },
+      "shape": [
+        950,
+        633
+      ],
+      "status": "processed"
+    },
+    {
+      "clean_gate_blockers": [],
+      "clean_gate_passed": true,
+      "contact_band_px": {
+        "p0->p1": 240,
+        "p1->p0": 367
+      },
+      "contact_detected": true,
+      "image_id": "0015",
+      "p0_annotation": "0015_02_01.png",
+      "p0_annotation_sha256": "72952d275c2d6383706cdcb16fa6043c6c7edfa0ca36e127c7551b07193160da",
+      "p0_pixels": 29717,
+      "p1_annotation": "0015_02_02.png",
+      "p1_annotation_sha256": "9d7e1e3367dc728bc01ddef5c4278e8b8235853f6017882d8c828188cca901ec",
+      "p1_pixels": 17471,
+      "raw_silhouette_intersection_px": 193,
+      "raw_silhouette_iou": 0.004107,
+      "seeded_faults": {
+        "contact_nonreciprocity": {
+          "blocked": true,
+          "blockers": [
+            "AUT-MP-002",
+            "AUT-MP-003"
+          ],
+          "injected": true
+        },
+        "cross_instance_bleed": {
+          "blocked": true,
+          "blockers": [
+            "QC-036",
+            "AUT-MP-001"
+          ],
+          "containment_also_blocked": true,
+          "injected": true
+        },
+        "exclusivity_overlap": {
+          "blocked": true,
+          "blockers": [
+            "QC-035",
+            "QC-036"
+          ],
+          "injected": true
+        }
+      },
+      "shape": [
+        563,
+        450
+      ],
+      "status": "processed"
+    },
+    {
+      "clean_gate_blockers": [],
+      "clean_gate_passed": true,
+      "contact_band_px": {
+        "p0->p1": 2298,
+        "p1->p0": 2664
+      },
+      "contact_detected": true,
+      "image_id": "0020",
+      "p0_annotation": "0020_02_01.png",
+      "p0_annotation_sha256": "ab14cfe42f50d2869282a29a4d23fc989f398a853f67fb8fd9b24496119acf46",
+      "p0_pixels": 442445,
+      "p1_annotation": "0020_02_02.png",
+      "p1_annotation_sha256": "83b3f3eb6c275077bbf572f2dce41528804abf686aae2988186732720740af99",
+      "p1_pixels": 483603,
+      "raw_silhouette_intersection_px": 511,
+      "raw_silhouette_iou": 0.000552,
+      "seeded_faults": {
+        "contact_nonreciprocity": {
+          "blocked": true,
+          "blockers": [
+            "AUT-MP-002",
+            "AUT-MP-003"
+          ],
+          "injected": true
+        },
+        "cross_instance_bleed": {
+          "blocked": true,
+          "blockers": [
+            "QC-036",
+            "AUT-MP-001"
+          ],
+          "containment_also_blocked": true,
+          "injected": true
+        },
+        "exclusivity_overlap": {
+          "blocked": true,
+          "blockers": [
+            "QC-035",
+            "QC-036"
+          ],
+          "injected": true
+        }
+      },
+      "shape": [
+        1598,
+        2000
+      ],
+      "status": "processed"
+    },
+    {
+      "clean_gate_blockers": [],
+      "clean_gate_passed": true,
+      "contact_band_px": {
+        "p0->p1": 1094,
+        "p1->p0": 1146
+      },
+      "contact_detected": true,
+      "image_id": "0021",
+      "p0_annotation": "0021_02_01.png",
+      "p0_annotation_sha256": "78af3b2c783fca33505813494889be417c0c8eccb8529662750897611428da44",
+      "p0_pixels": 33392,
+      "p1_annotation": "0021_02_02.png",
+      "p1_annotation_sha256": "0b95c9631d3cf2f6d9827888ba75e9b1d74d8b509d2297d46dab508e7c79ee46",
+      "p1_pixels": 27245,
+      "raw_silhouette_intersection_px": 79,
+      "raw_silhouette_iou": 0.001305,
+      "seeded_faults": {
+        "contact_nonreciprocity": {
+          "blocked": true,
+          "blockers": [
+            "AUT-MP-002",
+            "AUT-MP-003"
+          ],
+          "injected": true
+        },
+        "cross_instance_bleed": {
+          "blocked": true,
+          "blockers": [
+            "QC-036",
+            "AUT-MP-001"
+          ],
+          "containment_also_blocked": true,
+          "injected": true
+        },
+        "exclusivity_overlap": {
+          "blocked": true,
+          "blockers": [
+            "QC-035",
+            "QC-036"
+          ],
+          "injected": true
+        }
+      },
+      "shape": [
+        336,
+        336
+      ],
+      "status": "processed"
+    },
+    {
+      "clean_gate_blockers": [],
+      "clean_gate_passed": true,
+      "contact_band_px": {
+        "p0->p1": 0,
+        "p1->p0": 0
+      },
+      "contact_detected": false,
+      "image_id": "0023",
+      "p0_annotation": "0023_02_01.png",
+      "p0_annotation_sha256": "d8442497f0807941a0dd96bd67b87bee3c11e10f26889f1bb2ba8214d0205539",
+      "p0_pixels": 16286,
+      "p1_annotation": "0023_02_02.png",
+      "p1_annotation_sha256": "6d54cf0661574404d081015d12482137e9ae14fd2b150d51a5e2f8b70af5b49a",
+      "p1_pixels": 13897,
+      "raw_silhouette_intersection_px": 0,
+      "raw_silhouette_iou": 0.0,
+      "seeded_faults": {
+        "cross_instance_bleed": {
+          "blocked": true,
+          "blockers": [
+            "QC-036",
+            "AUT-MP-001"
+          ],
+          "containment_also_blocked": true,
+          "injected": true
+        },
+        "exclusivity_overlap": {
+          "blocked": true,
+          "blockers": [
+            "QC-035",
+            "QC-036"
+          ],
+          "injected": true
+        }
+      },
+      "shape": [
+        445,
+        309
+      ],
+      "status": "processed"
+    }
+  ],
+  "report_id": "lmps_f214db3a6faa210383ff0b0a",
+  "schema_version": "1.0.0",
+  "seal_sha256": "f214db3a6faa210383ff0b0ad8ce85c61e550b818e5b78b2fab851177d71c23f",
+  "seeded_faults_all_blocked": {
+    "bleed_containment_aut_mp_001": true,
+    "contact_nonreciprocity_aut_mp_002": true,
+    "cross_instance_bleed_qc036": true,
+    "exclusivity_overlap_qc035": true
+  },
+  "sha256": "01eaeffb074be3d20933c2524329eb5575bbdf7c6eeaac6ff8f05a2fc86d6e2e",
+  "source": "lv_mhp_v1",
+  "source_content_root": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1",
+  "source_role": "multi_person_full_body_parsing",
+  "visual_qa_pass_claimed": false
+}

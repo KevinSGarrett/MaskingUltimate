@@ -1,0 +1,99 @@
+{
+  "authority": "shadow_advisory_human_approval_required",
+  "image_id": "img_cdab0311dc96",
+  "instance_id": "p0",
+  "judgments": [
+    {
+      "confidence": 0.99,
+      "correction": {
+        "negative_points": [
+          [
+            760,
+            120
+          ],
+          [
+            900,
+            280
+          ],
+          [
+            930,
+            500
+          ],
+          [
+            650,
+            300
+          ],
+          [
+            150,
+            180
+          ]
+        ],
+        "polygon": [],
+        "positive_points": [
+          [
+            300,
+            520
+          ],
+          [
+            480,
+            590
+          ],
+          [
+            650,
+            670
+          ],
+          [
+            790,
+            760
+          ],
+          [
+            870,
+            850
+          ],
+          [
+            560,
+            820
+          ]
+        ],
+        "rationale": "Use SAM refinement with positive points distributed through the ankle/instep, midfoot, forefoot, and toes, and negative points in the clearly visible gray background and erroneous upper-right spill. Polygon tracing is less appropriate because the current crop has difficult ankle continuity and individual toe contours.",
+        "tool": "points"
+      },
+      "defects": [
+        "includes_background",
+        "boundary_too_loose",
+        "other"
+      ],
+      "evidence": "The mask is visibly non-anatomical: background regions above the instep and block-shaped protrusions are included, while internal fragmentation indicates component-count and topology failure. A clean target-foot mask should follow the ankle, instep, heel/lateral edge, and each visible toe boundary without rectangular extensions.",
+      "latency_ms": 12916,
+      "model": "gpt-5.6-luna",
+      "observations": {
+        "contour": "The cyan/white contour follows the outer toes and lower foot approximately, but includes a large angular extension into background around the ankle/instep and has blocky discontinuities.",
+        "full_context": "The forward foot in the lower-right of the full-person image is the visible target candidate; the specialist contour appears to extend broadly around it and does not provide reliable clean separation from the background.",
+        "mask": "The binary mask contains large rectangular and irregular regions outside the foot, including substantial background above and to the right of the foot. It also has fragmented holes and block artifacts, so it is not a clean anatomical component.",
+        "neighbor_overlap": "The mask primarily overlaps the target foot and adjoining ankle/leg, but its large background spill makes the protected-neighbor relationship unreliable; no clothing is visible in this crop.",
+        "overlay": "Red overlay covers much of the foot but also spills into gray background above the instep and along the upper-right side. The stepped rectangular edges are not aligned with visible pixels.",
+        "source_crop": "The crop clearly shows one bare foot extending toward the right, with the ankle continuing off the upper-left portion of the ROI. The visible skin boundary is distinct against the gray background."
+      },
+      "provider": "openai",
+      "response_sha256": "84e3b18e978acbb7198990a25408ea8e784a6ba325b3ac00a9978b59cefca504",
+      "usage": {
+        "cost_usd": 0.014752,
+        "input_tokens": 9382,
+        "output_tokens": 895
+      },
+      "verdict": "fail"
+    }
+  ],
+  "label": "right_foot_base",
+  "local_audit": {
+    "deterministic_overrides": [
+      "component_count_exceeds_ontology"
+    ],
+    "final_verdict": "fail",
+    "model": "qwen2.5vl:7b",
+    "model_verdict": "pass"
+  },
+  "schema_version": "1.0.0",
+  "sha256": "e7f9d9856e30809efca48bfa6f2b5cf83e35d0a610672ecb4ab6d6c6010585dc",
+  "source_sha256": "d962e914116cdd97d00187c313fe94c99e9e725ab50d38b79d203f1ed47bae43"
+}

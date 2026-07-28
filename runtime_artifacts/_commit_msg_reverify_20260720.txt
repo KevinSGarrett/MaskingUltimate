@@ -1,0 +1,21 @@
+Re-verify champions + Main workstreams at c378499b; seal honest hard-gate root cause
+
+Autonomous re-verification wave (no tier inflation, no fabrication):
+- Live re-probe: Docker 29.4.3 / CVAT 2.24.0 / Ollama 0.32.1 / nuclio pth-sam2 healthy;
+  GPU RTX 5060 ~2182 MiB free; WSL Ubuntu-22.04 still corrupt (E_FAIL); IsAdmin=False;
+  host torch 2.12.1+cpu; training-doctor ready=false; serve cannot start on host
+  (FastAPI serve deps missing -> serve/train runtime lives in WSL, down).
+- Workstream A champions=0 (force-register FORBIDDEN, not performed). Root cause chain
+  precisely documented and non-fabricable: 0 approved_gold/human_anchor_gold/
+  autonomous_certified_gold -> calibration certificate cannot pass -> 0 calibrated
+  lifecycle -> build-audit-queue population_count=0 (downstream symptom, not a code bug);
+  no CUDA training runtime + 0 gold volume -> no measured shadow win; Mode B /predict
+  AWAITING_RUNTIME. DAZ not killed (live user GUI); VRAM freeing moot.
+- Workstream B: producer bridge + cross-project suite PASS at HEAD;
+  run_cross_project_qualification=producer_partial. Main C:/Comfy_UI_Main HEAD b36001b9 is
+  a separate unrelated active project with a dirty tree and no MaskFactory consumer
+  surface; real MF-P6-11.02/11.07/12.05 receipts require an isolated Main-side consumer
+  build (not fabricated; Main branch untouched).
+- Sealed autonomy_reverify_20260720T0430.json; re-sealed milestone
+  (rev post_autonomy_reverify_20260720); refreshed needs_agent_actions; tracker notes on
+  Mode B + Main HARD items; OPS_LOG + handoff updated.

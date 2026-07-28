@@ -1,0 +1,64 @@
+{
+  "artifact_type": "docker_serve_contract_report",
+  "authority": "docker_serve_image_spec_coherence_only_no_build_no_health_green_no_champion",
+  "build_attempted": false,
+  "champion_claimed": false,
+  "checked_at": "2026-07-20T14:35:59Z",
+  "checks": {
+    "compose_service_coherence": "pass",
+    "dockerfile_spec_coherence": "pass",
+    "requirements_subset_coherence": "pass"
+  },
+  "compose_checks": {
+    "build_dockerfile_matches": true,
+    "container_runtime_env_declared": true,
+    "gpus_all_requested": true,
+    "image_tag_matches": true,
+    "no_lan_exposed_ports": true,
+    "repo_bind_mount_present": true,
+    "serve_command": true,
+    "serve_service_present": true
+  },
+  "compose_ref": "docker/compose.gpu.yml",
+  "compose_service": "maskfactory-serve",
+  "dockerfile_checks": {
+    "base_is_slim_python_not_cuda_devel": true,
+    "container_runtime_env_declared": true,
+    "libgomp_runtime_dep_present": true,
+    "loopback_serve_port_exposed": true,
+    "maskfactory_package_installed_no_deps": true,
+    "requirements_serve_copied_and_installed": true,
+    "serve_default_cmd": true,
+    "torch_cu128_index_used": true,
+    "torch_pin_matches_lock": true,
+    "torchvision_pin_matches_lock": true
+  },
+  "dockerfile_ref": "docker/Dockerfile.serve",
+  "gold_claimed": false,
+  "honest_non_claims": [
+    "serve_image_build_success",
+    "torch_cuda_available_in_container",
+    "serve_health_models_answered_in_container",
+    "champion_bodypart_hand_or_clothing",
+    "mode_b_predict_or_refine_backed",
+    "gold"
+  ],
+  "image_built_claimed": false,
+  "image_tag": "maskfactory/serve:cu128",
+  "lock_ref": "env/requirements.lock.txt",
+  "predict_refine_backed_claimed": false,
+  "proof_tier": "STATIC_PASS",
+  "report_id": "dsc_e651e9b98b1ce5b49e1479f9",
+  "requirements_checks": {
+    "fastapi_uvicorn_stack_present": true,
+    "no_pin_contradicts_lock": true,
+    "no_wsl_only_editable_git_or_file_deps": true,
+    "serve_core_runtime_present": true
+  },
+  "requirements_ref": "docker/requirements-serve.txt",
+  "schema_version": "1.0.0",
+  "seal_sha256": "e651e9b98b1ce5b49e1479f959121161f6b3b3a7322ffb312585bd25a03e990b",
+  "serve_health_green_claimed": false,
+  "sha256": "2a773907b8b891cc82c47faa56121e338cdaff824c64f928987f2650ca4eb427",
+  "torch_cuda_in_container_claimed": false
+}

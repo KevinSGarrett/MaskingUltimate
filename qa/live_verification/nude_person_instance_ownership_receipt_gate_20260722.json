@@ -1,0 +1,49 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_person_instance_ownership_gate.v1",
+  "artifact_type": "adult_corpus_terminal_receipt_person_instance_ownership_gate",
+  "recorded_at": "2026-07-22T12:18:45Z",
+  "status": "PASS_STATIC_AND_QUEUE_REVALIDATION",
+  "tracker_items": [
+    "MF-P4-12.02",
+    "MF-P4-12.05",
+    "MF-P4-12.06"
+  ],
+  "accepted_or_repaired_requirements": {
+    "ownership_status": "verified",
+    "exact_source_sha256": true,
+    "exact_selected_mask_sha256": true,
+    "nonnegative_person_index": true,
+    "owner_id": true,
+    "scene_instance_id": true,
+    "ownership_report_sha256": true
+  },
+  "nonacceptance_behavior": {
+    "ambiguous_or_unresolved_ownership_allowed": true,
+    "ambiguous_ownership_can_claim_person_index": false,
+    "ambiguous_ownership_can_claim_owner_id": false,
+    "ambiguous_ownership_can_claim_scene_instance_id": false,
+    "authority": "no_mask_authority"
+  },
+  "queue_boundary": {
+    "ownership_recomputed_before_accepted_or_repaired_mutation": true,
+    "ownership_recomputed_before_abstained_or_rejected_mutation": true,
+    "source_or_mask_binding_drift_rejected": true
+  },
+  "validation": {
+    "focused_tests": "29 passed",
+    "ruff": "pass",
+    "black": "pass"
+  },
+  "implementation_sha256": {
+    "src/maskfactory/nude_record_qualification.py": "784c4da0c2af275b95f04fa48598eba54992207f9fde6671d39bd68b339c87b6",
+    "tests/test_nude_record_qualification.py": "4bf8e4eaf40d9df14bc0f3a0939003c83d1178f7261682fb898619bf2ab70311",
+    "tests/test_nude_batch_queue.py": "3affb49db87f5c3f720230d702dfbd4d498927560b8815eeeee94d3ed14ffec6"
+  },
+  "authority": {
+    "real_polygon_canary_ownership_verified": false,
+    "provider_ownership_runtime_completed": false,
+    "production_mask_authority_granted": false,
+    "operational_certificates_issued": false
+  },
+  "remaining": "The live provider pipeline must produce exact person-instance ownership reports for every candidate. Existing external polygon localization remains ownership-unverified and therefore cannot be accepted."
+}

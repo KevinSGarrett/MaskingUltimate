@@ -1,0 +1,3391 @@
+{
+  "files": {
+    "annotations/autonomy/autonomy/chest_upper_torso.json": "0957d6199f01bc464f04efd980952bb4b9c2986614425707044e5579ad59df3c",
+    "annotations/autonomy/autonomy/hair.json": "2ed3567cca46125f7d35d1678328d42e58ddb8677499e02ca809ab2eb17da175",
+    "annotations/autonomy/autonomy/head_face.json": "165ffaecb2808b804d8fe9644576ce222f56e310eec86318d6eb4462823ecd51",
+    "annotations/autonomy/autonomy/left_ankle.json": "df81cee18424d8536cafba000269b6e4526e6ea7499b2c9c17b1fe99b6f93d62",
+    "annotations/autonomy/autonomy/left_calf.json": "a594ac060db282165e5110eb154a1aee4a821cf031d685e675acff99d319d0f4",
+    "annotations/autonomy/autonomy/left_elbow.json": "630deebb209d9f98ad66bbdf652edb330a1aecd8bc9ae4aabd12336709d3b596",
+    "annotations/autonomy/autonomy/left_foot_base.json": "7b77db87fe5a96ec74be216245603613d4fd2d6299d012ecf6e0e977a277f623",
+    "annotations/autonomy/autonomy/left_forearm.json": "d213d7a194ad0f3339dcaf055f8ae462cbdf178766ca57275a0a9d5e58631293",
+    "annotations/autonomy/autonomy/left_hand_base.json": "7f68a1c0d1130bc2867a2f09911da61529b8e06534986405a0eb2e3558b4da64",
+    "annotations/autonomy/autonomy/left_knee.json": "09be264828dfc267f07d12ddbf2e41316c6e77e1f5ff0500d906038dc594319f",
+    "annotations/autonomy/autonomy/left_shoulder.json": "885b38204e59961b4d1b182592fd4ae14d4ed915effd21a69d2c3636ea8dd31e",
+    "annotations/autonomy/autonomy/left_thigh.json": "3958e6283ac0da4a3628eea0ca3554e605e5b0af3071ae7746b03afcf04e5eed",
+    "annotations/autonomy/autonomy/left_upper_arm.json": "20685a297d0113d78bbd96a2f5813eaccd09c03b07e5c084ddeb2948a7c4a8cf",
+    "annotations/autonomy/autonomy/left_wrist.json": "2a91a3cdf84c62a4f2d11c7c4bd84a6b8a2a964f4b259facc2209b776851be10",
+    "annotations/autonomy/autonomy/neck.json": "e6fd2f47046dbad1b0cce52e41870db948b9f2d6f75bb9e43df0152a3d58febf",
+    "annotations/autonomy/autonomy/pelvic_region.json": "16fd10cdaf2b6a762177e60e8a48fa48dc1ea6a452fd1fd6c8c05ee5a0968454",
+    "annotations/autonomy/autonomy/right_ankle.json": "8d1dd4e3afed6cd3144e918fc2d7dd4de734da753ca3cd2481ffa96e9413b25d",
+    "annotations/autonomy/autonomy/right_calf.json": "0961250fc7e86f55c5893e49136ae9eaa196e7548b93f13ba6bba094d54cf345",
+    "annotations/autonomy/autonomy/right_elbow.json": "c43ce9e35a15a53bee962982f9a5ea3b8a7d6c05a6a2f5892ec17c549b2f3e66",
+    "annotations/autonomy/autonomy/right_foot_base.json": "98d2cfe79244562f4e166d3f55257fc17ecacecab7c531949b8472808f93b1f7",
+    "annotations/autonomy/autonomy/right_forearm.json": "1e01b8d88f51eea7f77a1b13b31a58128580a1e73ab154d977755eef824c6b6e",
+    "annotations/autonomy/autonomy/right_hand_base.json": "6f2a31de590167df14c980508851ce467a7d358593a206ffddbffbf4eaf3f860",
+    "annotations/autonomy/autonomy/right_knee.json": "b4c9022832e49aff70448c3cb230b527f738cd7a44f7c586e660d28350b4d6e7",
+    "annotations/autonomy/autonomy/right_shoulder.json": "41d4e21ebd19fa935df6d83a4145c0f640113108d90a91622dbd3e16ed690c1a",
+    "annotations/autonomy/autonomy/right_thigh.json": "33d26430fe778b7a29e9502a97e7d5a2f9db1acdf894c05d1be278497d47fc3f",
+    "annotations/autonomy/autonomy/right_upper_arm.json": "cd8bc5b27c3ede27d3ce304a874571ccd273f2258184c56ab864acd193d9a2a0",
+    "annotations/autonomy/autonomy/right_wrist.json": "2cf42cf55ebb39bfd82c0a8a291b3ade6e0a140e79a81abae08f7cd06861ec92",
+    "annotations/autonomy/autonomy_candidates/chest_upper_torso/s09_baseline.png": "03e89a6fb843d4557466e760a37363738e79958a48fa07a4d2f07215a15bf7d0",
+    "annotations/autonomy/autonomy_candidates/hair/s09_baseline.png": "769bc93080f4c6bd702bb5f2c57f63dc5864e0e23f64810753e24df0768897b2",
+    "annotations/autonomy/autonomy_candidates/head_face/s09_baseline.png": "0d2f335490bce2a5fb404331d1f39f1053caa53508a809a4410b0f6657a1fe4f",
+    "annotations/autonomy/autonomy_candidates/left_ankle/s09_baseline.png": "b65f2b94add7897df4df84e05a1920323c5188ad684ad3a3cbeb033890b683a1",
+    "annotations/autonomy/autonomy_candidates/left_calf/s09_baseline.png": "d605824b8161d79924ed6e605b55872c6ab6145cebc3a6f98ebfd069b6c96d13",
+    "annotations/autonomy/autonomy_candidates/left_elbow/s09_baseline.png": "553ba0e840078845ebf4100fa3bde63c90259cc308b705af5edab47615f3ce30",
+    "annotations/autonomy/autonomy_candidates/left_foot_base/s09_baseline.png": "8a0aa88d0a5232a146570c35c157a81604793488044ef5e405b5aebe4ddc71a6",
+    "annotations/autonomy/autonomy_candidates/left_forearm/s09_baseline.png": "c7b8edff155f6c557213810f98841e620f4e49a1924ed35ff5f7573ca45e7204",
+    "annotations/autonomy/autonomy_candidates/left_hand_base/s09_baseline.png": "867c0f756dab2be1bd97ae076692468ef8429f0ca78dc5df5f2a43a0790754fe",
+    "annotations/autonomy/autonomy_candidates/left_knee/s09_baseline.png": "1878d5b82df663c8587cc12417162fb303b20b04d227c228e00019f4a17db4da",
+    "annotations/autonomy/autonomy_candidates/left_shoulder/s09_baseline.png": "429c6289cc1e1f6d92d4f714bd983a6e55ad4442bd92222ef1e8ab46d0ef1f83",
+    "annotations/autonomy/autonomy_candidates/left_thigh/s09_baseline.png": "640c6578b5c17d20c33589b3d7ebd98119cbca1eaf174ba81ec2a55f68647e95",
+    "annotations/autonomy/autonomy_candidates/left_upper_arm/s09_baseline.png": "21fe5acbac7e118139689fea43253f14df173db0c701c992210f0ff90c0c8548",
+    "annotations/autonomy/autonomy_candidates/left_wrist/s09_baseline.png": "a7ff370f09928f29885f70685cdb0dde055483e25779f93439e79dfbf4e3d868",
+    "annotations/autonomy/autonomy_candidates/neck/s09_baseline.png": "f98bae405594817423188fa1d9bbe91389f505a3572bc8bd2356675c691b0d0d",
+    "annotations/autonomy/autonomy_candidates/pelvic_region/s09_baseline.png": "4aaaf1ffab05ef427d2aa6f91d1bb6b4bb3b03bec904b6058fa9327515bcbe99",
+    "annotations/autonomy/autonomy_candidates/right_ankle/s09_baseline.png": "691b814509cfedbd3dde8fcbae18b5968141ee59f4f682a5cecc245ae9e77936",
+    "annotations/autonomy/autonomy_candidates/right_calf/s09_baseline.png": "df317648c32e94f7b5b0f353e4e07b746d8b5b5d03f25e02f70e96296870742d",
+    "annotations/autonomy/autonomy_candidates/right_elbow/s09_baseline.png": "9b299914c2e92e05af7bee889d3bfba7b01a927adaab252b4481fda13cc29ee7",
+    "annotations/autonomy/autonomy_candidates/right_foot_base/s09_baseline.png": "6fee4a7fde9832e5a5c3fe9a504e85b97d29c89663be280a57e0c29791f9192d",
+    "annotations/autonomy/autonomy_candidates/right_forearm/s09_baseline.png": "5319bd92ad8b5c6b6e459589cb064e246e691e3d962cc384960fd3143a95f61c",
+    "annotations/autonomy/autonomy_candidates/right_hand_base/s09_baseline.png": "bed870b58d89a617745679dd3ebad09933fcf5b0fc977c5f819ece775ec55d51",
+    "annotations/autonomy/autonomy_candidates/right_knee/s09_baseline.png": "d4342bfd578bf5c4b90cf10f766c6f4402e61b92172fa4c19966b512b490802f",
+    "annotations/autonomy/autonomy_candidates/right_shoulder/s09_baseline.png": "825bdae44f3f1d6bb3d8cf4b3914c91ea1e552ff9842623473a5ba823eedab7a",
+    "annotations/autonomy/autonomy_candidates/right_thigh/s09_baseline.png": "8727f3f36ea3f25856138553fae7369b698630c31b40117a5b8032fc8401145c",
+    "annotations/autonomy/autonomy_candidates/right_upper_arm/s09_baseline.png": "204259b0297e44add6cac004ba45bf1a1fa1c3c66abcf94e78e637ce666fdf0d",
+    "annotations/autonomy/autonomy_candidates/right_wrist/s09_baseline.png": "8e52a5f58736e545858fa39255f7cc97a4aa67746779d2fea91c0f94c2119b55",
+    "annotations/autonomy/autonomy_review_draft/label_map_part.png": "c1b5cf0fc559f073d322a24cbe1310a294ad38b48f29f3346ff2b659c0a82787",
+    "annotations/autonomy/autonomy_review_draft/proposed_label_map_part.png": "c1b5cf0fc559f073d322a24cbe1310a294ad38b48f29f3346ff2b659c0a82787",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/all_parts.png": "5459f3fb1a9a65eb275e6bc9009ab4654952a0a6b2c580082bb60a0ac5bca7d4",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/chest_upper_torso.png": "6f300619548ed3c798238bd030ba2219576fea9642cf399f1d8364aff417b44c",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/hair.png": "0e7adecd793bcff7aaca73f7c94f510f48f2fc32b631d5a89b18d0a66348c6e0",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/head_face.png": "92811b60dfbc63f753a782c6c8dbe2fee3def1ca59fce3a1f7fe6305cbb3de14",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/left_ankle.png": "2e9bba6999a9d905a4feadefef1640b2a936332fb3f9f45d8e48b802285268b0",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/left_calf.png": "dcf11a2c0640b2c05102b1511b92a63e4d7343ca0991cb9bb0d820981d15ec28",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/left_elbow.png": "6bb3be1c769bec3f47374e9a57b24cfef434e89b592ca791e735c641314026b1",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/left_foot_base.png": "626dab41cfdf27f91e51ced3ce2272f0fc10951b159339b0d5395ffffdb1d150",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/left_forearm.png": "b0781273ba0e43d21c95a2fd411196958f5b5bb87a550519a662868236c2e8a7",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/left_hand_base.png": "69645618348f273c033c97eae663ef82dce6ed878f151dcd75d65e2827fb7cb4",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/left_knee.png": "4c8f33858bf198a511bea4e9b64e2f5aa7518ed0fcff0baeaa7df07bc8b07ccf",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/left_shoulder.png": "884c83d4f5bbd2cd077b51a9fbaff5c04420c35e860156b2187cb4e82b30e52c",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/left_thigh.png": "680bbf446307277e11a01b24836f3564aab03c89057eed0d56ad78a683d891f9",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/left_upper_arm.png": "9333ca9648b5645d894ad3bec5de5b2e724d2b635ffdf5d6ebe1f69332d635e4",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/left_wrist.png": "2a55190e469fc6d1a42515eee3262462e696a6d447269404d8245156f588173f",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/neck.png": "8337fefc2b9e8eab78d465e373da07ac36d622af3757e2e3c73e46ea193acd42",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/pelvic_region.png": "397f5a24c9d2e4e607afd7d631235ef50d9a4453bd070b82b190c5578157f2d6",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/right_ankle.png": "b63bbfeba1ea25a6733df464195f2ce1756755af87e49af37c0b88e7c4185403",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/right_calf.png": "0f32aac7e58af6cfcc1337b5d9e4dbdefee43fa527c2c9dc16b019b4f5674d91",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/right_elbow.png": "6b71aa13de2d2fcdd545623755f74bdee0fc3635ca2e2725515e6621e477a314",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/right_foot_base.png": "46dbc741dc69bd6b348eedb177584218744db3e5bc60041d004ddb7f08c674be",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/right_forearm.png": "bbbe654883a3a239546eddb2876fadc057ebabc168202b8acaf7292bd897de4b",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/right_hand_base.png": "2337674a735d83388c18bf78684fe8572e5430d3ea3324537347e97a68b675f4",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/right_knee.png": "bffa98748e6f81573d5e9aeaf6740e6ea3aba7e3dc144c0a80ef1693809ee329",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/right_shoulder.png": "582725fb9fcd988d7b4ea2a3051fb47ddd2a691b12fc46bcd1bde05de2455901",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/right_thigh.png": "fecac68cbcd9c01a4941fd8567385fe5157d8a18d7f37601b9b6ece786eb1a26",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/right_upper_arm.png": "82076db89257436c210de6a3f8964db7fbfc04c1d45eb6c9b729bb1456daba30",
+    "annotations/autonomy/autonomy_review_draft/qa_panels/right_wrist.png": "2d0a7027208801c41d2fae175beee7755c91d9a030e6fc002732eadceebde758",
+    "annotations/autonomy/autonomy_review_draft/report.json": "929612704b8480f8c015b77069d74eda05328f74200096890ddc332d59ae0495",
+    "annotations/autonomy/candidate_full_qa/chest_upper_torso_local_r1/qa_report.json": "a1eebb386fe6b83c89cf4745b306d5a8191d980f5c0f5859e62a8893cbf78c89",
+    "annotations/autonomy/candidate_full_qa/hair_local_r1/qa_report.json": "f8901c9802b7e59b7ce61d2e4fa49df41c657ba17c63a4af20939501539d5317",
+    "annotations/autonomy/candidate_full_qa/head_face_local_r1/qa_report.json": "70816526e335e8ebffdc3ae5563a2c19ff87f7f6bf1dc743b238ebb7930db6c1",
+    "annotations/autonomy/candidate_full_qa/left_ankle_local_r1/qa_report.json": "4c60e5dea97982a38973fbc1be35dd18365106d7db563a535c3114b82a8b9985",
+    "annotations/autonomy/candidate_full_qa/left_calf_local_r1/qa_report.json": "2d03e47defe444ca4c0979e87453a6397454f9d8f3b4f18aaa31bc66e7acd610",
+    "annotations/autonomy/candidate_full_qa/left_elbow_local_r1/qa_report.json": "49f76f199dd168b94df245b204a5a91643731e41eef75512d7881914c83e13a2",
+    "annotations/autonomy/candidate_full_qa/left_foot_base_local_r1/qa_report.json": "660fc51441c9bc4c2c781c84ac4e54c4e77c1d62526d044c5553b645f340cd5e",
+    "annotations/autonomy/candidate_full_qa/left_forearm_local_r1/qa_report.json": "6a26d476e10f428b1c3563d7a43febdee706a9f61647f159458e46e6e8fa91fb",
+    "annotations/autonomy/candidate_full_qa/left_hand_base_local_r1/qa_report.json": "8806c94d7c813bc21d60956987b345d4b84608e122534dd503c8672d4139690f",
+    "annotations/autonomy/candidate_full_qa/left_knee_local_r1/qa_report.json": "9d5d2d28aaad078323d42247a70582265c7cecd6ca9b3f359235af068153601a",
+    "annotations/autonomy/candidate_full_qa/left_shoulder_local_r1/qa_report.json": "f1cf9b62a887257ef1365d1b739d9f8f48c7bf3b476b9f6491d4f44274f2bb09",
+    "annotations/autonomy/candidate_full_qa/left_thigh_local_r1/qa_report.json": "4412a41d110232e1a2021ad71d97f40afc6274a1bed9a979a1ba05fd744aa36e",
+    "annotations/autonomy/candidate_full_qa/left_upper_arm_local_r1/qa_report.json": "e4ae237d2cf779c80097753ab76336a6606baeeac830741196a83b81fd222032",
+    "annotations/autonomy/candidate_full_qa/left_wrist_local_r1/qa_report.json": "374356b74e6739511986110eff3e159fd99c21bf97726dfde90e4237c33ab56d",
+    "annotations/autonomy/candidate_full_qa/neck_local_r1/qa_report.json": "761a18da0638fc73f2abf9abb5326dd89418f623caf95dbfd76a5b953ce1729d",
+    "annotations/autonomy/candidate_full_qa/pelvic_region_local_r1/qa_report.json": "704b49ab53aace837f90853a685ae376abb9dea420881055527783f1667a424d",
+    "annotations/autonomy/candidate_full_qa/right_ankle_local_r1/qa_report.json": "eeb8e1fe098f59acf3bcdef7ad87cb9a281e20a5046d9aa5cb92206a934202c2",
+    "annotations/autonomy/candidate_full_qa/right_calf_local_r1/qa_report.json": "3ffa6e29fd067c33272f91e03b9c7f884125c88101cdeccd433fceb4f636937a",
+    "annotations/autonomy/candidate_full_qa/right_elbow_local_r1/qa_report.json": "bd041220df5bb73a5c9bfb48ec8c76cf6bcfa294611d709ac44b078c0f1d667d",
+    "annotations/autonomy/candidate_full_qa/right_foot_base_local_r1/qa_report.json": "b5f88cd2443a63d3d58b52b9abcd306dd6bd708d2bbbf1c2abb629d70045874d",
+    "annotations/autonomy/candidate_full_qa/right_hand_base_local_r1/qa_report.json": "abe89a8c509a09a0d7d78f02aae88dcd04513afafe8740bf07e411dfaf404ba3",
+    "annotations/autonomy/candidate_full_qa/right_shoulder_local_r1/qa_report.json": "a1b061bdc9e5245f2121ca15b43c88d7e2e9d503bc840cd996c4950d04e4924d",
+    "annotations/autonomy/candidate_full_qa/right_thigh_local_r1/qa_report.json": "6b5bbf02d128c617d79eb3d61d26d94d20b417d3df4d997bdfbaff9bf09b9dbb",
+    "annotations/autonomy/candidate_full_qa/right_upper_arm_local_r1/qa_report.json": "0ea28447aafc0cac53bf487d6b441d05077e4af54d16a2ca992243c9c7ed6046",
+    "annotations/autonomy/candidate_full_qa/right_wrist_local_r1/qa_report.json": "dccaf4d03976375e63345c435017b434a5f074d917862f93498b0e82035de03e",
+    "annotations/autonomy/candidate_qa/chest_upper_torso/local_r1/label_map_part.png": "72baa221510d5185728a10b53410c40d9a9682657a5209a9da55c03461dc64d3",
+    "annotations/autonomy/candidate_qa/hair/local_r1/label_map_part.png": "6ce454fa80f348a019b9b9c4641abe3dcc08cdd14c26ce84d89e8df95178cce9",
+    "annotations/autonomy/candidate_qa/head_face/local_r1/label_map_part.png": "5d35a8d69fbe8656af532cbd64845f9e487c8a54e8ff34b3390722ff70db9383",
+    "annotations/autonomy/candidate_qa/left_ankle/local_r1/label_map_part.png": "a3c04a5e77e6309477407dcc0e2535397fcb584d542c59a5356878e8524d0f19",
+    "annotations/autonomy/candidate_qa/left_calf/local_r1/label_map_part.png": "29209bf623de961c7f0f82faf4ed537087f1aad0522303c0d090848e8feeb09b",
+    "annotations/autonomy/candidate_qa/left_elbow/local_r1/label_map_part.png": "ca5b3e2341d712bc88e7af341a8327fac52e03eb1132c81e414b01aa1fd5e7f0",
+    "annotations/autonomy/candidate_qa/left_foot_base/local_r1/label_map_part.png": "22eddd07b5a90e733414087950a25e71341729f9c85bbbebee978c48eedf28c8",
+    "annotations/autonomy/candidate_qa/left_forearm/local_r1/label_map_part.png": "f0076bd43e227f8d82f08273f7102ca208f091a5331c0ec46d8e3c03f16e6d0e",
+    "annotations/autonomy/candidate_qa/left_hand_base/local_r1/label_map_part.png": "42fe4f730e42582dd9f915e5f96a6efda4c83053d6e617b733904b3d3671245c",
+    "annotations/autonomy/candidate_qa/left_knee/local_r1/label_map_part.png": "ccdba241b99aba6494094dc7b27279ffd0343dd4d4a6a1976ec531b82628a967",
+    "annotations/autonomy/candidate_qa/left_shoulder/local_r1/label_map_part.png": "bd5b53f209e9f96c16d0bff9608ae2aeaf7b9432448136b0084524313fc15b37",
+    "annotations/autonomy/candidate_qa/left_thigh/local_r1/label_map_part.png": "da8dcab67bfc21703cbc6b87b7eee90f067c4bdb6c9f8603e1fb3dcc3313dc81",
+    "annotations/autonomy/candidate_qa/left_upper_arm/local_r1/label_map_part.png": "57f88df9a53e6bea1f6acae501fe8c084a744aa01d43b8f599bc339970958dda",
+    "annotations/autonomy/candidate_qa/left_wrist/local_r1/label_map_part.png": "2692eef681a9c5225c5a375092131f9b432e0e82e61fb53843f30c14d72bf5af",
+    "annotations/autonomy/candidate_qa/neck/local_r1/label_map_part.png": "7445e3b301034b35540aa4c5d5eacdfb2ec10f4e4fe63b306eff7e52f49751aa",
+    "annotations/autonomy/candidate_qa/pelvic_region/local_r1/label_map_part.png": "04be8477a935d79412ff95215c08ab33f42888b5025ab544c29ac1e57ff5ece3",
+    "annotations/autonomy/candidate_qa/right_ankle/local_r1/label_map_part.png": "4572b9c6f0029a57981738aff41cdf69eb60e50f08c967ae2ab4f903b8ee7202",
+    "annotations/autonomy/candidate_qa/right_calf/local_r1/label_map_part.png": "1c29352f30b2839ddeffa6ed6e1f4327c1739ee9c372f472c32ad9832696fcfb",
+    "annotations/autonomy/candidate_qa/right_elbow/local_r1/label_map_part.png": "e08cc9c4c2ec494b089337994bd2aadd2861c8c8af5e51f0a6c40789a522fce3",
+    "annotations/autonomy/candidate_qa/right_foot_base/local_r1/label_map_part.png": "15909e9e1b18f920b4bbb18e800bc31e82aeedaaf6b9d9b9fb0de0edf3546051",
+    "annotations/autonomy/candidate_qa/right_hand_base/local_r1/label_map_part.png": "68ae4be36b872b96aec3f943a333ca1437de80be48516255718a0542328e4f28",
+    "annotations/autonomy/candidate_qa/right_shoulder/local_r1/label_map_part.png": "1d02e4c70def2d1bc4353ecca1b1a2d4cfbd3eea909279e6519b3ef42bcd7040",
+    "annotations/autonomy/candidate_qa/right_thigh/local_r1/label_map_part.png": "9343d77ad2ea7e2d9d561743f7588c6165e3917de6e7a1c8430c4716eee3df3b",
+    "annotations/autonomy/candidate_qa/right_upper_arm/local_r1/label_map_part.png": "bf01dbc4ad9bd255cbc71031472fc9d033b13f664cae79aa64f894e82c04e89f",
+    "annotations/autonomy/candidate_qa/right_wrist/local_r1/label_map_part.png": "9cf73a36fa36ffce7467054ddd70b425834d8eba8598916d902834191212ef32",
+    "annotations/autonomy/correction_candidates/chest_upper_torso.png": "7db0c0052b6e7550bd7d801a0d7d3454c9bb33c79f644ea48a3190a74240470a",
+    "annotations/autonomy/correction_candidates/hair.png": "85e15d3bc86bd25f07693f6f551183e70210d93a7a250d1a3a2c4cb33fcb426f",
+    "annotations/autonomy/correction_candidates/head_face.png": "f74ece2ee6a3a3cb96fdb1189a40856cfcd3ed05a320696b69da7718040fef79",
+    "annotations/autonomy/correction_candidates/left_ankle.png": "ab624356ee551759de53507e88c46cec0d75a93cb27a68e127c77affdc0a1adc",
+    "annotations/autonomy/correction_candidates/left_calf.png": "d6646003296afe9217bbdfff72ff728b59a5ddfa2ebc3809163f699ddebe4a18",
+    "annotations/autonomy/correction_candidates/left_elbow.png": "bfd068b95520d588855af3d706c245666b6d080992b42cd51a4fd8e98d69a62f",
+    "annotations/autonomy/correction_candidates/left_foot_base.png": "89f0563198ebbd7035ccbc1510a8bc3382f68fc18c198728626f34e6cb1cb7ef",
+    "annotations/autonomy/correction_candidates/left_forearm.png": "948ab469ec669fe5a6f327cfbee3583814c4637c62a7c571db6a7acc4af4fee7",
+    "annotations/autonomy/correction_candidates/left_hand_base.png": "f26f7419fdc559cb1a8be4c580339c07c2150fc15d2ea353b368a3b1fa4c307d",
+    "annotations/autonomy/correction_candidates/left_knee.png": "eb03bbd2761bd7bcdfcdcf66025f740ca6494383690531b1d2394047b54d05f9",
+    "annotations/autonomy/correction_candidates/left_shoulder.png": "3da8dfa779e1664e8cde2f2b70146682a663d95b89f333c0eeba30ab9e529327",
+    "annotations/autonomy/correction_candidates/left_thigh.png": "efebe679bdf1c79aa8d7b3a78a5163d67cdd440d8e1bbd54f146362b901e4559",
+    "annotations/autonomy/correction_candidates/left_upper_arm.png": "54aee8f22bad4bdab2cc8720a544781568999ed3fa40d76c3e0c2b5b8b92fe58",
+    "annotations/autonomy/correction_candidates/left_wrist.png": "00fb4f00175f7a8d324105bb49ef12d468a921ac551581a0aaf25b92750b7b4b",
+    "annotations/autonomy/correction_candidates/neck.png": "3a515c31007789db1894864796fd9a92c5f1a93c9f3de131db2a812c6e527446",
+    "annotations/autonomy/correction_candidates/pelvic_region.png": "95d856e566b299cb569964c720fc772e31625565d5802ae941dc10661d836178",
+    "annotations/autonomy/correction_candidates/right_ankle.png": "831bc130c413e3a475994ac0cd7bd612bf158d93eb3579982e1c9b54077dd8d2",
+    "annotations/autonomy/correction_candidates/right_calf.png": "5546f81e33ccf45a327c283ec26e2aa6a1ba80960005a6e9e013dfd4ed765de9",
+    "annotations/autonomy/correction_candidates/right_elbow.png": "e263c73a387abf78676966253d37fa65ae4e302897d9790c91d324f3c2aa53de",
+    "annotations/autonomy/correction_candidates/right_foot_base.png": "14e82462c4ad204773f6b204811381dbdd57edead9ddeae7631e3cb4d86548a4",
+    "annotations/autonomy/correction_candidates/right_hand_base.png": "62914913cdeb847b2c2399ef495de0193d196c6a186e6804fe399650e12b9115",
+    "annotations/autonomy/correction_candidates/right_shoulder.png": "c289b74c50fa3df6ce064073f2f9e8c736544f7545811325b5a2645ac1bc62f9",
+    "annotations/autonomy/correction_candidates/right_thigh.png": "772ab5b004c482e43f657f20f7b98198823105eaf80221e7af2e374bffd841dd",
+    "annotations/autonomy/correction_candidates/right_upper_arm.png": "5abf134e8af63a92f3767a8d24a17f9b78557898717250f691929953969b16f9",
+    "annotations/autonomy/correction_candidates/right_wrist.png": "69ee5d8bb1d5a55d7cc89d25d1187016c8ccb0a309fd0766880877aee96156aa",
+    "annotations/autonomy/vlm_routing.json": "6458da318a7a6d67bb1fa6211ca33466830bb3c8d6ff25615a829b3ea79fe215",
+    "annotations/autonomy/workhorse_evidence/chest_upper_torso/contour.png": "eaa05815f94a2b195794f38a35cbf7b8548f1551060c29a617fed4a9b4e5b6da",
+    "annotations/autonomy/workhorse_evidence/chest_upper_torso/full_context.png": "9171d0a1e9c8a6be985dc0d47907b0de1bd0b6b6c8dd07d0409ba5a188265e6a",
+    "annotations/autonomy/workhorse_evidence/chest_upper_torso/mask.png": "8e1e17671e43e1875c919d4abf7b178affdcd521a68fed8d8ce0feac20337f5b",
+    "annotations/autonomy/workhorse_evidence/chest_upper_torso/neighbor_overlap.png": "9012e0565377a3dab9b0cd0471bac0b12ccfbf53bd8400860cadb99e41c4fe1c",
+    "annotations/autonomy/workhorse_evidence/chest_upper_torso/overlay.png": "f78da65bb4532bdf6b1bb1f84d8df5ea8047884f7602725a891565c730e68fde",
+    "annotations/autonomy/workhorse_evidence/chest_upper_torso/source_crop.png": "9012e0565377a3dab9b0cd0471bac0b12ccfbf53bd8400860cadb99e41c4fe1c",
+    "annotations/autonomy/workhorse_evidence/hair/contour.png": "79583b04601abcbf7228cc65a8b9258877b050c2b94fc13239ec32d632bf8bbc",
+    "annotations/autonomy/workhorse_evidence/hair/full_context.png": "1fabc37ddd64ecd3a63c19e5ba343f6553a8622ff5f9ca5f499546ea17ad801e",
+    "annotations/autonomy/workhorse_evidence/hair/mask.png": "fc35a32c298bca61169bdaecb6c232ac2ef6ce2c4a6f0e393ce4ee1d57f72af7",
+    "annotations/autonomy/workhorse_evidence/hair/neighbor_overlap.png": "f3640b50e010de94c5d6a667b235e11539ef76326b0df885326e57daaecc6a8a",
+    "annotations/autonomy/workhorse_evidence/hair/overlay.png": "70050818c693da8265e1e5e3086a1628e1f22f6cb315fde63ee7cabb5d693933",
+    "annotations/autonomy/workhorse_evidence/hair/source_crop.png": "f3640b50e010de94c5d6a667b235e11539ef76326b0df885326e57daaecc6a8a",
+    "annotations/autonomy/workhorse_evidence/head_face/contour.png": "f4d9f7a2a4aeb1636ef2b599e3015cf8099e126267c1101757275bc63e1479ae",
+    "annotations/autonomy/workhorse_evidence/head_face/full_context.png": "79bbd50ed6a591e342a48a56355bcd968a81e642666924d036f5210cf35a6a35",
+    "annotations/autonomy/workhorse_evidence/head_face/mask.png": "ab938ca73a495c4d6cc2d44e5b25bd137d30ebd53fbc063e79277f70912e6477",
+    "annotations/autonomy/workhorse_evidence/head_face/neighbor_overlap.png": "b193da94b81c44ef01995a3216a7d3b9a2c60cf923f78ef5ee618f3d4d86b863",
+    "annotations/autonomy/workhorse_evidence/head_face/overlay.png": "fdb4d1ecbdb77d592c6b029b1b8983e19edef83f7a99ebde31eae0f6de1ba3f2",
+    "annotations/autonomy/workhorse_evidence/head_face/source_crop.png": "b193da94b81c44ef01995a3216a7d3b9a2c60cf923f78ef5ee618f3d4d86b863",
+    "annotations/autonomy/workhorse_evidence/left_ankle/contour.png": "a71db626841cdbf9e52de4170ccdd5d6f3731f641068d8cd026aade086c8d578",
+    "annotations/autonomy/workhorse_evidence/left_ankle/full_context.png": "530501390e8f6b07ec6d08ef669000c8fa1ef67d6c85f25da3c014dca148637d",
+    "annotations/autonomy/workhorse_evidence/left_ankle/mask.png": "b80122782e9ae58fb3b55e930cf9f2cb96cdad38dcad1c491ea098502742764d",
+    "annotations/autonomy/workhorse_evidence/left_ankle/neighbor_overlap.png": "d245fff21b94e07de0999c087d56ea92b6ba50d0fe43afe10b5a48732c552397",
+    "annotations/autonomy/workhorse_evidence/left_ankle/overlay.png": "cd6919bd9a91313a09944c39ba9917819fb554d11a19d0ff470c9a45d4446915",
+    "annotations/autonomy/workhorse_evidence/left_ankle/source_crop.png": "d245fff21b94e07de0999c087d56ea92b6ba50d0fe43afe10b5a48732c552397",
+    "annotations/autonomy/workhorse_evidence/left_calf/contour.png": "fb2971fd9fb70d6b8a98438f2013240000205de5bd808c4e3551418c83df2fdd",
+    "annotations/autonomy/workhorse_evidence/left_calf/full_context.png": "0f1d79abb77e46089061c2a691b104239ea9f64fd116c9f2926913f880f7f13f",
+    "annotations/autonomy/workhorse_evidence/left_calf/mask.png": "3d0a2d95e51e625a7b27236a3425ee1100da8ceccec71b0af27c1d8802fa1e8f",
+    "annotations/autonomy/workhorse_evidence/left_calf/neighbor_overlap.png": "3cb2381332bbb92d2f9e974b2f2cc57ea19216347794e3c6c2549df1be4de487",
+    "annotations/autonomy/workhorse_evidence/left_calf/overlay.png": "1c269c50596adc3ccccc38930b4256bd02926220f2f9a077490d0bb1d36afd2f",
+    "annotations/autonomy/workhorse_evidence/left_calf/source_crop.png": "3cb2381332bbb92d2f9e974b2f2cc57ea19216347794e3c6c2549df1be4de487",
+    "annotations/autonomy/workhorse_evidence/left_elbow/contour.png": "c925894c5839fef3c3d61726d883bbe6041ada9d887b129271d40958294fd916",
+    "annotations/autonomy/workhorse_evidence/left_elbow/full_context.png": "885372ddde28f986d89b35e18f2aa4b5a66d77ae21b80386cbe364d216fe90ba",
+    "annotations/autonomy/workhorse_evidence/left_elbow/mask.png": "40558e3fbfe2b82518f599d9e5ffe3547b6f7c2c4362dd613baff16e2ae9e069",
+    "annotations/autonomy/workhorse_evidence/left_elbow/neighbor_overlap.png": "c4bd25e54ba2812fe1ac5a3897ff0602981a5d138404739465f380499b31be8e",
+    "annotations/autonomy/workhorse_evidence/left_elbow/overlay.png": "042e6effa41085b90cb60273bcc9922d5d04d27c39ef72ff9111ddcc84289238",
+    "annotations/autonomy/workhorse_evidence/left_elbow/source_crop.png": "c4bd25e54ba2812fe1ac5a3897ff0602981a5d138404739465f380499b31be8e",
+    "annotations/autonomy/workhorse_evidence/left_foot_base/contour.png": "ecdbb7696a7c28a042e112f29e6492f644d64babb5a96435ecf7a7826fd33b64",
+    "annotations/autonomy/workhorse_evidence/left_foot_base/full_context.png": "4c1eff55e07067ae594d34e7d8f90ed4f99dafe9e4fd7a5661d850f92b9bc37c",
+    "annotations/autonomy/workhorse_evidence/left_foot_base/mask.png": "e0cbd02d8c4e05d2cc8281cb5aa19109f4dc919a5f9cf43f38f48feb5694e613",
+    "annotations/autonomy/workhorse_evidence/left_foot_base/neighbor_overlap.png": "833efc51035e2bfb1350a0a8d06a94dfbbbc2eeb8c103f8d714a2d2168daa3d5",
+    "annotations/autonomy/workhorse_evidence/left_foot_base/overlay.png": "1bfb526047c27216b2a2802c988553d33fab3e57904f46db0b1a15eb8fc26eeb",
+    "annotations/autonomy/workhorse_evidence/left_foot_base/source_crop.png": "833efc51035e2bfb1350a0a8d06a94dfbbbc2eeb8c103f8d714a2d2168daa3d5",
+    "annotations/autonomy/workhorse_evidence/left_forearm/contour.png": "2736cf534b480b61531944903fc482e7f9e8c67ca75f01cbe67780bd6bd34af1",
+    "annotations/autonomy/workhorse_evidence/left_forearm/full_context.png": "bb579d2d67a58fb6a67b7ab36d07546968e9f74132c06f73b5cc009ee447d4d7",
+    "annotations/autonomy/workhorse_evidence/left_forearm/mask.png": "30ce0682789c360362b70b019f4af90a137d274d608865218ab81d3dda8ed8e5",
+    "annotations/autonomy/workhorse_evidence/left_forearm/neighbor_overlap.png": "71afd9e17258a94f72d7175902e71e3e825784bafaff3aeb65696ed5887fcdec",
+    "annotations/autonomy/workhorse_evidence/left_forearm/overlay.png": "353c932db9be5d3298b33d38c7737c889eb63e9ad7c74f334e45b73f1e832206",
+    "annotations/autonomy/workhorse_evidence/left_forearm/source_crop.png": "71afd9e17258a94f72d7175902e71e3e825784bafaff3aeb65696ed5887fcdec",
+    "annotations/autonomy/workhorse_evidence/left_hand_base/contour.png": "cd31f8815a774637dc978d411de7b97dde111168c93f129b81048539d3da6e5c",
+    "annotations/autonomy/workhorse_evidence/left_hand_base/full_context.png": "6a308eb56238409ad49bab4a317d6177cecbafd6573514afbf7f3419964f6a97",
+    "annotations/autonomy/workhorse_evidence/left_hand_base/mask.png": "96031d73b74daa35f01e1f477bacc613e6d40a2491824cf20ae5d1ebfdd10722",
+    "annotations/autonomy/workhorse_evidence/left_hand_base/neighbor_overlap.png": "790e988b42fc15dc79c1eef1bffb63f39302b8b40b6bf4ad4a5c63897a9bca9f",
+    "annotations/autonomy/workhorse_evidence/left_hand_base/overlay.png": "0255b7924b05732e56649de06fa9f7522491a318be4c07217c8382fbc7ece7a1",
+    "annotations/autonomy/workhorse_evidence/left_hand_base/source_crop.png": "790e988b42fc15dc79c1eef1bffb63f39302b8b40b6bf4ad4a5c63897a9bca9f",
+    "annotations/autonomy/workhorse_evidence/left_knee/contour.png": "44a9568a779548bb28fe15c153bc03a3bb88cc1b11a42c9f451ef18c059d3d01",
+    "annotations/autonomy/workhorse_evidence/left_knee/full_context.png": "69c21762153454223fbc77d0d4164476e98228d8a038614a9ef8b4fc7f0a702d",
+    "annotations/autonomy/workhorse_evidence/left_knee/mask.png": "a52c054e4dde6797b5ade6e2384c15a2f4a6f9e294f2c97f45a5d10f362df608",
+    "annotations/autonomy/workhorse_evidence/left_knee/neighbor_overlap.png": "ec4517422509b74033d16842eaed31d1ce780eda934ad28501e5d8948d85a4ec",
+    "annotations/autonomy/workhorse_evidence/left_knee/overlay.png": "e3dddfdba955756a5ddbb8ee226abeb0f704e0249a2ebf4ff33b78dfc7443c95",
+    "annotations/autonomy/workhorse_evidence/left_knee/source_crop.png": "ec4517422509b74033d16842eaed31d1ce780eda934ad28501e5d8948d85a4ec",
+    "annotations/autonomy/workhorse_evidence/left_shoulder/contour.png": "2081307e487b276ff1911888548272d70a14f31be8fe9727f9303fa5539c81e2",
+    "annotations/autonomy/workhorse_evidence/left_shoulder/full_context.png": "b7e07c6f2c80ecb254930e368532091464b3b3b4d8e26213ba1ce76d2618715c",
+    "annotations/autonomy/workhorse_evidence/left_shoulder/mask.png": "41150d3146e4090dc7248c73a8129cf6b26170e98aec57e198e80cab63506a3a",
+    "annotations/autonomy/workhorse_evidence/left_shoulder/neighbor_overlap.png": "240fa1eee6ed661c07d7a9f959a48e064e3b9cb1b81c7a9075901e719cb72f34",
+    "annotations/autonomy/workhorse_evidence/left_shoulder/overlay.png": "3494f036c426fa0f28a5366c815dd8180b9089ba93ae3e04d9970df5506e2687",
+    "annotations/autonomy/workhorse_evidence/left_shoulder/source_crop.png": "240fa1eee6ed661c07d7a9f959a48e064e3b9cb1b81c7a9075901e719cb72f34",
+    "annotations/autonomy/workhorse_evidence/left_thigh/contour.png": "c97da97ed41e0c75fda7b7e63fcdda0b2f83542828d8420d3cc3a41d35ca803e",
+    "annotations/autonomy/workhorse_evidence/left_thigh/full_context.png": "480be3c536b682784afed53e584853ed9619714b79613046155a712cf71f3c1a",
+    "annotations/autonomy/workhorse_evidence/left_thigh/mask.png": "c79ec107604b14e481bc73f8b59b13b4edb0eb9a948e2fa911ccbbc8db3194a5",
+    "annotations/autonomy/workhorse_evidence/left_thigh/neighbor_overlap.png": "24a070838354307bd8db096db3352c32e602f435002a8b6b59e90128e8888ae4",
+    "annotations/autonomy/workhorse_evidence/left_thigh/overlay.png": "dccf412df590c42eed1d9540622f9f121154cb135f0bbeedda71b4558a4d7e0f",
+    "annotations/autonomy/workhorse_evidence/left_thigh/source_crop.png": "24a070838354307bd8db096db3352c32e602f435002a8b6b59e90128e8888ae4",
+    "annotations/autonomy/workhorse_evidence/left_upper_arm/contour.png": "7df1340e8973c17de65e7c37c55bfbc65b21fd86aebed8a7796d740a0d836cd7",
+    "annotations/autonomy/workhorse_evidence/left_upper_arm/full_context.png": "afddb2464b54607db773f9d92da639ff110dd28117e81d86bd284f1396b258d1",
+    "annotations/autonomy/workhorse_evidence/left_upper_arm/mask.png": "4fbf5cc0bd1b2daf865368e351d15c271562f4e42dbb559245bd9f7debd487cf",
+    "annotations/autonomy/workhorse_evidence/left_upper_arm/neighbor_overlap.png": "6edd8793a883744579bc3d99a131dff3f7be9248765a1ecf86515e462ae7e80c",
+    "annotations/autonomy/workhorse_evidence/left_upper_arm/overlay.png": "97f49e336637c789dbd2752fa77fa6763305cb11487ce179f722734f85410f75",
+    "annotations/autonomy/workhorse_evidence/left_upper_arm/source_crop.png": "6edd8793a883744579bc3d99a131dff3f7be9248765a1ecf86515e462ae7e80c",
+    "annotations/autonomy/workhorse_evidence/left_wrist/contour.png": "b040f8728871a520549fe77d66589c0eecd6643e3257d57fb492fb930f09a61f",
+    "annotations/autonomy/workhorse_evidence/left_wrist/full_context.png": "29bd025b30cf97e9fa328a616984882b5afb2a4fc59f8c17675a7d4cb437187d",
+    "annotations/autonomy/workhorse_evidence/left_wrist/mask.png": "5e4961a79484f7cc288093f52f11d27705b4df886ac1bb499d28106c1e7cbdf8",
+    "annotations/autonomy/workhorse_evidence/left_wrist/neighbor_overlap.png": "96bd2b8d62acd8a63d8eecf58b659d00b44e5476f695cb8ed561c410453db2a4",
+    "annotations/autonomy/workhorse_evidence/left_wrist/overlay.png": "a1dbf70ba18fe2001914e2abf3a2b2ef2776bc7ef08e01fb2eed8f729397b34f",
+    "annotations/autonomy/workhorse_evidence/left_wrist/source_crop.png": "96bd2b8d62acd8a63d8eecf58b659d00b44e5476f695cb8ed561c410453db2a4",
+    "annotations/autonomy/workhorse_evidence/neck/contour.png": "8c8f3ce591e2212a5a0709ef632d8055e28c53839b388600daad2acf2549777f",
+    "annotations/autonomy/workhorse_evidence/neck/full_context.png": "d6720c2992373bd6c311a1296904b0fda13e3da49aaed76dc25d99d0dbb1d4de",
+    "annotations/autonomy/workhorse_evidence/neck/mask.png": "6c7888e7fbc9e1bbd3e7e5eb4842b32356a38ad31da6cd6a7353fc49dcc51761",
+    "annotations/autonomy/workhorse_evidence/neck/neighbor_overlap.png": "bffd5e3360f0ffd2c06d001e4cd636b67762962615a62ab3c3e52beb4f708e28",
+    "annotations/autonomy/workhorse_evidence/neck/overlay.png": "04f52ff2d4a16045c3492c85413976d1d13b6a06585f77a6b6ce52e260c23d32",
+    "annotations/autonomy/workhorse_evidence/neck/source_crop.png": "bffd5e3360f0ffd2c06d001e4cd636b67762962615a62ab3c3e52beb4f708e28",
+    "annotations/autonomy/workhorse_evidence/pelvic_region/contour.png": "5fdba118b3452475587b9b45f9f78d2e538ca52014949f4d9e0856cd75153284",
+    "annotations/autonomy/workhorse_evidence/pelvic_region/full_context.png": "517ceb4bcf60b8a163be4d9f0a212b42b75eece47946ded395dc124dee83b51c",
+    "annotations/autonomy/workhorse_evidence/pelvic_region/mask.png": "d7fbac678095de456e4b393dd72535b16fbc3fa95536d9efe136097f7479577f",
+    "annotations/autonomy/workhorse_evidence/pelvic_region/neighbor_overlap.png": "3a3859e6c61537d14ec0d51882b07a8b60db2f4c049b99773f399ddfac03f14e",
+    "annotations/autonomy/workhorse_evidence/pelvic_region/overlay.png": "f17c2ea7aa9b6dd26f6ed7b7005879c37a3bb19244a348dc296c62f631aae05b",
+    "annotations/autonomy/workhorse_evidence/pelvic_region/source_crop.png": "3a3859e6c61537d14ec0d51882b07a8b60db2f4c049b99773f399ddfac03f14e",
+    "annotations/autonomy/workhorse_evidence/right_ankle/contour.png": "46589d1f0200a6e66e0c6588066d2d867674c26c5818b4d9e919c741f2a1fa8c",
+    "annotations/autonomy/workhorse_evidence/right_ankle/full_context.png": "37d5d4a4297cb37c5c3c5ec93bde64a65f6a197428184bb63e2ebe4bc4ee07ed",
+    "annotations/autonomy/workhorse_evidence/right_ankle/mask.png": "c85828aafce1d9e7a87e7f2e4fe198671704a6233b63d8f1fec5bd98e4523f9e",
+    "annotations/autonomy/workhorse_evidence/right_ankle/neighbor_overlap.png": "878b57b66505b2f0abcf4852ebc557b3c28a1d27b8c94f0a5a59ed1b92d47d83",
+    "annotations/autonomy/workhorse_evidence/right_ankle/overlay.png": "1b8e7ee1be0c07a8374cc6a95c480b44eae714a42a8f6f459f0a3000f209c378",
+    "annotations/autonomy/workhorse_evidence/right_ankle/source_crop.png": "878b57b66505b2f0abcf4852ebc557b3c28a1d27b8c94f0a5a59ed1b92d47d83",
+    "annotations/autonomy/workhorse_evidence/right_calf/contour.png": "0a044681243daa459678d941a585542c0734b77e9afdbe750f192164de1b7447",
+    "annotations/autonomy/workhorse_evidence/right_calf/full_context.png": "79bbd50ed6a591e342a48a56355bcd968a81e642666924d036f5210cf35a6a35",
+    "annotations/autonomy/workhorse_evidence/right_calf/mask.png": "3358edd40205747cf3b3ed35df32abe7f954aea005c1e53f5d3acd088cd387af",
+    "annotations/autonomy/workhorse_evidence/right_calf/neighbor_overlap.png": "b193da94b81c44ef01995a3216a7d3b9a2c60cf923f78ef5ee618f3d4d86b863",
+    "annotations/autonomy/workhorse_evidence/right_calf/overlay.png": "6fbd052384fbabee523ee7484fdc5660c178ecde41d36b22c2b767e839265144",
+    "annotations/autonomy/workhorse_evidence/right_calf/source_crop.png": "b193da94b81c44ef01995a3216a7d3b9a2c60cf923f78ef5ee618f3d4d86b863",
+    "annotations/autonomy/workhorse_evidence/right_elbow/contour.png": "650ec5194de1ea8dc9ea685037737b58993a38da6abaf5bd2f35af61890f864c",
+    "annotations/autonomy/workhorse_evidence/right_elbow/full_context.png": "a535cda51d8421d6d128f6a2706f7b8a22e9a0bfe9a7c53d5383827165125e29",
+    "annotations/autonomy/workhorse_evidence/right_elbow/mask.png": "e059abf65f19248cb9b5e9353d93d7e8fc78c48e066d7d4514cc6a343c24493c",
+    "annotations/autonomy/workhorse_evidence/right_elbow/neighbor_overlap.png": "d34ee7483e1427b72a09aa85ad265fe7439ffb27f8427fcc487ddd6b8a5a0864",
+    "annotations/autonomy/workhorse_evidence/right_elbow/overlay.png": "169b24a1afb8c6880e79494ed6174f7ea338fe293ce9e931830a5d2ff7f1da88",
+    "annotations/autonomy/workhorse_evidence/right_elbow/source_crop.png": "d34ee7483e1427b72a09aa85ad265fe7439ffb27f8427fcc487ddd6b8a5a0864",
+    "annotations/autonomy/workhorse_evidence/right_foot_base/contour.png": "cea7c72074613846b3103ce0cc1e1ef6919512f4bb493d086929bcf5a1242e94",
+    "annotations/autonomy/workhorse_evidence/right_foot_base/full_context.png": "79bbd50ed6a591e342a48a56355bcd968a81e642666924d036f5210cf35a6a35",
+    "annotations/autonomy/workhorse_evidence/right_foot_base/mask.png": "ec5023b18f5fc72d9ca0a5bf13a59956159eda2f842910d894351f0435a773c8",
+    "annotations/autonomy/workhorse_evidence/right_foot_base/neighbor_overlap.png": "b193da94b81c44ef01995a3216a7d3b9a2c60cf923f78ef5ee618f3d4d86b863",
+    "annotations/autonomy/workhorse_evidence/right_foot_base/overlay.png": "7e999be1c4e1597ea6a29fe1e1974303b1ecaf744d9b250533a693cad73e0593",
+    "annotations/autonomy/workhorse_evidence/right_foot_base/source_crop.png": "b193da94b81c44ef01995a3216a7d3b9a2c60cf923f78ef5ee618f3d4d86b863",
+    "annotations/autonomy/workhorse_evidence/right_forearm/contour.png": "ce5bb0c12f2b93814266b862c431eebba5d47964c69b7f4ba9f02db0fd786d63",
+    "annotations/autonomy/workhorse_evidence/right_forearm/full_context.png": "ff593ec1799188575860029a5c0ea3c2e2eda24784a96a1230e15faca314484f",
+    "annotations/autonomy/workhorse_evidence/right_forearm/mask.png": "6e7029a96ee7423d5439be1ffa5c41127eeeeee6d5df6c678a0c1f45f4a47469",
+    "annotations/autonomy/workhorse_evidence/right_forearm/neighbor_overlap.png": "4fb75f17a2e27d54ac8c478c0f5c794ae19f1a490aee9f130cd8f96452705f86",
+    "annotations/autonomy/workhorse_evidence/right_forearm/overlay.png": "56a7e4416fb3b7e2727c067b985a41bda5300456ff48f481a52ee10490076b0b",
+    "annotations/autonomy/workhorse_evidence/right_forearm/source_crop.png": "4fb75f17a2e27d54ac8c478c0f5c794ae19f1a490aee9f130cd8f96452705f86",
+    "annotations/autonomy/workhorse_evidence/right_hand_base/contour.png": "d67d3a8c7d5160aabef80597138eac94954dea1396d612a73a596b98e4d39787",
+    "annotations/autonomy/workhorse_evidence/right_hand_base/full_context.png": "3dc3eb2a9670083d211eff9af7e970cd7907737967b074f2a3f3d3ef07ee0745",
+    "annotations/autonomy/workhorse_evidence/right_hand_base/mask.png": "d54fd8a7e29d97352c9ca391e8363f33750ba17559a62a2ee398792acda244ea",
+    "annotations/autonomy/workhorse_evidence/right_hand_base/neighbor_overlap.png": "56992403d5f1838371bb46ef75881044a8af17f7a2291c6aff8c890a1b35b8c5",
+    "annotations/autonomy/workhorse_evidence/right_hand_base/overlay.png": "37b81c94cba4cfb920a9820e4994daf839874339eab8fdd17b58109c70a84f49",
+    "annotations/autonomy/workhorse_evidence/right_hand_base/source_crop.png": "56992403d5f1838371bb46ef75881044a8af17f7a2291c6aff8c890a1b35b8c5",
+    "annotations/autonomy/workhorse_evidence/right_knee/contour.png": "2e31ca7ce80b611779cf132b100c0ad422a586c4cda78f0e0ebe34c6ce2a7a94",
+    "annotations/autonomy/workhorse_evidence/right_knee/full_context.png": "142551e7d7c2205e760122cd2f64e2188944733cc6f930a686bed7a0808bc764",
+    "annotations/autonomy/workhorse_evidence/right_knee/mask.png": "2b0141e2105404b4963d9ba9e12b7deccaff9d3b470667f8d4a86e3bdefc70f5",
+    "annotations/autonomy/workhorse_evidence/right_knee/neighbor_overlap.png": "ad67dd1f9af5e1837c1773839191069d9f6ca2bfde031078c17ba8b41ab6ac78",
+    "annotations/autonomy/workhorse_evidence/right_knee/overlay.png": "a39e000ec253a6779f3f573b5032ef183dba8a75c5762edee12d970e85d22afe",
+    "annotations/autonomy/workhorse_evidence/right_knee/source_crop.png": "ad67dd1f9af5e1837c1773839191069d9f6ca2bfde031078c17ba8b41ab6ac78",
+    "annotations/autonomy/workhorse_evidence/right_shoulder/contour.png": "cbcc53321d561d4f98528dd3de3b99f88f7ec343af1b22b463980153f9393ab6",
+    "annotations/autonomy/workhorse_evidence/right_shoulder/full_context.png": "f6b48c78584e036a190793619c43ac22d5f74533df18697ea1c32515feabaf72",
+    "annotations/autonomy/workhorse_evidence/right_shoulder/mask.png": "85b63f6ab8b19462b2eb88014a21a0a317e85885a1b3bcedc97969e9c550d501",
+    "annotations/autonomy/workhorse_evidence/right_shoulder/neighbor_overlap.png": "3e3b8a20b3bec2e35a32caa05d4e86ab3cfde8270b6b1ae9235aacf11dd7f7b4",
+    "annotations/autonomy/workhorse_evidence/right_shoulder/overlay.png": "ef455fbbe35019b4803f65789de3344268a6b52822b2995f81776c26a0003ce9",
+    "annotations/autonomy/workhorse_evidence/right_shoulder/source_crop.png": "3e3b8a20b3bec2e35a32caa05d4e86ab3cfde8270b6b1ae9235aacf11dd7f7b4",
+    "annotations/autonomy/workhorse_evidence/right_thigh/contour.png": "e786f5ed6ecfd5d3616158c0d4c900470715b88f87c76fc6bcf123260fd67137",
+    "annotations/autonomy/workhorse_evidence/right_thigh/full_context.png": "3f4cceac20b9deea8b5b249089ef35a1ce768698744c392243b12a02f0ae532a",
+    "annotations/autonomy/workhorse_evidence/right_thigh/mask.png": "c7c265d447a6fcf2341ed54cec0b1616b070d787e14e3bd702553c4fec60f19f",
+    "annotations/autonomy/workhorse_evidence/right_thigh/neighbor_overlap.png": "5868932ba76ed9bc8ac6ac102c783d02399b6b652449fbde13888e6b94d78ee2",
+    "annotations/autonomy/workhorse_evidence/right_thigh/overlay.png": "00c49c99dd67a8eb2ea761f6c66dc8c31ca927be1b926664eae64aea09e23b68",
+    "annotations/autonomy/workhorse_evidence/right_thigh/source_crop.png": "5868932ba76ed9bc8ac6ac102c783d02399b6b652449fbde13888e6b94d78ee2",
+    "annotations/autonomy/workhorse_evidence/right_upper_arm/contour.png": "d45ab1380ac6a9023af85b528d9f6902c38e6c4f168259a6941f1727cbf85b48",
+    "annotations/autonomy/workhorse_evidence/right_upper_arm/full_context.png": "0b90354eef8752396ea43117af04bca902611a6956c31db30e15929332b19454",
+    "annotations/autonomy/workhorse_evidence/right_upper_arm/mask.png": "218f78c94d611474f97353dac4f6ed758396ca0d7bade28d8311188e86d86736",
+    "annotations/autonomy/workhorse_evidence/right_upper_arm/neighbor_overlap.png": "89f87d31922c41990ef7cb3468311b5d147a92f228c54c5277937cb07d96de9f",
+    "annotations/autonomy/workhorse_evidence/right_upper_arm/overlay.png": "6262398eab1bd8125aa6dd34d66dfe78aa25c5ae10e97d511f9ffbbc9929bf39",
+    "annotations/autonomy/workhorse_evidence/right_upper_arm/source_crop.png": "89f87d31922c41990ef7cb3468311b5d147a92f228c54c5277937cb07d96de9f",
+    "annotations/autonomy/workhorse_evidence/right_wrist/contour.png": "994b7a93d5ebde8acf17f377620cc30aebcd44d11bcae9fdaf999f2836e73424",
+    "annotations/autonomy/workhorse_evidence/right_wrist/full_context.png": "226dc2cc5458995556f3a0884d89f0cc832fdc19dec396bc36e92a1dda9ac24b",
+    "annotations/autonomy/workhorse_evidence/right_wrist/mask.png": "d937373da38d0d227f47a5df22a7dd33762ef4bd0b43ea918e43c19ce57b92c1",
+    "annotations/autonomy/workhorse_evidence/right_wrist/neighbor_overlap.png": "467a68ee7a3420a13ae072f6c2f1b51fb157d4c530d7dcc1bb731dbfa811ff02",
+    "annotations/autonomy/workhorse_evidence/right_wrist/overlay.png": "b14ea9a76af8d23f5a1296c6c0cb4a01fec1b7f9558c007f083244fa282d6ec1",
+    "annotations/autonomy/workhorse_evidence/right_wrist/source_crop.png": "467a68ee7a3420a13ae072f6c2f1b51fb157d4c530d7dcc1bb731dbfa811ff02",
+    "annotations/autonomy/workhorse_evidence_after/chest_upper_torso/contour.png": "2737a0b258d3e8129ef397eab04c60f1d5641d6c95b8a067dbb96360f32dbc81",
+    "annotations/autonomy/workhorse_evidence_after/chest_upper_torso/full_context.png": "d0c1308b947235c686bb31ae31cf0ebfd63607ee00036d46377063ae67dc85d5",
+    "annotations/autonomy/workhorse_evidence_after/chest_upper_torso/mask.png": "bf6d6e6c4e8c46e52953f47f3e2980a3117642cc9c2335b32b4d765e357ded58",
+    "annotations/autonomy/workhorse_evidence_after/chest_upper_torso/neighbor_overlap.png": "b663a293b8ebeeb43b4910728d949da93ad4343ad486d11df19ab1191a3a1448",
+    "annotations/autonomy/workhorse_evidence_after/chest_upper_torso/overlay.png": "d8c89d9ad07c3d62d11638c7fab8e4951c19be1fa19e77589639ec0d8d420517",
+    "annotations/autonomy/workhorse_evidence_after/chest_upper_torso/source_crop.png": "b663a293b8ebeeb43b4910728d949da93ad4343ad486d11df19ab1191a3a1448",
+    "annotations/autonomy/workhorse_evidence_after/hair/contour.png": "4b3ed635569400c5991df0c175daacc4d47cad83f754168add7ab953d9c7157a",
+    "annotations/autonomy/workhorse_evidence_after/hair/full_context.png": "1fabc37ddd64ecd3a63c19e5ba343f6553a8622ff5f9ca5f499546ea17ad801e",
+    "annotations/autonomy/workhorse_evidence_after/hair/mask.png": "5b2bd28b2e372c937b1adfcb995eee81a54169c01876294f695f0ef3f6069075",
+    "annotations/autonomy/workhorse_evidence_after/hair/neighbor_overlap.png": "f3640b50e010de94c5d6a667b235e11539ef76326b0df885326e57daaecc6a8a",
+    "annotations/autonomy/workhorse_evidence_after/hair/overlay.png": "e87dc30b5452768cf7e92042a43ae23982a475e7aaf1c161d78c8826f32e63f6",
+    "annotations/autonomy/workhorse_evidence_after/hair/source_crop.png": "f3640b50e010de94c5d6a667b235e11539ef76326b0df885326e57daaecc6a8a",
+    "annotations/autonomy/workhorse_evidence_after/head_face/contour.png": "dcc021397b6b58063ba4244ba273579374b793cffd6f299026cec106681eca3e",
+    "annotations/autonomy/workhorse_evidence_after/head_face/full_context.png": "79bbd50ed6a591e342a48a56355bcd968a81e642666924d036f5210cf35a6a35",
+    "annotations/autonomy/workhorse_evidence_after/head_face/mask.png": "9250f6f5a77a102af6c2c0f9d3690ca440a763ac45c49641bedba1c62a2f2cbd",
+    "annotations/autonomy/workhorse_evidence_after/head_face/neighbor_overlap.png": "b193da94b81c44ef01995a3216a7d3b9a2c60cf923f78ef5ee618f3d4d86b863",
+    "annotations/autonomy/workhorse_evidence_after/head_face/overlay.png": "a9988f51c0e7f65bc7c588624ce2e906258150d8c5badce9f117835b5753d0f4",
+    "annotations/autonomy/workhorse_evidence_after/head_face/source_crop.png": "b193da94b81c44ef01995a3216a7d3b9a2c60cf923f78ef5ee618f3d4d86b863",
+    "annotations/autonomy/workhorse_evidence_after/left_ankle/contour.png": "469d2388cb82f9ad51d0839ed55c286db98ba0a47ccd86967072fd54ee7d9be7",
+    "annotations/autonomy/workhorse_evidence_after/left_ankle/full_context.png": "75a4326c2ac2c7f73f1abffa3be0f5d9a7dd84f5d9fb88d8035b8d1e73237af4",
+    "annotations/autonomy/workhorse_evidence_after/left_ankle/mask.png": "9b3bc7fb0199f74ddcf0f3b04b83666559700f732bfd5828a8a07efc203b1a8f",
+    "annotations/autonomy/workhorse_evidence_after/left_ankle/neighbor_overlap.png": "fdd876242b1797499a94955abbd9667dda9ebd81bbf91a07b8ce1051e0d47ab3",
+    "annotations/autonomy/workhorse_evidence_after/left_ankle/overlay.png": "6d6eae5a21bf93459287e5968a447fb6b5847962242b6532e65da3bd825fd38b",
+    "annotations/autonomy/workhorse_evidence_after/left_ankle/source_crop.png": "fdd876242b1797499a94955abbd9667dda9ebd81bbf91a07b8ce1051e0d47ab3",
+    "annotations/autonomy/workhorse_evidence_after/left_calf/contour.png": "efb177c96899000b8774ac6bb2bdee720c7832d5f2ca0e657e1a088ba751f142",
+    "annotations/autonomy/workhorse_evidence_after/left_calf/full_context.png": "fd47e985cab7327a13c43be090f8e58443e0100f4e5eda06193bcec63c5a7d5e",
+    "annotations/autonomy/workhorse_evidence_after/left_calf/mask.png": "86a4901ac8e282b62d5fb08c91d8b7ac79161483b0a4d885286fc6fb5670e9b7",
+    "annotations/autonomy/workhorse_evidence_after/left_calf/neighbor_overlap.png": "43abab9d6fe8643803f8056ee4bb7a618de71627de731903f616a9090d1c4d45",
+    "annotations/autonomy/workhorse_evidence_after/left_calf/overlay.png": "076253e06be09090f22c7cf5e8425b6509eb8dbbe193694ef960f8b0591b192c",
+    "annotations/autonomy/workhorse_evidence_after/left_calf/source_crop.png": "43abab9d6fe8643803f8056ee4bb7a618de71627de731903f616a9090d1c4d45",
+    "annotations/autonomy/workhorse_evidence_after/left_elbow/contour.png": "7144a03c1c1c62f23cf9a75bac29c10375ea73010e3fbedeb6c5f72211f8879f",
+    "annotations/autonomy/workhorse_evidence_after/left_elbow/full_context.png": "a4edc2533dfbe8cb253b9d78953f43acccf5472c592dade53600b037a8da13c9",
+    "annotations/autonomy/workhorse_evidence_after/left_elbow/mask.png": "1e052f4d722015d2f71ee4a29298faedd01f7f42ff2765378ae219352734c426",
+    "annotations/autonomy/workhorse_evidence_after/left_elbow/neighbor_overlap.png": "93ceb06045e3240bd966abe9cfec853490996f8c2564cf0e6801dd23db1ab759",
+    "annotations/autonomy/workhorse_evidence_after/left_elbow/overlay.png": "b4a67075c05d01f7d97d023545704cdb98fa2a49c2217cd389d11b731bc2a486",
+    "annotations/autonomy/workhorse_evidence_after/left_elbow/source_crop.png": "93ceb06045e3240bd966abe9cfec853490996f8c2564cf0e6801dd23db1ab759",
+    "annotations/autonomy/workhorse_evidence_after/left_foot_base/contour.png": "d132338fde2c6da5aeadf4146635f0cfa8f4a26e0befa694d979683ddb10aaff",
+    "annotations/autonomy/workhorse_evidence_after/left_foot_base/full_context.png": "351c5341f4306fa9d75adcc18970874f9c1066e39c24d11d950a22be140f159d",
+    "annotations/autonomy/workhorse_evidence_after/left_foot_base/mask.png": "20c445ffa1bf43cd555f78bde9343671fa88ec60666d04f303784d87df86c973",
+    "annotations/autonomy/workhorse_evidence_after/left_foot_base/neighbor_overlap.png": "e6679e2bc016c948189ff751624ce31fe1d2f45dff27ec701ac1cfecc8a06a3b",
+    "annotations/autonomy/workhorse_evidence_after/left_foot_base/overlay.png": "0c1f752e640b45c233eaea7ffc032c6ae5374033a612a6d52ac0db81143d1a7d",
+    "annotations/autonomy/workhorse_evidence_after/left_foot_base/source_crop.png": "e6679e2bc016c948189ff751624ce31fe1d2f45dff27ec701ac1cfecc8a06a3b",
+    "annotations/autonomy/workhorse_evidence_after/left_forearm/contour.png": "50b8970b4282d625a08a636d23a3535fd751d95d362d1d3acdc109020b058600",
+    "annotations/autonomy/workhorse_evidence_after/left_forearm/full_context.png": "75282bc87681748cda53d6eadc5c98a3cb4092bb66468fe9f1d1db2aa9873d9a",
+    "annotations/autonomy/workhorse_evidence_after/left_forearm/mask.png": "37c5e141e966eda1a57adb52f11da6889d89fbf1464b81a082b040505b03748f",
+    "annotations/autonomy/workhorse_evidence_after/left_forearm/neighbor_overlap.png": "22ab0872d21c896490f5e9e64dfc431bdd37117850c9b0e87e6f585bffe9b4bc",
+    "annotations/autonomy/workhorse_evidence_after/left_forearm/overlay.png": "5be36125446698fbdab7e41032771e8c32dddc35103fbac5ce78ff006b09d5fd",
+    "annotations/autonomy/workhorse_evidence_after/left_forearm/source_crop.png": "22ab0872d21c896490f5e9e64dfc431bdd37117850c9b0e87e6f585bffe9b4bc",
+    "annotations/autonomy/workhorse_evidence_after/left_hand_base/contour.png": "531febe39b51730038d167c6524caa5dfe5e8dac15abb115623ada2c88d21cf4",
+    "annotations/autonomy/workhorse_evidence_after/left_hand_base/full_context.png": "8d29769bac370576981d44f4eb26bcddec3f0627584578be809363e61a7a7e3d",
+    "annotations/autonomy/workhorse_evidence_after/left_hand_base/mask.png": "ba4b3babcff886ae46744cdb4f7f458b98e14db5f5f5e91ad4e3e7a132543b63",
+    "annotations/autonomy/workhorse_evidence_after/left_hand_base/neighbor_overlap.png": "88738c0668d39c804fb6bd2434caa1391fb4aedeabcaa0c7f476059cacff9e45",
+    "annotations/autonomy/workhorse_evidence_after/left_hand_base/overlay.png": "38f36d651fc074d7c6a02ed12a80acaa486dcd3d84376bba62d4b0a9d477bb1d",
+    "annotations/autonomy/workhorse_evidence_after/left_hand_base/source_crop.png": "88738c0668d39c804fb6bd2434caa1391fb4aedeabcaa0c7f476059cacff9e45",
+    "annotations/autonomy/workhorse_evidence_after/left_knee/contour.png": "5c3f9cd1990253231c3085a78d02533b601df356416db2e333898911a37df42d",
+    "annotations/autonomy/workhorse_evidence_after/left_knee/full_context.png": "a28abcd99ee1eb8eb3b78c8090d5d630311b2b4eb4337910d75ad546f22f6310",
+    "annotations/autonomy/workhorse_evidence_after/left_knee/mask.png": "3ee87e38f4dc6eb9cc331acfd3f158f30172671bbd7b61edaa9f42cb276f59c4",
+    "annotations/autonomy/workhorse_evidence_after/left_knee/neighbor_overlap.png": "711ebae45462ed5cc1a79c30808e18aad3798f25c67cbe4a608c5f0c7b58e3d3",
+    "annotations/autonomy/workhorse_evidence_after/left_knee/overlay.png": "7e2552b01a458f5581e464c1d50db7e1ba575bab62e589dcac25703722faea71",
+    "annotations/autonomy/workhorse_evidence_after/left_knee/source_crop.png": "711ebae45462ed5cc1a79c30808e18aad3798f25c67cbe4a608c5f0c7b58e3d3",
+    "annotations/autonomy/workhorse_evidence_after/left_shoulder/contour.png": "7954c82b3f7d6af9edcf7de535a8623c3aecfe292638370e4dc837181399c761",
+    "annotations/autonomy/workhorse_evidence_after/left_shoulder/full_context.png": "d5bca750bed9fa248e04453386b6ccd2a4738abdac2e41f4355934bba0c30326",
+    "annotations/autonomy/workhorse_evidence_after/left_shoulder/mask.png": "74453ec9d9702d1eb078b104ac58908fb0001ccf42dd7d4623c659cdbcf0e119",
+    "annotations/autonomy/workhorse_evidence_after/left_shoulder/neighbor_overlap.png": "955d345e29b0b4937bd827820eade17add3cf0cef0547a8561367a17ad0e82d1",
+    "annotations/autonomy/workhorse_evidence_after/left_shoulder/overlay.png": "29d622b7d681f291f7dd3bf88b44398bcf28e22ca29369daf56a4dec0c2f4de1",
+    "annotations/autonomy/workhorse_evidence_after/left_shoulder/source_crop.png": "955d345e29b0b4937bd827820eade17add3cf0cef0547a8561367a17ad0e82d1",
+    "annotations/autonomy/workhorse_evidence_after/left_thigh/contour.png": "278d2b77f6aaf08a4b5730146f40979586cda3afff5e6ea0b81c0ddda683bc52",
+    "annotations/autonomy/workhorse_evidence_after/left_thigh/full_context.png": "1dd5bb5e8b6dee1ffc4330f50a50fece2896fd4a02a6ef9bf2193795de1b3cea",
+    "annotations/autonomy/workhorse_evidence_after/left_thigh/mask.png": "f1a522d01b499cae9960f5e5b21272398250be53d468b675229c5e4f5a4a0598",
+    "annotations/autonomy/workhorse_evidence_after/left_thigh/neighbor_overlap.png": "88e44d71951abccd883399f052f018337261ca573f41bbe724e0b30cc5ecca27",
+    "annotations/autonomy/workhorse_evidence_after/left_thigh/overlay.png": "85460e8ae933cd1739e3af7902880408e52243d60135d8794c89016ec74a2899",
+    "annotations/autonomy/workhorse_evidence_after/left_thigh/source_crop.png": "88e44d71951abccd883399f052f018337261ca573f41bbe724e0b30cc5ecca27",
+    "annotations/autonomy/workhorse_evidence_after/left_upper_arm/contour.png": "016b1fb0a96899528fce43c47e7a3e85198bbf994e978009ba0c3d4f917a43fc",
+    "annotations/autonomy/workhorse_evidence_after/left_upper_arm/full_context.png": "4b32c8d523928621aa4fdf5c07cae11318e8950845feea1fa197e61ef6475527",
+    "annotations/autonomy/workhorse_evidence_after/left_upper_arm/mask.png": "18bc14f5a39e06bd0d2acaeb44adbd3d443839121b32c7886d372f3b55752668",
+    "annotations/autonomy/workhorse_evidence_after/left_upper_arm/neighbor_overlap.png": "6b6ad91ae41c937af774be5b0e7e11f80a9cd9e18094253f140cc98788cefb93",
+    "annotations/autonomy/workhorse_evidence_after/left_upper_arm/overlay.png": "69392428d1f6821538805afba8f48269583fa3ce7ee5c815f22ec8f37d98044e",
+    "annotations/autonomy/workhorse_evidence_after/left_upper_arm/source_crop.png": "6b6ad91ae41c937af774be5b0e7e11f80a9cd9e18094253f140cc98788cefb93",
+    "annotations/autonomy/workhorse_evidence_after/left_wrist/contour.png": "052dc5d268e5fd5baf8cfcdd8a7a16385e2e506fb4e6f291e702590a31335f31",
+    "annotations/autonomy/workhorse_evidence_after/left_wrist/full_context.png": "9c326e87c2753f28c744f243fd6f547362296ebef1ff1338c007c07abd65b57e",
+    "annotations/autonomy/workhorse_evidence_after/left_wrist/mask.png": "12aaabd388b25ac2838ec09352dba65c7c319702a5c4e1a08ccb9046ec794f70",
+    "annotations/autonomy/workhorse_evidence_after/left_wrist/neighbor_overlap.png": "2aff05f614f5481c23468c3eaaec7aa25113447f5432cab850ec9b184409fe86",
+    "annotations/autonomy/workhorse_evidence_after/left_wrist/overlay.png": "11983c952df0a1ddefaf1e5c8ae8dffe4dfa1395523d6da76094af1e44bc78f0",
+    "annotations/autonomy/workhorse_evidence_after/left_wrist/source_crop.png": "2aff05f614f5481c23468c3eaaec7aa25113447f5432cab850ec9b184409fe86",
+    "annotations/autonomy/workhorse_evidence_after/neck/contour.png": "7744e0f7f116664585a98088b5cf88846a7a556c642583ab0d410affa4949d78",
+    "annotations/autonomy/workhorse_evidence_after/neck/full_context.png": "fdd11bf3f134ed12e676f8c5b2a84fc75db002f85650cba0c809a6adf0b95d88",
+    "annotations/autonomy/workhorse_evidence_after/neck/mask.png": "19ede23cc5103e243057365f8370c9122e6b06101e6791e1cbf182870055a34d",
+    "annotations/autonomy/workhorse_evidence_after/neck/neighbor_overlap.png": "4d5b24e6798af18b5386a23fd8ac4dbe5f6e47fbbd60cb155ad11bec270be6a2",
+    "annotations/autonomy/workhorse_evidence_after/neck/overlay.png": "2f59fae4f8612b9e298c39dba6bad27d067eac7cc6f4cb70488a386d7bc13241",
+    "annotations/autonomy/workhorse_evidence_after/neck/source_crop.png": "4d5b24e6798af18b5386a23fd8ac4dbe5f6e47fbbd60cb155ad11bec270be6a2",
+    "annotations/autonomy/workhorse_evidence_after/pelvic_region/contour.png": "e7e0f7d31847f2c91b917c963742e1a5a9d9608e95d11b138a459330548f4592",
+    "annotations/autonomy/workhorse_evidence_after/pelvic_region/full_context.png": "a9033bd8a7ad1a4bada1c9fb0d4eaf891bd5a9045c6dd3ec39adaaaf09e72325",
+    "annotations/autonomy/workhorse_evidence_after/pelvic_region/mask.png": "e3b2fefced603f5b9ea0fe1dc5fdd3cd311c44e92be7c93170c110999bfa5dc7",
+    "annotations/autonomy/workhorse_evidence_after/pelvic_region/neighbor_overlap.png": "33efc2269d7fcb23df2ca7a452600d5785c3a5e4c797766867114cdd700ac289",
+    "annotations/autonomy/workhorse_evidence_after/pelvic_region/overlay.png": "9b1eebe0a10809f754c417d30de4c2f2f0e9b756c1bd63e90cb8843ca15f7ad1",
+    "annotations/autonomy/workhorse_evidence_after/pelvic_region/source_crop.png": "33efc2269d7fcb23df2ca7a452600d5785c3a5e4c797766867114cdd700ac289",
+    "annotations/autonomy/workhorse_evidence_after/right_ankle/contour.png": "a42ab9496445ac08d384d6685a25dbed9fdb37205442acb83428eb7739df0581",
+    "annotations/autonomy/workhorse_evidence_after/right_ankle/full_context.png": "cc844479428a62ddaa9cf4035e3facfd14ba02b7ad508ee3f3606fe141577b01",
+    "annotations/autonomy/workhorse_evidence_after/right_ankle/mask.png": "9fd09adcd4a369e20ae1b8a6d982e3b92f53093401b11b6ecec5a7e774ed61ef",
+    "annotations/autonomy/workhorse_evidence_after/right_ankle/neighbor_overlap.png": "2648a464b6a204b59e86d3b6cb99d81c76284392d07765126f55bca4459fe561",
+    "annotations/autonomy/workhorse_evidence_after/right_ankle/overlay.png": "ecc4e871b7ba0d7dc914cb072227be4097dac4027f7895dcb5d92b9ba289d9e9",
+    "annotations/autonomy/workhorse_evidence_after/right_ankle/source_crop.png": "2648a464b6a204b59e86d3b6cb99d81c76284392d07765126f55bca4459fe561",
+    "annotations/autonomy/workhorse_evidence_after/right_calf/contour.png": "333ab8c2538030cb92485fd4b630b556eb5907cd5d8064185593308617e07f83",
+    "annotations/autonomy/workhorse_evidence_after/right_calf/full_context.png": "611b990a51d277d5252868f973d0da8b5d50c62472ad30102b363b28c3e71a0a",
+    "annotations/autonomy/workhorse_evidence_after/right_calf/mask.png": "196b7cdd5955023bd695a870e46f98ef7fbee8b4c359daf96d0b85afc86a11d0",
+    "annotations/autonomy/workhorse_evidence_after/right_calf/neighbor_overlap.png": "6764b7c40da600d0c1261428de7feb0375539907733478c32fd1d8d438face1c",
+    "annotations/autonomy/workhorse_evidence_after/right_calf/overlay.png": "00e0387a4b676d95a579e1b979aac18d51fc6173f7cf2a952555e08c433aca19",
+    "annotations/autonomy/workhorse_evidence_after/right_calf/source_crop.png": "6764b7c40da600d0c1261428de7feb0375539907733478c32fd1d8d438face1c",
+    "annotations/autonomy/workhorse_evidence_after/right_elbow/contour.png": "30f14733e268510d6579cdd72b013d2d36eeacb5197904eadf6b4dd5ec508498",
+    "annotations/autonomy/workhorse_evidence_after/right_elbow/full_context.png": "7d896f4c765d3c7245ffca63ea764729f13fc95228e79fd633c3d48ed9cf5611",
+    "annotations/autonomy/workhorse_evidence_after/right_elbow/mask.png": "6ce4a6eb258b8b773986232523c4420579cfeab8b1219c93f1fc9024b2381553",
+    "annotations/autonomy/workhorse_evidence_after/right_elbow/neighbor_overlap.png": "d03d00448c782497806921338a30c919a74ec71f90e09fbf2814f9d5430ed06f",
+    "annotations/autonomy/workhorse_evidence_after/right_elbow/overlay.png": "10148f0fe5e05203752f59beda067a72bcb12069a63d8f1ff8323aded6012f53",
+    "annotations/autonomy/workhorse_evidence_after/right_elbow/source_crop.png": "d03d00448c782497806921338a30c919a74ec71f90e09fbf2814f9d5430ed06f",
+    "annotations/autonomy/workhorse_evidence_after/right_foot_base/contour.png": "e5ed8bd666b79a3567bdebb9b801c8b61046f4956ff46e7c43762cd2173dda68",
+    "annotations/autonomy/workhorse_evidence_after/right_foot_base/full_context.png": "da2f772f5693fc688056b583f6cd1e8563e248088afd8d667e68c10f6c02bf5a",
+    "annotations/autonomy/workhorse_evidence_after/right_foot_base/mask.png": "35404b665d948d88ba695d3ce61ce7960a2d34cfb76ab7bf77779f5547ce326a",
+    "annotations/autonomy/workhorse_evidence_after/right_foot_base/neighbor_overlap.png": "bfedd88e59eedc4972e9fdccc015c1d25f1cc2a9ee939fa92fb008f2a1e75472",
+    "annotations/autonomy/workhorse_evidence_after/right_foot_base/overlay.png": "06be3e3f2d923c6c1f0af14e879f97d0fb91f1705825682540a10b685ad6ce80",
+    "annotations/autonomy/workhorse_evidence_after/right_foot_base/source_crop.png": "bfedd88e59eedc4972e9fdccc015c1d25f1cc2a9ee939fa92fb008f2a1e75472",
+    "annotations/autonomy/workhorse_evidence_after/right_hand_base/contour.png": "833643e55bfb7cb0d49d32a0a847cc50105cc74c71e1086a435c1f6b0943013b",
+    "annotations/autonomy/workhorse_evidence_after/right_hand_base/full_context.png": "27f6941ed00bacf943f6cc4fa2499392abb46fd3e14bfb71659f714bd1d041b6",
+    "annotations/autonomy/workhorse_evidence_after/right_hand_base/mask.png": "46fe7308362178ed0e0c9cd7ad0ad0bbfbb39318d474d68fe303b193ba36c99e",
+    "annotations/autonomy/workhorse_evidence_after/right_hand_base/neighbor_overlap.png": "2f3da5ce72fad95eab8cd6fac08b9e3e18c76195917c23a06035603c5f7d60dc",
+    "annotations/autonomy/workhorse_evidence_after/right_hand_base/overlay.png": "3990ad6f1f93d208a67b89e650b59775f7ad186b4e40bf992358e48a5a489fad",
+    "annotations/autonomy/workhorse_evidence_after/right_hand_base/source_crop.png": "2f3da5ce72fad95eab8cd6fac08b9e3e18c76195917c23a06035603c5f7d60dc",
+    "annotations/autonomy/workhorse_evidence_after/right_shoulder/contour.png": "274ce245b11a3719961734e92649a06fdcd104ecc3da35258956f322a62c4d78",
+    "annotations/autonomy/workhorse_evidence_after/right_shoulder/full_context.png": "b538a7dbe453bd222badd26d400ea0381cc97f5b9ad92ef8bcc9b662075a97fb",
+    "annotations/autonomy/workhorse_evidence_after/right_shoulder/mask.png": "469a5987fc14d265c08e42baf414a731f9e9458c4c8ab11b92e271d44d046de0",
+    "annotations/autonomy/workhorse_evidence_after/right_shoulder/neighbor_overlap.png": "c6896ad924b4109f7c9c73cbcd91cc0e7a81ba6e69980d7f8fc1cd4d77ae4367",
+    "annotations/autonomy/workhorse_evidence_after/right_shoulder/overlay.png": "5448a9deaaf6a97e37c9ed6a21ee10f07c055316d37c44371168def804ed7d45",
+    "annotations/autonomy/workhorse_evidence_after/right_shoulder/source_crop.png": "c6896ad924b4109f7c9c73cbcd91cc0e7a81ba6e69980d7f8fc1cd4d77ae4367",
+    "annotations/autonomy/workhorse_evidence_after/right_thigh/contour.png": "96ababa354d1010416410a1cc1596ce13568ea8a9e6820059a816eec8aaa07c6",
+    "annotations/autonomy/workhorse_evidence_after/right_thigh/full_context.png": "dfb6c7ed323cbebc9d68326ead973823f555e9043570b98be67c91e7607620a4",
+    "annotations/autonomy/workhorse_evidence_after/right_thigh/mask.png": "9689590a27d0340423f2369ef6c70f4fb960ae9636814ac87a3877ec6aefb0e9",
+    "annotations/autonomy/workhorse_evidence_after/right_thigh/neighbor_overlap.png": "e8c1c32112df17b958941e08ba57dd2efeb96864d821e9111bcfc6c1d3a1efe3",
+    "annotations/autonomy/workhorse_evidence_after/right_thigh/overlay.png": "fdc4d8384b11aa177666c40504b0fc5f6e0ea36fc284b89779e28db076188244",
+    "annotations/autonomy/workhorse_evidence_after/right_thigh/source_crop.png": "e8c1c32112df17b958941e08ba57dd2efeb96864d821e9111bcfc6c1d3a1efe3",
+    "annotations/autonomy/workhorse_evidence_after/right_upper_arm/contour.png": "6e983429ef6ef9823c4da57e168315f1eb1dcb57975f8451cf98e6431fa93f4a",
+    "annotations/autonomy/workhorse_evidence_after/right_upper_arm/full_context.png": "3da1864344f2bc8420bd5f77709106ffd0d896e4efd824c74db18da6dbfe3cc0",
+    "annotations/autonomy/workhorse_evidence_after/right_upper_arm/mask.png": "406eaafacf442ac42e1e58d48ba08ec3ba05f21021063b6e75b57fa3fb28005c",
+    "annotations/autonomy/workhorse_evidence_after/right_upper_arm/neighbor_overlap.png": "4449f92e982b28b8c19d57bddd96aae0570b6a21a15f4e640fa08dcce868e58e",
+    "annotations/autonomy/workhorse_evidence_after/right_upper_arm/overlay.png": "44f4c5b34759e2184409ca2bf4654f2f0746c08318d1c5d5895cb9e655c54882",
+    "annotations/autonomy/workhorse_evidence_after/right_upper_arm/source_crop.png": "4449f92e982b28b8c19d57bddd96aae0570b6a21a15f4e640fa08dcce868e58e",
+    "annotations/autonomy/workhorse_evidence_after/right_wrist/contour.png": "16fb83e9373ef6d0f9dcbc570630bbe530080b48a6748ac510ac42b30033e895",
+    "annotations/autonomy/workhorse_evidence_after/right_wrist/full_context.png": "397c0a3ca730d93c37cb59b428beb91c2d904516632d14025d9535136bd3221f",
+    "annotations/autonomy/workhorse_evidence_after/right_wrist/mask.png": "82491f29a38535fde20ef71d72d8042b870f4e2a433879fc20b7769e341f0bfb",
+    "annotations/autonomy/workhorse_evidence_after/right_wrist/neighbor_overlap.png": "2d5b7a91dc195044cb21226e4e63533480a37b94b4b48688a8c712b2fa290481",
+    "annotations/autonomy/workhorse_evidence_after/right_wrist/overlay.png": "7feac8b32c51211805b0dc5402ccbbfbe356463a1a87f14843ad049640f788be",
+    "annotations/autonomy/workhorse_evidence_after/right_wrist/source_crop.png": "2d5b7a91dc195044cb21226e4e63533480a37b94b4b48688a8c712b2fa290481",
+    "annotations/autonomy/workhorse_report.json": "65dd6847971e0a6a41b13969a51e4137154087a11c2213096394796ef27e027f",
+    "annotations/cvat_task_backup.zip": "2d7035c682d7bba2912e136b492ef8766cb91ba729bd2f18a598b4c3662986c4",
+    "annotations/draft_baseline/baseline_manifest.json": "551bd38d3e358b0181f56d5b89e9906862361e2041bb3ea3c211bcec1fe88ae1",
+    "annotations/draft_baseline/label_map_material.png": "1943dd35628abea09a1864e1e15a9482cd1f2c4a0fb1f2e608ab9063f078e742",
+    "annotations/draft_baseline/label_map_part.png": "c1b5cf0fc559f073d322a24cbe1310a294ad38b48f29f3346ff2b659c0a82787",
+    "annotations/material_masks/accessory.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/material_masks/bottom_garment.png": "981efa3a2c3af3182bf6e741fd2a3e50170a2f9883665490ef3316aa9235650c",
+    "annotations/material_masks/bra.png": "3582d322fdc112f29c3994bf9fcb5ee3c4fe0b04d245295172c6d3ca34aff701",
+    "annotations/material_masks/clothing_generic.png": "e2dac2be929f4863f4039612113c30f70e95c2efaba33a123f8af84351c8aa2f",
+    "annotations/material_masks/footwear.png": "e655e1f1076b16d52f7610d0cad4a2114cb95662912bdb6389b7056b8acf8a16",
+    "annotations/material_masks/glove_or_sock.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/material_masks/hair_material.png": "161b995a124a73ddea341c35784df8c21462f070ceea497f7e51bd6931951d93",
+    "annotations/material_masks/lace_or_sheer.png": "1537acda02d016ded19b922b753d7d41a290e6c8879053571caf0ca001b3e572",
+    "annotations/material_masks/none_background.png": "996d941bb9420321f3503a237d075d1827589ac62167460547915bd335b525ef",
+    "annotations/material_masks/object_material.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/material_masks/other_person_material.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/material_masks/skin.png": "d4bd73c38df314e2e2bb73687e3d86f577e948d2d9f34db89e86c173dca6da97",
+    "annotations/material_masks/strap.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/material_masks/top_garment.png": "ca0ae5bce246d985764a1ac560e7da7c7ba479a87a187bc484f31b3485626907",
+    "annotations/material_masks/underwear_bottom.png": "3fa82244684130722ccbd92b991f8d32473e8078c57947b14fd66c5580c96b40",
+    "annotations/material_masks/waistband.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/abdomen_stomach.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/accessory_or_prop.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/back_lower_torso.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/back_upper_torso.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/background.png": "996d941bb9420321f3503a237d075d1827589ac62167460547915bd335b525ef",
+    "annotations/part_masks/belly_button.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/chest_upper_torso.png": "03e89a6fb843d4557466e760a37363738e79958a48fa07a4d2f07215a15bf7d0",
+    "annotations/part_masks/hair.png": "769bc93080f4c6bd702bb5f2c57f63dc5864e0e23f64810753e24df0768897b2",
+    "annotations/part_masks/head_face.png": "0d2f335490bce2a5fb404331d1f39f1053caa53508a809a4410b0f6657a1fe4f",
+    "annotations/part_masks/left_ankle.png": "b65f2b94add7897df4df84e05a1920323c5188ad684ad3a3cbeb033890b683a1",
+    "annotations/part_masks/left_breast.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/left_calf.png": "d605824b8161d79924ed6e605b55872c6ab6145cebc3a6f98ebfd069b6c96d13",
+    "annotations/part_masks/left_elbow.png": "553ba0e840078845ebf4100fa3bde63c90259cc308b705af5edab47615f3ce30",
+    "annotations/part_masks/left_foot_base.png": "8a0aa88d0a5232a146570c35c157a81604793488044ef5e405b5aebe4ddc71a6",
+    "annotations/part_masks/left_forearm.png": "c7b8edff155f6c557213810f98841e620f4e49a1924ed35ff5f7573ca45e7204",
+    "annotations/part_masks/left_glute.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/left_hand_base.png": "867c0f756dab2be1bd97ae076692468ef8429f0ca78dc5df5f2a43a0790754fe",
+    "annotations/part_masks/left_hip.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/left_index_finger.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/left_knee.png": "1878d5b82df663c8587cc12417162fb303b20b04d227c228e00019f4a17db4da",
+    "annotations/part_masks/left_middle_finger.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/left_pinky.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/left_ring_finger.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/left_shoulder.png": "429c6289cc1e1f6d92d4f714bd983a6e55ad4442bd92222ef1e8ab46d0ef1f83",
+    "annotations/part_masks/left_thigh.png": "640c6578b5c17d20c33589b3d7ebd98119cbca1eaf174ba81ec2a55f68647e95",
+    "annotations/part_masks/left_thumb.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/left_toes.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/left_upper_arm.png": "21fe5acbac7e118139689fea43253f14df173db0c701c992210f0ff90c0c8548",
+    "annotations/part_masks/left_wrist.png": "a7ff370f09928f29885f70685cdb0dde055483e25779f93439e79dfbf4e3d868",
+    "annotations/part_masks/neck.png": "f98bae405594817423188fa1d9bbe91389f505a3572bc8bd2356675c691b0d0d",
+    "annotations/part_masks/occluding_object.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/other_person.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/pelvic_region.png": "4aaaf1ffab05ef427d2aa6f91d1bb6b4bb3b03bec904b6058fa9327515bcbe99",
+    "annotations/part_masks/right_ankle.png": "691b814509cfedbd3dde8fcbae18b5968141ee59f4f682a5cecc245ae9e77936",
+    "annotations/part_masks/right_breast.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/right_calf.png": "df317648c32e94f7b5b0f353e4e07b746d8b5b5d03f25e02f70e96296870742d",
+    "annotations/part_masks/right_elbow.png": "9b299914c2e92e05af7bee889d3bfba7b01a927adaab252b4481fda13cc29ee7",
+    "annotations/part_masks/right_foot_base.png": "6fee4a7fde9832e5a5c3fe9a504e85b97d29c89663be280a57e0c29791f9192d",
+    "annotations/part_masks/right_forearm.png": "5319bd92ad8b5c6b6e459589cb064e246e691e3d962cc384960fd3143a95f61c",
+    "annotations/part_masks/right_glute.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/right_hand_base.png": "bed870b58d89a617745679dd3ebad09933fcf5b0fc977c5f819ece775ec55d51",
+    "annotations/part_masks/right_hip.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/right_index_finger.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/right_knee.png": "d4342bfd578bf5c4b90cf10f766c6f4402e61b92172fa4c19966b512b490802f",
+    "annotations/part_masks/right_middle_finger.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/right_pinky.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/right_ring_finger.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/right_shoulder.png": "825bdae44f3f1d6bb3d8cf4b3914c91ea1e552ff9842623473a5ba823eedab7a",
+    "annotations/part_masks/right_thigh.png": "8727f3f36ea3f25856138553fae7369b698630c31b40117a5b8032fc8401145c",
+    "annotations/part_masks/right_thumb.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/right_toes.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "annotations/part_masks/right_upper_arm.png": "204259b0297e44add6cac004ba45bf1a1fa1c3c66abcf94e78e637ce666fdf0d",
+    "annotations/part_masks/right_wrist.png": "8e52a5f58736e545858fa39255f7cc97a4aa67746779d2fea91c0f94c2119b55",
+    "annotations/part_masks/support_surface.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "label_map_material.png": "89af60fd95a535000c95d1b660e2cd201c5e505cedc377c09812b5de56ba38f9",
+    "label_map_part.png": "c1b5cf0fc559f073d322a24cbe1310a294ad38b48f29f3346ff2b659c0a82787",
+    "masks/abdomen_stomach.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks/back_lower_torso.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks/back_upper_torso.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks/belly_button.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks/chest_upper_torso.png": "03e89a6fb843d4557466e760a37363738e79958a48fa07a4d2f07215a15bf7d0",
+    "masks/hair.png": "769bc93080f4c6bd702bb5f2c57f63dc5864e0e23f64810753e24df0768897b2",
+    "masks/head_face.png": "0d2f335490bce2a5fb404331d1f39f1053caa53508a809a4410b0f6657a1fe4f",
+    "masks/left_ankle.png": "b65f2b94add7897df4df84e05a1920323c5188ad684ad3a3cbeb033890b683a1",
+    "masks/left_breast.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks/left_calf.png": "d605824b8161d79924ed6e605b55872c6ab6145cebc3a6f98ebfd069b6c96d13",
+    "masks/left_elbow.png": "553ba0e840078845ebf4100fa3bde63c90259cc308b705af5edab47615f3ce30",
+    "masks/left_foot_base.png": "8a0aa88d0a5232a146570c35c157a81604793488044ef5e405b5aebe4ddc71a6",
+    "masks/left_forearm.png": "c7b8edff155f6c557213810f98841e620f4e49a1924ed35ff5f7573ca45e7204",
+    "masks/left_glute.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks/left_hand_base.png": "867c0f756dab2be1bd97ae076692468ef8429f0ca78dc5df5f2a43a0790754fe",
+    "masks/left_hip.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks/left_index_finger.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks/left_knee.png": "1878d5b82df663c8587cc12417162fb303b20b04d227c228e00019f4a17db4da",
+    "masks/left_middle_finger.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks/left_pinky.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks/left_ring_finger.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks/left_shoulder.png": "429c6289cc1e1f6d92d4f714bd983a6e55ad4442bd92222ef1e8ab46d0ef1f83",
+    "masks/left_thigh.png": "640c6578b5c17d20c33589b3d7ebd98119cbca1eaf174ba81ec2a55f68647e95",
+    "masks/left_thumb.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks/left_toes.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks/left_upper_arm.png": "21fe5acbac7e118139689fea43253f14df173db0c701c992210f0ff90c0c8548",
+    "masks/left_wrist.png": "a7ff370f09928f29885f70685cdb0dde055483e25779f93439e79dfbf4e3d868",
+    "masks/neck.png": "f98bae405594817423188fa1d9bbe91389f505a3572bc8bd2356675c691b0d0d",
+    "masks/pelvic_region.png": "4aaaf1ffab05ef427d2aa6f91d1bb6b4bb3b03bec904b6058fa9327515bcbe99",
+    "masks/right_ankle.png": "691b814509cfedbd3dde8fcbae18b5968141ee59f4f682a5cecc245ae9e77936",
+    "masks/right_breast.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks/right_calf.png": "df317648c32e94f7b5b0f353e4e07b746d8b5b5d03f25e02f70e96296870742d",
+    "masks/right_elbow.png": "9b299914c2e92e05af7bee889d3bfba7b01a927adaab252b4481fda13cc29ee7",
+    "masks/right_foot_base.png": "6fee4a7fde9832e5a5c3fe9a504e85b97d29c89663be280a57e0c29791f9192d",
+    "masks/right_forearm.png": "5319bd92ad8b5c6b6e459589cb064e246e691e3d962cc384960fd3143a95f61c",
+    "masks/right_glute.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks/right_hand_base.png": "bed870b58d89a617745679dd3ebad09933fcf5b0fc977c5f819ece775ec55d51",
+    "masks/right_hip.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks/right_index_finger.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks/right_knee.png": "d4342bfd578bf5c4b90cf10f766c6f4402e61b92172fa4c19966b512b490802f",
+    "masks/right_middle_finger.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks/right_pinky.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks/right_ring_finger.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks/right_shoulder.png": "825bdae44f3f1d6bb3d8cf4b3914c91ea1e552ff9842623473a5ba823eedab7a",
+    "masks/right_thigh.png": "8727f3f36ea3f25856138553fae7369b698630c31b40117a5b8032fc8401145c",
+    "masks/right_thumb.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks/right_toes.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks/right_upper_arm.png": "204259b0297e44add6cac004ba45bf1a1fa1c3c66abcf94e78e637ce666fdf0d",
+    "masks/right_wrist.png": "8e52a5f58736e545858fa39255f7cc97a4aa67746779d2fea91c0f94c2119b55",
+    "masks_derived/abdomen_full.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks_derived/all_fingers.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks_derived/all_index_fingers.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks_derived/all_middle_fingers.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks_derived/all_pinkies.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks_derived/all_ring_fingers.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks_derived/all_thumbs.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks_derived/all_toes.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks_derived/both_arms.png": "1fb915479f8628e8bbeeac808b9b0f37e3878b65dea3625227e7756a8ef18060",
+    "masks_derived/both_breasts.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks_derived/both_calves.png": "e4cb0fe4e759e430bd0bfdd71eabae4069bb87858a34f1cbc02a0e855df25d73",
+    "masks_derived/both_feet.png": "9c6536742f8862b5405f93233e2cfc26ed249ebcb89409fa71d62f0126d28ddb",
+    "masks_derived/both_forearms.png": "1502cb7aef21b34b45052db40941cc14229e53feb82b609f97c2000fafbb3367",
+    "masks_derived/both_glutes.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks_derived/both_hands.png": "89c49ba9d539f562cec47d0ee51cae3cb7025de35f5c68b8fef7917e5d500aa0",
+    "masks_derived/both_knees.png": "60848c029c8ebf0a5aa1e70fe392dda34eb6eedd8cb99cff4fddeed6dc5f8181",
+    "masks_derived/both_thighs.png": "a2ec03826a610818a864c73b61716739ed1eb8f8bdc94a421794394bc8c4bae0",
+    "masks_derived/both_upper_arms.png": "002aad50fb71756685d7ae987d17661f1859f60b11a490ce6635e6252bcb27d4",
+    "masks_derived/bra_left_cup.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks_derived/bra_right_cup.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks_derived/bra_straps.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks_derived/bra_visible.png": "3582d322fdc112f29c3994bf9fcb5ee3c4fe0b04d245295172c6d3ca34aff701",
+    "masks_derived/breast_skin.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks_derived/clothing_bodypart_occlusion.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks_derived/clothing_boundary_chest.png": "b67bbd4dd74c3cae9712920ce548651b4a62d341dadc8216cb25f67eccfc282b",
+    "masks_derived/clothing_skin_boundary.png": "daadea17db17ff295bff18cfb0f68a08644b0f1743fb5689bdcf13195e7a7017",
+    "masks_derived/clothing_visible.png": "095a3fcad317041da1e6f78470a4d2ad14b69a0b700045a079ca2abba91bd9a6",
+    "masks_derived/full_arms.png": "1fb915479f8628e8bbeeac808b9b0f37e3878b65dea3625227e7756a8ef18060",
+    "masks_derived/full_body_parts_visible.png": "379c9feba3878f8dcc82af7454dba3f25e76e9414585a4f53e67e33aeea85498",
+    "masks_derived/full_legs.png": "167fc331c6d6128d89898145dc3d697bdd578379a011016c625b03a5c42d5ef6",
+    "masks_derived/full_torso.png": "78648a601ec4107266623c59f124665525c04105b2d5d21de261194039367be2",
+    "masks_derived/left_breast_skin.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks_derived/left_foot.png": "8a0aa88d0a5232a146570c35c157a81604793488044ef5e405b5aebe4ddc71a6",
+    "masks_derived/left_hand.png": "867c0f756dab2be1bd97ae076692468ef8429f0ca78dc5df5f2a43a0790754fe",
+    "masks_derived/panty_visible.png": "3fa82244684130722ccbd92b991f8d32473e8078c57947b14fd66c5580c96b40",
+    "masks_derived/person_full_visible.png": "379c9feba3878f8dcc82af7454dba3f25e76e9414585a4f53e67e33aeea85498",
+    "masks_derived/right_breast_skin.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks_derived/right_foot.png": "6fee4a7fde9832e5a5c3fe9a504e85b97d29c89663be280a57e0c29791f9192d",
+    "masks_derived/right_hand.png": "bed870b58d89a617745679dd3ebad09933fcf5b0fc977c5f819ece775ec55d51",
+    "masks_derived/visible_body_skin.png": "5fbf8265c0fcc3370c6dae0ed842817908419adada41f556d1ac8d919769a8c6",
+    "masks_material/accessory.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks_material/bottom_garment.png": "981efa3a2c3af3182bf6e741fd2a3e50170a2f9883665490ef3316aa9235650c",
+    "masks_material/bra.png": "3582d322fdc112f29c3994bf9fcb5ee3c4fe0b04d245295172c6d3ca34aff701",
+    "masks_material/clothing_generic.png": "e2dac2be929f4863f4039612113c30f70e95c2efaba33a123f8af84351c8aa2f",
+    "masks_material/footwear.png": "e655e1f1076b16d52f7610d0cad4a2114cb95662912bdb6389b7056b8acf8a16",
+    "masks_material/glove_or_sock.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks_material/hair_material.png": "161b995a124a73ddea341c35784df8c21462f070ceea497f7e51bd6931951d93",
+    "masks_material/lace_or_sheer.png": "1537acda02d016ded19b922b753d7d41a290e6c8879053571caf0ca001b3e572",
+    "masks_material/none_background.png": "97ce22b12e146f8711169c253ce916a5d26e6816f5704b58fc433508ec5b5cb8",
+    "masks_material/object_material.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks_material/other_person_material.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks_material/skin.png": "70a0aa00852d337923191ffbb5a754d83771a42cac68fa580d9fd26d84ecc04f",
+    "masks_material/strap.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks_material/top_garment.png": "ca0ae5bce246d985764a1ac560e7da7c7ba479a87a187bc484f31b3485626907",
+    "masks_material/underwear_bottom.png": "3fa82244684130722ccbd92b991f8d32473e8078c57947b14fd66c5580c96b40",
+    "masks_material/waistband.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "masks_regions/overlap_occlusion_boundary.png": "8bd457278c967ddcb28a03a860fe6d72326d7f94070a5d8aae5896292f0eea9f",
+    "masks_regions/waist.png": "fff6f4a92bb0ff5818bbd9a45994c5b5c974d2f76cd3f4f9e863214680975213",
+    "overlays/all_parts.png": "5459f3fb1a9a65eb275e6bc9009ab4654952a0a6b2c580082bb60a0ac5bca7d4",
+    "overlays/disagreement_heatmap.png": "f9ee568f3bd755243ccfa7030c055173cbc9bc9e0284e944ef18c1b9a77c6fb3",
+    "protected/accessory_or_prop.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "protected/background.png": "996d941bb9420321f3503a237d075d1827589ac62167460547915bd335b525ef",
+    "protected/occluding_object.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "protected/other_person.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "protected/support_surface.png": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+    "qa/cvat_pull_format.json": "eca09d9a20e5d5eaf79cf24b86918e780e45a1c81110cc9c8180b5ba4fae8f54",
+    "qa_panels/all_parts.png": "5459f3fb1a9a65eb275e6bc9009ab4654952a0a6b2c580082bb60a0ac5bca7d4",
+    "qa_panels/chest_upper_torso.png": "3081d35c5027f3073848d83ad80366f07083e92b6167370337bca4cab14c079f",
+    "qa_panels/hair.png": "1043666baf6f6c5413a4db7c0640dbf61d66503f105ebba70088fb6c6732cc4e",
+    "qa_panels/head_face.png": "8b0f5e4bc392dda01d3b6248405ca8dceda738d73ad12f5b7c3738ad771381a9",
+    "qa_panels/left_ankle.png": "d880cbda46c1e6c68491857f4288d46553d02f890c6f0bb6ac91818a6ca91b56",
+    "qa_panels/left_calf.png": "39d32a8dd54b8c684067add152c909c372c262a2cd39f6155c8e5790aff10e55",
+    "qa_panels/left_elbow.png": "b84b8ae5e4d8467fc500cf84c8a0c31d37cd718a54a075b72ca77f325d0f9448",
+    "qa_panels/left_foot_base.png": "572cd52b573455152fbceb77d4a8cc516384e70df6477a6398fd03f6759b8c1e",
+    "qa_panels/left_forearm.png": "39c805cb300fcb9af74ee5e346a05008e88c1cf93408da860a2e7a55fd5bc8f4",
+    "qa_panels/left_hand_base.png": "d5e018462b5efda29efd0203bada4557c7d23e64ea456d2d33a6a574a63b2080",
+    "qa_panels/left_knee.png": "62bf4be890dd64a9b746cf585bb7c09c51ec46dc27b15f80cf062e46b1091322",
+    "qa_panels/left_shoulder.png": "16c0c767640e79ee776a4e358f7fe6dab3f365768aa270ca3e83ed05700abcbf",
+    "qa_panels/left_thigh.png": "06188eb31d984746455e41856f4e6c81a9b56f8d736e41b05a209964901f6952",
+    "qa_panels/left_upper_arm.png": "24ce827007779c77ab689bb108b7e1855f68c512fd7350795e49641c756eb377",
+    "qa_panels/left_wrist.png": "a7b9729fa4c2e57ef46b2a461525a0df2277ac66fa85b57683cfeae8b4eb8a30",
+    "qa_panels/neck.png": "97409b509a912949372e05c53ca17e37647164611af05da8406e10c8c7903667",
+    "qa_panels/pelvic_region.png": "93b92d926c3cc401f8d06a95942adc4fade6c322f88a1760cce8b8e2c1d8347b",
+    "qa_panels/right_ankle.png": "d91e90b29a4221141c2d0a6ae83aafb2348d5dc3af62e02257e3f47c81a57143",
+    "qa_panels/right_calf.png": "9c5a929acf5581cac162457aec7e8a22ee0e43e9e970224286c877d4415dc712",
+    "qa_panels/right_elbow.png": "256395eece39870c2781f8d056124c591feb4aa7afe38cd7b62e9167dbf25f6e",
+    "qa_panels/right_foot_base.png": "fea0998ce9a5b8e4a65280a106077021dae770c76181fa3125fde593fae6fcac",
+    "qa_panels/right_forearm.png": "01ad79c1e6c6b10ae6aa986bb7be39f8cbb9a3bbd9a39f8a41973533d8488a58",
+    "qa_panels/right_hand_base.png": "5e31d4066367edccb953ca05adfe142a088419b30df13ce8f94a0641f2dabe7d",
+    "qa_panels/right_knee.png": "beb706abf88b2c42686755d0a60cb07d55c02524dca710bd4eb376c1b75f95d9",
+    "qa_panels/right_shoulder.png": "c213b8f1417f4fe36ecd532e4bd13147c7a248b5bf7a2a78f66fa03332897eb2",
+    "qa_panels/right_thigh.png": "865dae87c6a31bd29908b68772456023872038e8bc5e59f466de954ac9716d16",
+    "qa_panels/right_upper_arm.png": "61f7496c34d2a0c9ec6e83c492278f149484ec9ab301f5e47efd2534bcff3003",
+    "qa_panels/right_wrist.png": "da3940da74c1b3f1fbeb639e70f1f094037c56bb7b10e7444da9f34d00837be6",
+    "qa_report.json": "658071597fac59fb65f5be254254e825f693860990a5c5d8b084d5a382442ce5",
+    "source.png": "d962e914116cdd97d00187c313fe94c99e9e725ab50d38b79d203f1ed47bae43"
+  },
+  "image_id": "img_cdab0311dc96",
+  "inpaint_derivatives": [],
+  "interperson": [],
+  "left_right_convention": "character_perspective",
+  "mask_ontology_version": "body_parts_v1",
+  "parts": {
+    "abdomen_full": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/abdomen_full.png",
+      "mask_sha256": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "abdomen_stomach": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "accessory_or_prop": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "protected_qa",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "all_fingers": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/all_fingers.png",
+      "mask_sha256": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "all_index_fingers": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/all_index_fingers.png",
+      "mask_sha256": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "all_middle_fingers": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/all_middle_fingers.png",
+      "mask_sha256": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "all_pinkies": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/all_pinkies.png",
+      "mask_sha256": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "all_ring_fingers": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/all_ring_fingers.png",
+      "mask_sha256": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "all_thumbs": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/all_thumbs.png",
+      "mask_sha256": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "all_toes": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/all_toes.png",
+      "mask_sha256": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "back_lower_torso": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "back_upper_torso": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "background": {
+      "annotated_on": "full",
+      "components": 5,
+      "mask_area_px": 6972751,
+      "mask_bbox": [
+        0,
+        0,
+        1876,
+        5632
+      ],
+      "mask_file": "protected/background.png",
+      "mask_sha256": "996d941bb9420321f3503a237d075d1827589ac62167460547915bd335b525ef",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "belly_button": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "body_contact_region": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "region_band",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": null,
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "both_arms": {
+      "annotated_on": "full",
+      "components": 235,
+      "mask_area_px": 905742,
+      "mask_bbox": [
+        260,
+        1023,
+        1686,
+        4952
+      ],
+      "mask_file": "masks_derived/both_arms.png",
+      "mask_sha256": "1fb915479f8628e8bbeeac808b9b0f37e3878b65dea3625227e7756a8ef18060",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "both_breasts": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/both_breasts.png",
+      "mask_sha256": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "both_calves": {
+      "annotated_on": "full",
+      "components": 112,
+      "mask_area_px": 527186,
+      "mask_bbox": [
+        260,
+        1648,
+        1111,
+        5380
+      ],
+      "mask_file": "masks_derived/both_calves.png",
+      "mask_sha256": "e4cb0fe4e759e430bd0bfdd71eabae4069bb87858a34f1cbc02a0e855df25d73",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "both_feet": {
+      "annotated_on": "full",
+      "components": 287,
+      "mask_area_px": 1124527,
+      "mask_bbox": [
+        193,
+        1019,
+        1504,
+        5412
+      ],
+      "mask_file": "masks_derived/both_feet.png",
+      "mask_sha256": "9c6536742f8862b5405f93233e2cfc26ed249ebcb89409fa71d62f0126d28ddb",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "both_forearms": {
+      "annotated_on": "full",
+      "components": 211,
+      "mask_area_px": 83771,
+      "mask_bbox": [
+        425,
+        2120,
+        1591,
+        4952
+      ],
+      "mask_file": "masks_derived/both_forearms.png",
+      "mask_sha256": "1502cb7aef21b34b45052db40941cc14229e53feb82b609f97c2000fafbb3367",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "both_glutes": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/both_glutes.png",
+      "mask_sha256": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "both_hands": {
+      "annotated_on": "full",
+      "components": 198,
+      "mask_area_px": 560352,
+      "mask_bbox": [
+        260,
+        1023,
+        1686,
+        3718
+      ],
+      "mask_file": "masks_derived/both_hands.png",
+      "mask_sha256": "89c49ba9d539f562cec47d0ee51cae3cb7025de35f5c68b8fef7917e5d500aa0",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "both_knees": {
+      "annotated_on": "full",
+      "components": 7,
+      "mask_area_px": 133734,
+      "mask_bbox": [
+        571,
+        3554,
+        1115,
+        5210
+      ],
+      "mask_file": "masks_derived/both_knees.png",
+      "mask_sha256": "60848c029c8ebf0a5aa1e70fe392dda34eb6eedd8cb99cff4fddeed6dc5f8181",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "both_thighs": {
+      "annotated_on": "full",
+      "components": 46,
+      "mask_area_px": 373059,
+      "mask_bbox": [
+        412,
+        1029,
+        1296,
+        4013
+      ],
+      "mask_file": "masks_derived/both_thighs.png",
+      "mask_sha256": "a2ec03826a610818a864c73b61716739ed1eb8f8bdc94a421794394bc8c4bae0",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "both_upper_arms": {
+      "annotated_on": "full",
+      "components": 113,
+      "mask_area_px": 205294,
+      "mask_bbox": [
+        267,
+        1080,
+        1366,
+        2513
+      ],
+      "mask_file": "masks_derived/both_upper_arms.png",
+      "mask_sha256": "002aad50fb71756685d7ae987d17661f1859f60b11a490ce6635e6252bcb27d4",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "bra_left_cup": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/bra_left_cup.png",
+      "mask_sha256": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "bra_right_cup": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/bra_right_cup.png",
+      "mask_sha256": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "bra_straps": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/bra_straps.png",
+      "mask_sha256": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "bra_visible": {
+      "annotated_on": "full",
+      "components": 1,
+      "mask_area_px": 1,
+      "mask_bbox": [
+        1064,
+        2452,
+        1065,
+        2453
+      ],
+      "mask_file": "masks_derived/bra_visible.png",
+      "mask_sha256": "3582d322fdc112f29c3994bf9fcb5ee3c4fe0b04d245295172c6d3ca34aff701",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "breast_skin": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/breast_skin.png",
+      "mask_sha256": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "chest_upper_torso": {
+      "annotated_on": "full",
+      "components": 133,
+      "mask_area_px": 3284,
+      "mask_bbox": [
+        277,
+        1030,
+        1357,
+        3034
+      ],
+      "mask_file": "masks/chest_upper_torso.png",
+      "mask_sha256": "03e89a6fb843d4557466e760a37363738e79958a48fa07a4d2f07215a15bf7d0",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "chest_upper_torso"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "clothing_bodypart_occlusion": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/clothing_bodypart_occlusion.png",
+      "mask_sha256": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "clothing_boundary_chest": {
+      "annotated_on": "full",
+      "components": 96,
+      "mask_area_px": 227,
+      "mask_bbox": [
+        277,
+        1030,
+        1357,
+        2553
+      ],
+      "mask_file": "masks_derived/clothing_boundary_chest.png",
+      "mask_sha256": "b67bbd4dd74c3cae9712920ce548651b4a62d341dadc8216cb25f67eccfc282b",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "clothing_skin_boundary": {
+      "annotated_on": "full",
+      "components": 43,
+      "mask_area_px": 177232,
+      "mask_bbox": [
+        188,
+        1995,
+        1689,
+        5410
+      ],
+      "mask_file": "masks_derived/clothing_skin_boundary.png",
+      "mask_sha256": "daadea17db17ff295bff18cfb0f68a08644b0f1743fb5689bdcf13195e7a7017",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "clothing_visible": {
+      "annotated_on": "full",
+      "components": 5,
+      "mask_area_px": 3405725,
+      "mask_bbox": [
+        193,
+        555,
+        1682,
+        5415
+      ],
+      "mask_file": "masks_derived/clothing_visible.png",
+      "mask_sha256": "095a3fcad317041da1e6f78470a4d2ad14b69a0b700045a079ca2abba91bd9a6",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "full_arms": {
+      "annotated_on": "full",
+      "components": 235,
+      "mask_area_px": 905742,
+      "mask_bbox": [
+        260,
+        1023,
+        1686,
+        4952
+      ],
+      "mask_file": "masks_derived/full_arms.png",
+      "mask_sha256": "1fb915479f8628e8bbeeac808b9b0f37e3878b65dea3625227e7756a8ef18060",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "full_body_parts_visible": {
+      "annotated_on": "full",
+      "components": 1,
+      "mask_area_px": 3592881,
+      "mask_bbox": [
+        193,
+        256,
+        1686,
+        5415
+      ],
+      "mask_file": "masks_derived/full_body_parts_visible.png",
+      "mask_sha256": "379c9feba3878f8dcc82af7454dba3f25e76e9414585a4f53e67e33aeea85498",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "full_legs": {
+      "annotated_on": "full",
+      "components": 169,
+      "mask_area_px": 2251615,
+      "mask_bbox": [
+        193,
+        1019,
+        1504,
+        5412
+      ],
+      "mask_file": "masks_derived/full_legs.png",
+      "mask_sha256": "167fc331c6d6128d89898145dc3d697bdd578379a011016c625b03a5c42d5ef6",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "full_torso": {
+      "annotated_on": "full",
+      "components": 127,
+      "mask_area_px": 4018,
+      "mask_bbox": [
+        277,
+        1030,
+        1357,
+        3034
+      ],
+      "mask_file": "masks_derived/full_torso.png",
+      "mask_sha256": "78648a601ec4107266623c59f124665525c04105b2d5d21de261194039367be2",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "hair": {
+      "annotated_on": "full",
+      "components": 10,
+      "mask_area_px": 134692,
+      "mask_bbox": [
+        261,
+        256,
+        1342,
+        2166
+      ],
+      "mask_file": "masks/hair.png",
+      "mask_sha256": "769bc93080f4c6bd702bb5f2c57f63dc5864e0e23f64810753e24df0768897b2",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "hair"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "head_face": {
+      "annotated_on": "full",
+      "components": 66,
+      "mask_area_px": 288457,
+      "mask_bbox": [
+        717,
+        483,
+        1508,
+        5415
+      ],
+      "mask_file": "masks/head_face.png",
+      "mask_sha256": "0d2f335490bce2a5fb404331d1f39f1053caa53508a809a4410b0f6657a1fe4f",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "head_face"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "interperson_contact_boundary": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "region_band",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": null,
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_ankle": {
+      "annotated_on": "full",
+      "components": 43,
+      "mask_area_px": 19279,
+      "mask_bbox": [
+        250,
+        4695,
+        531,
+        4949
+      ],
+      "mask_file": "masks/left_ankle.png",
+      "mask_sha256": "b65f2b94add7897df4df84e05a1920323c5188ad684ad3a3cbeb033890b683a1",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "left_ankle"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "left_body_contact_region": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "region_band",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": null,
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_breast": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_breast_projected_region": {
+      "annotated_on": "full",
+      "basis": "torso_landmarks+clothing_surface",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "projected_amodal",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": null,
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "n/a"
+    },
+    "left_breast_skin": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/left_breast_skin.png",
+      "mask_sha256": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "left_calf": {
+      "annotated_on": "full",
+      "components": 37,
+      "mask_area_px": 222959,
+      "mask_bbox": [
+        261,
+        3770,
+        708,
+        4935
+      ],
+      "mask_file": "masks/left_calf.png",
+      "mask_sha256": "d605824b8161d79924ed6e605b55872c6ab6145cebc3a6f98ebfd069b6c96d13",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "left_calf"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "left_chest_clothing_over_breast": {
+      "annotated_on": "full",
+      "basis": "torso_landmarks+clothing_surface",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "projected_amodal",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": null,
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "n/a"
+    },
+    "left_elbow": {
+      "annotated_on": "full",
+      "components": 34,
+      "mask_area_px": 21924,
+      "mask_bbox": [
+        1149,
+        2045,
+        1459,
+        2492
+      ],
+      "mask_file": "masks/left_elbow.png",
+      "mask_sha256": "553ba0e840078845ebf4100fa3bde63c90259cc308b705af5edab47615f3ce30",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "left_elbow"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "left_foot": {
+      "annotated_on": "full",
+      "components": 104,
+      "mask_area_px": 115645,
+      "mask_bbox": [
+        193,
+        3616,
+        1368,
+        5379
+      ],
+      "mask_file": "masks_derived/left_foot.png",
+      "mask_sha256": "8a0aa88d0a5232a146570c35c157a81604793488044ef5e405b5aebe4ddc71a6",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "left_foot_base": {
+      "annotated_on": "full",
+      "components": 104,
+      "mask_area_px": 115645,
+      "mask_bbox": [
+        193,
+        3616,
+        1368,
+        5379
+      ],
+      "mask_file": "masks/left_foot_base.png",
+      "mask_sha256": "8a0aa88d0a5232a146570c35c157a81604793488044ef5e405b5aebe4ddc71a6",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "left_foot_base"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "left_forearm": {
+      "annotated_on": "full",
+      "components": 31,
+      "mask_area_px": 78651,
+      "mask_bbox": [
+        1280,
+        2162,
+        1591,
+        2809
+      ],
+      "mask_file": "masks/left_forearm.png",
+      "mask_sha256": "c7b8edff155f6c557213810f98841e620f4e49a1924ed35ff5f7573ca45e7204",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "left_forearm"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "left_glute": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_hand": {
+      "annotated_on": "full",
+      "components": 87,
+      "mask_area_px": 75944,
+      "mask_bbox": [
+        1270,
+        2488,
+        1686,
+        3204
+      ],
+      "mask_file": "masks_derived/left_hand.png",
+      "mask_sha256": "867c0f756dab2be1bd97ae076692468ef8429f0ca78dc5df5f2a43a0790754fe",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "left_hand_base": {
+      "annotated_on": "full",
+      "components": 87,
+      "mask_area_px": 75944,
+      "mask_bbox": [
+        1270,
+        2488,
+        1686,
+        3204
+      ],
+      "mask_file": "masks/left_hand_base.png",
+      "mask_sha256": "867c0f756dab2be1bd97ae076692468ef8429f0ca78dc5df5f2a43a0790754fe",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "left_hand_base"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "left_hip": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_index_finger": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_knee": {
+      "annotated_on": "full",
+      "components": 8,
+      "mask_area_px": 49001,
+      "mask_bbox": [
+        571,
+        3554,
+        905,
+        5210
+      ],
+      "mask_file": "masks/left_knee.png",
+      "mask_sha256": "1878d5b82df663c8587cc12417162fb303b20b04d227c228e00019f4a17db4da",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "left_knee"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "left_middle_finger": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_pinky": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_ring_finger": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_scapula_back": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "region_band",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": null,
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_shoulder": {
+      "annotated_on": "full",
+      "components": 6,
+      "mask_area_px": 13260,
+      "mask_bbox": [
+        1157,
+        1251,
+        1309,
+        1436
+      ],
+      "mask_file": "masks/left_shoulder.png",
+      "mask_sha256": "429c6289cc1e1f6d92d4f714bd983a6e55ad4442bd92222ef1e8ab46d0ef1f83",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "left_shoulder"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "left_thigh": {
+      "annotated_on": "full",
+      "components": 92,
+      "mask_area_px": 212338,
+      "mask_bbox": [
+        546,
+        2339,
+        1296,
+        3867
+      ],
+      "mask_file": "masks/left_thigh.png",
+      "mask_sha256": "640c6578b5c17d20c33589b3d7ebd98119cbca1eaf174ba81ec2a55f68647e95",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "left_thigh"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "left_thumb": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_toes": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "left_upper_arm": {
+      "annotated_on": "full",
+      "components": 34,
+      "mask_area_px": 189916,
+      "mask_bbox": [
+        1056,
+        1214,
+        1366,
+        2513
+      ],
+      "mask_file": "masks/left_upper_arm.png",
+      "mask_sha256": "21fe5acbac7e118139689fea43253f14df173db0c701c992210f0ff90c0c8548",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "left_upper_arm"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "left_wrist": {
+      "annotated_on": "full",
+      "components": 22,
+      "mask_area_px": 9910,
+      "mask_bbox": [
+        1356,
+        2625,
+        1574,
+        2784
+      ],
+      "mask_file": "masks/left_wrist.png",
+      "mask_sha256": "a7ff370f09928f29885f70685cdb0dde055483e25779f93439e79dfbf4e3d868",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "left_wrist"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "neck": {
+      "annotated_on": "full",
+      "components": 3,
+      "mask_area_px": 8357,
+      "mask_bbox": [
+        712,
+        1016,
+        1010,
+        1280
+      ],
+      "mask_file": "masks/neck.png",
+      "mask_sha256": "f98bae405594817423188fa1d9bbe91389f505a3572bc8bd2356675c691b0d0d",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "neck"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "occluding_object": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "protected_qa",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "other_person": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "protected_qa",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "overlap_occlusion_boundary": {
+      "annotated_on": "full",
+      "components": 30,
+      "mask_area_px": 163254,
+      "mask_bbox": [
+        192,
+        470,
+        1671,
+        5408
+      ],
+      "mask_file": "masks_regions/overlap_occlusion_boundary.png",
+      "mask_sha256": "8bd457278c967ddcb28a03a860fe6d72326d7f94070a5d8aae5896292f0eea9f",
+      "mask_type": "region_band",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "panty_visible": {
+      "annotated_on": "full",
+      "components": 2,
+      "mask_area_px": 346514,
+      "mask_bbox": [
+        595,
+        2334,
+        1302,
+        3034
+      ],
+      "mask_file": "masks_derived/panty_visible.png",
+      "mask_sha256": "3fa82244684130722ccbd92b991f8d32473e8078c57947b14fd66c5580c96b40",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "pelvic_region": {
+      "annotated_on": "full",
+      "components": 2,
+      "mask_area_px": 734,
+      "mask_bbox": [
+        1231,
+        2944,
+        1263,
+        3012
+      ],
+      "mask_file": "masks/pelvic_region.png",
+      "mask_sha256": "4aaaf1ffab05ef427d2aa6f91d1bb6b4bb3b03bec904b6058fa9327515bcbe99",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "pelvic_region"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "person_full_visible": {
+      "annotated_on": "full",
+      "components": 1,
+      "mask_area_px": 3592881,
+      "mask_bbox": [
+        193,
+        256,
+        1686,
+        5415
+      ],
+      "mask_file": "masks_derived/person_full_visible.png",
+      "mask_sha256": "379c9feba3878f8dcc82af7454dba3f25e76e9414585a4f53e67e33aeea85498",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "right_ankle": {
+      "annotated_on": "full",
+      "components": 8,
+      "mask_area_px": 73830,
+      "mask_bbox": [
+        741,
+        4947,
+        1123,
+        5194
+      ],
+      "mask_file": "masks/right_ankle.png",
+      "mask_sha256": "691b814509cfedbd3dde8fcbae18b5968141ee59f4f682a5cecc245ae9e77936",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "right_ankle"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "right_body_contact_region": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "region_band",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": null,
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_breast": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_breast_projected_region": {
+      "annotated_on": "full",
+      "basis": "torso_landmarks+clothing_surface",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "projected_amodal",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": null,
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "n/a"
+    },
+    "right_breast_skin": {
+      "annotated_on": "full",
+      "components": 0,
+      "mask_area_px": 0,
+      "mask_bbox": null,
+      "mask_file": "masks_derived/right_breast_skin.png",
+      "mask_sha256": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "not_visible"
+    },
+    "right_calf": {
+      "annotated_on": "full",
+      "components": 76,
+      "mask_area_px": 304227,
+      "mask_bbox": [
+        260,
+        1648,
+        1111,
+        5380
+      ],
+      "mask_file": "masks/right_calf.png",
+      "mask_sha256": "df317648c32e94f7b5b0f353e4e07b746d8b5b5d03f25e02f70e96296870742d",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "right_calf"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "right_chest_clothing_over_breast": {
+      "annotated_on": "full",
+      "basis": "torso_landmarks+clothing_surface",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "projected_amodal",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": null,
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "n/a"
+    },
+    "right_elbow": {
+      "annotated_on": "full",
+      "components": 22,
+      "mask_area_px": 4515,
+      "mask_bbox": [
+        280,
+        2071,
+        605,
+        2721
+      ],
+      "mask_file": "masks/right_elbow.png",
+      "mask_sha256": "9b299914c2e92e05af7bee889d3bfba7b01a927adaab252b4481fda13cc29ee7",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "right_elbow"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "right_foot": {
+      "annotated_on": "full",
+      "components": 220,
+      "mask_area_px": 1008882,
+      "mask_bbox": [
+        262,
+        1019,
+        1504,
+        5412
+      ],
+      "mask_file": "masks_derived/right_foot.png",
+      "mask_sha256": "6fee4a7fde9832e5a5c3fe9a504e85b97d29c89663be280a57e0c29791f9192d",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "right_foot_base": {
+      "annotated_on": "full",
+      "components": 220,
+      "mask_area_px": 1008882,
+      "mask_bbox": [
+        262,
+        1019,
+        1504,
+        5412
+      ],
+      "mask_file": "masks/right_foot_base.png",
+      "mask_sha256": "6fee4a7fde9832e5a5c3fe9a504e85b97d29c89663be280a57e0c29791f9192d",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "right_foot_base"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "right_forearm": {
+      "annotated_on": "full",
+      "components": 180,
+      "mask_area_px": 5120,
+      "mask_bbox": [
+        425,
+        2120,
+        1052,
+        4952
+      ],
+      "mask_file": "masks/right_forearm.png",
+      "mask_sha256": "5319bd92ad8b5c6b6e459589cb064e246e691e3d962cc384960fd3143a95f61c",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "right_forearm"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "right_glute": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_hand": {
+      "annotated_on": "full",
+      "components": 111,
+      "mask_area_px": 484408,
+      "mask_bbox": [
+        260,
+        1023,
+        1182,
+        3718
+      ],
+      "mask_file": "masks_derived/right_hand.png",
+      "mask_sha256": "bed870b58d89a617745679dd3ebad09933fcf5b0fc977c5f819ece775ec55d51",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "right_hand_base": {
+      "annotated_on": "full",
+      "components": 111,
+      "mask_area_px": 484408,
+      "mask_bbox": [
+        260,
+        1023,
+        1182,
+        3718
+      ],
+      "mask_file": "masks/right_hand_base.png",
+      "mask_sha256": "bed870b58d89a617745679dd3ebad09933fcf5b0fc977c5f819ece775ec55d51",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "right_hand_base"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "right_hip": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_index_finger": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_knee": {
+      "annotated_on": "full",
+      "components": 1,
+      "mask_area_px": 84733,
+      "mask_bbox": [
+        739,
+        3686,
+        1115,
+        3950
+      ],
+      "mask_file": "masks/right_knee.png",
+      "mask_sha256": "d4342bfd578bf5c4b90cf10f766c6f4402e61b92172fa4c19966b512b490802f",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "right_knee"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "right_middle_finger": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_pinky": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_ring_finger": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_scapula_back": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "region_band",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": null,
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_shoulder": {
+      "annotated_on": "full",
+      "components": 24,
+      "mask_area_px": 4112,
+      "mask_bbox": [
+        667,
+        2347,
+        1157,
+        3686
+      ],
+      "mask_file": "masks/right_shoulder.png",
+      "mask_sha256": "825bdae44f3f1d6bb3d8cf4b3914c91ea1e552ff9842623473a5ba823eedab7a",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "right_shoulder"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "right_thigh": {
+      "annotated_on": "full",
+      "components": 71,
+      "mask_area_px": 160721,
+      "mask_bbox": [
+        412,
+        1029,
+        1290,
+        4013
+      ],
+      "mask_file": "masks/right_thigh.png",
+      "mask_sha256": "8727f3f36ea3f25856138553fae7369b698630c31b40117a5b8032fc8401145c",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "right_thigh"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "right_thumb": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_toes": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "right_upper_arm": {
+      "annotated_on": "full",
+      "components": 79,
+      "mask_area_px": 15378,
+      "mask_bbox": [
+        267,
+        1080,
+        740,
+        2207
+      ],
+      "mask_file": "masks/right_upper_arm.png",
+      "mask_sha256": "204259b0297e44add6cac004ba45bf1a1fa1c3c66abcf94e78e637ce666fdf0d",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "right_upper_arm"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "right_wrist": {
+      "annotated_on": "full",
+      "components": 3,
+      "mask_area_px": 2604,
+      "mask_bbox": [
+        515,
+        2810,
+        729,
+        2967
+      ],
+      "mask_file": "masks/right_wrist.png",
+      "mask_sha256": "8e52a5f58736e545858fa39255f7cc97a4aa67746779d2fea91c0f94c2119b55",
+      "mask_type": "atomic_exclusive",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": "right_wrist"
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    },
+    "spine_back_center": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "region_band",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": null,
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "support_surface": {
+      "annotated_on": "full",
+      "components": null,
+      "mask_area_px": null,
+      "mask_bbox": null,
+      "mask_file": null,
+      "mask_sha256": null,
+      "mask_type": "protected_qa",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "n/a",
+      "visibility": "not_visible"
+    },
+    "visible_body_skin": {
+      "annotated_on": "full",
+      "components": 159,
+      "mask_area_px": 4877,
+      "mask_bbox": [
+        272,
+        2162,
+        1686,
+        5400
+      ],
+      "mask_file": "masks_derived/visible_body_skin.png",
+      "mask_sha256": "5fbf8265c0fcc3370c6dae0ed842817908419adada41f556d1ac8d919769a8c6",
+      "mask_type": "derived_union",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "derived_script",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "draft_model_generated",
+      "visibility": "visible"
+    },
+    "waist": {
+      "annotated_on": "full",
+      "components": 1,
+      "mask_area_px": 175800,
+      "mask_bbox": [
+        360,
+        2521,
+        1547,
+        2682
+      ],
+      "mask_file": "masks_regions/waist.png",
+      "mask_sha256": "fff6f4a92bb0ff5818bbd9a45994c5b5c974d2f76cd3f4f9e863214680975213",
+      "mask_type": "region_band",
+      "notes": "",
+      "occlusion": {
+        "layer": "unknown",
+        "occluded_by": [],
+        "occludes": []
+      },
+      "provenance": {
+        "draft_source": "s09_weighted_consensus",
+        "human_edit": false,
+        "sam2_prompt_id": null
+      },
+      "status": "human_corrected",
+      "visibility": "visible"
+    }
+  },
+  "person": {
+    "estimated_person_height_px": 5249,
+    "person_count": 1,
+    "pose_tags": [
+      "arms_down",
+      "leg_overlap"
+    ],
+    "primary_person_bbox": [
+      188,
+      243,
+      1688,
+      5492
+    ],
+    "view": "left_3_4"
+  },
+  "qa": {
+    "qa_overall": "fail",
+    "qa_report_file": "qa_report.json",
+    "qa_score": 0.8587051878870733
+  },
+  "review": {
+    "approved_at": null,
+    "review_time_sec": null,
+    "reviewer": null,
+    "second_review": {
+      "at": null,
+      "required": false,
+      "result": "not_required",
+      "reviewer": null
+    }
+  },
+  "schema_version": "1.0.0",
+  "source": {
+    "exif_stripped": true,
+    "ingested_at": "2026-07-11T22:30:55.787475+00:00",
+    "origin_note": "governed instance crop of muscular-man-poses-in-underwear-against-grey-backg-2026-01-08-01-55-14-utc.jpg",
+    "parent_source_sha256": "cdab0311dc96f413e603b2b78390d30f4ed85bd16ec9cb96ed033920c10e1920",
+    "phash64": "d94c2667cc19e69c",
+    "source_file": "source.png",
+    "source_height": 5632,
+    "source_origin": "generated",
+    "source_sha256": "d962e914116cdd97d00187c313fe94c99e9e725ab50d38b79d203f1ed47bae43",
+    "source_width": 1876
+  },
+  "tooling": {
+    "annotation_tool": "cvat",
+    "annotation_tool_version": "2.24.0",
+    "config_hashes": {
+      "ontology.yaml": "d28f66ab1b9a40241d253b9befe0f45c8b9e384cd7ce1fc32005d8cbdf49b451",
+      "pipeline.yaml": "c1afcf020257c82041893625c734d3806ccf51c9b761ea48a898bb0e82e603ab",
+      "prompting.yaml": "b52512816acea63c004942777c874e3c33a4dc004b88f7d69ad3b3503f2d6deb",
+      "qa.yaml": "98d5f5a5a0146d44d90488b380d5152260c39613f64e86b3b35d514ff5729ac4",
+      "vlm.yaml": "609fa5da74cf68fbb46b02299439bf3e912e044d2c90cdc0774270d0f30c40fe"
+    },
+    "model_versions_used": {
+      "densepose": "R_50_FPN_s1x",
+      "sam2": "2.1_hiera_large_or_base_plus"
+    },
+    "pipeline_version": "maskfactory 0.0.1"
+  },
+  "workflow_status": "corrected",
+  "workflow_updated_at": "2026-07-14T00:24:32.693291+00:00"
+}

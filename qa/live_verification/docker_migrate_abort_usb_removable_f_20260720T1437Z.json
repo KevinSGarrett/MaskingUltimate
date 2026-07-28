@@ -1,0 +1,104 @@
+{
+  "actions_not_taken": [
+    "Quit Docker Desktop",
+    "wsl --shutdown",
+    "move/robocopy live C: vhdx to F:",
+    "settings-store.json dataFolder retarget",
+    "wsl --export/--import of docker-desktop-data",
+    "delete/replace stale F: vhdx copy",
+    "docker system prune / volume wipe"
+  ],
+  "artifact_type": "maskfactory_docker_data_relocation_abort",
+  "blocker": {
+    "summary": "F: is present but is a USB Seagate Backup Plus Slim external drive. Live Docker data must remain on fixed NVMe C:. Migrating the locked live VHDX onto F: would recreate disconnect-driven daemon/crash-loop risk and endanger CVAT volumes.",
+    "why_not_forced": "Get-Disk BusType=USB is dispositive even when Get-Volume says Fixed. settings-store.json has no dataFolder to F:; live vhdx stays on C:. No quit/shutdown/move/import was started after this critical update."
+  },
+  "branch": "codex/maskfactory-runtime-implementation",
+  "claims_not_established": [
+    "docker_vhdx_relocated_to_f",
+    "c_disk_pressure_permanently_resolved_via_relocation",
+    "doctor_all_green"
+  ],
+  "completion_credit": false,
+  "critical_update": "Sibling cab71658: F: is a REMOVABLE external drive that disconnects; only NVMe C: is fixed. Never put docker_data.vhdx on removable media.",
+  "cvat_status": {
+    "api_about": {
+      "host_curl_127_0_0_1_8080": "empty_reply_curl_52_intermittent_under_sibling_load",
+      "in_container_cvat_server": {
+        "name": "Computer Vision Annotation Tool",
+        "result": "ok",
+        "version": "2.24.0"
+      },
+      "note": "Production CVAT remains on C:-hosted Docker data. Host loopback about flapped empty-reply (curl 52) under concurrent sibling traffic; authoritative in-container GET /api/server/about -> version 2.24.0."
+    },
+    "bootstrap_cvat_py": "ran; compose reported all production cvat_* containers Running; exit 0",
+    "containers_observed_running": [
+      "cvat_server (cvat/server:v2.24.0)",
+      "traefik (traefik:v3.6.1)",
+      "nuclio (healthy)",
+      "nuclio-nuclio-pth-sam2 (healthy)"
+    ],
+    "production_pin": "cvat/server:v2.24.0 @ localhost:8080"
+  },
+  "decision": "ABORT_MIGRATE_ENTIRELY",
+  "docker_prune_performed": false,
+  "docker_state": {
+    "context": "docker-desktop",
+    "docker_data_vhdx_bytes": 73131884544,
+    "docker_data_vhdx_gib": 68.11,
+    "docker_data_vhdx_path": "C:\\Users\\kevin\\AppData\\Local\\Docker\\wsl\\disk\\docker_data.vhdx",
+    "docker_root_dir": "/var/lib/docker",
+    "server_version": "29.6.1",
+    "settings_store_dataFolder_value": null,
+    "settings_store_has_dataFolder": false,
+    "settings_store_path": "%APPDATA%\\Docker\\settings-store.json",
+    "vhdx_still_on_c": true
+  },
+  "docker_vhdx_relocated": false,
+  "host_snapshot": {
+    "c_free_gib": 91.336,
+    "f_bus_type": "USB",
+    "f_friendly_name": "Seagate BUP Slim BK",
+    "f_present": true
+  },
+  "kevin_actions_required": [
+    "Provision a PERMANENT fixed internal/second NVMe (or always-present non-USB volume) before any Docker dataFolder relocation.",
+    "Keep F: USB drive for optional static offload only with C: disconnect-safe fallback; never host docker_data.vhdx there."
+  ],
+  "local_date": "2026-07-20",
+  "mutation_performed": false,
+  "outcome": "ABORTED_HARD_STOP_F_DRIVE_USB_REMOVABLE",
+  "probe": {
+    "fixed_nvme_only": {
+      "bus_type": "NVMe",
+      "friendly_name": "SKHynix_HFS001TEM4X182N",
+      "number": 0
+    },
+    "get_disk": {
+      "bus_type": "USB",
+      "friendly_name": "Seagate BUP Slim BK",
+      "number": 1,
+      "operational_status": "Online",
+      "partition_style": "MBR",
+      "size_gib": 1863.02
+    },
+    "get_volume_drive_type": "Fixed",
+    "get_volume_note": "Get-Volume reports DriveType=Fixed for this USB HDD; authoritative BusType from Get-Disk is USB \u2014 treat as removable.",
+    "stale_f_vhdx": {
+      "bytes": 73131884544,
+      "last_write_local": "2026-07-20T03:04:25",
+      "note": "STALE unlocked duplicate \u2014 not the live Docker disk; left untouched.",
+      "path": "F:\\MaskFactory_Offload_20260714\\DockerDesktop\\wsl\\disk\\docker_data.vhdx",
+      "present": true
+    },
+    "test_path_f": true
+  },
+  "project_head_at_authoring": "ddbb0d43eb079ece8c3047f368ccd8c1747bdf9a",
+  "recorded_at": "2026-07-20T14:42:03Z",
+  "related_prior_seal": "qa/live_verification/docker_relocation_f_absent_blocked_20260720T1435Z.json",
+  "requested_task": "Relocate live Docker Desktop docker_data.vhdx from C: to F: (MaskFactory_Offload / DockerDesktopData); update settings-store; preserve CVAT volumes; bootstrap+smoke.",
+  "schema_version": "1.0.0",
+  "self_sha256": "fe72b3bb9a80809352916c65ea1becb7df3f18dadc0370d61b236d65369a3d75",
+  "settings_store_dataFolder_changed": false,
+  "volume_wipe_performed": false
+}

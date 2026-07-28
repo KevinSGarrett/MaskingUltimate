@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "artifact_type": "bounded_operational_repair_gap_revalidation",
+  "captured_at": "2026-07-19T00:44:00.4094554Z",
+  "item_id": "MF-P6-08.06",
+  "repository": {
+    "branch": "codex/maskfactory-runtime-implementation",
+    "commit": "7108f0c34423f564752bbc74e1d5d5efd16c0870",
+    "preserved_dirty_scope_present": true,
+    "dirty_scope_owner": "MF-P6-08.05",
+    "dirty_scope_modified_by_audit": false
+  },
+  "governing_contract": {
+    "spec": "Plan/24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md sections 3-5",
+    "required": [
+      "ROI-bounded protected-mask-aware reversible repair",
+      "materially distinct child hypotheses",
+      "immutable accepted parents and rollback",
+      "attempt, time, resource, and no-progress caps",
+      "acceptance only after evidence improvement and complete-map QA",
+      "typed autonomous abstention or quarantine on exhaustion without mandatory human routing"
+    ]
+  },
+  "verified_foundations": {
+    "geometry_guards": [
+      "S05 and specialist repair ROI derivation",
+      "source/ROI coordinate conversion and clipping",
+      "ordinary versus reconstruction change limits",
+      "protected overlap, ROI escape, area, component, and atomic MCP/MTP vetoes",
+      "immutable protected-label union"
+    ],
+    "legacy_controller": [
+      "maximum repair rounds",
+      "maximum candidates per label",
+      "candidate-ID and output-mask-hash deduplication",
+      "re-evaluation through the existing hard-vetoed tournament"
+    ],
+    "frozen_feedback_contract": [
+      "signed advisory-only exact parent/release/source/output/protected/transform/QA/authority binding",
+      "attempt and remaining-attempt accounting",
+      "no-progress accounting and quarantine request at exhaustion",
+      "immutable-parent and no-authority-escalation firewall",
+      "distinct child hypothesis ID relative to the parent receipt"
+    ]
+  },
+  "source_hashes": {
+    "src/maskfactory/autonomy/repair.py": "5125171345063679a9ac12793a0fde19d473098e83613b48fe651b2a2728e197",
+    "src/maskfactory/autonomy/controller.py": "1c3aa10a5f1c608920d33542c1cddd66c714fbf9379efd91c224fe6d755941bf",
+    "src/maskfactory/schemas/mask_repair_feedback.schema.json": "602413b3bcd84b4656218c3a9a27dd4157466674b3221989b5862003c837df26"
+  },
+  "focused_validation": {
+    "commands": [
+      "python -m pytest -q tests/test_autonomous_repair.py",
+      "python -m pytest -q tests/test_autonomy.py -k bounded_correction_loop",
+      "python -m pytest -q tests/test_mask_bridge_contracts_v1.py::test_repair_feedback_error_policy_and_idempotency_guards",
+      "python -m ruff check src/maskfactory/autonomy/repair.py src/maskfactory/autonomy/controller.py tests/test_autonomous_repair.py tests/test_autonomy.py tests/test_mask_bridge_contracts_v1.py"
+    ],
+    "pytest": {
+      "geometry_and_transaction_tests": 13,
+      "legacy_controller_tests": 2,
+      "frozen_feedback_contract_tests": 1,
+      "total_passed": 16,
+      "failed": 0
+    },
+    "ruff": "pass"
+  },
+  "direct_exhaustion_probe": {
+    "input": "weak initial candidate followed by the same output mask under a renamed candidate ID",
+    "configured_maximum_rounds": 3,
+    "configured_maximum_candidates_per_label": 12,
+    "rounds_executed": 1,
+    "candidate_count": 1,
+    "stopped_reason": "no_novel_safe_candidate",
+    "decision_status": "residual_human_queue",
+    "winner_id": "weak",
+    "acceptance": "fail",
+    "reason": "Exhaustion still routes to a mandatory-human legacy status instead of typed autonomous abstention/quarantine."
+  },
+  "missing_operational_executor": [
+    "no unified repair controller consumes the frozen hypothesis, parent, protected, policy, and authority bindings",
+    "candidate identity and mask-hash deduplication do not prove a materially distinct repair hypothesis",
+    "no immutable accepted-parent snapshot or durable atomic rollback transaction",
+    "no evidence-improvement/regression comparison before acceptance",
+    "no elapsed-time or resource-use enforcement",
+    "no typed operational repair evidence schema/output",
+    "no acceptance-or-autonomous-abstention terminal type; the legacy terminal status is residual_human_queue"
+  ],
+  "worker_chain": {
+    "intent_id": "intent_20260718T204940191Z_mask_bounded_autonomous_repair_completion_1de087de",
+    "intent_sha256": "d8ddb149209b34522e439676049e299275e2430c3fa5f3b8c823b81fc6a3ffce",
+    "base_commit": "093b9b1d74fb21ec5653d9dae395af878a8f0909",
+    "claude_preflight": {
+      "request_id": "p000_20260718T221329521Z_mask_bounded_autonomous_repair_completion_sonnet_preflight_05314e21",
+      "status": "FAIL",
+      "classification": "AI_WORKER_RETRY_BUDGET_EXHAUSTED",
+      "dispatch_record_sha256": "e5e874b7042cab1ecfef7f2d8b756bb1bfec9860651e9ec4dc75925d8f0d93f7",
+      "reason": "Scope packet is under C:/Comfy_UI_Main/runtime_artifacts and outside registered trusted MaskFactory packet roots.",
+      "scope_files_unchanged": true
+    },
+    "cursor": {
+      "request_id": "p000_20260718T221330094Z_mask_bounded_autonomous_repair_completion_5a762da1",
+      "status": "QUEUED",
+      "depends_on_failed_preflight": true,
+      "request_sha256": "bbcdc59dda239b560cb122e38a0bf290fa344b8f4990ce77b8a650e5c2b54634"
+    },
+    "claude_review": {
+      "request_id": "p001_20260718T221330720Z_mask_bounded_autonomous_repair_completion_sonnet_review_eb461a06",
+      "status": "QUEUED",
+      "depends_on_cursor": true,
+      "request_sha256": "f9d309b2aceb26fc0797beeb004a8672ee1bc217feb09c13d20fb08c52d631bb"
+    },
+    "audit_action": "read_only_no_wake_no_duplicate_no_adoption"
+  },
+  "disposition": {
+    "status": "blocked",
+    "percent_complete": 40,
+    "block_scope": "item_only",
+    "dependencies": [
+      "MF-P6-08.05 remains blocked on authority precedence",
+      "the signed high-assurance completion chain is non-executable as issued"
+    ],
+    "unblock_contract": "After MF-P6-08.05 is accepted, reissue the same signed high-assurance chain under a registered MaskFactory trusted packet root, implement the complete additive controller/schema/tests, independently review it, and require every convergence, regression, duplicate-hypothesis, cap, rollback, exhaustion, and typed-abstention validator to pass."
+  },
+  "service_health_during_audit": "ok",
+  "truth_boundary": "This evidence credits verified reusable foundations only. It does not adopt rejected or queued worker bytes, does not prove the MF-P6-08.06 operational executor, and does not claim a repair acceptance, operational certificate, release, or downstream adoption."
+}

@@ -1,0 +1,51 @@
+{
+  "authority_ceiling": "proposal_boxes_only",
+  "claims": {
+    "masks_emitted": false,
+    "queue_terminal_progress": false,
+    "training_eligibility": false,
+    "visual_review": false
+  },
+  "input_shard": {
+    "batch_lane": "reference_and_tournament_input",
+    "file_sha256": "1cf9572717f3f3f89d20cf1832dadd5a825e0407d06537f3578c72cac1c0fee2",
+    "path": "/workspace/assets/MaskedWarehouse/Nude/_MASKFACTORY_INTAKE/batch_shards/runpod/reference_and_tournament_input.0001.json",
+    "platform": "runpod",
+    "sample_count": 256,
+    "self_sha256": "dd61d484ef3e6d357e3c5fdfd4134fb937cfcd2f7217256d4ff3e81e61eac03a"
+  },
+  "outputs": {
+    "progress_path": "runtime_artifacts/p4_groundingdino_cpu_reference_provider_shard0001_20260725T231555Z/launch_binding.json/progress.json",
+    "report_path": "runtime_artifacts/p4_groundingdino_cpu_reference_provider_shard0001_20260725T231555Z/launch_binding.json/groundingdino_report.json",
+    "stderr_path": "runtime_artifacts/p4_groundingdino_cpu_reference_provider_shard0001_20260725T231555Z/launch_binding.json/groundingdino.stderr.log"
+  },
+  "paired_yolo_report": {
+    "file_sha256": "ddb7b2760267c292d51c4a529a8ce4f9389027762e54aaa3f7ace29a79a84b03",
+    "output_sha256": "f3374553166e2a51546f8af35403ff4718af386f972c499483681fb31616d23a",
+    "path": "runtime_artifacts/p4_yolo11m_reference_provider_shard0001_20260725T231400Z/yolo11m_report.json"
+  },
+  "provider": {
+    "box_threshold": 0.4,
+    "checkpoint_path": "models/gdino/groundingdino_swint_ogc.pth",
+    "checkpoint_sha256": "3b3ca2563c77c69f651d7bd133e97139c186df06231157a64c507099c52bc799",
+    "device": "cpu",
+    "prompts": [
+      "person"
+    ],
+    "provider": "groundingdino_person",
+    "provider_family": "groundingdino",
+    "python_executable": "/workspace/maskfactory/.train_cu128_ada/bin/python",
+    "source_revision": "856dde20aee659246248e20734ef9ba5214f5e44",
+    "source_root": "/workspace/source/GroundingDINO",
+    "text_threshold": 0.25,
+    "tool_path": "tools/run_groundingdino_wsl.py",
+    "tool_sha256": "1c6932715842a83f50b46e42ae366da1947631c7ac7a771bcf5591ba284abb71"
+  },
+  "purpose": "independent CPU person-proposal provider for a governed reference shard",
+  "queue": {
+    "mutation_authorized": false,
+    "reason": "single-provider output cannot advance queue state"
+  },
+  "schema_version": "maskfactory.p4_groundingdino_cpu_independent_provider_binding.v1",
+  "self_sha256": "648a764d07a8ddf137ea5b923bb1c7a51658f54d4812a61e3d2f34fa3050fb28"
+}

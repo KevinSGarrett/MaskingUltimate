@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "sam31_post_restart_runtime_readiness",
+  "recorded_at": "2026-07-18T23:59:00Z",
+  "project_commit": "27a6791",
+  "tracker_item": "MF-P0-17.04",
+  "result": "ARTIFACTS_CURRENT_UBUNTU_EXECUTION_BLOCKED",
+  "completion_credit": false,
+  "checkpoint": {
+    "repository": "facebook/sam3.1",
+    "revision": "daa63191845a41281374e725f4c9e51c7a824460",
+    "path": "models/runtime_cache/sam31_checkpoint_daa63191/sam3.1_multiplex.pt",
+    "expected_size_bytes": 3502755717,
+    "observed_size_bytes": 3502755717,
+    "size_match": true,
+    "expected_sha256": "0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6",
+    "observed_sha256": "0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6",
+    "hash_match": true
+  },
+  "locked_host_artifacts": [
+    {
+      "path": "src/maskfactory/providers/sam31_multiplex.py",
+      "sha256": "dfd377d2bf840681e76f0321befaa044222049cc39f9ac17e7c7eae0c3144da8",
+      "lock_match": true
+    },
+    {
+      "path": "tools/smoke_sam31_multiplex_wsl.py",
+      "sha256": "e4b3a43f1daf2f920b75fe139e2e7add689c78bed05751b97b3a6d7d96a85224",
+      "lock_match": true
+    },
+    {
+      "path": "tools/run_sam31_runtime.py",
+      "sha256": "73ddb399e920350535d7ca87c5a9638aac855bc38ea6209006dd7eaf36eedb41",
+      "lock_match": true
+    },
+    {
+      "path": "src/maskfactory/providers/sam31_runtime.py",
+      "sha256": "75b4462adc9b897bb91ff745c11239838bb68e0aff1e160b1d81f0de904fc3b6",
+      "lock_match": true
+    },
+    {
+      "path": "src/maskfactory/providers/sam31_exemplars.py",
+      "sha256": "64372a36145c317742cc4e6258736e3f6d3b401ea5136eb2be40a699151f9b7d",
+      "lock_match": true
+    },
+    {
+      "path": "src/maskfactory/schemas/sam31_visual_exemplar.schema.json",
+      "sha256": "b1a26125fb56d6f0d0464049072265bee0c3c46282b4bbf68019a2ed4f6eacf3",
+      "lock_match": true
+    }
+  ],
+  "ubuntu_boundary": {
+    "distribution": "Ubuntu-22.04",
+    "default_user_import_probe": "failed before import after systemd user-session error and timeout; see maskfactory_service_recovery_20260718.json",
+    "root_noop_command": "wsl.exe -d Ubuntu-22.04 -u root -- /bin/true",
+    "root_noop_result": "timeout_no_output",
+    "owned_windows_client_pids_stopped": [2060, 10668],
+    "prior_diagnosis": "Ubuntu root ext4 emergency_ro with root-binary input/output errors",
+    "prior_evidence": "qa/live_verification/wsl_emergency_ro_diagnosis_20260717T094921Z.json"
+  },
+  "required_recovery": {
+    "script": "tools/Repair-MaskFactoryWslVhd.ps1",
+    "execution_boundary": "already_elevated_powershell_only",
+    "self_elevation_or_uac_attempted": false,
+    "repair_executed": false,
+    "needs_kevin": true,
+    "reason": "The offline VHD repair requires an administrator token; this task will not trigger UAC after the previously reported laptop crash."
+  },
+  "remaining_live_acceptance": [
+    "load the exact official SAM 3.1 multiplex checkpoint in /home/kevin/mfenvs/sam31-5dd401d1",
+    "run two fresh deterministic one-frame CUDA sessions",
+    "record model-load, cold and warm latency",
+    "record model and peak VRAM",
+    "verify identical strict output hashes",
+    "exercise typed failure and CUDA OOM behavior"
+  ],
+  "preservation": {
+    "model_downloaded_bytes": 0,
+    "checkpoint_modified": false,
+    "wsl_repair_or_shutdown_performed": false,
+    "docker_or_cvat_or_nuclio_modified": false,
+    "production_route_or_provider_lifecycle_changed": false,
+    "mask_or_gold_authority_changed": false
+  },
+  "claim_boundary": "This proves current checkpoint and host-contract integrity only. It does not prove checkpoint load, CUDA inference, latency, VRAM, determinism, failure behavior, benchmark qualification, promotion, production use, or gold authority."
+}

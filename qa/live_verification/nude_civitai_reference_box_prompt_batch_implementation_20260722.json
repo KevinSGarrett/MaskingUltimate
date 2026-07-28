@@ -1,0 +1,75 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_civitai_reference_box_prompt_batch_implementation.v1",
+  "recorded_at": "2026-07-22T16:12:30Z",
+  "result": "STATIC_PASS_EXECUTABLE_BATCH_STAGE_LIVE_GPU_PENDING",
+  "source_authority": {
+    "dataset_id": "civitai_top_nsfw_images_2025",
+    "source_role": "reference_and_tournament_input",
+    "authority": "reference_only_no_mask_truth",
+    "media_domain": "synthetic_or_generated",
+    "source_images_are_pixel_truth": false,
+    "prompts_may_create_pixel_labels": false,
+    "boxes_are_pixel_truth": false
+  },
+  "live_input_compatibility": {
+    "catalog_batch_path": "runtime_artifacts/nude_reference_person_catalog_canary_20260722_v1/comparison_selected_040.json",
+    "catalog_batch_sha256": "9aa78ea1a4a9d06ae19fd05e5e866bad5c7a79e78d47ee8a580b6c7d4e626472",
+    "catalog_records_validated": 256,
+    "catalog_pass": 157,
+    "catalog_abstain": 99,
+    "runpod_reference_shard_sha256": "dd61d484ef3e6d357e3c5fdfd4134fb937cfcd2f7217256d4ff3e81e61eac03a",
+    "runpod_reference_shard_records_validated": 256,
+    "reference_role_violations": 0
+  },
+  "implemented_behavior": {
+    "deterministic_consensus_box_and_shared_interior_point": true,
+    "exact_source_file_and_decoded_geometry_binding": true,
+    "provider_neutral_interactive_segmenter_contract": true,
+    "sam2_primary_with_base_plus_oom_bridge": true,
+    "strict_binary_png_output": true,
+    "exact_pixel_and_artifact_hashes": true,
+    "one_embedding_per_provider_per_source": true,
+    "per_record_provider_failure_continues_batch": true,
+    "idempotent_output_replay": true,
+    "independent_model_family_comparison": true,
+    "provider_specific_nonterminal_queue_checkpoint": true,
+    "queue_replay_is_idempotent": true,
+    "catalog_abstentions_remain_abstentions": true,
+    "hard_qc_complete": false,
+    "strict_visual_review_complete": false,
+    "operational_certificates_issued": false,
+    "production_mask_authority_granted": false
+  },
+  "artifacts": {
+    "src/maskfactory/nude_box_mask_generation.py": "ca7727ed1a39636a1769cffc67a5fac58eab713c5f782f2a7522d17b9095b0cf",
+    "src/maskfactory/nude_batch_queue.py": "0f12465e5b0a623c23bf2b67128c833b5781e5e4ae1cad5081fce250f878411c",
+    "tools/run_nude_box_prompt_masks.py": "ff7679425d87850805d64025d5b6aa6873be3687495a867e63a6378700303e52",
+    "tests/test_nude_box_mask_generation.py": "31f489d4ea06c7e0b4233a3a8eab464abf8ec3de9101a8f16829d1bcb4ccd72f",
+    "tests/test_nude_box_prompt_runner.py": "0749b31242ae37bc9676a343fa257199fd76e4191a6ab4767f0b9faaabb4d272",
+    "tests/test_nude_batch_queue.py": "eba8ed810b8f2fac8c228023f33c009c904e02a160030a51ae1da2e3b0374254"
+  },
+  "validation": {
+    "focused_and_adjacent_tests": 235,
+    "focused_and_adjacent_test_result": "PASS",
+    "ruff": "PASS",
+    "black": "PASS",
+    "git_diff_check": "PASS",
+    "runner_help": "PASS",
+    "exact_live_catalog_batch_validation": "PASS_256_157_99",
+    "exact_runpod_shard_role_mapping": "PASS_256"
+  },
+  "runtime_boundary": {
+    "generated_live_masks": 0,
+    "shared_gpu_coordinator_mode": "RECOVERY_REQUIRED",
+    "expired_lease_id": "lease_f31c0165ee8f4c9bb31e5ef96ef87d22",
+    "expired_lease_project": "maskfactory",
+    "expired_lease_profile": "maskfactory_release_validation",
+    "expired_lease_owner_pid": null,
+    "expired_lease_pod_pid": null,
+    "original_lease_token_available": false,
+    "coordinator_state_bypassed_or_edited": false,
+    "docker_desktop_available": false,
+    "local_ollama_available": true,
+    "next_action": "After authenticated coordinator reconciliation, request and validate maskfactory_generation; run SAM2.1 and an independent qualified provider over the 157 passing records, checkpoint provider batches, compare masks, then continue to hard QC and strict per-record visual review."
+  }
+}

@@ -1,0 +1,5 @@
+docs(multi-person): seal Mode A group climb OPS_LOG + tracker notes
+
+Record RUNTIME_PASS_BOUNDED warehouse LV-MHP Mode A+contact QC climb
+(local_multi_person_mode_a_group_slice_20260720T1004.json) in OPS_LOG,
+needs_agent_actions, and MF-P8-11.07 notes without claiming Kevin-governed demo.

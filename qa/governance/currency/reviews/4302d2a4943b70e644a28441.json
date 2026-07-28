@@ -1,0 +1,156 @@
+{
+  "active_role_digest": "e3a3b26cafd5807812acf1c8d6a8abbb30f8bcdad778625b998d3f10c4c631df",
+  "active_roles": [
+    {
+      "artifact_sha256": "b8a7382001b16e453bad95ca9dbc68ae8f2b839b304cf90eaf5c27fbdb4dae91",
+      "authority_key": "densepose_rcnn_r50_fpn_s1x",
+      "benchmark_certificate_sha256": null,
+      "benchmark_issued_at": null,
+      "content_compatibility": {
+        "adult_nonexplicit": "allowed",
+        "consensual_explicit_adult": "allowed"
+      },
+      "findings": [
+        "benchmark_certificate_missing",
+        "rollback_evidence_missing",
+        "rollback_provider_not_distinct"
+      ],
+      "license_status": "verified",
+      "lifecycle_state": "promoted",
+      "provider_alias": "densepose_r50_fpn_s1x",
+      "registry": "model_registry",
+      "role": "geometry_provider",
+      "rollback_evidence_sha256": null,
+      "rollback_provider": "densepose_r50_fpn_s1x",
+      "rollback_tested_at": null,
+      "runtime_identity": "WSL-detectron2-densepose-0.6+torch-2.11.0+cu128-sm_120",
+      "status": "fail"
+    },
+    {
+      "artifact_sha256": "2647878d5dfa5098f2f8649825738a9345572bae2d4350a2468587ece47dd318",
+      "authority_key": "sam2_1_hiera_large",
+      "benchmark_certificate_sha256": null,
+      "benchmark_issued_at": null,
+      "content_compatibility": {
+        "adult_nonexplicit": "allowed",
+        "consensual_explicit_adult": "allowed"
+      },
+      "findings": [
+        "benchmark_certificate_missing",
+        "rollback_evidence_missing",
+        "rollback_provider_not_distinct"
+      ],
+      "license_status": "verified",
+      "lifecycle_state": "promoted",
+      "provider_alias": "sam2_1_large",
+      "registry": "model_registry",
+      "role": "interactive_segmenter",
+      "rollback_evidence_sha256": null,
+      "rollback_provider": "sam2_1_large",
+      "rollback_tested_at": null,
+      "runtime_identity": "WSL-SAM-2-1.0+torch-2.11.0+cu128-bfloat16",
+      "status": "fail"
+    },
+    {
+      "artifact_sha256": "d5ffc1a674953a08e11a8d21e022781b1b23a19b730afc309290bd9fb5305b95",
+      "authority_key": "yolo11m",
+      "benchmark_certificate_sha256": null,
+      "benchmark_issued_at": null,
+      "content_compatibility": {
+        "adult_nonexplicit": "allowed",
+        "consensual_explicit_adult": "allowed"
+      },
+      "findings": [
+        "benchmark_certificate_missing",
+        "rollback_evidence_missing",
+        "rollback_provider_not_distinct"
+      ],
+      "license_status": "verified",
+      "lifecycle_state": "promoted",
+      "provider_alias": "yolo11m_person",
+      "registry": "model_registry",
+      "role": "person_detector",
+      "rollback_evidence_sha256": null,
+      "rollback_provider": "yolo11m_person",
+      "rollback_tested_at": null,
+      "runtime_identity": "ultralytics-8.4.87+torch-2.12.1-cpu-smoke",
+      "status": "fail"
+    },
+    {
+      "artifact_sha256": "724f4ff2439ed61afb86fb8a1951ec39c6220682803b4a8bd4f598cd913b1843",
+      "authority_key": "dwpose_133",
+      "benchmark_certificate_sha256": null,
+      "benchmark_issued_at": null,
+      "content_compatibility": {
+        "adult_nonexplicit": "allowed",
+        "consensual_explicit_adult": "allowed"
+      },
+      "findings": [
+        "benchmark_certificate_missing",
+        "rollback_evidence_missing",
+        "rollback_provider_not_distinct"
+      ],
+      "license_status": "verified",
+      "lifecycle_state": "promoted",
+      "provider_alias": "dwpose_133",
+      "registry": "model_registry",
+      "role": "pose_provider",
+      "rollback_evidence_sha256": null,
+      "rollback_provider": "dwpose_133",
+      "rollback_tested_at": null,
+      "runtime_identity": "WSL-onnxruntime-gpu-1.20.2",
+      "status": "fail"
+    },
+    {
+      "artifact_sha256": "9ab37426bf4de0567af6b5d21b16151357149139362e6e8992021b8ce356a154",
+      "authority_key": "birefnet_general",
+      "benchmark_certificate_sha256": null,
+      "benchmark_issued_at": null,
+      "content_compatibility": {
+        "adult_nonexplicit": "allowed",
+        "consensual_explicit_adult": "allowed"
+      },
+      "findings": [
+        "benchmark_certificate_missing",
+        "rollback_evidence_missing",
+        "rollback_provider_not_distinct"
+      ],
+      "license_status": "verified",
+      "lifecycle_state": "promoted",
+      "provider_alias": "birefnet_general",
+      "registry": "model_registry",
+      "role": "silhouette_provider",
+      "rollback_evidence_sha256": null,
+      "rollback_provider": "birefnet_general",
+      "rollback_tested_at": null,
+      "runtime_identity": "WSL-maskfactory-torch-2.11.0+cu128-transformers-4.47.1",
+      "status": "fail"
+    }
+  ],
+  "event": "scheduled_90_day",
+  "expires_at": "2026-10-13T06:34:57.417999Z",
+  "global_findings": [],
+  "input_hashes": {
+    "dependencies": {
+      "conda_environment": "27e18e50ccfb67be72c9fde0fb15281c5ac824425545396cb107ac11c9d162b5",
+      "governance_decisions": "b63e6f06c1c89fd532b58ade2f58be12f15a77b794284ad333069dc685bc0dc9",
+      "python_lock": "7e2dcd6cef23dab483c6d8a75db7e73015d785c66dffd6f6d0d2885006634e01",
+      "python_project": "ffe586c8e684a8ff7a7a044101bb622dfa1f4e138d7bfeed8537bc378965b839"
+    },
+    "external_registry": "439192dc1153df323cb3801feb0d2a25ff7c4f3486b6f54357e86842ae339e8a",
+    "model_registry": "2054dacc31ae016a2706c64da4f3bd4ca61bdb6a22ca4f071706834b164ce678",
+    "pipeline": "a00c7e7c6c9582426b9ea66b9ec4c1419e38c538d989999de88e4d66c79551c3",
+    "rollback_evidence": "7fb23e4b131a335f41761aeaf187bd2f1b2f785314180b5d88408f64fd7edf6d"
+  },
+  "payload_sha256": "863671e912455f7ed5c4ab90d082eddf3563b0e06cd6a5b25da84c7d8028fd24",
+  "previous_review_sha256": "eaf6e2ec8091c5b36651a4fdc83d57c59fb68dbb999f8b6dafc377765b4952f3",
+  "review_id": "4302d2a4943b70e644a28441",
+  "review_sha256": "100e9854dbc342cccf916f0c71507799544992f069c8823c16be390067cf2152",
+  "reviewed_at": "2026-07-15T06:34:57.417999Z",
+  "reviewer": "maskfactory-governance",
+  "schema_version": "1.0.0",
+  "signature": "Qc6N2vkwbUQD4sGRWnnfGKQ54l4kHQlOpBgRFKoKzq8Qc8qaPp46OoS07OOjnMjQ2hMMePKNZxtS+W115g3RDw==",
+  "signature_algorithm": "ed25519",
+  "signer_public_key_sha256": "854d4ee9f9b07505306651b528dcc6da73897ff2c687656d17e77173cf1e79fe",
+  "status": "fail"
+}

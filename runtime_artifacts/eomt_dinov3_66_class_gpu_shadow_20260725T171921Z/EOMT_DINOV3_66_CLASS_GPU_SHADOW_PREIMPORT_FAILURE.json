@@ -1,0 +1,39 @@
+{
+  "artifact_type": "maskfactory.eomt_dinov3_66_class_shadow_preimport_failure.v1",
+  "authority": {
+    "gold_authority": false,
+    "mask_promotion": false,
+    "semantic_mask_claim": false,
+    "shadow_only": true,
+    "visual_acceptance": false
+  },
+  "binding": {
+    "path": "runtime_artifacts/eomt_dinov3_66_class_gpu_shadow_20260725T171921Z/launch_binding.json",
+    "raw_sha256": "a34beae3ed6977ea84d78dbd88bdbfe9ecf5c049c79604cea61b8bdb3e26b452",
+    "self_sha256": "9eab3a97b8fcc8027729b2afaa93c4e28d5238609ca07568b0468546126c58bb"
+  },
+  "captured_at_utc": "2026-07-25T17:22:32Z",
+  "execution_admission": {
+    "broker_route": "local_pod",
+    "compute_processes": 0,
+    "gpu": "NVIDIA RTX 6000 Ada Generation, 49140 MiB, 0 %",
+    "serverless_active_jobs": 0
+  },
+  "failure": {
+    "error_type": "ModuleNotFoundError",
+    "message": "No module named 'PIL'",
+    "phase": "tool_import_before_binding_or_model_load",
+    "source_line": "from PIL import Image"
+  },
+  "result": "failure",
+  "root_cause": "The V4 clean EoMT isolated runtime proved the model loader and SciPy closure but omitted the Pillow image-decoding package required by the newly bound governed-fixture shadow runner.",
+  "safety_facts": {
+    "cuda_model_load": false,
+    "cuda_tensor_allocation": false,
+    "head_initialization": false,
+    "inference": false,
+    "mask_artifact_written": false
+  },
+  "next_safe_action": "Create a new immutable clean-runtime closure that adds a hash-bound Pillow wheel, then issue a new shadow binding. Do not rerun this V2 binding.",
+  "self_sha256": "5b4426b620ec0fa053a92e5803fe855f03ba176cfd1f656c00c8db54480d988e"
+}

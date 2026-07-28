@@ -1,0 +1,100 @@
+{
+  "artifact_type": "f_drive_usb_policy",
+  "authority": [
+    "Plan/DOCKER_RUNTIME_AND_SESSION_USE.md",
+    "qa/live_verification/docker_relocation_f_absent_blocked_20260720T1435Z.json",
+    "qa/live_verification/needs_agent_actions_20260720.json"
+  ],
+  "branch": "codex/maskfactory-runtime-implementation",
+  "c_drive_identity": {
+    "bus_type": "NVMe",
+    "free_gib": 90.81,
+    "media_type": "SSD",
+    "model": "SKHynix_HFS001TEM4X182N",
+    "total_gib": 951.65
+  },
+  "claims_not_established": [
+    "doctor_all_green",
+    "f_drive_permanent_fixture (it remains removable/USB; treat every session as re-probe-required)",
+    "docker_vhdx_relocated_anywhere (none attempted or desired by this policy)"
+  ],
+  "f_drive_identity": {
+    "bus_type": "USB",
+    "drive_letter": "F:",
+    "free_bytes": 137040777216,
+    "free_gib": 127.63,
+    "free_gib_fluctuation_note": "Free space observed dropping live during this sealing session: an initial probe matched the task prompt's ~181 GiB (194,575,269,888 bytes measured directly), then a later re-check within the same ~10-minute window read ~127.6 GiB and held stable there across repeated samples. This indicates a sibling/concurrent process is actively writing to F: right now (consistent with this being a shared multi-agent working tree per Plan/OPS_LOG.md parallel-wave entries), not a fault in this probe. Both figures are 'present with substantial headroom'; this seal records the fluctuation honestly rather than picking one number to overstate free space.",
+    "free_gib_samples_this_seal": [
+      127.63,
+      127.63,
+      127.63
+    ],
+    "media_type": "Unspecified (external HDD/SSD enclosure)",
+    "model": "Seagate BUP Slim BK",
+    "present": true,
+    "source": "Get-PhysicalDisk / Win32_DiskDrive / shutil.disk_usage (live, this session)",
+    "total_gib": 1863.02
+  },
+  "honesty": [
+    "No mutation performed by this seal; policy-only recording of live-probed facts.",
+    "docker_data.vhdx confirmed still on C: at seal time; this seal does not claim any future guarantee beyond 'do not move it to F:' as binding policy.",
+    "MaskedWarehouse-on-F: assumption in the task prompt was checked and found inaccurate for the current MaskedWarehouse root (it is on C: in the Main project); DAZ and the Ubuntu-22.04 WSL VHD are genuinely F:-resident and are called out precisely."
+  ],
+  "live_probe_this_session": {
+    "cvat_about_http": {
+      "http_status": 200,
+      "response_version": "2.24.0",
+      "url": "http://localhost:8080/api/server/about"
+    },
+    "docker_info_earlier_this_session": "Server=29.6.1; Context=docker-desktop (succeeded ~10 min before this seal write); `docker info`/`docker ps` became slow/unresponsive from this shell again by seal time (consistent with prior-documented intermittent CLI unresponsiveness on this host, e.g. qa/live_verification/disk_ephemeral_reclaim_20260720T0810.json). This seal does not re-block on CLI flakiness because the facts this policy depends on (vhdx file location, WSL registry BasePath, data/ junction target, F: bus/free-space) are filesystem-level truths independent of docker CLI responsiveness, and were reconfirmed directly.",
+    "docker_ps_earlier_this_session": "35 containers enumerated Up (cvat_*, cvat269_*, nuclio, nuclio-nuclio-pth-sam2 healthy) ~10 min before this seal write; not re-run at seal time due to CLI slowness noted above.",
+    "ollama_version": {
+      "response_version": "0.32.1",
+      "url": "http://127.0.0.1:11434/api/version"
+    },
+    "wsl_list_note": "Ubuntu-22.04 Running; docker-desktop Running; Cursor-Agent-WSL1 Stopped (probed earlier this session; wsl -l -v UTF-16 output omitted here, not machine-parsed)."
+  },
+  "local_date": "2026-07-20",
+  "no_open_human_stop_states": true,
+  "policy": {
+    "graceful_degrade_requirement": "Any tool/doctor check that reads from F: (DAZ status, offload mirrors, WSL Ubuntu pipeline paths) must treat F:-absent as a typed, non-fatal FAIL/SKIP with clear evidence \u2014 matching the precedent already set by docker_relocation_f_absent_blocked_20260720T1435Z.json \u2014 never a silent crash or a forced unsafe retarget.",
+    "rule_1_never_move_docker_vhdx_to_f": {
+      "statement": "The live Docker Desktop data VHDX (docker_data.vhdx, backing the docker-desktop WSL2 distro and every running container/CVAT/Nuclio/Ollama-in-Docker workload) MUST NEVER be relocated onto F:. F: is a removable/hot-pluggable USB drive; hosting the live engine store there would reintroduce the exact daemon crash-loop / dangling-junction failure mode already observed and hard-stopped this session.",
+      "verified_now": {
+        "docker_data_vhdx_on_c": true,
+        "docker_data_vhdx_path": "C:\\Users\\kevin\\AppData\\Local\\Docker\\wsl\\disk\\docker_data.vhdx",
+        "docker_data_vhdx_size_gib": 68.11,
+        "docker_desktop_wsl_basepath": "\\\\?\\C:\\Users\\kevin\\AppData\\Local\\Docker\\wsl\\main",
+        "docker_desktop_wsl_basepath_on_c": true
+      }
+    },
+    "rule_2_data_dir_stays_on_c_backup_junction": {
+      "statement": "The repo `data/` junction stays pointed at the on-C: backup (data_c_backup_relocated) as its durable, disconnect-safe target. It must not be repointed to point live at F: as its ONLY copy, because unplugging F: would again leave `data/` dangling and break MASKFACTORY_DATA_PATH / the CVAT read-only share mid-session. F: MAY be used as a secondary/offload mirror, never the sole live target.",
+      "verified_now": {
+        "data_junction_target": "C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated",
+        "target_exists": true,
+        "target_resolves_on_c": true
+      }
+    },
+    "rule_3_f_ok_for_cold_offload_read_when_present": {
+      "statement": "F: remains appropriate for cold offload / read-when-present governed assets: large archival copies, WSL distro VHDs that are not the Docker engine store, DAZ asset roots, and similar bulk data that the pipeline can gracefully treat as unavailable (typed FAIL/skip, not a crash) if F: is unplugged. Any read path against F: must degrade gracefully (existence-check + typed 'source unavailable' evidence) rather than hard-fail the whole session when F: is absent.",
+      "verified_now": {
+        "cold_offload_dirs_present_on_f": {
+          "MaskFactory_DataRelocated": true,
+          "MaskFactory_Offload_20260714": true
+        },
+        "daz_root_present_on_f": true,
+        "wsl_ubuntu2204_on_f": true,
+        "wsl_ubuntu2204_vhd_basepath": "F:\\MaskFactory_Offload_20260714\\WSL\\Ubuntu-22.04"
+      }
+    }
+  },
+  "project_head_at_authoring": "ddbb0d43eb079ece8c3047f368ccd8c1747bdf9a",
+  "recorded_at": "2026-07-20T14:55:25.829151Z",
+  "schema_version": "1.0.0",
+  "self_sha256": "59a6402f883c7021f865f6cf3b52bf7a393667f8d069d57cdf8c117c7b5ef33f",
+  "supersedes_context": {
+    "note": "That seal found F: physically absent and hard-stopped a Docker VHDX relocation request onto it. F: has since been reconnected (USB, reattached by Kevin). This seal does not reopen that relocation; it records the binding policy that a removable USB drive must never host the live docker_data.vhdx, precisely because a disconnect would reproduce the crash-loop that seal was written to stop.",
+    "path": "qa/live_verification/docker_relocation_f_absent_blocked_20260720T1435Z.json"
+  }
+}

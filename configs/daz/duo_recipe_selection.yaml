@@ -1,0 +1,86 @@
+schema_version: 1.0.0
+policy_version: 1.0.0
+anatomy_families:
+  MM: [adult_male, adult_male]
+  MF: [adult_male, adult_female]
+  FF: [adult_female, adult_female]
+relationship_families:
+  no_contact: [separated_side_by_side]
+  overlap_no_contact: [torso_overlap_depth]
+  contact_support: [hand_to_forearm_contact]
+required_matrix:
+  anatomy_families: [MM, MF, FF]
+  relationship_families: [no_contact, overlap_no_contact, contact_support]
+root_transform_bounds:
+  maximum_translation_cm: 250.0
+  maximum_rotation_degrees: 180.0
+  minimum_scale: 0.85
+  maximum_scale: 1.15
+separation:
+  minimum_no_contact_root_distance_cm: 80.0
+  minimum_overlap_depth_separation_cm: 20.0
+contact:
+  minimum_distance_mm: 0.0
+  maximum_distance_mm: 4.0
+  maximum_penetration_mm: 2.0
+  solver_activation: disabled_until_d8_validation
+  reciprocal_surface_and_normal_check_required: true
+  post_simulation_recheck_required: true
+camera_clearance_required: true
+final_root_joint_and_contact_readback_required: true
+p_index_assignment_stage: after_final_render
+templates:
+  - template_id: daz_duo_separated_side_by_side_001
+    relationship_family: no_contact
+    spatial_subfamily: separated_side_by_side
+    slots:
+      a:
+        pose_family: neutral_calibration
+        pose_subfamily: relaxed_standing
+        root_transform: {translation_cm: [-55.0, 0.0, 0.0], rotation_deg: [0.0, 5.0, 0.0], scale: 1.0}
+        contact_sites: []
+        mutable_dofs: []
+      b:
+        pose_family: neutral_calibration
+        pose_subfamily: relaxed_standing
+        root_transform: {translation_cm: [55.0, 0.0, 0.0], rotation_deg: [0.0, -5.0, 0.0], scale: 1.0}
+        contact_sites: []
+        mutable_dofs: []
+    relationship: {type: separated, participants: [c0, c1], front_slot: null, a_site: null, b_site: null, distance_mm: null, maximum_penetration_mm: null}
+    camera_clearance: {minimum_people_margin_fraction: 0.04, minimum_visible_fraction_per_slot: 0.25}
+  - template_id: daz_duo_torso_overlap_depth_001
+    relationship_family: overlap_no_contact
+    spatial_subfamily: torso_overlap_depth
+    slots:
+      a:
+        pose_family: neutral_calibration
+        pose_subfamily: relaxed_standing
+        root_transform: {translation_cm: [-20.0, 0.0, 25.0], rotation_deg: [0.0, 8.0, 0.0], scale: 1.0}
+        contact_sites: []
+        mutable_dofs: []
+      b:
+        pose_family: neutral_calibration
+        pose_subfamily: relaxed_standing
+        root_transform: {translation_cm: [20.0, 0.0, -25.0], rotation_deg: [0.0, -8.0, 0.0], scale: 1.0}
+        contact_sites: []
+        mutable_dofs: []
+    relationship: {type: overlap, participants: [c0, c1], front_slot: a, a_site: null, b_site: null, distance_mm: null, maximum_penetration_mm: null}
+    camera_clearance: {minimum_people_margin_fraction: 0.03, minimum_visible_fraction_per_slot: 0.25}
+  - template_id: daz_duo_hand_forearm_contact_001
+    relationship_family: contact_support
+    spatial_subfamily: hand_to_forearm_contact
+    slots:
+      a:
+        pose_family: neutral_calibration
+        pose_subfamily: relaxed_standing
+        root_transform: {translation_cm: [-32.0, 0.0, 0.0], rotation_deg: [0.0, 5.0, 0.0], scale: 1.0}
+        contact_sites: [right_hand]
+        mutable_dofs: [root_translation, root_rotation, right_shoulder, right_forearm, right_hand]
+      b:
+        pose_family: neutral_calibration
+        pose_subfamily: relaxed_standing
+        root_transform: {translation_cm: [32.0, 0.0, 0.0], rotation_deg: [0.0, -5.0, 0.0], scale: 1.0}
+        contact_sites: [left_forearm]
+        mutable_dofs: [root_translation, root_rotation, left_shoulder, left_forearm]
+    relationship: {type: contact, participants: [c0, c1], front_slot: null, a_site: right_hand, b_site: left_forearm, distance_mm: [0.0, 4.0], maximum_penetration_mm: 2.0}
+    camera_clearance: {minimum_people_margin_fraction: 0.03, minimum_visible_fraction_per_slot: 0.25}

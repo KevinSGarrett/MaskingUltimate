@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "external_supervision_converter_live_canary",
+  "status": "PASS",
+  "qualification_evidence_self_sha256": "d4a83c6cf89fd8f6d59f5c492868bad28ecce3820598361ed56ee385b6133055",
+  "cases": [
+    {
+      "source": "celebamask_hq",
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\CelebAMask-HQ\\CelebA-HQ-img\\0.jpg",
+      "source_sha256": "92583489fae83d937ed33b51459e41bf52104b87b4214ea9390512d860c88c2d",
+      "label_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\CelebAMask-HQ\\CelebAMask-HQ-mask-anno\\0\\00000_hair.png",
+      "label_sha256": "4d588a66304129e18b2899960632b057c94196cbf820c7776d688256ba0e329f",
+      "height": 512,
+      "width": 512,
+      "mapped_source_labels": ["hair"],
+      "ignored_source_labels": [],
+      "mapped_pixel_count": 129444,
+      "ignored_pixel_count": 132700,
+      "ignore_mask_matches_part_255": true
+    },
+    {
+      "source": "lapa",
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa\\train\\images\\10001436895_0.jpg",
+      "source_sha256": "bfeafa93dab56077f2560b00b73a693c5c8c9b0898283a3dfe019092a7e3be3e",
+      "label_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\LaPa\\train\\labels\\10001436895_0.png",
+      "label_sha256": "f55b63041d4cce8f588e927151569159f0fbaa4ba6435c54179a6743297d4cca",
+      "height": 492,
+      "width": 440,
+      "mapped_source_labels": ["background", "skin", "left_eyebrow", "right_eyebrow", "left_eye", "right_eye", "nose", "upper_lip", "inner_mouth", "lower_lip", "hair"],
+      "ignored_source_labels": [],
+      "mapped_pixel_count": 216480,
+      "ignored_pixel_count": 0,
+      "ignore_mask_matches_part_255": true
+    },
+    {
+      "source": "lv_mhp_v1",
+      "source_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1\\images\\0001.jpg",
+      "source_sha256": "adef946e161ab60130e63558d34b23ae77fdb7883e29e7563efb9df2b1e1ddb8",
+      "label_path": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1\\annotations\\0001_02_01.png",
+      "label_sha256": "34e7062a7452be2598d8babe97d325d9b49d9c859f9c6d34ef53b7fad95f4d7d",
+      "height": 900,
+      "width": 600,
+      "mapped_source_labels": ["background", "hair", "face", "bag"],
+      "ignored_source_labels": ["dress", "left_arm", "right_arm"],
+      "mapped_pixel_count": 476222,
+      "ignored_pixel_count": 63778,
+      "ignore_mask_matches_part_255": true
+    }
+  ],
+  "authority_limits": {
+    "truth_tier": "weighted_pseudo_label",
+    "truth_partition": "train",
+    "source_masks_are_gold": false,
+    "holdout_authority_granted": false,
+    "production_mask_authority_granted": false
+  },
+  "validation": {
+    "focused_tests_passed": 13,
+    "ruff_passed": true
+  },
+  "self_sha256": "0738118b1f5bd4ab253f6b5d8a6b3cf891c5d3ad8cb0d0a60b0ed9a5929edaed"
+}

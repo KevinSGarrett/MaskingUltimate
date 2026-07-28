@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_daz_recovery_matrix_foundation",
+  "captured_at": "2026-07-19T05:04:43.7398433Z",
+  "project_head_before_commit": "fae4eaa489f9458e0a5a58578d30299617699b46",
+  "tracker_item": "MF-P9-12.05",
+  "status": "CLOSED_RECOVERY_POLICY_AND_FIXTURE_MATRIX_PASS_LIVE_RECOVERY_MATRIX_OPEN",
+  "percent_supported": 55,
+  "implemented": [
+    "Closed Tier A/B/C recovery policy makes package metadata Tier A and backup-only.",
+    "Referenced Tier A/B authority requires backup; it cannot be silently rebuilt or omitted.",
+    "Optional Tier C bulk may be rebuilt or omitted only with source, rebuild-recipe, and toolchain hash evidence.",
+    "Deterministic recovery reports account backup and optional-bulk bytes and fail closed on unknown tiers, duplicate identities, invalid hashes, invalid sizes, or missing rebuild inputs."
+  ],
+  "validation": {
+    "focused_tests_passed": 9,
+    "backup_recovery_regressions_passed": 16,
+    "tests_failed": 0,
+    "ruff": "PASS",
+    "black_25_1_precommit": "PASS",
+    "schema_and_diff_checks": "PASS"
+  },
+  "live_preservation": {
+    "live_matrix_executed": false,
+    "bulk_files_copied_or_deleted": false,
+    "scheduled_tasks_reenabled": false,
+    "DAZ_or_WSL_launched": false,
+    "MF_P6_08_05_dirty_scope_modified": false
+  },
+  "remaining_acceptance": [
+    "Build the matrix from actual package metadata, dataset/model references, and governed storage inventory.",
+    "Add CLI publication and bind the matrix hash into backup/restore evidence.",
+    "Exercise backup, rebuild, and omission routes on a clean-root recovery fixture and then the governed live restore drill."
+  ],
+  "source_hashes": {
+    "configs/daz/recovery.yaml": "6e4525cf5cf54592baf9db9763843ac58445f08a78488212be3273b3d8f0ae78",
+    "src/maskfactory/schemas/daz_recovery.schema.json": "de5910d723094bcbea96ad069a9f51cabb343681b26611f6e1235d07748c347b",
+    "src/maskfactory/daz/recovery.py": "a93093e87c7337954de4b6313957e15bcd9772680158a148462590fcba3f4817",
+    "src/maskfactory/daz/__init__.py": "ad530925ae1c9bc4645130f352661cd524d7197e11dea8d0a752ebfbac10e0b4",
+    "tests/test_daz_recovery.py": "be69fa47a63b64ed1324aa0f2a17978425e98010bdf0f33a90797484235d52cf"
+  },
+  "claim_boundary": "This proves the closed recovery-policy evaluator and fixtures only. It does not classify the live corpus, copy or delete bulk files, execute a live recovery matrix, or complete MF-P9-12.05."
+}

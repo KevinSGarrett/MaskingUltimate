@@ -1,0 +1,56 @@
+{
+  "artifact_type": "sam3d_body_v3_host_adapter_static_validation.v1",
+  "authority": {
+    "gpu_inference_rerun": false,
+    "may_author_gold": false,
+    "may_promote_provider": false,
+    "provider_lifecycle_state": "installed_unqualified",
+    "provider_matrix_or_registry_changed": false
+  },
+  "bindings": {
+    "v3_repeatability_lock_sha256": "de207f0502299624c266f0325e92cc7c64dca832f6c2239688594237239e7b9f",
+    "v3_runtime_receipt": {
+      "file_sha256": "af2b72af63e9c037a156045ac3652f36b1cd36c6e93b11c7b1ba3b0c7dd72a17",
+      "path": "runtime_artifacts/sam3d_body_repeatability_v3_requalification_control_20260725T150946Z/V3_RUNTIME_RECEIPT.json",
+      "self_sha256": "afe31a4a45f39791df6c7cda352d79acf103885a9221de700a69d01f9841c6ae"
+    }
+  },
+  "changed_files": {
+    "env/sam3d_body_runtime_v4_warmup.lock.json": "a506ff07ca3ee26b7089ae8e37cbd67a2b1494a4127175626ff60742f2b51bd6",
+    "src/maskfactory/providers/sam3d_body.py": "5127b0f48d3bc2a443455893ba63de43c8e6afa7dab2c7049b35051d08662532",
+    "tests/test_sam3d_body_geometry_provider.py": "10ff6798a5098b6fb874df54ca74751c1915dfd0865a0fb2d1bb797d60536d8e",
+    "tests/test_sam3d_body_v3_host_adapter_lock.py": "199a95a083ff562ea3374c7b3e3369ca25094bc4f5af297d691189c73c980e0f"
+  },
+  "created_at_utc": "2026-07-25T15:28:38.415587+00:00",
+  "execution_identity": {
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "network_volume_id": "o9qv2ld91c",
+    "pod_id": "68psfqtaogg7s7",
+    "pod_name": "vitreous_beige_centipede",
+    "volume_mount": "/workspace"
+  },
+  "next_safe_action": "Use the new shadow-only host adapter only in a separately named bounded RunPod runtime wave; do not promote the provider or alter gold/production authority without the required independent evidence.",
+  "scope": "Host-adapter static integration only. The adapter validates the immutable V3 warm-up/two-measured-output contract and preserves the prior V1 path and provider-matrix status.",
+  "self_sha256": "4680518e24dfe5ffb15b35155b3db2f8d00522f458652808e2c9c8beec6e5c1c",
+  "source_commit": "fa21337ce812434875ca82b0972964a3aafb5846",
+  "validation": {
+    "compile": {
+      "command": "runtime_artifacts/sam3d_body_runpod_env/bin/python -m compileall -q src/maskfactory/providers/sam3d_body.py tests/test_sam3d_body_geometry_provider.py tests/test_sam3d_body_v3_host_adapter_lock.py",
+      "result": "pass"
+    },
+    "host_adapter_tests": {
+      "command": "PYTHONPATH=src .train_cu128_ada/bin/python -m pytest -q tests/test_sam3d_body_geometry_provider.py",
+      "result": "pass",
+      "selected_tests": 25
+    },
+    "repeatability_contract_tests": {
+      "command": "runtime_artifacts/sam3d_body_runpod_env/bin/python -m pytest -q tests/test_sam3d_body_v3_host_adapter_lock.py tests/test_sam3d_body_repeatability_v3.py",
+      "result": "pass",
+      "selected_tests": 3
+    },
+    "ruff": {
+      "reason": "the governed train runtime has no ruff module; no dependency mutation was authorized",
+      "result": "not_run"
+    }
+  }
+}

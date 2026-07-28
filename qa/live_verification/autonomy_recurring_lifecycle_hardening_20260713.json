@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-07-13T20:32:30Z",
+  "scope": "recurring_autonomy_audit_and_pseudo_label_lifecycle",
+  "result": "pass",
+  "defects": [
+    "String-valued or internally contradictory audit outcomes could avoid immediate revocation because the processor used identity checks without first enforcing boolean types.",
+    "Corrected-gold references could be arbitrary truthy strings and incorrectly increase retraining correction counts.",
+    "Weekly audit and pseudo-label builders trusted lifecycle fields without a shared schema, winner-ranking, mask-hash, and stage-root containment proof.",
+    "Pseudo-label winner paths could be absolute or traverse outside the lifecycle stage root."
+  ],
+  "repairs": [
+    "Require exact booleans for human_defect, serious_defect, and distribution_drift; serious defects must also be human defects.",
+    "Require corrected_gold_sha256 to be null or a lowercase 64-character SHA-256.",
+    "Reject missing or duplicate audit queue record IDs before outcome processing.",
+    "Centralize lifecycle winner verification: schema, contained relative path, current mask SHA-256, unique selected ranking row, and matching winner hash.",
+    "Apply the shared lifecycle proof before weekly audit sampling and before any calibrated pseudo-label enters the train-only manifest."
+  ],
+  "verification": {
+    "focused": {
+      "command": "pytest tests/test_autonomy.py -q",
+      "clean_publish_result": "19 passed"
+    },
+    "root_full": {
+      "command": "uv run pytest -q",
+      "result": "757 passed after one concurrent-edit collection race was identified and rerun on a settled snapshot"
+    },
+    "clean_publish_full": {
+      "command": "pytest -q with clean-worktree source on PYTHONPATH",
+      "result": "751 passed, 3 expected runtime-artifact skips; 754 collected"
+    },
+    "quality": {
+      "ruff": "pass",
+      "black_26_5_1": "pass"
+    },
+    "regressions": [
+      "Non-boolean serious/human outcomes are rejected instead of silently evaluating false.",
+      "Fake corrected-gold hashes are rejected before retraining counts are computed.",
+      "Thirty real calibrated lifecycle sidecars with hash-verified masks produce the deterministic 20-case weekly sample.",
+      "A pseudo-label lifecycle path containing parent traversal is rejected before manifest creation."
+    ]
+  },
+  "published_file_sha256": {
+    "src/maskfactory/autonomy/audit.py": "c012ed055dacd4e6173790848055dd20204abf2602f9cf23b9105e4ad2b8cb0e",
+    "src/maskfactory/autonomy/lifecycle.py": "7ff86d5c85e706c22d737f2da3c5bc5e093ae9dd9a9b29776a6a4173b01d8c51",
+    "src/maskfactory/autonomy/operations.py": "22e5b964cba1d5f4f4ff6490b29415ac8124bee079f342e0cf665b31c5725c96",
+    "src/maskfactory/autonomy/pseudo_dataset.py": "64bfb1b2a8a357c8f71acc1c36bdab8e67019b227a88faa5c0f2b719bbc125c2",
+    "tests/test_autonomy.py": "a5ed7856e7fcc512ae9ab7908a1fc2d98ac0f68b2eb5c68a422e55ebdd97feb8"
+  },
+  "authority": {
+    "machine_tiers_are_human_gold": false,
+    "approved_gold_count": 0,
+    "performance_certificate_claimed": false,
+    "tracker_status_changed": false
+  }
+}

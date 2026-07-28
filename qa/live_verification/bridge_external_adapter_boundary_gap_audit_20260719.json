@@ -1,0 +1,109 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_external_adapter_boundary_gap_audit",
+  "recorded_at": "2026-07-19T01:14:42.4919624Z",
+  "project_head": "b76cbd09d1ff258cec5cbbeaebc82faa7cef3fe5",
+  "tracker_item": "MF-P6-11.01",
+  "audit_status": "PRODUCER_PRIMITIVES_PRESENT_EXTERNAL_ADAPTER_BOUNDARY_OPEN",
+  "completion_credit_percent": 25,
+  "governing_requirement": "The Main-owned MaskFactoryAdapter must use only adopted, versioned, hash-bound producer contracts and published service/package capabilities; durable orchestration must not import MaskFactory internal modules, depend on ComfyUI node IDs, read arbitrary mutable paths, or treat thin nodes as the controller.",
+  "ownership_boundary": {
+    "MaskFactory": "Publish frozen wire contracts, release/capability/OpenAPI identities, immutable packages, localhost service behavior, compatibility fixtures, and producer conformance evidence.",
+    "Comfy_UI_Main": "Implement and operate MaskFactoryAdapter, controller/DAG binding, retries, arbitration, cache, recovery, and consumer acceptance.",
+    "prohibited": "MaskFactory must not implement Main orchestration or credit its thin ComfyUI nodes as the external adapter."
+  },
+  "prerequisites": [
+    "MF-P6-10.05 has no accepted live adoption conformance decision.",
+    "MF-P6-10.01 through MF-P6-10.04 have no accepted immutable production release/capability/install chain.",
+    "Main has not supplied a production adapter package and signed conformance result against the current producer release."
+  ],
+  "verified_foundations": [
+    "Twelve frozen v1 JSON contracts include acquisition request/receipt, release, capability, requirements, adoption, errors, invalidation, feedback, certificate, semantic profile, and lifecycle event records.",
+    "The MaskFactory FastAPI service is loopback-only and its current health/models/predict/refine surface is live under the pinned environment.",
+    "Raw predict responses are draft-only and the serving runtime resolves governed champion roles rather than allowing an arbitrary provider role.",
+    "The copied ComfyUI node module is dependency-light and its AST contains no package write operations; deliberate workflow output under the package truth root is rejected.",
+    "The node pack can be installed without importing the MaskFactory Python package, showing a useful thin execution/UI boundary."
+  ],
+  "focused_validation": {
+    "commands": [
+      "python -m pytest -q tests/test_serve_api.py::test_serve_cli_is_loopback_only_and_runtime_dependencies_are_locked tests/test_serve_api.py::test_runtime_holds_gpu_lease_and_returns_read_only_draft_contract tests/test_comfy_export.py::test_installer_copies_standalone_pack_workflows_and_config tests/test_comfy_export.py::test_node_runtime_has_no_package_write_or_heavy_dependency_path",
+      "python -m ruff check src/maskfactory/serve/api.py src/maskfactory/serve/comfy_export.py src/maskfactory/serve/comfy_install.py tests/test_serve_api.py tests/test_comfy_export.py",
+      "GET http://127.0.0.1:8765/openapi.json"
+    ],
+    "tests_passed": 4,
+    "tests_failed": 0,
+    "ruff": "pass",
+    "live_openapi": {
+      "title": "MaskFactory",
+      "version": "0.0.1",
+      "paths": ["/health", "/models", "/predict", "/refine"]
+    }
+  },
+  "confirmed_gaps": [
+    "No MaskFactoryAdapter class or external adapter package exists in this producer repository, as expected for a Main-owned runtime.",
+    "No producer conformance verifier proves that Main imports only its pinned adapter and frozen wire models rather than MaskFactory internals.",
+    "The live OpenAPI has no versioned mask_acquisition_request/mask_acquisition_receipt exchange endpoint and does not expose adopted release/capability/schema/journal identities per request.",
+    "The thin Mode A node pack reads a configured filesystem packages_root and filters a human_approved_gold status; it does not validate the frozen request/receipt exchange, release adoption, exact operational wrapper, revocation head, or cache identity.",
+    "The thin Mode B node posts multipart image/labels directly to /predict with a 120-second timeout; it does not carry the frozen identity tuple, authenticated consumer identity, idempotency, deadline/resource envelope, transforms, protected inputs, intended-use authority, or signed receipt.",
+    "No test rejects Main adapter imports of maskfactory internal modules, direct dirty-worktree paths, ComfyUI node-class IDs, or unversioned endpoint assumptions.",
+    "No exact Main adapter commit/package/API/ontology/node/champion/rollback identity has passed producer-side compatibility fixtures against an adopted release."
+  ],
+  "implementation_packet": {
+    "work_unit_id": "MF-CURSOR-11.01-EXTERNAL-ADAPTER-CONFORMANCE",
+    "objective": "Implement an additive producer-side adapter conformance verifier and evidence format that evaluates the pinned Main adapter against adopted frozen contracts and published producer capabilities without implementing Main orchestration or changing frozen v1.",
+    "state": "PREPARED_CROSS_PROJECT_PREREQUISITE_HELD_NOT_DISPATCHED",
+    "candidate_paths": [
+      "src/maskfactory/serve/api.py",
+      "src/maskfactory/serve/comfy_export.py",
+      "src/maskfactory/serve/comfy_install.py",
+      "src/maskfactory/schemas/mask_acquisition_request.schema.json",
+      "src/maskfactory/schemas/mask_acquisition_receipt.schema.json",
+      "tests/test_serve_api.py",
+      "tests/test_comfy_export.py",
+      "tests/test_mask_bridge_contracts_v1.py"
+    ],
+    "allowed_paths": [
+      "configs/bridge_external_adapter_conformance_policy.yaml",
+      "src/maskfactory/bridge/external_adapter_conformance.py",
+      "src/maskfactory/schemas/external_adapter_conformance_evidence.schema.json",
+      "tools/check_external_adapter_conformance.py",
+      "tests/test_external_adapter_conformance.py"
+    ],
+    "path_state": "All five allowed paths are absent and clean. Candidate paths are read-only. The scope is disjoint from frozen v1 contracts, preserved MF-P6-08.05 dirty paths, and prepared MF-P6-09/10/11.01 predecessor units.",
+    "frozen_v1_contract_mutation_allowed": false,
+    "validator_commands": [
+      "python -m pytest -q tests/test_external_adapter_conformance.py tests/test_mask_bridge_contracts_v1.py tests/test_serve_api.py tests/test_comfy_export.py",
+      "python -m ruff check src/maskfactory/bridge/external_adapter_conformance.py tools/check_external_adapter_conformance.py tests/test_external_adapter_conformance.py",
+      "python -m black --check src/maskfactory/bridge/external_adapter_conformance.py tools/check_external_adapter_conformance.py tests/test_external_adapter_conformance.py",
+      "python -m json.tool src/maskfactory/schemas/external_adapter_conformance_evidence.schema.json"
+    ],
+    "acceptance_criteria": [
+      "Consume an exact accepted producer release/capability/adoption chain plus a pinned Main adapter package/commit and closed byte inventory; editable, dirty, untracked, path-only, or unpinned inputs fail.",
+      "Statically and dynamically reject adapter imports from MaskFactory internal modules, direct MaskFactory repository paths, ComfyUI node-class IDs, mutable package roots, and undeclared endpoints.",
+      "Require every adapter exchange to serialize/validate the frozen request, receipt, error, certificate, invalidation, feedback, and lifecycle contracts at their exact schema hashes and supported versions.",
+      "Verify Mode A and Mode B use only published package/API capabilities, preserve identities and hashes exactly, keep raw Mode B draft-only, and independently recompute intended-use eligibility.",
+      "Exercise single- and multi-person fixtures, unknown/incompatible versions, malformed/extra/missing fields, direct internal coupling, dirty installs, stale release/capability/revocation heads, transport outage, and no-silent-fallback behavior.",
+      "Record exact producer and Main Git/package/API/OpenAPI/schema/ontology/node/champion/rollback hashes, test outputs, and deterministic verdict in a strict self-hashed evidence document.",
+      "The conformance tool performs no consumer writes, does not sign Main records, and cannot grant release, adoption, operational-certificate, or end-to-end authority.",
+      "Frozen v1 schemas/fixtures, held worker records, and preserved dirty paths remain byte-identical."
+    ]
+  },
+  "source_hashes": {
+    "src/maskfactory/serve/api.py": "90abde5558efad75c27e895a821c2f492bc2725defec12e0b918e468613a6e11",
+    "src/maskfactory/serve/comfy_export.py": "461ec9a4d1466894c790fca855edc3dcf77ff42e16fa4c9cc664bc9ee7187558",
+    "src/maskfactory/serve/comfy_install.py": "803b83ca16250e468f8ed5c61d7c6ae14d5be9c152455690eb418c9866804b4b",
+    "tests/test_serve_api.py": "9507b18b3722f058a9384e3a5b52751b2a1615c86edf52b24769076d45a7cad7",
+    "tests/test_comfy_export.py": "a05709635b8a6a28a6e0a681b45c278752abe00640a2fb788cbb4442714f2e06",
+    "src/maskfactory/schemas/mask_acquisition_request.schema.json": "2160fd336a8ab25c25dd86babe418c7f2cf072a341c7e7bd94c00743e9103f72",
+    "src/maskfactory/schemas/mask_acquisition_receipt.schema.json": "2a16bf9fe3f9e46e14c02a1cee287f09a821eca20023124d852a4aaf5dc5f18d"
+  },
+  "preservation": {
+    "frozen_v1_contracts_modified": false,
+    "dirty_mf_p6_08_05_scope_modified": false,
+    "held_or_queued_worker_paths_modified": false,
+    "worker_dispatched": false,
+    "main_adapter_modified": false,
+    "runtime_authority_claimed": false
+  },
+  "claim_boundary": "This audit proves loopback service, draft-only runtime, dependency-light read-only nodes, and frozen contract foundations only. It does not implement Main's MaskFactoryAdapter, publish an adopted producer release, prove contract-based Mode A/Mode B orchestration, or complete MF-P6-11.01."
+}

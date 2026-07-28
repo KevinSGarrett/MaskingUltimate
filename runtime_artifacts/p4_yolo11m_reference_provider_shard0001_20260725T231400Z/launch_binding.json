@@ -1,0 +1,41 @@
+{
+  "authority_ceiling": "proposal_boxes_only",
+  "claims": {
+    "masks_emitted": false,
+    "queue_terminal_progress": false,
+    "training_eligibility": false,
+    "visual_review": false
+  },
+  "input_shard": {
+    "batch_lane": "reference_and_tournament_input",
+    "file_sha256": "1cf9572717f3f3f89d20cf1832dadd5a825e0407d06537f3578c72cac1c0fee2",
+    "path": "/workspace/assets/MaskedWarehouse/Nude/_MASKFACTORY_INTAKE/batch_shards/runpod/reference_and_tournament_input.0001.json",
+    "platform": "runpod",
+    "sample_count": 256,
+    "self_sha256": "dd61d484ef3e6d357e3c5fdfd4134fb937cfcd2f7217256d4ff3e81e61eac03a"
+  },
+  "outputs": {
+    "progress_path": "runtime_artifacts/p4_yolo11m_reference_provider_shard0001_20260725T231400Z/launch_binding.json/progress.json",
+    "report_path": "runtime_artifacts/p4_yolo11m_reference_provider_shard0001_20260725T231400Z/launch_binding.json/yolo11m_report.json",
+    "stderr_path": "runtime_artifacts/p4_yolo11m_reference_provider_shard0001_20260725T231400Z/launch_binding.json/yolo11m.stderr.log"
+  },
+  "provider": {
+    "checkpoint_path": "models/detect/yolo11m.pt",
+    "checkpoint_sha256": "d5ffc1a674953a08e11a8d21e022781b1b23a19b730afc309290bd9fb5305b95",
+    "confidence_min": 0.5,
+    "device": "0",
+    "microbatch_size": 16,
+    "provider": "yolo11m_person",
+    "provider_family": "yolo",
+    "python_executable": "/workspace/maskfactory/.train_cu128_ada/bin/python",
+    "tool_path": "tools/run_yolo11_batch.py",
+    "tool_sha256": "97b9e6ee99e14ce09185255cffef0d424012a899475a4ab002589c69f1396b81"
+  },
+  "purpose": "independent GPU person-proposal provider for a governed reference shard",
+  "queue": {
+    "mutation_authorized": false,
+    "reason": "single-provider output cannot advance queue state"
+  },
+  "schema_version": "maskfactory.p4_yolo11m_reference_provider_binding.v1",
+  "self_sha256": "f6b80cc60e353bbc2ec2cdbcd358fe71d16f38b175c1fecd143017b7c378bf69"
+}

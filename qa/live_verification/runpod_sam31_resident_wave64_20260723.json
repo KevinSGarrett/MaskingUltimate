@@ -1,0 +1,112 @@
+{
+  "schema_version": "maskfactory.runpod_sam31_resident_wave64.v1",
+  "recorded_at": "2026-07-23T07:53:03.153610+00:00",
+  "status": "PROVIDER_AND_HARD_QC_STAGE_TERMINAL_NONAUTHORITATIVE",
+  "repository": {
+    "branch": "codex/maskfactory-plan-modernization",
+    "commit": "8d5b30fd20d4ff3079bc51dfae6e060fbaf4d8f4",
+    "deployed_archive_sha256": "b581bc9dd4422b9e8b4cce4b59f31d9365542a2870899224980872c13c35b8ae"
+  },
+  "execution": {
+    "platform": "directly_selected_runpod",
+    "pod_id": "1q4ji0gg1fkhvt",
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "persistent_root": "/workspace/maskfactory/runtime_artifacts/nude_sam31_resident_wave64_8d5b30fd2_v1",
+    "production_masking_ran_locally": false,
+    "gpu_or_vram_admission_gate_used": false,
+    "gpu_or_vram_reservation_used": false,
+    "gpu_or_vram_checkout_used": false,
+    "gpu_or_vram_measurements_are_telemetry_only": true
+  },
+  "inputs": {
+    "catalog": "/workspace/maskfactory/runtime_artifacts/nude_reference_person_catalog_comparison_20260722_v4/comparison_raised_040.json",
+    "source_shard": "/workspace/assets/MaskedWarehouse/Nude/_MASKFACTORY_INTAKE/batch_shards/runpod/reference_and_tournament_input.0001.json",
+    "source_role": "reference_and_tournament_input",
+    "source_is_pixel_truth": false,
+    "selected_record_count": 64,
+    "selected_sample_ids_sha256": "75603610d8dde34dc19f759262770492a96c21eb5cd165a5cbaacb09b6117d44",
+    "selected_sample_ids_unique": true,
+    "prior_attempt_overlap_count": 0,
+    "source_verification_log_sha256": "00103855d4ce3fba286f08b916d7a763b43f8bcc41683145645e0b185c8cc191",
+    "runtime_lock_sha256": "f238e6e82a24acc2e4ac88d7da7a5bd4d670c89d02a91372b391f6472ad88112",
+    "implementation_sha256": {
+      "src/maskfactory/providers/sam31_runtime.py": "edaf1c138e659ca96d8c6ecb250ae917122ba4bed3ead7266467185a55cdff14",
+      "tools/run_sam31_runtime.py": "e7f6e8edd18e09a8f0c3560229bdc873deab8d6b3d201c201cade384df267577",
+      "tools/run_sam31_resident_runtime.py": "255576dd8b862465709cc25b6e3981067c64397c59ab7d84251aff360fcede40",
+      "tools/run_nude_box_prompt_masks.py": "4ea16d8f7128a00a373f45382513ca1a54731d05195ab3e0271cd29738b7ea9b"
+    }
+  },
+  "provider": {
+    "provider_key": "sam3_1",
+    "model_family": "sam3",
+    "source_commit": "5dd401d1c5c1d5c3eedff06d41b77af824517619",
+    "runtime_fingerprint": "1cf09344fe0f36eb26417d53c2e96d06d1d3ffd13f18005ac9a9d5a8ee072c0b",
+    "record_count": 64,
+    "candidate_count": 60,
+    "status_counts": {
+      "generated": 59,
+      "provider_abstain": 5
+    },
+    "provider_json_sha256": "abb1aafcf7a023cdc1c690a28f2e33e5cbea50d59a11659d53cc5ef86147d1f0",
+    "provider_self_sha256": "4707039890c104188ff0e23deb4229f6491a5bd8895fe40b0e3955d020f89c22",
+    "all_candidate_files_exist": true,
+    "all_candidate_hashes_match": true
+  },
+  "deterministic_hard_qc": {
+    "record_count": 64,
+    "status_counts": {
+      "pass": 52,
+      "fail": 7,
+      "upstream_abstain": 5
+    },
+    "hard_qc_json_sha256": "b9cdaf4ea6234490399ccc4be8b8af31a01348768073266d8e5b6bf91820397b",
+    "hard_qc_self_sha256": "81aed54a06c5f4ec1c5aed4ca216190c5f892d8b87c35bb9c7b7c8b31ad34fb6"
+  },
+  "resident_runtime": {
+    "ready_status": "ready",
+    "shutdown_status": "stopped",
+    "request_count": 65,
+    "response_count": 65,
+    "successful_request_count": 64,
+    "failed_request_count": 1,
+    "model_load_count": 1,
+    "resident_model_count": 1,
+    "response_sequence_min": 1,
+    "response_sequence_max": 65,
+    "common_identity_sha256": "0c45c08c25527728a087f2280e02ec00b32a5eb64830b7cdb186671b71618fed",
+    "resident_json_sha256": "e1939b8e3eb8c1df74cb22dd4d502802f2f3655b156ed7ba5ff0f874f267a01a",
+    "resident_self_sha256": "5d5b8d1b9ad98e986c7765142abf1d3bdbda520003e24a82b8ae2f75c5e6111b",
+    "related_processes_after_shutdown": []
+  },
+  "validation": {
+    "state_self_sha256": "7be393266b9c24866b58338e8975fe9cc785c90caa5fc69d64b49423b5745472",
+    "provider_self_seal_valid": true,
+    "hard_qc_self_seal_valid": true,
+    "resident_self_seal_valid": true,
+    "state_self_seal_valid": true,
+    "sample_selection_unique": true,
+    "sample_selection_disjoint_from_prior_attempts": true,
+    "all_candidate_files_exist": true,
+    "all_candidate_hashes_match": true,
+    "exact_source_files_verified_before_launch": true,
+    "one_model_load_across_wave": true,
+    "typed_record_failure_did_not_stop_healthy_records": true,
+    "resident_process_stopped_cleanly": true,
+    "stderr_bytes": 0
+  },
+  "authority_boundary": {
+    "provider_and_hard_qc_stage_terminal": true,
+    "draft_machine_candidate_count": 60,
+    "deterministic_hard_qc_pass_count": 52,
+    "strict_visual_pass_count": 0,
+    "qualified_primary_critic_count": 0,
+    "qualified_independent_juror_count": 0,
+    "operationally_certified_artifact_count": 0,
+    "autonomous_certified_gold_count": 0,
+    "training_truth_count": 0,
+    "terminal_record_count": 0,
+    "shard_complete": false,
+    "claim": "One resident SAM3.1 process handled 64 new reference-only records and deterministic hard QA on RunPod. The 60 generated masks remain draft candidates. No visual, certificate, gold, training, terminal-record, shard, or production authority is claimed."
+  },
+  "self_sha256": "dd95b29af1a90d69e525b8624ff48124c10427b2017c028822f4bfbc76753b74"
+}

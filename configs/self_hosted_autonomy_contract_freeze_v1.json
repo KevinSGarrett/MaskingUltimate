@@ -1,7 +1,7 @@
 {
   "schema_version": "maskfactory_self_hosted_autonomy_contract_freeze.v1",
   "registry_id": "maskfactory_self_hosted_autonomy_contract_v1",
-  "frozen_at": "2026-07-27T01:35:00Z",
+  "frozen_at": "2026-07-28T11:15:00Z",
   "incomplete_claim": "SELF_HOSTED_AUTONOMOUS_LLM_THROUGHPUT_INCOMPLETE",
   "authority_files": [
     {
@@ -22,7 +22,7 @@
     },
     {
       "path": "Plan/SELF_HOSTED_AUTONOMOUS_LLM_PURSUING_GOAL_MESSAGE.md",
-      "sha256": "47e3192565c04f0ff3f4a9881397355b230ba78abda5f5dfd1132412d81da713"
+      "sha256": "c32125a0dbb5635d4c15245d767a831d119ef7fe419bd8e6d57af53f205a5327"
     },
     {
       "path": "Plan/Items/23_ITEMS_P6_SELF_HOSTED_AUTONOMOUS_LLM_OPERATIONS.md",
@@ -85,5 +85,5 @@
     "MF-P6-22.03",
     "MF-P6-22.04"
   ],
-  "registry_sha256": "a0ef5e43ddde8a33af496b2231df34e29846a39436e91046848b3be63db7eca8"
+  "registry_sha256": "af89bdb73de7d88979d3658e0434a313daf84e66a0f3184f0428788c3231dcaa"
 }

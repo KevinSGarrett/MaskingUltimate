@@ -1,0 +1,61 @@
+{
+  "artifact_type": "eomt_dinov3_66class_static_contract_receipt.v1",
+  "bindings": {
+    "asset_recovery_binding": "runtime_artifacts/eomt_dinov3_66class_asset_recovery_20260725T174500Z/recovery_binding.json",
+    "asset_recovery_receipt": "runtime_artifacts/eomt_dinov3_66class_asset_recovery_20260725T174500Z/ASSET_RECOVERY_RECEIPT.json",
+    "asset_recovery_receipt_sha256": "acb8eb6acad5fd1adee84e6876a615c0dbf1ac0acb8f6a9a6d0634bde9ebcaee",
+    "historical_lock": "env/eomt_dinov3_runtime.lock.json",
+    "historical_lock_sha256": "ac988f5a3d5e94259d7f52064c2d228ec4c34b7f594f9e9a3c817f38aa66b6b8",
+    "lock": "env/eomt_dinov3_runtime_v2.lock.json",
+    "lock_sha256": "33074535ca8d7e7c022006b54187dbb5a84e51ff86d6d9801e57482f44610295"
+  },
+  "created_at_utc": "2026-07-25T16:10:42.841559+00:00",
+  "execution_identity": {
+    "network_volume_id": "o9qv2ld91c",
+    "pod_id": "68psfqtaogg7s7",
+    "pod_name": "vitreous_beige_centipede",
+    "volume_mount": "/workspace"
+  },
+  "next_safe_action": "Prepare a separate immutable Python/cu128/Transformers closure for EoMT and only then schedule a 66-class shadow-only runtime smoke. Do not reuse the SAM3D download helper as an EoMT inference runtime.",
+  "runtime_state": {
+    "current_66_class_runtime_executed": false,
+    "gold_authority": false,
+    "gpu_inference_executed": false,
+    "provider_promotion": false,
+    "transformers_available_in_train_cu128_ada": false
+  },
+  "self_sha256": "e4d51682008277180e5e432b70023d501609bb67804ab8c60861a748ff685be3",
+  "snapshot_validation": [
+    {
+      "exists": true,
+      "filename": "model.safetensors",
+      "sha256": "1fed3231445cce739e368c1828f49215459ca33ba56b6712d48e3058274c5d6f",
+      "size_bytes": 93450628
+    },
+    {
+      "exists": true,
+      "filename": "config.json",
+      "sha256": "8baa79f9cc2d41a4e01f575efb97b0aad1353ce955c9e95b7da4c8f61f1034d3",
+      "size_bytes": 6703
+    },
+    {
+      "exists": true,
+      "filename": "preprocessor_config.json",
+      "sha256": "ce1554014d6dcea56b2f352e564275c9ec4a07c5efee704742fe3ed128550e2e",
+      "size_bytes": 436
+    },
+    {
+      "exists": true,
+      "filename": "README.md",
+      "sha256": "1e13062ee2842cd1e92206b7a7ecd3944a243b169d0da8f43e04d94a31794165",
+      "size_bytes": 3118
+    }
+  ],
+  "status": "STATIC_PASS",
+  "test": {
+    "command": "PYTHONPATH=src .train_cu128_ada/bin/python -m pytest -q tests/test_eomt_dinov3_contract.py",
+    "output": "............                                                             [100%]\n",
+    "returncode": 0
+  },
+  "tier": "STATIC_PASS"
+}

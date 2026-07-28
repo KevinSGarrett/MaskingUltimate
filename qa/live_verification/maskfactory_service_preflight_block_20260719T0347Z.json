@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_service_preflight_block",
+  "captured_at": "2026-07-19T03:47:34.9251417Z",
+  "project_head": "1eab7a55d67ea7e34a47f10d0cc298a23d7f9a69",
+  "related_tracker_item": "MF-P6-11.07",
+  "status": "LOCAL_WSL_PREFLIGHT_BLOCK_SERVICE_NOT_LAUNCHED",
+  "authoritative_runtime": {
+    "distro": "Ubuntu-22.04",
+    "interpreter": "/home/kevin/miniforge3/envs/maskfactory/bin/python",
+    "project_root": "/mnt/c/Comfy_UI_Main_Masking",
+    "pythonpath": "/mnt/c/Comfy_UI_Main_Masking/src",
+    "required_bind": "127.0.0.1:8765"
+  },
+  "observations": [
+    "Windows GET http://127.0.0.1:8765/health timed out after two seconds.",
+    "Windows had no listening socket on local port 8765 and runs/gpu.lock was absent.",
+    "The pinned-interpreter import preflight produced no WSL output within the bounded shell execution and therefore did not establish imports.",
+    "A separately launched, command-line-verified `wsl.exe -d Ubuntu-22.04 -- /bin/true` canary timed out after ten seconds.",
+    "Only the exact owned canary client PID 45284 was force-stopped; it was confirmed stopped afterward.",
+    "No non-Docker wsl.exe client remained after cleanup."
+  ],
+  "non_evidence_disclosed": {
+    "owned_pid": 44488,
+    "issue": "An attempted managed import launcher used ProcessStartInfo.ArgumentList, which is unavailable in this Windows PowerShell runtime; it launched bare wsl.exe and timed out.",
+    "credit": false,
+    "cleanup": "The exact owned bare-client PID was stopped and confirmed absent."
+  },
+  "final_state": {
+    "service_launched": false,
+    "windows_listener_8765": false,
+    "gpu_lock_present": false,
+    "owned_canary_pid_running": false,
+    "docker_desktop_processes_touched": false,
+    "scheduled_tasks_reenabled": false
+  },
+  "source_hashes": {
+    "qa/live_verification/bridge_failure_control_gap_audit_20260719.json": "ec6313f80de6e613f32f8c6ddfa308a13dc8cbd09e5dc6d2a1e9d120fe261694",
+    "qa/live_verification/maskfactory_service_recovery_followup_20260719.json": "1ca0ed3bf144563b2eba96345410b212fd7413841673bfdded49ded788261b68",
+    "qa/live_verification/maskfactory_service_recovery_20260719.json": "bab9049dba9e3c684e41489dccd90595ce8dcb66b7567d2154df65bd95e653cb"
+  },
+  "preservation": {
+    "MF_P6_08_05_dirty_scope_modified": false,
+    "frozen_v1_contracts_modified": false,
+    "worker_or_maintenance_state_modified": false,
+    "docker_cvat_nuclio_state_modified": false,
+    "runtime_model_state_modified": false
+  },
+  "claim_boundary": "This is a local preflight failure only. It does not prove FastAPI/Uvicorn/MaskFactory imports, service health, failure-control conformance, champion-backed prediction, certificate issuance, or MF-P6-11.07 completion, and it is not a global project blocker."
+}

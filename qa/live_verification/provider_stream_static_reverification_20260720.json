@@ -1,0 +1,97 @@
+{
+  "any_item_completed_by_this_reverification": false,
+  "artifact_type": "provider_stream_static_reverification_report",
+  "authority": "provider_stream_host_side_static_reverification_only_no_live_gpu_human_anchor_champion_gold_main_adoption_or_production_release_authority",
+  "checked_at": "2026-07-20T08:10:00Z",
+  "component_seals": {
+    "serving_static_contracts_20260720": {
+      "checks": {
+        "node_pack_inventory": "pass",
+        "serving_provenance": "pass",
+        "serving_route": "pass",
+        "workflow_preflight_contract": "pass"
+      },
+      "file_sha256": "1b82999a47b786e11dda7e3d7385cbee557927ce5374bd692ed0d8d5e04f36b1",
+      "proof_tier": "STATIC_PASS",
+      "report_sha256": "dd82c390096780ba07d00b6544ce6f4e01d43d5de8fe34833c847b7b167a4f84"
+    },
+    "specialist_static_contracts_20260720": {
+      "checks": {
+        "hand_chest_hair_feet_lane_contracts": "pass",
+        "qc_panel_fixtures": "pass",
+        "residual_and_preselected_audit_routing": "pass"
+      },
+      "file_sha256": "df0b15fd4189e63795b4f3435d9a4ab8bb6f8ff5229dc144cdb0132818dfa696",
+      "proof_tier": "STATIC_PASS",
+      "report_sha256": "8df1591d1225ed3788001c6fd87b9446027af2fe7713537ab17b50cd3002fedf"
+    }
+  },
+  "doctor_green_claimed": false,
+  "gold_claimed": false,
+  "head": "184313d107d60f6a1fce9935658130cfeb2e09d0",
+  "honest_non_claims": [
+    "no_new_item_completion",
+    "no_percent_or_status_promotion",
+    "no_live_gpu_or_wsl_smoke",
+    "no_human_anchor_holdout_result",
+    "no_champion_backed_predict",
+    "no_gold",
+    "no_main_adoption",
+    "no_doctor_green",
+    "no_production_evidence_pass"
+  ],
+  "host_side_static_gaps_found": false,
+  "host_side_static_gaps_remaining": false,
+  "main_complete_claimed": false,
+  "production_evidence_pass_claimed": false,
+  "proof_tier": "STATIC_PASS",
+  "pytest": {
+    "evidence_file": "runtime_artifacts/_prov_static_full.txt",
+    "exit_code": 0,
+    "provider_stream_test_files": 22,
+    "test_files": [
+      "tests/test_serving_static_contracts.py",
+      "tests/test_specialist_static_contracts.py",
+      "tests/test_provider_contracts.py",
+      "tests/test_provider_benchmark_matrix.py",
+      "tests/test_provider_benchmark_matrix_metrics.py",
+      "tests/test_specialist_benchmark_policy.py",
+      "tests/test_specialist_evidence_package.py",
+      "tests/test_ontology_v2_inactive_gates.py",
+      "tests/test_provider_discovery.py",
+      "tests/test_provider_runtime_matrix.py",
+      "tests/test_interactive_transaction.py",
+      "tests/test_interactive_promotion.py",
+      "tests/test_specialist_promotion.py",
+      "tests/test_specialist_role_transaction.py",
+      "tests/test_specialist_candidate_provenance.py",
+      "tests/test_currency_review.py",
+      "tests/test_shadow_tournament_registration.py",
+      "tests/test_sam31_shadow.py",
+      "tests/test_ontology_v2_registry_serving_comfy.py",
+      "tests/test_serving_routing.py",
+      "tests/test_serving_workflow_performance.py",
+      "tests/test_serving_workflow_preflight.py"
+    ],
+    "tests_failed": 0,
+    "tests_passed": 248
+  },
+  "remaining_work_is_non_static": "provider/ontology/serving/specialist completion is gated by live-GPU/WSL smoke, image-disjoint human-anchor holdout results, trained promoted champions, and real Comfy_UI_Main consumer receipts, none of which are host-side static or agent-fabricable",
+  "result": "pass_provider_stream_host_side_static_reverification",
+  "sapiens2_excluded": true,
+  "scope": [
+    "providers",
+    "ontology",
+    "serving_contracts",
+    "specialist_static"
+  ],
+  "sha256": "740ab13adb3345b316b419de4a1ae0a8706c09cdfef87f0ae0b980e0e2d2f0b6",
+  "stream": "provider-challenger / provider-neutral STATIC + bounded shadow (Sapiens2 excluded)",
+  "tracker_items_noted": [
+    "MF-P6-06.08",
+    "MF-P3-08.10",
+    "MF-P2-11.13",
+    "MF-P2-11.14"
+  ],
+  "visual_qa_pass_claimed": false
+}

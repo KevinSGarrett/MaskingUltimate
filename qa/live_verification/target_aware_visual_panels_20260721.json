@@ -1,0 +1,32 @@
+{
+  "authority_claimed": false,
+  "focused_test_count": 31,
+  "focused_tests_status": "PASS",
+  "panel_types": [
+    "source",
+    "binary_mask",
+    "overlay",
+    "contour",
+    "full_context",
+    "uncertainty_zoom",
+    "disagreement"
+  ],
+  "recorded_at": "2026-07-21T23:10:13.5913381Z",
+  "schema_version": "1.0.0",
+  "source_sha256": {
+    "src/maskfactory/vlm/panel_renderer.py": "527ac54175834cd7d28962bc5b8392cb192f6eb5d58e3a20d9cbf15546ecd4cb",
+    "tests/test_visual_critic_panel_renderer.py": "2f5a44dfd027386b19f88bfc094350a8f099634011d2ab446b987a8fef41914f"
+  },
+  "status": "STATIC_PASS",
+  "verified_fail_closed_inputs": [
+    "source_file_hash",
+    "candidate_file_hash",
+    "target_contract_hash",
+    "transform_hash",
+    "source_geometry",
+    "crop_geometry",
+    "target_roi",
+    "candidate_pixels",
+    "disagreement_pixels"
+  ]
+}

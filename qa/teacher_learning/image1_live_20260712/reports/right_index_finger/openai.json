@@ -1,0 +1,16 @@
+{
+  "authority": "shadow_advisory_human_approval_required",
+  "image_id": "img_684faa498391",
+  "instance_id": "p0",
+  "judgments": [],
+  "label": "right_index_finger",
+  "local_audit": {
+    "deterministic_overrides": [],
+    "final_verdict": "uncertain",
+    "model": "reference_seed",
+    "model_verdict": "uncertain"
+  },
+  "schema_version": "1.0.0",
+  "sha256": "c3b59abf46af521063e7f4fd601cbeafdbf9cf8156ec89f8d2f125d4057691ca",
+  "source_sha256": "684faa49839192aa2d2bf93d0919e3895280f1acd0555c1360bfaaff4753ded9"
+}

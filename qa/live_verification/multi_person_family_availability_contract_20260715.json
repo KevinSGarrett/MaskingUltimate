@@ -1,0 +1,109 @@
+{
+  "schema_version": "1.0.0",
+  "item_ids": ["MF-P8-11.03"],
+  "verified_at": "2026-07-15T13:13:01Z",
+  "result": "PASS_GOVERNED_MULTI_PERSON_FAMILY_AVAILABILITY_FIXTURE_CONTRACT_LIVE_TOURNAMENT_PENDING",
+  "policy": {
+    "path": "qa/governance/multi_person_family_availability_v1.json",
+    "locked_canonical_sha256": "860d1e1300737102b9c4f954d06112e74c45d79a805c2cbbda1a1a1a4827fa8d",
+    "file_sha256": "e2e61a2ce36d76b05f8bcd02defd9fce8da54ddd7d81405bb9582bbcda202396",
+    "frozen_before_real_multi_person_tournament_results": true
+  },
+  "governed_sources": {
+    "model_registry": "models/model_registry.json",
+    "provider_runtime_matrix": "env/provider_runtime_matrix.json",
+    "internal_sources_are_repository_contained_and_hash_bound": true,
+    "runtime_artifact_paths_and_hashes_reverified": true
+  },
+  "availability_rules": {
+    "registry_requires_installed_benchmarked_or_promoted": true,
+    "registry_requires_verified_artifact_identity": true,
+    "registry_requires_verified_license_review": true,
+    "registry_requires_both_permitted_content_lanes": true,
+    "runtime_requires_live_smoke_passed": true,
+    "runtime_requires_installed_checkpoint": true,
+    "runtime_requires_passing_smoke": true,
+    "runtime_may_not_author_gold": true,
+    "internal_family_requires_every_frozen_source_file": true,
+    "caller_asserted_availability_permitted": false
+  },
+  "current_repository_eligibility": {
+    "available": [
+      "deterministic_repair",
+      "fusion",
+      "geometry",
+      "pose",
+      "rf_detr_detection",
+      "sam21_refinement",
+      "silhouette",
+      "specialist"
+    ],
+    "unavailable": [
+      "sam31_exhaustive_discovery",
+      "sam31_refinement"
+    ],
+    "sam31_reason": "provider runtime matrix records source_only_human_gate, manual_huggingface_gate, and not_run_checkpoint_gated",
+    "live_reachability_claimed": false
+  },
+  "manifest_behavior": {
+    "availability_snapshot_embedded_and_canonically_sealed": true,
+    "policy_registry_runtime_and_internal_hash_drift_rejected": true,
+    "available_family_required_for_every_target": true,
+    "unavailable_family_forbidden_from_contributions": true,
+    "newly_qualified_family_becomes_mandatory_without_caller_override": true,
+    "independent_source_credit_still_deduplicated_by_true_model_family": true
+  },
+  "authority": "multi_person_tournament_evidence_only_no_selection_serving_training_semantic_mask_or_gold_authority",
+  "implementation_hashes": {
+    "src/maskfactory/autonomy/multi_person_availability.py": "6cc38fced8298c29279eca05aa14e7236af8d4eb734d45debe62a6720128b5ba",
+    "src/maskfactory/autonomy/multi_person_evidence.py": "c9225c87b1e735c47bca0d32c0b650ee81c612ec22cb58546e4a8cfebdf9893c",
+    "src/maskfactory/schemas/multi_person_family_availability_policy.schema.json": "af3a04421486677910d032275c85298d53721488063ddebbbec267964dab28ee",
+    "src/maskfactory/schemas/multi_person_tournament_evidence.schema.json": "b188b8c3a77d8bd1e3b61b225dea999af6ee4e5a8e112f43209446d7b88b9918",
+    "tests/test_multi_person_availability.py": "d4a85ef5a4f69cae3a0cd98d0e372e0406fe9456ae1d60c1f6c1a94f121ca19b",
+    "tests/test_multi_person_tournament_evidence.py": "200da7f76e73a3e89cd2f59c04e4486a94e2befe0710e4e01628f47e63e23bdd"
+  },
+  "verification": {
+    "dedicated_availability_and_evidence_tests": {
+      "collected": 22,
+      "passed": 22,
+      "failed": 0
+    },
+    "focused_availability_evidence_schema_tests": {
+      "collected": 28,
+      "passed": 28,
+      "failed": 0
+    },
+    "full_repository_suite": {
+      "collected": 1575,
+      "passed": 1575,
+      "failed": 0,
+      "exit_code": 0
+    },
+    "pre_commit_all_files": "pass",
+    "ruff": "pass",
+    "black": "pass",
+    "yaml": "pass",
+    "json_schemas": "pass"
+  },
+  "runtime_safety": {
+    "wsl_accessed": false,
+    "docker_accessed": false,
+    "cvat_accessed": false,
+    "external_vhd_accessed": false,
+    "external_drive_accessed": false
+  },
+  "claims_not_made": [
+    "repository eligibility proves current live runtime reachability",
+    "the official SAM 3.1 checkpoint is installed",
+    "official SAM 3.1 or any provider inference ran",
+    "a real multi-person tournament was executed",
+    "a winner, certificate, serving route, training eligibility, semantic decision, mask authority, or gold authority was granted",
+    "MF-P8-11.03 is complete"
+  ],
+  "remaining_work": [
+    "resolve the official SAM 3.1 checkpoint gate and qualify its live runtime",
+    "refresh the governed runtime matrix after actual qualification",
+    "run all then-eligible families on governed multi-person sources",
+    "execute identity-preserving tournaments and downstream certificate, residual, audit, and headline flows"
+  ]
+}

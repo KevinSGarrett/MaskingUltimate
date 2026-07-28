@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at_utc": "2026-07-16T03:02:04.7075096Z",
+  "command": "read final complete JSON line from active indexer stdout log without querying the live SQLite writer",
+  "progress_source": "F:\\Reference_Images\\Ultimate_Masking_Reference_Images\\logs\\reference_pipeline.masking_v2_resume_20260715_205427.stdout.log",
+  "database": "C:\\Temp\\MaskFactory_Reference_Library\\reference_working.sqlite",
+  "database_bytes": 308441088,
+  "discovered_images": 83422,
+  "valid_images": 83411,
+  "exact_duplicate_files_beyond_first": 14013,
+  "exact_representatives": 69398,
+  "visual_classified": 49762,
+  "visual_remaining": 19636,
+  "visual_percent": 71.705,
+  "current_run": {
+    "run_id": 14,
+    "stage": "index",
+    "started_at": "2026-07-16T01:55:07.750756+00:00",
+    "processed": 5360,
+    "failed": 0,
+    "completed_at": null
+  },
+  "near_duplicate_members": 0,
+  "benchmark_selected": 0,
+  "retrieval_selected": 0,
+  "status": "in_progress",
+  "authority": "unlabeled_reference_corpus_no_truth"
+}

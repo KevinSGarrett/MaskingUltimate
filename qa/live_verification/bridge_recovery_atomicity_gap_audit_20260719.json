@@ -1,0 +1,140 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_bridge_recovery_atomicity_gap_audit",
+  "recorded_at": "2026-07-19T02:16:33.9278583Z",
+  "project_head": "5c6fd0fc6bf615e3dc471667dd9cf41556a74b36",
+  "tracker_item": "MF-P6-11.08",
+  "audit_status": "RECOVERY_CONTRACT_STRONG_TRANSACTION_ENGINE_ABSENT",
+  "completion_credit_percent": 45,
+  "governing_requirement": "Implement receipt-last atomic commit, restart reconstruction and outcome-unknown reconciliation before retry, decision-time health/capability/revocation evidence, coordinated GPU leases, cache freshness, and installed service/node-pack drift rejection; fault injection at every durable boundary must prove no duplicate execution, orphan promotion, or authority drift.",
+  "prerequisites": [
+    "MF-P6-10.07 has no accepted consumer invalidation/cache/rollback execution.",
+    "MF-P6-11.06 has no accepted durable bridge journal or materialized state.",
+    "MF-P6-11.07 has no accepted retry/circuit/deadline/resource/scoped-impact runtime.",
+    "The bounded port-8765 follow-up is locally down after Windows localhost forwarding failed; this does not block the static/focused audit."
+  ],
+  "verified_foundations": [
+    "The frozen lifecycle permits receipt_last_atomic_commit only on receipt_committed and has explicit submission_unknown plus four exact reconciliation outcomes; only verified remote not-found may authorize one resubmission.",
+    "The signed receipt binds request/idempotency IDs, exact release and capability hashes, admission/queue/start/completion timing, selected route, worker/device/lease identity, observed resources, artifacts, transforms, QA, authority, revocation check, lineage, and eligibility.",
+    "Receipt validation recomputes durations, requires the lease to cover completion, validates request/receipt/release/capability/certificate bindings when exact external documents are supplied, and enforces fresh revocation evidence for production use.",
+    "The release contract requires byte hashes for a ComfyUI node-pack artifact and rejects unmanifested release files; cache/invalidation/rollback lifecycle vocabulary is signed and closed.",
+    "The live runtime uses a token-bound project GPU lock, refuses a live competing owner, reports stale owners without deleting them, and releases only its own unchanged token.",
+    "Thirteen focused contract, reconciliation, release-closure, installer, GPU-lock, and runtime-lease tests pass; Ruff passes."
+  ],
+  "focused_validation": {
+    "commands": [
+      "python -m pytest -q tests/test_mask_bridge_contracts_v1.py::test_receipt_authority_parent_ceiling_qa_and_execution_honesty tests/test_mask_bridge_contracts_v1.py::test_event_vocabulary_equals_transition_matrix_and_invalidation_replays_adoption_block tests/test_mask_bridge_contracts_v1.py::test_unknown_submission_reconciliation_is_outcome_specific tests/test_mask_bridge_contracts_v1.py::test_release_bundle_is_exact_byte_closed_and_rejects_unmanifested_files",
+      "python -m pytest -q tests/test_comfy_export.py::test_installer_copies_standalone_pack_workflows_and_config tests/test_gpu.py tests/test_serve_api.py::test_runtime_holds_gpu_lease_and_returns_read_only_draft_contract",
+      "python -m ruff check src/maskfactory/validation.py src/maskfactory/gpu.py src/maskfactory/serve/api.py src/maskfactory/serve/comfy_install.py tests/test_mask_bridge_contracts_v1.py tests/test_gpu.py tests/test_comfy_export.py tests/test_serve_api.py",
+      "direct unresolved-receipt commit, capability-drift, and stale-node reinstall probes"
+    ],
+    "tests_passed": 13,
+    "tests_failed": 0,
+    "ruff": "pass"
+  },
+  "direct_probes": [
+    {
+      "probe": "signed_receipt_commit_without_receipt_bytes",
+      "observed_validators": [],
+      "setup": "A trusted producer receipt_committed event carried a made-up receipt payload digest and correct schema digest, but no receipt document or artifact bytes were supplied.",
+      "gap": "The in-memory journal validator proves event shape/transition only; it cannot prove the receipt exists, is valid, or was committed after every artifact/state write."
+    },
+    {
+      "probe": "capability_binding_drift",
+      "receipt_alone_validators": [],
+      "full_exchange_validators": ["receipt_certificate_release_binding", "request_receipt_release_binding"],
+      "interpretation": "A re-signed receipt with a changed capability snapshot hash is internally valid. Drift is detected only when the caller supplies the exact external capability/certificate context; no runtime captures/resolves current decision-time state."
+    },
+    {
+      "probe": "node_pack_reinstall_drift",
+      "stale_unpublished_file_survives": true,
+      "closed_manifest_emitted": false,
+      "installation_receipt_emitted": false,
+      "gap": "The developer installer copies in place with dirs_exist_ok and cannot prove exact installed bytes, reject stale nodes, switch atomically, or roll back."
+    },
+    {
+      "probe": "runtime_persistence_search",
+      "observed": "No bridge journal/recovery module or receipt/artifact transaction store exists. Existing orchestrator caches, atomic writers, GPU lock, and unrelated DAZ/control stores are not contract-native bridge state.",
+      "gap": "Restart cannot reconstruct admitted/submitted/result/validated/receipt/cache/adoption state from authoritative bridge records."
+    }
+  ],
+  "confirmed_gaps": [
+    "No transaction stages artifacts and state, fsyncs them, atomically publishes exact outputs, signs a validated receipt, appends receipt_committed, and advances an authenticated checkpoint last.",
+    "No recovery entry point replays a durable journal, finds incomplete attempts, resolves exact remote execution identities, and forbids resubmission until signed/current not-found evidence exists.",
+    "No runtime provider API supports exact status/history reconciliation for a submitted-unknown identity or returns result/not-found evidence bound to the frozen reconciliation fields.",
+    "No decision transaction captures exact health, capability, adopted release, revocation head/freshness, installed service/OpenAPI, node-pack inventory, route, GPU lease, and policy state together.",
+    "No cache store binds request/receipt/artifact/authority/revocation/release/capability/node-pack keys, freshness, tombstone/rebuild events, and exact immutable bytes.",
+    "The current node installer mutates a live directory in place, retains stale files, emits no closed manifest/hash receipt, and has no atomic version switch or rollback.",
+    "The GPU lock is a safe local mutual-exclusion primitive but is not durably bound to journal lease events, request identity, device/resource observations, or restart reconciliation.",
+    "No kill matrix covers reservation, admission, lease, submission known/unknown, provider result, artifact write/fsync/rename, receipt sign/write, event/state/checkpoint, cache publish, install switch, or rollback boundaries.",
+    "No stale pack, changed capability, lock contention, service restart, cache corruption, rollback interruption, or concurrent recovery proof establishes no duplicate execution/orphan promotion/authority drift."
+  ],
+  "implementation_packet": {
+    "work_unit_id": "MF-CURSOR-11.08-BRIDGE-RECOVERY-ATOMICITY",
+    "objective": "Implement additive producer receipt-last transaction and recovery conformance over the accepted durable journal: exact staged artifact/receipt/checkpoint ordering, unknown-outcome reconciliation, decision-time state capture, lease/cache/drift evidence, and crash-safe recovery without implementing Main-owned cache/install/DAG actions.",
+    "state": "PREPARED_PREREQUISITE_HELD_NOT_DISPATCHED",
+    "candidate_paths": [
+      "src/maskfactory/schemas/mask_acquisition_receipt.schema.json",
+      "src/maskfactory/schemas/mask_bridge_event.schema.json",
+      "src/maskfactory/schemas/maskfactory_release_snapshot.schema.json",
+      "src/maskfactory/validation.py",
+      "src/maskfactory/gpu.py",
+      "src/maskfactory/serve/api.py",
+      "src/maskfactory/serve/comfy_install.py",
+      "tests/test_mask_bridge_contracts_v1.py",
+      "tests/test_gpu.py",
+      "tests/test_comfy_export.py",
+      "tests/test_serve_api.py"
+    ],
+    "allowed_paths": [
+      "configs/bridge_recovery_policy.yaml",
+      "src/maskfactory/bridge/recovery.py",
+      "src/maskfactory/schemas/bridge_recovery_evidence.schema.json",
+      "tools/recover_bridge_transactions.py",
+      "tests/test_bridge_recovery.py"
+    ],
+    "path_state": "All five allowed paths are absent and clean. Candidate paths remain read-only. Scope is disjoint from frozen v1 contracts, preserved MF-P6-08.05 dirty paths, and prepared MF-P6-10.07/11.06/11.07 paths.",
+    "frozen_v1_contract_mutation_allowed": false,
+    "validator_commands": [
+      "python -m pytest -q tests/test_bridge_recovery.py tests/test_mask_bridge_contracts_v1.py tests/test_gpu.py tests/test_comfy_export.py -k 'receipt or unknown or reconciliation or cache or lease or install or rollback or recovery'",
+      "python -m ruff check src/maskfactory/bridge/recovery.py tools/recover_bridge_transactions.py tests/test_bridge_recovery.py",
+      "python -m black --check src/maskfactory/bridge/recovery.py tools/recover_bridge_transactions.py tests/test_bridge_recovery.py",
+      "python -m json.tool src/maskfactory/schemas/bridge_recovery_evidence.schema.json"
+    ],
+    "acceptance_criteria": [
+      "Use the accepted durable journal/idempotency engine; do not create a second authority store. Persist exact transaction phase, request/body, remote identity, staged artifacts, receipt, lease, snapshots, cache decision, and checkpoint references.",
+      "Publish validated artifacts first, then the signed receipt and receipt_committed event, with the authenticated state/checkpoint last. A receipt event must resolve and validate exact receipt/artifact bytes before state gains authority.",
+      "On restart, replay authoritative records and reconcile every submitted/outcome-unknown attempt through exact provider history identity. Only verified current not-found evidence permits one bounded resubmission.",
+      "Capture and hash exact health, capability, adopted release, revocation, service/OpenAPI, installed node-pack, policy, route, and GPU lease observations at decision time; stale, missing, contradictory, or changed context fails closed.",
+      "Bind producer cache evidence to exact request/receipt/artifact/source/owner/transform/authority/certificate/revocation/release/capability/node-pack identities and freshness. Validate signed Main tombstone/rebuild evidence without mutating Main cache state.",
+      "Validate exact installed node-pack inventory/manifest and atomic version/rollback evidence from Main; reject stale/unmanifested/missing/changed nodes and never treat the developer copy installer as production adoption.",
+      "Coordinate the local GPU token lease with exact request/attempt/device/resource and journal evidence; contention/refusal/loss/stale-owner cases are typed, and cleanup never deletes a replacement owner's lock.",
+      "Kill/fault tests at every durable boundary plus stale pack, capability/revocation drift, lock contention, cache corruption, service restart, and rollback prove deterministic recovery, no duplicate execution, no orphan promotion, and no authority drift.",
+      "Frozen v1 contracts, preserved dirty paths, disabled scheduled maintenance, worker records, and unrelated WSL/Docker/CVAT state remain unchanged."
+    ]
+  },
+  "source_hashes": {
+    "Plan/24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md": "e57e9892c18cc2a43440691d508daba44bc00413f063dfdad40861e2a654e90d",
+    "src/maskfactory/schemas/mask_acquisition_receipt.schema.json": "2a16bf9fe3f9e46e14c02a1cee287f09a821eca20023124d852a4aaf5dc5f18d",
+    "src/maskfactory/schemas/mask_bridge_event.schema.json": "d1d707b460bfcb273c8e6929d1811d04b3eacf346f2c20dc9e46ecef81aa4407",
+    "src/maskfactory/schemas/maskfactory_release_snapshot.schema.json": "3f5e267c79c18c79212e2b69947f204d08335ae652f31cd859dae5c250b89f5b",
+    "src/maskfactory/validation.py": "777ed34e25de193a51d9005e68a34fa918aa90d9c9b3869d6a2335fd6d0e6300",
+    "src/maskfactory/gpu.py": "ca7d948f8e5d4fc122cad948a644db7bba88986a3aca3b6bf44efaee15ce4394",
+    "src/maskfactory/serve/api.py": "90abde5558efad75c27e895a821c2f492bc2725defec12e0b918e468613a6e11",
+    "src/maskfactory/serve/comfy_install.py": "803b83ca16250e468f8ed5c61d7c6ae14d5be9c152455690eb418c9866804b4b",
+    "tests/test_mask_bridge_contracts_v1.py": "a8bd203a58995a06f2ef1725cf2f068abd1a3635d38a3662aae278b94ce1369b",
+    "tests/test_gpu.py": "148b5ff307797fe4d4d27250d390078377daffc79eac92a53b441a0b44d4c7fd",
+    "tests/test_comfy_export.py": "a05709635b8a6a28a6e0a681b45c278752abe00640a2fb788cbb4442714f2e06",
+    "tests/test_serve_api.py": "9507b18b3722f058a9384e3a5b52751b2a1615c86edf52b24769076d45a7cad7"
+  },
+  "preservation": {
+    "frozen_v1_contracts_modified": false,
+    "dirty_mf_p6_08_05_scope_modified": false,
+    "held_or_queued_worker_paths_modified": false,
+    "worker_dispatched": false,
+    "scheduled_maintenance_reenabled": false,
+    "bridge_transaction_or_cache_created": false,
+    "production_recovery_claimed": false
+  },
+  "claim_boundary": "This audit credits the strict receipt/event/release contracts, unknown-submission decision matrix, receipt timing/lease/revocation checks, release-byte closure, GPU-lock safety, and existing atomic primitives only. It does not implement receipt-last persistence, restart reconstruction, live remote reconciliation, decision-time snapshot capture, cache freshness, exact installed node-pack drift checks, rollback, or the required crash/fault matrix, and it does not complete MF-P6-11.08."
+}

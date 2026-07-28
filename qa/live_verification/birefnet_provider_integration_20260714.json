@@ -1,0 +1,103 @@
+{
+  "authority": {
+    "lifecycle_state": "installed",
+    "may_author_gold": false,
+    "promotion_claimed": false,
+    "shadow_only": true
+  },
+  "captured_at": "2026-07-14T21:11:34.812971+00:00",
+  "fallback_selection": {
+    "active": "birefnet_general",
+    "challenger_failure_returns_incumbent_identity": true,
+    "challengers": [
+      "birefnet_dynamic",
+      "birefnet_hr",
+      "birefnet_hr_matting"
+    ],
+    "rollback": "birefnet_general",
+    "verified_by": "tests/test_birefnet_variant_provider.py"
+  },
+  "fixture": {
+    "adult_lane": "adult_nonexplicit_allowed",
+    "path": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+    "person_box_xyxy": [
+      49.75,
+      398.25,
+      247.625,
+      905.5
+    ],
+    "sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63"
+  },
+  "result": "pass",
+  "schema_version": "1.0.0",
+  "sha256": "45a5f712f634ec2d5bdea0e327742682ab7e11704fb7caacb16421679fd77155",
+  "variants": {
+    "birefnet_dynamic": {
+      "foreground_fraction": 0.05543324188385917,
+      "model_family": "birefnet",
+      "prompt_fingerprint": "3f2917f4501098401a166674f08ee6550ccdd2d8079c9e4c99943c855451defd",
+      "proposal_confidence": 0.9880990386009216,
+      "provider_key": "birefnet_dynamic",
+      "resolution": "native_divisible_by_32",
+      "runtime_fingerprint": "5b6d1c9cddec6e897d7ba9f16d40e0986ab66c677bef3ac830564f5553e16d1a",
+      "silhouette_contract": true,
+      "source_commit": "280306042f57b7a33854319da62fd86aaa89ec4c",
+      "strict_mask_dtype": "bool",
+      "strict_mask_sha256": "8b9b4c9a66073caca9bacea16e530a2571897d02c9632557c18ec6d985ad9934",
+      "strict_mask_shape": [
+        1080,
+        810
+      ],
+      "wall_seconds": 19.215132
+    },
+    "birefnet_hr": {
+      "foreground_fraction": 0.055489254686785554,
+      "model_family": "birefnet",
+      "prompt_fingerprint": "43c612fc93d9db609727806fa9f37c3377c738b46658ee42617cf24985c4636d",
+      "proposal_confidence": 0.9914167523384094,
+      "provider_key": "birefnet_hr",
+      "resolution": 1024,
+      "runtime_fingerprint": "5b6d1c9cddec6e897d7ba9f16d40e0986ab66c677bef3ac830564f5553e16d1a",
+      "silhouette_contract": true,
+      "source_commit": "a7a562f6fd16021180f2f4348f4de003a2d3d1e1",
+      "strict_mask_dtype": "bool",
+      "strict_mask_sha256": "0aa587c12f289b0f72f4dfe6794cc57120f7290f5f365ef71c4f516be81d8344",
+      "strict_mask_shape": [
+        1080,
+        810
+      ],
+      "wall_seconds": 17.24732
+    },
+    "birefnet_hr_matting": {
+      "foreground_fraction": 0.05544352994970279,
+      "matting": {
+        "alpha_dtype": "float32",
+        "alpha_max": 1.0,
+        "alpha_min": 0.0,
+        "alpha_sha256": "96cbb5a4f74d1704d1ddfdb43a3eedd32f091d566ae48c48d737210404ebc194",
+        "alpha_shape": [
+          1080,
+          810
+        ],
+        "fractional_alpha_fraction": 0.0638625971650663,
+        "prompt_fingerprint": "1763ec4d3885d85a28d7748bc2c2a85fd480466eeeb25c21d6c1cc32587f3007",
+        "wall_seconds": 12.09142
+      },
+      "model_family": "birefnet",
+      "prompt_fingerprint": "1763ec4d3885d85a28d7748bc2c2a85fd480466eeeb25c21d6c1cc32587f3007",
+      "proposal_confidence": 0.9795095324516296,
+      "provider_key": "birefnet_hr_matting",
+      "resolution": 1024,
+      "runtime_fingerprint": "5b6d1c9cddec6e897d7ba9f16d40e0986ab66c677bef3ac830564f5553e16d1a",
+      "silhouette_contract": true,
+      "source_commit": "5d6b6f8adcb5b417c871b1d84ceaae9871355b7f",
+      "strict_mask_dtype": "bool",
+      "strict_mask_sha256": "6908f02da49506aa426b5838e769e72f139c96a421314e4d367052335415af75",
+      "strict_mask_shape": [
+        1080,
+        810
+      ],
+      "wall_seconds": 15.973
+    }
+  }
+}

@@ -1,0 +1,153 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-17T07:08:34Z",
+  "item": "MF-P9-09.05",
+  "status": "partially_complete",
+  "percent_complete": 85,
+  "result": {
+    "offline_implementation_complete": true,
+    "relationship_fixtures_verify_clause_passed": true,
+    "qualified_live_relationship_record_available": false
+  },
+  "d6_to_d8_binding": {
+    "passed_d6_relationship_report_required": true,
+    "relationship_report_id_and_sha256_recomputed": true,
+    "relationship_report_findings_must_be_empty": true,
+    "relationship_report_scene_state_must_match_assignment": true,
+    "relationship_raster_resolution_must_match_final_frame": true,
+    "accepted_final_camera_p_index_assignment_required": true,
+    "assignment_id_and_sha256_bound": true,
+    "duo_selection_id_and_sha256_bound": true,
+    "duo_selection_replayed_against_closed_policy": true,
+    "construction_instance_and_p_index_mapping_preserved": true
+  },
+  "reciprocal_record_contract": {
+    "exact_unordered_pair_set_required": true,
+    "all_numeric_instance_pairs_projected_to_final_p_indices": true,
+    "contact_records_emit_both_directed_contact_edges": true,
+    "front_relationships_emit_occludes_and_inverse_occluded_by": true,
+    "mixed_front_ownership_emits_both_reciprocal_occlusion_directions": true,
+    "front_owner_counts_projected_to_p_index_keys": true,
+    "contact_regions_preserve_ordered_part_ids_and_area": true,
+    "source_and_projected_reciprocity_semantically_recomputed": true,
+    "record_summary_semantically_recomputed": true
+  },
+  "geometry_and_depth_authority": {
+    "contact_is_geometry_only": true,
+    "contact_distance_mm": [0.0, 4.0],
+    "maximum_penetration_mm": 2.0,
+    "minimum_normal_dot": 0.0,
+    "positive_contact_region_required": true,
+    "occlusion_uses_visible_instance_and_linear_depth": true,
+    "rgb_inference_allowed": false,
+    "overlap_without_3d_contact_is_contact": false
+  },
+  "recipe_family_consistency": {
+    "no_contact": "no contact, no visible boundary, no occlusion",
+    "overlap_no_contact": "no contact, positive visible boundary, depth-derived occlusion",
+    "contact_support": "3D contact, positive contact regions, positive visible boundary",
+    "mismatched_selected_family_blocks": true
+  },
+  "fixture_proof": {
+    "separated_without_boundary": {
+      "contact": false,
+      "occlusion_direction": "none",
+      "directed_relationship_count": 0,
+      "result": "pass"
+    },
+    "overlap_without_contact": {
+      "contact": false,
+      "occlusion_direction": "mixed",
+      "directed_relationship_count": 4,
+      "result": "pass"
+    },
+    "contact_with_mixed_occlusion": {
+      "contact": true,
+      "occlusion_direction": "mixed",
+      "directed_relationship_count": 6,
+      "result": "pass"
+    },
+    "coherently_rehashed_missing_reciprocal_contact_edge": "rejected",
+    "recipe_family_mismatch": "rejected",
+    "scene_state_rebinding": "rejected",
+    "unknown_record_field": "rejected",
+    "coherently_rehashed_projected_nonreciprocity": "rejected",
+    "immutable_publication_conflict": "rejected"
+  },
+  "publication_and_cli": {
+    "closed_json_schema": true,
+    "record_id_and_sha256_recomputed": true,
+    "atomic_immutable_idempotent_publication": true,
+    "cli": "maskfactory daz recipes build-multi-person-relationships",
+    "cli_replays_source_assignment_selection_and_record": true,
+    "failure_uses_scene_recipe_invalid_exit": true
+  },
+  "authority_boundary": {
+    "owner": "maskfactory",
+    "stage": "technical_d8_relationship_record",
+    "training_truth_tier_created": false,
+    "human_gold_created_or_mutated": false,
+    "autonomous_certified_gold_created_or_mutated": false,
+    "mode_b_or_inferred_authority_allowed": false,
+    "passing_record_can_raise_mask_authority": false
+  },
+  "wave64_integration_boundary": {
+    "main_repository_modified": false,
+    "main_side_files_preserved": true,
+    "separate_autonomy_bridge_worktree_preserved": true,
+    "provider_tier_ontology_owner_transform_certificate_authority_unchanged": true,
+    "downstream_selector_may_consume_versioned_reciprocal_records": true,
+    "downstream_selector_may_not_infer_stronger_mask_authority": true
+  },
+  "lineage_hashes": {
+    "policy_sha256": "d3c3d991266771a54f0ad6fa78b9db2b92e9a9c5a6761b60128981665ddbbbc7",
+    "schema_sha256": "c0092a4cea3ef4cdcbf9e3f59df3f12db4d7b37df0aa2a45e187e112173bb173",
+    "implementation_sha256": "861218164393685d251489ca0e5bff2cd433ac4a0f3b5ab46fe467dc2ffbdeba",
+    "cli_sha256": "48b2321cc085e80101e675cdcc6bcff61ff1a7e42bceb0223be331afcceb9b68",
+    "validation_registry_sha256": "118017a1d4ceb1030e4270c3ae2b93ae10bac6a6695a57c810fa62ae6538ceb5",
+    "tests_sha256": "cbb0ce7aceac710b627eee7400f14df3b5cea61f0c8aa96bc8da1df2d11673cc"
+  },
+  "verification": {
+    "focused_d8_relationship_tests_collected": 8,
+    "focused_d8_relationship_tests_passed": 8,
+    "d6_relationship_tests_collected": 62,
+    "d6_relationship_tests_passed": 62,
+    "p_index_tests_collected": 9,
+    "p_index_tests_passed": 9,
+    "directly_relevant_tests_collected": 79,
+    "directly_relevant_tests_passed": 79,
+    "immediately_preceding_daz_wide_baseline_tests_passed": 1197,
+    "immediately_preceding_daz_wide_baseline_commit": "c879c0a83af6d39d50ddab479878db512d1a2574",
+    "current_daz_wide_pass_claimed": false,
+    "current_full_repository_pass_claimed": false,
+    "resource_boundary": "The explicit DAZ-wide run ended after partial dot output without a pytest summary or exit code; it is not counted. Bounded focused and adjacent processes all completed normally.",
+    "ruff_changed_surface_lint": "pass",
+    "black_changed_surface_format": "pass",
+    "json_schema_meta_validation": "pass",
+    "maskfactory_json_schemas_parsed": 129,
+    "daz_yaml_documents_parsed": 36,
+    "git_diff_check": "pass"
+  },
+  "asset_and_storage_boundary": {
+    "download_install_daz_launch_render_or_live_validation_started_by_this_task": false,
+    "assets_moved_or_relabelled_by_this_task": false,
+    "f_drive_soft_hold_respected": true,
+    "main_repository_modified_by_this_task": false,
+    "autonomy_bridge_worktree_modified_by_this_task": false,
+    "wsl_docker_or_live_comfyui_process_terminated_by_this_task": false
+  },
+  "remaining_live_dependency": {
+    "software_and_relationship_fixtures_verify_clause_complete": true,
+    "qualified_live_d6_08_relationship_report_available": false,
+    "qualified_live_d8_01_scene_and_assignment_available": false,
+    "live_p_index_relationship_record_available": false,
+    "reason": "The D6 report replay, final-camera assignment and duo-selection binding, family consistency, p-index projection, reciprocal semantic replay, schema, CLI, publication, and seeded relationship fixtures pass. Qualified live geometry/depth relationship outputs have not run through this adapter."
+  },
+  "not_claimed": [
+    "live DAZ contact or occlusion record",
+    "live duo acceptance",
+    "dataset or training admission",
+    "human or autonomous-certified gold",
+    "current DAZ-wide or full-repository pass"
+  ]
+}

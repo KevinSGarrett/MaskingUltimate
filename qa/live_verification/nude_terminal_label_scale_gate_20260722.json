@@ -1,0 +1,49 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_terminal_label_scale_gate.v1",
+  "artifact_type": "adult_terminal_receipt_canonical_label_and_pixel_scale_gate",
+  "recorded_at": "2026-07-22T13:06:14Z",
+  "status": "FAIL_CLOSED_CONTRACT_PASS",
+  "tracker_items": [
+    "MF-P4-12.02",
+    "MF-P4-12.05",
+    "MF-P4-12.06"
+  ],
+  "product_behavior": {
+    "accepted_and_repaired_receipts_require_canonical_candidate_label": true,
+    "abstained_and_rejected_receipts_require_canonical_candidate_label": true,
+    "mask_scale_is_recomputed_from_exact_mask_panel_pixels_at_receipt_creation": true,
+    "mask_scale_is_recomputed_again_before_queue_mutation": true,
+    "label_and_receipt_hash_rewrite_cannot_bypass_pixel_scale_policy": true,
+    "qualification_schema": "maskfactory.nude_record_qualification.v3",
+    "nonacceptance_schema": "maskfactory.nude_record_nonacceptance.v3"
+  },
+  "adversarial_validation": {
+    "fixture_mask_image_area_ratio": 0.20833333333333334,
+    "coarse_label": "breast_region",
+    "coarse_label_result": "pass",
+    "rewritten_fine_label": "nipple",
+    "fine_label_maximum_image_area_ratio": 0.05,
+    "attacker_recomputed_receipt_hash": true,
+    "queue_result": "label_scale_hard_qc_invalid"
+  },
+  "validation": {
+    "focused_and_neighbor_tests": "56 passed",
+    "ruff": "PASS",
+    "black": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "implementation_sha256": {
+    "src/maskfactory/nude_record_qualification.py": "3d5f5998a52a867b8a6a5dfd46ae34d73b21f235c6efa13c827bfeb397346f87",
+    "tests/test_nude_record_qualification.py": "b96e9a5e1264f6452f1186edf50d6641ba12738e2cf225dbc75ba287e131bc93",
+    "tests/test_nude_batch_queue.py": "1cdcbba8342d990dcdac917dc79ce2268eaad2ed924ceadba8d6bd3e04ffe2e0"
+  },
+  "authority_boundary": {
+    "live_adult_provider_comparison_completed": false,
+    "live_strict_visual_reviews_completed": false,
+    "person_instance_ownership_verified": false,
+    "training_authority_granted": false,
+    "production_mask_authority_granted": false,
+    "operational_certificates_issued": false
+  },
+  "remaining": "Generate live person-instance ownership, independent provider proposals, strict per-record visual verdicts, and certificate-eligible terminal receipts for the adult corpus."
+}

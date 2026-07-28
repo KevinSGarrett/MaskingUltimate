@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "nude_corpus_durable_queue_foundation_evidence",
+  "status": "RUNTIME_PASS_FOUNDATION",
+  "queue_contract": {
+    "database": "SQLite WAL with FULL synchronous commits",
+    "platform": "runpod",
+    "shards": 322,
+    "records": 81910,
+    "initial_state": {
+      "queued": 322,
+      "checkpointed_records": 0
+    },
+    "max_attempts": 3,
+    "lease_default_seconds": 900,
+    "terminal_record_outcomes": [
+      "accepted",
+      "repaired",
+      "abstained",
+      "rejected",
+      "quarantined",
+      "holdout"
+    ],
+    "supports": [
+      "exclusive owned leases",
+      "lease heartbeat and expiry",
+      "retry-cap terminal failure",
+      "contiguous per-record checkpoints",
+      "exact idempotent checkpoint replay",
+      "submitted-unknown reconciliation before retry",
+      "source/evidence/payload hash binding",
+      "append-only queue events",
+      "1000-record milestone events"
+    ]
+  },
+  "durability": {
+    "local_runtime_path": "runtime_artifacts/nude_batch_queue_20260722/runpod.sqlite",
+    "runpod_path": "/workspace/maskfactory/runtime_artifacts/nude_batch_queue/runpod.sqlite",
+    "local_sha256": "ccac74754d892a9310fa55c4beb3d31cff9f8a41591231aaed5e0d5bbb893c74",
+    "runpod_sha256": "ccac74754d892a9310fa55c4beb3d31cff9f8a41591231aaed5e0d5bbb893c74"
+  },
+  "verification": {
+    "focused_tests": "13 passed across queue and intake modules",
+    "ruff": "pass",
+    "black": "pass"
+  },
+  "claim_boundary": "This proves the durable queue and recovery primitives plus the exact initial 322-shard/81910-record seed. No provider worker has claimed a production shard, so provider, QC, VLM, repair, certification, throughput, and completion claims remain open."
+}

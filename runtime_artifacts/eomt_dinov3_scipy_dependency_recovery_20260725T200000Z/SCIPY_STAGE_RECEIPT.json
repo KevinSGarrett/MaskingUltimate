@@ -1,0 +1,40 @@
+{
+  "artifact_type": "eomt_dinov3_scipy_dependency_recovery_receipt.v1",
+  "binding": {
+    "path": "runtime_artifacts/eomt_dinov3_scipy_dependency_recovery_20260725T200000Z/scipy_stage_binding.json",
+    "sha256": "fab5cca5dd19349ddbac5326fbd8db59f36ef809a3b1f4762f3941d3cea1e95b"
+  },
+  "controls": {
+    "gpu_execution": false,
+    "model_load": false,
+    "network_download": true,
+    "package_install": false,
+    "provider_promotion": false
+  },
+  "download": {
+    "argv": [
+      "/workspace/maskfactory/.train_cu128_ada/bin/python",
+      "-m",
+      "pip",
+      "download",
+      "--disable-pip-version-check",
+      "--only-binary=:all:",
+      "--no-deps",
+      "--dest",
+      "/workspace/maskfactory/runtime_artifacts/eomt_dinov3_scipy_dependency_recovery_20260725T200000Z/wheels",
+      "scipy==1.17.1"
+    ],
+    "output": "Collecting scipy==1.17.1\n  Downloading scipy-1.17.1-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)\nDownloading scipy-1.17.1-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (35.3 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 35.3/35.3 MB 316.3 MB/s  0:00:00\nSaved ./runtime_artifacts/eomt_dinov3_scipy_dependency_recovery_20260725T200000Z/wheels/scipy-1.17.1-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl\nSuccessfully downloaded scipy\n",
+    "returncode": 0
+  },
+  "ended_at_utc": "2026-07-25T16:46:02.968432+00:00",
+  "next_safe_action": "Create a new 54-package requirements lock and a new clean isolated runtime closure; this stage does not install SciPy or load EoMT.",
+  "self_sha256": "4769a9c860bcd7abd440b5ebbec954fc4bbb971b7ce060e9ec591930156cf29e",
+  "started_at_utc": "2026-07-25T16:46:00.582371+00:00",
+  "status": "SCIPY_ARTIFACT_STAGE_PASS",
+  "wheel": {
+    "bytes": 35349300,
+    "filename": "scipy-1.17.1-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+    "sha256": "43af8d1f3bea642559019edfe64e9b11192a8978efbd1539d7bc2aaa23d92de4"
+  }
+}

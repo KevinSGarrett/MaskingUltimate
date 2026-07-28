@@ -1,0 +1,20 @@
+schema_version: 1.0.0
+policy_version: 1.0.0
+numeric_tolerances:
+  property_value: 0.000001
+  joint_degrees: 0.001
+  transform: 0.000001
+  camera_scalar: 0.000001
+required_asset_roles: [figure, character_preset, skin_material, anatomy, pose, light, environment]
+optional_asset_roles: [hair, wardrobe, prop]
+required_scene_state_components: [node_hierarchy, geometry_fingerprints, world_transforms, joint_values, property_values, controller_side_effects, material_assignments, opacity_parameters, camera, lighting_environment, visibility_flags, renderer, pass_profile]
+default_scene_must_be_empty: true
+unexpected_renderable_nodes_allowed: 0
+unresolved_textures_allowed: 0
+locked_or_silently_ignored_requested_properties_allowed: 0
+undeclared_controller_side_effects_allowed: 0
+preflight_disposition_required: accept
+semantic_replay_hash_must_match: true
+annotation_restore_hash_must_match: true
+finite_values_required: true
+immutable_publication: true

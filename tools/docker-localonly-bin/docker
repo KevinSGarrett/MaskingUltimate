@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Force Nuclio 1.13's dynamically published HTTP function port to loopback.
+set -euo pipefail
+
+args=()
+while (($#)); do
+    if [[ "$1" == "--publish" && "${2:-}" == "8080" ]]; then
+        args+=("--publish" "127.0.0.1::8080")
+        shift 2
+    elif [[ "$1" == "--publish=8080" ]]; then
+        args+=("--publish=127.0.0.1::8080")
+        shift
+    else
+        args+=("$1")
+        shift
+    fi
+done
+
+exec /usr/bin/docker "${args[@]}"

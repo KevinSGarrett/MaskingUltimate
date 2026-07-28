@@ -1,0 +1,32 @@
+{
+  "artifact_type": "maskfactory.eomt_dinov3_66_class_shadow_preflight_failure.v1",
+  "authority": {
+    "gold_authority": false,
+    "mask_promotion": false,
+    "semantic_mask_claim": false,
+    "shadow_only": true,
+    "visual_acceptance": false
+  },
+  "binding": {
+    "path": "runtime_artifacts/eomt_dinov3_66_class_gpu_shadow_20260725T173903Z/launch_binding.json",
+    "raw_sha256": "d7111fb7f4784044b3c36ec1a9b1b078b33228be5428d208d91409489774df49",
+    "self_sha256": "b84aec8da92fa2f223d14a6116b7fbf75edd7274bcab98f7708aa2d9673b6b22"
+  },
+  "captured_at_utc": "2026-07-25T17:43:31Z",
+  "failure": {
+    "error_type": "ModuleNotFoundError",
+    "message": "No module named 'cryptography'",
+    "phase": "preflight_contract_import_before_model_load",
+    "trigger": "the broad maskfactory.providers package initializer imports unrelated promotion validation dependencies"
+  },
+  "result": "preflight_failure",
+  "safety_facts": {
+    "cuda_model_load": false,
+    "cuda_tensor_allocation": false,
+    "head_initialization": false,
+    "inference": false,
+    "mask_artifact_written": false
+  },
+  "next_safe_action": "Use a new runner binding that directly validates the bound EoMT training YAML, body-parts-v2 source, and ontology vocabulary without importing the broad provider package. Do not rerun this V4 binding.",
+  "self_sha256": "b5f9d29bec7e721d2bae68f02607be0ee9e6ff771f1a79bf5fe84505ac83462f"
+}

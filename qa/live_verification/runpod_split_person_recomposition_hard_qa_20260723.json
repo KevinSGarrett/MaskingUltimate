@@ -1,0 +1,92 @@
+{
+  "schema_version": "maskfactory.runpod_split_person_recomposition_hard_qa.v1",
+  "recorded_at": "2026-07-23T02:54:37Z",
+  "item_ids": [
+    "MF-P4-12.04",
+    "MF-P4-12.06",
+    "MF-P4-12.07"
+  ],
+  "platform": "runpod_persistent_storage",
+  "local_inference_used": false,
+  "source": {
+    "sample_id": "nude_7b75809e7490eab8a72eeaff",
+    "role": "reference_only_no_mask_truth",
+    "encoded_sha256": "79ff7ff15986bb564714c408958a7a6290c7f6171a553d9daae1885554c85b09",
+    "pixel_truth": false
+  },
+  "runtime_binding": {
+    "repository_commit": "4b498901325513db71addd556532840737042385",
+    "deployment_overlay": "/workspace/maskfactory_deployment_overlays/4b4989013_split_recomposition",
+    "deployment_tar_sha256": "7239742c4f7cfb314444efb952646a9c475d1f22fb66e33df44cf1956c6bace0",
+    "persistent_root": "/workspace/maskfactory_runtime/nude_reference_sam31_canary_20260723_v1/recomposition_v1"
+  },
+  "repair": {
+    "defect_hypothesis": "one_person_split_across_complementary_provider_proposals",
+    "operation": "union_disjoint_same_owner_proposals_v1",
+    "parent_count": 2,
+    "parent_encoded_sha256s": [
+      "a8508d4973302728e50ebed752c8d9c2cb324f955d1f4cef9fd60c7463d4a588",
+      "3fe99029f0e0a85acf06136eedbb98131b08de005b4a3d2ece75b96b4bb76966"
+    ],
+    "parent_pairwise_iou": 0.0000473511344901359,
+    "candidate_encoded_sha256": "605c9d8e34a1f1daf36848cd6681be27b353178c44467818e69ab6f15f70ab32",
+    "candidate_decoded_pixel_sha256": "ddf994935cecedc9dd27f9b9632f4bcb866cf8f7aed0e636717b335501bbc918",
+    "pixel_count": 464614,
+    "bbox_iou_with_detector": 0.9942247623613306,
+    "mask_to_detector_box_ratio": 0.5806034795170364,
+    "changed_pixel_fraction_from_largest_parent": 0.1756623290763674,
+    "prompt_box_expansion_fraction": 0.0007891108746130031,
+    "attempt_count": 1,
+    "success_count": 1
+  },
+  "hard_qc": {
+    "status": "pass",
+    "checks": {
+      "NREF-QC-001": true,
+      "NREF-QC-002": true,
+      "NREF-QC-003": true,
+      "NREF-QC-004": true,
+      "NREF-QC-005": true,
+      "NREF-QC-006": true,
+      "NREF-QC-007": true,
+      "NREF-QC-008": true
+    },
+    "blockers": [],
+    "report_self_sha256": "4849c5b07ff78321e3b79dd0b3e8983c7c620fed8b2601bc12b3704f2cb5519e",
+    "report_file_sha256": "78cebb5dd2f5bfdc8d889780dd12fb766b4a0b49c2a06dc20ab850aa53bd224c"
+  },
+  "visual_evidence": {
+    "rendered": true,
+    "strict_critic_verdict_present": false,
+    "self_sha256": "810a70d24bda65e545f29ff3c2b0554a2df875e893575bf07c99c4b8caad6ee4",
+    "file_sha256": "68a6068459da1a4c7a5fb054714512aba150f9ddb1a0fee4c5ae4837852a629c",
+    "semantic_render_checks_passed": 5,
+    "semantic_render_checks_total": 5
+  },
+  "remote_summary": {
+    "path": "/workspace/maskfactory_runtime/nude_reference_sam31_canary_20260723_v1/recomposition_v1/canary_summary.json",
+    "self_sha256": "a5e3988efc40f3095bf805b1ef6d1f229cdd44c904a61f52a7d356561e175289",
+    "file_sha256": "bcbf1cb52be5ac7cb842bde03ba705da5fc6f8511d87808f7f391f232a7fcd65"
+  },
+  "authority_result": {
+    "status": "HARD_QA_PASS_BOUNDED_VISUAL_CRITIC_BLOCKED",
+    "repair_attempt_count": 1,
+    "repair_success_count": 1,
+    "hard_qc_pass_count": 1,
+    "hard_qc_fail_count": 0,
+    "strict_visual_pass_count": 0,
+    "strict_visual_abstain_count": 1,
+    "operationally_certified_artifact_count": 0,
+    "autonomous_certified_gold_count": 0,
+    "training_truth_count": 0,
+    "candidate_authority": "draft_machine_candidate_only"
+  },
+  "claim_limits": [
+    "source_is_not_pixel_truth",
+    "detector_and_provider_proposals_are_not_pixel_truth",
+    "hard_qc_pass_is_not_visual_or_semantic_authority",
+    "visual_evidence_rendering_is_not_a_critic_verdict",
+    "no_certificate_gold_or_training_truth"
+  ],
+  "self_sha256": "d75cccf0766c203930b46988c849f92e3a13bb1885fba7ff7faed4aff57a2a0e"
+}

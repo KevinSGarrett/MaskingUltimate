@@ -1,0 +1,189 @@
+{
+  "schema_version": "maskfactory.runpod_sam31_resident_two_record_canary.v1",
+  "observed_at": "2026-07-23T07:17:09Z",
+  "repository": {
+    "branch": "codex/maskfactory-plan-modernization",
+    "implementation_commit": "5dc475fdfd65484afd7429b6b7c5fb6b714ba838",
+    "worktree": "C:\\w\\maskfactory-plan-modernization"
+  },
+  "execution": {
+    "platform": "directly_selected_runpod",
+    "pod_id": "1q4ji0gg1fkhvt",
+    "persistent_root": "/workspace/maskfactory/runtime_artifacts/nude_sam31_resident_canary_5dc475fdf_v6",
+    "production_masking_ran_locally": false,
+    "gpu_or_vram_admission_gate_used": false,
+    "gpu_or_vram_reservation_used": false,
+    "gpu_or_vram_checkout_used": false,
+    "gpu_or_vram_measurements_are_telemetry_only": true,
+    "related_processes_after_shutdown": []
+  },
+  "inputs": {
+    "runtime_lock": {
+      "path": "/workspace/maskfactory/env/sam31_runtime.lock.json",
+      "size_bytes": 7714,
+      "sha256": "f238e6e82a24acc2e4ac88d7da7a5bd4d670c89d02a91372b391f6472ad88112"
+    },
+    "catalog": {
+      "path": "/workspace/maskfactory/runtime_artifacts/nude_reference_person_catalog_comparison_20260722_v4/comparison_raised_040.json",
+      "size_bytes": 807703,
+      "sha256": "77f97391760d1edf64072200a45c7671162137e5598b2ddc0d548b939831b75c"
+    },
+    "source_shard": {
+      "path": "/workspace/assets/MaskedWarehouse/Nude/_MASKFACTORY_INTAKE/batch_shards/runpod/reference_and_tournament_input.0001.json",
+      "size_bytes": 148047,
+      "sha256": "1cf9572717f3f3f89d20cf1832dadd5a825e0407d06537f3578c72cac1c0fee2",
+      "source_role": "reference_and_tournament_input",
+      "pixel_truth": false
+    },
+    "sample_ids": [
+      "nude_7b75809e7490eab8a72eeaff",
+      "nude_9dd1d60c1632b8566b42dd84"
+    ],
+    "deployed_files": {
+      "src/maskfactory/providers/sam31_runtime.py": "edaf1c138e659ca96d8c6ecb250ae917122ba4bed3ead7266467185a55cdff14",
+      "tools/run_sam31_runtime.py": "e7f6e8edd18e09a8f0c3560229bdc873deab8d6b3d201c201cade384df267577",
+      "tools/run_sam31_resident_runtime.py": "255576dd8b862465709cc25b6e3981067c64397c59ab7d84251aff360fcede40",
+      "tools/run_nude_box_prompt_masks.py": "4ea16d8f7128a00a373f45382513ca1a54731d05195ab3e0271cd29738b7ea9b"
+    },
+    "model": {
+      "provider": "sam3_1",
+      "source_commit": "5dd401d1c5c1d5c3eedff06d41b77af824517619",
+      "checkpoint_sha256": "0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6",
+      "requirements_lock_sha256": "9fbf4fdd79b64d38f7baa58d127d06098859d8408fb84e2592a1dbd862c9c871"
+    }
+  },
+  "resident_runtime": {
+    "ready_status": "ready",
+    "shutdown_status": "stopped",
+    "request_count": 2,
+    "response_count": 2,
+    "response_sequences": [
+      1,
+      2
+    ],
+    "successful_request_count": 1,
+    "failed_request_count": 1,
+    "model_load_count": 1,
+    "resident_model_count": 1,
+    "common_identity_sha256": "0c45c08c25527728a087f2280e02ec00b32a5eb64830b7cdb186671b71618fed",
+    "summary_self_sha256": "f48b1df12cab3157113f484be20db48af04dfd18ce9bbb5ae35f45422758a499",
+    "model_load_latency_ms": 24310.876838862896,
+    "successful_inference_latency_ms": 968.6503559350967,
+    "model_vram_bytes_telemetry_only": 3926040576,
+    "peak_inference_vram_bytes_telemetry_only": 6053819904,
+    "successful_request": {
+      "request_sequence": 1,
+      "request_sha256": "401a0dbcd7e0d84a54e92070c404c7b0fe684f3cf92202f1e1131348b5c8c9a6",
+      "payload_sha256": "dbf6def871dc997c70024d7a713508276f34329e6eb81e908e8a2d68df9f4208",
+      "encoded_frame_sha256": "55885fdcd8caae3229c7a20297fdfd91e5a0a71273132c8ca89d7204d77d953d",
+      "prompt_npz_sha256": "d77964d879c9b9f305e2d6205f4888538e2220c08edcf95e47202086c86c3f07",
+      "output_npz_sha256": "7a70385bd980e5cda07deb443c817f48ca056ebedac9dc5135626105241bf375",
+      "result_count": 1,
+      "authority": "official_sam31_runtime_draft_candidates_only_no_gold_or_active_map_authority"
+    },
+    "failed_request": {
+      "request_sequence": 2,
+      "error_type": "RuntimeError",
+      "error": "official SAM 3.1 native box refinement returned no result",
+      "model_load_count": 1,
+      "disposition": "typed_provider_abstention"
+    }
+  },
+  "provider_result": {
+    "record_count": 2,
+    "candidate_count": 1,
+    "status_counts": {
+      "generated": 1,
+      "provider_abstain": 1
+    },
+    "provider_report_file_sha256": "a075828d3a02a7bc20f7425d47134d233df8edc2338edfe0cded85933ace8bc4",
+    "provider_report_self_sha256": "2daaed133c9813454bf6feed5b957413cd77c6e651adfec619c3b9cea19f9813",
+    "candidate": {
+      "sample_id": "nude_7b75809e7490eab8a72eeaff",
+      "person_index": 0,
+      "label": "person",
+      "artifact_relative_path": "nude_7b75809e7490eab8a72eeaff/person_000/sam3_1.png",
+      "artifact_sha256": "04f921cbb2bb7b4b4e07d6eb2e650a38a0743597c0510b11cad5dd3086fa5b67",
+      "decoded_mask_sha256": "9b79295704348f0ca9c6586aa1fed496dc4698bf7682369c1b39fe22d21eb757",
+      "pixel_count": 370382,
+      "authority": "draft_machine_candidate_only",
+      "operational_certificate_eligible": false,
+      "production_mask_authority": false
+    }
+  },
+  "hard_qc_result": {
+    "status_counts": {
+      "pass": 1,
+      "upstream_abstain": 1
+    },
+    "hard_qc_report_file_sha256": "64a65382b5d24c64e2e35d73b40cebfa299e853697df26285f42cf8a173176e8",
+    "hard_qc_report_self_sha256": "73395aca374c1c9ce3b5dbf7c92a5556b95de296dba6c7b967458d40bbc4f248",
+    "strict_visual_review_complete": false,
+    "operational_certificates_issued": false,
+    "production_mask_authority": false
+  },
+  "resident_evidence": {
+    "file_sha256": "38bd3ac641baf00e500468421ca7736dc09ba7d9360465e43b318cf3fa1c5653",
+    "self_sha256": "b314c89f00d7ef6adb970ebc917c58c2c4a96924c9d03f4da3565f5aae55b225",
+    "canonical_json_uses_utf8_without_ascii_escaping": true
+  },
+  "validation": {
+    "provider_self_seal_valid": true,
+    "hard_qc_self_seal_valid": true,
+    "resident_self_seal_valid": true,
+    "candidate_artifact_hash_valid": true,
+    "runtime_lock_hash_bound": true,
+    "runner_hashes_bound": true,
+    "one_model_load_across_two_requests": true,
+    "typed_failure_did_not_abort_healthy_record": true,
+    "resident_process_stopped_cleanly": true
+  },
+  "authority_boundary": {
+    "bounded_provider_runtime_checkpoint": true,
+    "persistent_predictor_reuse_proved": true,
+    "deterministic_hard_qc_pass_count": 1,
+    "strict_visual_pass_count": 0,
+    "qualified_primary_critic_count": 0,
+    "qualified_independent_juror_count": 0,
+    "operationally_certified_artifact_count": 0,
+    "autonomous_certified_gold_count": 0,
+    "training_truth_count": 0,
+    "terminal_record_count": 0,
+    "shard_complete": false,
+    "production_champion_promoted": false,
+    "claim": "Two reference-only records reused one official SAM3.1 predictor on persistent RunPod storage. One draft candidate passed deterministic hard QA and one request abstained. No visual, certificate, gold, training, shard, or production authority is claimed."
+  },
+  "prior_attempts": [
+    {
+      "suffix": "v1",
+      "accepted": false,
+      "reason": "outer wrapper used the SAM environment and lacked scipy"
+    },
+    {
+      "suffix": "v2",
+      "accepted": false,
+      "reason": "resident evidence used a noncanonical Unicode-escaping seal"
+    },
+    {
+      "suffix": "v3",
+      "accepted": false,
+      "reason": "resident evidence omitted per-request timing and hash telemetry"
+    },
+    {
+      "suffix": "v4",
+      "accepted": false,
+      "reason": "runtime lock still described the resident path as prepared-only"
+    },
+    {
+      "suffix": "v5",
+      "accepted": false,
+      "reason": "runtime lock verification timestamp was corrected before final acceptance"
+    },
+    {
+      "suffix": "v6",
+      "accepted": true,
+      "reason": "final deployed runtime lock and all implementation, report, request, and artifact hashes match"
+    }
+  ],
+  "self_sha256": "ece3d5ba132d964b2a27c8c69109005dd65fe077b64a65c4038ebc80b8de3da2"
+}

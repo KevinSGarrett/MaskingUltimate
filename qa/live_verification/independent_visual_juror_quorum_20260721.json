@@ -1,0 +1,22 @@
+{
+  "authority_claimed": false,
+  "catalog_binding_required": true,
+  "deterministic_hard_veto_precedence": true,
+  "focused_test_count": 22,
+  "focused_tests_status": "PASS",
+  "independence_identity": "family_id",
+  "qualified_independent_family_result": "eligible",
+  "recorded_at": "2026-07-21T23:36:25.8198863Z",
+  "required_roles": [
+    "primary_visual_critic",
+    "independent_juror"
+  ],
+  "same_family_result": "abstain",
+  "schema_version": "1.0.0",
+  "source_sha256": {
+    "src/maskfactory/vlm/critic_authority.py": "c34f33a11e0c9d33d3a2d584dc2651f523466fca8b9250966b17e2189992f754",
+    "tests/test_visual_critic_authority.py": "2b58afe5438a943bd19e5760b66d62119351d6e2ce41ed4afd4c03dac72231ef"
+  },
+  "status": "STATIC_PASS",
+  "truth_boundary": "quorum logic is implemented; live role certificates remain unissued until each model passes real frozen-corpus calibration"
+}

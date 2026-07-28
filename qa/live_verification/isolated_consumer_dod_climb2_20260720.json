@@ -1,0 +1,63 @@
+{
+  "artifact_type": "isolated_main_consumer_dod_climb_wave",
+  "authority": "autonomous_isolated_main_consumer_dod_climb_zero_human_wait",
+  "branch": "codex/maskfactory-runtime-implementation",
+  "champions": 0,
+  "claims_not_established": [
+    "real_comfyui_main_adoption",
+    "main_adoption_complete / MF-P6-12.06 core close",
+    "champions>0",
+    "PRODUCTION_EVIDENCE_PASS"
+  ],
+  "companion_waves": [
+    "qa/live_verification/isolated_consumer_dod_climb_20260720T0810.json"
+  ],
+  "hard_blockers_still_open": [
+    "MF-P6-11.02",
+    "MF-P6-11.07",
+    "MF-P6-12.05",
+    "MF-P6-12.06"
+  ],
+  "is_real_comfyui_main": false,
+  "main_adoption_complete": false,
+  "new_dod_checks_this_wave": {
+    "isolated_receipt_arbitration_dod_matrix": {
+      "covers": [
+        "wrapper-certified Mode A dominates an uncertified Mode B draft (choose)",
+        "two same-scope certified alternatives branch deterministically",
+        "a third same-scope candidate forces deterministic abstain",
+        "Main selecting the stale cheap draft is refused as silent weakening",
+        "high preservation risk + insufficient authority floor abstains",
+        "real normalize_and_arbitrate_receipts + conformance validator"
+      ],
+      "item": "MF-P6-11.04",
+      "passed": true
+    },
+    "isolated_recovery_dod_matrix": {
+      "covers": [
+        "receipt-last full-chain commit is ready and validates",
+        "kill at all 15 durable boundaries recovers fail-closed without drift",
+        "receipt-before-artifacts ordering violation rejected",
+        "unresolved receipt digest fails closed",
+        "orphan promotion + authority drift rejected",
+        "foreign GPU-lease cleanup refused (no replacement-owner deletion)",
+        "duplicate resubmit after found-running (no not-found evidence) rejected",
+        "real build_recovery_evidence / simulate_kill_at_boundary + validator"
+      ],
+      "item": "MF-P6-11.08",
+      "passed": true
+    }
+  },
+  "next_agent_step": "Real receipts require a dedicated Comfy_UI_Main-side integration on an isolated clean maskfactory branch that consumes the producer adapter package and emits Main-signed adoption/qualification/adapter-execution/result-history artifacts pinned back here. Comfy_UI_Main is a dirty Wave64 tree (branch codex/workflow_plan_update_improvements) and was NOT touched.",
+  "producer_git_commit": "9dd5f7584a5808fdd04dcf866bd58a1d1c39f1cd",
+  "run_evidence": {
+    "all_pass": true,
+    "checks_passed": 2,
+    "checks_total": 2,
+    "path": "runtime_artifacts/main_consumer/isolated_consumer_dod2_run_evidence_20260720T0928.json",
+    "self_sha256": "24f6f62f4a0173b7398a557f2b69965fedbcb3ebdeeea263295502267ec13647"
+  },
+  "runner": "tools/run_isolated_main_consumer_dod2.py",
+  "self_sha256": "a450273eea23309bfe84096dc9a9ea280528d01fe8fac41cef78bd17769bd3f1",
+  "tier_note": "STATIC_PASS producer + isolated-consumer evidence only. These matrices add real-machinery DoD surface for the producer boundary (MF-P6-11.04 / 11.08); they do NOT advance AWAITING_MAIN, do NOT close any HARD blocker, and mint no certificate. is_real_comfyui_main=false."
+}

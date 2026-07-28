@@ -1,0 +1,203 @@
+{
+  "accepted_capabilities": [
+    "mask.package.read",
+    "mask.live.predict"
+  ],
+  "adoption_id": "mfadopt_f1c700e00000000000000001",
+  "adoption_payload_sha256": "4fa0ac19251f410596ccae80f9ef14b96f98c5b4f1292d5a8119ff38075431b9",
+  "adoption_scope": "production_authority",
+  "capability_decisions": [
+    {
+      "capability_id": "mask.package.read",
+      "decision": "accepted",
+      "evidence_sha256": "256920d2637367c5d114e074e91542fa6e4b5679875520d15f026f0f433815d4",
+      "reason": "synthetic_main_consumer fixture acceptance",
+      "requirement_class": "required"
+    },
+    {
+      "capability_id": "mask.live.predict",
+      "decision": "accepted",
+      "evidence_sha256": "6a06be7e5dee6c51a845353cf7489ed56028acf068988ee89d291c6b336d8274",
+      "reason": "synthetic_main_consumer fixture acceptance",
+      "requirement_class": "optional"
+    }
+  ],
+  "capability_snapshot_id": "mfcap_f1c700e00000000000000001",
+  "capability_snapshot_sha256": "c32f92b0bac6ba4c8a9dc9da8a0f2daad78852655650e055e8ce5d8f9c8fdb7b",
+  "compatibility_checks": [
+    {
+      "check": "api_contract",
+      "evidence_sha256": "e880fa513fd36697faec38583224451e073edf1bf2cfd7a438740a1106df4047",
+      "result": "pass"
+    },
+    {
+      "check": "artifact_security",
+      "evidence_sha256": "fd9fe377c623bf62845c2d633bf97c80ae906b50a25b489920271faa486a1a35",
+      "result": "pass"
+    },
+    {
+      "check": "authority_policy",
+      "evidence_sha256": "0e8bc96a7c4828d323a9183bee334f6687fe5ed1e29fa2ee97dbef5a588908da",
+      "result": "pass"
+    },
+    {
+      "check": "canonicalization",
+      "evidence_sha256": "704be3f43e706691b4c57ee0404a1957ff9fdd83afc5db2ec4e94d587b331727",
+      "result": "pass"
+    },
+    {
+      "check": "capabilities",
+      "evidence_sha256": "31d5ddd6aae77dad2b154a533245a6066788ee7e186c55cb6e1622c02b580c41",
+      "result": "pass"
+    },
+    {
+      "check": "contract_tests",
+      "evidence_sha256": "d76bdb4991914e95419efe69554ed73ed3c9fd3bdc84143ebd7c384e1c9b5bdd",
+      "result": "pass"
+    },
+    {
+      "check": "media_scope",
+      "evidence_sha256": "b9974e5a449056ac68f7998d143753321ab6472b2009f9d03f291ecd84d32c95",
+      "result": "pass"
+    },
+    {
+      "check": "node_pack",
+      "evidence_sha256": "4f5b38d8743767312ec4dccefe0962bc0b26c0997a0eae0a4bfac2a05b5afa7e",
+      "result": "pass"
+    },
+    {
+      "check": "ontology",
+      "evidence_sha256": "9f40e90bf8ebb8528a75efdaca24d970586cece024888571b7e7129dd14974cd",
+      "result": "pass"
+    },
+    {
+      "check": "package_format",
+      "evidence_sha256": "0195586e5777898bbfa6146c258693617fbb4a1fd44e21cf7a860fc61ab1c4b2",
+      "result": "pass"
+    },
+    {
+      "check": "release_hash",
+      "evidence_sha256": "13dab1af0c3658c721fd239cff7ab3e751e429fbf10679344369ff7b660c5be1",
+      "result": "pass"
+    },
+    {
+      "check": "revocation_freshness",
+      "evidence_sha256": "1d7b8604fb9a94d5713724e256cd590be1c4fdcd11858dd9b75ee7fce76536ad",
+      "result": "pass"
+    },
+    {
+      "check": "signature",
+      "evidence_sha256": "245d5c8af156a3f50924c2c9a4ac288c0071aa1a583cd04526bcbc0966a22b69",
+      "result": "pass"
+    },
+    {
+      "check": "signed_journal",
+      "evidence_sha256": "d81ef9f5a841555be65dcda518425cf941a010177e7eb7d4d517a3da396f6055",
+      "result": "pass"
+    },
+    {
+      "check": "trust_anchor",
+      "evidence_sha256": "85f0444b96162233db05e8b3ed23e9c8eef569d3d91164d59b344a09f254ab8e",
+      "result": "pass"
+    },
+    {
+      "check": "wire_schemas",
+      "evidence_sha256": "6f62ac2f24ad3b259df7deb844896ea905875b1f21ce3de8d4356b61875114e6",
+      "result": "pass"
+    }
+  ],
+  "consumer": {
+    "controller_version": "1.0.0",
+    "git_commit": "204f21cfbaffd6fb92715092db508b7e2a51efa0",
+    "project": "Comfy_UI_Main"
+  },
+  "consumer_requirements_id": "mfreq_f1c700e00000000000000001",
+  "consumer_requirements_sha256": "ac51279e1592bd9db323b5e9190d75ef7a8203e5cd4cc6ac31c18dc83d4fb627",
+  "decided_at": "2026-07-19T15:00:00Z",
+  "decision": "adopted",
+  "evidence_context": "runtime_evidence",
+  "fixture_only": false,
+  "journal_checkpoint": {
+    "active_revocation_count": 0,
+    "checkpointed_at": "2026-07-17T00:00:00Z",
+    "event_count": 3,
+    "first_sequence": 1,
+    "fresh_until": "2026-07-18T00:00:00Z",
+    "genesis_event_id": "mfbevt_000000000000000000000001",
+    "genesis_event_sha256": "7d37b6d77c8d04b3ce01316eca7d381140823ea00bc94c6c45d4cba4bf3a9376",
+    "head_event_id": "mfbevt_000000000000000000000003",
+    "head_event_sha256": "b414193425ff71a255a4a10f8258805fd957f7c195001ae55fecdd5f5e1a69a3",
+    "last_sequence": 3,
+    "revocation_state_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+    "stream_id": "maskfactory-release-journal",
+    "validator_sha256": "e597828e353a219501158d05b4d1d20d0643dda95110d4f2f7d5dddad50d3d1a"
+  },
+  "pinned_artifacts": [
+    {
+      "kind": "adapter",
+      "sha256": "5601f67d5a4410237d7548857f01343c8c769878d30eb159edd5de2917f30f9d"
+    }
+  ],
+  "production_use_authorized": true,
+  "qualification_bundle_id": "mfqual_f1c700e00000000000000001",
+  "qualification_bundle_sha256": "e49e7fdaafc4676191fae631452b2fb6e755db5f6fdb0960ba39647e77f2fc1b",
+  "record_type": "maskfactory_adoption_receipt",
+  "rejected_capabilities": [],
+  "release_id": "mfr_20260719_f1c700e00001",
+  "release_payload_sha256": "2ce425a5f7177b34e15a692f42b313422215505d505a56e491595cb8bbcebc69",
+  "required_capabilities_satisfied": true,
+  "revalidation_triggers": [
+    "api_contract_changed",
+    "artifact_hash_drift",
+    "artifact_invalidated",
+    "capability_policy_changed",
+    "capability_snapshot_changed",
+    "certificate_expired",
+    "certificate_revoked",
+    "consumer_adoption_key_revoked",
+    "consumer_adoption_key_rotated",
+    "consumer_requirements_changed",
+    "node_pack_changed",
+    "ontology_changed",
+    "package_format_changed",
+    "package_invalidated",
+    "producer_signing_key_revoked",
+    "producer_signing_key_rotated",
+    "provider_stack_changed",
+    "qa_regression",
+    "release_revoked",
+    "release_superseded",
+    "revocation_checkpoint_stale",
+    "semantic_invariant_profile_changed",
+    "signed_journal_fork_detected",
+    "signed_journal_stale",
+    "trust_policy_changed",
+    "validity_expired",
+    "wire_schema_changed"
+  ],
+  "schema_version": "1.0.0",
+  "signature": {
+    "algorithm": "ed25519",
+    "key_id": "comfy-main-adoption-fixture",
+    "public_key_base64": "/RckOFqgx1tk+3jNYC+h2ZH96/drE8WO1wLqyDXp9hg=",
+    "signed_payload_format": "sha256_digest_bytes",
+    "signed_payload_sha256": "4fa0ac19251f410596ccae80f9ef14b96f98c5b4f1292d5a8119ff38075431b9",
+    "value_base64": "uiJGbEQeXZTRAoKpyjo1GU44xLsgJ1Ax8viv6UEnUtzS45FPEtTVN64qAogh8BBTFI5dtEGgrfLGVhEIjbpzDQ=="
+  },
+  "trust_binding": {
+    "consumer_adoption_key_id": "comfy-main-adoption-fixture",
+    "consumer_adoption_public_key_sha256": "dbc298251c51321b7266e78d1c151c2b62aff8cb95b293096d3463018544face",
+    "consumer_key_set_id": "comfy-main-fixture-trust-set",
+    "consumer_key_set_sha256": "39ccd77fccd407c90638280a28584c716fde4d98197754dc4cdb96d4eabd79f5",
+    "consumer_key_set_version": "1.0.0",
+    "producer_key_set_id": "mf-fixture-trust-set",
+    "producer_key_set_sha256": "be53b481e5ba5ac5dba64005fa76ee28bafeef40e04c342ccaf4142c54506ee5",
+    "producer_key_set_version": "1.0.0",
+    "producer_release_key_id": "mf-release-fixture",
+    "producer_release_public_key_sha256": "34750f98bd59fcfc946da45aaabe933be154a4b5094e1c4abf42866505f3c97e",
+    "revocation_policy_sha256": "c5884b8ac4bc90f113e1e3cd0dfe98bd65cead52c52898e32e4c8090486f1cdc",
+    "rotation_policy_sha256": "30940135965ec59344fc48d17ab6fa183f0ee6e4e263f7f39fd053402fac412f"
+  },
+  "use_time_recheck_required": true,
+  "valid_until": "2026-07-20T15:00:00Z"
+}

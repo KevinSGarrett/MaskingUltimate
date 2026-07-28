@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-07-11T00:25:00Z",
+  "cells": [
+    {
+      "view": "front",
+      "pose": "invented_pose",
+      "instance_context": "solo",
+      "approved_gold_count": 0
+    }
+  ],
+  "attribute_totals": {
+    "hands_visible": 0,
+    "feet_visible": 0,
+    "hand_body_contact": 0,
+    "hair_occlusion": 0,
+    "clothing_boundary": 0,
+    "bare_skin_dominant": 0,
+    "tight_clothing": 0,
+    "loose_clothing": 0,
+    "back_visible": 0,
+    "fingers_spread": 0,
+    "fingers_merged": 0,
+    "props_present": 0
+  }
+}

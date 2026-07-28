@@ -1,0 +1,4 @@
+evidence(dvc): retarget local remote to C: backup; status -c and push in sync
+
+Sibling copied dvc_local_remote onto data_c_backup_relocated; verify local-tier
+DVC survives without USB F: as the active remote path.

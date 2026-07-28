@@ -1,0 +1,51 @@
+{
+  "schema_version": "maskfactory.uniform_admission_daz_boundary_reconciliation.v1",
+  "recorded_at_utc": "2026-07-21T23:58:43.6879486Z",
+  "status": "pass",
+  "scope": "active DAZ package-adapter and synthetic-manifest admission boundary",
+  "result": {
+    "descriptor_eligibility_filters_removed": true,
+    "construction_person_identity_retained": true,
+    "manifest_integrity_retained": true,
+    "provenance_retained": true,
+    "rights_and_allowed_use_retained": true,
+    "annotation_and_mask_qa_retained": true,
+    "authority_binding_retained": true,
+    "active_special_admission_pattern_hits": 0
+  },
+  "behavior_proof": {
+    "arbitrary_nonempty_construction_descriptors_are_accepted": true,
+    "mismatched_person_identity_is_rejected": true,
+    "adapted_package_qc_requires_schema_valid_construction_metadata": true
+  },
+  "validation": {
+    "focused_tests": {
+      "command": "$env:PYTHONPATH=(Resolve-Path src).Path; python -m pytest -q tests/test_daz_s00_adapter.py tests/test_daz_adapted_package_qc.py tests/test_synthetic_manifest.py",
+      "passed": 101,
+      "failed": 0
+    },
+    "ruff": "pass",
+    "black": "pass",
+    "json_schema_parse": "pass",
+    "tracker_validate": "pass",
+    "git_diff_check": "pass"
+  },
+  "source_sha256": {
+    "configs/daz/s00_package_adapter.yaml": "de1bda65cd492a92f5ae54ca401ecfb033cb653552bd9d5a39616fba33f670fd",
+    "src/maskfactory/daz/s00_adapter.py": "6f65f12f2e4147aa54d3310143ab7d497ebde564680a27045057122282f1dcaf",
+    "src/maskfactory/daz/package_qc.py": "1b233eae1cea872236219beec20990617741b85e29824c9e96ba36e1a6b879fd",
+    "src/maskfactory/schemas/manifest_synthetic_v1.schema.json": "276624bbec44d557ecef2e811f040156f797bb7c7d25873f66ae0d7e17389a07",
+    "src/maskfactory/schemas/manifest_synthetic_v2.schema.json": "979e387a30fc6930139bed88e049ec49925e9178e32ba6e7499efeabb7d0a639",
+    "tests/test_daz_s00_adapter.py": "d4b5e1214fd287f21e503d99c34e7b848bc7fd264a85a934af4fa0c288cce586"
+  },
+  "authority_boundary": [
+    "provenance",
+    "license",
+    "rights_and_allowed_use",
+    "integrity",
+    "annotation_quality",
+    "technical_mask_qa",
+    "evidence_backed_authority"
+  ],
+  "historical_policy_records_rewritten": false
+}

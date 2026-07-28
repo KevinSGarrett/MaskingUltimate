@@ -1,0 +1,108 @@
+{
+  "admission_result": {
+    "calibrated_auto_accepted_count": 0,
+    "certificate_passed": false,
+    "exit_code": 1,
+    "invocation": "--label torso --context solo --pipeline-fingerprint autonomous_gold_stream_probe_20260720T022935",
+    "lifecycle_sidecars_seen": 0,
+    "machine_verified_candidate_count": 0,
+    "mode": "default no-corpus honest state report",
+    "output_evidence": "qa/live_verification/autonomous_gold_admission_20260720T022935.json",
+    "output_self_sha256": "b76f1564c2ec1b262571b32d8e2eb97341225381e6f0f0d531507ee4f462ab8a",
+    "status": "insufficient_autonomous_verified_samples",
+    "tool": "tools/build_autonomous_gold_admission.py"
+  },
+  "advanced_this_session": [
+    "Quantified the corpus SOURCE side as abundantly ready: MaskedWarehouse ~57k image/mask pairs across 5 datasets; reference library 69,398 indexed representatives (100% classified); DAZ foundation healthy (root/executable/queue/capacity-guard verified, 249 GiB free).",
+    "Live-probed the runtime and confirmed the SINGLE remaining blocker is the multi-provider segmentation runtime (Docker engine / nuclio SAM2 / WSL / CUDA all down); Ollama VLM up.",
+    "Re-sealed the honest autonomous-gold admission at HEAD 447b0f9b: gold count 0, insufficient_autonomous_verified_samples."
+  ],
+  "artifact_type": "autonomous_gold_stream_readiness_and_admission",
+  "authority": "autonomous_certified_gold_profile",
+  "blocker_is_out_of_my_lane": "Producing the candidates requires the multi-provider tournament in the Docker GPU container / restored nuclio SAM2 \u2014 the disk/serve/train Docker image build lane owned by the sibling stream. Per directive this stream did NOT run docker build and did NOT edit docker/Dockerfile.*.",
+  "branch": "codex/maskfactory-runtime-implementation",
+  "claims_not_established": [
+    "autonomous_certified_gold",
+    "machine_verified_candidate>0",
+    "champions>0",
+    "human_anchor_gold",
+    "certificate_minted"
+  ],
+  "gold_count": {
+    "autonomous_certified_gold": 0,
+    "human_anchor_gold": 0,
+    "machine_verified_candidate": 0
+  },
+  "live_runtime_probe": {
+    "cvat_localhost_8080": "DOWN \u2014 connection refused (nuclio SAM2 provider unavailable)",
+    "docker_engine": "DOWN \u2014 com.docker.service Stopped; `docker info`/`docker version` hang >60s; Docker Desktop relaunched this session but the engine did not come up; `wsl --list --running` shows no running distributions",
+    "gpu": "RTX 5060 8 GiB; DAZ + Ollama resident (prior probe ~377 MiB free)",
+    "host_torch": "2.12.1+cpu; torch.cuda.is_available()=False",
+    "ollama_127_0_0_1_11434": "UP \u2014 version 0.32.1 (VLM critic only; NOT one of the >=3 required independent segmentation model families)",
+    "wsl": "DOWN \u2014 no running distributions; Ubuntu-22.04 ext4 VHD corrupt per prior waves; non-interactive elevation unavailable (e2fsck deferred)"
+  },
+  "multi_agent_coordination": "A sibling stream has in-flight staged/unstaged edits to tracker.json / DASHBOARD.md / phases/P6.md / src. tracker.json was NOT modified by this stream (no honest status transition \u2014 gold=0). Committed only this stream's evidence via pathspec to avoid clobbering sibling work; coordinated via this evidence file.",
+  "next_agent_step": "Restore the Docker engine (or an elevated WSL e2fsck of Ubuntu-22.04) so nuclio SAM2 + >=2 additional independent families (parsing / silhouette / geometry) run; execute the multi-provider tournament on MaskedWarehouse/reference/DAZ sources to write machine_verified_candidate lifecycle sidecars under runs/; assemble a frozen image-disjoint corpus; re-run build_autonomous_gold_admission --corpus.",
+  "no_fabricated_samples": true,
+  "no_force_registered_champions": true,
+  "no_tier_inflation": true,
+  "project_head_at_authoring": "447b0f9b642e568e54467d592fb3307525810489",
+  "recorded_at": "2026-07-20T07:40:56.536200Z",
+  "root_cause": "The autonomous-gold certificate requires machine_verified_candidate lifecycle sidecars produced by a multi-provider tournament with >=3 INDEPENDENT model families (profile independent_provider_families_minimum=3; tournament minimum_independent_sources=3) plus ~>=270 zero-defect samples to clear the 0.01 one-sided Wilson bound. Every segmentation family (SAM2/SAM3.1, parsing, silhouette, geometry, pose) requires a CUDA runtime via WSL or Docker/nuclio. This session live-probed all of those DOWN; host torch is CPU-only; only Ollama (a VLM critic, not a segmentation family) is up. Zero genuine machine_verified_candidate samples can be produced this session, and fabricating them is forbidden (no tier inflation).",
+  "schema_version": "1.0.0",
+  "self_sha256": "d6e59032bcc1d8e134768348bdf698b4d8164a4170cc6ad105c486f09e16376b",
+  "source_readiness": {
+    "daz_foundation": {
+      "acquisition_queue_readable": true,
+      "capacity_guard_hash_matched": true,
+      "daz_studio_executable_present": true,
+      "note": "tools/daz_status.py exited nonzero on a live-skipped queue-count check; foundation roots/executable/storage/capacity-guard checks all PASS",
+      "root": "F:\\DAZ",
+      "root_exists": true,
+      "storage_free_gib": 249.424
+    },
+    "maskedwarehouse": {
+      "datasets": {
+        "body_archive": {
+          "images": 175,
+          "masks": 175,
+          "role": "seven_group_body_color"
+        },
+        "celebamask_hq": {
+          "images": 30000,
+          "masks": 372767,
+          "role": "face_components"
+        },
+        "lapa": {
+          "images": 22168,
+          "masks": 22168,
+          "role": "face_parsing"
+        },
+        "lv_mhp_v1": {
+          "images": 4980,
+          "masks": 14969,
+          "role": "multi_person_full_body_parsing"
+        },
+        "swimsuit_preview": {
+          "images": 10,
+          "masks": 10,
+          "role": "clothing_body_color_preview"
+        }
+      },
+      "present": true,
+      "root": "C:\\Comfy_UI_Main\\MaskedWarehouse",
+      "total_images": 57333,
+      "total_masks": 410089
+    },
+    "note": "Corpus SOURCE side is abundantly ready; only the multi-provider RUNTIME blocks production.",
+    "reference_library": {
+      "bytes": 446554112,
+      "exact_representatives": 69398,
+      "exists": true,
+      "index_complete": true,
+      "index_percent": 100.0,
+      "working_db": "C:\\Temp\\MaskFactory_Reference_Library\\reference_working.sqlite"
+    }
+  },
+  "stream": "autonomous_gold_candidate_population_and_certification (build_autonomous_gold_admission path; NOT docker image builds \u2014 sibling owns disk/serve/train build)"
+}

@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-13T00:27:00+00:00",
+  "outcome": "pass",
+  "item_id": "MF-P6-02.02",
+  "launch": {
+    "windows_identity": "KEVIN\\kevin",
+    "wsl_distro": "Ubuntu-22.04",
+    "command": "PYTHONPATH=/mnt/c/Comfy_UI_Main_Masking/src python -m maskfactory.cli serve --port 8765",
+    "uvicorn_host": "127.0.0.1",
+    "uvicorn_port": 8765,
+    "linux_pid": 145823
+  },
+  "listener": {
+    "ss_address": "127.0.0.1:8765",
+    "wildcard_listener": false,
+    "windows_localhost_reachable": true
+  },
+  "health": {
+    "http_status": 200,
+    "service_status": "ok",
+    "pipeline_version": "0.0.1",
+    "mode_b_api_version": "1.0.0",
+    "vram_available": true,
+    "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+    "configured_champions": 0
+  },
+  "models": {
+    "http_status": 200,
+    "verified_model_count": 17,
+    "champion_count": 0,
+    "ollama_version_fallbacks": [
+      "llama3.2-vision:11b",
+      "qwen2.5:7b-instruct",
+      "qwen2.5vl:7b"
+    ]
+  },
+  "live_defect_repaired": {
+    "symptom": "GET /models returned HTTP 500 for verified Ollama entries without version_tag",
+    "cause": "file-backed checkpoint schema was assumed for every verified registry entry",
+    "fix": "serve Ollama entries by governed ollama_name/digest fallback without weakening champion verification"
+  },
+  "shutdown": {
+    "graceful": true,
+    "service_unreachable_after_stop": true,
+    "gpu_lock_released": true
+  },
+  "verification": {
+    "focused_tests_passed": 31,
+    "test_runtime": "Ubuntu-22.04 pinned maskfactory environment",
+    "ruff_check": "pass",
+    "ruff_format": "pass"
+  }
+}

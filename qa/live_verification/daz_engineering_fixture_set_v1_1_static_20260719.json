@@ -1,0 +1,46 @@
+{
+  "accepted": false,
+  "doctor_green_claimed": false,
+  "fixture_set_canonical_sha256_24": "3ebcd73b6e42ec27d404a6c64f57eeda1ea520fa4f3d2747d19c352edbd33755",
+  "fixture_set_canonical_sha256_48": "df43f46bb70227d626218bfec01f7383d7c5b0012442644cbfd43baa5b1fe5cf",
+  "fixture_set_id_24": "daz_engineering_fixture_set_3ebcd73b6e42ec27d404a6c6",
+  "fixture_set_id_48": "daz_engineering_fixture_set_df43f46bb70227d626218bfe",
+  "full_marginal_coverage": true,
+  "gold_claimed": false,
+  "implementation": {
+    "cli": [
+      "daz recipes build-engineering-fixture-set",
+      "daz recipes validate-engineering-fixture-set"
+    ],
+    "module": "src/maskfactory/daz/scenes/engineering_fixtures.py",
+    "published": [
+      "qa/fixtures/daz/engineering_fixture_sets/daz_engineering_fixture_set_3ebcd73b6e42ec27d404a6c6.json",
+      "qa/fixtures/daz/engineering_fixture_sets/daz_engineering_fixture_set_df43f46bb70227d626218bfe.json"
+    ],
+    "schema": "src/maskfactory/schemas/daz_engineering_fixture_set.schema.json",
+    "tests": [
+      "tests/test_daz_engineering_fixtures.py"
+    ]
+  },
+  "items": [
+    "MF-P9-06.10",
+    "MF-P9-06.01"
+  ],
+  "live_daz_execution": false,
+  "live_qualified_assets": false,
+  "main_complete_claimed": false,
+  "mapping_authority": false,
+  "production_evidence_pass_claimed": false,
+  "proof_tier": "STATIC_PASS",
+  "pytest_exit_code": 0,
+  "pytest_summary": [
+    "......................                                                   [100%]"
+  ],
+  "rendered": false,
+  "resolved_recipe_embedded": true,
+  "result": "pass_daz_engineering_fixture_set_v1_1_static",
+  "schema_version": "1.1.0",
+  "sha256": "ece01ae9a517404110b177269038c15e63be73ea6b75add64e4af1cceba6df92",
+  "training_eligible": false,
+  "visual_qa_pass_claimed": false
+}

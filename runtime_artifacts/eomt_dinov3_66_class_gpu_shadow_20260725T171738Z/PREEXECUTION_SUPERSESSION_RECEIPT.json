@@ -1,0 +1,25 @@
+{
+  "artifact_type": "maskfactory.eomt_dinov3_66_class_shadow_preexecution_supersession.v1",
+  "authority": {
+    "gold_authority": false,
+    "mask_promotion": false,
+    "shadow_only": true,
+    "visual_acceptance": false
+  },
+  "captured_at_utc": "2026-07-25T17:19:21Z",
+  "result": "superseded_before_execution",
+  "superseded_binding": {
+    "path": "runtime_artifacts/eomt_dinov3_66_class_gpu_shadow_20260725T171738Z/launch_binding.json",
+    "raw_sha256": "112d6852784ec6bf23447a3321d941c16b4b6278cf8dce6f7e22d0a512655c70",
+    "self_sha256": "71a0ea1bcaa2b6d5fa82d3cf91e5317d891e8604056a58c5d3993d0600f23b51",
+    "tool_sha256": "b51dc43828483ce44d969b91ed5632e2cf87c4514ba95cec791f30be8bf92fdf"
+  },
+  "reason": "The V1 launcher rejected its pre-created immutable binding directory as an output-directory collision. The defect was detected before any model load, CUDA allocation, inference, receipt write, or output artifact.",
+  "replacement_binding": {
+    "path": "runtime_artifacts/eomt_dinov3_66_class_gpu_shadow_20260725T171921Z/launch_binding.json",
+    "raw_sha256": "a34beae3ed6977ea84d78dbd88bdbfe9ecf5c049c79604cea61b8bdb3e26b452",
+    "self_sha256": "9eab3a97b8fcc8027729b2afaa93c4e28d5238609ca07568b0468546126c58bb",
+    "tool_sha256": "36e03e32ffe17e852dd33f08f8dba552dd71994221ff3201375750cd67e70b91"
+  },
+  "self_sha256": "2138f94b07157c0fe03eb111ebe13c19ea72d854da435c0296abdcbff383828b"
+}

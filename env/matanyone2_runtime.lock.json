@@ -1,0 +1,80 @@
+{
+  "schema_version": "1.0.0",
+  "provider": "matanyone2",
+  "status": "live_static_and_temporal_smoke_passed_shadow_challenger",
+  "source": {
+    "repository": "https://github.com/pq-yang/MatAnyone2.git",
+    "commit": "d3bb5a1ebedf259a5453c6d168e6840fff85581e",
+    "tree": "754e115f9164332c25e8500f8d5206ad59a90a1d",
+    "local_path": "/workspace/models/runtime_cache/matanyone2_source_d3bb5a1e",
+    "tracked_tree_clean": true,
+    "license": "NTU S-Lab License 1.0",
+    "license_sha256": "dec3847228f2b16bb699a93c46be8c6c4131b90bb4181a14735f1e0006269903",
+    "pyproject_sha256": "f984d86671c0b29bde5cc41ed3cde617ff352316a6630ea51c852b522ebaec6a",
+    "uv_lock_sha256": "b3ad196ce0114758ea84c1fabc01d5d2a9075a5067ab6f86ede3571c3dcd3079"
+  },
+  "model": {
+    "repository": "PeiqingYang/MatAnyone2",
+    "repository_revision": "40c894a6f68d1f55c86ab0de838d89dc61587930",
+    "local_path": "/workspace/models/runtime_cache/matanyone2_checkpoint_40c894a6",
+    "checkpoint": {
+      "filename": "model.safetensors",
+      "sha256": "70d3bf1d85d0aaf2020f9ef3577239f4f83b77c2ba47fca1eebaaf872f9ad40f",
+      "size_bytes": 141199924
+    },
+    "config": {
+      "filename": "config.json",
+      "sha256": "48dfbea235039093873586f352f0d05fbfdcbfeda094f2d8b257bc6408e68063",
+      "size_bytes": 2814
+    },
+    "backbones": {
+      "resnet50-19c8e357.pth": {
+        "sha256": "19c8e3572231adff6824a2da93fd67b5986919a2e65f8b6007eab4edee220097",
+        "size_bytes": 102502400
+      },
+      "resnet18-5c106cde.pth": {
+        "sha256": "5c106cde386e87d4033832f2996f5493238eda96ccf559d1d62760c4de0613f8",
+        "size_bytes": 46827520
+      }
+    }
+  },
+  "license_review": {
+    "source_url": "https://github.com/pq-yang/MatAnyone2/blob/d3bb5a1ebedf259a5453c6d168e6840fff85581e/LICENSE.txt",
+    "snapshot_sha256": "dec3847228f2b16bb699a93c46be8c6c4131b90bb4181a14735f1e0006269903",
+    "reviewed_at": "2026-07-22T03:45:00Z",
+    "use_profile": "private_personal_noncommercial",
+    "decision": "allowed"
+  },
+  "runtime": {
+    "platform": "RunPod Linux-64 persistent volume",
+    "environment_path": "/workspace/maskfactory/runtime_artifacts/matanyone2_env",
+    "python": "3.10.12",
+    "torch": "2.10.0+cu128",
+    "torchvision": "0.25.0+cu128",
+    "cuda": "12.8",
+    "requirements_lock": "env/matanyone2_runtime.requirements.lock.txt",
+    "requirements_lock_sha256": "232c9ad5f739a83279c98ed0bbacea2a8161b08f6a983f4ae132b94f4856247a",
+    "runtime_fingerprint": "ba4de3d22c40ce3cf0649a35e0f2d439dc1b8fb13f641c076cb71c3c27514b13",
+    "resolved_package_count": 121,
+    "pip_check": "pass"
+  },
+  "contract": {
+    "provider": "src/maskfactory/providers/matanyone2.py",
+    "runner": "tools/run_matanyone2.py",
+    "runner_sha256": "d101881340cecbedbde0c8160c7b3a022975d640e98543bd597fa2f3938960a6",
+    "routes": {
+      "static_first_frame_refinement": "exactly_one_frame",
+      "temporal_propagation": "at_least_two_frames"
+    },
+    "input": "ordered same-geometry RGB frames plus exact first-frame binary prior",
+    "output": "ordered float32 alpha sequence",
+    "semantic_authority": false,
+    "fallback": "explicit route-compatible incumbent only"
+  },
+  "live_smoke": {
+    "verified_at": "2026-07-22T03:45:00Z",
+    "evidence": "qa/live_verification/matanyone2_runpod_capability_20260722.json",
+    "static_result": "pass",
+    "temporal_result": "pass"
+  }
+}

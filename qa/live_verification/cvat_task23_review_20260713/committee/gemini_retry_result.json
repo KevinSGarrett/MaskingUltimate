@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0.0",
+  "provider": "gemini",
+  "attempt": 2,
+  "status": "complete",
+  "judgment": {
+    "provider": "gemini",
+    "model": "gemini-3.5-flash",
+    "verdict": "fail",
+    "confidence": 1.0,
+    "defects": [
+      "wrong_part",
+      "includes_neighbor_part"
+    ],
+    "observations": {
+      "full_context": "The character is standing in profile facing right. The right foot is the forward foot (on the right side of the image), and the left foot is the rear foot (on the left side of the image).",
+      "source_crop": "High quality crop showing the full body of the male model in briefs.",
+      "mask": "The mask is extremely corrupted, including large parts of the right shoulder, upper arm, chest, right hand, and only a tiny, messy segment of the actual right foot.",
+      "overlay": "The red overlay clearly displays the massive error, showing the mask covering the upper body and hand instead of being restricted to the right foot.",
+      "contour": "The contour outlines multiple disjoint regions across the torso, arm, hand, and foot.",
+      "neighbor_overlap": "No distinct neighbor overlap is shown, but the mask overlaps extensively with other body parts belonging to different categories."
+    },
+    "evidence": "The current mask is heavily contaminated with non-foot body parts (shoulder, chest, hand), which violates the target label right_foot_base. The mask needs to be completely redrawn to cover only the right foot (the forward foot on the right).",
+    "correction": {
+      "tool": "points",
+      "polygon": [],
+      "positive_points": [
+        [
+          430,
+          925
+        ],
+        [
+          550,
+          930
+        ],
+        [
+          700,
+          945
+        ]
+      ],
+      "negative_points": [
+        [
+          250,
+          300
+        ],
+        [
+          500,
+          300
+        ],
+        [
+          350,
+          540
+        ]
+      ],
+      "rationale": "Add positive points on the right foot (the forward foot on the right side) to capture the correct anatomy, and place negative points on the shoulder, chest, and hand to exclude the incorrect regions currently included in the mask."
+    },
+    "usage": {
+      "input_tokens": 9024,
+      "output_tokens": 484,
+      "cost_usd": 0.008946
+    },
+    "latency_ms": 15436,
+    "response_sha256": "201fe9ba632524b13ffec2cc67dfacb448866d632064224720251c7d314f6859"
+  },
+  "budget": {
+    "committed_usd": "1.054583",
+    "available_usd": "13.945417"
+  }
+}

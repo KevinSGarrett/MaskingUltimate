@@ -1,0 +1,57 @@
+{
+  "authority": {
+    "lifecycle_state": "installed",
+    "promotion_claimed": false,
+    "shadow_only": true
+  },
+  "captured_at": "2026-07-14T23:33:07.212235+00:00",
+  "checkpoints": {
+    "rtmo_crowd": {
+      "bytes": 178452521,
+      "path": "models/pose/rtm/rtmo-l_16xb16-700e_body7-crowdpose-640x640-5bafdc11_20231219.pth",
+      "sha256": "5bafdc11e43fba1a834e1323013108831b3e1e0761681dbe7a37896a179f2183",
+      "source_url": "https://download.openmmlab.com/mmpose/v1/projects/rtmo/rtmo-l_16xb16-700e_body7-crowdpose-640x640-5bafdc11_20231219.pth"
+    },
+    "rtmw_x": {
+      "bytes": 369720404,
+      "path": "models/pose/rtm/rtmw-x_simcc-cocktail14_pt-ucoco_270e-384x288-f840f204_20231122.pth",
+      "sha256": "f840f2044fe46cb3821b7cea86be83e1f6cba406ccd28f5475ac010412dcda95",
+      "source_url": "https://download.openmmlab.com/mmpose/v1/projects/rtmw/rtmw-x_simcc-cocktail14_pt-ucoco_270e-384x288-f840f204_20231122.pth"
+    }
+  },
+  "result": "pass",
+  "runtime": {
+    "base_environment_unchanged": true,
+    "dependency_layer": "models/runtime_cache/rtm_pose_deps",
+    "mmpose_mim_metadata_sha256": "8186398abbf6158fa743ab0d70fe575f84f588f4339ac28b8f340ebf6446941f",
+    "packages": [
+      "json-tricks==3.17.3",
+      "mmcv-lite==2.1.0",
+      "mmdet==3.2.0",
+      "mmengine==0.10.7",
+      "mmpose @ file:///C:/Comfy_UI_Main_Masking/models/runtime_cache/mmpose_v1.3.2",
+      "munkres==1.1.4",
+      "numpy==1.26.4",
+      "xtcocotools==1.14.3"
+    ],
+    "python": "C:\\Comfy_UI_Main\\ComfyUI\\.venv\\Scripts\\python.exe"
+  },
+  "schema_version": "1.0.0",
+  "sha256": "6ae6060c62e0281e4ed85db8a6768d9b6946b8a6076e332071ab1904b1a80767",
+  "sources": {
+    "mmpose": {
+      "clean": true,
+      "commit": "5408bc76f5b848cf925a0d1857899011d8c5b497",
+      "license_sha256": "d125421b289cd79bf03e8590858fa81c22dc95e2753b20bf80e6a3cc80a893f9",
+      "repository": "https://github.com/open-mmlab/mmpose.git",
+      "tree": "592d7336c9dd65a3f19f96c8bbcf0956bcf97426"
+    },
+    "rtmlib": {
+      "clean": true,
+      "commit": "f1bac7d80c88305534dbcdde12da39f6db4c3953",
+      "license_sha256": "fe6aadc681443c2cb0a95f7f2f2dbf6e624dfaeba1932e710b6933340a1e1e7e",
+      "repository": "https://github.com/Tau-J/rtmlib.git",
+      "tree": "aa0ac704492788c82c37bc323ba98fff45edbf26"
+    }
+  }
+}

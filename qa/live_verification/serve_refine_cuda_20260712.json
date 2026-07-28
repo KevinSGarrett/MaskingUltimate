@@ -1,0 +1,71 @@
+{
+  "area_px": 509950,
+  "clicks": [
+    {
+      "positive": true,
+      "x": 150,
+      "y": 520
+    },
+    {
+      "positive": false,
+      "x": 20,
+      "y": 20
+    },
+    {
+      "positive": true,
+      "x": 170,
+      "y": 540
+    }
+  ],
+  "cold_start_seconds": 7.979530699987663,
+  "elapsed_seconds": 0.05892030001268722,
+  "endpoint": "http://127.0.0.1:8765/refine",
+  "health": {
+    "configured_models": [],
+    "gpu_lock": "C:\\Comfy_UI_Main_Masking\\runs\\gpu.lock",
+    "loaded_models": [],
+    "pipeline_version": "0.0.1",
+    "status": "ok",
+    "versions": {
+      "mode_b_api": "1.0.0",
+      "pipeline": "0.0.1"
+    },
+    "vram": {
+      "available": true,
+      "gpus": [
+        {
+          "free_mib": 7889,
+          "index": 0,
+          "name": "NVIDIA GeForce RTX 5060 Laptop GPU",
+          "total_mib": 8151,
+          "used_mib": 11
+        }
+      ]
+    }
+  },
+  "http_status": 200,
+  "item_progress": [
+    "MF-P6-02.01",
+    "MF-P6-02.05"
+  ],
+  "label": "left_forearm",
+  "latency_target_met": true,
+  "latency_target_seconds": 1.2,
+  "mask_mode": "L",
+  "mask_sha256": "a3e7caf593bd98255a7fbd454a66c6f850a3690a27dba77ae3432f00aa38b79e",
+  "mask_size": [
+    810,
+    1080
+  ],
+  "mask_values": [
+    0,
+    255
+  ],
+  "provenance": {
+    "source": "sam2_interactive_refine"
+  },
+  "response_status": "draft_model_generated",
+  "schema_version": "1.0.0",
+  "source_path": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+  "source_sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63"
+}

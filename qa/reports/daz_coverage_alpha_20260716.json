@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-16T19:15:22Z",
+  "item": "MF-P9-07.06",
+  "status": "partially_complete",
+  "policy": {
+    "path": "configs/daz/coverage_alpha.yaml",
+    "file_sha256": "ad44a75c9abc02d725e3d01013b68a59d4c4b025ff94ee1ba6d153076abe4643",
+    "version": "1.0.0",
+    "eligible_profiles": [
+      "training_standard",
+      "training_relationship",
+      "diagnostic_full"
+    ],
+    "encoding": "uint16_linear_png",
+    "color_space": "linear",
+    "train_eligible": false
+  },
+  "threshold_reconciliation": {
+    "continuous_visibility_threshold": 0.00392156862745098,
+    "minimum_nonzero_u16_code": 257,
+    "binary_ownership_threshold": 0.5,
+    "hard_owner_minimum_u16_code": 32768,
+    "meaning": "Opacity below 1/255 is encoded as zero. Continuous support from code 257 through 32767 is retained without creating a hard owner. Code 32768 is the first hard-owner value, matching MaskFactory's inclusive 50-percent rule."
+  },
+  "boundary_and_hair_controls": {
+    "sample_grid": "4x4",
+    "sample_count": 16,
+    "ownership_rule": "maximum_visible_coverage",
+    "tie_break": ["frontmost_depth", "stable_node_id"],
+    "transparent_surface_handling": "evaluated_opacity",
+    "downsample_filter": "box_linear",
+    "edge_uncertainty_radius_pixels": 1,
+    "canonical_hair_part_id": 1,
+    "canonical_hair_material_id": 2,
+    "hair_constructions": [
+      "polygonal",
+      "transmapped_cards",
+      "strand_based",
+      "fibermesh",
+      "mixed"
+    ],
+    "visible_hair_requires_approved_asset_certificate": true,
+    "opacity_below_half_defers_to_underlying_or_background_owner": true,
+    "mixed_pixels_retain_continuous_alpha": true,
+    "hair_shadows_never_create_hair_ownership": true,
+    "per_sample_visible_contribution_sum_must_not_exceed_one": true
+  },
+  "freeze_and_authority": {
+    "before_sidecar_after_restore_terminal_state_hashes_exact": true,
+    "plan_contract_mapping_and_ontology_sidecars_exact": true,
+    "material_part_instance_authority_hashes_exact": true,
+    "repeated_coverage_alpha_hash_exact": true,
+    "immutable_publication": true,
+    "cli": [
+      "daz recipes plan-coverage-alpha",
+      "daz recipes validate-coverage-alpha"
+    ]
+  },
+  "closed_fixture_coverage": {
+    "focused_tests_collected": 57,
+    "focused_tests_passed": 57,
+    "focused_tests_failed": 0,
+    "exact_u16_threshold_codes_tested": [0, 1, 256, 257, 32767, 32768, 65535],
+    "all_five_hair_construction_routes_tested": true,
+    "hair_certificate_mapping_lineage_mismatch_rejected": true,
+    "coverage_depth_and_stable_node_tie_breaks_tested": true,
+    "visibility_sum_overflow_rejected": true,
+    "hard_owner_alpha_and_hair_semantic_equations_seeded": true,
+    "all_five_state_mutation_points_seeded": true,
+    "all_nine_forbidden_effects_seeded": true,
+    "sidecar_authority_output_replay_and_publication_drift_tested": true,
+    "cli_contract_and_validation_replay_idempotent": true
+  },
+  "lineage": {
+    "implementation_sha256": "84c72ff94010933ee37fb3902a908694b5490a4991cbe6e8a27ab9c78cd76bdb",
+    "contract_schema_sha256": "2514d3933b433a73a969824d1f6b96d0487297f8b3a03e6fc1de292c694ff242",
+    "report_schema_sha256": "aefa43a502443f3575976affb35733ebdd14a251d1eabd8fda7286a706f383f4",
+    "test_sha256": "129178768faafa0644374910779d64332c757c7af2738bd890c3e55fb22736c1",
+    "cli_sha256": "883438cd86ffabc6f9ae6a57ef0fc418ae7e3d3964608c086a007d39e2b7b726"
+  },
+  "verification": {
+    "full_repository_tests_collected": 2424,
+    "full_repository_tests_passed": 2424,
+    "full_repository_tests_failed": 0,
+    "test_files_collected": 226,
+    "ruff_lint": "pass",
+    "black_files_checked": 480,
+    "black_format": "pass",
+    "git_diff_check": "pass"
+  },
+  "asset_and_storage_boundary": {
+    "autonomous_downloader_and_legacy_dim_sources_remain_independent": true,
+    "assets_moved_or_relabelled_by_this_task": false,
+    "download_install_or_render_started_by_this_task": false,
+    "f_drive_soft_hold_respected": true
+  },
+  "live_boundary": {
+    "representative_live_hair_certificates_approved": false,
+    "live_daz_coverage_alpha_rendered": false,
+    "live_transmapped_strand_and_mixed_edges_recorded": false,
+    "live_repeated_alpha_hash_recorded": false,
+    "reason": "Exact threshold, ownership, certificate, codec, alignment, freeze, replay, CLI, and publication behavior passes against closed edge fixtures. Completion requires approved certificates for representative live hair assets and qualified DAZ coverage-alpha renders across polygonal, transmapped, strand, fibermesh, and mixed constructions."
+  },
+  "not_claimed": [
+    "a live DAZ coverage-alpha render",
+    "approval of any real hair asset certificate",
+    "live hair-edge quality across all constructions",
+    "completion of MF-P9-07.06"
+  ]
+}

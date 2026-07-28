@@ -1,0 +1,41 @@
+{
+  "artifact_tree_sha256": "8349ee8e70b8a08bdf1b94c6165dffd6ee57117cfc6b7a9211a45c1abb91ee48",
+  "catalog_sha256": "fd0cc8c3af27f41f42f8ce08260ac6a007f44bc2ff2504625c408598bf656ead",
+  "calibration_module_sha256": "38f7d5521b342144d9f12d32cbeb4c2abedc6775d1afa4eb697cbc4028923f49",
+  "corpus_sha256": "2b5cd3bd8eb09c3d5804fd27bad0fff04ddbbc45ca26125f986b60b3b1b66c7a",
+  "hardware": {
+    "cuda": "12.8",
+    "driver": "550.127.05",
+    "gpu_count": 1,
+    "gpu_name": "NVIDIA RTX 6000 Ada Generation",
+    "vram_mib": 49140
+  },
+  "model": {
+    "model_id": "qwen3_6_27b_fp8",
+    "quantization": "fp8",
+    "repository": "Qwen/Qwen3.6-27B-FP8",
+    "revision": "e89b16ebf1988b3d6befa7de50abc2d76f26eb09"
+  },
+  "runtime_flags": {
+    "generation_config": "vllm",
+    "gpu_memory_utilization": 0.9,
+    "host": "127.0.0.1",
+    "limit_images_per_prompt": 3,
+    "max_model_len": 8192,
+    "max_num_seqs": 1,
+    "mm_processor_cache_gb": 0,
+    "port": 18001,
+    "seed": 1337,
+    "trust_remote_code": true
+  },
+  "runner_sha256": "feb9145ab8f063d372802fab5ad2af2cc4dc5b2605400541847d009d3eac637b",
+  "runtime": {
+    "engine": "vllm",
+    "pillow": "12.3.0",
+    "python": "3.11.10",
+    "torch": "2.10.0",
+    "transformers": "4.57.6",
+    "vllm": "0.19.1"
+  },
+  "schema_version": "1.0.0"
+}

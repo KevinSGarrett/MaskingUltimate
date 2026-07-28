@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_service_recovery_post_restart",
+  "captured_at": "2026-07-19T06:09:30.173191Z",
+  "project_head_at_launch": "10aa21d4ed7e10e28a5868aea47e0e19a086d602",
+  "related_tracker_item": "MF-P6-11.07",
+  "status": "SERVICE_HEALTHY_FAILURE_CONTROL_IMPLEMENTATION_STILL_OPEN",
+  "authoritative_runtime": {
+    "distro": "Ubuntu-22.04",
+    "interpreter": "/home/kevin/miniforge3/envs/maskfactory/bin/python",
+    "python_version": "3.11.15",
+    "project_root": "/mnt/c/Comfy_UI_Main_Masking",
+    "pythonpath": "/mnt/c/Comfy_UI_Main_Masking/src",
+    "fastapi_version": "0.139.0",
+    "uvicorn_version": "0.51.0",
+    "maskfactory_cli": "/mnt/c/Comfy_UI_Main_Masking/src/maskfactory/cli.py"
+  },
+  "launch": {
+    "windows_client_pid": 42128,
+    "linux_service_pid": 425,
+    "command": "wsl.exe -d Ubuntu-22.04 --cd /mnt/c/Comfy_UI_Main_Masking -e /usr/bin/env PYTHONPATH=/mnt/c/Comfy_UI_Main_Masking/src /home/kevin/miniforge3/envs/maskfactory/bin/python -m maskfactory.cli serve --port 8765",
+    "stdout": "logs/maskfactory_8765_.stdout.log",
+    "stderr": "logs/maskfactory_8765_.stderr.log",
+    "window_style": "Hidden",
+    "managed_process_still_running": true
+  },
+  "acceptance_gates": {
+    "wsl_listener": {
+      "address": "127.0.0.1:8765",
+      "wildcard_listener": false,
+      "process": "python",
+      "pid": 425
+    },
+    "windows_health": {
+      "url": "http://127.0.0.1:8765/health",
+      "http_status": 200,
+      "status": "ok",
+      "pipeline_version": "0.0.1",
+      "mode_b_api_version": "1.0.0",
+      "ontology_version": "body_parts_v1",
+      "vram_available": true,
+      "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+      "free_mib": 7899
+    },
+    "windows_models": {
+      "url": "http://127.0.0.1:8765/models",
+      "http_status": 200,
+      "governed_model_count": 17,
+      "champion_count": 0,
+      "loaded_model_count": 0
+    },
+    "gpu_lock": {
+      "path": "runs/gpu.lock",
+      "readable": true,
+      "purpose": "serve_mode_b",
+      "pid": 425,
+      "image_id": null
+    }
+  },
+  "failed_attempt_disclosure": {
+    "attempt": "Initial import canary used a malformed Windows-to-WSL quoted Python -c argument.",
+    "result": "The shell returned a quote syntax error before Python ran; no service or background process was launched.",
+    "credit": false
+  },
+  "preservation": {
+    "cursor_or_claude_called": false,
+    "worker_control_plane_modified": false,
+    "scheduled_tasks_reenabled": false,
+    "maintenance_tasks_state": "Disabled",
+    "docker_cvat_nuclio_modified": false,
+    "model_files_modified": false,
+    "operational_certificate_dirty_scope_modified": false
+  },
+  "operational_handoff": {
+    "service_should_remain_running": true,
+    "graceful_stop_command": "wsl.exe -d Ubuntu-22.04 -e /bin/kill -TERM 425",
+    "post_stop_requirements": [
+      "Windows health is unreachable",
+      "WSL has no listener on port 8765",
+      "runs/gpu.lock is absent"
+    ]
+  },
+  "claim_boundary": "This proves only the pinned service launch, exact localhost bind, health/models responses, and serve_mode_b lock. Champions remain absent. It does not prove /predict, /refine, role certificates, bounded transient retries, circuit breaking, scoped DAG blocking, incompatible-authority handling, or MF-P6-11.07 completion."
+}

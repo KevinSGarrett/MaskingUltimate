@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0.0",
+  "verified_at": "2026-07-15T19:35:50.387088Z",
+  "item": "MF-P6-06.03",
+  "result": "PASS_OFFICIAL_PROMOTED_SELECTION_REPRESENTABLE_REAL_PROMOTION_PENDING",
+  "corrected_invariant": {
+    "official_sam31_may_satisfy_retention_by_being_active": true,
+    "official_sam31_may_satisfy_retention_by_preceding_shadow_experiment": true,
+    "litetext_remains_shadow_only": true,
+    "litetext_active_fallback_rollback_forbidden": true
+  },
+  "verified_future_state": {
+    "active_interactive_provider": "sam3_1",
+    "rollback_provider": "sam2_1_large",
+    "oom_fallback": "sam2_1_base_plus",
+    "shadow_challengers": ["sam2_1_large", "sam3_litetext_s0"],
+    "official_candidate_lifecycle": "promoted"
+  },
+  "implementation_hashes": {
+    "src/maskfactory/providers/selection.py": "ec77eea3b9cbff4e17379ddd3b9a831aac0a262e4ee8c3a964d80eab56518a0b",
+    "tests/test_provider_contracts.py": "549b214d969daa837b7f7d86281e80251b51433fd9c4aa052360d52e288ea4ef"
+  },
+  "verification": {
+    "focused_provider_serve_preflight_tests": {"collected": 54, "passed": 54, "failed": 0},
+    "full_repository_suite": {"collected": 1636, "passed": 1636, "failed": 0},
+    "pre_commit_hooks": "pass"
+  },
+  "production_mutations": {
+    "pipeline_changed": false,
+    "external_registry_changed": false,
+    "model_registry_changed": false,
+    "provider_lifecycle_changed": false,
+    "active_provider_changed": false
+  },
+  "claims_not_made": [
+    "official SAM3.1 is installed or benchmarked",
+    "SAM3.1 is promoted or active",
+    "a live interactive rollback occurred",
+    "legacy batch S07 is provider-neutral",
+    "MF-P6-06.03 is complete"
+  ],
+  "remaining_work": [
+    "refactor legacy batch S07 to the InteractiveSegmenter contract",
+    "implement serialized hash-sealed interactive promotion and rollback across authoritative files",
+    "obtain and benchmark official SAM3.1",
+    "perform the real promotion and one-command rollback rehearsal"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "artifact_type": "serving_static_contracts_report",
+  "authority": "serving_static_contracts_only_no_mode_b_predict_main_adoption_champion_or_production_release_authority",
+  "checked_at": "2026-07-20T07:55:11Z",
+  "checks": {
+    "node_pack_inventory": "pass",
+    "serving_provenance": "pass",
+    "serving_route": "pass",
+    "workflow_preflight_contract": "pass"
+  },
+  "honest_non_claims": [
+    "mode_b_predict_complete",
+    "main_adoption_complete",
+    "production_release_installed",
+    "champion_backed_predict",
+    "doctor_green"
+  ],
+  "main_adoption_complete": false,
+  "mode_b_predict_complete": false,
+  "node_pack_inventory_sha256": "d567d52e36683bf63b73412e4a9513c16e84996e635874978bc550c47f120e0a",
+  "policy_sha256": "d48666d930c4deb8eed214ba00434a66e8601930e723ae56a887aa88905a6666",
+  "production_release_installed": false,
+  "proof_tier": "STATIC_PASS",
+  "ready_for_live_workflow_execution": false,
+  "required_workflows": [
+    "wf_bodypart_conditioned.json",
+    "wf_inpaint_gold_hand.json",
+    "wf_live_predict_inpaint.json",
+    "wf_multi_instance_p1.json",
+    "wf_person_index_default_p0.json",
+    "wf_v2_anatomy_selector.json",
+    "wf_v2_clothed_negative_guard.json"
+  ],
+  "schema_version": "1.0.0",
+  "sha256": "dd82c390096780ba07d00b6544ce6f4e01d43d5de8fe34833c847b7b167a4f84",
+  "workflow_preflight_report_sha256": "5936484c8c2dffd8f74ac811a8b85cf887cbd8a2268a52f65a1f32f32a817629"
+}

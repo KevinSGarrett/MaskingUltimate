@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_operational_authority_lattice_verification",
+  "recorded_at": "2026-07-18T22:23:46Z",
+  "project_head_before_change": "545a550a3c415dcb2b37ee847ae1cb76a66e856c",
+  "tracker_item": "MF-P6-09.03",
+  "verification_status": "PASS",
+  "completion_credit": true,
+  "runtime_dependency": false,
+  "governing_spec": "Plan/24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md §§6-8",
+  "implementation": {
+    "policy_id": "maskfactory-operational-authority-lattice",
+    "policy_version": "1.0.0",
+    "policy_sha256": "766cbba7088ecf384e4f39c2142094367ffdbfd38c0d3b4d6db6ca09d763399c",
+    "canonicalization": "maskfactory-canonical-json-v1",
+    "operational_namespace": "operational_output",
+    "training_namespace": "training_truth",
+    "decision_schema_id": "https://maskfactory.local/schemas/operational-authority-decision-1.0.0.json",
+    "unknown_value_behavior": "typed_fail_closed",
+    "decision_integrity": "policy identity/hash plus exact normalized inputs/result/reasons and canonical decision SHA-256"
+  },
+  "acceptance": {
+    "access_mode_is_orthogonal_and_non_authoritative": true,
+    "operational_certificate_cannot_impersonate_training_or_human_gold": true,
+    "training_truth_is_separate_and_non_comparable": true,
+    "raw_mode_b_is_capped_below_production": true,
+    "exact_original_mode_b_can_be_certified_only_by_maskfactory_producer": true,
+    "weakest_parent_caps_refinement_derived_projection_and_inpaint_descendants": true,
+    "target_and_protected_inputs_enforce_explicit_authority_floors": true,
+    "main_llm_and_provider_cannot_grant_or_revoke_operational_authority": true,
+    "consumer_may_reject_without_upgrade": true,
+    "unknown_and_illegal_transitions_are_deterministic_and_fail_closed": true,
+    "decision_is_deterministic_and_tamper_evident": true,
+    "frozen_v1_wire_contracts_unchanged": true
+  },
+  "verification": [
+    {
+      "command": "python -m pytest -q tests/test_operational_authority_lattice.py tests/test_truth_tiers.py tests/test_mask_bridge_contracts_v1.py",
+      "result": "PASS",
+      "tests_passed": 53
+    },
+    {
+      "command": "python -m ruff check src/maskfactory/authority/authority_lattice.py tests/test_operational_authority_lattice.py",
+      "result": "PASS"
+    },
+    {
+      "command": "python -m black --check src/maskfactory/authority/authority_lattice.py tests/test_operational_authority_lattice.py",
+      "result": "PASS",
+      "files_unchanged": 2
+    },
+    {
+      "command": "git diff --check -- configs/operational_authority_lattice.yaml src/maskfactory/authority/authority_lattice.py src/maskfactory/schemas/operational_authority_decision.schema.json tests/test_operational_authority_lattice.py",
+      "result": "PASS"
+    }
+  ],
+  "implemented_file_hashes": {
+    "configs/operational_authority_lattice.yaml": "4ac6e74ab430eed746b6a971966cb2e737438487a19731056dc4899ec8a17282",
+    "src/maskfactory/authority/authority_lattice.py": "f593324a090a4173a63b9bc474d9e454b281245708a6aa8421b84c24a0dacecf",
+    "src/maskfactory/schemas/operational_authority_decision.schema.json": "25683f5167a48577ee7e4a378c932aaab3fe51a655ecc8dc64000151f53719cf",
+    "tests/test_operational_authority_lattice.py": "0fbdda42c008e914c41d37469972f58fa79b27264bd532c24df673ac6060bbfd"
+  },
+  "preserved_source_hashes": {
+    "Plan/24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md": "e57e9892c18cc2a43440691d508daba44bc00413f063dfdad40861e2a654e90d",
+    "src/maskfactory/truth_tiers.py": "7b0b7a40dac46310223e3fe68cb511e0b198a7f824e17e8750560f83459240ea",
+    "tests/test_truth_tiers.py": "0d72c2cf30cde5e4ea7dd55393ef974f4389c515cf909c613670e5671835d1db",
+    "src/maskfactory/schemas/mask_bridge_semantic_invariant_profile.schema.json": "0cd46afbdf7a2fdc07f4e693bd83e47f14683bb8778e10802f054e5640253bf4",
+    "qa/governance/bridge/mask_bridge_semantic_invariants_v1.json": "0292d3714a2ddfe74ef59dceee98630b48f9400f50ef2b07dcbbe123d36d3a67",
+    "tests/test_mask_bridge_contracts_v1.py": "a8bd203a58995a06f2ef1725cf2f068abd1a3635d38a3662aae278b94ce1369b"
+  },
+  "preservation": {
+    "frozen_worker_paths_touched": false,
+    "frozen_v1_contracts_touched": false,
+    "docker_or_wsl_actions_performed": false,
+    "preserved_commit": "545a550a3c415dcb2b37ee847ae1cb76a66e856c",
+    "rollback_evidence_changed": false
+  },
+  "claim_boundary": "This proves the closed authority lattice and its deterministic decision contract. It does not claim a live production certificate, role certificate, runtime service, release, or end-to-end ComfyUI execution."
+}

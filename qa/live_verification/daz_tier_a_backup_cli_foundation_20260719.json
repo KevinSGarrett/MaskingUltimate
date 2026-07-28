@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_daz_tier_a_backup_cli_foundation",
+  "captured_at": "2026-07-19T04:59:09.6158984Z",
+  "project_head_before_commit": "b4854611ba109d5cbf490d23c2bf4bd09dd1c125",
+  "tracker_item": "MF-P9-12.04",
+  "supersedes_evidence": "qa/live_verification/daz_tier_a_backup_restore_foundation_20260719.json",
+  "status": "GOVERNED_DRY_RUN_CLI_AND_ISOLATED_RESTORE_PASS_LIVE_DRILL_OPEN",
+  "percent_supported": 75,
+  "implemented": [
+    "`maskfactory daz backup create --tier A` plans by default and writes only with `--apply`; source and destination are explicit and no D-drive default exists.",
+    "`maskfactory daz backup verify` checks the self-seal, exact file set, hashes, policy, Tier-A identity, and SQLite integrity read-only.",
+    "`maskfactory daz backup restore-test` plans by default and copies only with `--apply` into an empty isolated target.",
+    "Create and restore plans validate all required categories without creating destination or target directories.",
+    "A non-empty restore target is rejected with stable code 77 and its existing bytes remain unchanged."
+  ],
+  "validation": {
+    "focused_command": "python -m pytest -q tests/test_daz_backup.py",
+    "focused_tests_passed": 7,
+    "regression_command": "python -m pytest -q tests/test_daz_backup.py tests/test_daz_monitoring.py tests/test_daz_storage.py tests/test_daz_scheduler.py tests/test_daz_control_plane.py tests/test_daz_runtime_worker.py",
+    "regression_tests_passed": 54,
+    "tests_failed": 0,
+    "ruff": "PASS",
+    "black_25_1_precommit": "PASS",
+    "diff_check": "PASS"
+  },
+  "live_preservation": {
+    "scheduled_backup_tasks_reenabled": false,
+    "D_drive_used": false,
+    "F_drive_backup_created": false,
+    "DAZ_or_WSL_launched": false,
+    "MF_P6_08_05_dirty_scope_modified": false
+  },
+  "remaining_acceptance": [
+    "Configure a real backup destination on a separate present volume or Kevin-selected private backup system.",
+    "Run a drained live Tier-A create/verify/clean-root restore drill.",
+    "Rebuild registry views and execute one exact recipe semantic replay, package verification, and dataset/model lineage query against the restored root.",
+    "Record duration, missing-file result, path remapping, and final evidence hashes before completion."
+  ],
+  "source_hashes": {
+    "src/maskfactory/daz/backup.py": "c1cd7162ca62482a3aaa60855a478baa89e3c9fc707cc84eff771e7ddb366d0f",
+    "src/maskfactory/daz/__init__.py": "13f539009f8d803d9be77e3fad3eb8466eaa10f0b083b3afa072bb782d564c36",
+    "src/maskfactory/cli.py": "7f4e71d24aecdefd702203ff682bee65f74f726a5b5f0b5c5155a8f36a4e3288",
+    "tests/test_daz_backup.py": "e5f5f48d7f361b536ea774903f0777c0262a6b83a9f9346c92ff38d16fef2062"
+  },
+  "claim_boundary": "This proves the dry-run-safe command surface and isolated byte/hash/SQLite restore fixtures only. It does not select a real backup destination, copy live F-drive state, execute semantic replay or lineage recovery, re-enable maintenance, or complete MF-P9-12.04."
+}

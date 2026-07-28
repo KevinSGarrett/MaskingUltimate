@@ -1,0 +1,122 @@
+{
+  "adapter_conformance_status": "accepted",
+  "arbitration_status": "accepted",
+  "authority_kind": "fixture_authority",
+  "claim_boundary": {
+    "artifact": "producer_verify_evidence",
+    "authority_kind": "fixture_authority",
+    "claims_kevin_sgarrett_comfy_ui_main_production_commit": false,
+    "closed_fixture_producer_verify_complete": true,
+    "consumer_kind": "synthetic_main_consumer",
+    "fixture_authority": true,
+    "main_adoption_complete": false,
+    "production_core_close_authorized": false,
+    "production_main_adoption_complete": false,
+    "synthetic_main_consumer": true,
+    "synthetic_main_git_commit": "204f21cfbaffd6fb92715092db508b7e2a51efa0",
+    "trusted_keys_usage_scope": "conformance_only"
+  },
+  "consumer_kind": "synthetic_main_consumer",
+  "decided_at": "2026-07-19T15:00:00Z",
+  "decision_sha256": "1c76ec5ad1ac38f53f4f91010feb39f9e8b888092b580be0f72ee6bdb5d5bcf4",
+  "failure_control_status": "accepted",
+  "fault_injection_status": "accepted",
+  "harness": {
+    "main_adoption_complete": false,
+    "main_artifacts_present": true,
+    "rejection_reasons": [
+      "eligible"
+    ],
+    "status": "accepted",
+    "validation_issues": []
+  },
+  "journal_reconstruction_status": "reconstructed",
+  "loops": {
+    "MF-P6-11.01": {
+      "detail": "adapter_status=accepted",
+      "passed": true,
+      "surface": "external_adapter_conformance"
+    },
+    "MF-P6-11.02": {
+      "detail": "inbox adoption+adapter accepted without production adoption claim",
+      "passed": true,
+      "surface": "mode_a_package_read_via_adopted_inbox"
+    },
+    "MF-P6-11.03": {
+      "detail": "requirements/capability bundle present and harness-accepted",
+      "passed": true,
+      "surface": "mode_b_capability_offer_bundle"
+    },
+    "MF-P6-11.04": {
+      "detail": "arbitration_status=accepted",
+      "passed": true,
+      "surface": "receipt_arbitration_main_decision"
+    },
+    "MF-P6-11.05": {
+      "detail": "trusted consumer_feedback fixture key available for intake",
+      "passed": true,
+      "surface": "consumer_feedback_fixture_key"
+    },
+    "MF-P6-11.06": {
+      "detail": "history_valid=True;reconstruction=reconstructed;unmet=[]",
+      "passed": true,
+      "surface": "journal_checkpoint_and_reconstruction"
+    },
+    "MF-P6-11.07": {
+      "detail": "healthy=accepted;fault=accepted;deps=['main_circuit_breaker_execution', 'main_scoped_dag_blocking', 'main_retry_attempt_accounting', 'main_signed_failure_evidence']",
+      "passed": true,
+      "surface": "failure_control_circuit_dag"
+    },
+    "MF-P6-11.08": {
+      "detail": "recovery_status=accepted",
+      "passed": true,
+      "surface": "restart_recovery_marker"
+    },
+    "MF-P6-12.02": {
+      "detail": "hash-bound synthetic ComfyUI result/history receipt present",
+      "passed": true,
+      "surface": "comfyui_result_history_fixture_receipt"
+    },
+    "MF-P6-12.03": {
+      "detail": "duo person bindings present on fixture ComfyUI receipt",
+      "passed": true,
+      "surface": "multi_person_comfyui_bindings"
+    },
+    "MF-P6-12.04": {
+      "detail": "Mode B offer bundle + closed/open circuit evidence accepted",
+      "passed": true,
+      "surface": "mode_b_offer_and_circuit_closed"
+    },
+    "MF-P6-12.05": {
+      "detail": "pinned inbox adoption/observation/bundle present for qualification bind",
+      "passed": true,
+      "surface": "pinned_cross_project_adoption_evidence"
+    },
+    "MF-P6-12.06": {
+      "detail": "fixture pack ready for handoff evaluator; production close still gated",
+      "passed": true,
+      "surface": "handoff_ready_fixture_pack"
+    }
+  },
+  "materialization_index_sha256": "517f2c69f7cb9f3a9a9d7f34a67bf4e3a3fe16ee7f116edc465221fe9d86cffd",
+  "producer_verify_items": [
+    "MF-P6-11.01",
+    "MF-P6-11.02",
+    "MF-P6-11.03",
+    "MF-P6-11.04",
+    "MF-P6-11.05",
+    "MF-P6-11.06",
+    "MF-P6-11.07",
+    "MF-P6-11.08",
+    "MF-P6-12.02",
+    "MF-P6-12.03",
+    "MF-P6-12.04",
+    "MF-P6-12.05",
+    "MF-P6-12.06"
+  ],
+  "record_type": "fixture_main_producer_verify_evidence",
+  "recovery_status": "accepted",
+  "schema_version": "1.0.0",
+  "status": "accepted",
+  "synthetic_main_git_commit": "204f21cfbaffd6fb92715092db508b7e2a51efa0"
+}

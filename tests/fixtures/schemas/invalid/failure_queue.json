@@ -1,0 +1,12 @@
+{
+  "ts": "2026-07-11T00:25:00Z",
+  "image_id": "img_a3f9c2e17b04",
+  "failed_body_part": "left_index_finger",
+  "failure_reason": "invented_reason",
+  "pose_angle": "left_3_4",
+  "model_that_failed": "sam2_hand_lane",
+  "correction_needed": "manual_crop_repaint",
+  "priority": 0.8,
+  "resolved": false,
+  "resolution_pkg_version": null
+}

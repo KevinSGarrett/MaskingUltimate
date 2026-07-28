@@ -1,0 +1,59 @@
+{
+  "authority": "read_only_access_probe_no_terms_acceptance_download_inference_promotion_mask_truth_or_gold_authority",
+  "credential_present": true,
+  "credential_redacted": true,
+  "downloaded_bytes": 0,
+  "observed_at": "2026-07-17T08:58:59.261023Z",
+  "providers": [
+    {
+      "all_files_accessible": true,
+      "files": [
+        {
+          "content_length": 1032,
+          "error_type": null,
+          "filename": "sam3.1_multiplex.pt",
+          "http_status": 302,
+          "state": "accessible"
+        }
+      ],
+      "provider": "sam3_1",
+      "repository": "facebook/sam3.1",
+      "revision": "daa63191845a41281374e725f4c9e51c7a824460",
+      "terms_url": "https://huggingface.co/facebook/sam3.1"
+    },
+    {
+      "all_files_accessible": true,
+      "files": [
+        {
+          "content_length": 1016,
+          "error_type": null,
+          "filename": "model.ckpt",
+          "http_status": 302,
+          "state": "accessible"
+        },
+        {
+          "content_length": 1488,
+          "error_type": null,
+          "filename": "model_config.yaml",
+          "http_status": 200,
+          "state": "accessible"
+        },
+        {
+          "content_length": 1020,
+          "error_type": null,
+          "filename": "assets/mhr_model.pt",
+          "http_status": 302,
+          "state": "accessible"
+        }
+      ],
+      "provider": "sam3d_body",
+      "repository": "facebook/sam-3d-body-dinov3",
+      "revision": "11aaa346c7204874a1cbafe3d39a979080b2c55a",
+      "terms_url": "https://huggingface.co/facebook/sam-3d-body-dinov3"
+    }
+  ],
+  "request_method": "HEAD",
+  "result": "access_ready",
+  "schema_version": "1.0.0",
+  "sha256": "975d6a345b36f042fb92611c629bbd08a4c856cdf4d33724c5bb2e8a2d4bdc1d"
+}

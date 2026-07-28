@@ -1,0 +1,100 @@
+{
+  "schema_version": "maskfactory.runpod_sam31_visual_text_box_hard_qc_pass.v1",
+  "recorded_at_utc": "2026-07-23T02:56:30Z",
+  "claim": "RUNTIME_PASS_BOUNDED for one SAM3.1-first reference-lane box-prompt candidate through deterministic hard QC",
+  "production_platform": "RunPod",
+  "pod_id": "1q4ji0gg1fkhvt",
+  "local_inference_used": false,
+  "coordinator": {
+    "lease_id": "lease_6aeb69b6a70149df858138de212fbc19",
+    "lease_mode": "exclusive",
+    "qualified_peak_gib": 36,
+    "granted_at_utc": "2026-07-23T02:55:05Z",
+    "release_result": "completed_sam31_component_cleanup_canary_v4"
+  },
+  "source": {
+    "sample_id": "nude_7b75809e7490eab8a72eeaff",
+    "source_role": "reference_and_tournament_input",
+    "source_is_pixel_truth": false,
+    "source_sha256": "79ff7ff15986bb564714c408958a7a6290c7f6171a553d9daae1885554c85b09",
+    "source_shard": "/workspace/assets/MaskedWarehouse/Nude/_MASKFACTORY_INTAKE/batch_shards/runpod/reference_and_tournament_input.0001.json",
+    "catalog_batch": "/workspace/maskfactory/runtime_artifacts/nude_reference_person_catalog_comparison_20260722_v4/comparison_raised_040.json"
+  },
+  "deployed_byte_hashes": {
+    "/workspace/maskfactory/src/maskfactory/providers/sam31_runtime.py": "3ba4b385f4e957777a1bc88173cd5c0ac7703be267e354f97962486a78a61abc",
+    "/workspace/maskfactory/tools/run_sam31_runtime.py": "39f81af8f8ae96eb91216f69ecedd52ad0cac658763818d3d2577b6f19207872",
+    "/workspace/maskfactory/src/maskfactory/nude_box_mask_generation.py": "729a63d9c3b5547fac245daad4e535793344e92a5b55a62e92cadf7c94b7c042",
+    "/workspace/maskfactory/env/sam31_runtime.lock.json": "52e78d858cdd40f244b4b4e07e366bc19a66ee64c392a0cb6cc70cfec9a5db48"
+  },
+  "implementation_changes_verified": {
+    "sam31_prompt_translation": "native normalized box prompts now use the SAM3.1 public visual-text sentinel",
+    "box_only_prompt_diagnostic": "official SAM3.1 returned zero masks for box-only label-1 prompts but returned one nonempty mask for the same box with text='visual'",
+    "component_cleanup": {
+      "operation": "strict_box_clip_component_cleanup_v1",
+      "hard_qc_thresholds_weakened": false,
+      "applied": true,
+      "input_component_count": 53,
+      "output_component_count": 1,
+      "largest_component_fraction": 0.9936232257302976,
+      "removed_pixel_count": 2377,
+      "removed_fraction": 0.006376774269702408,
+      "maximum_removed_fraction": 0.02
+    }
+  },
+  "outputs": {
+    "remote_root": "/workspace/maskfactory/runtime_artifacts/nude_sam31_provider_canary_20260723_component_cleanup_v4",
+    "local_copy_root": "runtime_artifacts/nude_sam31_provider_canary_20260723_component_cleanup_v4",
+    "provider_output_json_sha256": "9b36a976dccb8875176529f604bf7ad47c68e34acfdfd163210d5226f6a41fe1",
+    "provider_output_self_sha256": "76cc9f277ec77e0020aa31c089fb38d341df703b7edb281d82503e195db6ad33",
+    "hard_qc_json_sha256": "c7b930e87295dd30f8382414e134d3edfee0740794ba48e35fa85f575848a3c7",
+    "hard_qc_self_sha256": "099c25e0c030dbffb5869dd6a5758f32816be6ff0c841d6a72bcb7759490cac4",
+    "candidate_artifact_relative_path": "nude_7b75809e7490eab8a72eeaff/person_000/sam3_1.png",
+    "candidate_artifact_sha256": "04f921cbb2bb7b4b4e07d6eb2e650a38a0743597c0510b11cad5dd3086fa5b67",
+    "candidate_mask_sha256": "9b79295704348f0ca9c6586aa1fed496dc4698bf7682369c1b39fe22d21eb757"
+  },
+  "counts": {
+    "record_count": 1,
+    "provider_mask_candidate_count": 1,
+    "hard_qc_pass_count": 1,
+    "hard_qc_fail_count": 0,
+    "strict_visual_pass_count": 0,
+    "strict_visual_abstain_count": 1,
+    "repair_attempt_count": 0,
+    "operationally_certified_artifact_count": 0,
+    "autonomous_certified_gold_count": 0,
+    "training_truth_count": 0
+  },
+  "authority": {
+    "candidate_authority": "draft_machine_candidate_only",
+    "hard_qc_may_be_overridden": false,
+    "strict_visual_review_complete": false,
+    "qualified_visual_critic_available": false,
+    "operational_certificate_issued": false,
+    "autonomous_gold_claimed": false,
+    "training_truth_claimed": false
+  },
+  "validated_commands": [
+    {
+      "command": "python -m pytest -q tests/test_nude_box_mask_generation.py tests/test_nude_reference_mask_hard_qc.py tests/test_nude_box_prompt_runner.py tests/test_sam31_runtime.py tests/test_sam31_runtime_lock.py",
+      "cwd": "C:\\w\\maskfactory-plan-modernization",
+      "result": "PASS",
+      "observed": "53 passed"
+    },
+    {
+      "command": "python -m ruff check src/maskfactory/nude_box_mask_generation.py src/maskfactory/providers/sam31_runtime.py tools/run_sam31_runtime.py tests/test_nude_box_mask_generation.py tests/test_sam31_runtime.py",
+      "cwd": "C:\\w\\maskfactory-plan-modernization",
+      "result": "PASS"
+    },
+    {
+      "command": "python -m black --check src/maskfactory/nude_box_mask_generation.py src/maskfactory/providers/sam31_runtime.py tools/run_sam31_runtime.py tests/test_nude_box_mask_generation.py tests/test_sam31_runtime.py",
+      "cwd": "C:\\w\\maskfactory-plan-modernization",
+      "result": "PASS",
+      "observed": "5 files would be left unchanged"
+    }
+  ],
+  "remaining_limits": [
+    "single-record canary only, not a full 256-record shard or 1000-record milestone",
+    "strict visual authority remains unavailable, so certification and autonomous gold remain blocked/abstained",
+    "reference source image remains reference-only and is not pixel truth"
+  ]
+}

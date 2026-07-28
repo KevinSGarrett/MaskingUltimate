@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-15T15:25:38Z",
+  "item_id": "MF-P6-06.07",
+  "result": "parallel_migration_rollback_and_sam2_pass_sam31_checkpoint_pending",
+  "live_versions": {
+    "production_cvat": "2.24.0",
+    "parallel_cvat": "2.69.0"
+  },
+  "preserved_data": {
+    "source_task_count": 21,
+    "target_task_count": 21,
+    "source_job_count": 21,
+    "target_job_count": 21,
+    "source_shape_count": 367,
+    "target_shape_count": 367,
+    "sam2_task_id": 1,
+    "sam2_task_identity_matches_both_apis": true
+  },
+  "serverless_recovery": {
+    "target_serverless_enabled": true,
+    "nuclio_host_gateway_alias": "nuclio:host-gateway",
+    "production_and_parallel_cvat_networks_joined": false,
+    "production_volumes_reused": false,
+    "parallel_lambda_catalog_http": 200,
+    "parallel_pth_sam2_present": true
+  },
+  "target_sam2_inference": {
+    "task_id": 1,
+    "frame": 0,
+    "latency_seconds": 4.219,
+    "mask_shape": [256, 256],
+    "unique_values": [0, 255],
+    "foreground_pixels": 21491,
+    "mask_array_sha256": "48a57d6aac9d4be6ca359b8e36afdce584a8657de4debb6564410af218177047",
+    "positive_point_foreground": true,
+    "negative_point_background": true
+  },
+  "rollback_rehearsal": {
+    "scope": "docker_compose_project_cvat269_stop_and_restart",
+    "parallel_target_while_stopped_http": "000_unreachable",
+    "production_cvat_while_target_stopped": "2.24.0_http_200",
+    "production_sam2_while_target_stopped": "healthy",
+    "volumes_removed": false,
+    "production_services_stopped_or_recreated": false,
+    "parallel_service_count_after_restart": 18,
+    "parallel_restart_version": "2.69.0",
+    "post_restart_target_sam2_inference": "pass"
+  },
+  "sam31_assistance": {
+    "status": "pending_gated_checkpoint",
+    "tracker_item": "MF-P0-17.04",
+    "promotion_or_assistance_authority": false
+  },
+  "artifact_hashes": {
+    "parallel_compose_override": "b1929498258934884b96b39d1c00235e4fb5c509893f777ede7222de1f91e306",
+    "parallel_assistance_verifier": "cc606a6b58f1e2b4bce23b800b8223020a3ccde16058cd8a7e3718bbe8521011",
+    "parallel_compose_tests": "c43b2e49066236805bfbedc0a12946a002864e5579e14fb21b6b8ead14be02da",
+    "prior_migration_evidence": "837ef644dda187a3ccdc3337d42b046a8a15e73cab4efbcfab8131d5a4b339c8",
+    "source_sam2_smoke": "f1517f415e21555ba02793a8234d2eeb61a1d359ccab3d83bb4ebb46afd30969",
+    "sam2_incumbent_rollback_recovery": "16541c9db6cee9c37efac36e0b9cf73f33d2fd5b5cd79de96255d12367d8ea56",
+    "parallel_sam2_assistance": "65bc02dd3ae3359372ca3d845536ede725fd0e8fc3597405543cd93a64201dab"
+  },
+  "verification": {
+    "focused_tests_passed": 49,
+    "full_repository_tests_passed": 1591,
+    "ruff": "pass",
+    "black": "pass",
+    "git_diff_check": "pass"
+  },
+  "production_annotations_or_task_state_mutated": false,
+  "authority_boundary": "This is live migration, rollback, and SAM2 assistance evidence only. It grants no SAM3.1 availability, provider promotion, production task mutation, gold, training, serving-role, or tracker-completion authority."
+}

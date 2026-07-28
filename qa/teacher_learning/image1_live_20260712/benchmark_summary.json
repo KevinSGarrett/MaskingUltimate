@@ -1,0 +1,92 @@
+{
+  "authority": "shadow_only_no_gold_or_mask_authority",
+  "budget": {
+    "available_usd": "6.000000",
+    "committed_usd": "9.000000",
+    "hard_limit_usd": "15.000000",
+    "local_date": "2026-07-12",
+    "reserved_usd": "0"
+  },
+  "image_id": "img_684faa498391",
+  "labels": [
+    "hair",
+    "left_breast",
+    "right_index_finger"
+  ],
+  "provider_results": [
+    {
+      "candidate": null,
+      "judgment": null,
+      "label": "hair",
+      "provider": "gemini",
+      "report": "reports/hair/gemini.json",
+      "status": "provider_failed_or_unusable"
+    },
+    {
+      "candidate": null,
+      "judgment": null,
+      "label": "hair",
+      "provider": "openai",
+      "report": "reports/hair/openai.json",
+      "status": "provider_failed_or_unusable"
+    },
+    {
+      "candidate": null,
+      "judgment": null,
+      "label": "hair",
+      "provider": "anthropic",
+      "report": "reports/hair/anthropic.json",
+      "status": "provider_failed_or_unusable"
+    },
+    {
+      "candidate": null,
+      "judgment": null,
+      "label": "left_breast",
+      "provider": "gemini",
+      "report": "reports/left_breast/gemini.json",
+      "status": "provider_failed_or_unusable"
+    },
+    {
+      "candidate": null,
+      "judgment": null,
+      "label": "left_breast",
+      "provider": "openai",
+      "report": "reports/left_breast/openai.json",
+      "status": "provider_failed_or_unusable"
+    },
+    {
+      "candidate": null,
+      "judgment": null,
+      "label": "left_breast",
+      "provider": "anthropic",
+      "report": "reports/left_breast/anthropic.json",
+      "status": "provider_failed_or_unusable"
+    },
+    {
+      "candidate": null,
+      "judgment": null,
+      "label": "right_index_finger",
+      "provider": "gemini",
+      "report": "reports/right_index_finger/gemini.json",
+      "status": "provider_failed_or_unusable"
+    },
+    {
+      "candidate": null,
+      "judgment": null,
+      "label": "right_index_finger",
+      "provider": "openai",
+      "report": "reports/right_index_finger/openai.json",
+      "status": "provider_failed_or_unusable"
+    },
+    {
+      "candidate": null,
+      "judgment": null,
+      "label": "right_index_finger",
+      "provider": "anthropic",
+      "report": "reports/right_index_finger/anthropic.json",
+      "status": "provider_failed_or_unusable"
+    }
+  ],
+  "reference_collection_id": "goldref_684faa498391",
+  "schema_version": "1.0.0"
+}

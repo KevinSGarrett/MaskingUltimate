@@ -1,0 +1,36 @@
+{
+  "authority_claimed": false,
+  "case_count": 12,
+  "context_taxonomy": [
+    "contact",
+    "crop",
+    "hair",
+    "hand",
+    "multi_person",
+    "occlusion",
+    "small_part"
+  ],
+  "corpus_canonical_sha256": "ba983fe792a2c83a004099b1f9f2a5403ad8260f16b32e7d2455e16670d30e74",
+  "corpus_manifest_sha256": "9959872d1b2044c35ad33fb69b9e06b5ad9d3f193e23b13fb366bd8affcee219",
+  "defect_case_count": 10,
+  "defect_taxonomy_count": 10,
+  "focused_test_count": 17,
+  "focused_tests_status": "PASS",
+  "image_disjoint_partitions": true,
+  "panel_file_count": 72,
+  "panel_total_bytes": 95226,
+  "partitions": [
+    "calibration",
+    "qualification_holdout"
+  ],
+  "recorded_at": "2026-07-21T23:20:00Z",
+  "schema_version": "1.0.0",
+  "source_sha256": {
+    "src/maskfactory/vlm/calibration_corpus.py": "5dd9dba41259f2116cd166427c29f428d8f5bb13693b91e52f98e0dd3d191023",
+    "tests/test_visual_critic_calibration_builder.py": "6fa7a2f7bcd911d71973228d42d8baea6b3ecd2880e1c5a1443b52e123fbff6e",
+    "tools/build_visual_critic_calibration_corpus.py": "c9c0df8159c6754ce3fb148038203cfa032517013baecd98640afc864006ea98"
+  },
+  "status": "CORPUS_PASS",
+  "truth_source": "deterministic_synthetic_exact_geometry",
+  "valid_case_count": 2
+}

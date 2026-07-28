@@ -1,0 +1,22 @@
+{
+  "artifact_type": "groundingdino_reference_provider_launch_failure",
+  "authority_claimed": false,
+  "binding_file_sha256": "3070bb37b267040b71067cd626ff1d1762433bf6488599e7ae55c91398209b0c",
+  "binding_path": "runtime_artifacts/p4_groundingdino_cpu_reference_provider_shard0001_20260725T231555Z/launch_binding.json",
+  "claims": {
+    "masks_emitted": false,
+    "queue_terminal_progress": false,
+    "training_eligibility": false,
+    "visual_review": false
+  },
+  "failed_before_inference": true,
+  "failure_class": "python_module_import",
+  "failure_detail": "ModuleNotFoundError: groundingdino",
+  "retry_of_same_binding_prohibited": true,
+  "schema_version": "maskfactory.groundingdino_launch_failure_receipt.v1",
+  "self_sha256": "9ff3b1d03442323f740e72ddbf3a64bd1bf5565525aff62734c315cb84ec8cf1",
+  "stderr_file_sha256": "7ba535196e6dd53f000b7e2af4e218c59a32ade3f25ec1b0928c5757b9f46b8c",
+  "stderr_path": "runtime_artifacts/p4_groundingdino_cpu_reference_provider_shard0001_20260725T231555Z/groundingdino.stderr.log",
+  "stdout_file_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_path": "runtime_artifacts/p4_groundingdino_cpu_reference_provider_shard0001_20260725T231555Z/groundingdino_report.json"
+}

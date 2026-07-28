@@ -1,0 +1,46 @@
+{
+  "audit_date": "2026-07-12",
+  "result": "PASS",
+  "scope": "durable per-instance routing for cached S02 needs_review terminals",
+  "contract": {
+    "queue": "work/queues/review_queue.jsonl",
+    "write": "append-only JSONL, fsync before success, exclusive short lock",
+    "identity": ["image_id", "instance_id", "stage", "config_hash"],
+    "database_status": "unchanged; needs_review is a semantic work route, not rejected or quarantined",
+    "mask_authority": "unchanged; the failed silhouettes remain failed and no QC threshold is relaxed"
+  },
+  "live_replay": {
+    "record_count_before": 0,
+    "record_count_after_first_run": 2,
+    "record_count_after_cached_replay": 2,
+    "queue_sha256": "480e565102280e282bc9f29dc0e5cd0aed1c21bb9f508626b81b06815fd473fb",
+    "routes": [
+      {
+        "image_id": "img_cea6df6f0f13",
+        "instance_id": "p0",
+        "stage": "S02",
+        "silhouette_bbox_ratio": 0.29936144319766883,
+        "required_range": [0.35, 0.95]
+      },
+      {
+        "image_id": "img_c02019c4979c",
+        "instance_id": "p2",
+        "stage": "S02",
+        "silhouette_bbox_ratio": 0.3117238384715588,
+        "required_range": [0.35, 0.95]
+      }
+    ]
+  },
+  "current_s02_corpus": {
+    "distinct_images": 20,
+    "instance_stage_records": 33,
+    "qc_passed": 31,
+    "needs_review": 2
+  },
+  "verification": {
+    "focused_tests": 59,
+    "full_tests": 647,
+    "ruff": "pass",
+    "format": "229 files clean"
+  }
+}

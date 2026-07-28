@@ -1,0 +1,96 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install package (CPU-only; GPU deps live in env/ lockfiles)
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch
+          pip install -e .
+          pip install ruff pytest
+      - name: Ruff lint
+        run: ruff check .
+      - name: Assert generated ontology has no drift
+        run: python tools/generate_ontology.py --check
+      - name: Assert inactive ontology-v2 artifacts have no drift
+        run: >-
+          python tools/generate_ontology_v2.py --check
+          && pytest -q tests/test_ontology_v2_derived_activation.py
+      - name: Assert inactive manifest-v2 schema has no drift
+        run: python tools/generate_manifest_v2_schema.py --check
+      - name: Assert provider runtime isolation matrix has no drift
+        run: >-
+          python tools/verify_provider_runtime_matrix.py
+          && pytest -q tests/test_provider_runtime_matrix.py
+      - name: Block training merges on ontology-aware flip invariant
+        run: pytest -q tests/test_training_augmentations.py
+      - name: Block MediaPipe vote-ablation and side-swap drift
+        run: pytest -q tests/test_mediapipe_vote_ablation.py
+      - name: Block incomplete pose-variant benchmark evidence
+        run: pytest -q tests/test_pose_variant_benchmark.py
+      - name: Block incomplete geometry-variant benchmark evidence
+        run: pytest -q tests/test_geometry_variant_benchmark.py
+      - name: Block incomplete top-level provider benchmark matrices
+        run: >-
+          pytest -q
+          tests/test_provider_benchmark_matrix.py
+          tests/test_provider_benchmark_matrix_metrics.py
+      - name: Block incomparable custom-segmenter training tournaments
+        run: pytest -q tests/test_custom_segmenter_training_tournament.py
+      - name: Block incomplete silhouette and matting benchmark evidence
+        run: pytest -q tests/test_silhouette_variant_benchmark.py
+      - name: Block operational metrics denominator and conflation drift
+        run: pytest -q tests/test_autonomy_metrics.py
+      - name: Block local-Qwen challenger benchmark contract drift
+        run: pytest -q tests/test_qwen_challenger_benchmark.py
+      - name: Block incomplete retraining lifecycle evidence
+        run: pytest -q tests/test_retraining_operations.py
+      - name: Block incomplete modernization completion bundles
+        run: pytest -q tests/test_completion_bundle.py
+      - name: Block incomplete specialist evidence packages
+        run: pytest -q tests/test_specialist_evidence_package.py
+      - name: Block registry governance and lifecycle drift
+        run: >-
+          pytest -q
+          tests/test_governance_policy.py
+          tests/test_model_registry_schema.py
+          tests/test_model_registry.py
+          tests/test_external_probe.py
+          tests/test_provider_contracts.py
+          tests/test_sam3_litetext_runtime_lock.py
+          tests/test_custom_segmenter_promotion_policy.py
+          tests/test_custom_segmenter_promotion_transaction.py
+          tests/test_specialist_benchmark_policy.py
+          tests/test_specialist_promotion.py
+          tests/test_matrix_promotion.py
+          tests/test_sam31_shadow.py
+          tests/test_sam31_candidates.py
+          tests/test_multi_person_availability.py
+          tests/test_multi_person_tournament_evidence.py
+          tests/test_multi_person_tournament_execution.py
+      - name: Verify signed currency review integrity and current input binding
+        run: >-
+          python -m maskfactory.cli governance verify-currency-review
+          qa/governance/currency/current_review.json
+          --public-key configs/governance/currency_review_ed25519_public.pem
+          --rollback-evidence qa/governance/currency/rollback_evidence.json
+          --required-event scheduled_90_day
+          --allow-failed-review
+      - name: Block currency governance gate regressions
+        run: pytest -q tests/test_currency_review.py
+      - name: Host-side shadow currency registry STATIC (no require-pass)
+        run: pytest -q tests/test_shadow_tournament_registration.py
+      - name: Audit governed asset-complete test partition
+        run: pytest --collect-only -m governed_asset
+      - name: Hermetic pytest
+        run: pytest -m "not governed_asset"

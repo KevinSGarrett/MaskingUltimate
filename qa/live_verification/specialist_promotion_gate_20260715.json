@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at_utc": "2026-07-15T03:24:23.6385234Z",
+  "item": "MF-P3-08.09",
+  "result": "implementation_pass_live_packet_pending",
+  "authority": "negative_promotion_gate_evidence_only_no_provider_role_or_gold_authority",
+  "implementation": {
+    "module": "src/maskfactory/providers/promotion.py",
+    "entry_point": "validate_specialist_promotion_packet",
+    "ci_workflow": ".github/workflows/ci.yml",
+    "named_ci_tests": [
+      "tests/test_specialist_benchmark_policy.py",
+      "tests/test_specialist_promotion.py"
+    ]
+  },
+  "required_prerequisites": {
+    "lifecycle_state": "benchmarked",
+    "identity_hashes": [
+      "source_tree_sha256",
+      "checkpoint_sha256",
+      "runtime_lock_sha256",
+      "license_evidence_sha256",
+      "content_decision_sha256"
+    ],
+    "content_compatibility": {
+      "adult_nonexplicit": "allowed",
+      "consensual_explicit_adult": "allowed"
+    },
+    "license_gate": {
+      "verify_license": false,
+      "checkpoint_decision": "allowed"
+    },
+    "benchmark": "exact frozen specialist margin manifest, primary win or labor reduction, complete bucket coverage, and zero hard-bucket regression",
+    "runtime": "deterministic, at least two repetitions, zero OOM/crash, and no more than 8 GiB peak reserved unless Kevin approves an exact alternate runtime",
+    "rollback": "distinct incumbent, one command, observed rollback and restore, passing result, timestamp, and evidence hash",
+    "packet_integrity": "canonical SHA-256"
+  },
+  "negative_fixture_coverage": [
+    "model card plus download plus smoke only",
+    "missing prerequisite sections",
+    "each missing provenance hash",
+    "installed but unbenchmarked lifecycle",
+    "prohibited adult content decision",
+    "unresolved or unclear checkpoint license",
+    "non-determinism",
+    "OOM or crash",
+    "8 GiB budget breach",
+    "unobserved rollback or restore",
+    "same-provider rollback",
+    "hard-bucket regression despite primary win",
+    "alternate runtime not approved by Kevin",
+    "packet hash tampering"
+  ],
+  "verification": {
+    "dedicated_specialist_promotion_tests": 28,
+    "focused_promotion_margin_registry_tests": 47,
+    "full_repository_tests": 1138,
+    "full_repository_result": "pass",
+    "ruff": "pass",
+    "ci_yaml": "pass"
+  },
+  "remaining_boundary": "A real promotion packet cannot exist until MF-P2-11.13/MF-P3-08.08 provide the frozen human-anchor benchmark matrix and real results. No synthetic packet is recorded as a promotion.",
+  "git_context": {
+    "branch": "codex/autonomous-gold-modernization",
+    "base_commit": "822b7b4"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "active_lock_count": 5,
+  "active_runtime_content_policy_fields": 0,
+  "focused_test_count": 23,
+  "focused_tests_status": "PASS",
+  "matrix_canonical_sha256": "9dbd1b41b7452d8180dd0dc5803bab5a5bf46bb1cb0b19bd77f3baa93ab7356a",
+  "matrix_file_sha256": "ba35c71f7bcb925df1c042896bcd296b08dd8fb8d1572ac60f8cfbbd81b18b87",
+  "recorded_at": "2026-07-21T23:52:19.0147120Z",
+  "schema_version": "1.0.0",
+  "source_sha256": {
+    "env/qwen3_vl_ollama.lock.json": "fed13b69dd13ad3089fe5e6e0e3a41d6c14125b8d95c9c20960fc85cbf678fdc",
+    "env/rfdetr_runtime.lock.json": "3c4c43ae374e8da861e2d65a68b9ce81d28e5a1ccc4a06aaf2bfe556dc54af54",
+    "env/sam31_runtime.lock.json": "9d4a93f622a216389f419bd9e81a52dec4d948d97e4c8c5a9683721e7ac506e9",
+    "env/sam3_litetext_s0_runtime.lock.json": "840dba5ca76516b97f988e28b0f0058d61f3f801fe6c2c8634ab2083d93baa1b",
+    "env/sam3d_body_runtime.lock.json": "5a68c555fe3fdc184d07551591f1a55fb921c206246f52ef3861cfdad36c3c39",
+    "src/maskfactory/providers/runtime_matrix.py": "6f8c3e05b5988cbb172bc415615fcb6825b842d4d11d7d34cc765ba8b68173f1",
+    "src/maskfactory/providers/sam3_litetext.py": "1386f573ebec43c7e322a9c280a283113bf112a60bd4ccf3c8685addb488e54c",
+    "tests/test_sam3_litetext_runtime_lock.py": "03c322c7adf86fcf4bc56f2e5f23744e4eb2ac93dad0abad65dec312ed9cae29"
+  },
+  "status": "PASS",
+  "uniform_admission_authority": [
+    "provenance",
+    "license",
+    "allowed_use",
+    "integrity",
+    "annotation_quality",
+    "technical_qa",
+    "evidence_backed_authority"
+  ]
+}

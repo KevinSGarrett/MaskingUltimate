@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_daz_monitoring_alert_contract",
+  "captured_at": "2026-07-19T04:47:08.2567466Z",
+  "project_head_before_commit": "9b427b4aee0662f933d51eddbc5240d5093dc7e5",
+  "tracker_item": "MF-P9-12.03",
+  "status": "INACTIVE_LOCAL_MONITORING_AND_ALERT_FIXTURES_PASS_PRODUCTION_TELEMETRY_OPEN",
+  "percent_supported": 80,
+  "implemented": [
+    "A closed checked-in local-only alert policy maps info, warning, high, and critical conditions to report, pause/investigate, drain, and stop-ingestion/preserve-evidence actions.",
+    "Strict Draft 2020-12 schemas reject unknown alert-policy and monitoring-snapshot fields.",
+    "The collector opens the governed SQLite database read-only, verifies integrity, and reports queue, lease, reservation, retry, crash, package, dataset, and explicitly synthetic acceptance counters.",
+    "Alert evaluation is deterministic, hash-bound, severity ordered, and suppresses lower-severity duplicates in the same incident group.",
+    "Critical fixtures cover corrupt DB signals, accepted semantic defects, and source DAZ assets detected in Git.",
+    "Dashboard and daily-report documents explicitly label accepted DAZ scenes as train-only synthetic and list real-image accuracy, real-gold counts, and zero-touch operation as not claimed.",
+    "The read-only `maskfactory daz monitor snapshot` CLI emits the snapshot, alert evaluation, dashboard, and actionable daily report without launching DAZ or mutating state."
+  ],
+  "validation": {
+    "focused_command": "python -m pytest -q tests/test_daz_monitoring.py",
+    "focused_tests_passed": 9,
+    "regression_command": "python -m pytest -q tests/test_daz_monitoring.py tests/test_daz_storage.py tests/test_daz_scheduler.py tests/test_daz_control_plane.py tests/test_daz_runtime_worker.py",
+    "regression_tests_passed": 47,
+    "tests_failed": 0,
+    "ruff": "PASS",
+    "black_25_1_precommit": "PASS",
+    "diff_check": "PASS",
+    "schema_validation": "PASS"
+  },
+  "alert_fixtures_proven": [
+    "99 GiB selects the high hard-floor alert and suppresses the duplicate soft-floor warning",
+    "three worker crashes produce a high drain action",
+    "retry rate at or above 20 percent produces a warning pause/investigate action",
+    "database corruption, an accepted semantic defect, or a source asset in Git produces a critical stop-ingestion/preserve-evidence action",
+    "policy evaluation is deterministic for identical captured input",
+    "unknown snapshot sections fail the closed schema",
+    "read-only collection leaves the fixture database byte-identical"
+  ],
+  "live_preservation": {
+    "F:/DAZ/00_control/runtime_state.json": {
+      "enabled": false,
+      "paused": true,
+      "drain": true,
+      "stop_requested": false,
+      "revision": 1
+    },
+    "scheduled_tasks": {
+      "MaskFactory_NightlyBackupIntegrity": "Disabled",
+      "MaskFactory_NightlyManifestLint": "Disabled",
+      "MaskFactory_WeeklyColdCopyReminder": "Disabled",
+      "MaskFactory_WeeklyQaMining": "Disabled"
+    },
+    "live_monitoring_cli_invoked": false,
+    "live_database_mutated": false,
+    "external_notification_configured": false,
+    "DAZ_or_WSL_launched": false,
+    "worker_lane_reenabled": false,
+    "MF_P6_08_05_dirty_scope_modified": false
+  },
+  "remaining_acceptance": [
+    "Bind production stage-duration, GPU/VRAM/CPU/RAM/IO, replay, package, coverage, dominance, near-duplicate, and useful-coverage metrics after D7 and the live worker loop provide them.",
+    "Calibrate retry and resource thresholds from the governed pilot rather than fixture defaults.",
+    "Persist and review an actual daily report from a bounded governed run, proving every alert is actionable and locally delivered.",
+    "Keep any external notification destination separately configured and prove it contains no DAZ source content before activation."
+  ],
+  "source_hashes": {
+    "configs/daz/alerts.yaml": "65d6b63c0c7f6d1eb5810aecf0a465590da996c38977a4a4e0100f1118c7cb3c",
+    "src/maskfactory/schemas/daz_alerts.schema.json": "e308132e35309ea65eeb83a1bc926c9022a571f3bfe92141e06c374f3577a64a",
+    "src/maskfactory/schemas/daz_monitoring_snapshot.schema.json": "ff3b499eb6ecc4ca23cc984aa4c1e59f66b70c6b572ddef0c17c35f924e28932",
+    "src/maskfactory/daz/monitoring.py": "eea533d8b59aea705906f01145051664b04cb13b21b5d186bb185a429b3e55c3",
+    "src/maskfactory/daz/__init__.py": "35e15021def0b2d410c325768845ea109cca84fec4a19d44d51915dc30742b37",
+    "src/maskfactory/cli.py": "5331bd4794a1da7bdb340c4354c294f485a96f2059130803ec756a0acca4ad41",
+    "tests/test_daz_monitoring.py": "c0dbd7d36c829db9ac4b3c554041b5634c54c8a2e211e7f1ba549668d0497e23"
+  },
+  "claim_boundary": "This evidence proves the inactive local monitoring/alert foundation and deterministic fixtures only. It does not prove production telemetry completeness, a delivered live alert, a reviewed daily report, D7 acceptance, the production worker loop, DAZ activation, or MF-P9-12.03 completion."
+}

@@ -1,0 +1,52 @@
+{
+  "audit_date": "2026-07-12",
+  "command": "maskfactory qa <image_id>",
+  "contract": {
+    "force_s10": true,
+    "multi_instance_aware": true,
+    "report_schema_revalidated": true,
+    "statuses": [
+      "pass",
+      "needs_human",
+      "blocked"
+    ],
+    "blocked_exit_code": 1,
+    "non_blocked_exit_code": 0
+  },
+  "live_cases": [
+    {
+      "exit_code": 0,
+      "failed_blocks": [],
+      "image_id": "img_2ca794d19be9",
+      "instance_count": 1,
+      "qc035_passed": true,
+      "routed": [
+        "QC-015",
+        "QC-017",
+        "QC-024",
+        "QC-029",
+        "QC-031"
+      ],
+      "status": "needs_human"
+    },
+    {
+      "exit_code": 1,
+      "failed_blocks": [
+        "QC-014"
+      ],
+      "image_id": "img_3f94e3070bc5",
+      "instance_count": 1,
+      "qc035_passed": true,
+      "routed": [
+        "QC-015",
+        "QC-017",
+        "QC-024",
+        "QC-028",
+        "QC-029",
+        "QC-031"
+      ],
+      "status": "blocked"
+    }
+  ],
+  "regression": "633 tests passed; Ruff check and format clean"
+}

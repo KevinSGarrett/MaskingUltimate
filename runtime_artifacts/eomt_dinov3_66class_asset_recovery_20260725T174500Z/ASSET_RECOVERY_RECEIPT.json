@@ -1,0 +1,74 @@
+{
+  "artifact_type": "eomt_dinov3_66class_asset_recovery_receipt.v1",
+  "authority": {
+    "gold_authority": false,
+    "gpu_execution": false,
+    "overwrite_allowed": false,
+    "provider_promotion": false,
+    "runtime_installation": false,
+    "substitution_allowed": false
+  },
+  "ended_at_utc": "2026-07-25T16:06:14.199563+00:00",
+  "next_safe_action": "Run 66-class static contract tests; EoMT runtime remains uninstalled and no inference/promotion is authorized.",
+  "preflight": {
+    "free_bytes": 89721152995328,
+    "minimum_free_bytes": 186921770,
+    "stage_exists": false,
+    "target_exists": false
+  },
+  "result": {
+    "assets": [
+      {
+        "filename": "model.safetensors",
+        "sha256": "1fed3231445cce739e368c1828f49215459ca33ba56b6712d48e3058274c5d6f",
+        "size_bytes": 93450628
+      },
+      {
+        "filename": "config.json",
+        "sha256": "8baa79f9cc2d41a4e01f575efb97b0aad1353ce955c9e95b7da4c8f61f1034d3",
+        "size_bytes": 6703
+      },
+      {
+        "filename": "preprocessor_config.json",
+        "sha256": "ce1554014d6dcea56b2f352e564275c9ec4a07c5efee704742fe3ed128550e2e",
+        "size_bytes": 436
+      },
+      {
+        "filename": "README.md",
+        "sha256": "1e13062ee2842cd1e92206b7a7ecd3944a243b169d0da8f43e04d94a31794165",
+        "size_bytes": 3118
+      }
+    ],
+    "target": "models/runtime_cache/eomt_dinov3_small_602edaa"
+  },
+  "self_sha256": "d2d3d9c5d78e139d4e03685eddb1eeff88f94b0db089b10db260c85408dcd6e7",
+  "snapshot": {
+    "assets": [
+      {
+        "filename": "model.safetensors",
+        "sha256": "1fed3231445cce739e368c1828f49215459ca33ba56b6712d48e3058274c5d6f",
+        "size_bytes": 93450628
+      },
+      {
+        "filename": "config.json",
+        "sha256": "8baa79f9cc2d41a4e01f575efb97b0aad1353ce955c9e95b7da4c8f61f1034d3",
+        "size_bytes": 6703
+      },
+      {
+        "filename": "preprocessor_config.json",
+        "sha256": "ce1554014d6dcea56b2f352e564275c9ec4a07c5efee704742fe3ed128550e2e",
+        "size_bytes": 436
+      },
+      {
+        "filename": "README.md",
+        "sha256": "1e13062ee2842cd1e92206b7a7ecd3944a243b169d0da8f43e04d94a31794165",
+        "size_bytes": 3118
+      }
+    ],
+    "repository": "tue-mps/eomt-dinov3-coco-panoptic-small-640",
+    "revision": "602edaa2839daf6cb3de3ad46c176098c3be9090",
+    "target": "models/runtime_cache/eomt_dinov3_small_602edaa"
+  },
+  "started_at_utc": "2026-07-25T16:06:09.288248+00:00",
+  "status": "ASSET_RECOVERY_PASS_EXACT_BOUND_BYTES"
+}

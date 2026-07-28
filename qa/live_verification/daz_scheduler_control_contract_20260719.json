@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_daz_scheduler_control_contract",
+  "captured_at": "2026-07-19T04:05:19.812400Z",
+  "project_head_before_commit": "6a3666f2871491b86f070934fc3a5dcc7c6cc9dd",
+  "tracker_item": "MF-P9-12.01",
+  "status": "INACTIVE_SCHEDULER_PRIMITIVES_AND_CONTROL_COMMANDS_PASS_LIVE_RUN_LOOP_OPEN",
+  "percent_supported": 85,
+  "implemented": [
+    "Hash-linked pause, resume, and drain transitions extend the existing default-disabled runtime control contract.",
+    "Resume requires an enabled non-stopped worker and rechecks the governed 150-GiB storage floor.",
+    "A deterministic SQLite scheduler leases pending/retry jobs by attempt then job ID under BEGIN IMMEDIATE.",
+    "The scheduler enforces the configured single-worker cap and refuses leases while disabled, paused, draining, or stopped.",
+    "Lease creation atomically updates job attempt/state and appends exact control-revision evidence.",
+    "Lease completion atomically removes the lease, records the terminal queue state, and explicitly records artifact_promoted=false.",
+    "Read-only status reports queue counts, active leases, leasing eligibility, and drained state.",
+    "JSON CLI commands implement `maskfactory daz worker status|pause|resume|drain`; mutations remain dry-run by default."
+  ],
+  "focused_validation": {
+    "command": "python -m pytest -q tests/test_daz_scheduler.py tests/test_daz_control_plane.py tests/test_daz_runtime_worker.py",
+    "tests_passed": 27,
+    "tests_failed": 0,
+    "ruff": "PASS",
+    "black_25_1_precommit": "PASS",
+    "diff_check": "PASS"
+  },
+  "queue_behaviors_proven": [
+    "default-disabled state creates no lease and leaves job/attempt/event rows unchanged",
+    "pause and drain prohibit new leases without cancelling an existing lease",
+    "drained becomes true only after the active lease finishes",
+    "two queued jobs lease deterministically and maximum_workers=1 blocks a second owner",
+    "dry-run CLI transitions do not mutate the control revision",
+    "low-space resume fails closed",
+    "terminal queue completion does not promote a partial or scene artifact"
+  ],
+  "live_preservation": {
+    "F:/DAZ/00_control/runtime_state.json": {
+      "enabled": false,
+      "paused": true,
+      "drain": true,
+      "stop_requested": false,
+      "revision": 1
+    },
+    "scheduled_tasks": {
+      "MaskFactory_NightlyBackupIntegrity": "Disabled",
+      "MaskFactory_NightlyManifestLint": "Disabled",
+      "MaskFactory_WeeklyColdCopyReminder": "Disabled",
+      "MaskFactory_WeeklyQaMining": "Disabled"
+    },
+    "live_database_mutated": false,
+    "DAZ_or_WSL_launched": false,
+    "worker_lane_reenabled": false,
+    "MF_P6_08_05_dirty_scope_modified": false
+  },
+  "remaining_acceptance": [
+    "Wire the scheduler to the production `maskfactory daz worker run` execution loop and exact recipe/result protocol.",
+    "Prove pause/resume/drain against the governed F-drive queue with a bounded inactive fixture plan after D1/D9 prerequisites permit it.",
+    "Prove restart/expired-lease recovery, heartbeat, resource ceilings, quiet hours and daily GPU limits in their dependent D11 items."
+  ],
+  "source_hashes": {
+    "src/maskfactory/daz/control.py": "76e7cb71eddd7b00a8368d643c0dbe59986a1a146ee252b24376691afebdd04c",
+    "src/maskfactory/daz/scheduler.py": "1454813da884bbaa1317f09c47d7dcc427cc686a90060cc2157905129f1ebb3b",
+    "src/maskfactory/daz/__init__.py": "4a7cc0d065ed7b66e7564a8da4661971bc525fb4c7ba150d69c0615ec28a42cd",
+    "src/maskfactory/cli.py": "1c09872978db236c128913c31617a43883d53b458ead86189dbc119251daf27a",
+    "tests/test_daz_scheduler.py": "e205430acf33c65242e1a5008d1be6bd6eadbc5c6cdecb8c70159b8362600789"
+  },
+  "claim_boundary": "This evidence proves inactive queue/control implementation and deterministic fixture behavior only. It does not activate DAZ, run a renderer, mutate the live queue, prove the production worker loop, complete MF-P9-12.01, or satisfy the seven-day soak/recovery gates."
+}

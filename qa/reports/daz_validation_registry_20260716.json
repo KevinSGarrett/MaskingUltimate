@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-16T22:45:22Z",
+  "item": "MF-P9-08.01",
+  "status": "partially_complete",
+  "percent_complete": 85,
+  "registry": {
+    "path": "configs/daz/validation_registry.yaml",
+    "file_sha256": "d23290e37671620725bf49fe116e30c70f59582caebc86d16e4f9ff0eb82ddb7",
+    "version": "1.0.0",
+    "layers": {
+      "V0": {"name": "contract", "scope": "scene"},
+      "V1": {"name": "asset", "scope": "scene"},
+      "V2": {"name": "recipe", "scope": "scene"},
+      "V3": {"name": "assembly", "scope": "scene"},
+      "V4": {"name": "geometry", "scope": "scene"},
+      "V5": {"name": "render", "scope": "scene"},
+      "V6": {"name": "semantic", "scope": "scene"},
+      "V7": {"name": "multi_person", "scope": "scene"},
+      "V8": {"name": "package", "scope": "scene"},
+      "V9": {"name": "corpus", "scope": "corpus"}
+    },
+    "scene_layers": ["V0", "V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8"],
+    "corpus_layers": ["V9"]
+  },
+  "result_contract": {
+    "statuses": ["pass", "fail", "warn", "not_applicable"],
+    "retryability": ["none", "same_recipe", "adjusted_recipe", "asset_retest"],
+    "closed_validator_id_pattern": "DAZ-V[0-9]-[0-9]{3}",
+    "validator_version_exact": true,
+    "reason_code_status_binding_exact": true,
+    "safe_relative_evidence_paths_only": true,
+    "affected_asset_and_mapping_ids_recorded": true,
+    "every_reason_inherits_documented_owner": true,
+    "every_reason_inherits_status_severity": true,
+    "every_reason_inherits_allowed_retryability": true,
+    "every_reason_inherits_evidence_requirement": true
+  },
+  "required_set_semantics": {
+    "warnings_satisfy_required": false,
+    "not_applicable_satisfies_required_when_registered": true,
+    "missing_required_result_rejects": true,
+    "failed_required_result_rejects": true,
+    "warning_required_result_rejects": true,
+    "optional_warning_is_informative": true,
+    "duplicate_results_rejected": true,
+    "mixed_entity_results_rejected": true,
+    "scene_corpus_scope_mixing_rejected": true
+  },
+  "publication": {
+    "immutable": true,
+    "idempotent": true,
+    "atomic_json_replace": true,
+    "cli": "daz recipes aggregate-validation-set"
+  },
+  "closed_fixture_coverage": {
+    "focused_tests_collected": 72,
+    "focused_tests_passed": 72,
+    "focused_tests_failed": 0,
+    "all_ten_layers_tested": true,
+    "all_four_statuses_per_layer_tested": true,
+    "every_closed_reason_code_tested": true,
+    "registry_drift_seeded": true,
+    "validator_version_reason_retry_and_evidence_drift_seeded": true,
+    "safe_path_defects_seeded": true,
+    "scene_and_corpus_aggregation_tested": true,
+    "required_warning_and_not_applicable_boundaries_tested": true,
+    "immutable_cli_replay_tested": true
+  },
+  "lineage": {
+    "implementation_sha256": "858d27432a39921a63f46dbf8c212d6e7061b40788588904aac94f456dddb021",
+    "result_schema_sha256": "738c471a628b67f54a0b5c7826195cea0a11a80d4d8be98c317d3bfc054c3c91",
+    "set_report_schema_sha256": "7d435f43247631a974548d7fcee11bac0d8567e825fc67e22aed31c5d5b71c73",
+    "test_sha256": "f58ae77a1702bdf492869eab4d59e920bd3856dd9c049892af9494feb0349695",
+    "cli_sha256": "3d46f3756a998dcd4433b801ec8ad2700b9ee4983aff8fd1699fc04c4ac2a5c7"
+  },
+  "verification": {
+    "full_repository_tests_collected": 2701,
+    "full_repository_tests_passed": 2701,
+    "full_repository_tests_failed": 0,
+    "ruff_lint": "pass",
+    "item_files_black_format": "pass",
+    "json_schemas_parsed": 118,
+    "git_diff_check": "pass"
+  },
+  "asset_and_storage_boundary": {
+    "autonomous_downloader_target": "F:\\DAZ\\03_content\\libraries\\MaskFactory_DAZ_Library",
+    "legacy_dim_and_original_roots_remain_independent": true,
+    "neither_root_assumed_complete": true,
+    "assets_moved_or_relabelled_by_this_task": false,
+    "download_install_daz_launch_render_or_live_validation_started_by_this_task": false,
+    "f_drive_soft_hold_respected": true
+  },
+  "activation_boundary": {
+    "schema_and_registry_contract_complete": true,
+    "d1_live_authority_accepted": false,
+    "d6_live_pass_chain_accepted": false,
+    "reason": "The V0-V9 schema, closed registry, result validation, aggregation semantics, publication, and CLI pass exhaustive contract fixtures. Tracker completion remains gated by the declared D1 and D6 live-acceptance dependencies."
+  },
+  "not_claimed": [
+    "live V0-V9 results for an accepted DAZ scene",
+    "D1 or D6 live acceptance",
+    "completion of MF-P9-08.01"
+  ]
+}

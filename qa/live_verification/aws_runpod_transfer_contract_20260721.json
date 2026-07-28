@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-07-21T22:03:00Z",
+  "scope": "resumable_aws_to_runpod_transfer_manifest_and_atomic_assembly",
+  "implementation": [
+    {
+      "path": "src/maskfactory/aws_runpod_transfer.py",
+      "sha256": "a72950dbdb741628c9267eff36fc98b138012106452bb5ddb7703ad7e8bb67fd"
+    },
+    {
+      "path": "tools/assemble_aws_runpod_transfer.py",
+      "sha256": "a1f57aacb04c5f69400a9f99c8f467230c27c9518e22350b79d655301b6c6bf5"
+    },
+    {
+      "path": "tests/test_aws_runpod_transfer.py",
+      "sha256": "432a233c6aa2f425cf64eac5deb49b5db52c9163ff3a4e6a7b3d8d2532db983c"
+    }
+  ],
+  "contract": {
+    "source_uri_scheme": "s3://",
+    "required_source_qualification": [
+      "role",
+      "version",
+      "license_allowed_use",
+      "qualification_evidence_sha256",
+      "expected_bytes",
+      "expected_sha256"
+    ],
+    "destination_storage_class": "runpod_persistent_network_volume",
+    "chunk_indices": "contiguous_ordered_zero_based",
+    "chunk_evidence": ["relative_path", "size", "sha256"],
+    "completion_evidence": [
+      "complete_true",
+      "expected_chunk_count",
+      "ordered_chunk_list_sha256",
+      "marker_path",
+      "marker_sha256"
+    ],
+    "assembly": "streamed_to_owned_partial_then_fsync_hash_and_atomic_replace",
+    "failure_cleanup": "owned_partial_only",
+    "chunks_preserved": true,
+    "idempotent_exact_destination": true
+  },
+  "validation": {
+    "pytest": {
+      "command": "python -m pytest -q tests/test_aws_runpod_transfer.py",
+      "passed": 8,
+      "failed": 0
+    },
+    "ruff": {
+      "command": "python -m ruff check src/maskfactory/aws_runpod_transfer.py tools/assemble_aws_runpod_transfer.py tests/test_aws_runpod_transfer.py",
+      "status": "pass"
+    },
+    "black": {
+      "command": "python -m black --check src/maskfactory/aws_runpod_transfer.py tools/assemble_aws_runpod_transfer.py tests/test_aws_runpod_transfer.py",
+      "status": "pass"
+    },
+    "negative_cases": [
+      "missing_chunk",
+      "reordered_chunks",
+      "same_size_corrupt_chunk",
+      "incomplete_completion_record",
+      "destination_escape",
+      "manifest_tamper",
+      "wrong_whole_object_hash_and_partial_cleanup"
+    ],
+    "positive_cases": [
+      "byte_identical_three_chunk_assembly",
+      "idempotent_exact_destination_reverification"
+    ]
+  },
+  "live_transfer": {
+    "selected_rows": 0,
+    "performed": false,
+    "reason": "The current gap-only analysis authorized no AWS source objects for transfer."
+  },
+  "status": "STATIC_PASS"
+}

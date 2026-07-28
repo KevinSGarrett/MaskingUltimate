@@ -1,0 +1,185 @@
+{
+  "artifact_type": "eomt_dinov3_clean_torch_closure_stage_receipt.v1",
+  "binding": {
+    "path": "runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/clean_torch_stage_binding.json",
+    "sha256": "8b6127e8d22ebefd51ce2c2d37eb80c1e67d07dcd96d8d9cec269d86c3e0fbee"
+  },
+  "controls": {
+    "gpu_execution": false,
+    "model_load": false,
+    "network_download": true,
+    "package_install": false,
+    "provider_promotion": false
+  },
+  "download": {
+    "argv": [
+      "/workspace/maskfactory/.train_cu128_ada/bin/python",
+      "-m",
+      "pip",
+      "download",
+      "--disable-pip-version-check",
+      "--only-binary=:all:",
+      "--index-url",
+      "https://download.pytorch.org/whl/cu128",
+      "--extra-index-url",
+      "https://pypi.org/simple",
+      "--dest",
+      "/workspace/maskfactory/runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels",
+      "torch==2.11.0+cu128"
+    ],
+    "output": "Looking in indexes: https://download.pytorch.org/whl/cu128, https://pypi.org/simple\nCollecting torch==2.11.0+cu128\n  Downloading torch-2.11.0%2Bcu128-cp311-cp311-manylinux_2_28_x86_64.whl.metadata (29 kB)\nCollecting filelock (from torch==2.11.0+cu128)\n  Downloading filelock-3.32.0-py3-none-any.whl.metadata (2.0 kB)\nCollecting typing-extensions>=4.10.0 (from torch==2.11.0+cu128)\n  Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)\nCollecting setuptools<82 (from torch==2.11.0+cu128)\n  Downloading setuptools-81.0.0-py3-none-any.whl.metadata (6.6 kB)\nCollecting sympy>=1.13.3 (from torch==2.11.0+cu128)\n  Downloading sympy-1.14.0-py3-none-any.whl.metadata (12 kB)\nCollecting networkx>=2.5.1 (from torch==2.11.0+cu128)\n  Downloading networkx-3.6.1-py3-none-any.whl.metadata (6.8 kB)\nCollecting jinja2 (from torch==2.11.0+cu128)\n  Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)\nCollecting fsspec>=0.8.5 (from torch==2.11.0+cu128)\n  Downloading fsspec-2026.6.0-py3-none-any.whl.metadata (10 kB)\nCollecting cuda-toolkit==12.8.1 (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == \"Linux\"->torch==2.11.0+cu128)\n  Downloading cuda_toolkit-12.8.1-py2.py3-none-any.whl.metadata (8.6 kB)\nCollecting cuda-bindings<13,>=12.9.4 (from torch==2.11.0+cu128)\n  Downloading cuda_bindings-12.9.7-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (2.6 kB)\nCollecting nvidia-cudnn-cu12==9.19.0.56 (from torch==2.11.0+cu128)\n  Downloading nvidia_cudnn_cu12-9.19.0.56-py3-none-manylinux_2_27_x86_64.whl.metadata (1.9 kB)\nCollecting nvidia-cusparselt-cu12==0.7.1 (from torch==2.11.0+cu128)\n  Downloading nvidia_cusparselt_cu12-0.7.1-py3-none-manylinux2014_x86_64.whl.metadata (7.0 kB)\nCollecting nvidia-nccl-cu12==2.28.9 (from torch==2.11.0+cu128)\n  Downloading nvidia_nccl_cu12-2.28.9-py3-none-manylinux_2_18_x86_64.whl.metadata (2.0 kB)\nCollecting nvidia-nvshmem-cu12==3.4.5 (from torch==2.11.0+cu128)\n  Downloading nvidia_nvshmem_cu12-3.4.5-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.1 kB)\nCollecting triton==3.6.0 (from torch==2.11.0+cu128)\n  Downloading triton-3.6.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (1.7 kB)\nCollecting nvidia-cublas-cu12==12.8.4.1.* (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == \"Linux\"->torch==2.11.0+cu128)\n  Downloading nvidia_cublas_cu12-12.8.4.1-py3-none-manylinux_2_27_x86_64.whl.metadata (1.7 kB)\nCollecting nvidia-cuda-runtime-cu12==12.8.90.* (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == \"Linux\"->torch==2.11.0+cu128)\n  Downloading nvidia_cuda_runtime_cu12-12.8.90-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (1.7 kB)\nCollecting nvidia-cufft-cu12==11.3.3.83.* (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == \"Linux\"->torch==2.11.0+cu128)\n  Downloading nvidia_cufft_cu12-11.3.3.83-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (1.7 kB)\nCollecting nvidia-cufile-cu12==1.13.1.3.* (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == \"Linux\"->torch==2.11.0+cu128)\n  Downloading nvidia_cufile_cu12-1.13.1.3-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (1.7 kB)\nCollecting nvidia-cuda-cupti-cu12==12.8.90.* (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == \"Linux\"->torch==2.11.0+cu128)\n  Downloading nvidia_cuda_cupti_cu12-12.8.90-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (1.7 kB)\nCollecting nvidia-curand-cu12==10.3.9.90.* (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == \"Linux\"->torch==2.11.0+cu128)\n  Downloading nvidia_curand_cu12-10.3.9.90-py3-none-manylinux_2_27_x86_64.whl.metadata (1.7 kB)\nCollecting nvidia-cusolver-cu12==11.7.3.90.* (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == \"Linux\"->torch==2.11.0+cu128)\n  Downloading nvidia_cusolver_cu12-11.7.3.90-py3-none-manylinux_2_27_x86_64.whl.metadata (1.8 kB)\nCollecting nvidia-cusparse-cu12==12.5.8.93.* (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == \"Linux\"->torch==2.11.0+cu128)\n  Downloading nvidia_cusparse_cu12-12.5.8.93-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (1.8 kB)\nCollecting nvidia-nvjitlink-cu12==12.8.93.* (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == \"Linux\"->torch==2.11.0+cu128)\n  Downloading nvidia_nvjitlink_cu12-12.8.93-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl.metadata (1.7 kB)\nCollecting nvidia-cuda-nvrtc-cu12==12.8.93.* (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == \"Linux\"->torch==2.11.0+cu128)\n  Downloading nvidia_cuda_nvrtc_cu12-12.8.93-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl.metadata (1.7 kB)\nCollecting nvidia-nvtx-cu12==12.8.90.* (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==12.8.1; platform_system == \"Linux\"->torch==2.11.0+cu128)\n  Downloading nvidia_nvtx_cu12-12.8.90-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (1.8 kB)\nCollecting cuda-pathfinder~=1.1 (from cuda-bindings<13,>=12.9.4->torch==2.11.0+cu128)\n  Downloading cuda_pathfinder-1.6.0-py3-none-any.whl.metadata (1.9 kB)\nCollecting mpmath<1.4,>=1.1.0 (from sympy>=1.13.3->torch==2.11.0+cu128)\n  Downloading mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)\nCollecting MarkupSafe>=2.0 (from jinja2->torch==2.11.0+cu128)\n  Downloading markupsafe-3.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)\nDownloading torch-2.11.0%2Bcu128-cp311-cp311-manylinux_2_28_x86_64.whl (820.2 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 820.2/820.2 MB 190.1 MB/s  0:00:03\nDownloading cuda_toolkit-12.8.1-py2.py3-none-any.whl (2.3 kB)\nDownloading nvidia_cudnn_cu12-9.19.0.56-py3-none-manylinux_2_27_x86_64.whl (657.9 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 657.9/657.9 MB 234.7 MB/s  0:00:02\nDownloading nvidia_cusparselt_cu12-0.7.1-py3-none-manylinux2014_x86_64.whl (287.2 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 287.2/287.2 MB 188.2 MB/s  0:00:01\nDownloading nvidia_nccl_cu12-2.28.9-py3-none-manylinux_2_18_x86_64.whl (296.8 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 296.8/296.8 MB 291.7 MB/s  0:00:00\nDownloading nvidia_nvshmem_cu12-3.4.5-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (139.1 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 139.1/139.1 MB 236.6 MB/s  0:00:00\nDownloading triton-3.6.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (188.2 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 188.2/188.2 MB 282.2 MB/s  0:00:00\nDownloading cuda_bindings-12.9.7-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (7.6 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 7.6/7.6 MB 240.9 MB/s  0:00:00\nDownloading cuda_pathfinder-1.6.0-py3-none-any.whl (54 kB)\nDownloading nvidia_cublas_cu12-12.8.4.1-py3-none-manylinux_2_27_x86_64.whl (594.3 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 594.3/594.3 MB 223.1 MB/s  0:00:02\nDownloading nvidia_cuda_cupti_cu12-12.8.90-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (10.2 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 10.2/10.2 MB 239.4 MB/s  0:00:00\nDownloading nvidia_cuda_nvrtc_cu12-12.8.93-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl (88.0 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 88.0/88.0 MB 278.0 MB/s  0:00:00\nDownloading nvidia_cuda_runtime_cu12-12.8.90-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (954 kB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 954.8/954.8 kB 231.7 MB/s  0:00:00\nDownloading nvidia_cufft_cu12-11.3.3.83-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (193.1 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 193.1/193.1 MB 265.1 MB/s  0:00:00\nDownloading nvidia_cufile_cu12-1.13.1.3-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (1.2 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 1.2/1.2 MB 284.0 MB/s  0:00:00\nDownloading nvidia_curand_cu12-10.3.9.90-py3-none-manylinux_2_27_x86_64.whl (63.6 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 63.6/63.6 MB 223.8 MB/s  0:00:00\nDownloading nvidia_cusolver_cu12-11.7.3.90-py3-none-manylinux_2_27_x86_64.whl (267.5 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 267.5/267.5 MB 258.2 MB/s  0:00:01\nDownloading nvidia_cusparse_cu12-12.5.8.93-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (288.2 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 288.2/288.2 MB 243.0 MB/s  0:00:01\nDownloading nvidia_nvjitlink_cu12-12.8.93-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl (39.3 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 39.3/39.3 MB 217.4 MB/s  0:00:00\nDownloading nvidia_nvtx_cu12-12.8.90-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (89 kB)\nDownloading setuptools-81.0.0-py3-none-any.whl (1.1 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 1.1/1.1 MB 314.9 MB/s  0:00:00\nDownloading fsspec-2026.6.0-py3-none-any.whl (203 kB)\nDownloading networkx-3.6.1-py3-none-any.whl (2.1 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.1/2.1 MB 459.6 MB/s  0:00:00\nDownloading sympy-1.14.0-py3-none-any.whl (6.3 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 6.3/6.3 MB 518.7 MB/s  0:00:00\nDownloading mpmath-1.3.0-py3-none-any.whl (536 kB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 536.2/536.2 kB 145.9 MB/s  0:00:00\nDownloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)\nDownloading filelock-3.32.0-py3-none-any.whl (97 kB)\nDownloading jinja2-3.1.6-py3-none-any.whl (134 kB)\nDownloading markupsafe-3.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/torch-2.11.0+cu128-cp311-cp311-manylinux_2_28_x86_64.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/cuda_toolkit-12.8.1-py2.py3-none-any.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/nvidia_cudnn_cu12-9.19.0.56-py3-none-manylinux_2_27_x86_64.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/nvidia_cusparselt_cu12-0.7.1-py3-none-manylinux2014_x86_64.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/nvidia_nccl_cu12-2.28.9-py3-none-manylinux_2_18_x86_64.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/nvidia_nvshmem_cu12-3.4.5-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/triton-3.6.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/cuda_bindings-12.9.7-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/cuda_pathfinder-1.6.0-py3-none-any.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/nvidia_cublas_cu12-12.8.4.1-py3-none-manylinux_2_27_x86_64.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/nvidia_cuda_cupti_cu12-12.8.90-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/nvidia_cuda_nvrtc_cu12-12.8.93-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/nvidia_cuda_runtime_cu12-12.8.90-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/nvidia_cufft_cu12-11.3.3.83-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/nvidia_cufile_cu12-1.13.1.3-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/nvidia_curand_cu12-10.3.9.90-py3-none-manylinux_2_27_x86_64.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/nvidia_cusolver_cu12-11.7.3.90-py3-none-manylinux_2_27_x86_64.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/nvidia_cusparse_cu12-12.5.8.93-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/nvidia_nvjitlink_cu12-12.8.93-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/nvidia_nvtx_cu12-12.8.90-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/setuptools-81.0.0-py3-none-any.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/fsspec-2026.6.0-py3-none-any.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/networkx-3.6.1-py3-none-any.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/sympy-1.14.0-py3-none-any.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/mpmath-1.3.0-py3-none-any.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/typing_extensions-4.16.0-py3-none-any.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/filelock-3.32.0-py3-none-any.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/jinja2-3.1.6-py3-none-any.whl\nSaved ./runtime_artifacts/eomt_dinov3_clean_torch_closure_candidate_20260725T190000Z/wheels/markupsafe-3.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl\nSuccessfully downloaded torch cuda-toolkit nvidia-cudnn-cu12 nvidia-cusparselt-cu12 nvidia-nccl-cu12 nvidia-nvshmem-cu12 triton cuda-bindings cuda-pathfinder nvidia-cublas-cu12 nvidia-cuda-cupti-cu12 nvidia-cuda-nvrtc-cu12 nvidia-cuda-runtime-cu12 nvidia-cufft-cu12 nvidia-cufile-cu12 nvidia-curand-cu12 nvidia-cusolver-cu12 nvidia-cusparse-cu12 nvidia-nvjitlink-cu12 nvidia-nvtx-cu12 setuptools fsspec networkx sympy mpmath typing-extensions filelock jinja2 MarkupSafe\n",
+    "returncode": 0
+  },
+  "ended_at_utc": "2026-07-25T16:29:57.654215+00:00",
+  "next_safe_action": "Resolve and hash-bind this staged CUDA core with the prior 27-wheel Transformers candidate in a clean venv; no model operation is authorized by this stage.",
+  "self_sha256": "dad4aafcf4c98900f9f784257847774850bbdc57c413d7552a95d860aa15c650",
+  "started_at_utc": "2026-07-25T16:29:13.808718+00:00",
+  "status": "CLEAN_TORCH_CLOSURE_STAGE_PASS",
+  "wheels": [
+    {
+      "bytes": 7647147,
+      "filename": "cuda_bindings-12.9.7-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl",
+      "sha256": "c6496a88d84b1209d6651b0370c19c26319e157c22f6d018bf9a358cd8049041"
+    },
+    {
+      "bytes": 54591,
+      "filename": "cuda_pathfinder-1.6.0-py3-none-any.whl",
+      "sha256": "1503af579d8379c24bdd65528379bc57039b0455be9f5f9686cf8e473a1fce51"
+    },
+    {
+      "bytes": 2283,
+      "filename": "cuda_toolkit-12.8.1-py2.py3-none-any.whl",
+      "sha256": "adc7906af4ecbf9a352f9dca5734eceb21daec281ccfcf5675e1d2f724fc2cba"
+    },
+    {
+      "bytes": 97732,
+      "filename": "filelock-3.32.0-py3-none-any.whl",
+      "sha256": "d396bea984af47333ef05e50eae7eff88c84256de6112aea0ec48a233c064fe3"
+    },
+    {
+      "bytes": 203949,
+      "filename": "fsspec-2026.6.0-py3-none-any.whl",
+      "sha256": "02e0b71817df9b2169dc30a16832045764def1191b43dcff5bb85bdee212d2a1"
+    },
+    {
+      "bytes": 134899,
+      "filename": "jinja2-3.1.6-py3-none-any.whl",
+      "sha256": "85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67"
+    },
+    {
+      "bytes": 22940,
+      "filename": "markupsafe-3.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+      "sha256": "0bf2a864d67e76e5c9a34dc26ec616a66b9888e25e7b9460e1c76d3293bd9dbf"
+    },
+    {
+      "bytes": 536198,
+      "filename": "mpmath-1.3.0-py3-none-any.whl",
+      "sha256": "a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c"
+    },
+    {
+      "bytes": 2068504,
+      "filename": "networkx-3.6.1-py3-none-any.whl",
+      "sha256": "d47fbf302e7d9cbbb9e2555a0d267983d2aa476bac30e90dfbe5669bd57f3762"
+    },
+    {
+      "bytes": 594346921,
+      "filename": "nvidia_cublas_cu12-12.8.4.1-py3-none-manylinux_2_27_x86_64.whl",
+      "sha256": "8ac4e771d5a348c551b2a426eda6193c19aa630236b418086020df5ba9667142"
+    },
+    {
+      "bytes": 10248621,
+      "filename": "nvidia_cuda_cupti_cu12-12.8.90-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "sha256": "ea0cb07ebda26bb9b29ba82cda34849e73c166c18162d3913575b0c9db9a6182"
+    },
+    {
+      "bytes": 88040029,
+      "filename": "nvidia_cuda_nvrtc_cu12-12.8.93-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl",
+      "sha256": "a7756528852ef889772a84c6cd89d41dfa74667e24cca16bb31f8f061e3e9994"
+    },
+    {
+      "bytes": 954765,
+      "filename": "nvidia_cuda_runtime_cu12-12.8.90-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "sha256": "adade8dcbd0edf427b7204d480d6066d33902cab2a4707dcfc48a2d0fd44ab90"
+    },
+    {
+      "bytes": 657906812,
+      "filename": "nvidia_cudnn_cu12-9.19.0.56-py3-none-manylinux_2_27_x86_64.whl",
+      "sha256": "ac6ad90a075bb33a94f2b4cf4622eac13dd4dc65cf6dd9c7572a318516a36625"
+    },
+    {
+      "bytes": 193118695,
+      "filename": "nvidia_cufft_cu12-11.3.3.83-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "sha256": "4d2dd21ec0b88cf61b62e6b43564355e5222e4a3fb394cac0db101f2dd0d4f74"
+    },
+    {
+      "bytes": 1197834,
+      "filename": "nvidia_cufile_cu12-1.13.1.3-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "sha256": "1d069003be650e131b21c932ec3d8969c1715379251f8d23a1860554b1cb24fc"
+    },
+    {
+      "bytes": 63619976,
+      "filename": "nvidia_curand_cu12-10.3.9.90-py3-none-manylinux_2_27_x86_64.whl",
+      "sha256": "b32331d4f4df5d6eefa0554c565b626c7216f87a06a4f56fab27c3b68a830ec9"
+    },
+    {
+      "bytes": 267506905,
+      "filename": "nvidia_cusolver_cu12-11.7.3.90-py3-none-manylinux_2_27_x86_64.whl",
+      "sha256": "4376c11ad263152bd50ea295c05370360776f8c3427b30991df774f9fb26c450"
+    },
+    {
+      "bytes": 288216466,
+      "filename": "nvidia_cusparse_cu12-12.5.8.93-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "sha256": "1ec05d76bbbd8b61b06a80e1eaf8cf4959c3d4ce8e711b65ebd0443bb0ebb13b"
+    },
+    {
+      "bytes": 287193691,
+      "filename": "nvidia_cusparselt_cu12-0.7.1-py3-none-manylinux2014_x86_64.whl",
+      "sha256": "f1bb701d6b930d5a7cea44c19ceb973311500847f81b634d802b7b539dc55623"
+    },
+    {
+      "bytes": 296782137,
+      "filename": "nvidia_nccl_cu12-2.28.9-py3-none-manylinux_2_18_x86_64.whl",
+      "sha256": "485776daa8447da5da39681af455aa3b2c2586ddcf4af8772495e7c532c7e5ab"
+    },
+    {
+      "bytes": 39254836,
+      "filename": "nvidia_nvjitlink_cu12-12.8.93-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl",
+      "sha256": "81ff63371a7ebd6e6451970684f916be2eab07321b73c9d244dc2b4da7f73b88"
+    },
+    {
+      "bytes": 139103095,
+      "filename": "nvidia_nvshmem_cu12-3.4.5-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "sha256": "042f2500f24c021db8a06c5eec2539027d57460e1c1a762055a6554f72c369bd"
+    },
+    {
+      "bytes": 89954,
+      "filename": "nvidia_nvtx_cu12-12.8.90-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "sha256": "5b17e2001cc0d751a5bc2c6ec6d26ad95913324a4adb86788c944f8ce9ba441f"
+    },
+    {
+      "bytes": 1062021,
+      "filename": "setuptools-81.0.0-py3-none-any.whl",
+      "sha256": "fdd925d5c5d9f62e4b74b30d6dd7828ce236fd6ed998a08d81de62ce5a6310d6"
+    },
+    {
+      "bytes": 6299353,
+      "filename": "sympy-1.14.0-py3-none-any.whl",
+      "sha256": "e091cc3e99d2141a0ba2847328f5479b05d94a6635cb96148ccb3f34671bd8f5"
+    },
+    {
+      "bytes": 820214272,
+      "filename": "torch-2.11.0+cu128-cp311-cp311-manylinux_2_28_x86_64.whl",
+      "sha256": "c9a7ca4c74fae10a58e6175b4b2cea953f9322bb6562bbf339ad6a05f52190ad"
+    },
+    {
+      "bytes": 188214640,
+      "filename": "triton-3.6.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+      "sha256": "e8e323d608e3a9bfcc2d9efcc90ceefb764a82b99dea12a86d643c72539ad5d3"
+    },
+    {
+      "bytes": 45571,
+      "filename": "typing_extensions-4.16.0-py3-none-any.whl",
+      "sha256": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8"
+    }
+  ]
+}

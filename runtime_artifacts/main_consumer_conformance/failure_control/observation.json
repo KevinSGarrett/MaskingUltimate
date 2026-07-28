@@ -1,0 +1,78 @@
+{
+  "at_time": "2026-07-19T15:00:00Z",
+  "claim_boundary": {
+    "artifact": "failure_control_observation",
+    "authority_kind": "fixture_authority",
+    "claims_kevin_sgarrett_comfy_ui_main_production_commit": false,
+    "consumer_kind": "synthetic_main_consumer",
+    "fixture_authority": true,
+    "main_adoption_complete": false,
+    "production_main_adoption_complete": false,
+    "synthetic_main_consumer": true,
+    "synthetic_main_git_commit": "204f21cfbaffd6fb92715092db508b7e2a51efa0",
+    "trusted_keys_usage_scope": "conformance_only"
+  },
+  "dag_passes": [
+    {
+      "depends_on": [],
+      "pass_id": "pass_predict"
+    },
+    {
+      "depends_on": [
+        "pass_predict"
+      ],
+      "pass_id": "pass_refine"
+    },
+    {
+      "depends_on": [],
+      "pass_id": "pass_unrelated"
+    }
+  ],
+  "failure": {},
+  "fallback_attempt": {},
+  "main_circuit_evidence": {
+    "authority_kind": "fixture_authority",
+    "consumer_kind": "synthetic_main_consumer",
+    "cooldown_ms": 5000,
+    "evidence_sha256": "decbd8d1db983694f82586513ea0a710f637c3cad964c9ebe499ac06930fd31c",
+    "failure_threshold": 3,
+    "half_open_probe_allowed": false,
+    "observation_window_ms": 60000,
+    "opened_at": null,
+    "release_id": "mfr_20260719_f1c700e00001",
+    "route_key": "mode-b/predict",
+    "state": "closed"
+  },
+  "main_retry_evidence": {},
+  "main_scoped_block_evidence": {},
+  "request": {
+    "attempt_number": 1,
+    "created_at": "2026-07-19T14:00:00Z",
+    "deadline_at": "2026-07-19T16:00:00Z",
+    "pass_id": "pass_predict",
+    "request_id": "mfareq_fixture_main_00000001",
+    "resource_envelope": {
+      "allow_cpu_fallback": false,
+      "maximum_output_bytes": 50000000,
+      "maximum_queue_ms": 30000,
+      "maximum_ram_mb": 16384,
+      "maximum_runtime_ms": 120000,
+      "maximum_vram_mb": 8192,
+      "priority": "normal"
+    },
+    "retry_policy": {
+      "allow_silent_fallback": false,
+      "maximum_attempts": 3,
+      "retry_only_typed_transient_errors": true
+    }
+  },
+  "route_requirements": {
+    "observed_queue_ms": 100,
+    "required_output_bytes": 1000000,
+    "required_ram_mb": 8192,
+    "required_runtime_ms": 5000,
+    "required_vram_mb": 4096,
+    "selected_device": "cuda",
+    "signed_cpu_route_permitted": false
+  }
+}

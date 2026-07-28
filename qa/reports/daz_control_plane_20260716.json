@@ -1,0 +1,96 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at_utc": "2026-07-16T03:31:42.1543128Z",
+  "scope": "DAZ D0-06 and D1-01 through D1-09 control-plane acceptance",
+  "live_result": "pass",
+  "configuration": {
+    "typed_loader": true,
+    "closed_json_schemas": [
+      "daz_paths",
+      "daz_operating_profile",
+      "daz_worker",
+      "daz_training_policy"
+    ],
+    "unknown_fields_rejected": true,
+    "default_disabled": true,
+    "automatic_purchase": false,
+    "automatic_account_login": false
+  },
+  "root_initialization": {
+    "root": "F:\\DAZ",
+    "root_uuid": "6bd1b3ba-162a-400b-96dc-e4951b892a04",
+    "missing_directories_before_apply": 0,
+    "path_registry_created": true,
+    "dry_run_replay_has_zero_changes": true,
+    "path_registry_sha256": "0c1bb5e18fa122ba1e5466b4830dec9fc80ebe2b0dde307a0b3f410ec7cfc119",
+    "path_traversal_and_registered_root_escape_rejected": true
+  },
+  "state_database": {
+    "path": "F:\\DAZ\\10_queue\\queue.sqlite",
+    "bytes": 126976,
+    "sha256_at_capture": "37e5944548cdab572fbd9bbcbd27c383938ad695d30e7b5af899e3d7680ca8c6",
+    "schema_version": 2,
+    "migration_sequence": [1, 2],
+    "replay_migrations_applied": [],
+    "journal_mode": "wal",
+    "quick_check": "ok",
+    "foreign_key_error_count": 0,
+    "missing_tables": [],
+    "append_only_events_verified_in_code_and_database_triggers": true
+  },
+  "control_state": {
+    "path": "F:\\DAZ\\00_control\\runtime_state.json",
+    "sha256": "8834f656b7f398ceae428769bb486150d60aa1e307388fb8f4995200c38103f9",
+    "revision": 1,
+    "enabled": false,
+    "paused": true,
+    "drain": true,
+    "stop_requested": false,
+    "reason": "initialize fail-closed local control state",
+    "enable_below_150_gib_refused": true
+  },
+  "daz_install_manager": {
+    "display_name": "DAZ Install Manager (64-bit)",
+    "display_version": "1.4.1.96",
+    "path": "C:\\Program Files\\DAZ 3D\\DAZ3DIM1\\DAZ3DIM.exe",
+    "bytes": 9291048,
+    "sha256": "b67210e71e67a1d7a4db01927e074be41267a5c60351a6e2b1424b8920ae2ede"
+  },
+  "storage": {
+    "free_gib": 141.328,
+    "level": "soft",
+    "large_generation_allowed": false,
+    "hard_blocked": false
+  },
+  "source_asset_git_guard": {
+    "pre_commit_hook": "prohibit-daz-source-assets",
+    "seeded_vendor_extension_detected": true,
+    "tiny_approved_fixture_allowed": true,
+    "stable_error_code": 80
+  },
+  "cli_contract": {
+    "json_fields": ["code", "reason", "entity_ids", "retryable", "evidence_paths"],
+    "configuration_path_error_range": [70, 79],
+    "no_scheduled_prompt": true,
+    "mutations_default_to_dry_run": true
+  },
+  "doctor": {
+    "passed": true,
+    "check_count": 10,
+    "warning": "storage_soft_floor: do not start new large generation plans"
+  },
+  "tests": {
+    "focused_passed": 15,
+    "focused_failed": 0,
+    "full_repository_passed": 1737,
+    "full_repository_failed": 0,
+    "blueprint_cases": ["T-001", "T-002", "T-003", "T-010"]
+  },
+  "runtime_preservation": {
+    "daz_launched": false,
+    "render_started": false,
+    "wsl_or_docker_restarted": false,
+    "acquisition_workers_stopped": false,
+    "reference_indexer_stopped": false
+  }
+}

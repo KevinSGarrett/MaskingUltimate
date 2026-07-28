@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0.0",
+  "item_id": "MF-P3-08.01",
+  "checked_at": "2026-07-22T02:27:00Z",
+  "result": "in_progress_quality_rejection",
+  "claim": "IN_PROGRESS",
+  "scope": "official SAM 3.1 direct discovery masks and seven representative specialist routes",
+  "implementation": {
+    "direct_discovery_masks_bypass_interactive_refinement": true,
+    "box_discovery_still_requires_official_interactive_provider": true,
+    "direct_candidate_provider_role": "concept_detector",
+    "cross_semantic_near_duplicate_iou_rejection": 0.98,
+    "writer_and_verifier_both_fail_closed": true
+  },
+  "execution": {
+    "provider": "runpod",
+    "pod_id": "1q4ji0gg1fkhvt",
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "source_commit": "5dd401d1c5c1d5c3eedff06d41b77af824517619",
+    "checkpoint_sha256": "0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6",
+    "runtime_lock_sha256": "734f8017db6cd51c5093b23f3ef4f4c49861e41a39de60453d37fc006f03bee6",
+    "requirements_lock_sha256": "9fbf4fdd79b64d38f7baa58d127d06098859d8408fb84e2592a1dbd862c9c871",
+    "runner_sha256": "2fa8491b34cb896389d9ab5596aabf4381c4c93d866f65d4c604450d8cca1d91"
+  },
+  "representative_routes": [
+    "accessory",
+    "chest_pelvic",
+    "clothing",
+    "foot_toe",
+    "hair",
+    "hand_finger",
+    "repeated_instance"
+  ],
+  "exemplar_assisted_run": {
+    "request_sha256": "8b0b718c2d184bd13cac42d64fcc67c321856883e64b371610272d566c640d7a",
+    "output_npz_sha256": "c52fe9e37931138cd551cd6a0c6ea7d50ec6037d43c1471ce70f46afa975840d",
+    "payload_sha256": "352042c6a2196e25ca3ce3ba43d76dc49aef9916bf614e3606033abbc09c721d",
+    "result_count": 8,
+    "inference_latency_ms": 1581.542156636715,
+    "peak_inference_vram_bytes": 6074663424,
+    "stdout_sha256": "5b87061941c1baf1c08faad89932c650daf44b7e6afe28abc9244f0401cccdbb",
+    "stderr_sha256": "727481922d2817ffa13c8793cb8d21328fddea00719e53eb615295fc1957c048",
+    "median_off_diagonal_iou": 0.9957592627383322,
+    "maximum_off_diagonal_iou": 0.9982534069346214,
+    "candidate_package_result": "rejected_cross_semantic_near_duplicates"
+  },
+  "text_only_control": {
+    "request_sha256": "91b3317ea084d892442e49f346c968157383513fccb6b79d4ba9b8f83725025a",
+    "output_npz_sha256": "2dde9ce7c8600e49542e0e4fe39232d18146720b50d6cc9fee9d63b7c4a5e12e",
+    "payload_sha256": "e17bc690785020d669a49b2bcc75fa52c93a7605093691d5504510d49ef18b4e",
+    "result_count": 0,
+    "inference_latency_ms": 1385.3711038827896,
+    "peak_inference_vram_bytes": 5969594368,
+    "stdout_sha256": "666e8c380e7bb13d43b951d2b26a41e3219991950a2ace522a51b83c4a451720",
+    "stderr_sha256": "e7e5e8192bdadc2ad8c8d256d206efdecfe58c25ac9108417857ee3e32492c9c"
+  },
+  "visual_review": {
+    "reviewer": "codex_mask_authority",
+    "result": "fail_all_outputs_for_requested_specialist_semantics",
+    "finding": "the full-person exemplar dominated specialist text; seven masks were near-identical left-person silhouettes and the extra accessory result was another whole person",
+    "panel_path": "qa/live_verification/panels/sam31_specialist_exemplar_rejection_20260722.jpg",
+    "panel_sha256": "c3af40756d864d307e3ded06948beead0ae734610395af38ce61af1f5b96ac5e"
+  },
+  "validation": {
+    "focused_tests_passed": 99,
+    "ruff": "pass",
+    "black": "pass",
+    "git_diff_check": "pass",
+    "live_artifact_replay": "rejected_as_cross_semantic_near_duplicate"
+  },
+  "source_sha256": {
+    "src/maskfactory/providers/sam31_candidates.py": "c342ac1b3149614b37fece55947f44bbc9437277b172614efcf9509a311ab18a",
+    "src/maskfactory/providers/sam31_orchestration.py": "c9ed3a05a9da443a3241cd868b1b33fd5b19eae61ccd27f222c13b4cc8799139",
+    "src/maskfactory/stages/production.py": "8439506a6717849f182de2c0ebd7ca55ff7617c66d1cf7d74b8b1fd54fea9aa2",
+    "tests/test_sam31_candidates.py": "97d794ca1b8a15a4c3963428e3bba20893eacd5adca26894e2c3fcb7dd1ec0a7",
+    "tests/test_sam31_orchestration.py": "908eeeeb7385c8cb0b092c83e5a855381357ac9e628a6994612875d78419030d",
+    "tests/test_production_runners.py": "01e9ce433f6c829a5bcf76128202218314e5ab38c5948849e8c0a3296571916b"
+  },
+  "non_mutation": {
+    "active_provider_map_changed": false,
+    "provider_lifecycle_changed": false,
+    "production_registry_changed": false,
+    "promotion_or_mask_authority_granted": false
+  },
+  "remaining": "specialist prompts require a materially different grounding strategy and live positive visual qualification before MF-P3-08.01 can complete"
+}

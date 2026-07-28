@@ -1,0 +1,54 @@
+{
+  "authority": "shadow_advisory_human_approval_required",
+  "image_id": "img_cdab0311dc96",
+  "instance_id": "p0",
+  "judgments": [
+    {
+      "confidence": 0.97,
+      "correction": {
+        "negative_points": [],
+        "polygon": [],
+        "positive_points": [],
+        "rationale": "The mask bears no resemblance to a foot region and instead spans shoulder/arm/hand/torso areas with 220 disconnected components, exceeding ontology limits and area sanity bounds by >6x. This requires full human re-annotation rather than automated point/polygon correction; cloud proposal is unusable for guiding a fix.",
+        "tool": "human_review"
+      },
+      "defects": [
+        "wrong_side",
+        "includes_neighbor_part",
+        "boundary_too_loose",
+        "other"
+      ],
+      "evidence": "The proposed mask for right_foot_base is almost entirely composed of unrelated body regions (shoulder, arm, hand, torso) rather than the visible right foot. Auto-QA deterministic overrides confirm component_count_exceeds_ontology, area_sanity failure (12.81% vs expected 0.2-4%), components_limit violation (220 components), side_coherence flip, and chain_integrity break. This is a catastrophic segmentation failure, not a minor boundary issue.",
+      "latency_ms": 15739,
+      "model": "claude-sonnet-5",
+      "observations": {
+        "contour": "Contour lines trace torso/arm/hand boundaries, not a foot outline; this confirms the mask is mislabeled/misassigned to right_foot_base.",
+        "full_context": "No green specialist contour visible on full-context image; overall pose shows a distorted/limb-scrambled figure making per-part attribution unreliable.",
+        "mask": "Binary mask shows large disconnected white blobs covering head/shoulder area and a hand-shaped region, plus a thin sliver at bottom near feet - mask geometry does not correspond to a single foot region and instead spans multiple unrelated body areas.",
+        "neighbor_overlap": "Neighbor overlap image identical to overlay, confirming overlap with shoulder, upper arm, forearm, hand_base, and torso regions - severe includes_neighbor_part contamination.",
+        "overlay": "Red overlay covers torso, shoulder, arm, and hand areas plus a thin strip near feet - this is clearly not isolated to right_foot_base, showing massive over-inclusion of neighboring parts (shoulder, arm, torso).",
+        "source_crop": "Source crop shows same distorted figure; foot regions are small and ambiguous at full-body scale, no clear right_foot_base isolation visible."
+      },
+      "provider": "anthropic",
+      "response_sha256": "7338623fd3f8ba2e4bb0c78590d0afd89597af170a04c242c2608617a5ba9bfb",
+      "usage": {
+        "cost_usd": 0.031396,
+        "input_tokens": 11748,
+        "output_tokens": 790
+      },
+      "verdict": "fail"
+    }
+  ],
+  "label": "right_foot_base",
+  "local_audit": {
+    "deterministic_overrides": [
+      "component_count_exceeds_ontology"
+    ],
+    "final_verdict": "fail",
+    "model": "qwen2.5vl:7b",
+    "model_verdict": "pass"
+  },
+  "schema_version": "1.0.0",
+  "sha256": "acd7ed7c455a3de8102d4b29407cb155a828576b8e7e57082b49cb1a4197ef15",
+  "source_sha256": "d962e914116cdd97d00187c313fe94c99e9e725ab50d38b79d203f1ed47bae43"
+}

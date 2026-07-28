@@ -1,0 +1,1010 @@
+{
+  "accepted": false,
+  "artifact_type": "daz_engineering_fixture_set",
+  "authority": "daz_engineering_fixture_set_static_only_unrendered",
+  "canonical_sha256": "c3e9b2a7a4c39671169f9b0bd1504fdfc1736dda7b8af416d2c55660f7d295b6",
+  "coverage_dimensions": [
+    "pose_family",
+    "camera_framing",
+    "wardrobe_class",
+    "lighting_family",
+    "anatomy_variant",
+    "prop_presence"
+  ],
+  "fixture_count": 24,
+  "fixtures": [
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "female_g9",
+        "camera_framing": "full_body",
+        "lighting_family": "soft_key",
+        "pose_family": "standing",
+        "prop_presence": "none",
+        "wardrobe_class": "nude_baseline"
+      },
+      "fixture_index": 0,
+      "person_count": 1,
+      "recipe_sha256": "eca6877c7e1ae6056676fcf1cda4fd7421172806f0c8cbea59967bdc3bdcc33e",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "female_g9",
+          "camera_framing": "full_body",
+          "lighting_family": "soft_key",
+          "pose_family": "standing",
+          "prop_presence": "none",
+          "wardrobe_class": "nude_baseline"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 8375518388673808255,
+          "characters": 17505791006743244531,
+          "degrade": 6585650908339770462,
+          "environment": 4425954196563383157,
+          "lighting": 14211981982260300333,
+          "placement": 17734220318417698388,
+          "poses": 14091809675854014562,
+          "render": 9673976314211050381
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_000"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_000",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    },
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "male_g9",
+        "camera_framing": "three_quarter",
+        "lighting_family": "hard_rim",
+        "pose_family": "seated",
+        "prop_presence": "chair",
+        "wardrobe_class": "lingerie"
+      },
+      "fixture_index": 1,
+      "person_count": 1,
+      "recipe_sha256": "45b0bc1519a525f3a3636a64c76c75a7aade3755ab47007c8adb9e47fca16bde",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "male_g9",
+          "camera_framing": "three_quarter",
+          "lighting_family": "hard_rim",
+          "pose_family": "seated",
+          "prop_presence": "chair",
+          "wardrobe_class": "lingerie"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 10099155305810199478,
+          "characters": 6275035423874452043,
+          "degrade": 11795079819539736242,
+          "environment": 248011002852980547,
+          "lighting": 17653248466201318444,
+          "placement": 15282844643552897612,
+          "poses": 17265306359794625392,
+          "render": 15014867116916827704
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_001"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_001",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    },
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "neutral_g9",
+        "camera_framing": "upper_body",
+        "lighting_family": "overcast",
+        "pose_family": "kneeling",
+        "prop_presence": "floor_support",
+        "wardrobe_class": "casual"
+      },
+      "fixture_index": 2,
+      "person_count": 1,
+      "recipe_sha256": "d1dad5b93424448d1d1b4147b3cd0de57bbb7a86a3078dd81ff5bb1abe61692c",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "neutral_g9",
+          "camera_framing": "upper_body",
+          "lighting_family": "overcast",
+          "pose_family": "kneeling",
+          "prop_presence": "floor_support",
+          "wardrobe_class": "casual"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 2347633053941744465,
+          "characters": 6199418393126496673,
+          "degrade": 15500578011592515649,
+          "environment": 8696751873692498633,
+          "lighting": 7716000070187174010,
+          "placement": 9026298166225533868,
+          "poses": 10798297122851996979,
+          "render": 15541703238077481252
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_002"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_002",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    },
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "female_g9",
+        "camera_framing": "close_portrait",
+        "lighting_family": "practical_warm",
+        "pose_family": "reclined",
+        "prop_presence": "handheld",
+        "wardrobe_class": "structured"
+      },
+      "fixture_index": 3,
+      "person_count": 1,
+      "recipe_sha256": "057b25f3a987bc81ef1dba75423a8cdc25b4979202fd609db30d3a5b68613078",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "female_g9",
+          "camera_framing": "close_portrait",
+          "lighting_family": "practical_warm",
+          "pose_family": "reclined",
+          "prop_presence": "handheld",
+          "wardrobe_class": "structured"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 6103707808889367169,
+          "characters": 16678796763476469952,
+          "degrade": 9079138123652210521,
+          "environment": 10501225970580543476,
+          "lighting": 18059502516996734456,
+          "placement": 12655581403687389542,
+          "poses": 6248120080444554933,
+          "render": 16008374637481503414
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_003"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_003",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    },
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "male_g9",
+        "camera_framing": "full_body",
+        "lighting_family": "soft_key",
+        "pose_family": "contrapposto",
+        "prop_presence": "none",
+        "wardrobe_class": "nude_baseline"
+      },
+      "fixture_index": 4,
+      "person_count": 1,
+      "recipe_sha256": "bb6849b207d9a99aa442881227652b1e679e5ea0abf1ec7f6ac73ef66733417a",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "male_g9",
+          "camera_framing": "full_body",
+          "lighting_family": "soft_key",
+          "pose_family": "contrapposto",
+          "prop_presence": "none",
+          "wardrobe_class": "nude_baseline"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 16277220334773237292,
+          "characters": 5375797188928170231,
+          "degrade": 3525484294658491220,
+          "environment": 5322863451850710381,
+          "lighting": 16488723952103606414,
+          "placement": 9728846495054877462,
+          "poses": 8323262715248876230,
+          "render": 12005701688629140204
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_004"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_004",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    },
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "neutral_g9",
+        "camera_framing": "three_quarter",
+        "lighting_family": "hard_rim",
+        "pose_family": "arms_raised",
+        "prop_presence": "chair",
+        "wardrobe_class": "lingerie"
+      },
+      "fixture_index": 5,
+      "person_count": 1,
+      "recipe_sha256": "3991b45d6c5ed95defdfc39ec131c5f1d94ba7131ecd5e8b10ddff4b47385f9a",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "neutral_g9",
+          "camera_framing": "three_quarter",
+          "lighting_family": "hard_rim",
+          "pose_family": "arms_raised",
+          "prop_presence": "chair",
+          "wardrobe_class": "lingerie"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 3102475025543932086,
+          "characters": 1662804060492616859,
+          "degrade": 1849523492918177014,
+          "environment": 17543508350883391276,
+          "lighting": 18371030947718292602,
+          "placement": 14901225665328477665,
+          "poses": 12228823309272476973,
+          "render": 15750895267600722504
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_005"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_005",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    },
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "female_g9",
+        "camera_framing": "upper_body",
+        "lighting_family": "overcast",
+        "pose_family": "standing",
+        "prop_presence": "floor_support",
+        "wardrobe_class": "casual"
+      },
+      "fixture_index": 6,
+      "person_count": 1,
+      "recipe_sha256": "858459253db5cd186305d8611f78576d172f9aec28ae4d3d295f5817fdb5f326",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "female_g9",
+          "camera_framing": "upper_body",
+          "lighting_family": "overcast",
+          "pose_family": "standing",
+          "prop_presence": "floor_support",
+          "wardrobe_class": "casual"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 7910032137348171116,
+          "characters": 1955012612111892067,
+          "degrade": 8908625245683923089,
+          "environment": 12242203049242522564,
+          "lighting": 4189238298836995777,
+          "placement": 14085320648369807820,
+          "poses": 679191291720808929,
+          "render": 16028672696673175628
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_006"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_006",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    },
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "male_g9",
+        "camera_framing": "close_portrait",
+        "lighting_family": "practical_warm",
+        "pose_family": "seated",
+        "prop_presence": "handheld",
+        "wardrobe_class": "structured"
+      },
+      "fixture_index": 7,
+      "person_count": 1,
+      "recipe_sha256": "3c201d7285e96a7c987f56c599eca5c7b8c5049b0013b0173142b4dece0b2e14",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "male_g9",
+          "camera_framing": "close_portrait",
+          "lighting_family": "practical_warm",
+          "pose_family": "seated",
+          "prop_presence": "handheld",
+          "wardrobe_class": "structured"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 12448849683745501255,
+          "characters": 6202723057657568409,
+          "degrade": 9436568116135388999,
+          "environment": 16598150445858253618,
+          "lighting": 2706255909929755923,
+          "placement": 11551017300207659290,
+          "poses": 4288178504123844759,
+          "render": 15781076832586364248
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_007"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_007",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    },
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "neutral_g9",
+        "camera_framing": "full_body",
+        "lighting_family": "soft_key",
+        "pose_family": "kneeling",
+        "prop_presence": "none",
+        "wardrobe_class": "nude_baseline"
+      },
+      "fixture_index": 8,
+      "person_count": 1,
+      "recipe_sha256": "c7d5ff861bd610e77eaa5b1b0eae9844228aa65f41a4f5eb80a94f105cd62213",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "neutral_g9",
+          "camera_framing": "full_body",
+          "lighting_family": "soft_key",
+          "pose_family": "kneeling",
+          "prop_presence": "none",
+          "wardrobe_class": "nude_baseline"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 15869202005310376487,
+          "characters": 9518795700285724443,
+          "degrade": 6349166482366389806,
+          "environment": 6916111344697858654,
+          "lighting": 6310026190940884262,
+          "placement": 15701313164447493994,
+          "poses": 8817182290622620087,
+          "render": 4229868795798356394
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_008"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_008",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    },
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "female_g9",
+        "camera_framing": "three_quarter",
+        "lighting_family": "hard_rim",
+        "pose_family": "reclined",
+        "prop_presence": "chair",
+        "wardrobe_class": "lingerie"
+      },
+      "fixture_index": 9,
+      "person_count": 1,
+      "recipe_sha256": "b85a8801770c8ede062670130debe0a626ea3ee2eed1031808b2ebd379edae85",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "female_g9",
+          "camera_framing": "three_quarter",
+          "lighting_family": "hard_rim",
+          "pose_family": "reclined",
+          "prop_presence": "chair",
+          "wardrobe_class": "lingerie"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 10429794772650820328,
+          "characters": 8394971695337742513,
+          "degrade": 12655691300810432735,
+          "environment": 8674466568048887952,
+          "lighting": 10009597052778669854,
+          "placement": 10971866794291468693,
+          "poses": 12484694982937306189,
+          "render": 3146688240608245775
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_009"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_009",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    },
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "male_g9",
+        "camera_framing": "upper_body",
+        "lighting_family": "overcast",
+        "pose_family": "contrapposto",
+        "prop_presence": "floor_support",
+        "wardrobe_class": "casual"
+      },
+      "fixture_index": 10,
+      "person_count": 1,
+      "recipe_sha256": "93f1ee061f7c8e7b3e97c82783a351a1877437c71271f8b4bf49adaddfd165e5",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "male_g9",
+          "camera_framing": "upper_body",
+          "lighting_family": "overcast",
+          "pose_family": "contrapposto",
+          "prop_presence": "floor_support",
+          "wardrobe_class": "casual"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 10190907520561136707,
+          "characters": 12156229618991883570,
+          "degrade": 9655099241911411238,
+          "environment": 14147439017260883383,
+          "lighting": 15850216833788861132,
+          "placement": 8319460733451738913,
+          "poses": 5222647322919580357,
+          "render": 11335276568643571077
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_010"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_010",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    },
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "neutral_g9",
+        "camera_framing": "close_portrait",
+        "lighting_family": "practical_warm",
+        "pose_family": "arms_raised",
+        "prop_presence": "handheld",
+        "wardrobe_class": "structured"
+      },
+      "fixture_index": 11,
+      "person_count": 1,
+      "recipe_sha256": "554c1b5c224e181e484405a387d5220dfcf0cf61f60f20e44eca80ce341dce0d",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "neutral_g9",
+          "camera_framing": "close_portrait",
+          "lighting_family": "practical_warm",
+          "pose_family": "arms_raised",
+          "prop_presence": "handheld",
+          "wardrobe_class": "structured"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 12460346562966913286,
+          "characters": 3385579772037728947,
+          "degrade": 14068891997843022552,
+          "environment": 13349507593639214906,
+          "lighting": 16977390764425772134,
+          "placement": 18053833462646734498,
+          "poses": 9414340867255722581,
+          "render": 12884225733865463682
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_011"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_011",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    },
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "female_g9",
+        "camera_framing": "full_body",
+        "lighting_family": "soft_key",
+        "pose_family": "standing",
+        "prop_presence": "none",
+        "wardrobe_class": "nude_baseline"
+      },
+      "fixture_index": 12,
+      "person_count": 1,
+      "recipe_sha256": "09a31853ca54766c5b32235ccf57c4898cce3d063ca4ac567e4dd7652d58b4c8",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "female_g9",
+          "camera_framing": "full_body",
+          "lighting_family": "soft_key",
+          "pose_family": "standing",
+          "prop_presence": "none",
+          "wardrobe_class": "nude_baseline"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 4998330858813002637,
+          "characters": 12858009648906698017,
+          "degrade": 11900679617226292066,
+          "environment": 11710310419329613228,
+          "lighting": 3997578077765571021,
+          "placement": 3233335418951871717,
+          "poses": 8613381340793520887,
+          "render": 13559935999420181610
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_012"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_012",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    },
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "male_g9",
+        "camera_framing": "three_quarter",
+        "lighting_family": "hard_rim",
+        "pose_family": "seated",
+        "prop_presence": "chair",
+        "wardrobe_class": "lingerie"
+      },
+      "fixture_index": 13,
+      "person_count": 1,
+      "recipe_sha256": "ddf564438c08ea9eea2390e0dcb15c6b9523bb18cc956b78d8cf6124d31bfd27",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "male_g9",
+          "camera_framing": "three_quarter",
+          "lighting_family": "hard_rim",
+          "pose_family": "seated",
+          "prop_presence": "chair",
+          "wardrobe_class": "lingerie"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 10380183288115735201,
+          "characters": 15233826659009832419,
+          "degrade": 2859661360151927664,
+          "environment": 8649107676742649128,
+          "lighting": 9216528651752432322,
+          "placement": 12845284200385842432,
+          "poses": 3904591285257815217,
+          "render": 474882579811577156
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_013"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_013",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    },
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "neutral_g9",
+        "camera_framing": "upper_body",
+        "lighting_family": "overcast",
+        "pose_family": "kneeling",
+        "prop_presence": "floor_support",
+        "wardrobe_class": "casual"
+      },
+      "fixture_index": 14,
+      "person_count": 1,
+      "recipe_sha256": "c082c02b8165178ee6d9c34e2cdf8bb96719ae2d0998f6c49f4a0b2961a2f07f",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "neutral_g9",
+          "camera_framing": "upper_body",
+          "lighting_family": "overcast",
+          "pose_family": "kneeling",
+          "prop_presence": "floor_support",
+          "wardrobe_class": "casual"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 9837233310455861478,
+          "characters": 2854537208179923417,
+          "degrade": 13098571600575184875,
+          "environment": 11080444696456863311,
+          "lighting": 13526568467794250662,
+          "placement": 6285729233680614852,
+          "poses": 12346246951991042591,
+          "render": 11386950635826184877
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_014"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_014",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    },
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "female_g9",
+        "camera_framing": "close_portrait",
+        "lighting_family": "practical_warm",
+        "pose_family": "reclined",
+        "prop_presence": "handheld",
+        "wardrobe_class": "structured"
+      },
+      "fixture_index": 15,
+      "person_count": 1,
+      "recipe_sha256": "bff43fe139911804cde2ee5ff3940f3aeeeab080f9fd1979d3b01b56243c09e6",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "female_g9",
+          "camera_framing": "close_portrait",
+          "lighting_family": "practical_warm",
+          "pose_family": "reclined",
+          "prop_presence": "handheld",
+          "wardrobe_class": "structured"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 10093293786482633939,
+          "characters": 4897034789612317860,
+          "degrade": 4371263677875216686,
+          "environment": 970349371633915216,
+          "lighting": 7429652710477919898,
+          "placement": 381219111361783296,
+          "poses": 12231872933348584452,
+          "render": 16023246395210332036
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_015"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_015",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    },
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "male_g9",
+        "camera_framing": "full_body",
+        "lighting_family": "soft_key",
+        "pose_family": "contrapposto",
+        "prop_presence": "none",
+        "wardrobe_class": "nude_baseline"
+      },
+      "fixture_index": 16,
+      "person_count": 1,
+      "recipe_sha256": "ecace4ef4bc23d03d9408178179463609ae1688f8ec6afd7a052e25c4428fbd5",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "male_g9",
+          "camera_framing": "full_body",
+          "lighting_family": "soft_key",
+          "pose_family": "contrapposto",
+          "prop_presence": "none",
+          "wardrobe_class": "nude_baseline"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 14022124978245869484,
+          "characters": 10149993260455455971,
+          "degrade": 11500817245795905915,
+          "environment": 9314602136274643457,
+          "lighting": 16776472628955989450,
+          "placement": 10821445379179321612,
+          "poses": 7939944362628079409,
+          "render": 16071299567226709039
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_016"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_016",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    },
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "neutral_g9",
+        "camera_framing": "three_quarter",
+        "lighting_family": "hard_rim",
+        "pose_family": "arms_raised",
+        "prop_presence": "chair",
+        "wardrobe_class": "lingerie"
+      },
+      "fixture_index": 17,
+      "person_count": 1,
+      "recipe_sha256": "6324d65cbe5f4c66039bf50be4f2a10ad611883e6ee0e5933bf5eaace8bccc72",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "neutral_g9",
+          "camera_framing": "three_quarter",
+          "lighting_family": "hard_rim",
+          "pose_family": "arms_raised",
+          "prop_presence": "chair",
+          "wardrobe_class": "lingerie"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 841186466854607839,
+          "characters": 1568759148565490145,
+          "degrade": 17327128677444822759,
+          "environment": 4889106714999612197,
+          "lighting": 6649976548428094170,
+          "placement": 9423835265541522529,
+          "poses": 11587003397447584528,
+          "render": 12072209147888175217
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_017"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_017",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    },
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "female_g9",
+        "camera_framing": "upper_body",
+        "lighting_family": "overcast",
+        "pose_family": "standing",
+        "prop_presence": "floor_support",
+        "wardrobe_class": "casual"
+      },
+      "fixture_index": 18,
+      "person_count": 1,
+      "recipe_sha256": "df0162d7c420ab42d4c2fa75b3f9ebbcd9bba9c5adc2a3a412e61fbb1d0e4f4c",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "female_g9",
+          "camera_framing": "upper_body",
+          "lighting_family": "overcast",
+          "pose_family": "standing",
+          "prop_presence": "floor_support",
+          "wardrobe_class": "casual"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 9635032342564809301,
+          "characters": 16640238165298157634,
+          "degrade": 3087299301871384951,
+          "environment": 6201127064936246361,
+          "lighting": 17847576048431262213,
+          "placement": 3618368820507450281,
+          "poses": 4144634214631698851,
+          "render": 6220318582230599209
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_018"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_018",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    },
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "male_g9",
+        "camera_framing": "close_portrait",
+        "lighting_family": "practical_warm",
+        "pose_family": "seated",
+        "prop_presence": "handheld",
+        "wardrobe_class": "structured"
+      },
+      "fixture_index": 19,
+      "person_count": 1,
+      "recipe_sha256": "d19f0e4c44c426337fdfc3f70fe15029b33fb3b31c49a15c814cf9a519095d43",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "male_g9",
+          "camera_framing": "close_portrait",
+          "lighting_family": "practical_warm",
+          "pose_family": "seated",
+          "prop_presence": "handheld",
+          "wardrobe_class": "structured"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 288024142780802281,
+          "characters": 410831075365575846,
+          "degrade": 16538004768273060693,
+          "environment": 6407950578073941474,
+          "lighting": 13652554062557433821,
+          "placement": 13841374469002528540,
+          "poses": 14168663732508894212,
+          "render": 2518842383152343182
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_019"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_019",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    },
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "neutral_g9",
+        "camera_framing": "full_body",
+        "lighting_family": "soft_key",
+        "pose_family": "kneeling",
+        "prop_presence": "none",
+        "wardrobe_class": "nude_baseline"
+      },
+      "fixture_index": 20,
+      "person_count": 1,
+      "recipe_sha256": "2c326dc1178987b69b2b22275fb1eda0e0c0633934758f8fc1ad362ab9d2a55a",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "neutral_g9",
+          "camera_framing": "full_body",
+          "lighting_family": "soft_key",
+          "pose_family": "kneeling",
+          "prop_presence": "none",
+          "wardrobe_class": "nude_baseline"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 7675506286411656315,
+          "characters": 13179643814151227522,
+          "degrade": 9664472596265670731,
+          "environment": 5680031277249045792,
+          "lighting": 13915612466420409985,
+          "placement": 18030076753626731833,
+          "poses": 15275848228377458802,
+          "render": 9330847798129264680
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_020"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_020",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    },
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "female_g9",
+        "camera_framing": "three_quarter",
+        "lighting_family": "hard_rim",
+        "pose_family": "reclined",
+        "prop_presence": "chair",
+        "wardrobe_class": "lingerie"
+      },
+      "fixture_index": 21,
+      "person_count": 1,
+      "recipe_sha256": "e6e2b3422252bdb1d80f354494b7d5eec0bce1235d5ad3faada86fab9ad3cfdc",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "female_g9",
+          "camera_framing": "three_quarter",
+          "lighting_family": "hard_rim",
+          "pose_family": "reclined",
+          "prop_presence": "chair",
+          "wardrobe_class": "lingerie"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 4647063203949099404,
+          "characters": 2545388510865481861,
+          "degrade": 11617011987733647136,
+          "environment": 17133834027794431537,
+          "lighting": 12192011346005166235,
+          "placement": 11648288174127506274,
+          "poses": 2467658063722913373,
+          "render": 11964519541488732129
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_021"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_021",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    },
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "male_g9",
+        "camera_framing": "upper_body",
+        "lighting_family": "overcast",
+        "pose_family": "contrapposto",
+        "prop_presence": "floor_support",
+        "wardrobe_class": "casual"
+      },
+      "fixture_index": 22,
+      "person_count": 1,
+      "recipe_sha256": "67338c662451cc33dc92673c86ea1b0d377ced3cb9216e2f8be5e4808e0624e6",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "male_g9",
+          "camera_framing": "upper_body",
+          "lighting_family": "overcast",
+          "pose_family": "contrapposto",
+          "prop_presence": "floor_support",
+          "wardrobe_class": "casual"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 16232120496508328664,
+          "characters": 6570915659503503787,
+          "degrade": 13005605576637882264,
+          "environment": 10867191390339545899,
+          "lighting": 14415884974409941841,
+          "placement": 3123184775401337365,
+          "poses": 7572187121162242098,
+          "render": 9526290233802568129
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_022"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_022",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    },
+    {
+      "accepted": false,
+      "coverage": {
+        "anatomy_variant": "neutral_g9",
+        "camera_framing": "close_portrait",
+        "lighting_family": "practical_warm",
+        "pose_family": "arms_raised",
+        "prop_presence": "handheld",
+        "wardrobe_class": "structured"
+      },
+      "fixture_index": 23,
+      "person_count": 1,
+      "recipe_sha256": "89df8f5eef3fd8e53b87e4cb683c7a232772a2046aa54ff7e0dfeb80803209e6",
+      "recipe_stub": {
+        "coverage": {
+          "anatomy_variant": "neutral_g9",
+          "camera_framing": "close_portrait",
+          "lighting_family": "practical_warm",
+          "pose_family": "arms_raised",
+          "prop_presence": "handheld",
+          "wardrobe_class": "structured"
+        },
+        "master_seed": 20260719,
+        "named_random_streams": {
+          "camera": 9766411658145902455,
+          "characters": 16631676840895889569,
+          "degrade": 7716180140750800032,
+          "environment": 11643922145923577801,
+          "lighting": 5368340232801049833,
+          "placement": 11899787236613612523,
+          "poses": 10924484337824944965,
+          "render": 2969041602044885579
+        },
+        "person_count": 1,
+        "scene_id": "daz_scene_eng_023"
+      },
+      "rendered": false,
+      "scene_id": "daz_scene_eng_023",
+      "status": "engineering_unrendered",
+      "training_eligible": false
+    }
+  ],
+  "live_daz_execution": false,
+  "mapping_authority": false,
+  "master_seed": 20260719,
+  "person_count": 1,
+  "proof_tier": "STATIC_PASS",
+  "rendered": false,
+  "schema_version": "1.0.0",
+  "set_id": "daz_engineering_fixture_set_c3e9b2a7a4c39671169f9b0b",
+  "training_eligible": false
+}

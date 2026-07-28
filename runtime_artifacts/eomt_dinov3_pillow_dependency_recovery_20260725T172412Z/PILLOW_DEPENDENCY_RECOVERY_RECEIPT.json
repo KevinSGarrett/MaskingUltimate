@@ -1,0 +1,39 @@
+{
+  "authority": {
+    "gold_authority": false,
+    "mask_promotion": false,
+    "shadow_only": true,
+    "visual_acceptance": false
+  },
+  "captured_at": "2026-07-25T17:25:18.587469+00:00",
+  "compatibility": {
+    "gpu_execution": false,
+    "interpreter": "CPython 3.11 clean runtime",
+    "platform": "manylinux x86_64",
+    "scope": "EoMT clean runtime only"
+  },
+  "prior_failure": {
+    "binding_self_sha256": "9eab3a97b8fcc8027729b2afaa93c4e28d5238609ca07568b0468546126c58bb",
+    "error": "ModuleNotFoundError: No module named PIL"
+  },
+  "reason": "EoMT 66-class GPU shadow runner failed before binding/model load because the sealed CP311 clean runtime had no PIL module.",
+  "result": "candidate_staged",
+  "schema_version": "maskfactory.eomt_dinov3_pillow_dependency_recovery.v1",
+  "self_sha256": "4f9e2a0a23c8be08a14b9c1255f561fdfedfab8d28196b148070274811785208",
+  "source": {
+    "binary_only": true,
+    "index": "https://pypi.org/simple",
+    "no_dependencies": true,
+    "requirement": "Pillow==12.3.0"
+  },
+  "staging_diagnostic": {
+    "first_receipt_attempt": "not_sealed",
+    "reason": "case-sensitive metadata assertion failed after wheel download; the existing wheel was inspected and sealed without a second download"
+  },
+  "wheel": {
+    "bytes": 6934408,
+    "filename": "pillow-12.3.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+    "path": "runtime_artifacts/eomt_dinov3_pillow_dependency_recovery_20260725T172412Z/wheels/pillow-12.3.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+    "sha256": "23d27a3e0307ec2244cc51e7287b919aa68d097504ebe19df4e76a98a3eea5bd"
+  }
+}

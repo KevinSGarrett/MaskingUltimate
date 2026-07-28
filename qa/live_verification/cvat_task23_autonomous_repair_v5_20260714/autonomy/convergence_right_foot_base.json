@@ -1,0 +1,423 @@
+{
+  "authoritative_gold": false,
+  "converged": false,
+  "enabled": true,
+  "final_votes": [
+    {
+      "candidate_id": "civitai_specialist_raw",
+      "confidence": 1.0,
+      "defects": [],
+      "model": "qwen2.5vl:7b",
+      "participated": true,
+      "provider": "self_hosted_qwen",
+      "round": 2,
+      "verdict": "pass"
+    },
+    {
+      "candidate_id": "civitai_specialist_raw",
+      "confidence": 0.86,
+      "defects": [],
+      "model": "gpt-5.6-luna",
+      "participated": true,
+      "provider": "openai",
+      "round": 2,
+      "verdict": "pass"
+    },
+    {
+      "candidate_id": "civitai_specialist_raw",
+      "confidence": 0.83,
+      "defects": [],
+      "model": "claude-sonnet-5",
+      "participated": true,
+      "provider": "anthropic",
+      "round": 2,
+      "verdict": "pass"
+    },
+    {
+      "candidate_id": "civitai_specialist_raw",
+      "confidence": null,
+      "defects": [],
+      "model": "gemini-3.5-flash",
+      "participated": false,
+      "provider": "gemini",
+      "reason": "provider_unavailable_or_call_failed",
+      "round": 2,
+      "verdict": "not_run"
+    }
+  ],
+  "publication_target": "reversible_non_gold_review_draft",
+  "remaining_uncertainties": [
+    "candidate_not_converged:gemini",
+    "candidate_not_converged:openai",
+    "candidate_not_converged:anthropic"
+  ],
+  "round_count": 2,
+  "rounds": [
+    {
+      "candidate_id": "civitai_specialist_raw",
+      "candidate_path": "C:\\Comfy_UI_Main_Masking\\qa\\live_verification\\cvat_task23_autonomous_repair_v5_20260714\\autonomy_candidates\\right_foot_base\\civitai_specialist_raw.png",
+      "candidate_score": 0.3350820436840132,
+      "cloud_votes": [
+        {
+          "confidence": 0.94,
+          "correction": {
+            "negative_points": [
+              [
+                950,
+                950
+              ],
+              [
+                700,
+                980
+              ],
+              [
+                970,
+                700
+              ]
+            ],
+            "polygon": [],
+            "positive_points": [
+              [
+                520,
+                620
+              ],
+              [
+                700,
+                790
+              ],
+              [
+                820,
+                860
+              ],
+              [
+                900,
+                850
+              ]
+            ],
+            "rationale": "Use positive points across the dorsal foot, forefoot, and toe tips to recover the clipped distal area, with negative background points below and beyond the foot to preserve the outer silhouette and avoid spill.",
+            "tool": "points"
+          },
+          "defects": [
+            "missing_visible_area",
+            "boundary_too_tight"
+          ],
+          "evidence": "The mask's lower contour lies inside the visible toe undersides and misses small portions of the forward toe silhouette, so the visible right_foot_base is incomplete despite correct side and anatomy.",
+          "latency_ms": 11180,
+          "model": "gpt-5.6-luna",
+          "observations": {
+            "contour": "The contour is generally plausible and connected, with no obvious background island or neighboring-foot inclusion; the ankle cutoff is somewhat angular but anatomically plausible for this crop.",
+            "full_context": "The visible foreground foot is the character's right foot according to the semantic pose-chain evidence; it is the planted foot extending toward the viewer-right.",
+            "mask": "The mask captures the main foot region but terminates too high along the distal underside and appears to clip portions of the toe tips, especially toward the lower and right edges.",
+            "neighbor_overlap": "No meaningful overlap with the rear/other foot or background is evident; the main issue is undercoverage of the visible target boundary.",
+            "overlay": "The red overlay follows the dorsal and lateral foot boundary reasonably well, but the white boundary is visibly inset from the lowest toe contours and slightly inset near the forwardmost toe.",
+            "source_crop": "The crop clearly shows the complete visible right foot, including the ankle transition, dorsal surface, heel-side edge, toe tips, and undersides of the toes."
+          },
+          "provider": "openai",
+          "response_sha256": "2488ec0c5b8df8606c6abb34541d46135b4c5764d1e0d5258691f88780e24015",
+          "usage": {
+            "cost_usd": 0.014635,
+            "input_tokens": 9697,
+            "output_tokens": 823
+          },
+          "verdict": "fail"
+        },
+        {
+          "confidence": 0.85,
+          "correction": {
+            "negative_points": [],
+            "polygon": [],
+            "positive_points": [],
+            "rationale": "Mask boundary and coverage are accurate for the visible right foot; no correction needed.",
+            "tool": "none"
+          },
+          "defects": [],
+          "evidence": "The candidate corresponds to the character's right foot per COCO semantic chain (right ankle joint at distance 263px vs left at 787px), and the mask/contour closely follow the visible foot boundary from ankle to toes without contamination.",
+          "latency_ms": 16047,
+          "model": "claude-sonnet-5",
+          "observations": {
+            "contour": "White contour line hugs the foot edges tightly, including the small step at the ankle/shin boundary and the toe tips, matching visible skin edges.",
+            "full_context": "Cyan ROI box marks the forward-standing foot (toes visible, foot flat on ground); pose-chain evidence confirms this is the right foot (distance 263px to right chain vs 787px to left chain).",
+            "mask": "Binary mask forms a coherent foot-shaped blob including ankle taper, arch, and forward toe cluster with no holes or stray fragments.",
+            "neighbor_overlap": "No visible overlap with the other leg/foot or background; contour stays within the single foot's visible pixels.",
+            "overlay": "Red overlay aligns closely with the visible foot silhouette, covering ankle to toe tips without spilling onto the ground or the other leg.",
+            "source_crop": "High-res crop shows a foot with visible ankle tendons, toes with faint nail striations, resting on gray ground; no clothing or occlusion present."
+          },
+          "provider": "anthropic",
+          "response_sha256": "21fc576693d59cd74042d1e107a2c2fbbccc97b989e7c43525df7e4575c418d2",
+          "usage": {
+            "cost_usd": 0.035314,
+            "input_tokens": 12462,
+            "output_tokens": 1039
+          },
+          "verdict": "pass"
+        }
+      ],
+      "committee_error": null,
+      "complete_map_qa": {
+        "all_block_qc_ids": [
+          "QC-014"
+        ],
+        "baseline_score": 0.8587051878870733,
+        "block_qc_ids": [],
+        "non_regressing": true,
+        "overall": "fail",
+        "report_path": "C:\\Comfy_UI_Main_Masking\\qa\\live_verification\\cvat_task23_autonomous_repair_v5_20260714\\candidate_full_qa\\right_foot_base_committee_r1\\qa_report.json",
+        "score": 0.8585343719780354
+      },
+      "converged": false,
+      "correction_attempts": [
+        {
+          "path": null,
+          "provider": "openai",
+          "reason": "SAM candidate violates a teacher correction point; fallback_errors=['ServingProviderError:SAM2 refine produced no positive-anchored candidate']",
+          "status": "not_created"
+        }
+      ],
+      "generated_candidates": [],
+      "local_audit": {
+        "confidence": 1.0,
+        "correction_instruction": "",
+        "correction_plan": {
+          "negative_points": [],
+          "positive_points": [
+            [
+              1024,
+              1536
+            ],
+            [
+              1088,
+              1792
+            ],
+            [
+              1152,
+              1920
+            ],
+            [
+              1216,
+              2088
+            ],
+            [
+              1280,
+              2240
+            ],
+            [
+              1344,
+              2400
+            ],
+            [
+              1408,
+              2560
+            ],
+            [
+              1472,
+              2720
+            ],
+            [
+              1536,
+              2880
+            ],
+            [
+              1592,
+              3040
+            ],
+            [
+              1656,
+              3200
+            ],
+            [
+              1720,
+              3360
+            ]
+          ],
+          "rationale": "The mask is correctly defined by the contour and covers all visible pixels of the right foot without including any background or clothing. The component count is one, which matches the ontology maximum.",
+          "tool": "none"
+        },
+        "deterministic_overrides": [],
+        "evidence": "The mask covers the correct named anatomy (right foot) and includes all visible pixels. It excludes background/clothing/neighbor anatomy, respects occlusion, and follows the visible boundary.",
+        "label": "right_foot_base",
+        "latency_ms": 152104,
+        "model": "qwen2.5vl:7b",
+        "model_confidence": 1.0,
+        "model_verdict": "pass",
+        "observations": {
+          "contour": "The cyan proposed boundary over the source crop matches the visible anatomy of the right foot, indicating that the mask is correctly defined by the contour.",
+          "full_context": "The full context image shows a person standing with the right foot visible, and there is a cyan crop box around the foot.",
+          "mask": "The proposed binary mask covers the entire visible anatomy of the right foot, including the toes and heel. It does not include any background or clothing pixels.",
+          "neighbor_overlap": "There are no magenta pixels in this image as it only contains a single anatomical label.",
+          "overlay": "The red overlay over the source crop shows that the mask correctly identifies the right foot without including any other anatomical parts.",
+          "source_crop": "The source crop image focuses on the right foot of the person in the full context image. The image appears to be high-resolution and contains only pixels from the foot area."
+        },
+        "problems": [],
+        "prompt_version": "p-workhorse-v1-multimage-tools",
+        "verdict": "pass"
+      },
+      "replanning_required": true,
+      "round": 1,
+      "target_confidence": 0.95
+    },
+    {
+      "candidate_id": "civitai_specialist_raw",
+      "candidate_path": "C:\\Comfy_UI_Main_Masking\\qa\\live_verification\\cvat_task23_autonomous_repair_v5_20260714\\autonomy_candidates\\right_foot_base\\civitai_specialist_raw.png",
+      "candidate_score": 0.36424871035067985,
+      "cloud_votes": [
+        {
+          "confidence": 0.86,
+          "correction": {
+            "negative_points": [],
+            "polygon": [],
+            "positive_points": [],
+            "rationale": "No executable correction is justified; the visible target coverage and boundary are acceptable.",
+            "tool": "none"
+          },
+          "defects": [],
+          "evidence": "The candidate is anatomically the character's right foot per COCO semantic chain evidence, and the mask provides continuous coverage of the visible foot with a clean outer silhouette and no substantial neighbor contamination.",
+          "latency_ms": 11674,
+          "model": "gpt-5.6-luna",
+          "observations": {
+            "contour": "The cyan contour is generally aligned with the skin/background boundary. The straight upper ankle cutoff is plausible for the atomic foot-base boundary rather than an attempt to include the lower leg.",
+            "full_context": "The highlighted target is the character's right foot, consistent with the supplied semantic pose-chain evidence. It is the forward foot and is clearly visible without clothing overlap.",
+            "mask": "The mask covers the visible foot, ankle region, heel, instep, and toes. It does not extend into the neighboring rear foot or clothing.",
+            "neighbor_overlap": "No meaningful overlap with the rear foot, lower leg outside the target boundary, clothing, or background objects is evident.",
+            "overlay": "The red overlay follows the visible foot silhouette closely along the heel, instep, toe tips, and lower edge. No obvious background spill is visible.",
+            "source_crop": "The crop shows the complete visible foot and lower ankle transition, with a clear silhouette against the gray background. The ankle boundary is partially defined by the crop framing and pose."
+          },
+          "provider": "openai",
+          "response_sha256": "394e3512a09a879d9016941a459b056d4ebf94e6a7433e52ae3eaf7dd746a180",
+          "usage": {
+            "cost_usd": 0.014683,
+            "input_tokens": 9727,
+            "output_tokens": 826
+          },
+          "verdict": "pass"
+        },
+        {
+          "confidence": 0.83,
+          "correction": {
+            "negative_points": [],
+            "polygon": [],
+            "positive_points": [],
+            "rationale": "The mask boundary already tightly follows the visible right foot silhouette with correct side assignment per pose-chain evidence; no correction is needed despite unrelated global QA flags concerning other body parts (shoulder/knee/thigh chain integrity).",
+            "tool": "none"
+          },
+          "defects": [],
+          "evidence": "The mask corresponds to the character's right foot (nearest_semantic_chain=right, expected_character_side=right), fully covering the visible dorsal foot and toes with a tight, accurate boundary and no contamination from background, floor, or the other foot.",
+          "latency_ms": 46867,
+          "model": "claude-sonnet-5",
+          "observations": {
+            "contour": "White contour line tracks the ankle joint notch, lateral foot edge, and toe tips accurately, following the true anatomical boundary of the visible foot.",
+            "full_context": "Cyan ROI box captures the forward-leaning right foot in the full-body pose; pose-chain evidence confirms this limb belongs to the character's right side (distance_to_chain_px right=263 vs left=788).",
+            "mask": "Binary mask outlines a foot-shaped silhouette including ankle notch, arch, and five-toe front edge, with no stray blobs or holes.",
+            "neighbor_overlap": "No visible overlap with the trailing left foot/ankle or any clothing; the crop is isolated to the single right foot region.",
+            "overlay": "Red overlay aligns closely with the foot's visible skin boundary, covering the dorsal foot and toes without bleeding onto the gray floor or the other leg.",
+            "source_crop": "High-res crop shows a bare foot from ankle to toe-tips, with visible tendons, toenails, and ground shadow; no clothing or other limb overlaps this region."
+          },
+          "provider": "anthropic",
+          "response_sha256": "12ed73cdca30684cd3b229267f8260ee3ca95f8c53f7a7b3d1f0df78a0849425",
+          "usage": {
+            "cost_usd": 0.084906,
+            "input_tokens": 25078,
+            "output_tokens": 3475
+          },
+          "verdict": "pass"
+        }
+      ],
+      "committee_error": null,
+      "complete_map_qa": {
+        "all_block_qc_ids": [
+          "QC-014"
+        ],
+        "baseline_score": 0.8587051878870733,
+        "block_qc_ids": [],
+        "non_regressing": true,
+        "overall": "fail",
+        "report_path": "C:\\Comfy_UI_Main_Masking\\qa\\live_verification\\cvat_task23_autonomous_repair_v5_20260714\\candidate_full_qa\\right_foot_base_committee_r2\\qa_report.json",
+        "score": 0.8585343719780354
+      },
+      "converged": false,
+      "correction_attempts": [],
+      "generated_candidates": [],
+      "local_audit": {
+        "confidence": 1.0,
+        "correction_instruction": "",
+        "correction_plan": {
+          "negative_points": [],
+          "positive_points": [
+            [
+              1024,
+              1536
+            ],
+            [
+              1088,
+              1792
+            ],
+            [
+              1152,
+              1920
+            ],
+            [
+              1216,
+              2088
+            ],
+            [
+              1280,
+              2240
+            ],
+            [
+              1344,
+              2400
+            ],
+            [
+              1408,
+              2560
+            ],
+            [
+              1472,
+              2720
+            ],
+            [
+              1536,
+              2880
+            ],
+            [
+              1592,
+              3040
+            ],
+            [
+              1656,
+              3200
+            ],
+            [
+              1720,
+              3360
+            ]
+          ],
+          "rationale": "The mask is correctly defined by the contour and covers all visible pixels of the right foot without including any background or clothing. The component count is one, which matches the ontology maximum.",
+          "tool": "none"
+        },
+        "deterministic_overrides": [],
+        "evidence": "The mask covers the correct named anatomy (right foot) and includes all visible pixels. It excludes background/clothing/neighbor anatomy, respects occlusion, and follows the visible boundary.",
+        "label": "right_foot_base",
+        "latency_ms": 66695,
+        "model": "qwen2.5vl:7b",
+        "model_confidence": 1.0,
+        "model_verdict": "pass",
+        "observations": {
+          "contour": "The cyan proposed boundary over the source crop matches the visible anatomy of the right foot, indicating that the mask is correctly defined by the contour.",
+          "full_context": "The full context image shows a person standing with the right foot visible, and there is a cyan crop box around the foot.",
+          "mask": "The proposed binary mask covers the entire visible anatomy of the right foot, including the toes and heel. It does not include any background or clothing pixels.",
+          "neighbor_overlap": "There are no magenta pixels in this image as it only contains a single anatomical label.",
+          "overlay": "The red overlay over the source crop shows that the mask correctly identifies the right foot without including any other anatomical parts.",
+          "source_crop": "The source crop image focuses on the right foot of the person in the full context image. The image appears to be high-resolution and contains only pixels from the foot area."
+        },
+        "problems": [],
+        "prompt_version": "p-workhorse-v1-multimage-tools",
+        "verdict": "pass"
+      },
+      "round": 2,
+      "target_confidence": 0.95
+    }
+  ],
+  "rounds_report": "autonomy/convergence_right_foot_base.json",
+  "stop_reason": "reviewers_produced_no_novel_safe_candidate",
+  "target_confidence": 0.95
+}

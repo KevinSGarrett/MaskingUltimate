@@ -1,0 +1,128 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_invalidation_publication_gap_audit",
+  "recorded_at": "2026-07-19T01:03:35.5367882Z",
+  "project_head": "ef9c1811203d5e24072b993d103d6124b9b65dd2",
+  "tracker_item": "MF-P6-10.06",
+  "audit_status": "STRONG_EVENT_CONTRACT_PUBLICATION_LEDGER_OPEN",
+  "completion_credit_percent": 55,
+  "governing_requirement": "Publish trusted-signed, idempotent, lossless invalidation events with exact homogeneous targets, exact reason/action mapping, effective time, rollback or supersession evidence, append-only journal position, and deterministic rejection of replay, collision, fork, deletion, reorder, stale trust, and revocation drift.",
+  "prerequisites": [
+    "MF-P6-08.07 remains blocked because no current-state operational certificate invalidation decision exists.",
+    "MF-P6-10.05 remains blocked because no live adoption conformance decision exists."
+  ],
+  "verified_foundations": [
+    "Strict closed invalidation schema with canonical payload hash, Ed25519 producer_journal signature, production trust-key checks, fixture/runtime evidence firewall, occurred/effective timestamps, and blocking severity.",
+    "Exactly 27 invalidation reasons equal the adoption revalidation-trigger set.",
+    "Each reason restricts target kinds and requires a closed minimum action set.",
+    "Exact target and transition IDs are unique within an event, every transition strictly lowers authority, and active certificate invalidation retains an explicit terminal status.",
+    "Required actions reference known transitions, cover every transition, carry deadlines and verification-policy hashes, and include the reason's minimum action set.",
+    "Release supersession requires an exact replacement binding and non-supersession events reject that binding.",
+    "The separate signed bridge lifecycle chain detects duplicate event IDs, noncontiguous sequence, stream/epoch drift, previous-hash/causation drift, nonmonotonic time, illegal transitions, journal replay mismatch, and invalidation-driven state changes without an exact invalidation-document binding.",
+    "Focused taxonomy, lifecycle replay, trust-role/revocation, Ruff, and schema parsing validations pass."
+  ],
+  "focused_validation": {
+    "commands": [
+      "python -m pytest -q tests/test_mask_bridge_contracts_v1.py::test_invalidation_taxonomy_is_lossless_actionable_and_equals_adoption_triggers tests/test_mask_bridge_contracts_v1.py::test_event_vocabulary_equals_transition_matrix_and_invalidation_replays_adoption_block tests/test_mask_bridge_contracts_v1.py::test_trust_anchor_role_revocation_and_self_signed_substitution_fail_closed",
+      "python -m ruff check src/maskfactory/validation.py tests/test_mask_bridge_contracts_v1.py",
+      "python -m json.tool src/maskfactory/schemas/mask_authority_invalidation_event.schema.json"
+    ],
+    "tests_passed": 3,
+    "tests_failed": 0,
+    "ruff": "pass",
+    "schema_json": "pass"
+  },
+  "trusted_resign_probes": [
+    {
+      "probe": "release_revoked_without_rollback_binding",
+      "mutation": "Use a valid trusted-signed release_revoked event with rollback_binding=null.",
+      "observed_validators": [],
+      "gap": "Release revocation requires rollback_release as an action but does not require or resolve exact rollback bytes/evidence."
+    },
+    {
+      "probe": "mixed_target_kinds",
+      "mutation": "One qa_regression event carries both artifact and certificate transitions, with all actions covering both.",
+      "observed_validators": [],
+      "gap": "Permitted kinds are checked independently; an event is not required to contain one homogeneous target kind/scope class."
+    },
+    {
+      "probe": "extra_policy_action",
+      "mutation": "Add refresh_release to a certificate_revoked event in addition to its required actions.",
+      "observed_validators": [],
+      "gap": "The policy is enforced as a subset, not an exact action set; an undeclared extra action can acquire signed execution authority."
+    },
+    {
+      "probe": "unanchored_journal_position",
+      "mutation": "Set sequence=999 and causation_id=invented-causation, then trusted re-sign.",
+      "observed_validators": [],
+      "gap": "The standalone invalidation validator accepts declared journal position without the prior event, expected stream/head, or checkpoint."
+    },
+    {
+      "probe": "same_idempotency_different_payloads",
+      "mutation": "Two different valid trusted-signed invalidation payloads use the same idempotency key.",
+      "first_observed_validators": [],
+      "second_observed_validators": [],
+      "gap": "Validation is single-event only; no invalidation batch/ledger validator rejects same-key/different-body collisions or proves same-key/same-body replay safety."
+    }
+  ],
+  "confirmed_gaps": [
+    "No production invalidation publisher or append-only invalidation ledger exists.",
+    "No batch/chain validator binds invalidation sequence, causation, stream, idempotency key, prior payload hash, checkpoint, or current revocation head.",
+    "Reason target policy permits heterogeneous target kinds and action policy permits extras rather than exact equality.",
+    "Rollback binding is never semantically required or byte-resolved; superseding binding is shaped but not resolved to a published release.",
+    "evidence_sha256 and action verification_policy_sha256 are signed declarations but no evidence root/catalog is accepted for actual-byte resolution.",
+    "No deterministic publisher observes current release/adoption/certificate/provider/policy/ontology state, derives exact transitions/actions, persists atomically, and returns a replay-safe publication receipt."
+  ],
+  "implementation_packet": {
+    "work_unit_id": "MF-CURSOR-10.06-INVALIDATION-PUBLICATION-LEDGER",
+    "objective": "Implement an additive fail-closed invalidation publisher and append-only ledger over the frozen v1 event, resolving exact live state and enforcing homogeneous targets, exact actions, rollback/supersession bytes, idempotency, and checkpoint continuity without modifying the frozen contract.",
+    "state": "PREPARED_PREREQUISITE_HELD_NOT_DISPATCHED",
+    "candidate_paths": [
+      "src/maskfactory/schemas/mask_authority_invalidation_event.schema.json",
+      "src/maskfactory/validation.py",
+      "tests/test_mask_bridge_contracts_v1.py",
+      "tests/fixtures/mask_bridge_contracts/build_contract_fixtures.py"
+    ],
+    "allowed_paths": [
+      "configs/bridge_invalidation_publication_policy.yaml",
+      "src/maskfactory/bridge/invalidation_publication.py",
+      "src/maskfactory/schemas/mask_authority_invalidation_publication_evidence.schema.json",
+      "tools/publish_mask_authority_invalidation.py",
+      "tests/test_bridge_invalidation_publication.py"
+    ],
+    "path_state": "All five allowed paths are absent and clean. They are disjoint from the held MF-P6-08.07 operational-invalidation unit, MF-P6-10.01-10.05 units, and preserved MF-P6-08.05 dirty scope. Existing candidate paths are read-only; validation.py must not be mutated.",
+    "frozen_v1_contract_mutation_allowed": false,
+    "validator_commands": [
+      "python -m pytest -q tests/test_bridge_invalidation_publication.py tests/test_mask_bridge_contracts_v1.py -k invalidation",
+      "python -m ruff check src/maskfactory/bridge/invalidation_publication.py tools/publish_mask_authority_invalidation.py tests/test_bridge_invalidation_publication.py",
+      "python -m black --check src/maskfactory/bridge/invalidation_publication.py tools/publish_mask_authority_invalidation.py tests/test_bridge_invalidation_publication.py",
+      "python -m json.tool src/maskfactory/schemas/mask_authority_invalidation_publication_evidence.schema.json"
+    ],
+    "acceptance_criteria": [
+      "Derive transitions only from observed current producer state and an exact accepted 08.07/10.05 authority decision; caller-supplied previous/new states cannot override observation.",
+      "Require every event to contain one homogeneous target kind and compatible scope class; mixed target kinds or unrelated scopes split into separately signed ordered events.",
+      "Map each reason to exactly—not at least—the allowed action multiset and exact transition coverage; extra, missing, duplicate, or inapplicable actions fail.",
+      "Resolve evidence, verification policy, superseding release, and rollback bindings to contained regular catalog bytes and current published identities before signing.",
+      "Bind stream, sequence, prior event ID/hash, causation, current journal checkpoint, and revocation head; publish by atomic append plus receipt-last checkpoint update.",
+      "Maintain an idempotency ledger where same-key/same-canonical-body returns the existing result and same-key/different-body fails without mutation.",
+      "Detect fork, deletion, insertion, reorder, replay across stream/epoch, stale head, concurrent append, and signer/trust/revocation drift while preserving immutable historical evidence.",
+      "Emit a strict self-hashed publication evidence record containing observed inputs, event payload/hash/signature, append position, previous/new checkpoint, verification results, and rollback/supersession resolution.",
+      "Tests cover all 27 reasons, mixed targets, exact actions, missing rollback, false supersession, evidence-byte drift, duplicate/collision idempotency, concurrent writers, fork/delete/reorder, stale trust/revocation, and crash at every append/checkpoint boundary.",
+      "Frozen v1 schemas/fixtures, held worker units, and dirty MF-P6-08.05 paths remain byte-identical."
+    ]
+  },
+  "source_hashes": {
+    "src/maskfactory/schemas/mask_authority_invalidation_event.schema.json": "72b072a1d239057a574ea9ff6dd8536e072d47f13b3b16f2edd6890a0ecb0920",
+    "src/maskfactory/validation.py": "777ed34e25de193a51d9005e68a34fa918aa90d9c9b3869d6a2335fd6d0e6300",
+    "tests/test_mask_bridge_contracts_v1.py": "a8bd203a58995a06f2ef1725cf2f068abd1a3635d38a3662aae278b94ce1369b",
+    "tests/fixtures/mask_bridge_contracts/build_contract_fixtures.py": "3832f6437aaf2d2e8ea59700ec6284534a4cffc5e1e110899707cea1fd44e4a8"
+  },
+  "preservation": {
+    "frozen_v1_contracts_modified": false,
+    "dirty_mf_p6_08_05_scope_modified": false,
+    "held_or_queued_worker_paths_modified": false,
+    "worker_dispatched": false,
+    "runtime_invalidation_published": false
+  },
+  "claim_boundary": "This audit credits the frozen event/schema/validator and signed lifecycle-chain foundations only. It does not publish an invalidation, apply downstream actions, prove idempotent append/recovery, complete MF-P6-10.06, or claim production authority."
+}

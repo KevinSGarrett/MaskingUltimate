@@ -1,0 +1,18 @@
+{
+  "authority_ceiling": "runtime_import_preflight_only",
+  "claims": {
+    "inference_executed": false,
+    "masks_emitted": false,
+    "queue_mutated": false,
+    "visual_review": false
+  },
+  "failed_operation": "dependency freeze via python -m pip",
+  "failure_class": "sealed_sam2_python_has_no_pip_module",
+  "input_preflight_path": "runtime_artifacts/p4_sam2_reference_draft_runtime_preflight_20260725T235841Z/import_preflight.json",
+  "input_preflight_sha256": "204037f82e6b7718948874e6368e8d87babed23d7d778c2a22ab11afbeccb4e5",
+  "next_safe_action": "create a distinct runtime preflight that derives package identity through importlib.metadata without invoking pip",
+  "retry_of_same_root_prohibited": true,
+  "schema_version": "maskfactory.p4_sam2_reference_draft_runtime_preflight_failure.v1",
+  "self_sha256": "a7e595e254e3d5f5d3f2c983029bf7c64d75436823be06762e5bef4629ad7409",
+  "state": "failed"
+}

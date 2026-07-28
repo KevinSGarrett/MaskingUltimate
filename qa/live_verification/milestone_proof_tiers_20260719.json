@@ -1,0 +1,591 @@
+{
+  "artifact_type": "milestone_proof_tiers",
+  "authority": [
+    "Plan/Instructions/02_AUTONOMOUS_OPERATING_RULES.md §11 proof-tier vocabulary",
+    "Plan/Tracker/DASHBOARD.md",
+    "Plan/OPS_LOG.md ephemeral reclaim 2026-07-20 01:49 UTC + autonomous session handoff",
+    "Plan/DOCKER_RUNTIME_AND_SESSION_USE.md",
+    "qa/live_verification/disk_ephemeral_reclaim_20260719T2057.json",
+    "qa/live_verification/proof_tier_runtime_reprobe_20260719T1917.json",
+    "Plan/RESTART_HANDOFF_AUTONOMOUS_20260719.md",
+    "qa/live_verification/disk_relocation_doctor_climb_20260719T2210.json",
+    "qa/live_verification/needs_agent_actions_20260719.json",
+    "qa/live_verification/agent_queue_execution_20260719T2300.json",
+    "qa/live_verification/autonomy_reverify_20260720T0430.json",
+    "qa/live_verification/runtime_climb_disk_safe_20260720T0720.json",
+    "qa/live_verification/needs_agent_actions_20260720.json",
+    "qa/live_verification/autonomous_gold_admission_20260720T021922.json",
+    "runtime_artifacts/main_consumer/isolated_consumer_run_evidence_20260720T021815.json"
+  ],
+  "branch": "codex/maskfactory-runtime-implementation",
+  "claims_not_established": [
+    "core_autonomous_runtime complete",
+    "doctor_all_green",
+    "VISUAL_QA_PASS_BOUNDED for the machine package corpus (data/packages) — external ground-truth certifiable subset holds a scoped VISUAL_QA_PASS_BOUNDED review verdict (never gold)",
+    "PRODUCTION_EVIDENCE_PASS",
+    "human_approved_gold",
+    "autonomous_certified_gold",
+    "Mode B champion-backed predict/refine RUNTIME_PASS_BOUNDED",
+    "Main adoption / MF-P6-12.06 close",
+    "champion_bodypart / champion_hand / champion_clothing",
+    "P5 entry / D6 / D7",
+    "MF-P4-10.08/09 cloud-teacher live corpus gate",
+    "MF-P8-11.07 real multi-person demonstration",
+    "MF-P1-07.09 DVC S3 push",
+    "MF-P1-09.05 live B1 restore",
+    "MF-P9-08.10 DAZ pilot / accepted packages",
+    "MF-P9-12.07 seven-day soak / MF-P9-12.09 live activation",
+    "Civitai gold promotion / paid download / extracted runtime"
+  ],
+  "core_autonomous_runtime": {
+    "blocker_classes": {
+      "champion": [
+        "champions=0 / certified_training_package_count=0",
+        "Mode B /predict HTTP 503 no champion provider",
+        "no D6/D7 measured win; P5 entry closed"
+      ],
+      "disk": [
+        "RESOLVED autonomously: data/ on governed F: (>250 GiB free); doctor disk_free PASS 251.1 GiB (reversible junction; C: backup retained)",
+        "DAZ soft floor 150 GiB (post-core) can be satisfied by the same governed-drive relocation approach when DAZ new-work resumes"
+      ],
+      "kevin": [
+        "SUPERSEDED by needs_agent_actions_20260719.json — no OPEN human stop states"
+      ],
+      "main": [
+        "MF-P6-11.01..11.08 AWAITING_MAIN adapter/adoption/journal/circuit",
+        "MF-P6-12.02..12.06 AWAITING_MAIN qualification/handoff",
+        "HARD: MF-P6-11.02",
+        "HARD: MF-P6-11.07",
+        "HARD: MF-P6-12.05"
+      ]
+    },
+    "evidence": [
+      "qa/live_verification/autonomy_reverify_20260720T0430.json",
+      "qa/live_verification/agent_queue_execution_20260719T2300.json",
+      "qa/live_verification/needs_agent_actions_20260719.json",
+      "qa/live_verification/disk_relocation_doctor_climb_20260719T2210.json",
+      "qa/live_verification/disk_ephemeral_reclaim_20260719T2057.json",
+      "qa/live_verification/proof_tier_runtime_reprobe_20260719T1917.json",
+      "Plan/Tracker/DASHBOARD.md",
+      "qa/live_verification/proof_tier_runtime_reprobe_20260719T1625.json",
+      "qa/live_verification/mode_b_runtime_loopback_health_20260719T214045Z.json",
+      "qa/live_verification/mode_b_predict_draft_provider_policy_blocker_20260719.json",
+      "qa/live_verification/bridge_p6_12_reevaluation_after_p6_10_20260719.json",
+      "qa/live_verification/serving_static_contracts_20260719.json",
+      "qa/live_verification/training_static_gates_20260719.json",
+      "qa/live_verification/cloud_teacher_static_20260719.json",
+      "qa/live_verification/civitai_workflow_intake_static_20260719.json",
+      "qa/live_verification/ops_bootstrap_static_20260719.json",
+      "qa/live_verification/daz_validation_static_contracts_20260719.json",
+      "qa/live_verification/daz_ops_static_contracts_20260719.json"
+    ],
+    "exact_blockers": [
+      "RESOLVED (autonomous): disk ingest floor — data/ relocated to governed F: (>250 GiB free); doctor disk_free PASS 251.1 GiB (was FAIL). Reversible; C: backup at data_c_backup_relocated.",
+      "AGENT (scripted-from-elevated-shell): MF-P0-17.04 WSL Ubuntu-22.04 ext4 VHD offline e2fsck (Repair-MaskFactoryWslVhd.ps1 -ConfirmRepair). Autonomous fallback DONE: Docker GPU CUDA container proof. 3 doctor FAILs share this root cause.",
+      "GPU CONTENTION: 1 doctor FAIL rotates between nuclio SAM2 / ollama qwen2.5vl on the shared 8GB GPU; both RUNTIME_PASS_BOUNDED individually via dedicated smokes.",
+      "AGENT (autonomous-gold, supersedes human anchors): VISUAL_QA_REVIEWED_WITH_DEFECTS -> VISUAL_QA_PASS_BOUNDED then autonomous_certified_gold; MF-P1-08.* human SOP-1 deferred/superseded.",
+      "DONE (local tier): MF-P1-07.09 DVC local push/cache PASS (52 objects to local F: remote, in sync); MF-P1-09.05 local B1 restore drill PASS (verify-package p0+p1). Cloud DVC S3 push still deferred.",
+      "MAIN (agent-executable in Main repo, not human): AWAITING_MAIN MF-P6-11.01..11.08 / MF-P6-12.02..12.06; producer side 93 tests PASS + fixture_complete/consumer pack Main-ready.",
+      "MAIN HARD BLOCKERS named: MF-P6-11.02, MF-P6-11.07, MF-P6-12.05 (blocks MF-P6-12.06 / core close) until real Main-side artifacts exist.",
+      "AGENT (local): MF-P4-10.08/10.09 local teacher corpus; MF-P8-11.07 local multi-person sources (DAZ/MaskedWarehouse/reference).",
+      "CHAMPION: champions=0; certified_training_package_count=0; Mode B /predict AWAITING_RUNTIME (HTTP 503; no invented champions). Legitimate measured path documented (P5 entry via certified gold -> training -> measured win -> promotion).",
+      "QUALITY residual (not gold closer): VISUAL_QA_PASS_BOUNDED not achieved."
+    ],
+    "highest_live_surface_tier_seen": "RUNTIME_PASS_BOUNDED",
+    "highest_tier_achieved": "STATIC_PASS",
+    "open_hard_blockers_named": [
+      "MF-P6-11.02",
+      "MF-P6-11.07",
+      "MF-P6-12.05"
+    ],
+    "production_evidence": "NOT_CLAIMED",
+    "profile_complete": false,
+    "profile_status": "blocked",
+    "rationale": "AUTONOMY RE-VERIFY WAVE (2026-07-20, honest): live re-probe confirmed Docker 29.4.3 / CVAT 2.24.0 / Ollama 0.32.1 / nuclio pth-sam2 healthy; GPU RTX 5060 ~2182 MiB free. Champions still 0 and the chain is precisely root-caused and NON-FABRICABLE: (1) data/packages has 0 approved_gold / 0 human_anchor_gold / 0 autonomous_certified_gold, so the autonomy calibration certificate (needs a frozen human-anchor-gold corpus, ~>=270 zero-defect audits for the 0.01 Wilson bound) cannot pass -> 0 calibrated_auto_accepted lifecycle sidecars -> autonomy build-audit-queue population_count=0 (downstream symptom, not a code bug); (2) no CUDA training runtime (host torch 2.12.1+cpu, training-doctor ready=false; WSL Ubuntu-22.04 corrupt E_FAIL; IsAdmin=False so e2fsck is elevation-gated) and 0 gold training volume -> no registered candidate / no measured shadow win; (3) host `maskfactory serve` cannot start (FastAPI serve deps missing) so Mode B /predict is AWAITING_RUNTIME (also champions=0). force-register FORBIDDEN. DAZ not killed (live user GUI). Workstream B: producer bridge + cross-project PASS at HEAD; run_cross_project_qualification=producer_partial; Main C:/Comfy_UI_Main HEAD b36001b9 is a separate unrelated active project with a dirty tree and no MaskFactory consumer surface -> real MF-P6-11.02/11.07/12.05 receipts require an isolated Main-side consumer build (not fabricated; Main branch untouched). No doctor-green / gold / visual-pass / Main-complete / PRODUCTION_EVIDENCE_PASS / core close."
+  },
+  "honesty_rules": [
+    "Do not inflate tiers",
+    "Fixture Main / producer_partial = STATIC_PASS only",
+    "VISUAL_QA_REVIEWED_WITH_DEFECTS is not VISUAL_QA_PASS_BOUNDED",
+    "RUNTIME_PASS_BOUNDED health/models with champions=0 is not predict/refine runtime pass",
+    "Historical doctor-green is not current doctor-green",
+    "Post-freeze STATIC portfolio binders add STATIC_PASS surfaces only; they do not advance AWAITING_MAIN or champions",
+    "External ground-truth certifiable subset VISUAL_QA_PASS_BOUNDED is a scoped agent pixel-review verdict, never gold, and does not advance the machine package corpus"
+  ],
+  "host_snapshot_at_authoring": {
+    "approved_gold_packages": 0,
+    "audit_queue_population_count": 0,
+    "autonomous_certified_gold_packages": 0,
+    "certified_training_package_count": 0,
+    "champions": 0,
+    "cross_project_qualification": "producer_partial (mf_p6_12_05_complete=false)",
+    "data_drive": "F:\\MaskFactory_DataRelocated (junction from data/)",
+    "doctor_all_green": false,
+    "doctor_disk_free": "PASS",
+    "gpu_consumers": "DAZStudio pid52340 + python pid10912 + Cursor",
+    "gpu_free_vram_mib_approx": 2182,
+    "head": "c378499bdbbc7f26d1a9a08918408107907e2f01",
+    "host_torch": "2.12.1+cpu (no CUDA)",
+    "human_anchor_gold_packages": 0,
+    "main_repo_present": "C:/Comfy_UI_Main HEAD b36001b9 (separate git; no MaskFactory consumer surface)",
+    "mode_b_predict": "AWAITING_RUNTIME",
+    "mode_b_serve_host": "cannot start (FastAPI serve deps missing; runtime=WSL down)",
+    "needs_agent_actions": "qa/live_verification/needs_agent_actions_20260719.json",
+    "producer_bridge_tests": "PASS at HEAD (15 modules)",
+    "runtime_evidence_sha256": "39ec91647921291d3e85eeee093ebb519f901bce01afac9934b170965af8eaad",
+    "training_doctor_ready": false,
+    "wsl_elevation_available": false,
+    "wsl_ubuntu_2204": "corrupt (E_FAIL step 2, ext4 VHD)"
+  },
+  "kevin_decisions_still_required": [
+    "SUPERSEDED: see qa/live_verification/needs_agent_actions_20260719.json — all former Kevin actions reclassified to agent-executable paths (disk DONE_AUTONOMOUS; WSL repair scripted-from-elevated-shell with Docker-GPU fallback done; DVC/B1/cloud-teacher/multi-person local-first; Main adoption agent-executable in Main repo). No OPEN human stop states."
+  ],
+  "live_state_20260720T0720": {
+    "autonomous_gold": "insufficient_autonomous_verified_samples (0 machine_verified_candidate)",
+    "champions": 0,
+    "cvat_live": "DOWN this wave (engine unhealthy)",
+    "disk": "ephemeral reclaim +11.11 GiB (no governed wipe); C:~29.15 GiB, F:249.42 GiB",
+    "docker_engine": "RUNTIME_BLOCKED (crashed recovering 68.11 GiB docker_data.vhdx under low C: headroom; 500 then pipe vanished)",
+    "focused_tests": "52 passed at HEAD 447b0f9b",
+    "isolated_main_consumer": "6/6 PASS; main_adoption_complete=false; HARD MF-P6-11.02/11.07/12.05/12.06 OPEN",
+    "ollama_host": "UP 0.32.1",
+    "serve_cu128_built": false,
+    "tier_changes": "NONE (no tier advanced or inflated; CVAT/Nuclio RUNTIME_PASS_BOUNDED reflect prior healthy probes, live-down this wave pending engine restore)."
+  },
+  "local_date": "2026-07-19",
+  "portfolio_snapshot": {
+    "portfolio_progress": "565/798 items (70.8%)",
+    "profiles": {
+      "core_autonomous_runtime": {
+        "claim": "operational autonomous runtime complete",
+        "classification": "required",
+        "required_gates": 43,
+        "status": "blocked"
+      },
+      "independent_real_accuracy": {
+        "classification": "optional",
+        "required_gates": 6,
+        "status": "blocked"
+      },
+      "scale_daz_maturity": {
+        "classification": "post_core",
+        "required_gates": 5,
+        "status": "waiting_for_prerequisite"
+      }
+    },
+    "required_core_status": "blocked"
+  },
+  "project_head_at_authoring": "447b0f9b642e568e54467d592fb3307525810489",
+  "recent_waves_summarized": [
+    {
+      "wave": "visual_qa_certifiable_subset_climb_20260720",
+      "result": "Machine corpus re-reviewed live -> VISUAL_QA_REVIEWED_WITH_DEFECTS (unchanged, 14/14 defective); external GT certifiable subset (15 named panels) agent pixel-review PASS -> VISUAL_QA_PASS_BOUNDED (never gold; no human CVAT; no docker build)"
+    },
+    {
+      "result": "RESTART_HANDOFF_AUTONOMOUS written; milestone revision post_ephemeral_reclaim; core still blocked",
+      "wave": "autonomous_session_handoff_20260719"
+    },
+    {
+      "result": "Reclaimed ~8.715 GiB caches; C: 4.067→12.781 GiB; doctor still RUNTIME_BLOCKED (<<75); no governed wipe",
+      "wave": "ephemeral_disk_reclaim_pip_uv_temp"
+    },
+    {
+      "result": "CVAT/Nuclio/Ollama RUNTIME_PASS_BOUNDED; doctor RUNTIME_BLOCKED (Kevin disk + WSL)",
+      "wave": "proof_tier_runtime_reprobe"
+    },
+    {
+      "result": "/health+/models RUNTIME_PASS_BOUNDED; predict/refine AWAITING_RUNTIME; champions=0",
+      "wave": "mode_b_loopback_health"
+    },
+    {
+      "result": "NO temporary draft predict provider; AWAITING_RUNTIME retained",
+      "wave": "mode_b_predict_draft_provider_policy"
+    },
+    {
+      "result": "HARD_QA_PASS_BOUNDED retained; VISUAL_QA_REVIEWED_WITH_DEFECTS; VISUAL_QA_PASS_BOUNDED not claimed",
+      "wave": "bounded_visual_repair + residual"
+    },
+    {
+      "result": "STATIC_PASS only; never gold; AWAITING_MAIN unchanged for P6-11/12",
+      "wave": "STATIC portfolio (converters, firewalls, packages, batch cap, shadow CI)"
+    },
+    {
+      "result": "STATIC_PASS; ready_for_live_workflow_execution=false; no Mode B predict / Main adoption",
+      "wave": "STATIC serving_static_contracts + CLI restore"
+    },
+    {
+      "result": "STATIC_PASS binders; D4/MF-P8-11.07 still Kevin-gated",
+      "wave": "STATIC failure_mining + multi_person contracts"
+    },
+    {
+      "result": "STATIC_PASS only; no live DAZ Studio; production_audit_complete=false",
+      "wave": "STATIC DAZ procedural/worker/100 fixtures + selective autonomy"
+    },
+    {
+      "result": "STATIC_PASS; certified_count=0; no paid cloud; no champions/D6/D7",
+      "wave": "STATIC training_static_gates + cloud_teacher"
+    },
+    {
+      "result": "STATIC_PASS; 79 records proposal_or_reference_only; no gold/paid download/Kevin credentials",
+      "wave": "STATIC civitai_workflow_intake"
+    },
+    {
+      "result": "STATIC_PASS; MF-P1-07.09/09.05 remain Kevin-gated (no S3 push / no B1 restore)",
+      "wave": "STATIC ops_bootstrap (hash/reindex/DVC wiring)"
+    },
+    {
+      "result": "STATIC_PASS; no live Studio validation/accepted packages/soak/activation",
+      "wave": "STATIC DAZ validation + DAZ ops contracts"
+    }
+  ],
+  "recorded_at": "2026-07-20T07:42:43Z",
+  "revision": "post_visual_qa_certifiable_subset_20260720",
+  "schema_version": "1.0.0",
+  "supersedes_self_sha256": "ec4e63acfa10723125cb33cc5cdadf03ab1570ae2a5c3dd2d60b858b68d520fd",
+  "surfaces": [
+    {
+      "evidence": "qa/live_verification/disk_relocation_doctor_climb_20260719T2210.json",
+      "exact_blockers": [
+        "disk_free RESOLVED -> PASS (251.1 GiB via governed F: relocation); full doctor now RUNS TO COMPLETION (PASS=8 FAIL=4)",
+        "3 FAIL rooted in Ubuntu-22.04 ext4 VHD read-only fallback / I/O error (torch_cuda, registered_models, wsl_roundtrip) — elevation-gated offline e2fsck",
+        "1 FAIL = 8GB GPU VRAM contention (nuclio SAM2 vs ollama qwen2.5vl); each RUNTIME_PASS_BOUNDED individually via smokes",
+        "gpu_lock stale lock cleared (FAIL->PASS)"
+      ],
+      "highest_tier_achieved": "RUNTIME_BLOCKED",
+      "id": "doctor_all_green"
+    },
+    {
+      "bound": "localhost:8080 production CVAT 2.24.0 only",
+      "evidence": "qa/live_verification/proof_tier_runtime_reprobe_20260719T1917.json",
+      "exact_blockers": [],
+      "highest_tier_achieved": "RUNTIME_PASS_BOUNDED",
+      "id": "cvat_api_2.24"
+    },
+    {
+      "bound": "tools/smoke_cvat_sam2.py via localhost:8080 (pass after non-destructive restart + cold wait)",
+      "evidence": "qa/live_verification/proof_tier_runtime_reprobe_20260719T1917.json",
+      "exact_blockers": [],
+      "highest_tier_achieved": "RUNTIME_PASS_BOUNDED",
+      "id": "nuclio_pth_sam2_smoke"
+    },
+    {
+      "bound": "host Ollama qwen2.5vl:7b advisory smoke; not gold / not VLM calibration gate",
+      "evidence": [
+        "qa/live_verification/proof_tier_runtime_reprobe_20260719T1917.json",
+        "qa/reports/ollama_vlm_smoke.json"
+      ],
+      "exact_blockers": [
+        "MF-P4-05.04 authoritative VLM gate still blocked (needs human-anchor corpus)"
+      ],
+      "highest_tier_achieved": "RUNTIME_PASS_BOUNDED",
+      "id": "ollama_vlm_smoke"
+    },
+    {
+      "bound": "Windows loopback 127.0.0.1:8765 GET /health + GET /models; draft-service only",
+      "evidence": [
+        "qa/live_verification/proof_tier_runtime_reprobe_20260719T1917.json",
+        "qa/live_verification/mode_b_runtime_loopback_health_20260719T214045Z.json",
+        "qa/live_verification/mode_b_predict_draft_provider_policy_blocker_20260719.json"
+      ],
+      "exact_blockers": [
+        "champions=0; configured_models=[]; loaded_models=[]; not champion-backed prediction"
+      ],
+      "highest_tier_achieved": "RUNTIME_PASS_BOUNDED",
+      "id": "mode_b_health_models"
+    },
+    {
+      "evidence": "qa/live_verification/mode_b_predict_draft_provider_policy_blocker_20260719.json",
+      "exact_blockers": [
+        "champions=0",
+        "HTTP 503 champion prediction provider is not configured",
+        "configure_champion_predictor refuses non-champion_* roles",
+        "create_production_runtime leaves predictor=None without complete champion_bodypart+hand+clothing set",
+        "force-register forbidden (would invent champion win)"
+      ],
+      "highest_tier_achieved": "AWAITING_RUNTIME",
+      "id": "mode_b_predict",
+      "policy_note": "STATIC_BLOCKED_BY_POLICY for temporary draft/challenger/incumbent serving path"
+    },
+    {
+      "evidence": [
+        "qa/live_verification/proof_tier_runtime_reprobe_20260719T1917.json",
+        "qa/live_verification/mode_b_runtime_loopback_health_20260719T214045Z.json"
+      ],
+      "exact_blockers": [
+        "longer-timeout refine retry SKIPPED under <<75 GiB free (~12.65 GiB post-reclaim still unsafe vs ingest floor); prior 30s timeout under ~32 GiB still stands"
+      ],
+      "highest_tier_achieved": "AWAITING_RUNTIME",
+      "id": "mode_b_refine"
+    },
+    {
+      "evidence": "Plan/Tracker/DASHBOARD.md Currently Blocked Core Items",
+      "exact_blockers": [
+        "AWAITING_MAIN: no Main-supplied production MaskFactoryAdapter",
+        "no production adopted-package / exact operational-wrapper authority",
+        "no champion-backed live predict proof for MF-P6-11.03",
+        "HARD BLOCKER MF-P6-11.02 / MF-P6-11.07 still open"
+      ],
+      "highest_tier_achieved": "STATIC_PASS",
+      "id": "bridge_p6_11_adapter_and_clients"
+    },
+    {
+      "evidence": "qa/live_verification/bridge_p6_12_reevaluation_after_p6_10_20260719.json",
+      "exact_blockers": [
+        "AWAITING_MAIN for ComfyUI/Main execution receipts and adoption pins",
+        "PRODUCTION_EVIDENCE_PASS not claimed",
+        "claim_boundary.mf_p6_12_04_complete=false; mf_p6_12_05_complete=false"
+      ],
+      "highest_tier_achieved": "STATIC_PASS",
+      "id": "bridge_p6_12_vertical_slices_and_handoff",
+      "item_notes": {
+        "MF-P6-12.01": "complete (producer verify clause)",
+        "MF-P6-12.02": "blocked ~84% STATIC_PASS / AWAITING_MAIN",
+        "MF-P6-12.03": "blocked ~80% STATIC_PASS / AWAITING_MAIN",
+        "MF-P6-12.04": "blocked ~86%; health/models RUNTIME_PASS_BOUNDED; predict/refine AWAITING_RUNTIME",
+        "MF-P6-12.05": "blocked ~82% HARD BLOCKER producer_partial; no Main qualification bindings",
+        "MF-P6-12.06": "blocked ~76%; core_autonomous_runtime not met"
+      }
+    },
+    {
+      "bound": "node-pack inventory + provenance + route firewall + workflow preflight contracts only",
+      "evidence": "qa/live_verification/serving_static_contracts_20260719.json",
+      "exact_blockers": [
+        "ready_for_live_workflow_execution=false",
+        "no Mode B /predict RUNTIME_PASS",
+        "no Main adoption / production release install (MF-P6-10.04 still open)"
+      ],
+      "highest_tier_achieved": "STATIC_PASS",
+      "id": "serving_static_contracts_p6_06"
+    },
+    {
+      "bound": "verify-package sample after bounded repairs (e.g. 14/14 PASS on repaired sample)",
+      "equivalent_vocabulary": "RUNTIME_PASS_BOUNDED for named package hard-QC verify",
+      "evidence": [
+        "qa/live_verification/bounded_visual_repair_20260719.json",
+        "qa/live_verification/bounded_visual_residual_20260719.json",
+        "qa/live_verification/hard_visual_qa_corpus_climb_20260719.json"
+      ],
+      "exact_blockers": [
+        "Does not imply VISUAL_QA_PASS_BOUNDED or gold"
+      ],
+      "highest_tier_achieved": "HARD_QA_PASS_BOUNDED",
+      "id": "package_hard_qa_bounded_corpus"
+    },
+    {
+      "evidence": [
+        "qa/live_verification/hard_visual_qa_corpus_climb_20260719.json",
+        "qa/live_verification/bounded_visual_repair_20260719.json",
+        "qa/live_verification/bounded_visual_residual_20260719.json",
+        "qa/live_verification/visual_qa_img_2ca794d19be9_20260719.json",
+        "qa/live_verification/visual_qa_certifiable_subset_climb_20260720.json"
+      ],
+      "exact_blockers": [
+        "VISUAL_QA_PASS_BOUNDED blocked by residual garment bias / underfill / exclusivity bleed / multi-person half-fill",
+        "noise islands reduced by ACCEPTED_REVERSIBLE_REPAIR_BOUNDED; structural defects ABSTAIN_BOUNDED"
+      ],
+      "highest_tier_achieved": "VISUAL_QA_REVIEWED_WITH_DEFECTS",
+      "id": "package_visual_qa_bounded_corpus"
+    },
+    {
+      "id": "external_supervision_visual_qa_bounded_subset",
+      "highest_tier_achieved": "VISUAL_QA_PASS_BOUNDED",
+      "bound": "15 named external ground-truth panels (5 CelebAMask-HQ face + 5 LaPa face + 5 LV-MHP body); ai_agent live pixel-review PASS; source_masks_are_gold=false; human CVAT not required (dataset ground truth); NOT machine-package visual pass; NOT gold",
+      "exact_blockers": [
+        "external labels never gold (source_masks_are_gold=false); does not grant autonomous_certified_gold",
+        "split_dedup_passed deferred (admission_ready=false) — this is a review verdict, not warehouse admission",
+        "does NOT advance the machine package_visual_qa_bounded_corpus (still VISUAL_QA_REVIEWED_WITH_DEFECTS)"
+      ],
+      "evidence": [
+        "qa/live_verification/visual_qa_certifiable_subset_climb_20260720.json",
+        "qa/external_supervision/celebamask_hq/visual_alignment_qa_passed.json",
+        "qa/external_supervision/lapa/visual_alignment_qa_passed.json",
+        "qa/external_supervision/lv_mhp_v1/visual_alignment_qa_passed.json"
+      ]
+    },
+    {
+      "evidence": "Plan/Tracker/DASHBOARD.md MF-P1-08.04 blocked_reason",
+      "exact_blockers": [
+        "NEEDS KEVIN: CVAT SOP-1 correction (MF-P1-08.02..08.05)",
+        "human_anchor_train_count=0",
+        "VISUAL_QA_REVIEWED_WITH_DEFECTS prevents autonomous gold promotion"
+      ],
+      "highest_tier_achieved": "HARD_QA_PASS_BOUNDED",
+      "id": "human_approved_gold_p1_08"
+    },
+    {
+      "evidence": [
+        "qa/live_verification/host_side_shadow_tournament_registration_20260719.json",
+        "qa/live_verification/host_side_shadow_currency_registry_static_20260719.json",
+        "qa/live_verification/shadow_currency_ci_static_binding_20260719.json"
+      ],
+      "exact_blockers": [
+        "MF-P7-07.01 currency review may honestly FAIL",
+        "no WSL GPU promotion / RUNTIME_PASS claimed for shadow tournament"
+      ],
+      "highest_tier_achieved": "STATIC_PASS",
+      "id": "host_side_shadow_currency_registry"
+    },
+    {
+      "evidence": [
+        "qa/live_verification/external_supervision_converters_static_20260719.json",
+        "qa/live_verification/external_supervision_packages_batch_cap_static_20260719.json",
+        "qa/live_verification/external_supervision_holdout_ablation_static_20260719.json",
+        "qa/live_verification/external_supervision_holdout_ablation_builder_launch_static_20260719.json"
+      ],
+      "exact_blockers": [
+        "split_dedup_passed not achieved; full ~57k dHash not materialized",
+        "admission_ready=false; live_warehouse_admission=false",
+        "external labels never gold",
+        "holdout ablation live_holdout_executed=false"
+      ],
+      "highest_tier_achieved": "STATIC_PASS",
+      "id": "external_supervision_maskedwarehouse"
+    },
+    {
+      "bound": "classification admission + license/provenance gate + workflow admissions; no extracted Plan/Civitai runtime",
+      "evidence": {
+        "file_sha256": "f4f60c30a41832ec3f3765ddfbd70cf714532dcedb35483bb3b9dd613b524da9",
+        "path": "qa/live_verification/civitai_workflow_intake_static_20260719.json",
+        "report_id": "cwi_2bbe2c5aa3efe8a57038d8ee",
+        "seal_sha256": "2bbe2c5aa3efe8a57038d8ee80ae9116c1b4b859150c6847cfa27ce2c2d49d17"
+      },
+      "exact_blockers": [
+        "direct_gold_promotion_claimed=false; mask_authority=none; proposal_or_reference_only only",
+        "paid_civitai_download / kevin_credentials / plan_civitai_extracted_runtime not claimed",
+        "never gold / doctor-green / Main-complete / PRODUCTION_EVIDENCE_PASS"
+      ],
+      "highest_tier_achieved": "STATIC_PASS",
+      "id": "civitai_workflow_intake_static"
+    },
+    {
+      "bound": "fixture QC-006 hash integrity + multi-package reindex + DVC wiring honesty only",
+      "evidence": {
+        "file_sha256": "b91befb85f6c597f90cafb3abf8a8d5e14a0a21477bbbfd1bf375bc94e8f9106",
+        "path": "qa/live_verification/ops_bootstrap_static_20260719.json",
+        "report_id": "obs_955bca97ae3286fcb47f998c",
+        "seal_sha256": "955bca97ae3286fcb47f998cbdb4246d800737c89251265edaaf1e1097071750"
+      },
+      "exact_blockers": [
+        "KEVIN: mf_p1_07_09_complete=false; kevin_dvc_s3_push_required=true; dvc_push_attempted=false; aws_credentials_present=false",
+        "KEVIN: mf_p1_09_05_complete=false; kevin_b1_restore_required=true; b1_mirror_present=false; human_anchor_package_present=false",
+        "never live B1 restore / DVC S3 push / doctor-green / PRODUCTION_EVIDENCE_PASS"
+      ],
+      "highest_tier_achieved": "STATIC_PASS",
+      "id": "ops_bootstrap_static_p1_09"
+    },
+    {
+      "bound": "backup/restore drill + nightly reindex/verify + failure-mining ops seals (fixture)",
+      "evidence": "qa/live_verification/ops_static_contracts_20260719.json",
+      "exact_blockers": [
+        "never D10 signed; never live B1/B2 media restore; never human-anchor package authority"
+      ],
+      "highest_tier_achieved": "STATIC_PASS",
+      "id": "ops_static_contracts_p7"
+    },
+    {
+      "evidence": "qa/live_verification/training_static_gates_20260719.json",
+      "exact_blockers": [
+        "certified_training_package_count=0; p5_entry_gate_open=false",
+        "no D6/D7 measured win",
+        "no champion_bodypart / champion_hand / champion_clothing",
+        "no live SegFormer/Mask2Former training run"
+      ],
+      "highest_tier_achieved": "STATIC_PASS",
+      "id": "training_static_gates_p5"
+    },
+    {
+      "evidence": "qa/live_verification/cloud_teacher_static_20260719.json",
+      "exact_blockers": [
+        "NEEDS KEVIN: MF-P4-10.08 frozen ≥200 human-anchor corpus + billable auth",
+        "MF-P4-10.09 simultaneous threshold gate still blocked",
+        "no paid cloud calls under STATIC binder"
+      ],
+      "highest_tier_achieved": "STATIC_PASS",
+      "id": "cloud_teacher_static_p4"
+    },
+    {
+      "evidence": "qa/live_verification/failure_mining_static_20260719.json",
+      "exact_blockers": [
+        "d4_complete=false; vlm_calibration_complete=false",
+        "MF-P4-EXIT remains blocked"
+      ],
+      "highest_tier_achieved": "STATIC_PASS",
+      "id": "failure_mining_static_p4"
+    },
+    {
+      "evidence": "qa/live_verification/multi_person_static_contracts_20260719.json",
+      "exact_blockers": [
+        "NEEDS KEVIN: MF-P8-11.07 real multi-person demo sources",
+        "mf_p8_11_07_demo_complete=false; kevin_multi_person_sources_required=true"
+      ],
+      "highest_tier_achieved": "STATIC_PASS",
+      "id": "multi_person_static_contracts_p8"
+    },
+    {
+      "bound": "V0-V9 registry + acceptance/repair/S00 honesty binders only",
+      "evidence": {
+        "file_sha256": "186646c421f8f8f208fcb321c3e09b57a5d74560a35919b7afb345cf7ea52879",
+        "path": "qa/live_verification/daz_validation_static_contracts_20260719.json",
+        "report_id": "dvs_447b91df6a48369113689f40",
+        "seal_sha256": "447b91df6a48369113689f40c480d468f0e4d45438454e77fa3ab281b1faba02"
+      },
+      "exact_blockers": [
+        "mf_p9_08_01_complete=false; mf_p9_08_05_complete=false; mf_p9_08_10_pilot_complete=false",
+        "live_daz_validation_executed=false; accepted_package_produced=false",
+        "body_parts_v2 remains inactive (S00 refuses gold truth tiers)",
+        "never live DAZ Studio validation / pilot / gold / Main-complete"
+      ],
+      "highest_tier_achieved": "STATIC_PASS",
+      "id": "daz_validation_static_contracts",
+      "profile": "scale_daz_maturity (post_core; cannot block core)"
+    },
+    {
+      "bound": "Tier-A backup/restore + pause/drain + retention/reservation + recovery matrix + failure-campaign plan (fixture)",
+      "evidence": {
+        "file_sha256": "b0430279b3c7cbd603dcd414d0455ec54966cec6b6d26c8b7e2e488a22d8fb0c",
+        "path": "qa/live_verification/daz_ops_static_contracts_20260719.json",
+        "report_id": "dos_935461c966be9954f347b25f",
+        "seal_sha256": "935461c966be9954f347b25f26a967155a492ca1450a9d4fb74e08816a81bb1e"
+      },
+      "exact_blockers": [
+        "mf_p9_12_01_complete=false; mf_p9_12_07_soak_complete=false; mf_p9_12_09_activation_complete=false",
+        "live_daz_execution=false; seven_day_soak=false",
+        "DISK: soft_floor_gib=150.0 binds storage new-work pause on DAZ volume metric",
+        "never soak/activation / doctor-green / gold / PRODUCTION_EVIDENCE_PASS"
+      ],
+      "highest_tier_achieved": "STATIC_PASS",
+      "id": "daz_ops_static_contracts",
+      "profile": "scale_daz_maturity (post_core; cannot block core)"
+    },
+    {
+      "evidence": [
+        "Plan/Tracker/DASHBOARD.md Live DAZ Vertical Slice",
+        "qa/live_verification/daz_inactive_v2_ontology_snapshot_static_20260719.json",
+        "qa/live_verification/daz_procedural_primitive_static_20260719.json",
+        "qa/live_verification/daz_worker_isolation_static_20260719.json",
+        "qa/live_verification/daz_engineering_fixture_set_100_static_20260719.json",
+        "qa/live_verification/selective_autonomy_hard_gates_static_20260719.json",
+        "qa/live_verification/daz_validation_static_contracts_20260719.json",
+        "qa/live_verification/daz_ops_static_contracts_20260719.json"
+      ],
+      "exact_blockers": [
+        "live hashing 2859/41094; 0 qualified assets; storage new-work paused (free <150 GiB floor on DAZ volume metric)",
+        "body_parts_v2 inactive snapshot only (activation_status=approved_design_not_active)",
+        "no live DAZ Studio launch / accepted engineering fixtures / headless promotion",
+        "production_audit_complete=false for selective autonomy hard gates",
+        "MF-P9-08 pilot / MF-P9-12 soak+activation remain open after STATIC binders"
+      ],
+      "highest_tier_achieved": "STATIC_PASS",
+      "id": "daz_optional_scale_maturity",
+      "profile": "scale_daz_maturity (post_core; cannot block core)"
+    },
+    {
+      "bound": "data/ junctioned to F:\\MaskFactory_DataRelocated (~251 GiB free); doctor disk_free PASS; reversible; C: backup retained",
+      "evidence": "qa/live_verification/disk_relocation_doctor_climb_20260719T2210.json",
+      "exact_blockers": [],
+      "highest_tier_achieved": "RUNTIME_PASS_BOUNDED",
+      "id": "disk_ingest_headroom_relocation"
+    }
+  ],
+  "self_sha256": "3b3622193d0e3302b11dc09a081bf16c543ff6359128591f7be0390510acef1b"
+}

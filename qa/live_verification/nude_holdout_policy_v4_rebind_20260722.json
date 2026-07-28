@@ -1,0 +1,35 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_holdout_v4_rebind.v1",
+  "artifact_type": "adult_corpus_holdout_policy_corrected_split_rebind",
+  "recorded_at": "2026-07-22T11:46:36Z",
+  "status": "PASS_FROZEN_BEFORE_FIRST_EVALUATION",
+  "tracker_item": "MF-P5-11.02",
+  "prior_policy_sha256": "86251a0672cd8dcc5e5d73baec0060b959889a3bf5ae5982fded4db541cbb529",
+  "policy_sha256": "b95e04871c85062fe29bbb8ef94d3a598bc8a8966406ec40bf47ae72bd91fe72",
+  "split_mapping_file_sha256": "544672f6d9afb8ae9232323f234593ed47ca48dfb3722416f0a26994b68bfbad",
+  "live_binding_result": {
+    "sample_count": 50,
+    "split_group_count": 46,
+    "holdout_group_member_count": 50,
+    "cross_partition_group_count": 0,
+    "training_eligible": false,
+    "critic_calibration_eligible": false,
+    "first_evaluation_completed": false
+  },
+  "durable_queue": {
+    "shards": 1,
+    "records": 50,
+    "checkpointed_records": 50,
+    "outcomes": {
+      "holdout": 50
+    },
+    "idempotent_replay_passed": true,
+    "queue_file_sha256": "b8e7904bbd2192b0fc9af94e9c8eda836388262e48900ecfd309c8e9dff3d35d",
+    "report_sha256": "629521a4ff8623f39585125542e749451c55a4ec0a1acb22d8d046fa05c258dc"
+  },
+  "implementation_sha256": {
+    "configs/nude_holdout_policy.json": "6bc58b53a4d325bf118e58dc4f495b398c123cb7ae93823c98f79f3dd9a8e975",
+    "src/maskfactory/nude_holdout_policy.py": "96f6b155d3d88fc54dd83a8a45976c39f0352eeb6187bd2a0f9f1c4092ad7a5e"
+  },
+  "claim_boundary": "The original evaluation set remains frozen and unchanged while its leakage binding is refreshed to the corrected v4 split map. No model evaluation has occurred and no mask or training authority is granted."
+}

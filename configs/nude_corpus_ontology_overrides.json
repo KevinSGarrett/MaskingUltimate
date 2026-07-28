@@ -1,0 +1,98 @@
+{
+  "schema_version": "maskfactory.nude_corpus_ontology_overrides.v1",
+  "rule": "Add only coarse source interpretations that the supplied crosswalk omitted. These mappings do not create laterality or finer anatomy.",
+  "anatomy_aliases": {
+    "ARMPITS_EXPOSED": {
+      "canonical_candidate": "armpit_region",
+      "kind": "anatomy_state"
+    },
+    "BELLY_COVERED": {
+      "canonical_candidate": "abdomen_region_covered",
+      "kind": "anatomy_state"
+    },
+    "BELLY_EXPOSED": {
+      "canonical_candidate": "abdomen_region",
+      "kind": "anatomy_state"
+    },
+    "Bush": {
+      "canonical_candidate": "pubic_hair_unspecified",
+      "kind": "appearance_region"
+    },
+    "FACE_FEMALE": {
+      "canonical_candidate": "head_face",
+      "kind": "coarse_anatomy"
+    },
+    "FACE_MALE": {
+      "canonical_candidate": "head_face",
+      "kind": "coarse_anatomy"
+    },
+    "FEET_COVERED": {
+      "canonical_candidate": "feet_region_covered",
+      "kind": "anatomy_state"
+    },
+    "FEET_EXPOSED": {
+      "canonical_candidate": "feet_region_unspecified",
+      "kind": "anatomy_state"
+    },
+    "Feet": {
+      "canonical_candidate": "feet_region_unspecified",
+      "kind": "ambiguous_coarse_anatomy"
+    },
+    "Pussy": {
+      "canonical_candidate": "vulva_external_region",
+      "kind": "source_alias_for_visible_external_anatomy"
+    },
+    "armpit": {
+      "canonical_candidate": "armpit_region",
+      "kind": "anatomy"
+    },
+    "eyes": {
+      "canonical_candidate": "eyes_region",
+      "kind": "coarse_anatomy"
+    },
+    "face_female": {
+      "canonical_candidate": "head_face",
+      "kind": "coarse_anatomy"
+    },
+    "female face": {
+      "canonical_candidate": "head_face",
+      "kind": "coarse_anatomy"
+    },
+    "male face": {
+      "canonical_candidate": "head_face",
+      "kind": "coarse_anatomy"
+    },
+    "feet": {
+      "canonical_candidate": "feet_region_unspecified",
+      "kind": "ambiguous_coarse_anatomy"
+    },
+    "face": {
+      "canonical_candidate": "head_face",
+      "kind": "coarse_anatomy"
+    },
+    "head": {
+      "canonical_candidate": "head_face",
+      "kind": "coarse_anatomy"
+    },
+    "lips": {
+      "canonical_candidate": "lips_region",
+      "kind": "coarse_anatomy"
+    }
+  },
+  "context_aliases": {
+    "Bikini": {"context_candidate": "bikini_garment", "kind": "context_garment"},
+    "Chains": {"context_candidate": "chain_restraint", "kind": "context_object"},
+    "Chocker": {"context_candidate": "choker_garment", "kind": "context_garment"},
+    "Clothed": {"context_candidate": "clothed_state", "kind": "context_state"},
+    "Dress": {"context_candidate": "dress_garment", "kind": "context_garment"},
+    "Heels": {"context_candidate": "high_heel_footwear", "kind": "context_garment"},
+    "Leather Lingerie": {"context_candidate": "leather_lingerie_garment", "kind": "context_garment"},
+    "Lingerie": {"context_candidate": "lingerie_garment", "kind": "context_garment"},
+    "Rope": {"context_candidate": "rope_restraint", "kind": "context_object"},
+    "Shower": {"context_candidate": "shower_scene", "kind": "context_scene"},
+    "Stockings": {"context_candidate": "stockings_garment", "kind": "context_garment"},
+    "Tounge Out": {"context_candidate": "tongue_out_expression", "kind": "context_state"},
+    "Underwear": {"context_candidate": "underwear_garment", "kind": "context_garment"},
+    "toy": {"context_candidate": "sex_toy_object", "kind": "context_object"}
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-16T15:35:48Z",
+  "item": "MF-P9-06.07",
+  "status": "partially_complete",
+  "policy": {
+    "path": "configs/daz/scene_formation_selection.yaml",
+    "file_sha256": "f3ab88b554b36918781d2234b2ef045698f13307eff411db458cc4309ab47ac4",
+    "version": "1.0.0",
+    "camera_axes": {
+      "azimuth_bins": 8,
+      "elevation_bins": 6,
+      "roll_bins": 4,
+      "focal_families": 7,
+      "framing_profiles": 12,
+      "aspect_ratios": 7,
+      "resolution_profiles": 5,
+      "depth_of_field_modes": 3,
+      "motion_blur_modes": ["off"]
+    },
+    "lighting_profiles": 22,
+    "exposure_profiles": 7,
+    "environment_families": 3,
+    "environment_subfamilies": 21,
+    "context_complexities": 4,
+    "prop_modes": ["none", "support_surface", "handheld_worn", "occluder"]
+  },
+  "camera_controls": {
+    "continuous_values_derived_by_namespaced_sha256": true,
+    "azimuth_elevation_roll_values_must_remain_inside_requested_bins": true,
+    "perspective_focal_length_must_remain_inside_requested_family": true,
+    "orthographic_is_limited_to_full_body_mapping_profiles": true,
+    "multi_person_framing_requires_multiple_people": true,
+    "single_person_framing_requires_one_person": true,
+    "short_side_resolution_and_aspect_ratio_are_exact": true,
+    "crop_is_initially_full_frame": true,
+    "beauty_depth_of_field_is_explicit": true,
+    "annotation_depth_of_field_and_motion_blur_are_off": true,
+    "pristine_lens_distortion_is_none": true,
+    "projected_bbox_prominence_and_final_camera_readback_are_required": true
+  },
+  "asset_controls": {
+    "runtime_qualified_assets_only": true,
+    "exact_foundation_replay_required": true,
+    "required_dependencies_must_be_runtime_qualified": true,
+    "generation_neutral_or_genesis_9_base_compatible": true,
+    "lighting_profile_facet_must_match": true,
+    "environment_context_facet_must_match": true,
+    "prop_role_facet_must_match": true,
+    "renderer_dimension_camera_and_output_path_mutations_forbidden": true,
+    "environment_initial_production_restrictions_all_required": [
+      "no_person_reflections",
+      "no_transparent_duplicate_silhouettes",
+      "no_undeclared_people_media",
+      "no_ambiguous_volumetrics",
+      "replayable_only",
+      "no_loaded_human_figures",
+      "bounded_scale"
+    ],
+    "prop_stable_object_id_required": true,
+    "prop_named_anchor_required": true,
+    "prop_contact_and_occlusion_preflight_required": true,
+    "final_asset_readback_required": true,
+    "registry_order_independent_sha256_rank": true,
+    "selection_replay_recomputed": true,
+    "immutable_publication": true,
+    "cli": "daz recipes select-formation"
+  },
+  "closed_fixture_coverage": {
+    "all_camera_axis_values_covered": true,
+    "all_lighting_profiles_covered": true,
+    "all_exposure_profiles_covered": true,
+    "all_environment_subfamilies_covered": true,
+    "all_context_complexities_covered": true,
+    "all_prop_modes_covered": true,
+    "focused_tests_collected": 117,
+    "focused_tests_passed": 117,
+    "focused_tests_failed": 0,
+    "covered_refusals": [
+      "environment missing one initial-production restriction",
+      "asset mutates camera/renderer/dimensions/output path",
+      "prop missing stable object identity",
+      "single-person request with multi-person framing",
+      "multi-person request with single-person framing",
+      "orthographic non-mapping framing",
+      "unqualified requested lighting profile",
+      "selection tamper",
+      "immutable publication conflict"
+    ]
+  },
+  "lineage": {
+    "implementation_sha256": "4f225ddf4966fbad3cc8495ff3c384c181a3ebb74fefc62ef1b9cec19f39e7b0",
+    "schema_sha256": "064f91e39d6f7332c910201a405647becd97e5362b096ef7f799bfe5303bd740",
+    "test_sha256": "f94a1dc286a395b1817c2c540afdd17886c4d379e16fd0f2e4deee59bcde5c82"
+  },
+  "verification": {
+    "full_repository_tests_collected": 2059,
+    "full_repository_tests_passed": 2059,
+    "full_repository_tests_failed": 0,
+    "ruff_lint": "pass",
+    "black_precommit": "pass"
+  },
+  "storage_boundary": {
+    "free_bytes": 150760443904,
+    "free_gib": 140.407,
+    "capacity_state": "soft",
+    "new_work_allowed": false,
+    "active_job_allowed": true,
+    "new_asset_or_render_work_started": false
+  },
+  "live_boundary": {
+    "live_qualified_formation_assets_selected": false,
+    "live_camera_and_asset_readback_recorded": false,
+    "live_framing_prominence_validation_recorded": false,
+    "live_rgb_or_annotation_pass_recorded": false,
+    "live_prop_contact_or_occlusion_validation_recorded": false,
+    "reason": "All selection and coverage contracts pass against closed fixtures. Completion requires live qualified descriptor records, final DAZ camera/light/environment/prop readback, accepted RGB and annotation passes, projected bbox/prominence checks, and geometry preflight for framing, contacts, and occlusion."
+  },
+  "not_claimed": [
+    "a live camera or image-formation selection",
+    "a live framing or prominence pass",
+    "a live lighting/environment render",
+    "live prop/support/contact geometry",
+    "completion of MF-P9-06.07"
+  ]
+}

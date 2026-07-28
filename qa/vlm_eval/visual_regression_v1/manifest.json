@@ -1,0 +1,1487 @@
+{
+  "cases": [
+    {
+      "case_id": "vr_001_clothing_skin_boundary_valid",
+      "case_sha256": "58d7cd8ec7ac16d7b23dcd1bf3338d230bc6292010115f2b1f8d99c7b9a946c6",
+      "defect_type": null,
+      "domain": "clothing_skin_boundary",
+      "expected_outcome": "valid_mask",
+      "panel_files": {
+        "binary_mask": "panels/vr_001_clothing_skin_boundary_valid/binary_mask.png",
+        "contour": "panels/vr_001_clothing_skin_boundary_valid/contour.png",
+        "disagreement": "panels/vr_001_clothing_skin_boundary_valid/disagreement.png",
+        "full_context": "panels/vr_001_clothing_skin_boundary_valid/full_context.png",
+        "overlay": "panels/vr_001_clothing_skin_boundary_valid/overlay.png",
+        "source": "panels/vr_001_clothing_skin_boundary_valid/source.png",
+        "uncertainty_zoom": "panels/vr_001_clothing_skin_boundary_valid/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "3ad1a3f0908da10f212984025ef1a6f65287f499ef7a5aa16133d0fa4ca9b63d",
+      "panels": {
+        "binary_mask": "6877b6c58a917ecae40a13adf402a971c2f9bf47b1fb352f78c2db265077dc12",
+        "contour": "501ac740c3d35ca71b6a4de5357a84f4797a4e7b0f9cc3f67d62001a5358e909",
+        "disagreement": "c1bb079a3298e3eda500bba7f01ebf32dd4bc3ca023868bcd907a3769e96a845",
+        "full_context": "890ab0e50a76b8e556cf13354552eab7a93bdd34b57d51707b388c707674e954",
+        "overlay": "29773422ac922050ee08eec6535be0f89ba58713ae896861906056b363f78282",
+        "source": "890ab0e50a76b8e556cf13354552eab7a93bdd34b57d51707b388c707674e954",
+        "uncertainty_zoom": "29773422ac922050ee08eec6535be0f89ba58713ae896861906056b363f78282"
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "6877b6c58a917ecae40a13adf402a971c2f9bf47b1fb352f78c2db265077dc12",
+          "width": 128
+        },
+        "contract_id": "target-vr_001_clothing_skin_boundary_valid",
+        "contract_sha256": "1031f07a0334731f1b4a85d70b5a4761307cbb0632edbe7bedacffedd86ed1d4",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "character-vr_001_clothing_skin_boundary_valid",
+          "person_index": 0,
+          "person_mask_sha256": "ede6503da7011d7b4cfde9325ebca80dc380f304dc7d886fb116d97497e7ea73"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vr_001_clothing_skin_boundary_valid",
+          "sha256": "890ab0e50a76b8e556cf13354552eab7a93bdd34b57d51707b388c707674e954",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "torso_skin",
+          "maximum_area_pixels": 8192,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vr_002_clothing_skin_boundary_boundary",
+      "case_sha256": "8e1a53f71d9cf801a75d8d9ac3ad2188d5ca38c3ff4a95b79058d6bcaaca6ce5",
+      "defect_type": "boundary",
+      "domain": "clothing_skin_boundary",
+      "expected_outcome": "serious_defect",
+      "panel_files": {
+        "binary_mask": "panels/vr_002_clothing_skin_boundary_boundary/binary_mask.png",
+        "contour": "panels/vr_002_clothing_skin_boundary_boundary/contour.png",
+        "disagreement": "panels/vr_002_clothing_skin_boundary_boundary/disagreement.png",
+        "full_context": "panels/vr_002_clothing_skin_boundary_boundary/full_context.png",
+        "overlay": "panels/vr_002_clothing_skin_boundary_boundary/overlay.png",
+        "source": "panels/vr_002_clothing_skin_boundary_boundary/source.png",
+        "uncertainty_zoom": "panels/vr_002_clothing_skin_boundary_boundary/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "ab0c59f809e302aac3f7ce7330d3d810e99beb296b0b87980694032b37400554",
+      "panels": {
+        "binary_mask": "2e4ddcd67010dc27c8b673c35b576a3113e0d6daec0b7c7d246d182f9a2719a3",
+        "contour": "0ebd81c550b94d2e9d5a2a6be43ff12309f6d3f867de476264d05a065c607510",
+        "disagreement": "ba6b13d9bc23a6a86c568484548a180b262147757b0e9687000dfb8d4612a5d3",
+        "full_context": "b0dc92db1290cb4501fac92eba735c412a171b55529c2bef3976b562f8739490",
+        "overlay": "9eed089e870bf29a32cd7320b4db985e449f4d92c98d718883d52f45a5d3d611",
+        "source": "b0dc92db1290cb4501fac92eba735c412a171b55529c2bef3976b562f8739490",
+        "uncertainty_zoom": "9eed089e870bf29a32cd7320b4db985e449f4d92c98d718883d52f45a5d3d611"
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "2e4ddcd67010dc27c8b673c35b576a3113e0d6daec0b7c7d246d182f9a2719a3",
+          "width": 128
+        },
+        "contract_id": "target-vr_002_clothing_skin_boundary_boundary",
+        "contract_sha256": "956fe883493ce6e4a47989dbd715d035b7e1458a242ae664a940eb3dbed25643",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "character-vr_002_clothing_skin_boundary_boundary",
+          "person_index": 0,
+          "person_mask_sha256": "ede6503da7011d7b4cfde9325ebca80dc380f304dc7d886fb116d97497e7ea73"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vr_002_clothing_skin_boundary_boundary",
+          "sha256": "b0dc92db1290cb4501fac92eba735c412a171b55529c2bef3976b562f8739490",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "torso_skin",
+          "maximum_area_pixels": 8192,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vr_003_feet_valid",
+      "case_sha256": "c87cef021e25bbee535fb44763bd2cb19e820ef74c27b85af69fd521d7589dbc",
+      "defect_type": null,
+      "domain": "feet",
+      "expected_outcome": "valid_mask",
+      "panel_files": {
+        "binary_mask": "panels/vr_003_feet_valid/binary_mask.png",
+        "contour": "panels/vr_003_feet_valid/contour.png",
+        "disagreement": "panels/vr_003_feet_valid/disagreement.png",
+        "full_context": "panels/vr_003_feet_valid/full_context.png",
+        "overlay": "panels/vr_003_feet_valid/overlay.png",
+        "source": "panels/vr_003_feet_valid/source.png",
+        "uncertainty_zoom": "panels/vr_003_feet_valid/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "b3ebbc37eb93a4eeaf7a06d790493bbab957ca18ce7b945c9694fd3ec0a5606b",
+      "panels": {
+        "binary_mask": "36c1bafc25a08820b4d26e6d11ef0761760f18070bb9c48903fbaecae7861efa",
+        "contour": "89963611cfa708b7077ea535a897ceccfc28bfc092bb110853b13e49bdfca910",
+        "disagreement": "c1bb079a3298e3eda500bba7f01ebf32dd4bc3ca023868bcd907a3769e96a845",
+        "full_context": "23d81e0615d56261883231a12ef7f44c62bad40e08034d481126f88aeb5cd10d",
+        "overlay": "94d8a6802e60854b418ab0096685d3a7b2a42bf525e78cf84e9a143b0509da23",
+        "source": "23d81e0615d56261883231a12ef7f44c62bad40e08034d481126f88aeb5cd10d",
+        "uncertainty_zoom": "94d8a6802e60854b418ab0096685d3a7b2a42bf525e78cf84e9a143b0509da23"
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "36c1bafc25a08820b4d26e6d11ef0761760f18070bb9c48903fbaecae7861efa",
+          "width": 128
+        },
+        "contract_id": "target-vr_003_feet_valid",
+        "contract_sha256": "d3e4f97e3286a394ca75349ad5b882046e4b61fc4974a1660c12caff894d6363",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "character-vr_003_feet_valid",
+          "person_index": 0,
+          "person_mask_sha256": "c209c06ae6c13b07030c8e76793d4d937a829f96e8f2730ec6c3c69d36d37c15"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vr_003_feet_valid",
+          "sha256": "23d81e0615d56261883231a12ef7f44c62bad40e08034d481126f88aeb5cd10d",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "left_foot",
+          "maximum_area_pixels": 8192,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vr_004_feet_anatomy",
+      "case_sha256": "eaa80e27cbcf68eccb5ee01872d4ddcf7c07b64ccf45a46de68f136be036b5a3",
+      "defect_type": "anatomy",
+      "domain": "feet",
+      "expected_outcome": "serious_defect",
+      "panel_files": {
+        "binary_mask": "panels/vr_004_feet_anatomy/binary_mask.png",
+        "contour": "panels/vr_004_feet_anatomy/contour.png",
+        "disagreement": "panels/vr_004_feet_anatomy/disagreement.png",
+        "full_context": "panels/vr_004_feet_anatomy/full_context.png",
+        "overlay": "panels/vr_004_feet_anatomy/overlay.png",
+        "source": "panels/vr_004_feet_anatomy/source.png",
+        "uncertainty_zoom": "panels/vr_004_feet_anatomy/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "049483d98fcb34bc866eed7b32b99008a9018be0c82abfed349b59fd25195d52",
+      "panels": {
+        "binary_mask": "0c0263ec510650b427b37bfde5cfcc935fdfc84793fb2b11765e3b5140894bcd",
+        "contour": "45b789067a76e2ed607027d9c302c478013479181d50ee7c4483ea2d3d16f94e",
+        "disagreement": "5cb3efe41018cb08df19d7f1ceb1cd0e95982ad01830c074b694d306194f4352",
+        "full_context": "6e9ec5bb0dcc6906da2bc74b5d5ea5c44d698529fc38eb50ed5d3262713e4bc5",
+        "overlay": "979cd2e84bf733e876d9abdd2d4f5ea38575d68e62ada381bb487d3cfbebf5a6",
+        "source": "6e9ec5bb0dcc6906da2bc74b5d5ea5c44d698529fc38eb50ed5d3262713e4bc5",
+        "uncertainty_zoom": "979cd2e84bf733e876d9abdd2d4f5ea38575d68e62ada381bb487d3cfbebf5a6"
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "0c0263ec510650b427b37bfde5cfcc935fdfc84793fb2b11765e3b5140894bcd",
+          "width": 128
+        },
+        "contract_id": "target-vr_004_feet_anatomy",
+        "contract_sha256": "ecd1a889d166685605bf528ed0498227063a2099ab30ecf3c09ea94a2a4f09aa",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "character-vr_004_feet_anatomy",
+          "person_index": 0,
+          "person_mask_sha256": "c209c06ae6c13b07030c8e76793d4d937a829f96e8f2730ec6c3c69d36d37c15"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vr_004_feet_anatomy",
+          "sha256": "6e9ec5bb0dcc6906da2bc74b5d5ea5c44d698529fc38eb50ed5d3262713e4bc5",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "left_foot",
+          "maximum_area_pixels": 8192,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vr_005_hair_valid",
+      "case_sha256": "2562b7f2a8d2ba6b5dc3f5f211aa276fe341547f1ad09bdbd67854cef0159936",
+      "defect_type": null,
+      "domain": "hair",
+      "expected_outcome": "valid_mask",
+      "panel_files": {
+        "binary_mask": "panels/vr_005_hair_valid/binary_mask.png",
+        "contour": "panels/vr_005_hair_valid/contour.png",
+        "disagreement": "panels/vr_005_hair_valid/disagreement.png",
+        "full_context": "panels/vr_005_hair_valid/full_context.png",
+        "overlay": "panels/vr_005_hair_valid/overlay.png",
+        "source": "panels/vr_005_hair_valid/source.png",
+        "uncertainty_zoom": "panels/vr_005_hair_valid/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "65ebfee715578a275b0306bd2e81db8cafc69ab4c22f2bea042004505ee76c59",
+      "panels": {
+        "binary_mask": "167ca9fddf3804c8b96ad02f173b8dd03599a486952dd30ba2a6c4903477a554",
+        "contour": "d87e94e07cb62e921513d6354b1e360321e9783ecce055ab1ba440e93583c8fc",
+        "disagreement": "c1bb079a3298e3eda500bba7f01ebf32dd4bc3ca023868bcd907a3769e96a845",
+        "full_context": "b5923d6d44cddbf16e4ee97408c6000f86d574a8b51d25492b6e8d0c2bb26a35",
+        "overlay": "5b55368aa0e72ca4e1835ec5a6117f8257e8c0541f773e2f0d96f51672c9de26",
+        "source": "b5923d6d44cddbf16e4ee97408c6000f86d574a8b51d25492b6e8d0c2bb26a35",
+        "uncertainty_zoom": "5b55368aa0e72ca4e1835ec5a6117f8257e8c0541f773e2f0d96f51672c9de26"
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "167ca9fddf3804c8b96ad02f173b8dd03599a486952dd30ba2a6c4903477a554",
+          "width": 128
+        },
+        "contract_id": "target-vr_005_hair_valid",
+        "contract_sha256": "deb66ad67aeeb81addb6e5a6ed76fb041291d225119826a8b6748cccd2048805",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "character-vr_005_hair_valid",
+          "person_index": 0,
+          "person_mask_sha256": "20c8adeea786fdc44ea3245988caaa5ba1c5821ccc1eab6cb5d210151889b438"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vr_005_hair_valid",
+          "sha256": "b5923d6d44cddbf16e4ee97408c6000f86d574a8b51d25492b6e8d0c2bb26a35",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "hair",
+          "maximum_area_pixels": 8192,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vr_006_hair_boundary",
+      "case_sha256": "a56e09bd9208bf5a7b23ac1524b789522c3329ff4614d8fff37422ee326733ff",
+      "defect_type": "boundary",
+      "domain": "hair",
+      "expected_outcome": "serious_defect",
+      "panel_files": {
+        "binary_mask": "panels/vr_006_hair_boundary/binary_mask.png",
+        "contour": "panels/vr_006_hair_boundary/contour.png",
+        "disagreement": "panels/vr_006_hair_boundary/disagreement.png",
+        "full_context": "panels/vr_006_hair_boundary/full_context.png",
+        "overlay": "panels/vr_006_hair_boundary/overlay.png",
+        "source": "panels/vr_006_hair_boundary/source.png",
+        "uncertainty_zoom": "panels/vr_006_hair_boundary/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "f47952eef53e1e962777e25afa21f4b8e302ffa910c0f7f4932904e0a6bedca7",
+      "panels": {
+        "binary_mask": "b2722a046f9b85fde0022ee98e1d359d7d964f1aa095e162f1e2b25544766e5a",
+        "contour": "fc274616a25da869e6201443fdd99acd9d658d414277eb824342131def62ae28",
+        "disagreement": "b1bc986de28c09d3df60996d5a0cfdce54fc981e52d7a906c8e630b9ce34e44c",
+        "full_context": "292569110c6c70417bcf49319ec8ac0c4095ad81ce5f95342d54dca93d322c20",
+        "overlay": "2f5bf7b79586feae9ec4bc45bb510e7b648dfb18ce09870355c04da0acfdbbc2",
+        "source": "292569110c6c70417bcf49319ec8ac0c4095ad81ce5f95342d54dca93d322c20",
+        "uncertainty_zoom": "2f5bf7b79586feae9ec4bc45bb510e7b648dfb18ce09870355c04da0acfdbbc2"
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "b2722a046f9b85fde0022ee98e1d359d7d964f1aa095e162f1e2b25544766e5a",
+          "width": 128
+        },
+        "contract_id": "target-vr_006_hair_boundary",
+        "contract_sha256": "0cf2b59ca2d2606157e5c9eeb35e3cfcf600ee19306b5b8b2ba65fe91d17e573",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "character-vr_006_hair_boundary",
+          "person_index": 0,
+          "person_mask_sha256": "20c8adeea786fdc44ea3245988caaa5ba1c5821ccc1eab6cb5d210151889b438"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vr_006_hair_boundary",
+          "sha256": "292569110c6c70417bcf49319ec8ac0c4095ad81ce5f95342d54dca93d322c20",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "hair",
+          "maximum_area_pixels": 8192,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vr_007_hands_valid",
+      "case_sha256": "f6a6963ae1bef0c4e7e1cc8dfae9151793fc6b699592a400832bd0e34f0d9224",
+      "defect_type": null,
+      "domain": "hands",
+      "expected_outcome": "valid_mask",
+      "panel_files": {
+        "binary_mask": "panels/vr_007_hands_valid/binary_mask.png",
+        "contour": "panels/vr_007_hands_valid/contour.png",
+        "disagreement": "panels/vr_007_hands_valid/disagreement.png",
+        "full_context": "panels/vr_007_hands_valid/full_context.png",
+        "overlay": "panels/vr_007_hands_valid/overlay.png",
+        "source": "panels/vr_007_hands_valid/source.png",
+        "uncertainty_zoom": "panels/vr_007_hands_valid/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "670af109b3041f2d56c3973232bd2a54454d57519ab875e630bb644b76787b1e",
+      "panels": {
+        "binary_mask": "c97f73ddf480cbf3bf189d6006d8e265d5da73b335d7f08361bbeefb1db06c84",
+        "contour": "188562c800e2b910d376bbec3fd5cd2511ff995bef4fbcd473e6b36448ab57cf",
+        "disagreement": "c1bb079a3298e3eda500bba7f01ebf32dd4bc3ca023868bcd907a3769e96a845",
+        "full_context": "8b335535d0cb6446c556d8c6bf62a0ddb45f385e6094e1490e4c830e72a2018c",
+        "overlay": "94adb066bb340332785f6b20152d301da239646d41f0f4963175245b13c9d086",
+        "source": "8b335535d0cb6446c556d8c6bf62a0ddb45f385e6094e1490e4c830e72a2018c",
+        "uncertainty_zoom": "94adb066bb340332785f6b20152d301da239646d41f0f4963175245b13c9d086"
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "c97f73ddf480cbf3bf189d6006d8e265d5da73b335d7f08361bbeefb1db06c84",
+          "width": 128
+        },
+        "contract_id": "target-vr_007_hands_valid",
+        "contract_sha256": "cdad849a97ce003261ba4e2342ad9669704fab6aa85a5845e41b00525aa45a76",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "character-vr_007_hands_valid",
+          "person_index": 0,
+          "person_mask_sha256": "4cf8b7562b74cc37ad38db6a902c23dc7e254761297943d2dec448a26ba4f6b3"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vr_007_hands_valid",
+          "sha256": "8b335535d0cb6446c556d8c6bf62a0ddb45f385e6094e1490e4c830e72a2018c",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "left_hand",
+          "maximum_area_pixels": 8192,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vr_008_hands_anatomy",
+      "case_sha256": "9c8d8bf18db2447a14cb105338131edeb68b77badbcb677fc1b069fe0f11cb1b",
+      "defect_type": "anatomy",
+      "domain": "hands",
+      "expected_outcome": "serious_defect",
+      "panel_files": {
+        "binary_mask": "panels/vr_008_hands_anatomy/binary_mask.png",
+        "contour": "panels/vr_008_hands_anatomy/contour.png",
+        "disagreement": "panels/vr_008_hands_anatomy/disagreement.png",
+        "full_context": "panels/vr_008_hands_anatomy/full_context.png",
+        "overlay": "panels/vr_008_hands_anatomy/overlay.png",
+        "source": "panels/vr_008_hands_anatomy/source.png",
+        "uncertainty_zoom": "panels/vr_008_hands_anatomy/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "01e8f0f3732c853e33309e07b54d5041f59edca95ae6b1a27b4bcd02f024ed66",
+      "panels": {
+        "binary_mask": "dbe6b82afceb1c1671167a137f4a4ef42c8663607c27fda06f22ac6c1d87fead",
+        "contour": "0b5e1b9971d7dba5617fa37258d7f6f85ca43c4ff597d77da1ae009e1188d818",
+        "disagreement": "51127a1a978e3f56465254fc0b33b1dd94817771b9412c682e0a90a79e6875a4",
+        "full_context": "f5f159dbbba6fcd1b2b743c19d3c5a5478494de5167aa46e5a2bd283b7f12f55",
+        "overlay": "be72c2385ed9d0ba67e8a5047520320eb1ba9cadd63e54a5ba00f69c40be4a6c",
+        "source": "f5f159dbbba6fcd1b2b743c19d3c5a5478494de5167aa46e5a2bd283b7f12f55",
+        "uncertainty_zoom": "be72c2385ed9d0ba67e8a5047520320eb1ba9cadd63e54a5ba00f69c40be4a6c"
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "dbe6b82afceb1c1671167a137f4a4ef42c8663607c27fda06f22ac6c1d87fead",
+          "width": 128
+        },
+        "contract_id": "target-vr_008_hands_anatomy",
+        "contract_sha256": "55d64fda893736bbaa74b0749546956af193ff27524f23182b71f61b78879b9c",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "character-vr_008_hands_anatomy",
+          "person_index": 0,
+          "person_mask_sha256": "4cf8b7562b74cc37ad38db6a902c23dc7e254761297943d2dec448a26ba4f6b3"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vr_008_hands_anatomy",
+          "sha256": "f5f159dbbba6fcd1b2b743c19d3c5a5478494de5167aa46e5a2bd283b7f12f55",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "left_hand",
+          "maximum_area_pixels": 8192,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vr_009_multi_person_ownership_valid",
+      "case_sha256": "d719a427e395682dcf759055afad154ab9a07bf158516cdca5b15aa1aec86be1",
+      "defect_type": null,
+      "domain": "multi_person_ownership",
+      "expected_outcome": "valid_mask",
+      "panel_files": {
+        "binary_mask": "panels/vr_009_multi_person_ownership_valid/binary_mask.png",
+        "contour": "panels/vr_009_multi_person_ownership_valid/contour.png",
+        "disagreement": "panels/vr_009_multi_person_ownership_valid/disagreement.png",
+        "full_context": "panels/vr_009_multi_person_ownership_valid/full_context.png",
+        "overlay": "panels/vr_009_multi_person_ownership_valid/overlay.png",
+        "source": "panels/vr_009_multi_person_ownership_valid/source.png",
+        "uncertainty_zoom": "panels/vr_009_multi_person_ownership_valid/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "0ee11ace477fa0b01111b9c4dd9a0b95d81f130f1e081031e9efc7e2526a722c",
+      "panels": {
+        "binary_mask": "7cd883f46a14bf18f373d1a9f8778da1c35e91290367e1472d121b0fbeff2277",
+        "contour": "c5079527c8a582fb3a40048b10d01d536f274abdd06005ea8d2c32471ed08f1f",
+        "disagreement": "c1bb079a3298e3eda500bba7f01ebf32dd4bc3ca023868bcd907a3769e96a845",
+        "full_context": "73bf3f5e668eda553a84b83f60bb484cea211743db3cbec18aeed4e50246d04c",
+        "overlay": "fe36d21c52f1a20758abcb60a481d56aa530340395092eec78ce6345edd112f0",
+        "source": "73bf3f5e668eda553a84b83f60bb484cea211743db3cbec18aeed4e50246d04c",
+        "uncertainty_zoom": "fe36d21c52f1a20758abcb60a481d56aa530340395092eec78ce6345edd112f0"
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "7cd883f46a14bf18f373d1a9f8778da1c35e91290367e1472d121b0fbeff2277",
+          "width": 128
+        },
+        "contract_id": "target-vr_009_multi_person_ownership_valid",
+        "contract_sha256": "31ba7b18e3aa0a7961c9105bd0f262e69aa1ae60109ca92947ec00a11c1c49c3",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "character-vr_009_multi_person_ownership_valid",
+          "person_index": 0,
+          "person_mask_sha256": "41eee10a59daed715a299fbe6c62686f0d0d28ce267efec6dd5dd82c2064294f"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vr_009_multi_person_ownership_valid",
+          "sha256": "73bf3f5e668eda553a84b83f60bb484cea211743db3cbec18aeed4e50246d04c",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "left_arm",
+          "maximum_area_pixels": 8192,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vr_010_multi_person_ownership_ownership",
+      "case_sha256": "ab7edc40868c7deeea1dd7365c36937bb7c291e63ab183b4885e6f2dc00b98f9",
+      "defect_type": "ownership",
+      "domain": "multi_person_ownership",
+      "expected_outcome": "serious_defect",
+      "panel_files": {
+        "binary_mask": "panels/vr_010_multi_person_ownership_ownership/binary_mask.png",
+        "contour": "panels/vr_010_multi_person_ownership_ownership/contour.png",
+        "disagreement": "panels/vr_010_multi_person_ownership_ownership/disagreement.png",
+        "full_context": "panels/vr_010_multi_person_ownership_ownership/full_context.png",
+        "overlay": "panels/vr_010_multi_person_ownership_ownership/overlay.png",
+        "source": "panels/vr_010_multi_person_ownership_ownership/source.png",
+        "uncertainty_zoom": "panels/vr_010_multi_person_ownership_ownership/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "57769407d447c15f8ff63c2a1857e22940b42187289ffad1562b6eb0f4345837",
+      "panels": {
+        "binary_mask": "316931290e48e20f710b54eb7be4b1b707156c3e58a92abc9799ee735ec15d06",
+        "contour": "3695ccef2c51914da8e8588d9ff507c83095a1bce42d7a9b4dc55b980b498f57",
+        "disagreement": "0376ef7e75ad6779c0ee34e6c8eb3f5a82310b795a4acd2b3fc26c6918ee1669",
+        "full_context": "d84233b34b4476a23486b8aa278bd83745681e51cb7d309001b165e28453883e",
+        "overlay": "a87d9636909da57ebe30a0885737ecdefcca7615cf2e631d969b06cceb1065c8",
+        "source": "d84233b34b4476a23486b8aa278bd83745681e51cb7d309001b165e28453883e",
+        "uncertainty_zoom": "a87d9636909da57ebe30a0885737ecdefcca7615cf2e631d969b06cceb1065c8"
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "316931290e48e20f710b54eb7be4b1b707156c3e58a92abc9799ee735ec15d06",
+          "width": 128
+        },
+        "contract_id": "target-vr_010_multi_person_ownership_ownership",
+        "contract_sha256": "dfae37d35ae171a7f02f17b810013b17d11b9244130b5e4c938d519353558716",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "character-vr_010_multi_person_ownership_ownership",
+          "person_index": 0,
+          "person_mask_sha256": "41eee10a59daed715a299fbe6c62686f0d0d28ce267efec6dd5dd82c2064294f"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vr_010_multi_person_ownership_ownership",
+          "sha256": "d84233b34b4476a23486b8aa278bd83745681e51cb7d309001b165e28453883e",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "left_arm",
+          "maximum_area_pixels": 8192,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vr_011_occlusion_contact_valid",
+      "case_sha256": "54193444e04020b02150c9c4678747a391d32a85249ffa0329a58262d1581891",
+      "defect_type": null,
+      "domain": "occlusion_contact",
+      "expected_outcome": "valid_mask",
+      "panel_files": {
+        "binary_mask": "panels/vr_011_occlusion_contact_valid/binary_mask.png",
+        "contour": "panels/vr_011_occlusion_contact_valid/contour.png",
+        "disagreement": "panels/vr_011_occlusion_contact_valid/disagreement.png",
+        "full_context": "panels/vr_011_occlusion_contact_valid/full_context.png",
+        "overlay": "panels/vr_011_occlusion_contact_valid/overlay.png",
+        "source": "panels/vr_011_occlusion_contact_valid/source.png",
+        "uncertainty_zoom": "panels/vr_011_occlusion_contact_valid/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "fe056c78544cf95635a5bb818aab170ceff370542f834c1c111269c87c6179f9",
+      "panels": {
+        "binary_mask": "dbc8e69686b0d6f43b251a52641f3be2370ffcfba096efd471ed1e01a3bcf8f4",
+        "contour": "f0b6296e32db1f57568a943390cc9d1c3b27f72bb1c1ade7d43cf1fc9cb5b96a",
+        "disagreement": "c1bb079a3298e3eda500bba7f01ebf32dd4bc3ca023868bcd907a3769e96a845",
+        "full_context": "6858abc2d6b20327bcd550e180ef05c65c52ca6290d3622aa5371952e48554dd",
+        "overlay": "e02211ea5fa9d9046e821ce2c49c95e9bd9b42430056489ba7ed90eb0565d0df",
+        "source": "6858abc2d6b20327bcd550e180ef05c65c52ca6290d3622aa5371952e48554dd",
+        "uncertainty_zoom": "e02211ea5fa9d9046e821ce2c49c95e9bd9b42430056489ba7ed90eb0565d0df"
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "dbc8e69686b0d6f43b251a52641f3be2370ffcfba096efd471ed1e01a3bcf8f4",
+          "width": 128
+        },
+        "contract_id": "target-vr_011_occlusion_contact_valid",
+        "contract_sha256": "a8b90450daa4e854f18f26d6f4d2fac0b9218aab6275f9b8a00e32bf5bae56f4",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "character-vr_011_occlusion_contact_valid",
+          "person_index": 0,
+          "person_mask_sha256": "1fef02d71d22b7059a1e3c739ef3c7c91fbe6765b51a814b176a960944fe2265"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vr_011_occlusion_contact_valid",
+          "sha256": "6858abc2d6b20327bcd550e180ef05c65c52ca6290d3622aa5371952e48554dd",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "right_hand",
+          "maximum_area_pixels": 8192,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vr_012_occlusion_contact_protected_region",
+      "case_sha256": "ec0245788c8f446ea3bc5ab955bbe8599fe849548f6eaee26149852e2e23f206",
+      "defect_type": "protected_region",
+      "domain": "occlusion_contact",
+      "expected_outcome": "serious_defect",
+      "panel_files": {
+        "binary_mask": "panels/vr_012_occlusion_contact_protected_region/binary_mask.png",
+        "contour": "panels/vr_012_occlusion_contact_protected_region/contour.png",
+        "disagreement": "panels/vr_012_occlusion_contact_protected_region/disagreement.png",
+        "full_context": "panels/vr_012_occlusion_contact_protected_region/full_context.png",
+        "overlay": "panels/vr_012_occlusion_contact_protected_region/overlay.png",
+        "source": "panels/vr_012_occlusion_contact_protected_region/source.png",
+        "uncertainty_zoom": "panels/vr_012_occlusion_contact_protected_region/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "f1025eb0af1f37406356700f690c53e39a0cd290263dea3f64140354cef66c56",
+      "panels": {
+        "binary_mask": "1567a2e07a6303d19267bf290e6f35cb92ed9e3234ab753dcfb931107d9c60e8",
+        "contour": "5cb62ece89a2ec7471038ffa1e9bf45296d220dc66639f90284488cce361d08f",
+        "disagreement": "b7fa99d01a59a0f4bb819cc6ac0ea701b57b1629ac23efc5c2fe54e46df45bb0",
+        "full_context": "453a05a9f5546883b62db4b876b78a0c01f73fb0a5255cf292116f1812a23125",
+        "overlay": "8963dcb8996aaf29cef702ce895ef4d3987167af8225a9acbe4e85dd285ec0b3",
+        "source": "453a05a9f5546883b62db4b876b78a0c01f73fb0a5255cf292116f1812a23125",
+        "uncertainty_zoom": "8963dcb8996aaf29cef702ce895ef4d3987167af8225a9acbe4e85dd285ec0b3"
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "1567a2e07a6303d19267bf290e6f35cb92ed9e3234ab753dcfb931107d9c60e8",
+          "width": 128
+        },
+        "contract_id": "target-vr_012_occlusion_contact_protected_region",
+        "contract_sha256": "58fa907e148b7ec4ed05a9d59dd1dadb94c4b82f5d061eee54e54d5ab0216d9a",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "character-vr_012_occlusion_contact_protected_region",
+          "person_index": 0,
+          "person_mask_sha256": "1fef02d71d22b7059a1e3c739ef3c7c91fbe6765b51a814b176a960944fe2265"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vr_012_occlusion_contact_protected_region",
+          "sha256": "453a05a9f5546883b62db4b876b78a0c01f73fb0a5255cf292116f1812a23125",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "right_hand",
+          "maximum_area_pixels": 8192,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vr_013_visible_anatomy_valid",
+      "case_sha256": "4225b13252ef14a9dd47cfd009aa926076b38e1e6f19f0fa76c539a94f70bd2f",
+      "defect_type": null,
+      "domain": "visible_anatomy",
+      "expected_outcome": "valid_mask",
+      "panel_files": {
+        "binary_mask": "panels/vr_013_visible_anatomy_valid/binary_mask.png",
+        "contour": "panels/vr_013_visible_anatomy_valid/contour.png",
+        "disagreement": "panels/vr_013_visible_anatomy_valid/disagreement.png",
+        "full_context": "panels/vr_013_visible_anatomy_valid/full_context.png",
+        "overlay": "panels/vr_013_visible_anatomy_valid/overlay.png",
+        "source": "panels/vr_013_visible_anatomy_valid/source.png",
+        "uncertainty_zoom": "panels/vr_013_visible_anatomy_valid/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "91d1f8a5f7f27bb10eb29814e48cdf2aa4e30cb781e2c201927671fe02320222",
+      "panels": {
+        "binary_mask": "b799459d41eed098959673d58e0b69febfcb38bb3464d756729686dc5c26018d",
+        "contour": "37a57afc2e88b8e17c9419aae9937e47b25af62af51ae4ec6566c52638ec5fd0",
+        "disagreement": "c1bb079a3298e3eda500bba7f01ebf32dd4bc3ca023868bcd907a3769e96a845",
+        "full_context": "f19627716fe0726e7c76892d3b3bcc647aeaf6e34548228553d8571cc7e66cf0",
+        "overlay": "fa4625619af30c560457058d9ef18a93ef575de5eda40f3662191d6bf75356da",
+        "source": "f19627716fe0726e7c76892d3b3bcc647aeaf6e34548228553d8571cc7e66cf0",
+        "uncertainty_zoom": "fa4625619af30c560457058d9ef18a93ef575de5eda40f3662191d6bf75356da"
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "b799459d41eed098959673d58e0b69febfcb38bb3464d756729686dc5c26018d",
+          "width": 128
+        },
+        "contract_id": "target-vr_013_visible_anatomy_valid",
+        "contract_sha256": "4056bf6f1e268d28fa275352abf8030375475ef906a8bbbf0e073a9eff8a415e",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "character-vr_013_visible_anatomy_valid",
+          "person_index": 0,
+          "person_mask_sha256": "35698c0af42f47c1315cfd304b2719006fdcbe20f63e722207d9e1f259f5d465"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vr_013_visible_anatomy_valid",
+          "sha256": "f19627716fe0726e7c76892d3b3bcc647aeaf6e34548228553d8571cc7e66cf0",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "face_skin",
+          "maximum_area_pixels": 8192,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vr_014_visible_anatomy_anatomy",
+      "case_sha256": "e91b1283f6f5fd285cdd804dde218cbffd37a64f7dd3a66e788645c6ba82b623",
+      "defect_type": "anatomy",
+      "domain": "visible_anatomy",
+      "expected_outcome": "serious_defect",
+      "panel_files": {
+        "binary_mask": "panels/vr_014_visible_anatomy_anatomy/binary_mask.png",
+        "contour": "panels/vr_014_visible_anatomy_anatomy/contour.png",
+        "disagreement": "panels/vr_014_visible_anatomy_anatomy/disagreement.png",
+        "full_context": "panels/vr_014_visible_anatomy_anatomy/full_context.png",
+        "overlay": "panels/vr_014_visible_anatomy_anatomy/overlay.png",
+        "source": "panels/vr_014_visible_anatomy_anatomy/source.png",
+        "uncertainty_zoom": "panels/vr_014_visible_anatomy_anatomy/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "aa2aae992ef6735a0a7bb95c2d684ba06e7effd4610652b6a393b5dc4c23e16e",
+      "panels": {
+        "binary_mask": "ebfb105251b7e95d9daf6865b8187abcfc4e99e4307913ec6df1415f893e7273",
+        "contour": "5992a6202cef89375a7948087fa8bc2b74ea3ad6dc56a92120d2a998ca8d7008",
+        "disagreement": "ed4ba3968aeb52591aca5902ef4fa2ea53040c59e39f5c5f7cbc915a338b4109",
+        "full_context": "a9662ae828cf6f1aec05cb10ef803646cf3dd0bf3cc4c9c73608c49578a737e8",
+        "overlay": "2aca23ffce78720a540e2e92bbd3352f49e7e9d5728b6ac8eab1ff0b19e639df",
+        "source": "a9662ae828cf6f1aec05cb10ef803646cf3dd0bf3cc4c9c73608c49578a737e8",
+        "uncertainty_zoom": "2aca23ffce78720a540e2e92bbd3352f49e7e9d5728b6ac8eab1ff0b19e639df"
+      },
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "ebfb105251b7e95d9daf6865b8187abcfc4e99e4307913ec6df1415f893e7273",
+          "width": 128
+        },
+        "contract_id": "target-vr_014_visible_anatomy_anatomy",
+        "contract_sha256": "50f4a8d11592c2af68e8aabf50f2bdcc19d63434c0f88d95f41159adbc0cb0a4",
+        "excluded_labels": [
+          "other_person"
+        ],
+        "owner": {
+          "character_instance_id": "character-vr_014_visible_anatomy_anatomy",
+          "person_index": 0,
+          "person_mask_sha256": "35698c0af42f47c1315cfd304b2719006fdcbe20f63e722207d9e1f259f5d465"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vr_014_visible_anatomy_anatomy",
+          "sha256": "a9662ae828cf6f1aec05cb10ef803646cf3dd0bf3cc4c9c73608c49578a737e8",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "face_skin",
+          "maximum_area_pixels": 8192,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    }
+  ],
+  "frozen_at": "2026-07-21T00:00:00Z",
+  "required_domains": [
+    "clothing_skin_boundary",
+    "feet",
+    "hair",
+    "hands",
+    "multi_person_ownership",
+    "occlusion_contact",
+    "visible_anatomy"
+  ],
+  "schema_version": "1.0.0",
+  "suite_id": "maskfactory_visual_regression_v1",
+  "suite_sha256": "22001e0769d2fe7f36077e0f23affd9b975e3987b43d73fb87781c25e09b7781"
+}

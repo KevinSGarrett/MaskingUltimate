@@ -1,0 +1,120 @@
+{
+  "schema_version": "maskfactory.runpod_matanyone2_sam31_split_person_recomposition.v1",
+  "recorded_at": "2026-07-23T02:35:00Z",
+  "item_ids": [
+    "MF-P2-11.17",
+    "MF-P4-12.04"
+  ],
+  "platform": "runpod_persistent_storage",
+  "local_inference_used": false,
+  "source": {
+    "sample_id": "nude_7b75809e7490eab8a72eeaff",
+    "role": "reference_and_tournament_input",
+    "pixel_truth": false,
+    "path": "/workspace/assets/MaskedWarehouse/Nude/CivitAI_Top_NSFW_Images/images/100.jpeg",
+    "encoded_sha256": "79ff7ff15986bb564714c408958a7a6290c7f6171a553d9daae1885554c85b09",
+    "detector_person_count": 1,
+    "direct_source_only_person_count_observation": 1,
+    "direct_source_observation_is_mask_authority": false
+  },
+  "persistence": {
+    "evidence": "qa/live_verification/runpod_persistence_current_20260723.json",
+    "network_volume_gib": 1150,
+    "checks_passed": 13,
+    "checks_total": 13
+  },
+  "coordinator": {
+    "request_id": "req_db2012aeaa374f81b5e885312eb74eee",
+    "lease_id": "lease_02c8c7bb09514e28870393345d3dd5e2",
+    "owned_remote_pid": 3504632,
+    "reserved_peak_gib": 6.0,
+    "released": true,
+    "release_result": "failed_contained",
+    "release_result_explanation": "both GPU refinements completed; the first CPU summary parser incorrectly treated a leading model-load log line plus final JSON as one JSON document",
+    "terminal_gpu_used_memory_mib": 648,
+    "terminal_gpu_free_memory_mib": 47993
+  },
+  "provider": {
+    "provider_key": "matanyone2",
+    "family_id": "matanyone2",
+    "source_revision": "d3bb5a1ebedf259a5453c6d168e6840fff85581e",
+    "checkpoint_revision": "40c894a6f68d1f55c86ab0de838d89dc61587930",
+    "checkpoint_sha256": "70d3bf1d85d0aaf2020f9ef3577239f4f83b77c2ba47fca1eebaaf872f9ad40f",
+    "runner_sha256": "d101881340cecbedbde0c8160c7b3a022975d640e98543bd597fa2f3938960a6",
+    "route": "static_first_frame_refinement",
+    "semantic_authority": false
+  },
+  "refinements": [
+    {
+      "proposal_id": "000",
+      "sam31_probability": 0.8083832263946533,
+      "initial_sha256": "ac4291a4fb5dd322c5a566d4cef1e5312b3ecd5d3e50b849b4b85492f2c913cc",
+      "initial_bbox_xyxy": [
+        385,
+        195,
+        807,
+        947
+      ],
+      "refined_png_sha256": "a8508d4973302728e50ebed752c8d9c2cb324f955d1f4cef9fd60c7463d4a588",
+      "refined_npz_sha256": "50229b19063099b589a2bd17e4aaae581af5f45954604b323ec922a6cb0a2d3a",
+      "initial_pixels": 173691,
+      "refined_pixels": 174324,
+      "initial_refined_iou": 0.9693240077411469,
+      "detector_box_containment": 1.0,
+      "fractional_alpha_fraction": 0.01932767350361197,
+      "deterministic": true,
+      "peak_reserved_bytes": 17303601152
+    },
+    {
+      "proposal_id": "001",
+      "sam31_probability": 0.7538461089134216,
+      "initial_sha256": "1f5f275238680ce1e57af1c18436c344db1508d08f65d3356c2a0a5a5eb1b69c",
+      "initial_bbox_xyxy": [
+        28,
+        200,
+        498,
+        1216
+      ],
+      "refined_png_sha256": "3fe99029f0e0a85acf06136eedbb98131b08de005b4a3d2ece75b96b4bb76966",
+      "refined_npz_sha256": "ecd64e6d6c3ebf8d22758b2f3628e948ce58166cd0520a7f1c6a24686b397416",
+      "initial_pixels": 288812,
+      "refined_pixels": 290312,
+      "initial_refined_iou": 0.9871259067108613,
+      "detector_box_containment": 0.9996520984320317,
+      "fractional_alpha_fraction": 0.005548971233230134,
+      "deterministic": true,
+      "peak_reserved_bytes": 17303601152
+    }
+  ],
+  "comparison": {
+    "refined_pairwise_iou": 0.0000473511344901359,
+    "candidate_count": 2,
+    "detector_person_count": 1,
+    "exact_ownership_resolved": false,
+    "hard_qc_outcome": "abstained",
+    "reason": "independent_refinement_preserved_two_complementary_same-envelope_regions_and_did_not_resolve_provider_detector_person_count_disagreement"
+  },
+  "bounded_next_hypothesis": {
+    "defect": "one bent person was split into two complementary SAM3.1 proposals",
+    "operation": "new_immutable_union_candidate_only_after_allowlist_and_contract_validation",
+    "parent_bytes_immutable": true,
+    "full_hard_qc_rerun_required": true,
+    "strict_visual_rerun_required": true,
+    "certification_permitted_now": false
+  },
+  "authority_result": {
+    "provider_mask_candidate_count": 2,
+    "machine_verified_candidate_count": 0,
+    "strict_visual_pass_count": 0,
+    "repair_attempt_count": 0,
+    "operationally_certified_artifact_count": 0,
+    "autonomous_certified_gold_count": 0,
+    "training_truth_count": 0,
+    "claim": "HARD_QA_BLOCK_ABSTAIN"
+  },
+  "remote_result": {
+    "path": "/workspace/maskfactory_runtime/nude_reference_sam31_canary_20260723_v1/matanyone2_refinement/result.json",
+    "self_sha256": "8ccb1ffb9f4d76a93f7e8cabc52b9c73b2be89c9e6c28a1659e3557d73c32a93"
+  },
+  "self_sha256": "3acf2bea4326b8cd851e42b6806f481ff2c3dabccb4e18234e54a3e662e08ff4"
+}

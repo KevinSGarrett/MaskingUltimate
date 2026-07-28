@@ -1,0 +1,193 @@
+{
+  "authority": "pre_result_completion_index_only_no_primary_evidence_or_completion_authority",
+  "blocking_for_core_completion": false,
+  "completion_scope": "legacy_portfolio_research_evidence",
+  "core_completion_authority": "none",
+  "governing_source_hashes": {
+    "Plan/20_PROGRESSIVE_AUTONOMOUS_MASK_FACTORY_SPEC.md": "051c172fd17fdd4a7c09c080c0934dba577f35e162b01241a431c1297ddf61c9",
+    "Plan/22_TECHNOLOGY_CURRENCY_AND_MODEL_CHALLENGE_SPEC.md": "aff04f6699c7e585aa5082534635804423d573af7629bc63245f9503e77f957e",
+    "Plan/Items/00_ITEMS_MASTER_INDEX.md": "bdb255077d8236d6539c15c4a19bff4303b9598b6f80a489a383660b3b2f6ba2",
+    "Plan/23_EXTERNAL_SUPERVISION_REFERENCE_DAZ_AND_MINIMAL_REVIEW_SPEC.md": "b769a621b6ece466fda411f124c901321debd0c929d9e2a2d25437b6cd1f1c93",
+    "Plan/Items/20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md": "fd66bc85217cbc7b208b42dea4f9998172d2e9285564030cc08674e79b02e9b0",
+    "Plan/Items/18_ITEMS_P7_CURRENCY_OPERATIONS.md": "d101b45700e5f0287f68fda47e71c936a838b9b5d10b5b6f79bda0ada8b60084",
+    "Plan/SIDE_THREAD_HANDOFF_SAM31_AUTONOMOUS_GOLD_20260713.md": "6818856f7bdd2f034967043b2b7fef363e5b13676def797c05189b4e871253ec",
+    "Plan/Tracker/tracker.py": "1c10f94b0108c0a39d3ffedb371f750132776981f02bb56758757a1cf64e64b8"
+  },
+  "policy_id": "modernization_completion_v1",
+  "required_domains": {
+    "autonomy_certificate": {
+      "maximum_age_hours": 720,
+      "measurement_rules": {
+        "certificate_count": {"operator": "ge", "value": 1},
+        "human_anchor_audit_count": {"operator": "ge", "value": 300},
+        "overall_false_accept_upper_bound": {"operator": "le", "value": 0.01},
+        "serious_false_accept_upper_bound": {"operator": "le", "value": 0.005}
+      },
+      "minimum_source_artifacts": 2,
+      "verifier_id": "maskfactory.autonomy.verify_certificate_bundle"
+    },
+    "autonomy_revocation": {
+      "maximum_age_hours": 720,
+      "measurement_rules": {
+        "serious_failure_observed": {"operator": "eq", "value": true},
+        "serving_eligibility_removed": {"operator": "eq", "value": true},
+        "training_eligibility_removed": {"operator": "eq", "value": true}
+      },
+      "minimum_source_artifacts": 2,
+      "verifier_id": "maskfactory.autonomy.verify_live_revocation"
+    },
+    "cvat_migration": {
+      "maximum_age_hours": 720,
+      "measurement_rules": {
+        "migrated_task_count": {"operator": "ge", "value": 1},
+        "migration_result_pass": {"operator": "eq", "value": true},
+        "rollback_supported": {"operator": "eq", "value": true}
+      },
+      "minimum_source_artifacts": 2,
+      "verifier_id": "maskfactory.cvat.verify_migration"
+    },
+    "cvat_rollback": {
+      "maximum_age_hours": 720,
+      "measurement_rules": {
+        "exact_state_restored": {"operator": "eq", "value": true},
+        "post_rollback_smoke_pass": {"operator": "eq", "value": true}
+      },
+      "minimum_source_artifacts": 2,
+      "verifier_id": "maskfactory.cvat.verify_rollback"
+    },
+    "doctor": {
+      "maximum_age_hours": 24,
+      "measurement_rules": {
+        "fail_count": {"operator": "eq", "value": 0},
+        "pass_count": {"operator": "ge", "value": 1},
+        "skip_count": {"operator": "eq", "value": 0},
+        "warn_count": {"operator": "eq", "value": 0}
+      },
+      "minimum_source_artifacts": 1,
+      "verifier_id": "maskfactory.doctor.live"
+    },
+    "frozen_benchmarks": {
+      "maximum_age_hours": 2160,
+      "measurement_rules": {
+        "failed_role_count": {"operator": "eq", "value": 0},
+        "human_anchor_truth_only": {"operator": "eq", "value": true},
+        "missing_role_count": {"operator": "eq", "value": 0},
+        "passed_role_count": {"operator": "ge", "value": 9}
+      },
+      "minimum_source_artifacts": 3,
+      "verifier_id": "maskfactory.providers.verify_all_role_benchmarks"
+    },
+    "live_provider_smokes": {
+      "maximum_age_hours": 24,
+      "measurement_rules": {
+        "failed_role_count": {"operator": "eq", "value": 0},
+        "live_hardware": {"operator": "eq", "value": true},
+        "passed_role_count": {"operator": "ge", "value": 7},
+        "skipped_role_count": {"operator": "eq", "value": 0}
+      },
+      "minimum_source_artifacts": 2,
+      "verifier_id": "maskfactory.providers.verify_live_smokes"
+    },
+    "multi_person_headline": {
+      "maximum_age_hours": 720,
+      "measurement_rules": {
+        "blinded_audit_complete": {"operator": "eq", "value": true},
+        "cross_instance_bleed_failures": {"operator": "eq", "value": 0},
+        "image_count": {"operator": "ge", "value": 10},
+        "maximum_person_count": {"operator": "le", "value": 4},
+        "minimum_person_count": {"operator": "ge", "value": 2}
+      },
+      "minimum_source_artifacts": 3,
+      "verifier_id": "maskfactory.headline.verify_multi_person"
+    },
+    "operational_metrics": {
+      "maximum_age_hours": 720,
+      "measurement_rules": {
+        "blinded_human_anchor_count": {"operator": "ge", "value": 1},
+        "denominators_complete": {"operator": "eq", "value": true},
+        "eligible_package_count": {"operator": "ge", "value": 20},
+        "truth_tiers_separate": {"operator": "eq", "value": true}
+      },
+      "minimum_source_artifacts": 2,
+      "verifier_id": "maskfactory.autonomy.verify_operational_metrics"
+    },
+    "retraining_lifecycle": {
+      "maximum_age_hours": 2160,
+      "measurement_rules": {
+        "new_fingerprint_proven": {"operator": "eq", "value": true},
+        "recertification_or_abstention_complete": {"operator": "eq", "value": true},
+        "role_decision_recorded": {"operator": "eq", "value": true},
+        "rollback_result_pass": {"operator": "eq", "value": true}
+      },
+      "minimum_source_artifacts": 3,
+      "verifier_id": "maskfactory.autonomy.verify_retraining_operations"
+    },
+    "runtime_matrix": {
+      "maximum_age_hours": 720,
+      "measurement_rules": {
+        "installed_artifact_count": {"operator": "ge", "value": 15},
+        "live_qualified_family_count": {"operator": "ge", "value": 7},
+        "source_only_family_count": {"operator": "eq", "value": 0},
+        "unqualified_family_count": {"operator": "eq", "value": 0}
+      },
+      "minimum_source_artifacts": 2,
+      "verifier_id": "maskfactory.providers.verify_runtime_matrix"
+    },
+    "signed_currency_review": {
+      "maximum_age_hours": 2160,
+      "measurement_rules": {
+        "active_role_count": {"operator": "ge", "value": 5},
+        "failed_role_count": {"operator": "eq", "value": 0},
+        "global_finding_count": {"operator": "eq", "value": 0},
+        "review_status_pass": {"operator": "eq", "value": true}
+      },
+      "minimum_source_artifacts": 3,
+      "verifier_id": "maskfactory.providers.verify_currency_review"
+    },
+    "single_person_headline": {
+      "maximum_age_hours": 720,
+      "measurement_rules": {
+        "blinded_audit_complete": {"operator": "eq", "value": true},
+        "format_failure_count": {"operator": "eq", "value": 0},
+        "image_count": {"operator": "ge", "value": 20},
+        "left_right_failure_count": {"operator": "eq", "value": 0},
+        "routine_per_image_correction": {"operator": "eq", "value": false}
+      },
+      "minimum_source_artifacts": 3,
+      "verifier_id": "maskfactory.headline.verify_single_person"
+    },
+    "test_suite": {
+      "maximum_age_hours": 24,
+      "measurement_rules": {
+        "drift_checks_pass": {"operator": "eq", "value": true},
+        "format_pass": {"operator": "eq", "value": true},
+        "lint_pass": {"operator": "eq", "value": true},
+        "tests_collected": {"operator": "ge", "value": 1},
+        "tests_failed": {"operator": "eq", "value": 0},
+        "tests_passed": {"operator": "ge", "value": 1}
+      },
+      "minimum_source_artifacts": 2,
+      "verifier_id": "maskfactory.ci.verify_full_suite"
+    },
+    "tracker_validation": {
+      "maximum_age_hours": 24,
+      "measurement_rules": {
+        "definitions_of_done_met": {"operator": "eq", "value": 11},
+        "goals_met": {"operator": "eq", "value": 9},
+        "tracker_item_count": {"operator": "ge", "value": 755},
+        "unresolved_item_count_excluding_bundle": {"operator": "eq", "value": 0}
+      },
+      "minimum_source_artifacts": 2,
+      "verifier_id": "maskfactory.tracker.verify_completion"
+    }
+  },
+  "schema_version": "1.0.0",
+  "sha256": "53794241b838451c794ea5b36f5f88dd2ec7612011c975521335e121fdbce80f",
+  "tracker_requirements": {
+    "allowed_terminal_statuses": ["complete", "not_applicable"],
+    "excluded_item_ids": ["MF-P7-07.09"],
+    "minimum_item_count": 755,
+    "required_definition_of_done_ids": ["D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "D11"],
+    "required_goal_ids": ["G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9"]
+  }
+}

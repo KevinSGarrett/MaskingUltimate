@@ -1,0 +1,65 @@
+{
+  "accepted": false,
+  "canonical_sha256": "3ebcd73b6e42ec27d404a6c64f57eeda1ea520fa4f3d2747d19c352edbd33755",
+  "coverage_dimensions": [
+    "pose_family",
+    "framing_profile",
+    "wardrobe_state",
+    "lighting_profile",
+    "anatomy_configuration",
+    "prop_mode"
+  ],
+  "curriculum_stage": "engineering",
+  "doctor_green_claimed": false,
+  "fixture_count": 24,
+  "full_marginal_coverage": true,
+  "gold_claimed": false,
+  "honest_non_claims": [
+    "Not an accepted rendered engineering fixture set",
+    "Synthetic resolved recipes use fixture-only asset IDs; not live/qualified",
+    "No live DAZ Studio execution or renders",
+    "scale_daz_maturity remains post-core / waiting_for_prerequisite"
+  ],
+  "implementation": {
+    "cli": [
+      "maskfactory daz recipes build-engineering-fixture-set",
+      "maskfactory daz recipes validate-engineering-fixture-set"
+    ],
+    "module": "src/maskfactory/daz/scenes/engineering_fixtures.py",
+    "schema": "src/maskfactory/schemas/daz_engineering_fixture_set.schema.json",
+    "tests": [
+      "tests/test_daz_engineering_fixtures.py"
+    ]
+  },
+  "items": [
+    "MF-P9-06.10",
+    "MF-P9-06.01",
+    "MF-P9-06.02"
+  ],
+  "live_daz_execution": false,
+  "live_qualified_assets": false,
+  "mapping_authority": false,
+  "prior_v1_0_fixture_retained": "qa/fixtures/daz/engineering_fixture_sets/daz_engineering_fixture_set_c3e9b2a7a4c39671169f9b0b.json",
+  "proof_tier": "STATIC_PASS",
+  "published_file_sha256": "3f9b80e05c8615030f77eee5431a80d958efe75122e65f5b45dbe77fd5d8ad98",
+  "published_path": "qa\\fixtures\\daz\\engineering_fixture_sets\\daz_engineering_fixture_set_3ebcd73b6e42ec27d404a6c6.json",
+  "pytest_summary": "7 passed",
+  "rendered": false,
+  "resolved_recipes_sealed": true,
+  "result": "pass_daz_engineering_fixture_set_v1_1_contract",
+  "runtime_pass_claimed": false,
+  "schema_version": "1.1.0",
+  "set_id": "daz_engineering_fixture_set_3ebcd73b6e42ec27d404a6c6",
+  "sha256": "dcdb3521766397b7394bb663bf39b9f5f8cc2c4018f8a6bddf143aa7b192c598",
+  "stream_contract": [
+    "characters",
+    "poses",
+    "placement",
+    "camera",
+    "lighting",
+    "environment",
+    "render",
+    "degrade"
+  ],
+  "training_eligible": false
+}

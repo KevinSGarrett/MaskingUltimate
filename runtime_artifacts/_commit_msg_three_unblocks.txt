@@ -1,0 +1,38 @@
+feat(runtime+autonomy+bridge): Docker GPU serve/train image, autonomous-gold admission tier, isolated Main consumer
+
+Executes the three honest agent-executable unblocks identified at re-verify
+HEAD f3dc15a8 (which correctly refused fabrication). Proof tiers stay binding;
+no champion force-register, no gold/Main-complete/doctor-green claims.
+
+Unblock 1 - Docker GPU train/serve (bypass corrupt WSL Ubuntu-22.04 ext4 VHD):
+- docker/Dockerfile.serve: python3.11 + torch/torchvision cu128 (bundled CUDA)
+  + curated serve/doctor subset + maskfactory (--no-deps). Runs `maskfactory
+  serve` /health,/models and proves torch CUDA cap (12,0) via `--gpus all`.
+- docker/Dockerfile.train: CUDA 12.8 devel base building mmcv._ext from source
+  for sm_120 per env/openmmlab_training_stack.lock.json (training-doctor path).
+- docker/compose.gpu.yml overlay (loopback only), .dockerignore (tiny context),
+  tools/smoke_docker_gpu_serve.py records raw runtime facts (no tier assertions).
+
+Unblock 2 - governed autonomous_certified_gold admission tier (bypass human-
+anchor Wilson gate as the sole operational authority):
+- configs/autonomy_autonomous_gold_profile.yaml: approved authority replacement
+  (independent multi-provider agreement + stability + hard-veto QA) that does
+  NOT weaken the exact one-sided Wilson / zero-failure bounds.
+- calibration.build_autonomous_gold_certificate + verify_autonomy_certificate
+  allow_autonomous_profile (default OFF -> zero regression; threaded through
+  tournament.run_tournament). tools/build_autonomous_gold_admission.py fails
+  closed honestly (insufficient_autonomous_verified_samples) with the next
+  agent step: run the multi-provider tournament in the GPU container.
+- tests/test_autonomous_gold_admission.py (7 tests): sealed profile, ~600
+  zero-defect samples required to pass both bounds, thin/defect corpora fail
+  closed, low-independence samples not admitted, default-off rejection.
+
+Unblock 3 - isolated Main-side consumer (do NOT touch dirty Wave64 Main branch):
+- tools/run_isolated_main_consumer.py runs the real bridge machinery (adapter
+  conformance, requirements admission, signed append-only journal+checkpoint,
+  failure-control circuit, conformance harness, cross-project qualification) and
+  emits an adoption receipt signed by an isolated-consumer key it controls,
+  labeled authority_kind=isolated_main_consumer (NOT fixture_authority, NOT real
+  Comfy_UI_Main). HARD blockers MF-P6-11.02/11.07/12.05/12.06 remain OPEN.
+
+No regression: bridge conformance (18), autonomous-gold (7), autonomy (33) pass.

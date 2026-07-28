@@ -1,0 +1,28 @@
+{
+  "1": {
+    "class_type": "MFPackageBrowser",
+    "inputs": {
+      "status": "human_approved_gold",
+      "search": "",
+      "ontology_version": "body_parts_v2",
+      "index": 0
+    }
+  },
+  "2": {
+    "class_type": "MFV2CanonicalSelector",
+    "inputs": {"selector": "penis head"}
+  },
+  "3": {
+    "class_type": "MFLoadGoldMask",
+    "inputs": {
+      "image_id": ["1", 0],
+      "person_index": ["1", 1],
+      "label": ["2", 0],
+      "on_missing": "error"
+    }
+  },
+  "4": {
+    "class_type": "MFMaskStats",
+    "inputs": {"mask": ["3", 0]}
+  }
+}

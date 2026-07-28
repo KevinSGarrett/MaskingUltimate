@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "dvc_packages_first_push_restore_evidence",
+  "tracker_item": "MF-P1-07.09",
+  "status": "PRODUCTION_EVIDENCE_PASS",
+  "dvc_version": "3.67.1",
+  "remote": {
+    "name": "maskfactory-dvc-local",
+    "url": "F:/MaskFactory_DataRelocated/dvc_local_remote",
+    "config_sha256": "244f67664c778860fa3fc5133a7ab833a34f42e66b5f0b4956891c045965bad4",
+    "aws_mutation_used": false
+  },
+  "descriptor": {
+    "path": "data/packages.dvc",
+    "sha256": "1a15b90a1741874d8e5c1dedfca3f6599bca92d9e4d09af2351cfeaba4ff892c",
+    "md5": "41609c16a8aed4de946dd4cd6aafc943.dir",
+    "nfiles": 15,
+    "size_bytes": 1242277
+  },
+  "payload": {
+    "source": "runtime_artifacts/external_supervision/package_population_canary_20260722_v2/packages",
+    "source_evidence_path": "qa/live_verification/external_supervision_package_population_canary_20260722.json",
+    "source_evidence_sha256": "d9a5b9db548a10f9471406444155da2be7fb944856fb5b72a66e0678edc42789",
+    "package_count": 3,
+    "authority": "weighted_pseudo_label_train_only_not_gold"
+  },
+  "live_commands": [
+    {"command": "dvc add data/packages", "status": "PASS"},
+    {"command": "dvc push data/packages.dvc", "status": "PASS", "objects_pushed": 14},
+    {"command": "dvc status -c data/packages.dvc", "status": "PASS", "result": "cache_and_remote_in_sync"},
+    {"command": "isolated repository: dvc pull packages.dvc", "status": "PASS", "files_fetched": 14, "files_added": 15}
+  ],
+  "restore_probe": {
+    "path": "runtime_artifacts/dvc_packages_restore_probe_20260722",
+    "restored_file_count": 15,
+    "restored_size_bytes": 1242277,
+    "source_restore_sha256_maps_equal": true,
+    "relative_file_map_sha256": "c2d3e8a3d1dfbeae9fd028218513d1ea97f0813e57abc8fa0e24b829ac5446a5"
+  },
+  "claim_limits": [
+    "this proves DVC package persistence and restore only",
+    "the payload is external weighted pseudo-label supervision, not autonomous-certified gold",
+    "this does not prove bodyparts@v1 publication or any training/champion result"
+  ]
+}

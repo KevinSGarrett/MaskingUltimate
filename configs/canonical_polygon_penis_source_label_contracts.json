@@ -1,0 +1,19 @@
+{
+  "artifact_type": "canonical_polygon_source_label_contracts",
+  "authority_claimed": false,
+  "claim_limits": [
+    "This contract binds the raw penis label only to an exact coarse external penis calibration candidate.",
+    "It cannot infer surrounding genital region, internal anatomy, laterality, source qualification, critic controls, gold, training truth, or production masks.",
+    "Every selected record remains subject to exact re-rasterization and per-record visual screening."
+  ],
+  "critic_positive_control_authority_granted": false,
+  "gold_or_production_authority_granted": false,
+  "schema_version": "maskfactory.canonical_polygon_source_label_contracts.v1",
+  "source_label_contracts": {
+    "penis": {
+      "candidate_kind": "coarse_anatomy",
+      "canonical_label": "penis",
+      "eligible_dataset_ids": ["roboflow_mange_v3"]
+    }
+  }
+}

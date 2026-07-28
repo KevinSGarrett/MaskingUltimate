@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_live_verification",
+  "verified_at": "2026-07-22",
+  "status": "IMPLEMENTATION_AND_GOVERNANCE_PASS",
+  "item_ids": [
+    "MF-P0-13.05",
+    "MF-P4-11.17",
+    "MF-P4-11.24",
+    "MF-P2-11.10",
+    "MF-P1-10.01",
+    "MF-P1-10.02",
+    "MF-P1-10.04",
+    "MF-P1-10.06",
+    "MF-P1-10.07",
+    "MF-P1-10.08",
+    "MF-P1-10.09",
+    "MF-P1-11.01",
+    "MF-P1-11.02",
+    "MF-P1-11.04",
+    "MF-P1-11.08",
+    "MF-P5-09.01",
+    "MF-P5-09.03",
+    "MF-P5-09.06"
+  ],
+  "required_sources": {
+    "maskedwarehouse_windows": "C:\\Comfy_UI_Main\\MaskedWarehouse",
+    "maskedwarehouse_runpod": "/workspace/assets/MaskedWarehouse",
+    "reference_windows": "F:\\Reference_Images\\Ultimate_Masking_Reference_Images",
+    "reference_runpod": "/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images",
+    "maskedwarehouse_role": "evidence-qualified masks, points, silhouettes, annotations, and panels for training, calibration, seeded-defect, QA, or benchmark consumer lanes",
+    "reference_role": "real-image retrieval, coverage discovery, hard-case mining, calibration, and benchmark input; image selection alone grants no mask truth"
+  },
+  "real_corpus_contract": {
+    "synthetic_semantic_positive_allowed": false,
+    "draft_or_in_review_positive_allowed": false,
+    "historical_low_quality_mask_positive_allowed": false,
+    "source_and_mask_hash_binding_required": true,
+    "consumer_lane_binding_required": true,
+    "corpus_sha256": "1fab174a5df8bc2f5ffc649522e16dada8348c955435d7e794c5ad0d3903d1c8",
+    "source_bindings_sha256": "a7085b457fd881e030825bc475da151999db583fb2c02ecfb0e246ae8d8696da",
+    "reference_inventory_sha256": "c663483c3619f91e86a37a1793e583937427b777a937bbbe71d744d794e1a259",
+    "policy_file_sha256": "12921da319af90cfec0afc992e13f359e5f6aeb09e5b7789bf8090b92758c0b0"
+  },
+  "ontology_v2_contract": {
+    "class_count": 66,
+    "preserved_ids": "0..55",
+    "appended_ids": "56..65",
+    "appended_labels": [
+      "left_areola",
+      "right_areola",
+      "left_nipple",
+      "right_nipple",
+      "vulva",
+      "penis_shaft",
+      "glans_penis",
+      "left_scrotal_region",
+      "right_scrotal_region",
+      "anus"
+    ],
+    "required_alias_examples": [
+      "vagina",
+      "penis head",
+      "testicle",
+      "testicles",
+      "asshole",
+      "anal opening",
+      "butt",
+      "buttocks",
+      "ass",
+      "left butt cheek",
+      "right butt cheek",
+      "breasts",
+      "areolas",
+      "nipples"
+    ],
+    "additions_file_sha256": "f6a4b6c96662182daa4b440a5ea4698690b7d13df84bd68c5232b135edf886a7",
+    "generated_ontology_sha256": "e4bea7663ad4f72c5550fbf93efafb506eca8593ad227f338620d6d5137ed2c4"
+  },
+  "policy_reseals": {
+    "specialist_margin_policy_sha256": "4d93b3867078924f6cdb673a07b4703f143b7918464340ad1d52ded589c5ef45",
+    "provider_benchmark_policy_sha256": "3c36aaf1928ae45a9dbf331afd274366622c7ff093f0014d9a8aeadad62e37fb",
+    "custom_segmenter_margin_policy_sha256": "d009abe2667092e5d990a05f92ba39072e6b25022f0c1116c5ed93bcb7adad90",
+    "custom_segmenter_tournament_policy_sha256": "093eef03b2c7855f090dd1681aa0f0c9075d775009523574fb402a5fd427141c"
+  },
+  "validation": [
+    {
+      "scope": "real-corpus, source-governance, ontology-v2, anatomy-v2, CVAT-v2, DAZ snapshot, 66-class training, benchmark, promotion, and documentation contracts",
+      "status": "PASS",
+      "tests_passed": 284
+    },
+    {
+      "command": "ruff check <all changed Python files>",
+      "status": "PASS"
+    },
+    {
+      "command": "python -m black --check <all changed Python files>",
+      "status": "PASS",
+      "files_checked": 40
+    },
+    {
+      "command": "git diff --check",
+      "status": "PASS"
+    },
+    {
+      "command": "python -m pytest -q tests/test_runpod_corpus_mirror_verifier.py tests/test_runpod_persistence_verifier.py",
+      "status": "PASS",
+      "tests_passed": 6
+    }
+  ],
+  "runpod_live_binding": {
+    "persistence_status": "RUNTIME_PASS_BOUNDED",
+    "persistence_checks": "13/13",
+    "network_volume_gib": 1000,
+    "corpus_snapshot_status": "RUNTIME_PASS_HASH_BOUND_SNAPSHOT",
+    "corpus_snapshot_checks": "10/10",
+    "maskedwarehouse_snapshot_files": 489638,
+    "maskedwarehouse_snapshot_bytes": 6866153864,
+    "reference_snapshot_files": 3711,
+    "reference_snapshot_bytes": 11539355704,
+    "authoritative_snapshot_sha256": "46f5fee69ef7acb0479c0c68c3fe07bedf351224f79f909a23bdf1ef5170a205",
+    "evidence": [
+      "qa/live_verification/runpod_persistence_binding_20260722.json",
+      "qa/live_verification/runpod_corpus_mirror_reconciliation_20260722.json"
+    ]
+  },
+  "truth_boundary": {
+    "manual_cvat_required_for_autonomous_completion": false,
+    "reference_image_selection_grants_mask_truth": false,
+    "maskedwarehouse_folder_name_grants_mask_truth": false,
+    "authority_requires_evidence": true,
+    "runpod_inventory_reconciliation_complete": false,
+    "self_hosted_visual_critic_qualified": false,
+    "eomt_66_class_live_runtime_requalified": false
+  }
+}

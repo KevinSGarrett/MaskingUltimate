@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-17T02:04:05Z",
+  "item": "MF-P9-08.06",
+  "status": "complete",
+  "percent_complete": 100,
+  "synthetic_schema_family": {
+    "record_schema_version": "maskfactory_instance_synthetic_1.0.0",
+    "body_parts_v1_schema": "manifest_synthetic_v1",
+    "body_parts_v2_schema": "manifest_synthetic_v2",
+    "source_origin": "synthetic",
+    "annotation_authority": "geometry_render",
+    "historical_schema_reinterpretation_allowed": false,
+    "unknown_version_or_ontology_fallback_allowed": false
+  },
+  "training_truth_contract": {
+    "truth_tier": "weighted_pseudo_label",
+    "truth_partition": "train",
+    "train_eligible": true,
+    "evaluation_eligible": false,
+    "minimum_training_loss_weight": 0.1,
+    "maximum_training_loss_weight": 0.25,
+    "required_source_attributes": ["synthetic_geometry_exact", "visible_pixel_truth"],
+    "counts_as_human_anchor_gold": false,
+    "counts_as_autonomous_certified_gold": false,
+    "visible_only": true,
+    "amodal_train_eligible": false
+  },
+  "technical_mask_authority": {
+    "provider_id": "daz_exact_geometry",
+    "authority_tier": "synthetic_exact",
+    "owner": "maskfactory",
+    "access_mode": "mode_a_approved_package",
+    "ontology_version_and_hash_required": true,
+    "package_revision_required": true,
+    "certificate_id_hash_and_scope_required": true,
+    "transform_chain_sha256_required": true,
+    "certificate_and_ontology_cross_bound": true,
+    "mode_b_live_result_allowed": false,
+    "stronger_authority_inference_allowed": false,
+    "technical_authority_changes_training_truth_tier": false
+  },
+  "synthetic_lineage": {
+    "generator": "daz_studio",
+    "scene_family_variant_and_state_bound": true,
+    "recipe_hash_required": true,
+    "asset_registry_and_registry_snapshot_hashes_required": true,
+    "operating_profile_hash_required": true,
+    "runtime_script_renderer_and_asset_snapshot_hashes_required": true,
+    "mapping_set_and_ontology_required": true,
+    "pass_profile_id_and_hash_required": true,
+    "acceptance_certificate_id_and_hash_required": true,
+    "promoted_person_and_instance_mapping_required": true,
+    "semantic_mapping_status": "validated",
+    "geometry_exact_required": true,
+    "all_required_fields_negative_tested": true
+  },
+  "person_construction": {
+    "figure_character_body_face_skin_hair_and_wardrobe_recorded": true,
+    "adult_anatomy_configuration_required": true,
+    "adult_age_appearance_category_required": true,
+    "presentation_morph_pose_and_mapping_bundle_recorded": true,
+    "supported_promoted_people": ["p0", "p1", "p2", "p3"],
+    "instance_ids": [1, 2, 3, 4],
+    "person_instance_cross_binding_required": true
+  },
+  "human_authority_boundary": {
+    "review_block_present": false,
+    "cvat_identity_or_job_fields_allowed": false,
+    "manual_edit_or_human_review_fields_allowed": false,
+    "calibration_or_real_autonomous_certification_fields_allowed": false,
+    "forbidden_fields_scanned_recursively": true,
+    "gold_mutation_or_relabel_permitted": false
+  },
+  "integrity": {
+    "canonical_json_hash": true,
+    "stable_across_fresh_processes": true,
+    "key_order_independent": true,
+    "content_tamper_evident": true,
+    "unsafe_relative_paths_rejected": true,
+    "v1_and_v2_schema_dispatch_explicit": true
+  },
+  "historical_compatibility": {
+    "manifest_v1_sha256": "d6e2f004a73099b3089d952f3d7479952d28b2b446c9741772931b909032f285",
+    "manifest_v2_sha256": "abb2f1afba611e0377952d0481e4ddc8e44644a22faf16047b68f20d433a7c2c",
+    "historical_schema_files_modified": false,
+    "historical_v1_fixture_validates_unchanged": true,
+    "historical_v2_fixture_validates_unchanged": true,
+    "synthetic_origin_rejected_by_historical_v1": true,
+    "synthetic_origin_rejected_by_historical_v2": true,
+    "historical_manifests_rejected_by_synthetic_dispatch": true,
+    "existing_dataset_reindex_review_and_migration_tests_pass": true
+  },
+  "lineage": {
+    "manifest_synthetic_v1_schema_sha256": "0de63fb3b879b28b3cd3b1dcafdf7dcef731fb5af4dc24903dda93d36a7c64e6",
+    "manifest_synthetic_v2_schema_sha256": "a0f6eae20758aa9aac213d1c5da370b76e00f9c0b371daf9aa2f43d376f49711",
+    "implementation_sha256": "e18b33f420f00847538f4e7b6012f2a155fee02984f610c7fd33322fad6796f2",
+    "validation_dispatch_sha256": "7d4f98bc2c3765bff24d8690d84cf424264a5dd9d7ea0ccd3555a0ab919a2633",
+    "test_sha256": "74da8d5edb368c945566c3795ab3cefec11723ebae1c37be99286ffd3f13b029"
+  },
+  "verification": {
+    "new_tests_collected": 69,
+    "new_tests_passed": 69,
+    "new_tests_failed": 0,
+    "focused_compatibility_tests_collected": 130,
+    "focused_compatibility_tests_passed": 130,
+    "focused_compatibility_tests_failed": 0,
+    "full_repository_tests_collected": 2885,
+    "full_repository_tests_passed": 2885,
+    "full_repository_tests_failed": 0,
+    "ruff_lint": "pass",
+    "precommit_black_format": "pass",
+    "json_schemas_parsed": 123,
+    "daz_yaml_documents_parsed": 30,
+    "git_diff_check": "pass"
+  },
+  "asset_and_storage_boundary": {
+    "autonomous_downloader_target": "F:\\DAZ\\03_content\\libraries\\MaskFactory_DAZ_Library",
+    "legacy_dim_and_original_roots_remain_independent": true,
+    "assets_moved_or_relabelled_by_this_task": false,
+    "download_install_daz_launch_render_or_live_validation_started_by_this_task": false,
+    "f_drive_soft_hold_respected": true
+  },
+  "next_boundary": {
+    "schema_versions_and_historical_compatibility_complete": true,
+    "s00_package_adapter_implemented": false,
+    "reason": "MF-P9-08.06 is an offline schema and historical-compatibility item, and its full verify clause passed. D7-07 remains a separately tracked adapter and package-fixture task."
+  },
+  "not_claimed": [
+    "completion of MF-P9-08.07 S00/package adapter",
+    "live DAZ package conversion",
+    "dataset builder admission of synthetic rows",
+    "training launcher admission of synthetic rows",
+    "v2 ontology activation"
+  ]
+}

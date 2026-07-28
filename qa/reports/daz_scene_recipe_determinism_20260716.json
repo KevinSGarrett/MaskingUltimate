@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-16T13:10:00Z",
+  "items": ["MF-P9-06.01", "MF-P9-06.02"],
+  "status": "partially_complete",
+  "recipe_contract": {
+    "source_contract": "Plan/Daz/30_DATA_CONTRACTS_AND_EXAMPLE_MANIFESTS.md section 5",
+    "schema": "src/maskfactory/schemas/daz_resolved_scene_recipe.schema.json",
+    "schema_sha256": "f1f6e5f802e9d8ff81b735cd77599062280a1072e47a27992b5563c701d5da1c",
+    "one_to_four_characters": true,
+    "canonical_construction_ids": true,
+    "unique_requested_promoted_ids": true,
+    "relationship_participants_must_exist": true,
+    "camera_crop_within_resolution": true,
+    "v1_or_v2_ontology_snapshot_bound": true,
+    "registry_runtime_script_mapping_and_asset_ids_resolved_in_document": true,
+    "nonfinite_numbers_refused": true,
+    "non_json_values_and_non_string_keys_refused": true,
+    "content_addressed_immutable_publication": true
+  },
+  "determinism_contract": {
+    "master_seed_bits": 63,
+    "derivation_algorithm": "sha256_first_u64_be_v1",
+    "required_named_streams": ["characters", "poses", "placement", "camera", "lighting", "environment", "render", "degrade"],
+    "scene_id_bound_streams": true,
+    "mapping_insertion_order_independent": true,
+    "canonical_json_utf8_sorted_keys_compact_separators": true,
+    "stored_asset_ids_and_final_numeric_parameters_required": true,
+    "recipe_sha256_recomputed_on_validation": true,
+    "lighting_parameter_seed_must_match_named_stream": true,
+    "byte_identical_replay_fixture": true
+  },
+  "cli": ["daz recipes seal", "daz recipes validate"],
+  "lineage": {
+    "implementation_sha256": "b2eace969103a02229390accbbf6faa29bfdfc35fd53a088056e084ed386622f",
+    "schema_sha256": "f1f6e5f802e9d8ff81b735cd77599062280a1072e47a27992b5563c701d5da1c",
+    "test_sha256": "9a39d483b483c4840424490fe09155c1c120ac1051be20cd71e3e5e541c0c27c"
+  },
+  "verification": {
+    "focused_scene_recipe_tests_passed": 6,
+    "focused_scene_recipe_runtime_smoke_tests_passed": 44,
+    "focused_tests_failed": 0,
+    "full_repository_tests_collected": 1803,
+    "full_repository_tests_passed": 1803,
+    "full_repository_tests_failed": 0,
+    "ruff_lint": "pass",
+    "black_precommit": "pass",
+    "tracker_validation": "pass"
+  },
+  "live_boundary": {
+    "live_scene_recipe_generated": false,
+    "live_daz_scene_replayed": false,
+    "reason": "The schema and deterministic sealing path are fixture-proven, but live generation still depends on final qualified assets, a frozen mapping bundle, and DAZ engineering-render evidence."
+  },
+  "not_claimed": [
+    "live DAZ scene generation",
+    "live byte-identical DAZ render replay",
+    "mapping readiness",
+    "completion of MF-P9-06.01 or MF-P9-06.02"
+  ]
+}

@@ -1,0 +1,38 @@
+schema_version: 1.0.0
+root: 'F:\DAZ'
+root_identity: 'F:\DAZ\00_control\root_identity.json'
+daz_studio_executable: 'C:\Program Files\DAZ 3D\DAZStudio6\DAZStudio.exe'
+daz_studio_executable_sha256: 2079c7629e38bda411aa2b9218ae2702009d33f03f8226a1b68ae68026c3d18f
+acquisition_database: 'F:\DAZ\00_control\render_state_ingest\queue.sqlite3'
+state_database: 'F:\DAZ\10_queue\queue.sqlite'
+expected_top_level_roots:
+  - 00_control
+  - 01_source_records
+  - 02_installers
+  - 03_content
+  - 04_runtime
+  - 05_registry
+  - 06_asset_staging
+  - 07_mappings
+  - 08_asset_tests
+  - 09_generation
+  - 10_queue
+  - 11_scene_state
+  - 12_renders
+  - 13_annotations
+  - 14_scene_packages
+  - 15_datasets
+  - 16_maskfactory_exports
+  - 17_logs
+  - 18_reports
+  - 19_cache
+  - 20_tmp
+  - 21_backups
+  - 22_dvc
+  - 23_exports
+  - 99_archive
+storage_thresholds_gib:
+  healthy: 150
+  soft: 150
+  hard: 100
+  emergency: 60

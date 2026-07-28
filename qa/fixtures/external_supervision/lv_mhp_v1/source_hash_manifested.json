@@ -1,0 +1,1 @@
+{"artifact_type":"external_supervision_source_hash_manifest","fixture":true,"gate":"source_hash_manifested","schema_version":"1.0.0","seal_sha256":"848d8c32a4700d83a6a18e90c008525159eaf36004de32e747f0cda583f874d0","source":"lv_mhp_v1","source_masks_are_gold":false,"status":"PASS"}

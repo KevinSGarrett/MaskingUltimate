@@ -1,0 +1,6715 @@
+{
+  "complete": true,
+  "completed_record_count": 256,
+  "planned_record_count": 256,
+  "records": [
+    {
+      "image_size": [
+        1600,
+        2345
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1045.1048016548157,
+            269.1510137915611,
+            1438.269031047821,
+            1789.0362697839737
+          ],
+          "box_score": 0.7794758081436157,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7794758081436157
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            180.1098346710205,
+            540.861688554287,
+            1242.9824352264404,
+            2332.080092728138
+          ],
+          "box_score": 0.4761127233505249,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4761127233505249
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            0.8911490440368652,
+            1.217072457075119,
+            393.04507970809937,
+            2342.5195203721523
+          ],
+          "box_score": 0.5337833762168884,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5337833762168884
+        }
+      ],
+      "sample_id": "nude_9b731e81bb2a771580cce604",
+      "source_sha256": "92e8c63e1a4b2594486e7b1c24fbad15a03a6ee55d92db0e82f1c9f8cd4fb2a1"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [],
+      "sample_id": "nude_1f9ab54ca9cd80792cc0e301",
+      "source_sha256": "8a56a930c81f774523b3f8ed5d35e4906886d35adc35cc73adfaf19c718e39d0"
+    },
+    {
+      "image_size": [
+        816,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            25.276389598846436,
+            193.48110580444336,
+            807.9305462837219,
+            1214.3952369689941
+          ],
+          "box_score": 0.6038886904716492,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6038886904716492
+        }
+      ],
+      "sample_id": "nude_7b75809e7490eab8a72eeaff",
+      "source_sha256": "79ff7ff15986bb564714c408958a7a6290c7f6171a553d9daae1885554c85b09"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            137.27214813232422,
+            103.75588989257812,
+            1197.954444885254,
+            1853.9919128417969
+          ],
+          "box_score": 0.9076273441314697,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9076273441314697
+        }
+      ],
+      "sample_id": "nude_14806402a792af4d9193adb1",
+      "source_sha256": "377b74d82388922ebe7004d105629ca5c62abdb929e12e9e39979c5ef0f3010c"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.1187992095947266,
+            7.883169174194336,
+            830.9602489471436,
+            1213.725419998169
+          ],
+          "box_score": 0.7135594487190247,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7135594487190247
+        }
+      ],
+      "sample_id": "nude_9dd1d60c1632b8566b42dd84",
+      "source_sha256": "07a5d2a86d677618718f615265820457bb16ad813ded7a3105cd22072a344bf5"
+    },
+    {
+      "image_size": [
+        1200,
+        1800
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            105.65818548202515,
+            50.5396842956543,
+            1178.5667538642883,
+            1797.0148086547852
+          ],
+          "box_score": 0.5630707144737244,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5630707144737244
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1084.7424432635307,
+            43.63266080617905,
+            1179.778392612934,
+            157.17589259147644
+          ],
+          "box_score": 0.4003300070762634,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4003300070762634
+        }
+      ],
+      "sample_id": "nude_8d124afd294edd1b0a39345a",
+      "source_sha256": "a82c36476e7a21c74d6428ccf1180157806b5819c1f4bdc9b53ec78bc916b4c3"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            144.19564056396484,
+            41.911922454833984,
+            717.5420379638672,
+            1214.7498054504395
+          ],
+          "box_score": 0.9226096868515015,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9226096868515015
+        }
+      ],
+      "sample_id": "nude_f6c42aaedf96242afd349e17",
+      "source_sha256": "62e4f74a6c646e15944c807260190c4657a97437ebbbe1c4ed406d69ad6b9a7d"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.2198657989501953,
+            514.85231590271,
+            831.1002941131592,
+            1214.1613101959229
+          ],
+          "box_score": 0.4635768234729767,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4635768234729767
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.8833198547363281,
+            14.78587532043457,
+            830.4338645935059,
+            1136.8763256072998
+          ],
+          "box_score": 0.5906436443328857,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5906436443328857
+        }
+      ],
+      "sample_id": "nude_4dee2bad4249b9adb28ff3a2",
+      "source_sha256": "1f59b311953d8bd549c5e06b20a9a3e70654b28995e6a6e5d0d9e3d9efb846f9"
+    },
+    {
+      "image_size": [
+        2200,
+        3143
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            2.2871077060699463,
+            2.609328955411911,
+            2198.0986773967743,
+            3139.9103379547596
+          ],
+          "box_score": 0.8569344282150269,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8569344282150269
+        }
+      ],
+      "sample_id": "nude_69a6f9df31cd98e77f501015",
+      "source_sha256": "9fdbfc0df2d2fce14127f193bf11102ed7247a031ffa144b0b0771ef04a63267"
+    },
+    {
+      "image_size": [
+        1152,
+        1680
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.5198898315429688,
+            1.489870548248291,
+            1080.8942184448242,
+            1614.6277928352356
+          ],
+          "box_score": 0.6315698027610779,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6315698027610779
+        }
+      ],
+      "sample_id": "nude_7b8384c1e60ff20ab73ca59d",
+      "source_sha256": "177fe394718fae4122049f2a992628c582d2b27693d4b52379ee974b0aefebf0"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            116.09808731079102,
+            89.64722633361816,
+            719.1206703186035,
+            1176.2128429412842
+          ],
+          "box_score": 0.7381193041801453,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7381193041801453
+        }
+      ],
+      "sample_id": "nude_9e431cb6d258d592cacee7b0",
+      "source_sha256": "e7d9ab3e9a2618d2bfb1ceea0e07243ffc4dac7b08498e87c8329e19e486f436"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            106.22817611694336,
+            15.278444290161133,
+            786.4795188903809,
+            1213.7943477630615
+          ],
+          "box_score": 0.5155707001686096,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5155707001686096
+        }
+      ],
+      "sample_id": "nude_56c4bb52e396fd1bd3d25e43",
+      "source_sha256": "fc78cb376de7c25a132436a3d8a49c62a9d8a7c66f00586530a00b8949ab5a5b"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [],
+      "sample_id": "nude_e07bfb865af82be8eaedce84",
+      "source_sha256": "02fee512706fa31c5bde77f90462859a14441f0f077b189c710e84876cf608d6"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            32.47028350830078,
+            135.71890258789062,
+            1255.1015853881836,
+            1689.6135177612305
+          ],
+          "box_score": 0.7419683337211609,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7419683337211609
+        }
+      ],
+      "sample_id": "nude_1d66d168b503f772a342e664",
+      "source_sha256": "4d05cb6d342246156935dc766ee2769090d2dbe95356b6db38243bcd2bed5457"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.4949970245361328,
+            1.0040550231933594,
+            830.5073833465576,
+            1214.279125213623
+          ],
+          "box_score": 0.6417964696884155,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6417964696884155
+        }
+      ],
+      "sample_id": "nude_9ae671466c2cd266cfab5592",
+      "source_sha256": "1f2e6fad08a82574c3da2cd33cf6e2660106525fd615367a882e549e084daa12"
+    },
+    {
+      "image_size": [
+        1920,
+        2816
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            2.5265121459960938,
+            94.35501098632812,
+            1913.3341598510742,
+            2812.21337890625
+          ],
+          "box_score": 0.8334745764732361,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8334745764732361
+        }
+      ],
+      "sample_id": "nude_104cac9ecb793e0aaf2ef127",
+      "source_sha256": "592fdb2e9d550ff534d72c021cd5bb28777acd991008837032583dbb0bf14781"
+    },
+    {
+      "image_size": [
+        1248,
+        1824
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            2.1795272827148438,
+            0.8288183212280273,
+            1176.1957340240479,
+            1821.6831464767456
+          ],
+          "box_score": 0.8607636094093323,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8607636094093323
+        }
+      ],
+      "sample_id": "nude_927bb3941acebe0efe2e6c19",
+      "source_sha256": "66d8484ae03bd615a58895b31bd44a6058255065890f8e51d3c44179e7cff983"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            200.8092999458313,
+            30.855136036872864,
+            1082.447612285614,
+            1752.8764382600784
+          ],
+          "box_score": 0.8917994499206543,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8917994499206543
+        }
+      ],
+      "sample_id": "nude_075eddc46ca819b5cfa727c4",
+      "source_sha256": "d290a42ec8b2a667fdf2f1676c35742b0aaeb67a9e919c8d7f73f352ca6d8428"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            51.418190002441406,
+            73.91396903991699,
+            1165.9228897094727,
+            1853.4762287139893
+          ],
+          "box_score": 0.9078224301338196,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9078224301338196
+        }
+      ],
+      "sample_id": "nude_d1159c6187ca993053c32aab",
+      "source_sha256": "e396fd6027a19ff90919ffc0855d461a5ab78cb7e723aa75eaf1df3c70ead00b"
+    },
+    {
+      "image_size": [
+        1280,
+        3072
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            2.9338836669921875,
+            171.41903686523438,
+            883.0070495605469,
+            3065.669219970703
+          ],
+          "box_score": 0.7363605499267578,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7363605499267578
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            132.00950622558594,
+            239.13308715820312,
+            1276.1063385009766,
+            3043.5726013183594
+          ],
+          "box_score": 0.747599720954895,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.747599720954895
+        }
+      ],
+      "sample_id": "nude_f3615796e2723173f6c8f747",
+      "source_sha256": "bcf6b2726f34ffd8169fd2231e904b497ee1520a74360fea4829e902c92cc47c"
+    },
+    {
+      "image_size": [
+        2200,
+        1621
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            572.33567237854,
+            1.7392409443855286,
+            2180.0220489501953,
+            1619.3898422122002
+          ],
+          "box_score": 0.5214966535568237,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5214966535568237
+        }
+      ],
+      "sample_id": "nude_5067114b5683a49af5f4dbd4",
+      "source_sha256": "e3e757c7189d2efe3dd138b9a5ea1c6cc53dc86f70fe5e3deb1b3cbfab060dcb"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            200.0536346435547,
+            67.72769546508789,
+            1202.289810180664,
+            1853.3410987854004
+          ],
+          "box_score": 0.9175952672958374,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9175952672958374
+        }
+      ],
+      "sample_id": "nude_7bd8ed55824869ae3ebdd6d5",
+      "source_sha256": "4aa3268f72881c18c8de808b5b43dc38152538c548d787f62df5390db96365de"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.55914306640625,
+            1.1485424041748047,
+            830.0107040405273,
+            1214.6804065704346
+          ],
+          "box_score": 0.8234496712684631,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8234496712684631
+        }
+      ],
+      "sample_id": "nude_144bbe7bb5fa1364d1b2766f",
+      "source_sha256": "e6ae98ec5cb175fb41363b976d438f22d716f54492d0472d7e8bd61f5e28eb65"
+    },
+    {
+      "image_size": [
+        2200,
+        3190
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1125.772562623024,
+            796.9006824493408,
+            2153.3522933721542,
+            2938.516696691513
+          ],
+          "box_score": 0.40654128789901733,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.40654128789901733
+        }
+      ],
+      "sample_id": "nude_9050910e871f75496e926cae",
+      "source_sha256": "df1d881fe9c325525684406d85eff622b6ebcf6ad8b135836ef8335927d7d313"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.1722087860107422,
+            47.92940330505371,
+            443.9240093231201,
+            1214.7401294708252
+          ],
+          "box_score": 0.7002561688423157,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7002561688423157
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            347.8011779785156,
+            38.827640533447266,
+            830.1700897216797,
+            1214.0493659973145
+          ],
+          "box_score": 0.6283009648323059,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6283009648323059
+        }
+      ],
+      "sample_id": "nude_54f6a56cbc7e3514aad610ac",
+      "source_sha256": "db9a10248b370aa6559cbb261e8d738e5c8f9dbec4ed8f458b128c0744b8a1fd"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            219.83039474487305,
+            130.49113082885742,
+            609.0896530151367,
+            684.8456878662109
+          ],
+          "box_score": 0.5604632496833801,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5604632496833801
+        }
+      ],
+      "sample_id": "nude_337be0b814e53bdb57dd1e50",
+      "source_sha256": "446168d0b62efe9818a0748d616c0a3a79a7fb0134d17db9e4172744648e6dbf"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            27.232139587402344,
+            70.21532249450684,
+            775.0728797912598,
+            1214.285394668579
+          ],
+          "box_score": 0.9116657972335815,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9116657972335815
+        }
+      ],
+      "sample_id": "nude_65889abff1bfddfe86f22c91",
+      "source_sha256": "4757207a9fee9d106f45dc2de9d5237ac71c84eca729c64c8be41eca97e2ca17"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            90.86394309997559,
+            0.3636651635169983,
+            1108.814263343811,
+            1753.4523329138756
+          ],
+          "box_score": 0.44279617071151733,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.44279617071151733
+        }
+      ],
+      "sample_id": "nude_7ff06fd3e3162ce8499c96e0",
+      "source_sha256": "c0d9b60690c10fc2d2601ea7932a51e059e54025359e5976cd63eaa43fe27023"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            70.85871315002441,
+            8.203201293945312,
+            723.9583530426025,
+            1214.4489440917969
+          ],
+          "box_score": 0.9163143038749695,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9163143038749695
+        }
+      ],
+      "sample_id": "nude_bd6a181194f63e932471c876",
+      "source_sha256": "45ad1043f6342bab4be4f0109b86fa9ddbe9d06371e2038b99ffda53f8919c85"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            129.52827215194702,
+            1.0225175023078918,
+            1104.142677783966,
+            1752.430285871029
+          ],
+          "box_score": 0.9312497973442078,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9312497973442078
+        }
+      ],
+      "sample_id": "nude_81b2e26efbfbc0fc9338f170",
+      "source_sha256": "06dbaa9b8f9008f5200903dfd7af3bb196bca7a6f43d06260d2dd53cd8e08f2c"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            44.969425201416016,
+            7.338994979858398,
+            777.0984764099121,
+            1193.434564590454
+          ],
+          "box_score": 0.87342768907547,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.87342768907547
+        }
+      ],
+      "sample_id": "nude_eedd85af2af89ca1343bace3",
+      "source_sha256": "46706ec868d9e22ae3ed98a30bb84f3b53045c529719709757f622cef25e721e"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            79.0533390045166,
+            21.182132720947266,
+            715.4225902557373,
+            1214.6606559753418
+          ],
+          "box_score": 0.7933381199836731,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7933381199836731
+        }
+      ],
+      "sample_id": "nude_0551f156de2eef70ecf78c8f",
+      "source_sha256": "108a8c66ccb94fc1d73289672200994bebf8026f0466320bfde7e5ff427306c7"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            193.25789070129395,
+            17.832033157348633,
+            647.4300670623779,
+            1214.4250621795654
+          ],
+          "box_score": 0.9252869486808777,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9252869486808777
+        }
+      ],
+      "sample_id": "nude_599913f4d4aac8d92a710ed6",
+      "source_sha256": "5e3a1adca75eb55e8c8206cb6f07ebed9f14f53e1e30ac1c9ed3bae3f5ee6e86"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            22.615349292755127,
+            37.89540505409241,
+            1197.1992373466492,
+            1750.9275860786438
+          ],
+          "box_score": 0.9061890840530396,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9061890840530396
+        }
+      ],
+      "sample_id": "nude_c2431c02c016a8365302e8f6",
+      "source_sha256": "78c53f7f4c4dd0247f70c2ea04c17c9e9cad9567f18f431fcabfd8ef90c8fb4a"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.7397785186767578,
+            0.6470584869384766,
+            767.8924160003662,
+            1214.3838214874268
+          ],
+          "box_score": 0.8968344926834106,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8968344926834106
+        }
+      ],
+      "sample_id": "nude_ab635daf5d1c5e2184da5217",
+      "source_sha256": "e33be77a644020fef1ef4f08617551ffcfec92b7932bfc0b75dbe49eabffb4d1"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            103.29744338989258,
+            59.643354415893555,
+            795.8965644836426,
+            1196.9206714630127
+          ],
+          "box_score": 0.8972457647323608,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8972457647323608
+        }
+      ],
+      "sample_id": "nude_51c74d76b0d72692e2a48375",
+      "source_sha256": "b4ccd683f5ff5c84e7eb9d78ed10e3a15d84adf2164b3302bda93f7afa6d7755"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            58.694570541381836,
+            1.8948249816894531,
+            777.5978336334229,
+            1213.4137954711914
+          ],
+          "box_score": 0.8346875309944153,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8346875309944153
+        }
+      ],
+      "sample_id": "nude_2641234f02b66dad2b70885e",
+      "source_sha256": "d44d2e673ffc7701fde33952d5be43cdd69f212c4a2caf995f55329d6075a5d5"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            30.4632568359375,
+            1.9743461608886719,
+            1275.9442138671875,
+            1853.1419715881348
+          ],
+          "box_score": 0.6058089733123779,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6058089733123779
+        }
+      ],
+      "sample_id": "nude_87761b453db7c0911dd734b9",
+      "source_sha256": "e2b283ecd858269cb56584249fad81f576a083bc9de17b9483b446689b2bb219"
+    },
+    {
+      "image_size": [
+        1344,
+        1728
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            248.0771598815918,
+            49.95773506164551,
+            1342.2134971618652,
+            1725.9959392547607
+          ],
+          "box_score": 0.8892815709114075,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8892815709114075
+        }
+      ],
+      "sample_id": "nude_25602c84bf415baa075c310e",
+      "source_sha256": "44f164adb8c7f38964194eadfa18fb7875e578ff0025d9ebce4fcc1df006dfbe"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            8.45443344116211,
+            23.323713302612305,
+            814.3525238037109,
+            1198.4275150299072
+          ],
+          "box_score": 0.8085449934005737,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8085449934005737
+        }
+      ],
+      "sample_id": "nude_910dcacdb833ca84ebc602fb",
+      "source_sha256": "684d0131f4e6510776bc9b590c73ee47de73973bd377f084e606661a8857a253"
+    },
+    {
+      "image_size": [
+        1280,
+        1824
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            63.757362365722656,
+            11.135476112365723,
+            1221.4924240112305,
+            1822.5120191574097
+          ],
+          "box_score": 0.8695768713951111,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8695768713951111
+        }
+      ],
+      "sample_id": "nude_2a21a95d8b14c70530e06f9e",
+      "source_sha256": "092cce6e4e8ea09e86d79cd381eaa01a5c5771ee3c815f2c44d2884e13e7f2a9"
+    },
+    {
+      "image_size": [
+        2112,
+        3096
+      ],
+      "proposals": [],
+      "sample_id": "nude_faf2a0a59eceab2f5c0fd15b",
+      "source_sha256": "49712d6c64f37812e1ccda2ef207376dc03f44ffc94a131c4bd9540e6737b2db"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            0.20094919204711914,
+            432.8032522201538,
+            70.51270389556885,
+            633.944073677063
+          ],
+          "box_score": 0.6928065419197083,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6928065419197083
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.3260154724121094,
+            137.43417167663574,
+            803.0596961975098,
+            1120.3508396148682
+          ],
+          "box_score": 0.5203880667686462,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5203880667686462
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            804.8188353776932,
+            693.6019420623779,
+            831.5489243268967,
+            747.0912647247314
+          ],
+          "box_score": 0.5478668808937073,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5478668808937073
+        }
+      ],
+      "sample_id": "nude_5d3f6376f6f03d71f6811129",
+      "source_sha256": "6e83da30a17c1727f17f447b6e5de555a2e5db287ca797590f291e5fe268147d"
+    },
+    {
+      "image_size": [
+        1600,
+        2345
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            344.4169044494629,
+            171.53502374887466,
+            1229.634666442871,
+            1021.4147287607193
+          ],
+          "box_score": 0.44333910942077637,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.44333910942077637
+        }
+      ],
+      "sample_id": "nude_426372493529e832b75d477a",
+      "source_sha256": "1646848172c9626ef6461710827db866a480b2e00bf89247719c681c3d71cdec"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.2421817779541016,
+            1.1900005340576172,
+            830.65407371521,
+            1211.673532485962
+          ],
+          "box_score": 0.8123419880867004,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8123419880867004
+        }
+      ],
+      "sample_id": "nude_1d7ad050a5805a8c597197f1",
+      "source_sha256": "ca7d129ff5efbc21d1ca5ac0bb98482b717c9f51fad0d2f60c5605e961d1f162"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            81.11823654174805,
+            17.99826431274414,
+            727.8097190856934,
+            1114.3247337341309
+          ],
+          "box_score": 0.4207223653793335,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4207223653793335
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.2131710052490234,
+            831.692141532898,
+            830.6176738739014,
+            1214.436604499817
+          ],
+          "box_score": 0.44928503036499023,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.44928503036499023
+        }
+      ],
+      "sample_id": "nude_bded8f3412187e78487cce11",
+      "source_sha256": "f51608a142cf6a9760738cd288ba940745d4d4de591d0fd62d188f483ce3aea0"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.7597885131835938,
+            42.1574821472168,
+            830.103141784668,
+            1211.7210426330566
+          ],
+          "box_score": 0.6618594527244568,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6618594527244568
+        }
+      ],
+      "sample_id": "nude_7f35197ae636be70f20f9af2",
+      "source_sha256": "297bd279186153e7f0146a0956b78c46044e465f5bba66ee262e66bde7d5921c"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            68.10225248336792,
+            184.78586488962173,
+            1193.5409188270569,
+            1751.7137238383293
+          ],
+          "box_score": 0.8457961678504944,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8457961678504944
+        }
+      ],
+      "sample_id": "nude_d4dd193ec2ff794a34a716f1",
+      "source_sha256": "410f8023af022e4c05331416dde982c632298495e511ccf9b6ef814f0fc1dd70"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            21.693809509277344,
+            14.660486221313477,
+            812.4835357666016,
+            1213.1431941986084
+          ],
+          "box_score": 0.7721086740493774,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7721086740493774
+        }
+      ],
+      "sample_id": "nude_717afdf41906e20b924e5364",
+      "source_sha256": "bbd129b19c3fb9f385979c299e886302e8c9fcf3b08ab9faa397f8bd0beb1235"
+    },
+    {
+      "image_size": [
+        1600,
+        2400
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            94.78673934936523,
+            81.2713623046875,
+            1533.354663848877,
+            2397.0391273498535
+          ],
+          "box_score": 0.8835740685462952,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8835740685462952
+        }
+      ],
+      "sample_id": "nude_88b3ea34b5df3d9891ed7d59",
+      "source_sha256": "5efaf212667acd7469496676b066024171ae96a72eae55cea74e6c85bdbc1653"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            106.12026596069336,
+            0.6842765808105469,
+            729.4490013122559,
+            1214.4066162109375
+          ],
+          "box_score": 0.9107246398925781,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9107246398925781
+        }
+      ],
+      "sample_id": "nude_9dbb3b25879718ff42fe653c",
+      "source_sha256": "425cffc0e63866494d6d7d9ce3bc75f8053ac55cb7eb5eea39b724a68c20f1b0"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            75.45193672180176,
+            137.22101020812988,
+            763.8366603851318,
+            1138.7100505828857
+          ],
+          "box_score": 0.8222098350524902,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8222098350524902
+        }
+      ],
+      "sample_id": "nude_4403b48542dd2beaba4b93ee",
+      "source_sha256": "26935ee8ed6ede1bf04115f43e22dd6416670dd076f2b4b5269b9408e259c5af"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            93.48228073120117,
+            47.690185546875,
+            797.9505271911621,
+            1214.1812057495117
+          ],
+          "box_score": 0.852480947971344,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.852480947971344
+        }
+      ],
+      "sample_id": "nude_745aca13b3760d146074d45f",
+      "source_sha256": "049f9ae0d51c16d1fc8e93326bf1bb1c52bab65df645b97134ad53b3371e6b6d"
+    },
+    {
+      "image_size": [
+        2200,
+        2825
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1839.6949779242277,
+            475.8306532166898,
+            1967.217205837369,
+            632.9088897444308
+          ],
+          "box_score": 0.5283248424530029,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5283248424530029
+        }
+      ],
+      "sample_id": "nude_d7101149c9357d898f75fcec",
+      "source_sha256": "b61df7e62065f9a44777c87f7ff9ef6a68deb7136a916d14571ca16395f465a3"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            93.75908374786377,
+            1.3031727075576782,
+            1029.8102617263794,
+            1752.7990738153458
+          ],
+          "box_score": 0.4873659908771515,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4873659908771515
+        }
+      ],
+      "sample_id": "nude_44e3abacde23ba57fd9acf8a",
+      "source_sha256": "6e0a1356c4423d534e2fb571248984ee7f5c8ec2bc7efccf5d83cd36677b93f9"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [],
+      "sample_id": "nude_cf1e82b254235cb660b8ca84",
+      "source_sha256": "2771a60ad07a64c378b8dfa4417ddcf5ba6c1ca66da0f1ede6883ec047ed96c7"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            32.80763626098633,
+            71.39373916387558,
+            1187.3459815979004,
+            1358.5558748841286
+          ],
+          "box_score": 0.47913649678230286,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.47913649678230286
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.544809341430664,
+            702.778825044632,
+            1177.5596380233765,
+            1751.7154488563538
+          ],
+          "box_score": 0.4256018102169037,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4256018102169037
+        }
+      ],
+      "sample_id": "nude_d134930ce956e5b0e19db70e",
+      "source_sha256": "8b140c981affdaa97a0cb65546e3cfb7190f76b5ad14c61f540a9d03ffbabca0"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            4.2820892333984375,
+            20.55384635925293,
+            827.7763290405273,
+            1213.8821201324463
+          ],
+          "box_score": 0.46077802777290344,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.46077802777290344
+        }
+      ],
+      "sample_id": "nude_04feaa0b7642b214cf610b22",
+      "source_sha256": "dabc241c922a04f0e0d8c55bb850d8ae49e82347a9b7af9033e730f70412df4a"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            66.24934673309326,
+            92.96576911211014,
+            1118.1573629379272,
+            1629.6240572333336
+          ],
+          "box_score": 0.8347238898277283,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8347238898277283
+        }
+      ],
+      "sample_id": "nude_11729e29821cae36dbe10d7f",
+      "source_sha256": "c7dc69c403f2886fe8a6c9dad8f9786be5a479ca3d890a652acab9dd87f19b6d"
+    },
+    {
+      "image_size": [
+        544,
+        960
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            98.72774124145508,
+            12.009859085083008,
+            500.74813079833984,
+            959.554967880249
+          ],
+          "box_score": 0.9014096856117249,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9014096856117249
+        }
+      ],
+      "sample_id": "nude_eb4ff143d7a09f4e6156a678",
+      "source_sha256": "ff5b7f125b1e843061e9c78e1380348de114f905d24975778240872feafbc6e0"
+    },
+    {
+      "image_size": [
+        1536,
+        2304
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            30.24810791015625,
+            17.709274291992188,
+            1533.116455078125,
+            2289.121627807617
+          ],
+          "box_score": 0.9112955927848816,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9112955927848816
+        }
+      ],
+      "sample_id": "nude_886f099217600d291de26dec",
+      "source_sha256": "46b8cc35478d503937c508b4dc60ec19c6e6820b592f94958da2a318fa613f5a"
+    },
+    {
+      "image_size": [
+        1024,
+        1536
+      ],
+      "proposals": [],
+      "sample_id": "nude_f0c3293cd75af1aa0c3a0a97",
+      "source_sha256": "2a7fa864ed28e8d0bc1fe6e431f4bfe494523fb7d4bb11f048f756932daa5bed"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            149.75246810913086,
+            18.28850746154785,
+            830.9406852722168,
+            999.6639766693115
+          ],
+          "box_score": 0.41561296582221985,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.41561296582221985
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.1050376892089844,
+            853.9432344436646,
+            830.4786949157715,
+            1214.4869413375854
+          ],
+          "box_score": 0.4305252432823181,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4305252432823181
+        }
+      ],
+      "sample_id": "nude_b389d3c12f5f125b389ffcf3",
+      "source_sha256": "466fca51519fce4f360f9297375c0a18aab0d9ba522445b64b0d3fd0d326f734"
+    },
+    {
+      "image_size": [
+        1200,
+        1800
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            259.09838676452637,
+            107.08193778991699,
+            945.9351539611816,
+            1797.296118736267
+          ],
+          "box_score": 0.9350336790084839,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9350336790084839
+        }
+      ],
+      "sample_id": "nude_9986ea5f7768de44f9848fb7",
+      "source_sha256": "138d6a2f98e7bb4f265ba102fbd6f6471c5fdc4491b127d8a352ac938b600647"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            138.99423217773438,
+            24.089021682739258,
+            643.0877990722656,
+            1214.8099269866943
+          ],
+          "box_score": 0.9101849794387817,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9101849794387817
+        }
+      ],
+      "sample_id": "nude_249cd9c349345571e7df62f3",
+      "source_sha256": "61f1f9053b127376bd30ffc662645c9461392538222a853cf26cb881d12af9c5"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            2.55035400390625,
+            16.840408325195312,
+            1277.5364685058594,
+            1853.255142211914
+          ],
+          "box_score": 0.7474772334098816,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7474772334098816
+        }
+      ],
+      "sample_id": "nude_217d4567600868581add3efd",
+      "source_sha256": "044c7c5a3418eba4bbf48437d916ae3b059a91082899597b24bea5e571e4f431"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            23.507949829101562,
+            61.081668853759766,
+            825.3880233764648,
+            1205.0243949890137
+          ],
+          "box_score": 0.7618339657783508,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7618339657783508
+        }
+      ],
+      "sample_id": "nude_d444cad5118fd52df10bcf4b",
+      "source_sha256": "5acd9ae36762d634664a656d8f9c9956c99bb62523d601c4b02871b830b869ec"
+    },
+    {
+      "image_size": [
+        896,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            34.1291389465332,
+            38.40454292297363,
+            894.3956108093262,
+            1214.0791912078857
+          ],
+          "box_score": 0.44787317514419556,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.44787317514419556
+        }
+      ],
+      "sample_id": "nude_1640ac50f2e7d8ef5eeedfc2",
+      "source_sha256": "06fd1436d7610b63aef6c9ac7e570caf7ee26a0ec64b8a308926aaea7cecb98f"
+    },
+    {
+      "image_size": [
+        1344,
+        2240
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            330.45351791381836,
+            1001.0781860351562,
+            1002.5484466552734,
+            1989.0222930908203
+          ],
+          "box_score": 0.8861676454544067,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8861676454544067
+        }
+      ],
+      "sample_id": "nude_4225668662e519d8460269bb",
+      "source_sha256": "af362e584e082df544996eb18b7eb3e34b7589aae1b72a054038e9fd9a0ef0e2"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            0.4970388412475586,
+            421.5133228302002,
+            266.04965114593506,
+            1214.6232204437256
+          ],
+          "box_score": 0.6183468103408813,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6183468103408813
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            214.38559341430664,
+            75.78741836547852,
+            830.0901985168457,
+            1215.0781364440918
+          ],
+          "box_score": 0.42786166071891785,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.42786166071891785
+        }
+      ],
+      "sample_id": "nude_c6b501cda5997d1977d0a54e",
+      "source_sha256": "983ec42ab05bb73919651b8ae7123254f700d00f7a041b10fb153e73a6a26e73"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            28.605266571044922,
+            46.56603240966797,
+            826.0388069152832,
+            1214.5734634399414
+          ],
+          "box_score": 0.8613343834877014,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8613343834877014
+        }
+      ],
+      "sample_id": "nude_f367e27e83e8691a553c38a0",
+      "source_sha256": "8cfdea12756aef4b28fd3fff99b6fa1386ea79257e65994519a7f8dd6f19857c"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            64.72152471542358,
+            39.794754445552826,
+            1144.0530896186829,
+            1751.3688247799873
+          ],
+          "box_score": 0.8192420601844788,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8192420601844788
+        }
+      ],
+      "sample_id": "nude_447e1d650d4ec2d8f539ad3f",
+      "source_sha256": "98345bea96e2ddca28cbdc445ff86f282698a29b85cbaadf5ede5097b145a830"
+    },
+    {
+      "image_size": [
+        2200,
+        3143
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            2.0069479942321777,
+            227.28222799301147,
+            2197.193157672882,
+            2983.213563323021
+          ],
+          "box_score": 0.7152909636497498,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7152909636497498
+        }
+      ],
+      "sample_id": "nude_cd81bbb2785c407345b835fa",
+      "source_sha256": "887fe8f4da5b769d0c8d09902fa152ac13c7abe8d2c981b0bd7c80104ebef9ef"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            110.01300811767578,
+            10.878097534179688,
+            1277.5156784057617,
+            1852.3491134643555
+          ],
+          "box_score": 0.7048717141151428,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7048717141151428
+        }
+      ],
+      "sample_id": "nude_89f9bca46846dfad36c76b1c",
+      "source_sha256": "0474e61fbb78934be7c6d2bdabda27afb5b7521eaa191db5c4826b87d0e75629"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            9.514541625976562,
+            1.1024093627929688,
+            830.8806304931641,
+            1214.0724868774414
+          ],
+          "box_score": 0.8676341772079468,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8676341772079468
+        }
+      ],
+      "sample_id": "nude_7a75c2847784db6e04056283",
+      "source_sha256": "d273ba925d7c48c5c8fd41aadd75d8d77175ddb34029c2ccc3682325c1df741c"
+    },
+    {
+      "image_size": [
+        2200,
+        3143
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            3.3520162105560303,
+            316.58399882912636,
+            2191.549903154373,
+            3138.780506104231
+          ],
+          "box_score": 0.8672725558280945,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8672725558280945
+        }
+      ],
+      "sample_id": "nude_f8276e3503950dee72caf674",
+      "source_sha256": "90f3f09a5f0d539323e85f034235d899d8de3ebed5e62eb0d7170ae9476d5c8a"
+    },
+    {
+      "image_size": [
+        2200,
+        2807
+      ],
+      "proposals": [],
+      "sample_id": "nude_4fb949cd4eb116ad51d0b8dd",
+      "source_sha256": "9967b8199fd21e534e2e3e8b052795db83d8a1199f5c1263eb261de0696422d2"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            3.4169387817382812,
+            18.277055740356445,
+            1276.6070175170898,
+            1853.5719203948975
+          ],
+          "box_score": 0.6993836760520935,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6993836760520935
+        }
+      ],
+      "sample_id": "nude_a832df390256909050204c80",
+      "source_sha256": "943e83a8cc34cbf37752ec257cf2500e7b4277eaa29bcd5494f7f1ce93f71a86"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            0.864713191986084,
+            1.2742576599121094,
+            204.06734800338745,
+            1214.9004173278809
+          ],
+          "box_score": 0.6610006093978882,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6610006093978882
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            119.5981502532959,
+            15.115474700927734,
+            828.8394870758057,
+            1214.715015411377
+          ],
+          "box_score": 0.4443061351776123,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4443061351776123
+        }
+      ],
+      "sample_id": "nude_322cac3f5740791426674be4",
+      "source_sha256": "227197a0bb3df49717bc0ae705d7526da46a417837623afe110f098ea85ad85e"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            127.15862989425659,
+            33.72614103555679,
+            1198.3276963233948,
+            1750.9712342619896
+          ],
+          "box_score": 0.7640894055366516,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7640894055366516
+        }
+      ],
+      "sample_id": "nude_8925ab630d2c95175b9e0a8d",
+      "source_sha256": "02af26d532831aa7054b39f96b7565382bccb2c83b6f6f232c2a76bee05f3360"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            3.4681320190429688,
+            88.51250439882278,
+            1196.628713607788,
+            1751.331710755825
+          ],
+          "box_score": 0.5111109018325806,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5111109018325806
+        }
+      ],
+      "sample_id": "nude_02327affc3acd63dcd0351cf",
+      "source_sha256": "4daa53a19c4de6e575f6c12943c76366b0389be6fb400aead09d007e9e0d1ea8"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            6.582999229431152,
+            651.0606414675713,
+            1189.313793182373,
+            1749.8516452908516
+          ],
+          "box_score": 0.5615972280502319,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5615972280502319
+        }
+      ],
+      "sample_id": "nude_fe6780e092afa7066af52b14",
+      "source_sha256": "d9c1bc01157fa94aca18a402d8ef51e0f5addd1a870ccad2c22ebbe11ae4040d"
+    },
+    {
+      "image_size": [
+        1024,
+        1024
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            194.05307006835938,
+            79.01547241210938,
+            966.4728088378906,
+            1022.8371887207031
+          ],
+          "box_score": 0.5453343987464905,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5453343987464905
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            0.7154541015625,
+            0.40655517578125,
+            945.749755859375,
+            1023.30615234375
+          ],
+          "box_score": 0.5060047507286072,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5060047507286072
+        }
+      ],
+      "sample_id": "nude_96395e01738d26c83034959b",
+      "source_sha256": "da519ba21973f07a4a6b71f804b1dc9f1f5500cf4cdb2f6a91807c731309e154"
+    },
+    {
+      "image_size": [
+        1024,
+        1536
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            5.284088134765625,
+            1.9707183837890625,
+            1021.3902282714844,
+            1533.4640350341797
+          ],
+          "box_score": 0.5497307777404785,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5497307777404785
+        }
+      ],
+      "sample_id": "nude_ab84be7e1c8cd51b5cc9061a",
+      "source_sha256": "7c128eb314af75e045a6e82b43c0650b901737ccb6f87059a70065abc6af8ff7"
+    },
+    {
+      "image_size": [
+        2200,
+        3190
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            135.75400114059448,
+            219.22397136688232,
+            2040.2186155319214,
+            3029.3764317035675
+          ],
+          "box_score": 0.7752780914306641,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7752780914306641
+        }
+      ],
+      "sample_id": "nude_2a276de12e61923947172a06",
+      "source_sha256": "7c99717e5bfb2df9685e84886d97b6b4292cbbbea5267404d8708aae3868397e"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            59.053306579589844,
+            1.2496337890625,
+            1278.1386184692383,
+            1853.6306076049805
+          ],
+          "box_score": 0.8354336619377136,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8354336619377136
+        }
+      ],
+      "sample_id": "nude_f73383b394ed961126c533eb",
+      "source_sha256": "1b4e286614f9bd98137083d3b2d1ca94757ab73e8849af1faeac346dbb042c33"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            15.491752624511719,
+            19.713376998901367,
+            811.499153137207,
+            1202.8007678985596
+          ],
+          "box_score": 0.7132770419120789,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7132770419120789
+        }
+      ],
+      "sample_id": "nude_4144e5920c597df304c019bd",
+      "source_sha256": "c06dff5b8c04c48adc82b5fd8ebbe36a55fef16766b04c9f26d423845289cce2"
+    },
+    {
+      "image_size": [
+        1200,
+        933
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            595.5634832382202,
+            0.7506668865680695,
+            1199.2822408676147,
+            931.9940223991871
+          ],
+          "box_score": 0.6303530335426331,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6303530335426331
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.1390447616577148,
+            0.9574290812015533,
+            615.1619911193848,
+            930.992910772562
+          ],
+          "box_score": 0.5639926791191101,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5639926791191101
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            5.3009748458862305,
+            327.1898005306721,
+            608.2084894180298,
+            932.2096267640591
+          ],
+          "box_score": 0.44178396463394165,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.44178396463394165
+        }
+      ],
+      "sample_id": "nude_bc95cc4dfdbd8ed10f36c107",
+      "source_sha256": "0e1ec492754de81348091c6f3a4b1fbfb19645eaf230bc0dc553d483d67e05f1"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            4.267609119415283,
+            242.8891765475273,
+            1129.0003180503845,
+            1750.8040643334389
+          ],
+          "box_score": 0.7848806381225586,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7848806381225586
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            423.4610438346863,
+            3.6656633019447327,
+            1198.4557271003723,
+            1748.7320563197136
+          ],
+          "box_score": 0.6503220200538635,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6503220200538635
+        }
+      ],
+      "sample_id": "nude_d67560ace53159a89ac3def8",
+      "source_sha256": "10f642ab7bc5ea0bbb983413abb857bec4182f40fb40b22789134c64477e1428"
+    },
+    {
+      "image_size": [
+        1200,
+        1800
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            209.39351320266724,
+            10.663068294525146,
+            987.6733660697937,
+            1798.212468624115
+          ],
+          "box_score": 0.9205904603004456,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9205904603004456
+        }
+      ],
+      "sample_id": "nude_f562047f111ac774155a0b90",
+      "source_sha256": "4cb71edb64b725ebc869f77c9c59017f9c71ed10919a07ad098c6c6c61d83b2c"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [],
+      "sample_id": "nude_582aca12c36f7b025d41acfd",
+      "source_sha256": "8f26e40d846dad6754e55e0ee1a983f7a77d7cce0fcb2040313f30b6f673dae4"
+    },
+    {
+      "image_size": [
+        1920,
+        2880
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            5.472507476806641,
+            3.0913639068603516,
+            1911.891918182373,
+            2874.8658657073975
+          ],
+          "box_score": 0.8646706342697144,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8646706342697144
+        }
+      ],
+      "sample_id": "nude_9345afd037253ea3f3d61ece",
+      "source_sha256": "128e01a78f8115690c16025b398448abca7386f8ddacd76e32e32e6d548f50b3"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            282.8573942184448,
+            87.17817682027817,
+            1198.926043510437,
+            1751.6230819821358
+          ],
+          "box_score": 0.5552948117256165,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5552948117256165
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            0.6782412528991699,
+            1.9849207401275635,
+            502.4950861930847,
+            1751.3149310350418
+          ],
+          "box_score": 0.40502607822418213,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.40502607822418213
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1052.6125341653824,
+            673.6421075314283,
+            1199.4665712118149,
+            991.2229702025652
+          ],
+          "box_score": 0.4851468503475189,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4851468503475189
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1092.503111064434,
+            330.17525847256184,
+            1198.91849309206,
+            630.8944881409407
+          ],
+          "box_score": 0.43728113174438477,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.43728113174438477
+        }
+      ],
+      "sample_id": "nude_9da62fc89333b7d0b930c069",
+      "source_sha256": "d3ffe163d530b5f9b3a272b6851d01516b4685ab635391b6d54e43613aa295b3"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            260.09693145751953,
+            161.12814140319824,
+            1044.624137878418,
+            1774.0771350860596
+          ],
+          "box_score": 0.8923299312591553,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8923299312591553
+        }
+      ],
+      "sample_id": "nude_2eeeef5bc58c79e3b9317f2e",
+      "source_sha256": "016d187ac6593547aed4a63c1fbc7a2bc0b7e6870aba1d6d3f8e054a841a813a"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.3541336059570312,
+            25.725168228149414,
+            727.9351348876953,
+            1213.9548168182373
+          ],
+          "box_score": 0.4444902241230011,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4444902241230011
+        }
+      ],
+      "sample_id": "nude_567c00ac2031d211b4ff8e51",
+      "source_sha256": "e3bccfb5849e77e0c11f3db143bd445039c7bee0160372a81513fd30bd3cb8a2"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            53.27606201171875,
+            199.7556095123291,
+            1225.9422302246094,
+            1781.7686443328857
+          ],
+          "box_score": 0.750839114189148,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.750839114189148
+        }
+      ],
+      "sample_id": "nude_cf94460a9710db18514c4f3c",
+      "source_sha256": "5511ab84b52427c450dfcf9f9f7218a504078ccfd559aa7f5b5902dc5078dcf2"
+    },
+    {
+      "image_size": [
+        1024,
+        1536
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            94.7510986328125,
+            223.5457763671875,
+            1022.1708984375,
+            1533.98583984375
+          ],
+          "box_score": 0.7114930152893066,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7114930152893066
+        }
+      ],
+      "sample_id": "nude_3303e02ab9a5c56f83325803",
+      "source_sha256": "8a63eb039df7f3243f55e24847043b50941a058edf9f3ad5fab11102c7dba40f"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            66.06722450256348,
+            1.5674724578857422,
+            831.10475730896,
+            726.3895244598389
+          ],
+          "box_score": 0.4722254276275635,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4722254276275635
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            0.8622894287109375,
+            523.9852085113525,
+            830.8016319274902,
+            1213.957281112671
+          ],
+          "box_score": 0.41167011857032776,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.41167011857032776
+        }
+      ],
+      "sample_id": "nude_8a2e2ef3e615c2a474e0db15",
+      "source_sha256": "0abded8526e880d935870703b9f3a277ae0396d98d6dfce403640742f431821b"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            3.8186607360839844,
+            13.174697875976562,
+            823.4810485839844,
+            1166.8290634155273
+          ],
+          "box_score": 0.7816622257232666,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7816622257232666
+        }
+      ],
+      "sample_id": "nude_15ef96ea8edc951b676ff40a",
+      "source_sha256": "d01354321032ca8dbac26eefef7544c8a11e5c34a35acf1fd19fb0959d8b7d7e"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            2.4468994140625,
+            69.74844932556152,
+            1277.4581909179688,
+            1852.0157413482666
+          ],
+          "box_score": 0.7991153597831726,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7991153597831726
+        }
+      ],
+      "sample_id": "nude_e0e609cd8416c02627210e4f",
+      "source_sha256": "94975bd0b69095fe104a732218f983190f883f0e4fc3e3882fa9ff661e7bead7"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            174.314302444458,
+            22.280555725097656,
+            810.6579647064209,
+            1215.8186569213867
+          ],
+          "box_score": 0.5769815444946289,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5769815444946289
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            0.853914737701416,
+            0.9097232818603516,
+            202.08214330673218,
+            1214.9163265228271
+          ],
+          "box_score": 0.5091531872749329,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5091531872749329
+        }
+      ],
+      "sample_id": "nude_afac94163c17276a11fb7868",
+      "source_sha256": "c027fcd8850dda585352c4dade6ff7f2e65101dd2fc9871dac884d9a9e0ce922"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            2.4413466453552246,
+            94.95241487026215,
+            1197.6792454719543,
+            1750.9117995500565
+          ],
+          "box_score": 0.717623233795166,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.717623233795166
+        }
+      ],
+      "sample_id": "nude_c01fc6b17f07b1a2f5449e97",
+      "source_sha256": "566aa3e06a48a142b0ffea734d086d82e2f08527e9c183fa12017eb2efbbb694"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            86.06786727905273,
+            132.7107594013214,
+            1121.2726593017578,
+            1751.8421592712402
+          ],
+          "box_score": 0.4200907349586487,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4200907349586487
+        }
+      ],
+      "sample_id": "nude_0bfc77e71c6d48bb52bb854d",
+      "source_sha256": "ec60aa062a9fe592c2c7ee13b3ac651d7e9906d66a0fdfd28aed0e1faee706df"
+    },
+    {
+      "image_size": [
+        1024,
+        1536
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            126.03170776367188,
+            0.85052490234375,
+            1022.6611633300781,
+            1534.2667236328125
+          ],
+          "box_score": 0.8694143891334534,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8694143891334534
+        }
+      ],
+      "sample_id": "nude_ad7bdea0af561c1b06482d72",
+      "source_sha256": "11b41a8052defa6ccbbf2b90e64c97f2a9acaabf0949833878da79e756c232c8"
+    },
+    {
+      "image_size": [
+        512,
+        768
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            3.367431640625,
+            28.44426727294922,
+            510.50128173828125,
+            767.1901016235352
+          ],
+          "box_score": 0.8905602097511292,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8905602097511292
+        }
+      ],
+      "sample_id": "nude_4af0b323a665f1fc9d1ee443",
+      "source_sha256": "5e9a152fd64cdea4aa290ed198cdd8e052391ed92becbdb91fae88a34ef0beaf"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            145.40973663330078,
+            3.2743701934814453,
+            1132.287712097168,
+            1853.261724472046
+          ],
+          "box_score": 0.9147447347640991,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9147447347640991
+        }
+      ],
+      "sample_id": "nude_0a5b4c7f34b52893f1be44dc",
+      "source_sha256": "fe4a6d12fb5d90e05e6ba1f6181bacd03c277449ed6f0f7012fb48ef1c7186f7"
+    },
+    {
+      "image_size": [
+        1664,
+        2432
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1024.4108753204346,
+            2.032245635986328,
+            1661.8958263397217,
+            2428.4906272888184
+          ],
+          "box_score": 0.6610332131385803,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6610332131385803
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            4.237159729003906,
+            22.97374725341797,
+            1417.6913986206055,
+            2425.881446838379
+          ],
+          "box_score": 0.5898566246032715,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5898566246032715
+        }
+      ],
+      "sample_id": "nude_ca1432534dd31bd1441f4fa6",
+      "source_sha256": "caf5c7a94735be8f48077e8723204a6524b0a66966bb653377d94ffcdb8da467"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            123.66896867752075,
+            91.26746273040771,
+            1192.936885356903,
+            1752.3391735553741
+          ],
+          "box_score": 0.7709899544715881,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7709899544715881
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            534.2318773269653,
+            3.0085882544517517,
+            1198.5900163650513,
+            1750.060006558895
+          ],
+          "box_score": 0.5488345623016357,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5488345623016357
+        }
+      ],
+      "sample_id": "nude_27d4a9520b958ecf8d7ddc1a",
+      "source_sha256": "778310b88a7a315bc2a4e7d10c6adecc58f781091de7db08354a26b94e94deb3"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            631.6245496273041,
+            402.74429684877396,
+            1199.1431772708893,
+            1752.0537092089653
+          ],
+          "box_score": 0.5736895799636841,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5736895799636841
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            3.319430351257324,
+            47.0852033495903,
+            916.970157623291,
+            1751.2329142689705
+          ],
+          "box_score": 0.4346321225166321,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4346321225166321
+        }
+      ],
+      "sample_id": "nude_e1162a99e3374d27783d92b9",
+      "source_sha256": "ad61c5735e6da277543147cef9bca76ddf47fee99020d73cf71710a7a9829309"
+    },
+    {
+      "image_size": [
+        2112,
+        3096
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            115.40092849731445,
+            0.47148942947387695,
+            2018.223346710205,
+            3094.2103700637817
+          ],
+          "box_score": 0.6178359389305115,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6178359389305115
+        }
+      ],
+      "sample_id": "nude_75a8d1c4ddddcb2e726b22dc",
+      "source_sha256": "494cd0c79d7c73015ac633554dd264b41916078707db1c6fb60545fb198ea8d5"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            66.71979331970215,
+            7.204183578491211,
+            724.7986736297607,
+            1214.7375202178955
+          ],
+          "box_score": 0.8930477499961853,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8930477499961853
+        }
+      ],
+      "sample_id": "nude_3a6d8991c6450ba1e21bb0d4",
+      "source_sha256": "11de17f78722572c4ee7e6612152717460fdd6794cd93fefc791c98af8e007f1"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            17.168996810913086,
+            0.9112091064453125,
+            743.738790512085,
+            1214.900634765625
+          ],
+          "box_score": 0.8844072222709656,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8844072222709656
+        }
+      ],
+      "sample_id": "nude_b7ec4e26efd2a7d68b0728b5",
+      "source_sha256": "3431472e49ada2fabd9f89345ec0f9e84902c1dacf4eb260bbc7b92409a788bf"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            121.91305160522461,
+            227.90070402622223,
+            1145.998191833496,
+            1719.9603761434555
+          ],
+          "box_score": 0.5333027243614197,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5333027243614197
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            87.75626420974731,
+            1.1077229380607605,
+            1099.0007758140564,
+            656.7034890651703
+          ],
+          "box_score": 0.493496298789978,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.493496298789978
+        }
+      ],
+      "sample_id": "nude_42c6cc23548675e949c6dd81",
+      "source_sha256": "192c6811c07bc65da5c72e0b2949bcff1a739f219e20d0d1178509008f81e123"
+    },
+    {
+      "image_size": [
+        2200,
+        3215
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            344.30376291275024,
+            4.142825901508331,
+            2140.102207660675,
+            3210.0479251146317
+          ],
+          "box_score": 0.8408833146095276,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8408833146095276
+        }
+      ],
+      "sample_id": "nude_bb0f33d6a13f67011e9ed459",
+      "source_sha256": "d96f2c8ef17749ac1a5b5b6a8b5b7084e8b4ed346df1b42706b8cb87b07ad822"
+    },
+    {
+      "image_size": [
+        768,
+        1024
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            41.287010192871094,
+            17.586822509765625,
+            766.1725845336914,
+            1021.9705505371094
+          ],
+          "box_score": 0.559984028339386,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.559984028339386
+        }
+      ],
+      "sample_id": "nude_724c1fb58166f64e60cacc16",
+      "source_sha256": "9c83aeef15495ffa28e30ec5866719707d2799d205e27acc94db9fa74d7c77a0"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            76.9664478302002,
+            18.140722274780273,
+            797.27174949646,
+            1214.910020828247
+          ],
+          "box_score": 0.8766762018203735,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8766762018203735
+        }
+      ],
+      "sample_id": "nude_3c56a8678c1d76b58cda257e",
+      "source_sha256": "218c5587ef7cbdeb0c67ce7cd3e105da8ffddb68693ee1d2091d08c43466933e"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            144.60223770141602,
+            1.1612987518310547,
+            831.3793678283691,
+            962.5072002410889
+          ],
+          "box_score": 0.5167245864868164,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5167245864868164
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            28.01560401916504,
+            453.6415615081787,
+            707.7907238006592,
+            1214.1542072296143
+          ],
+          "box_score": 0.4965207576751709,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4965207576751709
+        }
+      ],
+      "sample_id": "nude_b847f7b2ad807b4a82a31dbd",
+      "source_sha256": "fee254f233a0289ff77d741097b51f7a9f22a3dbad598fb0ea4ccfa823535847"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            68.27283668518066,
+            47.6646728515625,
+            827.2079906463623,
+            1214.4067611694336
+          ],
+          "box_score": 0.888574481010437,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.888574481010437
+        }
+      ],
+      "sample_id": "nude_9e6230f4f00c889c321f2ee0",
+      "source_sha256": "d9d9996100d0cb837b6dd4cea8856fccdb7810ba45f4670480f68b9da8119302"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            10.201824188232422,
+            10.943967819213867,
+            828.7106742858887,
+            1214.4729709625244
+          ],
+          "box_score": 0.772376537322998,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.772376537322998
+        }
+      ],
+      "sample_id": "nude_9835f81363cb18f71b0643bf",
+      "source_sha256": "b96c1aea4068db42e48bd94918e8ddc259335fc09dad905f0decadecdee227b8"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            33.191423416137695,
+            28.410415649414062,
+            830.2483196258545,
+            1214.6266632080078
+          ],
+          "box_score": 0.907505989074707,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.907505989074707
+        }
+      ],
+      "sample_id": "nude_b42e97b8599cb79b28fd1e8e",
+      "source_sha256": "e0082e5a97d822fa9a88f154d9a8ccdd46e63fd13344fff8a3fdeaaf12ab64ab"
+    },
+    {
+      "image_size": [
+        1200,
+        2119
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            115.34188985824585,
+            16.871579825878143,
+            1159.3220829963684,
+            2115.873893201351
+          ],
+          "box_score": 0.46247467398643494,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.46247467398643494
+        }
+      ],
+      "sample_id": "nude_8f68ea05ab102a14aa52c207",
+      "source_sha256": "9a39c78c6406907cf0a54b67b47b34413a583fa006ee48ba7c38f83b94437e33"
+    },
+    {
+      "image_size": [
+        1248,
+        1824
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            429.6197519302368,
+            9.911138534545898,
+            1242.5431852340698,
+            1585.9532890319824
+          ],
+          "box_score": 0.430948942899704,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.430948942899704
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            2.22802734375,
+            1.3792619705200195,
+            1245.0535469055176,
+            1821.64976978302
+          ],
+          "box_score": 0.6248405575752258,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6248405575752258
+        }
+      ],
+      "sample_id": "nude_26a0cb4b7903586febb9b5be",
+      "source_sha256": "253f007baa805b48c3e99aa3474f2bb286e2d762a85584c54995fd3dc7999167"
+    },
+    {
+      "image_size": [
+        1152,
+        1728
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            3.7922401428222656,
+            2.5176544189453125,
+            1147.6275444030762,
+            1724.7839241027832
+          ],
+          "box_score": 0.8286624550819397,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8286624550819397
+        }
+      ],
+      "sample_id": "nude_268737bd4caa5dd9a5e14b8f",
+      "source_sha256": "88505bb5895501b5c3a3d65a07931d2b73936e291b544ff9d601c63e0c4ab81f"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [],
+      "sample_id": "nude_145faca28f59fc96071dd3a6",
+      "source_sha256": "9da955b43f2d5144b9bb8ea167830be0d65027edc6baf9d177c652b7e4d59948"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.4975929260253906,
+            3.678211212158203,
+            590.5961418151855,
+            1846.1420974731445
+          ],
+          "box_score": 0.5943887829780579,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5943887829780579
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            862.7347564697266,
+            365.22887229919434,
+            1279.1141510009766,
+            1854.0269260406494
+          ],
+          "box_score": 0.6435242891311646,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6435242891311646
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            11.338233947753906,
+            42.25667190551758,
+            1122.7028274536133,
+            1854.0692405700684
+          ],
+          "box_score": 0.5187901854515076,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5187901854515076
+        }
+      ],
+      "sample_id": "nude_25327a7896e5670cec68e474",
+      "source_sha256": "6eac29fa29f58527926567e30ba05e379fdf15e8913a2ce6597c0d237c84093d"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            30.290937423706055,
+            133.3537729382515,
+            1179.84037399292,
+            1728.1660777926445
+          ],
+          "box_score": 0.8851339221000671,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8851339221000671
+        }
+      ],
+      "sample_id": "nude_f35fdbf15822e48ec591cf42",
+      "source_sha256": "3a9e756e9ba11840a9ce50b006a5349212f553331a6aad4887feba5ccc012529"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            36.47355842590332,
+            1.5646095275878906,
+            827.6001567840576,
+            1213.7234992980957
+          ],
+          "box_score": 0.5884869694709778,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5884869694709778
+        }
+      ],
+      "sample_id": "nude_5f951d513f66322ddb202f1b",
+      "source_sha256": "661c82742bd6e222bdedafbfb8f12cdecb21ca14871c8740d553e3f56fac4b86"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            4.618513584136963,
+            21.27637231349945,
+            1183.9065670967102,
+            1752.4208244085312
+          ],
+          "box_score": 0.8874642252922058,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8874642252922058
+        }
+      ],
+      "sample_id": "nude_54eb2334765b30fc25a2f4e0",
+      "source_sha256": "aece5626a6d10e9f44d0d41f4ab123b4b8118cc5d47d15ef288382f2e8f190a0"
+    },
+    {
+      "image_size": [
+        1920,
+        2816
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            360.26561737060547,
+            584.9694290161133,
+            1377.4127197265625,
+            2489.601737976074
+          ],
+          "box_score": 0.8792813420295715,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8792813420295715
+        }
+      ],
+      "sample_id": "nude_867c25a188db2a11d4b7ad10",
+      "source_sha256": "9ee7b52b66c4e5611dec2be5ffc9657c6393865e117e480c8208ff58e50bbf00"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            84.69320678710938,
+            11.459077835083008,
+            806.3726272583008,
+            1201.3811168670654
+          ],
+          "box_score": 0.6154395341873169,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6154395341873169
+        }
+      ],
+      "sample_id": "nude_dc09985d1e1e6e9aea763287",
+      "source_sha256": "be1d4833354d4bc0ff0ad4fe6b9e7856889041d20f438a83bd16ee6580ef9386"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            119.91097927093506,
+            32.18005442619324,
+            1040.0644540786743,
+            1752.1553807258606
+          ],
+          "box_score": 0.910018801689148,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.910018801689148
+        }
+      ],
+      "sample_id": "nude_823e8d4a820c5c7d01bd068d",
+      "source_sha256": "3496a14eb13970e755104f2d8fcda6eb3daff0fd9a2b8fb583dcbbfbc4d4dfaa"
+    },
+    {
+      "image_size": [
+        2200,
+        2829
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            154.74441051483154,
+            40.49007868766785,
+            2075.79345703125,
+            2825.609358072281
+          ],
+          "box_score": 0.7336780428886414,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7336780428886414
+        }
+      ],
+      "sample_id": "nude_ea73860bb9b833d24332c442",
+      "source_sha256": "e16e83a07b4b582b38a238b23f85b0be5b68bc03a4b3557298baeadc9f87705e"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            56.9261531829834,
+            13.379777908325195,
+            830.8211460113525,
+            1214.9786586761475
+          ],
+          "box_score": 0.8755788207054138,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8755788207054138
+        }
+      ],
+      "sample_id": "nude_526cfc1f5dd05934526543f3",
+      "source_sha256": "58cf82568aa0e3b5cc98683be529dafdc299cfa0f43d26e2091b7a30806da3c2"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            0.7048988342285156,
+            47.46932411193848,
+            202.1328353881836,
+            926.8270854949951
+          ],
+          "box_score": 0.6537459492683411,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6537459492683411
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            37.23182678222656,
+            76.6734848022461,
+            1272.8319549560547,
+            1852.276985168457
+          ],
+          "box_score": 0.5341755747795105,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5341755747795105
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            133.66284370422363,
+            278.0218906402588,
+            252.03551292419434,
+            945.5898456573486
+          ],
+          "box_score": 0.5242007970809937,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5242007970809937
+        }
+      ],
+      "sample_id": "nude_c0e465b11d9cccef12fd84e6",
+      "source_sha256": "bcd4d56d62ee44365860e3b202fbde5429c4abba8e21c26566711f967b0927e6"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            6.396503448486328,
+            24.330123901367188,
+            829.9558067321777,
+            1214.306739807129
+          ],
+          "box_score": 0.8159939050674438,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8159939050674438
+        }
+      ],
+      "sample_id": "nude_4e71c20807c803acf89d585d",
+      "source_sha256": "4582e0ac04cb0e3cc4c806ffd4b77652f996a0b5a298756a9347947b6b75eb63"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            64.48296356201172,
+            0.5871543884277344,
+            829.1441497802734,
+            1214.7426300048828
+          ],
+          "box_score": 0.8587977886199951,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8587977886199951
+        }
+      ],
+      "sample_id": "nude_ba97310d6a3ddb466c7d1436",
+      "source_sha256": "38137f72ec2e57bd9865b9abcc6898c9a5036554aeb0b32bfd126c776639fed2"
+    },
+    {
+      "image_size": [
+        2200,
+        1711
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            0.3942757844924927,
+            663.8105773478746,
+            223.7585723400116,
+            1291.4785680025816
+          ],
+          "box_score": 0.810154139995575,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.810154139995575
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1998.2728123664856,
+            558.4133093655109,
+            2199.5020985603333,
+            1352.8483148515224
+          ],
+          "box_score": 0.8137021064758301,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8137021064758301
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            409.163448959589,
+            974.410483174026,
+            528.2750748097897,
+            1278.9979872182012
+          ],
+          "box_score": 0.7528727650642395,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7528727650642395
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1655.150045081973,
+            1054.4652603566647,
+            1752.3316252976656,
+            1269.8799059689045
+          ],
+          "box_score": 0.7233907580375671,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7233907580375671
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1957.9268552362919,
+            1032.3094367086887,
+            2031.7777059972286,
+            1270.5943007171154
+          ],
+          "box_score": 0.7396411895751953,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7396411895751953
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            660.2090805768967,
+            1.7836922407150269,
+            1097.1114307641983,
+            1672.253288924694
+          ],
+          "box_score": 0.6959338188171387,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6959338188171387
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            192.51010194420815,
+            969.6203287094831,
+            265.0159500539303,
+            1265.3562472611666
+          ],
+          "box_score": 0.6761742234230042,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6761742234230042
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1080.605348944664,
+            1.5047162473201752,
+            1518.419972062111,
+            1675.3642460405827
+          ],
+          "box_score": 0.6408827304840088,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6408827304840088
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            0.0,
+            1060.879796013236,
+            30.19482884556055,
+            1249.68331374228
+          ],
+          "box_score": 0.6394937634468079,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6394937634468079
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1760.5812035501003,
+            1153.0509611722082,
+            1781.6808260977268,
+            1218.2086765412241
+          ],
+          "box_score": 0.4463246166706085,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4463246166706085
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1779.694014787674,
+            1072.2670940496027,
+            1822.315138578415,
+            1270.5576949976385
+          ],
+          "box_score": 0.4400024116039276,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4400024116039276
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1490.568307042122,
+            2.068328320980072,
+            2028.3310383558273,
+            1705.5597896575928
+          ],
+          "box_score": 0.7032716274261475,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7032716274261475
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            106.71534538269043,
+            1.3493953049182892,
+            684.7622632980347,
+            1674.236104041338
+          ],
+          "box_score": 0.6884185075759888,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6884185075759888
+        }
+      ],
+      "sample_id": "nude_15e7cfad37a79f31a9f9a5a9",
+      "source_sha256": "28e5bbc3caa5c68aebb4f36a0daa2123342bf3b24b1bde79f554807c7b0ccd70"
+    },
+    {
+      "image_size": [
+        1200,
+        2648
+      ],
+      "proposals": [],
+      "sample_id": "nude_9a289b2d8a5c5045017c5530",
+      "source_sha256": "0cdb0fb58aeb4f0999318624aa9277328a0823f3171eb9900c52ef8273939b3d"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            62.36949157714844,
+            0.9750995635986328,
+            810.769172668457,
+            1215.2104473114014
+          ],
+          "box_score": 0.645280122756958,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.645280122756958
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            732.9426763057709,
+            986.8885035514832,
+            831.4587290287018,
+            1215.0329365730286
+          ],
+          "box_score": 0.50272536277771,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.50272536277771
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            541.0227060317993,
+            996.0791802406311,
+            784.943076133728,
+            1214.8478064537048
+          ],
+          "box_score": 0.4983156621456146,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4983156621456146
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            0.14365601539611816,
+            852.7994756698608,
+            71.85328364372253,
+            1214.9382333755493
+          ],
+          "box_score": 0.5004286170005798,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5004286170005798
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            531.7921104431152,
+            1041.2391877174377,
+            641.4720726013184,
+            1214.642472743988
+          ],
+          "box_score": 0.45226356387138367,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.45226356387138367
+        }
+      ],
+      "sample_id": "nude_7e4d5dc0530daf46ef6717a2",
+      "source_sha256": "75f9714d17cfec395a358231ac5872cc3ee002ccf10ea6f5626dcbd073b50b4a"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            21.10530138015747,
+            107.80594235658646,
+            1198.3795523643494,
+            1736.9251965880394
+          ],
+          "box_score": 0.7860842347145081,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7860842347145081
+        }
+      ],
+      "sample_id": "nude_df33f54bbb337c05e83b2e79",
+      "source_sha256": "9e56e10fc26e66e0ce534da1d32986cac704534458f9ba1c10e4191850d85aed"
+    },
+    {
+      "image_size": [
+        1600,
+        2345
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            133.0254077911377,
+            48.90639513731003,
+            1582.2831630706787,
+            2297.874311506748
+          ],
+          "box_score": 0.47931110858917236,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.47931110858917236
+        }
+      ],
+      "sample_id": "nude_7312c741976244cfda05ef09",
+      "source_sha256": "ae3228058cf8258256adbafff890a8c2dd2bcf0902d1a59b03784daf23fe8dd7"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            193.16619873046875,
+            131.47815704345703,
+            986.5940856933594,
+            1854.128646850586
+          ],
+          "box_score": 0.9239749908447266,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9239749908447266
+        }
+      ],
+      "sample_id": "nude_be7ae4302b3fa2c835a0b449",
+      "source_sha256": "35d30775976a7741c1154f5d07fcd1a839f41f9e22f8bbd532d9105e32dd6d66"
+    },
+    {
+      "image_size": [
+        1472,
+        2048
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.2789573669433594,
+            53.243408203125,
+            1417.7364807128906,
+            1997.729248046875
+          ],
+          "box_score": 0.6765506863594055,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6765506863594055
+        }
+      ],
+      "sample_id": "nude_8107108d2f46f105ce0fc9d3",
+      "source_sha256": "4447ca9074283ac4ec0838eb2c599ee2916a0684a1bb1512f9fdfdc45177b9af"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            181.10664176940918,
+            57.56562805175781,
+            831.273416519165,
+            1163.5901107788086
+          ],
+          "box_score": 0.6633347868919373,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6633347868919373
+        }
+      ],
+      "sample_id": "nude_a2fd9988bff78e6c3eb28c5a",
+      "source_sha256": "2825ee683c674d8721f4af55ffcee43468734cb675dd16c921b3a14aacc986b6"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            161.12060546875,
+            308.1069402694702,
+            1137.1812438964844,
+            1086.382924079895
+          ],
+          "box_score": 0.8189522624015808,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8189522624015808
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            835.9240913391113,
+            32.10957169532776,
+            997.1430778503418,
+            146.20883345603943
+          ],
+          "box_score": 0.4963817894458771,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4963817894458771
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            0.48520565032958984,
+            838.8064479827881,
+            86.37989521026611,
+            1045.8101215362549
+          ],
+          "box_score": 0.4243178069591522,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4243178069591522
+        }
+      ],
+      "sample_id": "nude_3fa1bd82098aecf63b3b2188",
+      "source_sha256": "d7dec6cd46f8eb4cf0a7944ce4e013787a9978c282c6d2a6f588684b2972c7be"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            187.5048065185547,
+            22.745912551879883,
+            1080.3517150878906,
+            1835.6126384735107
+          ],
+          "box_score": 0.47424474358558655,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.47424474358558655
+        }
+      ],
+      "sample_id": "nude_9e98b54dfed0d036ca1c9dd0",
+      "source_sha256": "1aaaf630f8918057b41055d271317f9a5d6fe52be34b6e8d379062ec351ecd15"
+    },
+    {
+      "image_size": [
+        1336,
+        2224
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            182.51741194725037,
+            63.43421983718872,
+            1255.1321098804474,
+            2220.7337698936462
+          ],
+          "box_score": 0.7751874923706055,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7751874923706055
+        }
+      ],
+      "sample_id": "nude_72d94bb495665302fb08f1f0",
+      "source_sha256": "5af9de4b5f0dd42b2a54763fb987e5800963a940fcefa990926867771947a7f0"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            190.43212890625,
+            107.00127601623535,
+            1087.482681274414,
+            1853.9002590179443
+          ],
+          "box_score": 0.9135827422142029,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9135827422142029
+        }
+      ],
+      "sample_id": "nude_9366738792d256c804d15ed3",
+      "source_sha256": "f9b7db498dc29de888a0ea798c0e2048dcc9597a253c85ebe59cb44a2aa224fa"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [],
+      "sample_id": "nude_4f54b41b93d235933211af48",
+      "source_sha256": "75ffb701c27836f61546fbb0459ea8ef90e27319cc25e8c0fa3575099aef98f0"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            173.4331932067871,
+            112.51464653015137,
+            689.194149017334,
+            1215.1270236968994
+          ],
+          "box_score": 0.6977151036262512,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6977151036262512
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            571.0182580947876,
+            43.097537994384766,
+            831.6058874130249,
+            1214.7719841003418
+          ],
+          "box_score": 0.6518850326538086,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6518850326538086
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            23.728530883789062,
+            133.49829483032227,
+            261.06504249572754,
+            1063.3497886657715
+          ],
+          "box_score": 0.5566873550415039,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5566873550415039
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            0.3225588798522949,
+            123.16159439086914,
+            84.52906656265259,
+            1214.8746147155762
+          ],
+          "box_score": 0.5650840401649475,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5650840401649475
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            787.837929725647,
+            181.8254144191742,
+            831.7283773422241,
+            307.67083382606506
+          ],
+          "box_score": 0.41173046827316284,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.41173046827316284
+        }
+      ],
+      "sample_id": "nude_9cf5203e176793dd2dddde26",
+      "source_sha256": "5a939205564d887d8cacb9298eb84b589961c94e21abefc21a21ff2abd6611f4"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.645195484161377,
+            205.42993968725204,
+            693.7480330467224,
+            1584.1915779709816
+          ],
+          "box_score": 0.6229500770568848,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6229500770568848
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            520.8286285400391,
+            323.3361762166023,
+            1199.5360851287842,
+            1572.8379275202751
+          ],
+          "box_score": 0.5506766438484192,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5506766438484192
+        }
+      ],
+      "sample_id": "nude_bb6507a5283eedc625371078",
+      "source_sha256": "5ad3c58398e458b697574234c9e00a6159ba34249261f94b2bc3d9b730351c48"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            141.36110544204712,
+            14.990667998790741,
+            1106.3467383384705,
+            1750.8935561776161
+          ],
+          "box_score": 0.5804604291915894,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5804604291915894
+        }
+      ],
+      "sample_id": "nude_86904c52373330df7cdfa68b",
+      "source_sha256": "ca75604fd5fa8e8a8d12ba80523fd8fb0ec99315649fa20840066b54205c95f3"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.6134204864501953,
+            2.401853561401367,
+            830.2514934539795,
+            1214.1544971466064
+          ],
+          "box_score": 0.8352748155593872,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8352748155593872
+        }
+      ],
+      "sample_id": "nude_624277a3a58818a865bfb4ce",
+      "source_sha256": "6cd31ac32c12d93a9a5efe3a77faedd74b55aeef8e6db95a5e673c0df8301b6c"
+    },
+    {
+      "image_size": [
+        2200,
+        3143
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            194.2178189754486,
+            439.3958404958248,
+            1945.1403558254242,
+            3139.6772902309895
+          ],
+          "box_score": 0.8504542112350464,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8504542112350464
+        }
+      ],
+      "sample_id": "nude_05d07e40159a98f72769f364",
+      "source_sha256": "280c12e5200a32d2ccfb7cae92743e20bc218f4740961c370780534e08aad03b"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            123.09255981445312,
+            28.75291633605957,
+            750.9342803955078,
+            1214.905309677124
+          ],
+          "box_score": 0.8885399699211121,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8885399699211121
+        }
+      ],
+      "sample_id": "nude_789cf383159c753059716abe",
+      "source_sha256": "2045230c52999c3aa659b16426cac922d077b013c8949e08271c6247e5103c4c"
+    },
+    {
+      "image_size": [
+        1200,
+        2400
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            722.4825203418732,
+            116.2196159362793,
+            1166.5134608745575,
+            2370.773506164551
+          ],
+          "box_score": 0.7676299810409546,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7676299810409546
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            42.574793100357056,
+            84.59522724151611,
+            587.0234906673431,
+            2366.1601781845093
+          ],
+          "box_score": 0.8118962645530701,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8118962645530701
+        }
+      ],
+      "sample_id": "nude_c5d826e9613afcd6f5dcbb8b",
+      "source_sha256": "eb66e2b4cee3611ea04606e93fb2dd4a57e183ab383dfd3e4bbec73c57f81dc4"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [],
+      "sample_id": "nude_80e5b3778e48f47b4f5d505e",
+      "source_sha256": "3eb60a5b60f2bf81683ad1a3e1991b7e3c832b1b8c00b8134a2ed5544734725b"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            14.241586685180664,
+            374.1109161376953,
+            829.9384746551514,
+            1215.1222763061523
+          ],
+          "box_score": 0.6127595901489258,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6127595901489258
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            13.177982330322266,
+            25.35867691040039,
+            829.5558052062988,
+            1072.762378692627
+          ],
+          "box_score": 0.4411739706993103,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4411739706993103
+        }
+      ],
+      "sample_id": "nude_427abb8028e5901172b49fc6",
+      "source_sha256": "63de7ea8385ee9723dabb4109c30198d2961125c9e72ca9223ff7be6259c84ad"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.3412151336669922,
+            1.5745391845703125,
+            830.317548751831,
+            1214.1237297058105
+          ],
+          "box_score": 0.8878450989723206,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8878450989723206
+        }
+      ],
+      "sample_id": "nude_cbc14fb307a0d157977238d3",
+      "source_sha256": "a144ed717891a513219d2a0fd0d603d145642f2285a4549efed165843c1966b3"
+    },
+    {
+      "image_size": [
+        1536,
+        2688
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            88.09245300292969,
+            34.07669448852539,
+            1516.2582550048828,
+            2685.4069633483887
+          ],
+          "box_score": 0.9215251207351685,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9215251207351685
+        }
+      ],
+      "sample_id": "nude_6e7e1ae8918a0cf3506e1c00",
+      "source_sha256": "511188301fcd7ac993f8ef873a6c66093bf095bbc379e3c75841a4d9e063291f"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.0124444961547852,
+            113.7629000544548,
+            1150.1039028167725,
+            1751.4196344017982
+          ],
+          "box_score": 0.7392292022705078,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7392292022705078
+        }
+      ],
+      "sample_id": "nude_ed777ed73a2f1e44387113ac",
+      "source_sha256": "2d379ef67a0506bcf4660f2438a364bfd3af733fc93f03b67c92e01b50b8200b"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            106.78327369689941,
+            3.7402915954589844,
+            723.6685924530029,
+            1209.2536315917969
+          ],
+          "box_score": 0.8534289002418518,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8534289002418518
+        }
+      ],
+      "sample_id": "nude_9d2965b9506576c320ea73ff",
+      "source_sha256": "d45a1c1d97ea2b9a278f1d026a983488a6d4e02e6b0f6b883687a270be202223"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            202.49372720718384,
+            111.67223048210144,
+            1198.4537959098816,
+            1750.2405061721802
+          ],
+          "box_score": 0.4044436514377594,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4044436514377594
+        }
+      ],
+      "sample_id": "nude_e7fce352be292ea9a46f9cd0",
+      "source_sha256": "cafdd7169aa1b432f6db7cece541845d95dc18b56094c9a60022472d69766c30"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.8315963745117188,
+            11.222179412841797,
+            829.7389450073242,
+            1213.1770057678223
+          ],
+          "box_score": 0.6444600820541382,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6444600820541382
+        }
+      ],
+      "sample_id": "nude_e0989e076763cd273d6831d5",
+      "source_sha256": "7f27fc4a9fac0b18abe1d40c458d9073d55c0feb2d4dbac818fccd71b4c7ff1a"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            123.76181602478027,
+            65.8321762084961,
+            762.9183826446533,
+            1214.6908798217773
+          ],
+          "box_score": 0.9260714650154114,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9260714650154114
+        }
+      ],
+      "sample_id": "nude_d76cf9b9796f82093c2e0ee5",
+      "source_sha256": "d3d5059b63e6208f96cbfd2e2d802fb0d634d1859d6c156683de437ffbcf05ec"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            34.98795032501221,
+            11.612037241458893,
+            1140.7161712646484,
+            1337.470927298069
+          ],
+          "box_score": 0.4412001967430115,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4412001967430115
+        }
+      ],
+      "sample_id": "nude_13ee420e63d40fe105e4fd39",
+      "source_sha256": "87a0ce78e9083927d4c55af5ac6bdc7992d3163375519b3e720dcf5886a3551e"
+    },
+    {
+      "image_size": [
+        920,
+        1224
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            63.23036313056946,
+            86.14169383049011,
+            876.1296927928925,
+            1089.3101170063019
+          ],
+          "box_score": 0.8590039014816284,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8590039014816284
+        }
+      ],
+      "sample_id": "nude_5c2a6192f71a741199d0e3d0",
+      "source_sha256": "8381640b25ad96b42d858921df67697956622bcb253a55f272a164e519f87d8b"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            3.2734813690185547,
+            25.82337760925293,
+            829.4115695953369,
+            1214.10129737854
+          ],
+          "box_score": 0.6129252910614014,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6129252910614014
+        }
+      ],
+      "sample_id": "nude_cca2ffb30081cde3864475a6",
+      "source_sha256": "4ef1c5ebba12a60d57503512ec7be63fc6073e4e4fdf4dd126c8cf1975193015"
+    },
+    {
+      "image_size": [
+        1024,
+        1536
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            0.7978515625,
+            118.6102066040039,
+            701.6049194335938,
+            394.67823028564453
+          ],
+          "box_score": 0.4527182877063751,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4527182877063751
+        }
+      ],
+      "sample_id": "nude_dcb1db41559d788663b3806a",
+      "source_sha256": "366c890a87a71cd87cd889a7576fb56db4b22bbca06d928029bb479fab58f801"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            183.84193181991577,
+            105.52311623096466,
+            1198.076355457306,
+            1625.508739233017
+          ],
+          "box_score": 0.5356082320213318,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5356082320213318
+        }
+      ],
+      "sample_id": "nude_40e24ba7060a82be07c647f1",
+      "source_sha256": "d4c8525e53b25cfbb3e018dfbc0ed3bb91269e540785150c8e0344c4e7746336"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.1865158081054688,
+            22.128313064575195,
+            830.3923568725586,
+            1196.648946762085
+          ],
+          "box_score": 0.6979823708534241,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6979823708534241
+        }
+      ],
+      "sample_id": "nude_c92fab797d0f5e44c32cb716",
+      "source_sha256": "a95295d6de32e4fd57287d378c53e00499bbdef1db10a4dbcc430b3146d478ec"
+    },
+    {
+      "image_size": [
+        1248,
+        1824
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.5530061721801758,
+            25.7127742767334,
+            1246.3978986740112,
+            1822.093397140503
+          ],
+          "box_score": 0.9059286117553711,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9059286117553711
+        }
+      ],
+      "sample_id": "nude_f50b34fa1d8576fadc47c162",
+      "source_sha256": "82ecf5e59cd11f0b27b87db3968c97df7e5cdb537445bac1cdee1d615ab0abe0"
+    },
+    {
+      "image_size": [
+        2200,
+        3215
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            7.808738946914673,
+            665.022054463625,
+            1261.6438925266266,
+            3210.5631195008755
+          ],
+          "box_score": 0.6478645205497742,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6478645205497742
+        }
+      ],
+      "sample_id": "nude_5f549938d25a6a12ec6f5b69",
+      "source_sha256": "ab0900089dcfcd1c5c72dcacfcd201564efbefcfe255b9b1b1d2b8993f40a348"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            18.534278869628906,
+            56.203334987163544,
+            1133.377718925476,
+            1622.9212644696236
+          ],
+          "box_score": 0.4479789435863495,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4479789435863495
+        }
+      ],
+      "sample_id": "nude_664b2b122d07a20744ac55c9",
+      "source_sha256": "cd9bc5c3036e54288fb7eb2117eff50de9becd0fccb93836a24d7cca8bad580d"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            161.35005950927734,
+            195.27613258361816,
+            1145.3398513793945,
+            1622.4800510406494
+          ],
+          "box_score": 0.7808099985122681,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7808099985122681
+        }
+      ],
+      "sample_id": "nude_fa3d47a1132b62a34d3dbfa1",
+      "source_sha256": "41cbc21dc4225ef24045f258360b172c27acb2a4fec79c0866d19cc852fc9f0f"
+    },
+    {
+      "image_size": [
+        1600,
+        2844
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            77.85897254943848,
+            113.16531550884247,
+            1593.882131576538,
+            2798.8107830286026
+          ],
+          "box_score": 0.6123204827308655,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6123204827308655
+        }
+      ],
+      "sample_id": "nude_6b9450eb00bd33c435c3efa3",
+      "source_sha256": "f8927650132b896ebb2e87bcd440b678d61f0887b2f46ce8fa2866b50ff12984"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.1670513153076172,
+            184.7184009552002,
+            830.5464115142822,
+            1214.589735031128
+          ],
+          "box_score": 0.8922426104545593,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8922426104545593
+        }
+      ],
+      "sample_id": "nude_1c4fe7fea78724e9fc5c13d7",
+      "source_sha256": "3216dac3891fc3ccdff7629a5ded8dbff04d9d7cd84a9d29b5b83d8f24a6cc41"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            116.78484916687012,
+            58.01427459716797,
+            830.7861347198486,
+            1214.7875671386719
+          ],
+          "box_score": 0.8756412267684937,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8756412267684937
+        }
+      ],
+      "sample_id": "nude_ef6c31b7669c11978cf187c7",
+      "source_sha256": "373ba65861e1e277c81c6ba83cec1d5e5ee66c7a2fc6228de1fceeabaa4be516"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            6.179071426391602,
+            1.5953044891357422,
+            767.1734943389893,
+            1134.3572368621826
+          ],
+          "box_score": 0.6546350717544556,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6546350717544556
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            0.3945589065551758,
+            543.9227004051208,
+            296.6178560256958,
+            792.9521012306213
+          ],
+          "box_score": 0.40044865012168884,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.40044865012168884
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            536.6998529434204,
+            562.7452259063721,
+            831.1307058334351,
+            781.1030941009521
+          ],
+          "box_score": 0.42304763197898865,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.42304763197898865
+        }
+      ],
+      "sample_id": "nude_096351113c436cc08fc70840",
+      "source_sha256": "07ad8753d1e152764ad7f59a4623b655fad50ecec8d80d961c5b998108ab61ef"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            42.57732582092285,
+            54.294748306274414,
+            762.040620803833,
+            1214.249517440796
+          ],
+          "box_score": 0.9140207171440125,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9140207171440125
+        }
+      ],
+      "sample_id": "nude_dc2b5a72e7035e023284712d",
+      "source_sha256": "e12a44f8a7bc85e9e856e052df6d9dcedb6ab8e3273a8acabe88cdd52407fa1c"
+    },
+    {
+      "image_size": [
+        1600,
+        2743
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            10.964775085449219,
+            40.096790850162506,
+            1586.4604949951172,
+            2740.190002143383
+          ],
+          "box_score": 0.8554962873458862,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8554962873458862
+        }
+      ],
+      "sample_id": "nude_37a63a2f13492b982257f69b",
+      "source_sha256": "6570c2781266b3e0730210e8da4210ebb38ffe580e441d0daaae559edc6ce471"
+    },
+    {
+      "image_size": [
+        1024,
+        1536
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.67681884765625,
+            102.43057250976562,
+            996.1103515625,
+            1513.5934753417969
+          ],
+          "box_score": 0.8378292918205261,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8378292918205261
+        }
+      ],
+      "sample_id": "nude_a5f238033058da1260658f18",
+      "source_sha256": "10dc0a18a7789d5757237fb897b5daa8caa55bb4d172ebe34360fe3cea610b30"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            174.38053131103516,
+            35.350608825683594,
+            1176.7327499389648,
+            1853.38037109375
+          ],
+          "box_score": 0.778519332408905,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.778519332408905
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            161.0350227355957,
+            1242.3131334781647,
+            224.03314590454102,
+            1369.3991391658783
+          ],
+          "box_score": 0.5062900185585022,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5062900185585022
+        }
+      ],
+      "sample_id": "nude_4910916c3bfe9d770eee5f5e",
+      "source_sha256": "50f9aa0aa684b6dd7360747aa6a55c094edc1267c356f59651a7ba632e22d993"
+    },
+    {
+      "image_size": [
+        1248,
+        1824
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.8371257781982422,
+            500.8533296585083,
+            1246.1856365203857,
+            1821.0332250595093
+          ],
+          "box_score": 0.4963974058628082,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4963974058628082
+        }
+      ],
+      "sample_id": "nude_4b0b92788869567ef735afb8",
+      "source_sha256": "e3d5d70d8e9404f3013907af84baab8c629aafa8fdd09b4c25a30dee70be0899"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            0.8883118629455566,
+            839.7373106479645,
+            1198.6846804618835,
+            1691.4000368118286
+          ],
+          "box_score": 0.6599636077880859,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6599636077880859
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            547.1418857574463,
+            0.4502819776535034,
+            1198.8495826721191,
+            1311.3096698522568
+          ],
+          "box_score": 0.4064745008945465,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4064745008945465
+        }
+      ],
+      "sample_id": "nude_0647f572461a5bfec015046b",
+      "source_sha256": "e38669a4e031bf24a2e64b358d213e734962ea9e106e193df8a5fa11efcf9b66"
+    },
+    {
+      "image_size": [
+        2200,
+        3143
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            696.5938150882721,
+            136.65429571270943,
+            2003.056114912033,
+            3090.2826003730297
+          ],
+          "box_score": 0.8682482242584229,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8682482242584229
+        }
+      ],
+      "sample_id": "nude_af6b9cfbf65f48a97c35a9a7",
+      "source_sha256": "e513715fd38592ecfc87c54fe2009bb1113c6a5f72a41181d302856e5f1b72a0"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            38.755069732666016,
+            385.31830978393555,
+            827.4389610290527,
+            1048.4564628601074
+          ],
+          "box_score": 0.4568381905555725,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4568381905555725
+        }
+      ],
+      "sample_id": "nude_0c0c0c54ac2215f8eda5539b",
+      "source_sha256": "ecad4bce1b71fced7bcb890460e0d3cc8002fdb8dd51d176c63065d7b8b7d969"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            157.3356113433838,
+            3.9783496856689453,
+            830.1940670013428,
+            1213.4029598236084
+          ],
+          "box_score": 0.4323219060897827,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4323219060897827
+        }
+      ],
+      "sample_id": "nude_b53244a5aad0e9d3a09cbb1d",
+      "source_sha256": "2c8e7ffab130fa037e7f1782b18fef3159c1257a929c2b09f78dd8731b187b22"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            159.15069580078125,
+            227.6210942864418,
+            1195.7583904266357,
+            1413.675009906292
+          ],
+          "box_score": 0.4064963459968567,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4064963459968567
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            170.4722285270691,
+            577.5825055241585,
+            1198.1414437294006,
+            1417.2358652949333
+          ],
+          "box_score": 0.44650062918663025,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.44650062918663025
+        }
+      ],
+      "sample_id": "nude_63c0ed5579944961dbe4f0bb",
+      "source_sha256": "e682bb350f0dfc060309008af73961b7cc659919f3b9acd005fd6d9fc60d304f"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            26.866579055786133,
+            5.99305534362793,
+            807.2679195404053,
+            1213.8938617706299
+          ],
+          "box_score": 0.893613874912262,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.893613874912262
+        }
+      ],
+      "sample_id": "nude_90fb56e666d8014b422c61f1",
+      "source_sha256": "aca0aca628af536d2925cc53a984ea0bb64e25305d18cf4ee88e74dff61cc17f"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            65.05145072937012,
+            128.21854400634766,
+            764.5095119476318,
+            1214.3932800292969
+          ],
+          "box_score": 0.7864717841148376,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7864717841148376
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            116.68866729736328,
+            100.61880874633789,
+            338.7126235961914,
+            704.6428871154785
+          ],
+          "box_score": 0.6939485669136047,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6939485669136047
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            645.8882715702057,
+            0.360914945602417,
+            739.268016576767,
+            99.49389004707336
+          ],
+          "box_score": 0.48333218693733215,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.48333218693733215
+        }
+      ],
+      "sample_id": "nude_1acd1756b19e37a0cf85ee46",
+      "source_sha256": "41b50114b64ec50bf14420091285207dd35d96ad6f344c54fab66635c62c7aa1"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            2.255525588989258,
+            357.19266510009766,
+            830.7383785247803,
+            1136.7996063232422
+          ],
+          "box_score": 0.6503725647926331,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6503725647926331
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            38.36681818962097,
+            257.38170099258423,
+            97.72778725624084,
+            410.34612798690796
+          ],
+          "box_score": 0.4895347058773041,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4895347058773041
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            97.47780644893646,
+            265.1549870967865,
+            134.23698770999908,
+            379.7808725833893
+          ],
+          "box_score": 0.47687652707099915,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.47687652707099915
+        }
+      ],
+      "sample_id": "nude_a82fd5bafb469286e29727f1",
+      "source_sha256": "8ba9ace15f42fb7d63aa56b631b607175408148f4decee8a882ecadbe7f16191"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            100.86856842041016,
+            843.9571495056152,
+            1100.1359939575195,
+            1851.3542518615723
+          ],
+          "box_score": 0.638516366481781,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.638516366481781
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            114.1910171508789,
+            18.509868621826172,
+            1225.0201034545898,
+            1219.1289405822754
+          ],
+          "box_score": 0.4072660505771637,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4072660505771637
+        }
+      ],
+      "sample_id": "nude_e2ab654868b445b2865ea667",
+      "source_sha256": "2c724f16061663e7bd0d3dbac00ef8f699f68f64c8a2ea92a5dc147d8fd20662"
+    },
+    {
+      "image_size": [
+        1920,
+        2880
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            198.59115600585938,
+            1.4035892486572266,
+            1555.7528686523438,
+            2877.105703353882
+          ],
+          "box_score": 0.8945403099060059,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8945403099060059
+        }
+      ],
+      "sample_id": "nude_6d2b36d4b7d535e4b777fa94",
+      "source_sha256": "ba77d8f0d199b4c460ddc94143cf28e3b848e0c4ce650fa232cee2235317d0f5"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            241.77303314208984,
+            81.11606788635254,
+            1057.9301834106445,
+            1854.3197536468506
+          ],
+          "box_score": 0.8923267722129822,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8923267722129822
+        }
+      ],
+      "sample_id": "nude_7b65f29e5f4cadfe09590d6c",
+      "source_sha256": "dfabe0efae50cd10f8fea89e9aa906237bafd72b8e43fb2bf6da8aaa034623ee"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            93.28511953353882,
+            156.55730402469635,
+            1157.3132157325745,
+            1750.9722274541855
+          ],
+          "box_score": 0.6024364829063416,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6024364829063416
+        }
+      ],
+      "sample_id": "nude_5bfb36a9395f9b4db08a967c",
+      "source_sha256": "6372c015ba3c0cb03c3300d8238e2f72a2293d6130edec786d39c80a6f062618"
+    },
+    {
+      "image_size": [
+        2200,
+        3215
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            355.90845942497253,
+            4.6884892880916595,
+            2197.9160130023956,
+            3209.8546673357487
+          ],
+          "box_score": 0.5739202499389648,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5739202499389648
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            2.3352324962615967,
+            2.960187941789627,
+            1240.8465087413788,
+            3209.0260638296604
+          ],
+          "box_score": 0.5511637330055237,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5511637330055237
+        }
+      ],
+      "sample_id": "nude_62a155beec04a6b9f4d001b4",
+      "source_sha256": "ea34fc8c1830270b2d37cb644d04cb7d2811639d87865bd5201454513f259ed5"
+    },
+    {
+      "image_size": [
+        1152,
+        1680
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            2.4958877563476562,
+            2.930724620819092,
+            1149.1293411254883,
+            1676.6355872154236
+          ],
+          "box_score": 0.6671130061149597,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6671130061149597
+        }
+      ],
+      "sample_id": "nude_34bcbb4d97abcf49547173b4",
+      "source_sha256": "e47c7d51eb8d566339a84e88bbde63d7ed1fcda98043bba097f1dd326a53773b"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            2.620553970336914,
+            52.31441253423691,
+            1197.5698471069336,
+            1751.0438941121101
+          ],
+          "box_score": 0.8996615409851074,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8996615409851074
+        }
+      ],
+      "sample_id": "nude_ec53f412dba9298fbddde2c6",
+      "source_sha256": "d058a571ecdb9c568bad8f98decc1ff2367e474f0d1c3a557a8945dc09463ae6"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            58.9249210357666,
+            25.269418716430664,
+            830.0653285980225,
+            1214.1032543182373
+          ],
+          "box_score": 0.8432337045669556,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8432337045669556
+        }
+      ],
+      "sample_id": "nude_652e7cc567de9c59dded8afd",
+      "source_sha256": "1bfb317532572e8d036c6d4692bb43503a00b0e40b3bc60d7fc196fa10c7069f"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            57.239891052246094,
+            33.67657661437988,
+            830.1159362792969,
+            1214.26198387146
+          ],
+          "box_score": 0.794620156288147,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.794620156288147
+        }
+      ],
+      "sample_id": "nude_b98e911d919d81615e25e28a",
+      "source_sha256": "c1f32ca510a640b0bbb095e9f0a9641a86b9de49e176724fde18a96959c338f3"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            147.95401096343994,
+            1.9664160013198853,
+            1076.655650138855,
+            1751.5757746696472
+          ],
+          "box_score": 0.5305617451667786,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5305617451667786
+        }
+      ],
+      "sample_id": "nude_4fc58b59484fdb177d7e1678",
+      "source_sha256": "dfedabfe93c6df0bb398af10fb90a9c006a87a38689f9e721b7c663d3a1e3564"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            3.6107749938964844,
+            6.917201995849609,
+            799.637565612793,
+            1213.498378753662
+          ],
+          "box_score": 0.42624062299728394,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.42624062299728394
+        }
+      ],
+      "sample_id": "nude_99d50b9bfa35f7ab19b886cd",
+      "source_sha256": "de8f3a441037ff701537050639763a217a43aa88c20d8c6014f1215362f6fd4b"
+    },
+    {
+      "image_size": [
+        2200,
+        3850
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            245.56893706321716,
+            59.06026363372803,
+            2006.557422876358,
+            3845.442110300064
+          ],
+          "box_score": 0.4796857535839081,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4796857535839081
+        }
+      ],
+      "sample_id": "nude_2a1040b6b64c619305e6f132",
+      "source_sha256": "c1ff854ca9625da327f3a15a50caeaa69fcc9a5613cd5713f0057a586e511044"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.9412040710449219,
+            53.7123566865921,
+            1197.553038597107,
+            1751.3448313474655
+          ],
+          "box_score": 0.5868884325027466,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5868884325027466
+        }
+      ],
+      "sample_id": "nude_3ed4ea358636610b90da656b",
+      "source_sha256": "56ea514e540b7b955ef2077a343b3f63c01890ce89903875fabf180a37473607"
+    },
+    {
+      "image_size": [
+        1248,
+        1824
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            874.1734127998352,
+            0.40948963165283203,
+            1247.077178478241,
+            1821.9672288894653
+          ],
+          "box_score": 0.7225918173789978,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7225918173789978
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            9.760302543640137,
+            721.8893966674805,
+            781.6078290939331,
+            1821.1848335266113
+          ],
+          "box_score": 0.5053905844688416,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5053905844688416
+        }
+      ],
+      "sample_id": "nude_aa7d413ccabd3f5d9db10c99",
+      "source_sha256": "b3c609f19d601a3f6912880d6801213a85a9b7a6951c3d087c85f0c9e07f152e"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            0.7540817260742188,
+            2.8571319580078125,
+            830.7762413024902,
+            1213.5396194458008
+          ],
+          "box_score": 0.7673205733299255,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7673205733299255
+        }
+      ],
+      "sample_id": "nude_376d4e3eecf320e933c4318f",
+      "source_sha256": "8bff32480bebd678e462617be2d1af4f9dc3035e4bf4a911f11f3128501e6edc"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            84.15231704711914,
+            150.18649673461914,
+            791.8972434997559,
+            1123.2767906188965
+          ],
+          "box_score": 0.8982944488525391,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8982944488525391
+        }
+      ],
+      "sample_id": "nude_0b9834f5d3b84a5db193007e",
+      "source_sha256": "789e94dc218455b54c22b120154e8c249d48a773768207b598768364f71f91b1"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            3.0668020248413086,
+            238.33037209510803,
+            1196.4484691619873,
+            1750.5543549060822
+          ],
+          "box_score": 0.4719610810279846,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4719610810279846
+        }
+      ],
+      "sample_id": "nude_fadf4e9e94a44a69e23567cd",
+      "source_sha256": "fe1860228ada69cfd9b0070b23928d8165e6e18778369b63d6935847212fef00"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            5.886039733886719,
+            102.63076591491699,
+            1149.5969772338867,
+            1852.450059890747
+          ],
+          "box_score": 0.8882527947425842,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8882527947425842
+        }
+      ],
+      "sample_id": "nude_bfd2c58b0dbee6c56959e426",
+      "source_sha256": "995e99b02b100e7abfd6d2b874d71ffbdee7afb3688c681c3e95c6492e6342ff"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            9.6468505859375,
+            48.137346267700195,
+            829.9630966186523,
+            1214.2097988128662
+          ],
+          "box_score": 0.8055195212364197,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8055195212364197
+        }
+      ],
+      "sample_id": "nude_27112bb766ad9db1da0d9ee8",
+      "source_sha256": "ccab422631516315067c63da54d3d970c8e22c17b57a3455f16394501fe174c2"
+    },
+    {
+      "image_size": [
+        1200,
+        2250
+      ],
+      "proposals": [],
+      "sample_id": "nude_cb09d1eb94363b1bc3b831e0",
+      "source_sha256": "713ed6dbb024a4fd088287be88c42ae89424fd734bb8f9a51e37dac125a09ad8"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            6.31788969039917,
+            29.326038241386414,
+            1195.6058621406555,
+            1751.4493778944016
+          ],
+          "box_score": 0.4156874120235443,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4156874120235443
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            946.1644381284714,
+            14.94984257221222,
+            1196.4183121919632,
+            523.3170453310013
+          ],
+          "box_score": 0.44774824380874634,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.44774824380874634
+        }
+      ],
+      "sample_id": "nude_4d39112fe2f1607e3f92a2d7",
+      "source_sha256": "2cde8cf979a25e43e8f0e7e2f9e708dac314d0c5084ec6a30cbeec475ee1f798"
+    },
+    {
+      "image_size": [
+        2200,
+        3843
+      ],
+      "proposals": [],
+      "sample_id": "nude_c5b11b645c18b20786295c92",
+      "source_sha256": "961abb57a9446693890738d47e68893bc1bcbd219252a86cf7a7af6c272e37ee"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.4230155944824219,
+            43.5194034576416,
+            830.4567756652832,
+            1173.1994457244873
+          ],
+          "box_score": 0.6694427132606506,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6694427132606506
+        }
+      ],
+      "sample_id": "nude_a71af21814c316d3a7b095c9",
+      "source_sha256": "6b386c99f1f15c82c4ca9ce4a3b6a71561281d16fa964097ee828f57e3fd0d28"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.8919239044189453,
+            41.230255126953125,
+            829.6297206878662,
+            1214.0211715698242
+          ],
+          "box_score": 0.6226053237915039,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6226053237915039
+        }
+      ],
+      "sample_id": "nude_0497f1e8be95e31da044a58b",
+      "source_sha256": "690d9875d6edabf4636a1f319ad7e96024277d08db7f880f8e51e0d66af7bd1d"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            34.899723529815674,
+            86.06851977109909,
+            1161.1782431602478,
+            1751.5534539818764
+          ],
+          "box_score": 0.9199408888816833,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9199408888816833
+        }
+      ],
+      "sample_id": "nude_bd5102eb398aa8380a19d045",
+      "source_sha256": "4e9bac5c3021bd65fdd0b280c2347761d8d2351296e7580bdf9d2330129519cc"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            48.58726692199707,
+            2.238739013671875,
+            748.8008975982666,
+            1214.0492935180664
+          ],
+          "box_score": 0.9121175408363342,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9121175408363342
+        }
+      ],
+      "sample_id": "nude_0cdc8a07c5c5a9165305dc9f",
+      "source_sha256": "f2713eb56a404cd6e83bbb534c405471011b50e65fb080b84e2222809d2a0d5d"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            54.58099174499512,
+            39.01996421813965,
+            730.9312534332275,
+            1214.3946933746338
+          ],
+          "box_score": 0.9078903198242188,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9078903198242188
+        }
+      ],
+      "sample_id": "nude_13f97e92cfa8cb7875531f61",
+      "source_sha256": "1dcd403d324312d729cd451fe44155a735f6d8e1fbdca105085e90a3e20e187b"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            203.46209526062012,
+            22.914133071899414,
+            747.3308200836182,
+            913.3922176361084
+          ],
+          "box_score": 0.40144145488739014,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.40144145488739014
+        }
+      ],
+      "sample_id": "nude_522bd478af720529ad5055be",
+      "source_sha256": "599232daff36e35488b86a5af011acc9abe17b3a015870adc459e3ef00cdb148"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            0.8633556365966797,
+            81.64798164367676,
+            822.680326461792,
+            1198.3042278289795
+          ],
+          "box_score": 0.7054527401924133,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7054527401924133
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            0.9168272018432617,
+            1.0077877044677734,
+            379.39630222320557,
+            1117.7507915496826
+          ],
+          "box_score": 0.44709646701812744,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.44709646701812744
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            475.3528051376343,
+            2.388154983520508,
+            831.3308801651001,
+            929.7008457183838
+          ],
+          "box_score": 0.47920751571655273,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.47920751571655273
+        }
+      ],
+      "sample_id": "nude_6b6ae1a4dee9e7bceede0eb1",
+      "source_sha256": "ac7e5c8e6cb80d7dd80fbd42e20154cb5bb260dd3a8a68aa51b4429fe894f5d7"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            2.5882568359375,
+            26.150222778320312,
+            829.6042556762695,
+            1213.0412521362305
+          ],
+          "box_score": 0.6095048189163208,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6095048189163208
+        }
+      ],
+      "sample_id": "nude_385d8d746cbe33d5c1127b80",
+      "source_sha256": "2e0ba3079b75312fdd3eb09b91c158d7a2ffc2850f7db642d6b9f1d6e5ec9951"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            11.772894859313965,
+            1.1858192086219788,
+            1107.6494693756104,
+            1751.4895760416985
+          ],
+          "box_score": 0.8993101119995117,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8993101119995117
+        }
+      ],
+      "sample_id": "nude_bea7f898f19f9c7ecbdda496",
+      "source_sha256": "7f1893a24c707b2777df51400386bcdf2940262205933b4da3b3bb326fe54b64"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [],
+      "sample_id": "nude_5018cfa603ab7fe567276c86",
+      "source_sha256": "8ccb661a9563d25acd513f709338924f973eabf4829665b5c808e117f9263b8e"
+    },
+    {
+      "image_size": [
+        1344,
+        1728
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            52.806175231933594,
+            32.92041206359863,
+            1253.3388862609863,
+            1726.4165782928467
+          ],
+          "box_score": 0.885307788848877,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.885307788848877
+        }
+      ],
+      "sample_id": "nude_86641bb08bd86e55a706bdbb",
+      "source_sha256": "3a278c89283f0ec39a8bd7a8df18a20417838c0a4867da6a16fafbdbc7df84dd"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.2220501899719238,
+            26.899512887001038,
+            1052.8059124946594,
+            1752.4124606847763
+          ],
+          "box_score": 0.40055570006370544,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.40055570006370544
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            912.8003239631653,
+            1507.902799591422,
+            1198.8062739372253,
+            1752.1058910042048
+          ],
+          "box_score": 0.4448533356189728,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4448533356189728
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            2.1685123443603516,
+            27.12360841035843,
+            1195.1898336410522,
+            1752.242311179638
+          ],
+          "box_score": 0.4278079867362976,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4278079867362976
+        }
+      ],
+      "sample_id": "nude_c7c79b22c7e7abdef59c1cfb",
+      "source_sha256": "567d237f1920a83eab66a8a40e49a9f8d528dc84f3934b6937b55b593741fbea"
+    },
+    {
+      "image_size": [
+        2200,
+        3143
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            4.208886623382568,
+            240.13638359308243,
+            2194.8814630508423,
+            3137.903486073017
+          ],
+          "box_score": 0.8470268249511719,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8470268249511719
+        }
+      ],
+      "sample_id": "nude_4f250b5aeb8b600e4301bca3",
+      "source_sha256": "c09e41bec849242c32673ac35ecceffac57f4a7ced4baf0e0475fee6d91886a9"
+    },
+    {
+      "image_size": [
+        1344,
+        1728
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            127.63173294067383,
+            9.40675163269043,
+            1341.4252281188965,
+            1703.574354171753
+          ],
+          "box_score": 0.6496524810791016,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6496524810791016
+        }
+      ],
+      "sample_id": "nude_c3d5a5b69239ab41a226eb7a",
+      "source_sha256": "a73f28b63989df564ca4114756e91df08cdd8527b818c93ebd599dbeea0ef06b"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            59.91956901550293,
+            75.06208229064941,
+            774.9672260284424,
+            1214.362585067749
+          ],
+          "box_score": 0.8866459727287292,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8866459727287292
+        }
+      ],
+      "sample_id": "nude_b6f927bd030c5a51e8572882",
+      "source_sha256": "2f8da703b8759ae6081ae5ad9704eab7afac446bfc31d597532c9a7b67627ebd"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [],
+      "sample_id": "nude_ad19fd26b5ebb3fb3218cd97",
+      "source_sha256": "0792ad52b2f226e4fa128d1ab2efdcf39e70876efe7e4b9aa953b199d2d38d14"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            406.0748691558838,
+            91.95598030090332,
+            823.8331203460693,
+            1214.731939315796
+          ],
+          "box_score": 0.7935828566551208,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7935828566551208
+        }
+      ],
+      "sample_id": "nude_97af4d7cfd9668c4ed2de1ec",
+      "source_sha256": "f1558ba6e54335766b938888166dfd5fb6a66a72ab716e18df594676ae8a66af"
+    },
+    {
+      "image_size": [
+        1664,
+        2432
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            166.24462127685547,
+            6.450145721435547,
+            1661.224983215332,
+            2427.6343574523926
+          ],
+          "box_score": 0.6223649978637695,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6223649978637695
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.6353397369384766,
+            92.96543502807617,
+            558.9326801300049,
+            2431.250202178955
+          ],
+          "box_score": 0.596595287322998,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.596595287322998
+        }
+      ],
+      "sample_id": "nude_cba304420c18d5a358dbcd9f",
+      "source_sha256": "c6a7866d16bb45faf8cc50247d9170c66d4e1c2c7cade51875d758d30e31cb47"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            142.5854434967041,
+            2.0281505584716797,
+            716.2101955413818,
+            1214.112169265747
+          ],
+          "box_score": 0.8678616881370544,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8678616881370544
+        }
+      ],
+      "sample_id": "nude_f1d07976cd0ebc0a0ff9dc17",
+      "source_sha256": "fad32d99924ba04e3b4ff0fe590e754cec7e292832383cce54b384f01e72598d"
+    },
+    {
+      "image_size": [
+        1536,
+        2304
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.5127716064453125,
+            155.5297393798828,
+            1372.2715301513672,
+            2300.028030395508
+          ],
+          "box_score": 0.490348756313324,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.490348756313324
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            3.0612030029296875,
+            7.6782073974609375,
+            1533.1039581298828,
+            2089.062240600586
+          ],
+          "box_score": 0.5421473383903503,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5421473383903503
+        }
+      ],
+      "sample_id": "nude_54d7ef63c40861a99be8a15a",
+      "source_sha256": "4ccf9ed0f05c876f71cad8fdd9054d3f4d7b34b3929248c662de54abd8ccc0c7"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            11.968982219696045,
+            38.858435571193695,
+            1195.8643555641174,
+            1724.9342303872108
+          ],
+          "box_score": 0.7509965896606445,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7509965896606445
+        }
+      ],
+      "sample_id": "nude_85ff661b028d32f4c7957440",
+      "source_sha256": "367b70bb261df6f92ff04242da3d3b2df2382245da218c32929430042fee6d65"
+    },
+    {
+      "image_size": [
+        1248,
+        1824
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            2.402947425842285,
+            2.408177375793457,
+            1244.4118509292603,
+            1820.8850412368774
+          ],
+          "box_score": 0.6553411483764648,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6553411483764648
+        }
+      ],
+      "sample_id": "nude_42ba6635bfbe76dec75f1ad7",
+      "source_sha256": "e413203d4bf5412db8cf9505e077260610bc946d177d74309b31e832afc7e976"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.0125503540039062,
+            16.117137908935547,
+            831.0037155151367,
+            1215.1413383483887
+          ],
+          "box_score": 0.9215964674949646,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9215964674949646
+        }
+      ],
+      "sample_id": "nude_d8114c27571b3e75981bd3cd",
+      "source_sha256": "cdad0c9138f8cca45d05fd8f8bc4dc664a002c43499fe0588a32ae98764dfdde"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            3.9580154418945312,
+            220.183349609375,
+            1274.763526916504,
+            1852.3181381225586
+          ],
+          "box_score": 0.4698237478733063,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4698237478733063
+        }
+      ],
+      "sample_id": "nude_dc0bc1fd2a6dec61b0cbb01b",
+      "source_sha256": "3ed12ef4938a47cb8ca6ecac21ca37660113902aad1186cd65d8df044642ed2a"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            57.4665470123291,
+            97.71304321289062,
+            831.2097911834717,
+            1214.6726150512695
+          ],
+          "box_score": 0.822106122970581,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.822106122970581
+        }
+      ],
+      "sample_id": "nude_e2a47c3d73db66a79fec1ad9",
+      "source_sha256": "898c7a0f3b4bf4da2e4cc5eb6188e4e2d11912f8714d0c0bf97ad5ed30f9b46e"
+    },
+    {
+      "image_size": [
+        1280,
+        1856
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            2.3613357543945312,
+            38.9563045501709,
+            1277.6017379760742,
+            1853.410737991333
+          ],
+          "box_score": 0.7807048559188843,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.7807048559188843
+        }
+      ],
+      "sample_id": "nude_32a42bd249d4392e84947e6b",
+      "source_sha256": "94339dbc9d7dc02f7a59234130886109cc919b57efc1ca942565b2f83c84af01"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            0.8369731903076172,
+            77.05613136291504,
+            815.9648036956787,
+            1214.3544673919678
+          ],
+          "box_score": 0.6935018301010132,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6935018301010132
+        }
+      ],
+      "sample_id": "nude_1bddab2599b554d847f917c2",
+      "source_sha256": "26e04100cbacdc7f5e49170b8d16aee0e8193abeb87e60f097eadcd8d8cda9c4"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            4.853427886962891,
+            1.6881866455078125,
+            828.3523292541504,
+            1214.334861755371
+          ],
+          "box_score": 0.6288869976997375,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6288869976997375
+        }
+      ],
+      "sample_id": "nude_05b864d2de40772509634665",
+      "source_sha256": "68f8fc790e05fd9e4a72c42523952a3c43a8dceabf5dc4e8b63ba3d26b317b34"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            17.0386962890625,
+            1.106576919555664,
+            798.8869552612305,
+            1214.0433864593506
+          ],
+          "box_score": 0.9092453718185425,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9092453718185425
+        }
+      ],
+      "sample_id": "nude_dca175d93cfa697ad0aa6ef9",
+      "source_sha256": "147be22e04f84a2766d9e3bf9e45ae0c44420927d57b99a7fe8432964cb71054"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            2.136655807495117,
+            35.22473335266113,
+            829.383996963501,
+            1213.9136486053467
+          ],
+          "box_score": 0.5411102771759033,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5411102771759033
+        }
+      ],
+      "sample_id": "nude_c3b1ff00e09197e0f56daa18",
+      "source_sha256": "e90a3b16a684c644137d5398dc2a5017c0a1f24898cd1af4f0f5e7914ceb9a90"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            2.660585403442383,
+            1.2099323272705078,
+            828.2575359344482,
+            1214.6700420379639
+          ],
+          "box_score": 0.5215852856636047,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5215852856636047
+        }
+      ],
+      "sample_id": "nude_e8b791b8be95e8d289d0db42",
+      "source_sha256": "e1fc7c4789e09e736b8117796818f3424ba84d78634def309ec4a5e2c0b699ec"
+    },
+    {
+      "image_size": [
+        2160,
+        2880
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            3.6693263053894043,
+            19.01535987854004,
+            2156.4019989967346,
+            2874.6348094940186
+          ],
+          "box_score": 0.9228728413581848,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9228728413581848
+        }
+      ],
+      "sample_id": "nude_25a8d39e7d44f99d5250dba4",
+      "source_sha256": "eddd1018e133dcfb4b01d5e5d73310fa9946a12a10580263b518b9979ad3088c"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.260406494140625,
+            0.6905097961425781,
+            830.8054504394531,
+            1121.6625328063965
+          ],
+          "box_score": 0.8485373258590698,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8485373258590698
+        }
+      ],
+      "sample_id": "nude_fcca8c4571e3cd27a7e9d317",
+      "source_sha256": "d0e1bec2794d545cd2833a7f3d2428c1ba5a4541c98b1fcd95fb7b85de6daffe"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            167.26954460144043,
+            131.24665451049805,
+            813.5928134918213,
+            882.7405624389648
+          ],
+          "box_score": 0.5383376479148865,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.5383376479148865
+        }
+      ],
+      "sample_id": "nude_b194c30456691593dd6c46a5",
+      "source_sha256": "d7f5687f582257479275759d4795c23549ac99210a36f5eeb7dc9160f333dd87"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.7690620422363281,
+            10.81948471069336,
+            818.6091728210449,
+            1214.486415863037
+          ],
+          "box_score": 0.9129936099052429,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.9129936099052429
+        }
+      ],
+      "sample_id": "nude_c2c50f34031519f277b8c0a9",
+      "source_sha256": "77b65474dfb92324a17b5f184ead724cf8af385205cf83263c62efe37f8ebad2"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.7683625221252441,
+            6.3682960867881775,
+            1198.6622214317322,
+            1750.3676870465279
+          ],
+          "box_score": 0.547441303730011,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.547441303730011
+        }
+      ],
+      "sample_id": "nude_3257f040be41e53dd25ab60c",
+      "source_sha256": "c1ed859f8ab254b546314932bc51edcae0b19d019d7fa96c6bc8faec6bb349b7"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            244.11081075668335,
+            143.0275171995163,
+            885.4334950447083,
+            1681.4565101861954
+          ],
+          "box_score": 0.8771312832832336,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8771312832832336
+        }
+      ],
+      "sample_id": "nude_003f16fb56afb9d484c005ff",
+      "source_sha256": "ee61952d8d2a49027e9092723ddb850de8af1507734b57320326ad67ea9cae5a"
+    },
+    {
+      "image_size": [
+        1200,
+        1754
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            10.857653617858887,
+            17.135597229003906,
+            1056.5797090530396,
+            1751.066005706787
+          ],
+          "box_score": 0.42829471826553345,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.42829471826553345
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            795.0624883174896,
+            131.10711991786957,
+            1199.0830957889557,
+            1751.9336374998093
+          ],
+          "box_score": 0.41171228885650635,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.41171228885650635
+        }
+      ],
+      "sample_id": "nude_c20a6b2bd387833ba87359fc",
+      "source_sha256": "9c4353ccdc94fa03ac13320073bf0e4095667ff59930ef3729e5043b6b021056"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            0.6270294189453125,
+            96.8341236114502,
+            289.47744941711426,
+            1214.4665203094482
+          ],
+          "box_score": 0.6348140239715576,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6348140239715576
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            229.16340827941895,
+            3.0315170288085938,
+            830.5293025970459,
+            1214.5408477783203
+          ],
+          "box_score": 0.6818584203720093,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6818584203720093
+        }
+      ],
+      "sample_id": "nude_97fe568a9871657af2e91b9c",
+      "source_sha256": "b9adc6c3b251559fff321c444c1ded012d8baab160d8a3a075b9bdcdadd4fb2d"
+    },
+    {
+      "image_size": [
+        2200,
+        3220
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            5.611652135848999,
+            134.31681752204895,
+            2195.6338226795197,
+            3217.1143782138824
+          ],
+          "box_score": 0.6341928243637085,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6341928243637085
+        },
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            619.5464193820953,
+            2562.420342564583,
+            1167.2972738742828,
+            3080.8060306310654
+          ],
+          "box_score": 0.4065076410770416,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.4065076410770416
+        }
+      ],
+      "sample_id": "nude_95d2792e4557ffd6ecc0100c",
+      "source_sha256": "92e9122a36df74c767e232632eccdf2079ddd590c7158214b15f0dc4c4943e37"
+    },
+    {
+      "image_size": [
+        1152,
+        1680
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            304.0088653564453,
+            367.7607536315918,
+            895.6452941894531,
+            1678.6313438415527
+          ],
+          "box_score": 0.8981691598892212,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.8981691598892212
+        }
+      ],
+      "sample_id": "nude_1f54e9f7b414286f5df0b33d",
+      "source_sha256": "71f352eca694fea05e3460e58b38baf446d0b53d5ebcf699e0c1e0a32a002bda"
+    },
+    {
+      "image_size": [
+        832,
+        1216
+      ],
+      "proposals": [
+        {
+          "authority": "proposal_only",
+          "bbox_xyxy": [
+            1.7338275909423828,
+            3.7587738037109375,
+            830.147253036499,
+            1161.4241409301758
+          ],
+          "box_score": 0.6325108408927917,
+          "phrase": "person",
+          "prompt": "person",
+          "text_score": 0.6325108408927917
+        }
+      ],
+      "sample_id": "nude_f272911c26e00c585f78b378",
+      "source_sha256": "d9709a19a7d3a9fc0675667245e5451cd162a77c1544580514544fd5383eacd3"
+    }
+  ],
+  "run_policy_sha256": "87882a72638e00499da9a89312ab91d411897eb7efdfa895db878ce4f51eb558",
+  "schema_version": "maskfactory.groundingdino_batch_checkpoint.v1",
+  "self_sha256": "f05a4dbaa8f7e6ae64c7c107ddb375d1d0b81c2c9c0c8f4e144a0227188d3a6a"
+}

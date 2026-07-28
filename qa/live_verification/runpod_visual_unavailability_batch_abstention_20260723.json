@@ -1,0 +1,57 @@
+{
+  "schema_version": "maskfactory.runpod_visual_unavailability_batch_abstention.v1",
+  "recorded_at_utc": "2026-07-23T03:16:00Z",
+  "scope": "reference_batch_continuation_while_visual_roles_are_unavailable",
+  "runtime_preflight": {
+    "persistence_evidence": "qa/live_verification/runpod_persistence_refresh_20260723.json",
+    "persistence_evidence_sha256": "68dd67b76d0da5f8b873050ec4a8b213ff500b45d961041bc45dced2b5ae0c89",
+    "persistence_checks_passed": 13,
+    "persistence_checks_total": 13,
+    "corpus_mirror_evidence": "qa/live_verification/runpod_corpus_mirrors_refresh_20260723.json",
+    "corpus_mirror_evidence_sha256": "6778e3032033eb9432bf6b6cacbb45fd3e9d834a74bacf55f2e51a4135fcd542",
+    "corpus_mirror_checks_passed": 13,
+    "corpus_mirror_checks_total": 13,
+    "pod_id_sha256": "0e3fb937281672b1608acf3597081196014d49be623f2988576a10334c9793dd"
+  },
+  "implementation": {
+    "path": "src/maskfactory/autonomy/work_cell.py",
+    "sha256": "8f8f8faa4873a1072b6b100d16221137e5ca2546f2178c479cbca0945d3d18f2",
+    "actor_kind": "visual_authority_gate",
+    "allowed_stages": [
+      "primary_visual_review",
+      "independent_visual_review"
+    ],
+    "allowed_status": "abstain",
+    "required_role_state": "unavailable",
+    "requires_exact_panel_sha256": true,
+    "requires_exact_role_binding_sha256": true,
+    "forbids_critic_invocation": true,
+    "forbids_package_freeze": true,
+    "forbids_certification": true
+  },
+  "validation": {
+    "test_path": "tests/test_runpod_autonomous_work_cell.py",
+    "test_sha256": "7d688d4fcd487ad39fb02e0e4f3de596f749b394726cb6fc0a1373072ebb9ecb",
+    "focused_tests_passed": 30,
+    "ruff": "pass",
+    "black": "pass",
+    "diff_check": "pass",
+    "positive_fixture": "unavailable primary role produces a sealed visual-stage abstention and no executor failure",
+    "negative_fixtures": [
+      "qualified role cannot be represented as unavailable",
+      "non-visual stage cannot use the authority gate",
+      "non-abstain status is rejected",
+      "wrong stage-to-role binding is rejected",
+      "stale or forged role binding hash is rejected",
+      "evidence seal mismatch is rejected"
+    ]
+  },
+  "authority_result": {
+    "strict_visual_pass_count": 0,
+    "operationally_certified_artifact_count": 0,
+    "autonomous_certified_gold_count": 0,
+    "training_truth_count": 0,
+    "claim": "STATIC_PASS_TYPED_VISUAL_CRITIC_BLOCKED_CONTINUATION"
+  },
+  "self_sha256": "3b53eaf5821e7dc7356e2a6882ed878fa8bf02d22ce69f9249ecf333b93983b5"
+}

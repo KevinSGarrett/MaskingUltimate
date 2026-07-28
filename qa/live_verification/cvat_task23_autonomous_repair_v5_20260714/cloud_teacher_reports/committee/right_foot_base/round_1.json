@@ -1,0 +1,110 @@
+{
+  "authority": "shadow_advisory_human_approval_required",
+  "image_id": "img_cdab0311dc96",
+  "instance_id": "p0",
+  "judgments": [
+    {
+      "confidence": 0.94,
+      "correction": {
+        "negative_points": [
+          [
+            950,
+            950
+          ],
+          [
+            700,
+            980
+          ],
+          [
+            970,
+            700
+          ]
+        ],
+        "polygon": [],
+        "positive_points": [
+          [
+            520,
+            620
+          ],
+          [
+            700,
+            790
+          ],
+          [
+            820,
+            860
+          ],
+          [
+            900,
+            850
+          ]
+        ],
+        "rationale": "Use positive points across the dorsal foot, forefoot, and toe tips to recover the clipped distal area, with negative background points below and beyond the foot to preserve the outer silhouette and avoid spill.",
+        "tool": "points"
+      },
+      "defects": [
+        "missing_visible_area",
+        "boundary_too_tight"
+      ],
+      "evidence": "The mask's lower contour lies inside the visible toe undersides and misses small portions of the forward toe silhouette, so the visible right_foot_base is incomplete despite correct side and anatomy.",
+      "latency_ms": 11180,
+      "model": "gpt-5.6-luna",
+      "observations": {
+        "contour": "The contour is generally plausible and connected, with no obvious background island or neighboring-foot inclusion; the ankle cutoff is somewhat angular but anatomically plausible for this crop.",
+        "full_context": "The visible foreground foot is the character's right foot according to the semantic pose-chain evidence; it is the planted foot extending toward the viewer-right.",
+        "mask": "The mask captures the main foot region but terminates too high along the distal underside and appears to clip portions of the toe tips, especially toward the lower and right edges.",
+        "neighbor_overlap": "No meaningful overlap with the rear/other foot or background is evident; the main issue is undercoverage of the visible target boundary.",
+        "overlay": "The red overlay follows the dorsal and lateral foot boundary reasonably well, but the white boundary is visibly inset from the lowest toe contours and slightly inset near the forwardmost toe.",
+        "source_crop": "The crop clearly shows the complete visible right foot, including the ankle transition, dorsal surface, heel-side edge, toe tips, and undersides of the toes."
+      },
+      "provider": "openai",
+      "response_sha256": "2488ec0c5b8df8606c6abb34541d46135b4c5764d1e0d5258691f88780e24015",
+      "usage": {
+        "cost_usd": 0.014635,
+        "input_tokens": 9697,
+        "output_tokens": 823
+      },
+      "verdict": "fail"
+    },
+    {
+      "confidence": 0.85,
+      "correction": {
+        "negative_points": [],
+        "polygon": [],
+        "positive_points": [],
+        "rationale": "Mask boundary and coverage are accurate for the visible right foot; no correction needed.",
+        "tool": "none"
+      },
+      "defects": [],
+      "evidence": "The candidate corresponds to the character's right foot per COCO semantic chain (right ankle joint at distance 263px vs left at 787px), and the mask/contour closely follow the visible foot boundary from ankle to toes without contamination.",
+      "latency_ms": 16047,
+      "model": "claude-sonnet-5",
+      "observations": {
+        "contour": "White contour line hugs the foot edges tightly, including the small step at the ankle/shin boundary and the toe tips, matching visible skin edges.",
+        "full_context": "Cyan ROI box marks the forward-standing foot (toes visible, foot flat on ground); pose-chain evidence confirms this is the right foot (distance 263px to right chain vs 787px to left chain).",
+        "mask": "Binary mask forms a coherent foot-shaped blob including ankle taper, arch, and forward toe cluster with no holes or stray fragments.",
+        "neighbor_overlap": "No visible overlap with the other leg/foot or background; contour stays within the single foot's visible pixels.",
+        "overlay": "Red overlay aligns closely with the visible foot silhouette, covering ankle to toe tips without spilling onto the ground or the other leg.",
+        "source_crop": "High-res crop shows a foot with visible ankle tendons, toes with faint nail striations, resting on gray ground; no clothing or occlusion present."
+      },
+      "provider": "anthropic",
+      "response_sha256": "21fc576693d59cd74042d1e107a2c2fbbccc97b989e7c43525df7e4575c418d2",
+      "usage": {
+        "cost_usd": 0.035314,
+        "input_tokens": 12462,
+        "output_tokens": 1039
+      },
+      "verdict": "pass"
+    }
+  ],
+  "label": "right_foot_base",
+  "local_audit": {
+    "deterministic_overrides": [],
+    "final_verdict": "pass",
+    "model": "qwen2.5vl:7b",
+    "model_verdict": "pass"
+  },
+  "schema_version": "1.0.0",
+  "sha256": "00956e415dd7fb29e7bee0ca927d0e9bf05bb731b040c928af926bb4c6dafee7",
+  "source_sha256": "d962e914116cdd97d00187c313fe94c99e9e725ab50d38b79d203f1ed47bae43"
+}

@@ -1,0 +1,1 @@
+{"artifact_type":"external_supervision_remap_evidence","fixture":true,"gate":"deterministic_remap_tested","schema_version":"1.0.0","seal_sha256":"9d8cd0dbee66c48dca85e0c5f916975fa4eede9653b1c95bbe31e9bbfdedfc68","source":"lapa","source_masks_are_gold":false,"status":"PASS"}

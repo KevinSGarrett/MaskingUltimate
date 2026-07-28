@@ -1,0 +1,56 @@
+{
+  "audit_count": 1,
+  "audits": [
+    {
+      "confidence": 1.0,
+      "correction_instruction": "Remove disconnected fragments outside the main anatomy.",
+      "correction_plan": {
+        "negative_points": [],
+        "positive_points": [],
+        "rationale": "Deterministic component count exceeds the ontology maximum.",
+        "tool": "remove_small_components"
+      },
+      "deterministic_overrides": [
+        "component_count_exceeds_ontology"
+      ],
+      "evidence": "Deterministic topology found 220 components; ontology allows 1.",
+      "label": "right_foot_base",
+      "latency_ms": 141897,
+      "model": "qwen2.5vl:7b",
+      "model_confidence": 1.0,
+      "model_verdict": "pass",
+      "observations": {
+        "contour": "The cyan proposed boundary over the source image matches the anatomy of the right foot base without any fragmentation or misplacement.",
+        "full_context": "The full context image shows a person in underwear with the right foot base highlighted by a cyan box.",
+        "mask": "The proposed binary mask covers the correct anatomy of the right foot base without any background or clothing overlap. It includes all visible pixels and excludes other anatomical regions.",
+        "neighbor_overlap": "There is no overlap with other protected anatomical labels.",
+        "overlay": "The red overlay shows that the mask correctly identifies the right foot base region in the source crop, with no misclassification.",
+        "source_crop": "The source crop is a high-resolution image of the right foot base, showing detailed skin texture and contours."
+      },
+      "problems": [
+        "other"
+      ],
+      "prompt_version": "p-workhorse-v1-multimage-tools",
+      "verdict": "fail"
+    }
+  ],
+  "authority": "candidate_proposals_only_human_approval_required",
+  "candidate_created_count": 0,
+  "candidates": [
+    {
+      "after_area_px": 789155,
+      "before_area_px": 1008882,
+      "candidate_path": null,
+      "changed_fraction": 0.21779256642501305,
+      "label": "right_foot_base",
+      "negative_points_satisfied": true,
+      "positive_points_satisfied": true,
+      "protected_overlap_fraction": 0.0,
+      "reason": "repair candidate vetoed: candidate_outside_repair_roi,candidate_area_sanity",
+      "status": "candidate_rejected"
+    }
+  ],
+  "schema_version": "1.0.0",
+  "sha256": "54df826cdec5f6f05fe23a51362efd7a2737500ca48593e60780bb1980f30f6d",
+  "verifications": []
+}

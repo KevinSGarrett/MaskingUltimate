@@ -1,0 +1,47 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_holdout_checkpoint.v1",
+  "artifact_type": "adult_holdout_durable_queue_live_evidence",
+  "recorded_at": "2026-07-22T11:55:00Z",
+  "status": "PASS",
+  "tracker_items": [
+    "MF-P4-12.01",
+    "MF-P4-12.07",
+    "MF-P5-11.02"
+  ],
+  "policy_sha256": "86251a0672cd8dcc5e5d73baec0060b959889a3bf5ae5982fded4db541cbb529",
+  "runtime_report_self_sha256": "c27e9a18ab17f276ca2876172a2f5b685a628120acc0ea8160b02a5ea3628861",
+  "runtime_report_file_sha256": "3671382a3d61d5fd66b161932ec28921b23fa456c85e5741bd61a7b47925f7a6",
+  "runtime_queue_file_sha256": "4d6be3674d598af0f91034ce025bcd7f317e8b8e591304a8e1a1e0499eae3aea",
+  "queue_result": {
+    "platform": "local",
+    "shards": 1,
+    "records": 50,
+    "checkpointed_records": 50,
+    "states": {
+      "complete": 1
+    },
+    "outcomes": {
+      "holdout": 50
+    },
+    "idempotent_replay_passed": true,
+    "second_process_resume_same_queue_sha256": true
+  },
+  "authority": {
+    "training_eligible": false,
+    "critic_calibration_eligible": false,
+    "mask_generated": false,
+    "production_mask_authority": false
+  },
+  "implementation_sha256": {
+    "src/maskfactory/nude_holdout_checkpoint.py": "542eb014b9ecd91146fbaf323fb8e0a6f2c1cabc635c4be7640f5481a62d62bf",
+    "tests/test_nude_holdout_checkpoint.py": "a0885e68e67098f7f646e18bcc2207fce4f67f7e8d44ca8f90f4361b419b4185"
+  },
+  "validation": {
+    "focused_tests": "14 passed",
+    "ruff": "pass",
+    "black": "pass",
+    "live_first_run": "pass",
+    "live_second_process_resume": "pass"
+  },
+  "claim_boundary": "This proves durable terminal accounting, contiguous checkpointing, replay safety, and process-level resumption for the 50-record evaluation-only canary lane. It does not execute provider inference, strict-VLM mask review, or candidate certification."
+}

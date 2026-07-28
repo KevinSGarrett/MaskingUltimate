@@ -1,0 +1,85 @@
+{
+  "ablation_corpus_complete": false,
+  "accepted_package_produced": false,
+  "accepted_scene_count": 0,
+  "artifact_type": "daz_stream_static_reverify",
+  "authority": "daz_validation_ops_coverage_static_reverify_host_only",
+  "binders": {
+    "coverage_planner_static": {
+      "file_sha256": "335fabdc01847515cceadaa3cac4af3bec6ef6419ecb7df97b08f3095214249d",
+      "path": "qa/live_verification/daz_coverage_planner_static_20260720.json",
+      "proof_tier": "STATIC_PASS",
+      "report_id": "dcp_38ab594f1edc9d7069286f8d",
+      "seal_sha256": "38ab594f1edc9d7069286f8d18478bb073890aaea15b7178abf8f7e688f79514"
+    },
+    "ops_static_contracts": {
+      "file_sha256": "25d50f843480deaf3a60734b94ce98e90a84385d4e6e6b30d38ccb1533c31825",
+      "path": "qa/live_verification/daz_ops_static_contracts_20260720.json",
+      "proof_tier": "STATIC_PASS",
+      "report_id": "dos_a521171f37f02a0c021b2407",
+      "seal_sha256": "a521171f37f02a0c021b2407b36a3b58469738fe35c0136e0bd2fcf488f7c898"
+    },
+    "procedural_primitive_bundle": {
+      "file_sha256": "3f956a63a9a66e9da765c97e24c62d4e75fb6c08a3c33c522e12497c628eac65",
+      "path": "qa/fixtures/daz/procedural_primitives/daz_proc_prim_7c6483dd52c97066ea085e19/bundle.json",
+      "proof_tier": "STATIC_PASS",
+      "report_id": null,
+      "seal_sha256": null
+    },
+    "validation_static_contracts": {
+      "file_sha256": "0b25a3407225436693ea91c3344fc639af68e27ee50a17bcd925a77804d57beb",
+      "path": "qa/live_verification/daz_validation_static_contracts_20260720.json",
+      "proof_tier": "STATIC_PASS",
+      "report_id": "dvs_1a924aaf05db430365ef103b",
+      "seal_sha256": "1a924aaf05db430365ef103bbfb6e347df594063b413538d8692fb6e0bade136"
+    }
+  },
+  "daz_assets_used": false,
+  "daz_foundation_doctor": {
+    "failed_checks": [],
+    "free_gib": 181.206,
+    "passed": true,
+    "root": "F:\\DAZ"
+  },
+  "doctor_all_green_claimed": false,
+  "focused_tests": [
+    "tests/test_daz_validation_static_contracts.py",
+    "tests/test_daz_ops_static_contracts.py",
+    "tests/test_daz_coverage_planner_static.py",
+    "tests/test_daz_procedural_primitive.py",
+    "tests/test_daz_worker_isolation_static.py",
+    "tests/test_daz_foundation.py"
+  ],
+  "gold_claimed": false,
+  "items": [
+    "MF-P9-08.01",
+    "MF-P9-08.02",
+    "MF-P9-08.03",
+    "MF-P9-08.04",
+    "MF-P9-08.05",
+    "MF-P9-08.07",
+    "MF-P9-08.08",
+    "MF-P9-10.01",
+    "MF-P9-12.01",
+    "MF-P9-03.09"
+  ],
+  "live_activation_complete": false,
+  "live_calibration_complete": false,
+  "live_daz_execution": false,
+  "main_complete_claimed": false,
+  "pilot_complete": false,
+  "production_evidence_pass_claimed": false,
+  "proof_tier": "STATIC_PASS",
+  "pytest_exit_code": 0,
+  "pytest_summary": [
+    ".......................                                                  [100%]"
+  ],
+  "recorded_at": "2026-07-20T08:00:00Z",
+  "result": "pass_daz_validation_ops_coverage_static_reverify",
+  "schema_version": "1.0.0",
+  "self_sha256": "fb2c6943035ac6182300304bc45b4fe299cd0cfdde174d2063396a28d6146656",
+  "seven_day_soak_complete": false,
+  "stream": "daz_validation_ops_coverage",
+  "training_eligible": false,
+  "visual_qa_pass_claimed": false
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0.0",
+  "verified_at": "2026-07-10T23:58:57Z",
+  "cvat_url": "http://localhost:8080/tasks/1/jobs/1",
+  "task_id": 1,
+  "job_id": 1,
+  "frame": 0,
+  "source_image": "sam2_synthetic.png",
+  "interaction": {
+    "tool": "Magic Wand / AI Tools / Interactors",
+    "model": "Segment Anything 2.1 (CPU)",
+    "positive_click_inside_light_object": true,
+    "mask_appeared_in_workspace": true,
+    "accepted_with_done": true,
+    "saved": true
+  },
+  "cvat_api_verification": {
+    "lambda_http_status": 200,
+    "annotation_create_http_status": 200,
+    "shape_id": 1,
+    "shape_type": "mask",
+    "label_id": 1,
+    "points_count": 329
+  },
+  "result": "PASS"
+}

@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-07-21T22:35:05Z",
+  "item": "MF-P4-11.16",
+  "status": "STATIC_PASS",
+  "catalog": {
+    "path": "configs/visual_critic_catalog.yaml",
+    "canonical_sha256": "b42f510b462374cba21a4ebe7aa1ef542436dd833d9f7049153cd07803b48ee4"
+  },
+  "authority_contract": {
+    "exact_catalog_binding_required": true,
+    "exact_model_revision_required": true,
+    "exact_artifact_hash_required": true,
+    "passing_calibration_hash_required": true,
+    "current_qualification_window_required": true,
+    "primary_role_required": true,
+    "independent_family_juror_required": true,
+    "same_family_quorum_allowed": false,
+    "deterministic_hard_veto_precedes_quorum": true,
+    "unknown_or_unpromoted_model_allowed": false
+  },
+  "validation": {
+    "focused_tests": 23,
+    "eligible_independent_quorum_hash_bound": true,
+    "deterministic_veto_blocks_valid_quorum": true,
+    "same_family_variants_abstain": true,
+    "missing_role_abstains": true,
+    "stale_certificate_rejected": true,
+    "name_only_certificate_rejected": true,
+    "catalog_artifact_and_calibration_drift_rejected": true,
+    "unpromoted_lifecycle_rejected": true,
+    "ruff": "pass",
+    "black": "pass"
+  },
+  "source_hashes": {
+    "src/maskfactory/vlm/critic_authority.py": "c34f33a11e0c9d33d3a2d584dc2651f523466fca8b9250966b17e2189992f754",
+    "tests/test_visual_critic_authority.py": "92b9dadc3586ac8879a031dca4694a1f9d6a7f67fe903d5dfc8489f2e81ce412"
+  },
+  "live_role_certificate_claimed": false
+}

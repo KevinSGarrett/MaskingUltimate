@@ -1,0 +1,15 @@
+schema_version: 1.0.0
+tiers:
+  A:
+    allowed_strategies: [backup]
+    referenced_requires_backup: true
+  B:
+    allowed_strategies: [backup, rebuild]
+    referenced_requires_backup: true
+  C:
+    allowed_strategies: [backup, rebuild, omit]
+    referenced_requires_backup: false
+rebuild_requires: [source_sha256, rebuild_recipe_id, toolchain_sha256]
+package_metadata_tier: A
+unknown_tier_action: block
+matrix_must_be_complete: true

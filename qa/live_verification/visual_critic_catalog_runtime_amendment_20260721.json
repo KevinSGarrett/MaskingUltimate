@@ -1,0 +1,37 @@
+{
+  "authority_claimed": false,
+  "catalog_canonical_sha256": "d42ab7ab94faa6811d8acfe0bf194bc8d24472c124f41dd596e14f00b85a39b5",
+  "catalog_file_sha256": "7298673e826c3acdf63fa280190566c313af5f1f432261c04d5e80e6d6eaccfc",
+  "fallback": {
+    "job_dir": "/workspace/maskfactory/runtime_artifacts/visual_critic_qwen27_fallback",
+    "model_id": "qwen3_6_27b_fp8",
+    "pid_at_launch": 2718563,
+    "repository": "Qwen/Qwen3.6-27B-FP8",
+    "revision": "e89b16ebf1988b3d6befa7de50abc2d76f26eb09",
+    "script_sha256": "9ac577084a76f50e244eec96524e86e01f043360cc370e6bd454fc3e89167876",
+    "status": "RUNNING_AT_RECORD_TIME"
+  },
+  "focused_test_count": 52,
+  "focused_tests_status": "PASS",
+  "measured_infeasible_route": {
+    "catalog_model_id": "qwen3_6_35b_a3b_fp8",
+    "failure_evidence_sha256": "4d487925cc1ae274db864e9764c8ebd1f8706b79f846bfa9325ab38cf3057c8b",
+    "failure_reason": "vllm_weight_load_out_of_memory",
+    "owned_processes_contained": true,
+    "repeated_attempt_prohibited": true
+  },
+  "recorded_at": "2026-07-21T22:51:44.5386947Z",
+  "schema_sha256": "5c6f3fd0ef2d298731747ffc0e6fc8d3905485d5347987975d004f7bddd672ca",
+  "schema_version": "1.0.0",
+  "source_sha256": {
+    "critic_catalog.py": "55c415b0232c750455c01bebf6609e66c066f7b333646b2ba21f8b6ca9fd2d19",
+    "runtime_qualification.py": "3f315c2fb3c3e26e256e241617484d98646104c75afb43d99c4164ee6548d316",
+    "launch_runpod_critic_fallback.py": "ce57ff23328258aa000ca8e4a05e9be8ea41f422bb8961395faa8e82bb7ac24e"
+  },
+  "status": "PARTIAL_RUNTIME_QUALIFICATION",
+  "validation": {
+    "catalog_schema_and_semantics": "PASS",
+    "python_lint": "PASS",
+    "runtime_completion_claimed": false
+  }
+}

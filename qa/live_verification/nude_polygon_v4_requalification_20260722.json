@@ -1,0 +1,50 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_polygon_v4_requalification.v1",
+  "artifact_type": "adult_polygon_lane_v4_split_requalification",
+  "recorded_at": "2026-07-22T11:46:36Z",
+  "status": "PASS_BOUNDED_HARD_QC_AND_ROLE_GATE",
+  "tracker_items": [
+    "MF-P4-12.02",
+    "MF-P4-12.07",
+    "MF-P5-11.01"
+  ],
+  "split_mapping_sha256": "544672f6d9afb8ae9232323f234593ed47ca48dfb3722416f0a26994b68bfbad",
+  "hard_qc": {
+    "record_count": 39354,
+    "mask_count": 125976,
+    "hard_qc_pass_candidate_records": 37736,
+    "quarantined_input_records": 1618,
+    "records_sha256": "6bc215602e8615f5f650470892f3b9fb5f941e9bf2bdfac37dc904a3bb16a15b",
+    "summary_sha256": "3c00dea52b5717e69695505f69b6b2556787e7ef63d1c6115b28f9c2e203342c"
+  },
+  "training_role_gate": {
+    "train_partition_candidate_masks": 97833,
+    "candidate_stream_sha256": "d371d2a79b7ae3b8df1ea1ef0a545dd5455a28c26cabb5998704ad253c292b04",
+    "summary_sha256": "b7ca523dc8d7108437cf434b9815b20574aa84b4d00deab3a91a157ff7b744e6",
+    "training_authority_granted": false
+  },
+  "draft_refinement_canary": {
+    "record_count": 12,
+    "unique_split_group_count": 12,
+    "outcomes": {
+      "draft_refined_candidate": 12
+    },
+    "report_sha256": "11ebe20212b5e2aeda9e821eacc08f0086677c2600881f2d37b5a9b1f297629b",
+    "contact_sheet_sha256": "ad532c2366e1cbef974806f509a9bd8f6847406f0c6cbb34891f35bb5b7c733e",
+    "codex_visual_review": "Diverse live-photo and illustration sources were inspected. Refinements remained localized and made generally small boundary changes without obvious gross bleed. Source annotations vary in quality and coarseness, so no improvement or acceptance claim is made."
+  },
+  "implementation_sha256": {
+    "src/maskfactory/nude_polygon_refinement.py": "697418b15fdcbf022d8c7237782e82eecaabbbac6cae66bd0d8355b2e32e9e54",
+    "tests/test_nude_polygon_refinement.py": "b1deccdaf92dbfa854dd4a29b9da594bbb591c670ad8143283e84c9fdcbe789c",
+    "src/maskfactory/nude_polygon_hard_qc.py": "5c50945ac0a01e98633fb3145e17d5bdee88c0bd9a70b8dcc8172b64542ddbd6",
+    "src/maskfactory/nude_training_role_gate.py": "c5a091fceb4edbc0f419688ae41d33e4ac7d539966d605dea6c759dbeb01e664"
+  },
+  "authority": {
+    "external_polygons_are_human_gold": false,
+    "production_mask_authority_granted": false,
+    "independent_provider_comparison_passed": false,
+    "strict_per_record_visual_review_passed": false,
+    "operational_certificates_issued": false
+  },
+  "remaining": "Run independent provider comparison, strict per-record VLM review, bounded repair/abstention, terminal receipts, and immutable weighted export before training admission."
+}

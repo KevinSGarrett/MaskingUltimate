@@ -1,0 +1,45 @@
+{
+  "adapter_execution_receipt": {
+    "adapter_package_sha256": "5601f67d5a4410237d7548857f01343c8c769878d30eb159edd5de2917f30f9d",
+    "execution_sha256": "c3f167fff6725b047ca390cdfb7abf489bf55c95e353cd44d5e52771840864ad",
+    "receipt_id": "fixture-main-adapter-exec-0001",
+    "status": "succeeded"
+  },
+  "authority_kind": "fixture_authority",
+  "claim_boundary": {
+    "artifact": "comfyui_result_history_receipt",
+    "authority_kind": "fixture_authority",
+    "claims_kevin_sgarrett_comfy_ui_main_production_commit": false,
+    "closed_fixture_execution_complete": true,
+    "consumer_kind": "synthetic_main_consumer",
+    "fixture_authority": true,
+    "main_adoption_complete": false,
+    "production_comfyui_execution_complete": false,
+    "production_main_adoption_complete": false,
+    "synthetic_main_consumer": true,
+    "synthetic_main_git_commit": "204f21cfbaffd6fb92715092db508b7e2a51efa0",
+    "trusted_keys_usage_scope": "conformance_only"
+  },
+  "consumer_kind": "synthetic_main_consumer",
+  "decided_at": "2026-07-19T15:00:00Z",
+  "history_sha256": "b4535632a894e8a101987bc17f380f6182c9c99664efe7b13939394af39a7f42",
+  "operation": "comfyui_inpaint_edit",
+  "person_bindings": [
+    {
+      "character_id": "character-fixture",
+      "mask_encoded_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "person_index": 0
+    },
+    {
+      "character_id": "character-fixture-002",
+      "mask_encoded_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "person_index": 1
+    }
+  ],
+  "receipt_sha256": "9683124cae89e4008708dc21701680d8b9f3794c125c75f78ec00fc2c670b32c",
+  "record_type": "fixture_main_comfyui_result_history_receipt",
+  "result_sha256": "0aae5b539cdeb1f2896e67e9710feb394917ab5932d7276e05684a4452857e80",
+  "schema_version": "1.0.0",
+  "synthetic_main_git_commit": "204f21cfbaffd6fb92715092db508b7e2a51efa0",
+  "workflow_sha256": "68a0d7d024edcaabddd433a5a1dad4a583e7cfe68db80f3f7a19323494f439b5"
+}

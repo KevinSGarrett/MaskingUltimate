@@ -1,0 +1,18 @@
+{
+  "image_id": "img_a3f9c2e17b04",
+  "run_id": "qa_20260711_0025_fixture",
+  "pipeline_version": "fixture",
+  "created_at": "2026-07-11T00:25:00Z",
+  "checks": [],
+  "metrics_per_part": {},
+  "consensus": {
+    "method": "weighted_vote_v1",
+    "sources": ["sam2"]
+  },
+  "vlm_review": {
+    "model": "qwen2.5vl:7b",
+    "verdicts": []
+  },
+  "overall": "pass",
+  "score": 1.5
+}

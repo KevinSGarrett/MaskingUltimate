@@ -1,0 +1,124 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-16T18:53:36Z",
+  "item": "MF-P9-07.05",
+  "status": "partially_complete",
+  "policy": {
+    "path": "configs/daz/material_protected_pass.yaml",
+    "file_sha256": "71318f7fc435f487f3d8af56ee90db4f612880d18676c3c87e848715424f62eb",
+    "version": "1.0.0",
+    "active_ontology_version": "body_parts_v1",
+    "encoding": "uint16_png",
+    "background_value": 0,
+    "decode_filter": "nearest_neighbor_exact",
+    "profile_outputs": {
+      "engineering_minimal": ["material"],
+      "training_standard": ["material", "protected"],
+      "training_relationship": ["material", "protected"],
+      "diagnostic_full": ["material", "protected"]
+    }
+  },
+  "canonical_namespaces": {
+    "material_ids": {"minimum": 0, "maximum": 15, "count": 16},
+    "protected_ids": {
+      "other_person": 50,
+      "occluding_object": 51,
+      "support_surface": 52,
+      "accessory_or_prop": 53
+    },
+    "protected_allowed_material_ids": {
+      "50": [13],
+      "51": [14],
+      "52": [14],
+      "53": [9, 14]
+    },
+    "clothing_retains_anatomical_part_authority": true,
+    "material_and_protected_are_orthogonal_to_part_and_instance": true
+  },
+  "pixel_and_freeze_controls": {
+    "background_all_zero": true,
+    "every_visible_authority_pixel_has_material": true,
+    "every_material_pixel_has_instance_or_protected_authority": true,
+    "protected_equals_protected_part": true,
+    "unprotected_person_part_excludes_protected_ids": true,
+    "non_target_person_requires_other_person_protection": true,
+    "target_person_cannot_be_other_person": true,
+    "special_material_requires_matching_protected": true,
+    "expected_material_ids_nonempty": true,
+    "all_nine_integer_map_effects_forbidden": true,
+    "before_sidecar_after_restore_terminal_state_hashes_exact": true,
+    "plan_contract_mapping_and_ontology_sidecars_exact": true,
+    "part_and_instance_authority_hashes_exact": true,
+    "repeated_material_and_protected_hashes_exact": true,
+    "immutable_publication": true,
+    "cli": [
+      "daz recipes plan-material-protected",
+      "daz recipes validate-material-protected"
+    ]
+  },
+  "closed_fixture_coverage": {
+    "focused_tests_collected": 60,
+    "focused_tests_passed": 60,
+    "focused_tests_failed": 0,
+    "all_material_ids_observed": "0..15",
+    "all_protected_ids_observed": [0, 50, 51, 52, 53],
+    "material_only_engineering_profile_passed": true,
+    "clothing_body_part_and_material_orthogonality_passed": true,
+    "all_orthogonality_equations_seeded_and_detected": true,
+    "all_five_state_mutation_points_seeded_and_detected": true,
+    "forbidden_effects_tested": [
+      "jpeg",
+      "palette_quantization",
+      "color_management",
+      "tone_mapping",
+      "denoising",
+      "bloom",
+      "motion_blur",
+      "depth_of_field",
+      "lossy_resize"
+    ],
+    "sidecar_authority_output_replay_and_publication_drift_tested": true,
+    "cli_contract_and_validation_replay_idempotent": true
+  },
+  "lineage": {
+    "implementation_sha256": "e6e920523f95155287cdc2971aa16f977d567a8ba25c2cb30b942e8340c83bad",
+    "contract_schema_sha256": "9551f67b5d57eb1fbffc97538eaf61026505fa0e241861b68edfce646c2dc7e8",
+    "report_schema_sha256": "e48828ed615a5067f6d181e8095dbc40e2619691d9c3b7bd6e1886c5ccb85788",
+    "test_sha256": "0a1e7c1a2d2eb7674a78017e5ab5f1d43464ab46f261e25851eb460789b5ca6c",
+    "cli_sha256": "bb4d54c6de1caed856f57742034d71a95b8b7ad6821fa3393fcc762d1b201066",
+    "validation_registry_sha256": "c3cb5d3ec630b7f8bf6f37cff694bea01f0da4fb099cdc56ceae05b75e1702d5",
+    "render_exports_sha256": "d7bc2a9a48403be80adb06bb2516c3aba9e76b92e7422722660879ec7b100f39"
+  },
+  "verification": {
+    "full_repository_tests_collected": 2367,
+    "full_repository_tests_passed": 2367,
+    "full_repository_tests_failed": 0,
+    "test_files_collected": 225,
+    "ruff_lint": "pass",
+    "black_files_checked": 478,
+    "black_format": "pass",
+    "git_diff_check": "pass"
+  },
+  "asset_source_boundary": {
+    "autonomous_downloader_target": "F:\\DAZ\\03_content\\libraries\\MaskFactory_DAZ_Library",
+    "legacy_dim_content_root": "C:\\Users\\Public\\Documents\\My DAZ 3D Library",
+    "legacy_dim_download_root": "C:\\Users\\Public\\Documents\\DAZ 3D\\InstallManager\\Downloads",
+    "future_dim_download_root": "F:\\DAZ\\02_installers\\dim_downloads",
+    "sources_remain_independently_registered": true,
+    "assets_moved_or_relabelled_by_this_task": false,
+    "download_install_or_render_started_by_this_task": false
+  },
+  "live_boundary": {
+    "live_material_pass_rendered": false,
+    "live_protected_pass_rendered": false,
+    "live_part_instance_material_protected_alignment_recorded": false,
+    "live_semantic_replay_hash_recorded": false,
+    "reason": "The canonical MATERIAL/protected policy, schemas, exact decoder, cross-map orthogonality equations, freeze controls, replay checks, CLI, and immutable publication pass against closed fixtures. Completion still requires qualified live DAZ MATERIAL/protected renders aligned to live PART and INSTANCE maps."
+  },
+  "not_claimed": [
+    "a live DAZ MATERIAL render",
+    "a live DAZ protected render",
+    "live four-map alignment",
+    "completion of MF-P9-07.05"
+  ]
+}

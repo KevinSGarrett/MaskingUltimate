@@ -1,0 +1,121 @@
+{
+  "artifact_type": "isolated_main_consumer_dod_run",
+  "authority_kind": "isolated_main_consumer",
+  "checks": [
+    {
+      "cases": [
+        {
+          "case": "full_closed_state_machine",
+          "entry_count": 14,
+          "passed": true
+        },
+        {
+          "case": "signed_checkpointed_history",
+          "passed": true
+        },
+        {
+          "case": "same_key_same_body_replay_idempotent",
+          "passed": true
+        },
+        {
+          "case": "same_key_different_body_refused",
+          "passed": true
+        },
+        {
+          "case": "illegal_transition_refused",
+          "passed": true
+        },
+        {
+          "case": "fork_delete_reorder_detected",
+          "passed": true
+        },
+        {
+          "case": "interruption_reconstruct_exact_state",
+          "passed": true
+        }
+      ],
+      "check": "isolated_journal_dod_matrix",
+      "passed": true,
+      "reconstruction_decision_sha256": "d8202e2c8152a6053e8c8d92ff1b1a6e8520a49bbf50ce093c4d18e929104da7"
+    },
+    {
+      "cases": [
+        {
+          "case": "closed_permits_provider",
+          "passed": true
+        },
+        {
+          "case": "open_blocks_route_no_substitution",
+          "passed": true
+        },
+        {
+          "case": "half_open_without_probe_blocks",
+          "passed": true
+        },
+        {
+          "case": "half_open_with_probe_permits",
+          "passed": true
+        }
+      ],
+      "check": "isolated_circuit_breaker_matrix",
+      "passed": true
+    },
+    {
+      "cases": [
+        {
+          "case": "eligible_adopted_accepts",
+          "passed": true
+        },
+        {
+          "case": "optional_only_blocker_refused",
+          "passed": true
+        },
+        {
+          "case": "partial_required_coverage_refused",
+          "passed": true
+        },
+        {
+          "case": "expired_and_file_presence_only_refused",
+          "passed": true
+        },
+        {
+          "case": "missing_duplicate_checks_refused",
+          "passed": true
+        }
+      ],
+      "check": "isolated_adoption_receipt_matrix",
+      "passed": true
+    }
+  ],
+  "claim_boundary": {
+    "advances": [
+      "MF-P6-11.06 (full closed-state-machine journal DoD: replay idempotency, same-key/different-body + illegal-transition refusal, fork/delete/reorder detection, exact interruption reconstruction vs corrupted-history refusal)",
+      "MF-P6-11.07 (circuit-breaker closed-permit/open-block/half-open-probe gating, no mask substitution)",
+      "adoption-receipt admission matrix (eligible accept vs optional-only / partial-required / expired / file-presence-only / missing-duplicate refusals)"
+    ],
+    "advances_are_producer_isolated_only": true,
+    "does_not_close_any_hard_blocker": true,
+    "establishes_production_qualification": false,
+    "hard_blockers_still_open": [
+      "MF-P6-11.02",
+      "MF-P6-11.07",
+      "MF-P6-12.05",
+      "MF-P6-12.06"
+    ],
+    "isolated_consumer_is_not_fixture_authority": true,
+    "isolated_consumer_is_not_real_comfyui_main": true,
+    "main_adoption_complete": false,
+    "next_agent_step": "Real receipts require a dedicated Comfy_UI_Main-side integration on an isolated clean maskfactory branch that consumes the producer adapter package and emits Main-signed adoption/qualification/adapter-execution/result-history artifacts pinned back here. Comfy_UI_Main is a dirty Wave64 tree and untouched."
+  },
+  "decided_at": "2026-07-20T05:00:00Z",
+  "is_real_comfyui_main": false,
+  "producer_git_commit": "9dd5f7584a5808fdd04dcf866bd58a1d1c39f1cd",
+  "recorded_at": "2026-07-20T14:28:41.796205Z",
+  "schema_version": "1.0.0",
+  "self_sha256": "704ecd5db2c552f57fc5e3ac6456a65f4a61ced6ce7f87ac2d0d1dd5e5796819",
+  "summary": {
+    "isolated_adoption_receipt_matrix": true,
+    "isolated_circuit_breaker_matrix": true,
+    "isolated_journal_dod_matrix": true
+  }
+}

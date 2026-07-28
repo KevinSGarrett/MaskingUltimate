@@ -1,0 +1,32 @@
+{
+  "audit_date": "2026-07-12",
+  "authority": "Plan/18_ADULT_ANATOMY_ONTOLOGY_V2_SPEC.md section 1",
+  "resolution": {
+    "body_parts_v1": {
+      "background_id": 0,
+      "ids": "0..55",
+      "logits": 56
+    },
+    "body_parts_v2": {
+      "background_id": 0,
+      "ids": "0..64",
+      "logits": 65
+    },
+    "obsolete_contract": "57-class (56 PART IDs plus background)"
+  },
+  "corrected_configs": {
+    "configs/training/bodypart_mask2former_swinb.yaml": 56,
+    "configs/training/bodypart_segformer_b3.yaml": 56
+  },
+  "compiler_contract": "declared num_classes must equal the contiguous active ontology vocabulary length",
+  "negative_test": "mutated num_classes=57 is rejected before run staging",
+  "focused_tests_passed": 21,
+  "full_tests_passed": 639,
+  "training_doctor": {
+    "class_count_issue_present": false,
+    "ready": false,
+    "remaining_boundary": "Current Windows process has CPU torch 2.12.1 and no pinned MMEngine/MMCV/MMSeg/MMDet stack or CUDA; Kevin-account Ubuntu-22.04 runtime remains required for the real BaseSegDataset/CUDA execution."
+  },
+  "ruff": "clean",
+  "format": "clean"
+}

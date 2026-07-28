@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0.0",
+  "status": "partial_pass_fail_closed",
+  "item_id": "MF-P4-11.23",
+  "verified_at": "2026-07-22T08:30:00Z",
+  "suite": {
+    "path": "qa/vlm_eval/visual_regression_v2_real",
+    "schema_version": "2.0.0",
+    "suite_sha256": "653c8973857ce419a021f4d7ec3d4a58a89d757d9da7bb18321c80b7e1b6466a",
+    "source_bindings_sha256": "98fdee21f6415e3eb94c1462f6f0373539f44aaa0c9cd5f5b294fed2902a0ce1",
+    "case_count": 14,
+    "panel_count": 98,
+    "byte_count": 29144460,
+    "distinct_source_images": 14,
+    "distinct_annotation_files": 44,
+    "truth_source": "real_image_external_labeled_reference",
+    "production_authority_claimed": false
+  },
+  "source_authority": {
+    "labeled_source": "C:\\Comfy_UI_Main\\MaskedWarehouse\\Body\\LV-MHP-v1\\LV-MHP-v1",
+    "source_family": "maskedwarehouse",
+    "authority": "external_labeled_reference",
+    "every_case_binds_original_and_annotation_hashes": true,
+    "reference_library": "F:\\Reference_Images\\Ultimate_Masking_Reference_Images",
+    "reference_inventory_sha256": "c663483c3619f91e86a37a1793e583937427b777a937bbbe71d744d794e1a259",
+    "reference_library_role": "coverage_retrieval_only",
+    "reference_library_truth_authority": "none"
+  },
+  "enforcement": {
+    "synthetic_v1_suite_can_validate_renderer_plumbing": true,
+    "synthetic_v1_suite_can_authorize_promotion": false,
+    "real_v2_source_authority_required_for_promotion": true,
+    "source_binding_drift_fails_closed": true,
+    "serious_regression_blocks_promotion": true,
+    "every_promotion_fingerprint_change_requires_rerun": true
+  },
+  "visual_review": {
+    "sampled_domains": [
+      "hands",
+      "multi_person_ownership"
+    ],
+    "real_source_pixels_confirmed": true,
+    "positive_and_serious_controls_confirmed": true,
+    "finding": "The frozen cases are valid real-image regression controls, but LV-MHP hand truth is a coarse arm/hand region and cannot stand in for isolated finger-accurate hand truth."
+  },
+  "coverage_present": [
+    "clothing_skin_boundary_external_reference",
+    "feet_external_reference",
+    "hair_external_reference",
+    "coarse_arm_hand_region_external_reference",
+    "multi_person_ownership_external_reference",
+    "occlusion_contact_external_reference",
+    "face_and_torso_visible_anatomy_external_reference"
+  ],
+  "coverage_remaining": [
+    "isolated_hand_and_finger_exact_labeled_controls",
+    "complete_visible_adult_anatomy_exact_labeled_controls",
+    "live_promoted_primary_and_independent_critic_rerun",
+    "current_passing_role_certificates"
+  ],
+  "claim_boundary": "This increment replaces synthetic-only promotion authority with a real, image-disjoint, hash-bound regression suite and retains the synthetic suite only for plumbing tests. MF-P4-11.23 remains incomplete until exact isolated-hand/finger and complete visible adult-anatomy controls plus a current promoted-critic rerun exist."
+}

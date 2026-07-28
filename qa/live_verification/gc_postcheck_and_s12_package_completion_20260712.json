@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0.0",
+  "verified_at": "2026-07-12T15:12:00Z",
+  "gc": {
+    "dry_run_plan_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "apply_plan_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "candidates": 0,
+    "removals": 0,
+    "log_file": "logs/gc_2026-07-12.log",
+    "log_sha256": "9bf5df34be595ae239d980ae97761dcb8cea8ca887cf877fbf06555784b3bacc"
+  },
+  "production_package_repair": {
+    "root_cause": "S12 review assembly omitted script-derived masks and explicit states for enabled non-material derived, region, projected, and background labels",
+    "fix": "assembly and cached-task refresh now regenerate masks_derived, populate every enabled non-material state, and reseal the complete file inventory",
+    "hard_gates_weakened": false,
+    "live_package_images": 3,
+    "live_instance_packages": 9
+  },
+  "post_checks": {
+    "verify_package_sample_requested": 10,
+    "verify_package_discovered": 9,
+    "verify_package_passed": 9,
+    "verify_package_failed": 0,
+    "qc_008": "pass_all",
+    "qc_009": "pass_all",
+    "reindex_missing_in_db": [],
+    "reindex_stale_rows": {},
+    "reindex_extra_rows": [],
+    "reindex_clean": true
+  },
+  "validation": {
+    "pytest_collected_and_passed": 671,
+    "ruff": "pass",
+    "ruff_format": "pass"
+  }
+}

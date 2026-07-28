@@ -27,12 +27,9 @@ DEFAULT_DATABASE = Path(
     "/workspace/.maskfactory/shared_pod_coordination/shared_gpu_leases_v1.sqlite"
 )
 DEFAULT_MANAGER = Path(
-    "/workspace/.maskfactory/shared_pod_coordination/tools/"
-    "manage_shared_pod_gpu_lease_v2.py"
+    "/workspace/.maskfactory/shared_pod_coordination/tools/" "manage_shared_pod_gpu_lease_v2.py"
 )
-EXPECTED_MANAGER_SHA256 = (
-    "5f98839d8b0c7fd0a384a88e421088506dbb3ddd7546b7271dc5974f94e7e4c3"
-)
+EXPECTED_MANAGER_SHA256 = "5f98839d8b0c7fd0a384a88e421088506dbb3ddd7546b7271dc5974f94e7e4c3"
 FALLBACK_REQUIRED = 75
 COORDINATION_FAILURE = 70
 CHILD_TIMEOUT = 124
@@ -60,9 +57,7 @@ def file_sha256(path: Path) -> str:
 
 def canonical_sha256(value: object) -> str:
     return hashlib.sha256(
-        json.dumps(
-            value, sort_keys=True, separators=(",", ":"), ensure_ascii=False
-        ).encode("utf-8")
+        json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
     ).hexdigest()
 
 
@@ -71,9 +66,7 @@ def atomic_sealed_json(path: Path, value: dict[str, Any]) -> dict[str, Any]:
     sealed = copy.deepcopy(value)
     sealed["self_sha256"] = "0" * 64
     sealed["self_sha256"] = canonical_sha256(sealed)
-    body = (
-        json.dumps(sealed, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
-    ).encode("utf-8")
+    body = (json.dumps(sealed, indent=2, sort_keys=True, ensure_ascii=False) + "\n").encode("utf-8")
     descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o444)
     try:
         with os.fdopen(descriptor, "wb") as stream:
@@ -197,9 +190,7 @@ def run_local_admission_preflight(
     for name, expected in binding.get("input_sha256", {}).items():
         if Path(name).name != name:
             raise GuardError("mission binding input is not a root file")
-        if file_sha256(mission_root / name) != validate_sha256(
-            expected, f"input_sha256.{name}"
-        ):
+        if file_sha256(mission_root / name) != validate_sha256(expected, f"input_sha256.{name}"):
             raise GuardError(f"mission binding input drift: {name}")
 
     contract = load_closed_json(runtime_contract_path)
@@ -247,9 +238,7 @@ def run_local_admission_preflight(
         ("config.json", model.get("config_sha256")),
         ("model.safetensors.index.json", model.get("index_sha256")),
     ):
-        if file_sha256(model_root / name) != validate_sha256(
-            expected, f"model.{name}"
-        ):
+        if file_sha256(model_root / name) != validate_sha256(expected, f"model.{name}"):
             raise GuardError(f"model file drift: {name}")
     engine = Path(str(contract.get("engine", {}).get("vllm_executable", "")))
     if file_sha256(engine) != validate_sha256(
@@ -545,11 +534,7 @@ def run_guarded(
         token_removed = remove_owned_token(token_file, owner_token)
         emit(
             {
-                "status": (
-                    "FALLBACK_REQUIRED"
-                    if token_removed
-                    else "TOKEN_CLEANUP_FAILED"
-                ),
+                "status": ("FALLBACK_REQUIRED" if token_removed else "TOKEN_CLEANUP_FAILED"),
                 "reason": acquired.get("reason", "SHARED_GPU_LEASE_UNAVAILABLE"),
                 "request_id": request_id,
                 "session_id": SESSION_ID,
@@ -602,11 +587,7 @@ def run_guarded(
         token_removed = remove_owned_token(token_file, owner_token)
         emit(
             {
-                "status": (
-                    "FALLBACK_REQUIRED"
-                    if token_removed
-                    else "TOKEN_CLEANUP_FAILED"
-                ),
+                "status": ("FALLBACK_REQUIRED" if token_removed else "TOKEN_CLEANUP_FAILED"),
                 "reason": "GPU_PROCESS_RACE_AFTER_LEASE",
                 "request_id": request_id,
                 "session_id": SESSION_ID,
@@ -649,9 +630,7 @@ def run_guarded(
                 "MASKFACTORY_SHARED_GPU_GUARD_JOB_ID": job_id,
                 "MASKFACTORY_SHARED_GPU_GUARD_PAYLOAD_SHA256": payload_sha256,
                 "MASKFACTORY_SHARED_GPU_GUARD_REQUEST_ID": request_id,
-                "MASKFACTORY_SHARED_GPU_GUARD_RECEIPT_ROOT": str(
-                    Path(receipt_root).resolve()
-                ),
+                "MASKFACTORY_SHARED_GPU_GUARD_RECEIPT_ROOT": str(Path(receipt_root).resolve()),
             }
         )
         child = subprocess.Popen(
@@ -697,9 +676,7 @@ def run_guarded(
     if returncode == 0:
         terminal_reason = "MaskFactory guarded local GPU command completed"
     elif returncode == CHILD_TIMEOUT:
-        terminal_reason = (
-            "MaskFactory guarded local GPU command exceeded its atomic runtime"
-        )
+        terminal_reason = "MaskFactory guarded local GPU command exceeded its atomic runtime"
     elif heartbeat_errors:
         terminal_reason = "MaskFactory shared GPU lease heartbeat failed"
     else:

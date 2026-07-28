@@ -1,0 +1,40 @@
+{
+  "admission_ready": false,
+  "any_source_admitted_live": false,
+  "builder_discovers_holdout_ablation_report": true,
+  "doctor_green_claimed": false,
+  "fixture_report_seal_sha256": "822787c93a3485587ddfde3d8c787d3be4a895e02306b83c2d742b2cc9220ad6",
+  "gold_claimed": false,
+  "implementation": {
+    "module": "src/maskfactory/external_supervision_holdout_ablation.py",
+    "schema": "src/maskfactory/schemas/external_supervision_holdout_ablation_report.schema.json",
+    "tests": [
+      "tests/test_external_supervision_holdout_ablation.py",
+      "tests/test_training_launch.py"
+    ],
+    "wires": [
+      "src/maskfactory/datasets/builder.py",
+      "src/maskfactory/training/launch.py",
+      "src/maskfactory/external_supervision_packages.py"
+    ]
+  },
+  "items": [
+    "MF-P9-13.08",
+    "MF-P9-13.06",
+    "MF-P9-13.07"
+  ],
+  "launcher_requires_bound_report_for_ablation_active": true,
+  "live_holdout_executed": false,
+  "main_complete_claimed": false,
+  "production_evidence_pass_claimed": false,
+  "proof_tier": "STATIC_PASS",
+  "pytest_exit_code": 0,
+  "pytest_summary": [
+    "......................                                                   [100%]"
+  ],
+  "result": "pass_holdout_ablation_builder_launcher_training_authority_static",
+  "sample_truth_propagates_ablation_active_and_label_names": true,
+  "schema": "external_supervision_holdout_ablation_report",
+  "sha256": "ae95729b8851efbc74a6c87bc47a0cb5c1198884b736768c50401550c9c506d6",
+  "visual_qa_pass_claimed": false
+}

@@ -1,0 +1,104 @@
+{
+  "artifact_type": "data_junction_readable_reverify",
+  "authority": [
+    "qa/live_verification/docker_relocation_f_absent_blocked_20260720T1435Z.json",
+    "Plan/OPS_LOG.md (2026-07-20 14:35 UTC data/ junction repaired to C: backup)"
+  ],
+  "branch": "codex/maskfactory-runtime-implementation",
+  "c_backup_retained": true,
+  "c_free_gib": 91.22,
+  "claims_not_established": [
+    "docker_vhdx_relocated_to_f",
+    "f_drive_restored",
+    "doctor_all_green",
+    "disk_free_above_75_gib_floor_durably"
+  ],
+  "f_free_gib": 181.21,
+  "f_present": true,
+  "honesty": [
+    "This is a read-only re-verification of an already-completed sibling restore, not a new restore action.",
+    "F: is still physically absent; durable off-C: storage still needs a permanent fixed second disk (Kevin action)."
+  ],
+  "junction": {
+    "is_reparse_point": true,
+    "observed_realpaths_this_session": [
+      "C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated",
+      "F:\\MaskFactory_DataRelocated",
+      "C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated"
+    ],
+    "path": "C:\\Comfy_UI_Main_Masking\\data",
+    "realpath_at_seal": "C:\\Comfy_UI_Main_Masking\\data_c_backup_relocated",
+    "resolves_on_c": true,
+    "resolves_on_f": false,
+    "target_flap_observed": true
+  },
+  "local_date": "2026-07-20",
+  "maskfactory_reindex_dry_run": {
+    "clean": false,
+    "exit_code": 0,
+    "extra_in_db": [],
+    "interpretation": "No packages missing_in_db or extra_in_db => maskfactory reads every restored package. The lone stale_rows entry is a benign sub-second updated_at drift, not an outage artifact.",
+    "missing_in_db": [],
+    "stale_rows": {
+      "img_cdab0311dc96": {
+        "updated_at": {
+          "database": "2026-07-14T00:24:32.787628+00:00",
+          "manifest": "2026-07-14T00:24:32.693291+00:00"
+        }
+      }
+    }
+  },
+  "packages": {
+    "count": 8,
+    "names": [
+      "img_2ca794d19be9",
+      "img_51945db358cb",
+      "img_6d6bb33f01a1",
+      "img_7b7a3c7d5dd3",
+      "img_a3d2663ad90d",
+      "img_b2b46c45d8e0",
+      "img_cdab0311dc96",
+      "img_e5163e08baac"
+    ],
+    "sample_readback": {
+      "bytes_sampled": 214133653,
+      "files": 372,
+      "files_stat_ok": 372,
+      "package": "img_2ca794d19be9"
+    }
+  },
+  "premise": "F: is a REMOVABLE drive. It was physically absent earlier this session (dangling data/ -> F:\\MaskFactory_DataRelocated junction), was repointed to the on-C: backup data_c_backup_relocated, and F: subsequently REAPPEARED. The junction target was observed flapping between the C: backup and F: as concurrent sibling sessions and the drive's presence changed. Both targets hold the same 8 packages, so package readability held continuously; this seal verifies that end-to-end via maskfactory.",
+  "project_head_at_authoring": "ddbb0d43eb079ece8c3047f368ccd8c1747bdf9a",
+  "recorded_at": "2026-07-20T14:41:29.245149Z",
+  "restore_properties": {
+    "mutation_performed": false,
+    "performed_by": "sibling session repointed junction; this session independently re-verified readability",
+    "prune_performed": false,
+    "reverse_procedure": "Remove-Item data (junction only); Rename-Item data_c_backup_relocated data  OR  repoint junction back to F: if the drive returns.",
+    "reversible": true,
+    "wipe_performed": false
+  },
+  "schema_version": "1.0.0",
+  "self_sha256": "299bd06caf5b32793868d6ef867795f725803c5bb54c32aa72706893a0bc633c",
+  "sqlite_index": {
+    "opened_ok": true,
+    "path": "C:\\Comfy_UI_Main_Masking\\data\\maskfactory.sqlite",
+    "row_counts": {
+      "images": 24,
+      "review_tasks": 0,
+      "stage_runs": 0,
+      "training_runs": 0
+    },
+    "tables": [
+      "images",
+      "stage_runs",
+      "review_tasks",
+      "training_runs"
+    ]
+  },
+  "target_readability": {
+    "c_backup_packages": 8,
+    "f_target_packages": 8,
+    "note": "Both candidate junction targets checked directly (independent of instantaneous junction state)."
+  }
+}

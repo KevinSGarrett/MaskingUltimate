@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-13T11:06:02.5044991Z",
+  "outcome": "pass",
+  "scope": "progressive_autonomy_prepublication_hardening",
+  "repairs": [
+    {
+      "defect": "autonomy certificates were scoped only to the VLM gate fingerprint",
+      "resolution": "bind the gate plus source tree, configs, model registry, dependency lock, and project manifest",
+      "regression": "test_pipeline_fingerprint_binds_gate_and_every_component"
+    },
+    {
+      "defect": "label/context revocation markers could overwrite a different pipeline fingerprint",
+      "resolution": "use collision-free pipeline-fingerprint-specific markers while honoring legacy markers",
+      "regression": "test_revocations_preserve_multiple_pipeline_fingerprints_for_one_scope"
+    },
+    {
+      "defect": "ontology-v2 no-go report lagged the live failure queue by two records",
+      "resolution": "refresh record count, QC distribution, and exact queue SHA-256",
+      "regression": "test_ontology_v2_no_go_matches_live_failure_evidence"
+    }
+  ],
+  "authority_invariants": {
+    "machine_status_is_human_gold": false,
+    "approved_gold_count_changed": false,
+    "human_review_gate_changed": false,
+    "cloud_call_executed": false
+  },
+  "verification": {
+    "full_pytest_passed": 750,
+    "ruff": "pass",
+    "black_version": "26.5.1",
+    "black_checked_files": 297,
+    "black": "pass"
+  },
+  "files": [
+    {
+      "path": "src/maskfactory/autonomy/calibration.py",
+      "sha256": "52fa23040d7d8d36d16b0f5d3dc810a5133e399baa0c40a9745b3fa1a127cfe1"
+    },
+    {
+      "path": "src/maskfactory/autonomy/lifecycle.py",
+      "sha256": "cf7800da2cba7ff3d10b3603acb74f65f39b737d9dd001e8dcda48576634b5d4"
+    },
+    {
+      "path": "src/maskfactory/autonomy/operations.py",
+      "sha256": "25b427cab4bc3b9bb5fcfbfd331f2a0427809132bd335b4cae91cbf339c7d1a8"
+    },
+    {
+      "path": "src/maskfactory/vlm/production.py",
+      "sha256": "69ef22e4d84cc3d1efc5b438bd7bc4d8f3aa6f648d83c9965abcffee4330367f"
+    },
+    {
+      "path": "tests/test_autonomy.py",
+      "sha256": "38f6cb98aee310cdde56cfcb4edd4b29c0a6bd51b9a7681a98412c5caa78a395"
+    },
+    {
+      "path": "qa/reports/ontology_v2_evidence_review_2026-07-12.json",
+      "sha256": "153d3edac1a0ea8397d07ddeddb51fd879d6342b45f5d219c38b1533df10b1a2"
+    },
+    {
+      "path": "qa/failure_queue.jsonl",
+      "sha256": "05d7817e65b876a6bb607dcea61d344abadcef5ce8015e1accf70f105f86ef39"
+    }
+  ]
+}

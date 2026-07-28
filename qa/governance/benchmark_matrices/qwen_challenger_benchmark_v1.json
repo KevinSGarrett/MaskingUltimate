@@ -1,0 +1,101 @@
+{
+  "schema_version": "1.0.0",
+  "policy_id": "qwen_challenger_benchmark_v1",
+  "frozen_at": "2026-07-15T08:42:06Z",
+  "eligible_truth": {
+    "authority": "human_anchor_gold",
+    "partition": "holdout",
+    "image_disjoint": true
+  },
+  "datasets": [
+    "teacher_holdout",
+    "local_40_panel",
+    "incremental_200"
+  ],
+  "high_risk_contexts": [
+    "serious_anatomy_swap",
+    "missing_part",
+    "neighbor_or_person_contamination",
+    "clothing_skin_boundary",
+    "hair",
+    "hands_or_fingers",
+    "feet_or_toes",
+    "occlusion",
+    "multi_person_contact",
+    "good_mask"
+  ],
+  "providers": [
+    "qwen2_5_vl_7b",
+    "qwen3_vl_4b",
+    "qwen3_vl_8b_quantized"
+  ],
+  "challengers": [
+    "qwen3_vl_4b",
+    "qwen3_vl_8b_quantized"
+  ],
+  "incumbent": "qwen2_5_vl_7b",
+  "rollback_provider": "qwen2_5_vl_7b",
+  "fallback_provider": "llava_13b",
+  "generation_options": {
+    "temperature": 0,
+    "seed": 1337,
+    "num_predict": 192,
+    "num_ctx": 4096,
+    "think": false
+  },
+  "provider_identities": {
+    "qwen2_5_vl_7b": {
+      "model": "qwen2.5vl:7b",
+      "manifest_sha256": "5ced39dfa4bac325dc183dd1e4febaa1c46b3ea28bce48896c8e69c1e79611cc",
+      "model_blob_sha256": "5ced39dfa4bac325dc183dd1e4febaa1c46b3ea28bce48896c8e69c1e79611cc",
+      "source_revision": "ollama:qwen2.5vl:7b@5ced39dfa4ba",
+      "prompt_identity_sha256": "2ffd407978a2f25c8e5f461ceb90f71a9acd35cc94dfed87419e46de5364365e",
+      "runtime_lock_sha256": "2054dacc31ae016a2706c64da4f3bd4ca61bdb6a22ca4f071706834b164ce678",
+      "candidate_kind": "incumbent_base_model"
+    },
+    "qwen3_vl_4b": {
+      "model": "qwen3-vl:4b-instruct-q4_K_M",
+      "manifest_sha256": "ee4b975b58c17ce268cd19d40db35d5edc64603035d2ffc1fee1968eb0947f7b",
+      "model_blob_sha256": "16b83be682148a4d8201dbf720ea7eace5de98b69f63f05e0c908b4d7977ecb5",
+      "source_revision": "1cd86afb9a95c410a6038ab3b40d8b578c892266",
+      "prompt_identity_sha256": "2ffd407978a2f25c8e5f461ceb90f71a9acd35cc94dfed87419e46de5364365e",
+      "runtime_lock_sha256": "aaf88cbe3e0b41969096e85b184a837f5c69e19b505f93c4c3846c52b890a059",
+      "candidate_kind": "challenger_base_model"
+    },
+    "qwen3_vl_8b_quantized": {
+      "model": "qwen3-vl:8b-instruct-q4_K_M",
+      "manifest_sha256": "0533d74300e4f9bc367d675d4e64ffd073d50ff16a2b4096cc2e8a1cf8c96319",
+      "model_blob_sha256": "1329cd5ab37e5ef6faef37cd8ff8660ffc96ed5b47b34fddf8eb0912e6c82466",
+      "source_revision": "f982a07559d4a2f6c8744d840bf6fccab30eea96",
+      "prompt_identity_sha256": "2ffd407978a2f25c8e5f461ceb90f71a9acd35cc94dfed87419e46de5364365e",
+      "runtime_lock_sha256": "aaf88cbe3e0b41969096e85b184a837f5c69e19b505f93c4c3846c52b890a059",
+      "candidate_kind": "challenger_base_model"
+    }
+  },
+  "pass_requirements": {
+    "minimum_serious_defect_recall": 0.95,
+    "minimum_overall_defect_recall": 0.9,
+    "minimum_precision": 0.8,
+    "maximum_false_pass_rate": 0.02,
+    "minimum_correction_usefulness": 0.7,
+    "minimum_recall_improvement_over_incumbent": 0.01,
+    "minimum_reviewer_time_reduction_fraction": 0.05,
+    "maximum_warm_latency_regression_fraction": 0.5,
+    "maximum_peak_vram_bytes": 8589934592,
+    "required_deterministic_repeats": 2
+  },
+  "source_hashes": {
+    "configs/cloud_teacher.yaml": "80f1d7496e42be2ebf8b802a3e597c1c819970820cfb39f5da1dbcc4b2171594",
+    "configs/external_sources.yaml": "e3cba6fc8ada84c014203efa2e30f6deb1ee8376a4b1bb0fa2ea213bff62e119",
+    "configs/vlm.yaml": "234d979a3debacb77fc6e4a6d3dfe3193e65e286036fc8ad215de8ee6aeafb49",
+    "env/qwen3_vl_ollama.lock.json": "fed13b69dd13ad3089fe5e6e0e3a41d6c14125b8d95c9c20960fc85cbf678fdc",
+    "models/model_registry.json": "799cba987a44cf638f10413f7871951864e4d8aad1003ab0780fe60e778594f7",
+    "src/maskfactory/providers/qwen3_vl.py": "f95ee49780ab41ee43b0ce9ba392fd4251e445ea1d8dc088722d06d48f6352a9",
+    "src/maskfactory/vlm/client.py": "7d2b14b64b8d58f3cee9e4dd2cb7c79a58dcba0493acf9009903368718439bc5",
+    "src/maskfactory/vlm/cloud_teacher.py": "554a38e958e10fde2820079550b6f8fb93f7d0bdf716ac1ffea87b46f566ad0a",
+    "src/maskfactory/vlm/eval.py": "3545daad88d3b5c4d018493b4f1588e23a2de0882d1e2692d8cbb50e76bf981c",
+    "src/maskfactory/vlm/prompts/p_workhorse.txt": "2ffd407978a2f25c8e5f461ceb90f71a9acd35cc94dfed87419e46de5364365e"
+  },
+  "authority": "pre_result_policy_only_no_provider_mask_gold_or_block_clearance_authority",
+  "sha256": "b51cbc7af9d80cce6cb55aabd36614aa16e1c4a03104e225e4e256e68aaf4a9d"
+}

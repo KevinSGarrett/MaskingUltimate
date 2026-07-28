@@ -1,0 +1,18 @@
+ops(f-restore): confirm F: back online; seal f_drive_restored; unblock DAZ/data/WSL
+
+Kevin reports removable F: is back after the 2026-07-20 14:35Z F-absent hard stop.
+Re-verified live (non-elevated):
+- F: online, 181.21 GiB free; F:\MaskFactory_Offload_20260714 + F:\MaskFactory_DataRelocated intact; F:\DAZ reachable (26 entries).
+- data/ junction resolves (8 packages, sqlite images=24); currently on the on-C: backup
+  (data_c_backup_relocated) for outage resilience. F: copy identical (8 pkgs + dvc_local_remote).
+  Not auto-moved; repoint to F: is reversible on request.
+- WSL Ubuntu-22.04 wakes HEALTHY: echo ok, kernel 6.18.33.2, / read/write WRITE_OK, exit 0.
+  Honest correction: the prior "ext4 corrupt / Error code 6" was F: being disconnected
+  (the distro vhdx lives on F:), NOT on-disk ext4 damage; that lane is now unblocked.
+
+No mutation, no prune, no volume wipe. F: is still REMOVABLE; durable off-C: Docker VHDX
+relocation still needs a permanent fixed second disk (Kevin). No tier inflation:
+champions=0, gold=0, doctor not all-green, no docker_vhdx_relocated_to_f, no live SAM 3.1 WSL smoke claimed.
+
+Evidence: qa/live_verification/f_drive_restored_20260720T0933Z.json (self_sha256 e0ac39190c38...).
+needs_agent_actions_20260720.json updated (F: online; DAZ/data/WSL unblocked; repair_ubuntu_2204_ext4_vhd -> UNBLOCKED_WSL_HEALTHY_ON_F_RESTORE).

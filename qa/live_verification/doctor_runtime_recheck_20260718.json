@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0.0",
+  "observed_at": "2026-07-18T20:21:11.8157684Z",
+  "item_id": "MF-P0-EXIT",
+  "result": "fail_closed_environment_regression",
+  "doctor": {
+    "command": "python -m maskfactory.cli doctor",
+    "summary": {
+      "pass": 8,
+      "warn": 0,
+      "skip": 0,
+      "fail": 4
+    },
+    "passes": [
+      "cvat_api_version_2.24.0",
+      "cvat_project_count_2",
+      "nuclio_interactor_pth_sam2_foreground_21491",
+      "ollama_qwen2.5vl_7b_strict_image_json",
+      "wsl_backing_store_readable",
+      "png_strict",
+      "sqlite_writable",
+      "gpu_lock_absent"
+    ],
+    "failures": {
+      "torch_cuda": "Ubuntu-22.04 preflight timed out after 10 seconds",
+      "registered_models": "withheld because the shared Ubuntu-22.04 preflight timed out",
+      "disk_free": "doctor observed 22.4 GiB free on the C:-resident data path, below the 75 GiB ingest floor",
+      "wsl_roundtrip": "Ubuntu-22.04 preflight timed out after 10 seconds"
+    }
+  },
+  "windows_observation": {
+    "wsl_version": "2.7.10.0",
+    "wsl_query_behavior": "wsl --status hung after version output; only the two read-only query processes were terminated",
+    "docker_desktop_processes_responsive": true,
+    "wsl_service_responsive": true,
+    "vmmem_and_vmmemwsl_present": true,
+    "c_volume_free_bytes_after_diagnostics": 17069527040,
+    "c_volume_size_bytes": 1021821579264,
+    "f_volume_free_bytes": 205190639616,
+    "f_volume_size_bytes": 2000397881344,
+    "ubuntu_vhd_path": "F:\\MaskFactory_Offload_20260714\\WSL\\Ubuntu-22.04\\ext4.vhdx",
+    "ubuntu_vhd_bytes": 57511247872,
+    "ubuntu_vhd_last_write_utc": "2026-07-18T08:00:43.4347863Z",
+    "ubuntu_vhd_hash_status": "not_readable_for_hash_while_in_use"
+  },
+  "governed_data_move_rehearsal": {
+    "command": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/move_data_to_junction.ps1 -Name data -Target F:\\MaskFactory_Offload_20260714\\MaskFactory\\data",
+    "mode": "rehearsal",
+    "source": "C:\\Comfy_UI_Main_Masking\\data",
+    "source_bytes": 2390915389,
+    "target": "F:\\MaskFactory_Offload_20260714\\MaskFactory\\data",
+    "target_volume_visible": true,
+    "applied": false,
+    "reason_not_applied": "Moving 2.39 GB cannot restore the 75 GiB ingest floor, and the guarded script would roll back on the unrelated current WSL doctor failure."
+  },
+  "implementation_hashes": {
+    "doctor_py_sha256": "27b06457bedd129ff68b6e60d1c78b903284957e2efdb75aa26e0b7ba218f056",
+    "move_data_to_junction_ps1_sha256": "79b7cd4eaa4691ff02b38ede4d1beeb4cb75c2af60f060804ce8ff5d3f12feac"
+  },
+  "safety_boundary": {
+    "new_ingest_allowed": false,
+    "wsl_shutdown_performed": false,
+    "docker_restart_performed": false,
+    "vhd_detach_or_attach_performed": false,
+    "filesystem_repair_performed": false,
+    "data_move_performed": false,
+    "cleanup_or_deletion_performed": false,
+    "preserved_worker_snapshots_or_worktrees_deleted": false
+  },
+  "next_safe_actions": [
+    "Relocate future dispatcher snapshots and worker worktrees from C: to the governed F: volume before launching more copy-heavy workers.",
+    "Preserve all currently sealed/retained worker material until the control-plane owner completes an exact relocation or adoption decision.",
+    "Repair or restart the WSL control path only through the existing backup-first guarded recovery procedure; do not detach the in-use VHD or force a new sharing-violation cycle.",
+    "Rerun doctor after both capacity and WSL control-path recovery; do not infer CUDA/model failure from the suppressed smokes."
+  ],
+  "authority_boundary": "This is a current fail-closed diagnostic. Historical healthy runtime evidence remains valid only at its observation time, and this record grants no permission to delete preserved snapshots, detach the VHD, or claim P0 exit completion."
+}

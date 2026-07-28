@@ -1,0 +1,65 @@
+{
+  "artifact": "sam3d_body_v3_host_adapter_activation",
+  "authority": {
+    "lifecycle_state": "installed_unqualified",
+    "may_author_gold": false,
+    "may_promote_provider": false,
+    "v1_provider_path_accepted": false
+  },
+  "checkpoint": {
+    "assets": [
+      {
+        "filename": "model.ckpt",
+        "sha256": "b5a2f9d305dd02626b967aa2e86021fba07065df66ce7a7e00ffb9664f150abf"
+      },
+      {
+        "filename": "model_config.yaml",
+        "sha256": "1012fc3f39cb5e90e3f8fbadf7bded31604bfafdce0321d17a7c1a2d3f08b88d"
+      },
+      {
+        "filename": "assets/mhr_model.pt",
+        "sha256": "352e271a6c42729c68554ceaea0c955e866970160c31e35506d782dc0f7377bc"
+      }
+    ],
+    "downloaded": true,
+    "local_root": "models/runtime_cache/sam3d_body_checkpoint_11aaa346",
+    "repository_revision": "11aaa346c7204874a1cbafe3d39a979080b2c55a"
+  },
+  "inherits": {
+    "v1_runtime_lock": "env/sam3d_body_runtime.lock.json",
+    "v1_runtime_lock_sha256": "61a8d53e5a08309ca5cf2c879a7bed509ff81422283b5ea31133d6859e4987a3",
+    "v3_repeatability_lock": "env/sam3d_body_repeatability_v3_runtime.lock.json",
+    "v3_repeatability_lock_sha256": "de207f0502299624c266f0325e92cc7c64dca832f6c2239688594237239e7b9f",
+    "v3_runtime_receipt": {
+      "file_sha256": "af2b72af63e9c037a156045ac3652f36b1cd36c6e93b11c7b1ba3b0c7dd72a17",
+      "path": "runtime_artifacts/sam3d_body_repeatability_v3_requalification_control_20260725T150946Z/V3_RUNTIME_RECEIPT.json",
+      "self_sha256": "afe31a4a45f39791df6c7cda352d79acf103885a9221de700a69d01f9841c6ae",
+      "status": "RUNTIME_PASS_BOUNDED_V3_REQUALIFICATION_ONLY"
+    }
+  },
+  "provider": "sam3d_body",
+  "runtime": {
+    "contract": {
+      "host_adapter_role": "shadow_only",
+      "measured_repeats": 2,
+      "non_evaluated_warmup_runs": 1,
+      "numeric_tolerance_allowed": false,
+      "raw_measured_npz_must_match": true,
+      "source_root_import_injection_required": true
+    },
+    "environment_path": "/workspace/maskfactory/runtime_artifacts/sam3d_body_runpod_env",
+    "python": "3.11.10",
+    "repeatability_runtime_lock": "env/sam3d_body_repeatability_v3_runtime.lock.json",
+    "repeatability_runtime_lock_sha256": "de207f0502299624c266f0325e92cc7c64dca832f6c2239688594237239e7b9f",
+    "runner": "tools/run_sam3d_body_repeatability_v3.py",
+    "runner_sha256": "54f2d9f8b12daa444531b43ca250ff2134feec951568f75c44594d2a90b85dfb",
+    "torch": "2.10.0+cu128"
+  },
+  "schema_version": "1.0.0",
+  "source": {
+    "commit": "b5c765a0d89d789985e186d396315e7590887b94",
+    "local_path": "models/runtime_cache/sam-3d-body_b5c765a",
+    "tree": "7b5a2a23619659a679d64f096201c6504cbebe30"
+  },
+  "status": "runtime_pass_bounded_v3_host_adapter_static_contract_pending"
+}

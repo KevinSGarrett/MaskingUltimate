@@ -1,0 +1,120 @@
+{
+  "authority": "shadow_advisory_human_approval_required",
+  "image_id": "img_cdab0311dc96",
+  "instance_id": "p0",
+  "judgments": [
+    {
+      "confidence": 0.99,
+      "correction": {
+        "negative_points": [
+          [
+            500,
+            80
+          ],
+          [
+            750,
+            180
+          ],
+          [
+            900,
+            300
+          ],
+          [
+            950,
+            500
+          ],
+          [
+            150,
+            250
+          ],
+          [
+            300,
+            300
+          ],
+          [
+            620,
+            300
+          ],
+          [
+            780,
+            420
+          ]
+        ],
+        "polygon": [],
+        "positive_points": [
+          [
+            220,
+            520
+          ],
+          [
+            350,
+            600
+          ],
+          [
+            520,
+            680
+          ],
+          [
+            700,
+            760
+          ],
+          [
+            820,
+            840
+          ],
+          [
+            900,
+            880
+          ],
+          [
+            650,
+            500
+          ],
+          [
+            430,
+            400
+          ]
+        ],
+        "rationale": "Use positive points distributed through the ankle, instep, midfoot, forefoot, and toes, with negative points in the gray background and around the rectangular artifact regions. SAM refinement is safer than a polygon because the toe separations and ankle contour are detailed, while the correct character-perspective side should be verified by a human.",
+        "tool": "points"
+      },
+      "defects": [
+        "includes_background",
+        "boundary_too_loose",
+        "wrong_side",
+        "other"
+      ],
+      "evidence": "Localized evidence is the gray-background wedge and block artifacts above the instep/ankle, plus the implausible internal boundary. The full-person chain also raises a character-left/right assignment conflict, so this should not pass deterministic QA.",
+      "latency_ms": 12217,
+      "model": "gpt-5.6-luna",
+      "observations": {
+        "contour": "The contour follows the outer foot and toe silhouette in places, but has implausible straight segments, large excursions into background, and an incorrect internal curved boundary across the ankle/upper foot.",
+        "full_context": "The foreground foot is the visible target candidate, but the pose and crossed-leg chain make character-perspective side assignment inconsistent with the proposed right_foot_base label; human side verification is warranted.",
+        "mask": "The mask covers most of the foot, but also contains a large background wedge above the instep and multiple rectangular/block-shaped background inclusions near the upper and right edges. It is not a clean single anatomical component.",
+        "neighbor_overlap": "The mask appears to extend beyond the foot into surrounding background and may include adjacent ankle/lower-leg area; no clothing is visible in this crop.",
+        "overlay": "Red overlay visibly spills into gray background above the foot and has stepped rectangular protrusions around the ankle and instep; the foot boundary is otherwise approximately covered.",
+        "source_crop": "The crop clearly shows one bare foot and ankle against a gray background. The visible foot extends from the ankle at the upper-left through the toes at the lower-right."
+      },
+      "provider": "openai",
+      "response_sha256": "47d3d936b89720f7174e085c688ee68edebdceedc0e9efb6d686c5abc6133933",
+      "usage": {
+        "cost_usd": 0.014092,
+        "input_tokens": 9382,
+        "output_tokens": 785
+      },
+      "verdict": "fail"
+    }
+  ],
+  "label": "right_foot_base",
+  "local_audit": {
+    "deterministic_overrides": [
+      "component_count_exceeds_ontology"
+    ],
+    "final_verdict": "fail",
+    "model": "qwen2.5vl:7b",
+    "model_verdict": "pass"
+  },
+  "schema_version": "1.0.0",
+  "sha256": "5c3671a11c806547eb9b05ed02ed0af63cf2d74c8dc31f270ecb94314f50f2c2",
+  "source_sha256": "d962e914116cdd97d00187c313fe94c99e9e725ab50d38b79d203f1ed47bae43"
+}

@@ -1,0 +1,59 @@
+{
+  "artifact_type": "needs_agent_actions_reprioritization_brief",
+  "at": "2026-07-20T14:31:00Z",
+  "authority": "agent_executable_action_queue_zero_human_wait_states",
+  "claims_not_established": [
+    "PRODUCTION_EVIDENCE_PASS",
+    "champions>0",
+    "autonomous_certified_gold"
+  ],
+  "disk_repair": {
+    "action_id": "disk_headroom_above_75_gib",
+    "basis": "C: free 91.71 GiB, above the 75 GiB repair/ingest floor (host_snapshot.c_above_75_repair_floor=true); Docker engine UP (32 running containers; production CVAT v2.24 + nuclio-pth-sam2 healthy; Ollama 0.32.1).",
+    "status": "DONE"
+  },
+  "host_snapshot": {
+    "c_above_75_repair_floor": true,
+    "c_free_gib": 91.71,
+    "champions": 0,
+    "cvat_about_http": 200,
+    "data_drive": "F:\\MaskFactory_DataRelocated (junction from data/); ~249 GiB free",
+    "docker_engine": "UP (32 running containers; production CVAT v2.24 + cvat269 rehearsal + nuclio/nuclio-pth-sam2 healthy)",
+    "gold": 0,
+    "ollama_version": "0.32.1"
+  },
+  "live_priorities_this_wave": [
+    {
+      "action_id": "retry_serve_cu128_build_and_containerized_smoke",
+      "rank": 1,
+      "status": "AGENT_EXECUTABLE_NOW"
+    },
+    {
+      "action_id": "build_train_cu128_and_training_doctor",
+      "rank": 2,
+      "status": "AGENT_EXECUTABLE_NOW"
+    },
+    {
+      "action_id": "multi_provider_gpu_tournament_toward_autonomous_gold",
+      "rank": 3,
+      "status": "AGENT_EXECUTABLE_NOW_INSUFFICIENT_SAMPLES"
+    },
+    {
+      "action_id": "main_adoption_isolated_consumer_hard_blockers",
+      "rank": 4,
+      "status": "PRODUCER_VERIFIED_AGENT_EXECUTABLE_IN_MAIN"
+    },
+    {
+      "action_id": "repair_ubuntu_2204_ext4_vhd",
+      "rank": 5,
+      "status": "AGENT_EXECUTABLE_FROM_ELEVATED_SHELL_SUBSTITUTE_ACTIVE"
+    }
+  ],
+  "note": "Disk repair confirmed DONE; serve/train/tournament re-ranked to top-3 (1=serve cu128 build+containerized smoke, 2=train cu128 build+training-doctor, 3=multi-provider GPU tournament toward autonomous gold) per explicit instruction. No tier inflation: champions=0, gold=0 unchanged; this is a queue/priority update only, not a runtime or certification claim.",
+  "project_head_before_this_wave": "139b4536",
+  "queue_source": {
+    "path": "qa/live_verification/needs_agent_actions_20260720.json",
+    "self_sha256": "2f4dcc76d511bf52cbc2fd5074cf7c7c312c52edb836b7b268ecfb34a67cd24b"
+  },
+  "self_sha256": "a51849f3cc566be5ebaf4199c6e408143c16cc9e1c28224a1f019daa84e69bb9"
+}

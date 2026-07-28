@@ -1,0 +1,1286 @@
+{
+  "cases": [
+    {
+      "case_id": "vc_001_valid",
+      "context_tags": [
+        "contact",
+        "occlusion"
+      ],
+      "defect_type": null,
+      "expected_outcome": "valid_mask",
+      "panel_files": {
+        "binary_mask": "panels/vc_001_valid/binary_mask.png",
+        "contour": "panels/vc_001_valid/contour.png",
+        "full_context": "panels/vc_001_valid/full_context.png",
+        "overlay": "panels/vc_001_valid/overlay.png",
+        "source": "panels/vc_001_valid/source.png",
+        "uncertainty_zoom": "panels/vc_001_valid/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "4d15733a3194096811a4ee3b72c7e4f4237cb9cdbdd0d972f870307b332a6592",
+      "panels": {
+        "binary_mask": "c97f73ddf480cbf3bf189d6006d8e265d5da73b335d7f08361bbeefb1db06c84",
+        "contour": "3a343889a0cdae1f247caa619aaa10fdd1e1ef4d35aa5c67122f98458d400288",
+        "full_context": "3f5eb6c1948db67769318579774c0b0f79363ef517cf0c8472f1cdb3719a7a15",
+        "overlay": "32b565d5885db2422e278c45811066420c492d31cc45972889b21badf9bc429a",
+        "source": "3f5eb6c1948db67769318579774c0b0f79363ef517cf0c8472f1cdb3719a7a15",
+        "uncertainty_zoom": "32b565d5885db2422e278c45811066420c492d31cc45972889b21badf9bc429a"
+      },
+      "partition": "calibration",
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "c97f73ddf480cbf3bf189d6006d8e265d5da73b335d7f08361bbeefb1db06c84",
+          "width": 128
+        },
+        "contract_id": "target-vc_001_valid",
+        "contract_sha256": "bd3d34ef4bb7d7c1c85b317d414841a7e9d97cd6b735457613efb471f9e7dd39",
+        "excluded_labels": [
+          "right_hand"
+        ],
+        "owner": {
+          "character_instance_id": "character-vc_001_valid",
+          "person_index": 0,
+          "person_mask_sha256": "4cf8b7562b74cc37ad38db6a902c23dc7e254761297943d2dec448a26ba4f6b3"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vc_001_valid",
+          "sha256": "3f5eb6c1948db67769318579774c0b0f79363ef517cf0c8472f1cdb3719a7a15",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "left_hand",
+          "maximum_area_pixels": 4096,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vc_002_anatomy",
+      "context_tags": [
+        "hand"
+      ],
+      "defect_type": "anatomy",
+      "expected_outcome": "known_defect",
+      "panel_files": {
+        "binary_mask": "panels/vc_002_anatomy/binary_mask.png",
+        "contour": "panels/vc_002_anatomy/contour.png",
+        "full_context": "panels/vc_002_anatomy/full_context.png",
+        "overlay": "panels/vc_002_anatomy/overlay.png",
+        "source": "panels/vc_002_anatomy/source.png",
+        "uncertainty_zoom": "panels/vc_002_anatomy/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "6e58ae071ce8b0460be894cae7f29741b16cefca0789a9f90be53c91f63b6052",
+      "panels": {
+        "binary_mask": "ea3fad3281d55694ad428e0f1c1f16db4514739411e811bc7f2e3f1e86a2b72e",
+        "contour": "5c2b205516890ffca00c7880ce012262e16edfdace52d7bc0d1371f87e248bd5",
+        "full_context": "f2f637567b43aef9219327d0830677eab840a56a220e1203332a3c184960380a",
+        "overlay": "a8737aa60ba7720b42d869ebe74eb1fd2db0022f898af7fa0ee17e2674fe9223",
+        "source": "f2f637567b43aef9219327d0830677eab840a56a220e1203332a3c184960380a",
+        "uncertainty_zoom": "a8737aa60ba7720b42d869ebe74eb1fd2db0022f898af7fa0ee17e2674fe9223"
+      },
+      "partition": "calibration",
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "ea3fad3281d55694ad428e0f1c1f16db4514739411e811bc7f2e3f1e86a2b72e",
+          "width": 128
+        },
+        "contract_id": "target-vc_002_anatomy",
+        "contract_sha256": "3107f5ed63a297c0bb1d29506ef7eebb2ac7cb9b2fc4733e73bcaf298786a987",
+        "excluded_labels": [
+          "right_hand"
+        ],
+        "owner": {
+          "character_instance_id": "character-vc_002_anatomy",
+          "person_index": 0,
+          "person_mask_sha256": "4cf8b7562b74cc37ad38db6a902c23dc7e254761297943d2dec448a26ba4f6b3"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vc_002_anatomy",
+          "sha256": "f2f637567b43aef9219327d0830677eab840a56a220e1203332a3c184960380a",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "left_hand",
+          "maximum_area_pixels": 4096,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vc_003_boundary",
+      "context_tags": [
+        "hair"
+      ],
+      "defect_type": "boundary",
+      "expected_outcome": "known_defect",
+      "panel_files": {
+        "binary_mask": "panels/vc_003_boundary/binary_mask.png",
+        "contour": "panels/vc_003_boundary/contour.png",
+        "full_context": "panels/vc_003_boundary/full_context.png",
+        "overlay": "panels/vc_003_boundary/overlay.png",
+        "source": "panels/vc_003_boundary/source.png",
+        "uncertainty_zoom": "panels/vc_003_boundary/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "172814c3b7cdb169470c11c222f2bacaf32789e7c05ab84d7cd07873fa521e7e",
+      "panels": {
+        "binary_mask": "35ce883f0536439ac0fd243c66c79fc72ff0ebf81baaeeedbcc7c58c3a1b1c78",
+        "contour": "167c2289d8e1723badb439a7fc699323eba978c87b07d16ae7f8aff8dd4b8b2d",
+        "full_context": "3f4de83356dabd1dcb5f2f27664e95576edfa760b1c8d3b137226693ee7b8e5d",
+        "overlay": "3bedd98b9469d7d593dbe9ef0d488b987134a6ab6fbafea05db5326f45faefdc",
+        "source": "3f4de83356dabd1dcb5f2f27664e95576edfa760b1c8d3b137226693ee7b8e5d",
+        "uncertainty_zoom": "3bedd98b9469d7d593dbe9ef0d488b987134a6ab6fbafea05db5326f45faefdc"
+      },
+      "partition": "calibration",
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "35ce883f0536439ac0fd243c66c79fc72ff0ebf81baaeeedbcc7c58c3a1b1c78",
+          "width": 128
+        },
+        "contract_id": "target-vc_003_boundary",
+        "contract_sha256": "22ca106be086368602270429cf194017d563e892add9d3b84483fd06741572b5",
+        "excluded_labels": [
+          "right_hand"
+        ],
+        "owner": {
+          "character_instance_id": "character-vc_003_boundary",
+          "person_index": 0,
+          "person_mask_sha256": "4cf8b7562b74cc37ad38db6a902c23dc7e254761297943d2dec448a26ba4f6b3"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vc_003_boundary",
+          "sha256": "3f4de83356dabd1dcb5f2f27664e95576edfa760b1c8d3b137226693ee7b8e5d",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "left_hand",
+          "maximum_area_pixels": 4096,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vc_004_flood",
+      "context_tags": [
+        "crop"
+      ],
+      "defect_type": "flood",
+      "expected_outcome": "known_defect",
+      "panel_files": {
+        "binary_mask": "panels/vc_004_flood/binary_mask.png",
+        "contour": "panels/vc_004_flood/contour.png",
+        "full_context": "panels/vc_004_flood/full_context.png",
+        "overlay": "panels/vc_004_flood/overlay.png",
+        "source": "panels/vc_004_flood/source.png",
+        "uncertainty_zoom": "panels/vc_004_flood/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "630682fc89e5e35f7a3e304c9a17801efe6916ddf19249326541d833dc666bfa",
+      "panels": {
+        "binary_mask": "2dcec291eb0e91279ee28c5837be1310065431b4146202ba4d6f8c5fb3e1a291",
+        "contour": "fe316628e6332fec509f3e3e0821e4b56290fc6142d91f14002f050b4975cb01",
+        "full_context": "1ff231f7bb96a5aa5880ece39274b7cf4d5bafdb120506a119b3878ab0df087f",
+        "overlay": "2890f209315f320e9eb574e906560c26e60c1a630fb02736c9a8cfc478041103",
+        "source": "1ff231f7bb96a5aa5880ece39274b7cf4d5bafdb120506a119b3878ab0df087f",
+        "uncertainty_zoom": "2890f209315f320e9eb574e906560c26e60c1a630fb02736c9a8cfc478041103"
+      },
+      "partition": "calibration",
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "2dcec291eb0e91279ee28c5837be1310065431b4146202ba4d6f8c5fb3e1a291",
+          "width": 128
+        },
+        "contract_id": "target-vc_004_flood",
+        "contract_sha256": "5c2c33fb933ccc4832c8f1a21d9c264c4f6512b1bb782d160f78fa392a9a5dbe",
+        "excluded_labels": [
+          "right_hand"
+        ],
+        "owner": {
+          "character_instance_id": "character-vc_004_flood",
+          "person_index": 0,
+          "person_mask_sha256": "4cf8b7562b74cc37ad38db6a902c23dc7e254761297943d2dec448a26ba4f6b3"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vc_004_flood",
+          "sha256": "1ff231f7bb96a5aa5880ece39274b7cf4d5bafdb120506a119b3878ab0df087f",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "left_hand",
+          "maximum_area_pixels": 4096,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vc_005_leakage",
+      "context_tags": [
+        "multi_person"
+      ],
+      "defect_type": "leakage",
+      "expected_outcome": "known_defect",
+      "panel_files": {
+        "binary_mask": "panels/vc_005_leakage/binary_mask.png",
+        "contour": "panels/vc_005_leakage/contour.png",
+        "full_context": "panels/vc_005_leakage/full_context.png",
+        "overlay": "panels/vc_005_leakage/overlay.png",
+        "source": "panels/vc_005_leakage/source.png",
+        "uncertainty_zoom": "panels/vc_005_leakage/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "0b6db1506aacc75fc1e60d1e46a35cad0ee19fbc3f29c363ee66db23faa47a52",
+      "panels": {
+        "binary_mask": "dc282caeca8b7b57410a00a253b20dd0711ab299e78013cc8ed2dbe580c9e756",
+        "contour": "62c55b2d7bae9aa2ce7c869cbb3fc77ec140d22e830f15b24360424d2c968f50",
+        "full_context": "4afef403f9237abcf88a0ee8cd23db94dfe450c435bdaea2200acb7f89e19452",
+        "overlay": "17afe3aebf68c8e6e543bc63bc12315df527209416c406422c56ab9dc0b58889",
+        "source": "4afef403f9237abcf88a0ee8cd23db94dfe450c435bdaea2200acb7f89e19452",
+        "uncertainty_zoom": "17afe3aebf68c8e6e543bc63bc12315df527209416c406422c56ab9dc0b58889"
+      },
+      "partition": "calibration",
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "dc282caeca8b7b57410a00a253b20dd0711ab299e78013cc8ed2dbe580c9e756",
+          "width": 128
+        },
+        "contract_id": "target-vc_005_leakage",
+        "contract_sha256": "c4e906ebce9a11cea029432ed2a6b2f2fd1a3fa6f14f33487bad8301800a2cdb",
+        "excluded_labels": [
+          "right_hand"
+        ],
+        "owner": {
+          "character_instance_id": "character-vc_005_leakage",
+          "person_index": 0,
+          "person_mask_sha256": "4cf8b7562b74cc37ad38db6a902c23dc7e254761297943d2dec448a26ba4f6b3"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vc_005_leakage",
+          "sha256": "4afef403f9237abcf88a0ee8cd23db94dfe450c435bdaea2200acb7f89e19452",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "left_hand",
+          "maximum_area_pixels": 4096,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vc_006_missing_area",
+      "context_tags": [
+        "small_part"
+      ],
+      "defect_type": "missing_area",
+      "expected_outcome": "known_defect",
+      "panel_files": {
+        "binary_mask": "panels/vc_006_missing_area/binary_mask.png",
+        "contour": "panels/vc_006_missing_area/contour.png",
+        "full_context": "panels/vc_006_missing_area/full_context.png",
+        "overlay": "panels/vc_006_missing_area/overlay.png",
+        "source": "panels/vc_006_missing_area/source.png",
+        "uncertainty_zoom": "panels/vc_006_missing_area/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "dd47041ee228627d4beebc92bd296f0f05cbe89f805b701b9a20eeac7bdd2562",
+      "panels": {
+        "binary_mask": "0be690715ef1739cec4a412c4c91001278d3a6c30aff1b303a4c13ad2efc9c77",
+        "contour": "fa5ad6ad067e0e6713ec044dd31796ad57f13f12637674333c11649012f943cc",
+        "full_context": "9b34f4bddd814b08dffb6e15c78ce858c8f3825662b03bcb713eb3077b3cf8a8",
+        "overlay": "2bb0fb72a0cbe87f3032e5a5eaee3c771722b67d4a95caa013bd864c8014fd39",
+        "source": "9b34f4bddd814b08dffb6e15c78ce858c8f3825662b03bcb713eb3077b3cf8a8",
+        "uncertainty_zoom": "2bb0fb72a0cbe87f3032e5a5eaee3c771722b67d4a95caa013bd864c8014fd39"
+      },
+      "partition": "calibration",
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "0be690715ef1739cec4a412c4c91001278d3a6c30aff1b303a4c13ad2efc9c77",
+          "width": 128
+        },
+        "contract_id": "target-vc_006_missing_area",
+        "contract_sha256": "3de676a1b6cdef4bab37e418e70182fca17b5562473f2431a0bd98633076e615",
+        "excluded_labels": [
+          "right_hand"
+        ],
+        "owner": {
+          "character_instance_id": "character-vc_006_missing_area",
+          "person_index": 0,
+          "person_mask_sha256": "4cf8b7562b74cc37ad38db6a902c23dc7e254761297943d2dec448a26ba4f6b3"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vc_006_missing_area",
+          "sha256": "9b34f4bddd814b08dffb6e15c78ce858c8f3825662b03bcb713eb3077b3cf8a8",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "left_hand",
+          "maximum_area_pixels": 4096,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vc_007_valid",
+      "context_tags": [
+        "hair",
+        "crop"
+      ],
+      "defect_type": null,
+      "expected_outcome": "valid_mask",
+      "panel_files": {
+        "binary_mask": "panels/vc_007_valid/binary_mask.png",
+        "contour": "panels/vc_007_valid/contour.png",
+        "full_context": "panels/vc_007_valid/full_context.png",
+        "overlay": "panels/vc_007_valid/overlay.png",
+        "source": "panels/vc_007_valid/source.png",
+        "uncertainty_zoom": "panels/vc_007_valid/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "6f619d81ed0e1849c39c54a000e20c9de71ce0a0d69af11089147681ab7626a1",
+      "panels": {
+        "binary_mask": "c97f73ddf480cbf3bf189d6006d8e265d5da73b335d7f08361bbeefb1db06c84",
+        "contour": "ece2b4238f34b667b39749baa44f0bc04ed75d41978d5e3f06bd68c268a93a02",
+        "full_context": "e366ae8325c337cfc0240eae6954feb274c85b3e9b121b4f340257dc31beab91",
+        "overlay": "ef71260641ff0f916b48c828591b7374602909aafbb5b1c31d1f2a217f595652",
+        "source": "e366ae8325c337cfc0240eae6954feb274c85b3e9b121b4f340257dc31beab91",
+        "uncertainty_zoom": "ef71260641ff0f916b48c828591b7374602909aafbb5b1c31d1f2a217f595652"
+      },
+      "partition": "qualification_holdout",
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "c97f73ddf480cbf3bf189d6006d8e265d5da73b335d7f08361bbeefb1db06c84",
+          "width": 128
+        },
+        "contract_id": "target-vc_007_valid",
+        "contract_sha256": "05710e0ec0c752cb422c3a659b9a3df7a67c1dc427cc1de1d56a151339f6eed3",
+        "excluded_labels": [
+          "right_hand"
+        ],
+        "owner": {
+          "character_instance_id": "character-vc_007_valid",
+          "person_index": 0,
+          "person_mask_sha256": "4cf8b7562b74cc37ad38db6a902c23dc7e254761297943d2dec448a26ba4f6b3"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vc_007_valid",
+          "sha256": "e366ae8325c337cfc0240eae6954feb274c85b3e9b121b4f340257dc31beab91",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "left_hand",
+          "maximum_area_pixels": 4096,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vc_008_ownership",
+      "context_tags": [
+        "multi_person"
+      ],
+      "defect_type": "ownership",
+      "expected_outcome": "known_defect",
+      "panel_files": {
+        "binary_mask": "panels/vc_008_ownership/binary_mask.png",
+        "contour": "panels/vc_008_ownership/contour.png",
+        "full_context": "panels/vc_008_ownership/full_context.png",
+        "overlay": "panels/vc_008_ownership/overlay.png",
+        "source": "panels/vc_008_ownership/source.png",
+        "uncertainty_zoom": "panels/vc_008_ownership/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "0d1dd7c3fedbbb65654c82be36424c9e33b2bd4c47decc143c5bb741ac0d9d61",
+      "panels": {
+        "binary_mask": "5bfde1160adf084bd371883c1c6b0087e85cc9fdbe653c6d0303d6c3a68144dd",
+        "contour": "9fcdb56e56225ddabb3de3a66f7573a20bd4fa5f3799463882bb1225f81b4929",
+        "full_context": "0805305d2b63f908c7ad53406f40e28d7aed1e6cd368d053572e7e133d98e46d",
+        "overlay": "d0ea09627e54358f29de2660eb62fd71e13c51accc9f17e1856f90909666dbff",
+        "source": "0805305d2b63f908c7ad53406f40e28d7aed1e6cd368d053572e7e133d98e46d",
+        "uncertainty_zoom": "d0ea09627e54358f29de2660eb62fd71e13c51accc9f17e1856f90909666dbff"
+      },
+      "partition": "qualification_holdout",
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "5bfde1160adf084bd371883c1c6b0087e85cc9fdbe653c6d0303d6c3a68144dd",
+          "width": 128
+        },
+        "contract_id": "target-vc_008_ownership",
+        "contract_sha256": "512fd7e58d02efcc7622ed6121ad2664267352b921c3fa4f8e5d9e47c9b6459e",
+        "excluded_labels": [
+          "right_hand"
+        ],
+        "owner": {
+          "character_instance_id": "character-vc_008_ownership",
+          "person_index": 0,
+          "person_mask_sha256": "4cf8b7562b74cc37ad38db6a902c23dc7e254761297943d2dec448a26ba4f6b3"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vc_008_ownership",
+          "sha256": "0805305d2b63f908c7ad53406f40e28d7aed1e6cd368d053572e7e133d98e46d",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "left_hand",
+          "maximum_area_pixels": 4096,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vc_009_protected_region",
+      "context_tags": [
+        "contact"
+      ],
+      "defect_type": "protected_region",
+      "expected_outcome": "known_defect",
+      "panel_files": {
+        "binary_mask": "panels/vc_009_protected_region/binary_mask.png",
+        "contour": "panels/vc_009_protected_region/contour.png",
+        "full_context": "panels/vc_009_protected_region/full_context.png",
+        "overlay": "panels/vc_009_protected_region/overlay.png",
+        "source": "panels/vc_009_protected_region/source.png",
+        "uncertainty_zoom": "panels/vc_009_protected_region/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "5439266d78f00d03491ad5ad545bae44ac4f9b646f52b3ea658d3dd72b267a1f",
+      "panels": {
+        "binary_mask": "a0ef1ec589ba367e3bd93993a9c0de6717682456ad8faf222f0dd51aff4351e2",
+        "contour": "d0ecbd936c1a242af6dac16e88581e8bf7db7da579a7d200ac169e49fcb2d727",
+        "full_context": "60eaa98914102a2d4afc4b053182a2ad3bbbead4cf5b1fce4b58703a1c546d57",
+        "overlay": "565fbd65a7a412f6e2d386d1a5643ba49c61a074ef12e4f228929aac64819a9d",
+        "source": "60eaa98914102a2d4afc4b053182a2ad3bbbead4cf5b1fce4b58703a1c546d57",
+        "uncertainty_zoom": "565fbd65a7a412f6e2d386d1a5643ba49c61a074ef12e4f228929aac64819a9d"
+      },
+      "partition": "qualification_holdout",
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "a0ef1ec589ba367e3bd93993a9c0de6717682456ad8faf222f0dd51aff4351e2",
+          "width": 128
+        },
+        "contract_id": "target-vc_009_protected_region",
+        "contract_sha256": "d57d769225d334b7827d6517a4f2d0fa53202f94bf220e6a4a6fb62c33b648ca",
+        "excluded_labels": [
+          "right_hand"
+        ],
+        "owner": {
+          "character_instance_id": "character-vc_009_protected_region",
+          "person_index": 0,
+          "person_mask_sha256": "4cf8b7562b74cc37ad38db6a902c23dc7e254761297943d2dec448a26ba4f6b3"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vc_009_protected_region",
+          "sha256": "60eaa98914102a2d4afc4b053182a2ad3bbbead4cf5b1fce4b58703a1c546d57",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "left_hand",
+          "maximum_area_pixels": 4096,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vc_010_transform",
+      "context_tags": [
+        "occlusion"
+      ],
+      "defect_type": "transform",
+      "expected_outcome": "known_defect",
+      "panel_files": {
+        "binary_mask": "panels/vc_010_transform/binary_mask.png",
+        "contour": "panels/vc_010_transform/contour.png",
+        "full_context": "panels/vc_010_transform/full_context.png",
+        "overlay": "panels/vc_010_transform/overlay.png",
+        "source": "panels/vc_010_transform/source.png",
+        "uncertainty_zoom": "panels/vc_010_transform/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "c193fb8d98833acc32adc0c6742b0fb06a37ec96f1c57e461da56dab65336934",
+      "panels": {
+        "binary_mask": "0b0e9cddca95b8f44f2f4d0f2b9082a905bba6de416ba37f139e09d5818bc38e",
+        "contour": "921200d579b801c6178121fa363ad001c9f50b9d141a76922829c4c2de351d54",
+        "full_context": "3c9cc2d20a1a8bd26acb2d2838006659e8b9333cc17ca99a95ead80999ec8efa",
+        "overlay": "930d63cec60acc0a5ec11c66d37edf7da7900d76d096ee5fb77fe7bb44534f43",
+        "source": "3c9cc2d20a1a8bd26acb2d2838006659e8b9333cc17ca99a95ead80999ec8efa",
+        "uncertainty_zoom": "930d63cec60acc0a5ec11c66d37edf7da7900d76d096ee5fb77fe7bb44534f43"
+      },
+      "partition": "qualification_holdout",
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "0b0e9cddca95b8f44f2f4d0f2b9082a905bba6de416ba37f139e09d5818bc38e",
+          "width": 128
+        },
+        "contract_id": "target-vc_010_transform",
+        "contract_sha256": "a71ec08877c32cddd87fecdda6c1770e757cbef9503426a48557754de8762718",
+        "excluded_labels": [
+          "right_hand"
+        ],
+        "owner": {
+          "character_instance_id": "character-vc_010_transform",
+          "person_index": 0,
+          "person_mask_sha256": "4cf8b7562b74cc37ad38db6a902c23dc7e254761297943d2dec448a26ba4f6b3"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vc_010_transform",
+          "sha256": "3c9cc2d20a1a8bd26acb2d2838006659e8b9333cc17ca99a95ead80999ec8efa",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "left_hand",
+          "maximum_area_pixels": 4096,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vc_011_wrong_label",
+      "context_tags": [
+        "hand"
+      ],
+      "defect_type": "wrong_label",
+      "expected_outcome": "known_defect",
+      "panel_files": {
+        "binary_mask": "panels/vc_011_wrong_label/binary_mask.png",
+        "contour": "panels/vc_011_wrong_label/contour.png",
+        "full_context": "panels/vc_011_wrong_label/full_context.png",
+        "overlay": "panels/vc_011_wrong_label/overlay.png",
+        "source": "panels/vc_011_wrong_label/source.png",
+        "uncertainty_zoom": "panels/vc_011_wrong_label/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "0df5f51c7f73114e89a6b6ee7a34d27f12ce25592c32544628d39fda4dd0c542",
+      "panels": {
+        "binary_mask": "5bfde1160adf084bd371883c1c6b0087e85cc9fdbe653c6d0303d6c3a68144dd",
+        "contour": "8195ed8ecb3fa4cf80ae7a302fd5e7ae5d470b45b62f3123eced2349a40aadec",
+        "full_context": "cd50e40fc8e327a72584bcb8624ddd74a3d1cf637bef548b03d0a874a3e7f154",
+        "overlay": "0e892493d4cc97f1852dd5a5b41288a370e383cddd8fa6fb12246a4df2552a77",
+        "source": "cd50e40fc8e327a72584bcb8624ddd74a3d1cf637bef548b03d0a874a3e7f154",
+        "uncertainty_zoom": "0e892493d4cc97f1852dd5a5b41288a370e383cddd8fa6fb12246a4df2552a77"
+      },
+      "partition": "qualification_holdout",
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "5bfde1160adf084bd371883c1c6b0087e85cc9fdbe653c6d0303d6c3a68144dd",
+          "width": 128
+        },
+        "contract_id": "target-vc_011_wrong_label",
+        "contract_sha256": "87fbeeeb3f72c482929fbc0def2e42f8be880d09fab0174cb237460398fb205e",
+        "excluded_labels": [
+          "right_hand"
+        ],
+        "owner": {
+          "character_instance_id": "character-vc_011_wrong_label",
+          "person_index": 0,
+          "person_mask_sha256": "4cf8b7562b74cc37ad38db6a902c23dc7e254761297943d2dec448a26ba4f6b3"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vc_011_wrong_label",
+          "sha256": "cd50e40fc8e327a72584bcb8624ddd74a3d1cf637bef548b03d0a874a3e7f154",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "left_hand",
+          "maximum_area_pixels": 4096,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "vc_012_wrong_side",
+      "context_tags": [
+        "hand"
+      ],
+      "defect_type": "wrong_side",
+      "expected_outcome": "known_defect",
+      "panel_files": {
+        "binary_mask": "panels/vc_012_wrong_side/binary_mask.png",
+        "contour": "panels/vc_012_wrong_side/contour.png",
+        "full_context": "panels/vc_012_wrong_side/full_context.png",
+        "overlay": "panels/vc_012_wrong_side/overlay.png",
+        "source": "panels/vc_012_wrong_side/source.png",
+        "uncertainty_zoom": "panels/vc_012_wrong_side/uncertainty_zoom.png"
+      },
+      "panel_set_sha256": "5ed7dbe0d22ff9b64b2289b7b1b42ef8dedf63bb6b4ada10c9221eab5e935b98",
+      "panels": {
+        "binary_mask": "d6351e5938a059dddc01c81cca7c69d7356b541bb0d10849c03296a70d267b1c",
+        "contour": "cdfebe22e933a29066a2035d2e4d7b75e100bbccb3b4d7e1ada755dfd7ad3426",
+        "full_context": "0afadf9eea5e190d9a23d7e48c16b8d387943e027f3258857087530b57d58d0c",
+        "overlay": "e07e99120ff291b07129f57fcfc7f65552b329d617b012484547b2a4fb83969d",
+        "source": "0afadf9eea5e190d9a23d7e48c16b8d387943e027f3258857087530b57d58d0c",
+        "uncertainty_zoom": "e07e99120ff291b07129f57fcfc7f65552b329d617b012484547b2a4fb83969d"
+      },
+      "partition": "qualification_holdout",
+      "target_contract": {
+        "candidate": {
+          "binary_values": [
+            0,
+            255
+          ],
+          "height": 128,
+          "mask_sha256": "d6351e5938a059dddc01c81cca7c69d7356b541bb0d10849c03296a70d267b1c",
+          "width": 128
+        },
+        "contract_id": "target-vc_012_wrong_side",
+        "contract_sha256": "30acadae392363685ac870fa722dbe45fc4b67b99e0f03551b9cc5a896d37132",
+        "excluded_labels": [
+          "right_hand"
+        ],
+        "owner": {
+          "character_instance_id": "character-vc_012_wrong_side",
+          "person_index": 0,
+          "person_mask_sha256": "4cf8b7562b74cc37ad38db6a902c23dc7e254761297943d2dec448a26ba4f6b3"
+        },
+        "protected_regions": [],
+        "schema_version": "1.0.0",
+        "source": {
+          "height": 128,
+          "image_id": "image-vc_012_wrong_side",
+          "sha256": "0afadf9eea5e190d9a23d7e48c16b8d387943e027f3258857087530b57d58d0c",
+          "width": 128
+        },
+        "target": {
+          "allowed_roi_xyxy": [
+            0,
+            0,
+            128,
+            128
+          ],
+          "exclusion_rule": "exclude_occluded_outside_owner_and_named_labels",
+          "expected_presence": "visible_nonempty",
+          "inclusion_rule": "visible_pixels_only",
+          "label_id": "left_hand",
+          "maximum_area_pixels": 4096,
+          "minimum_area_pixels": 1
+        },
+        "transforms": {
+          "candidate_to_source": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ],
+          "source_to_candidate": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    }
+  ],
+  "corpus_id": "maskfactory_visual_critic_calibration_v1",
+  "corpus_sha256": "ba983fe792a2c83a004099b1f9f2a5403ad8260f16b32e7d2455e16670d30e74",
+  "defect_taxonomy": [
+    "anatomy",
+    "boundary",
+    "flood",
+    "leakage",
+    "missing_area",
+    "ownership",
+    "protected_region",
+    "transform",
+    "wrong_label",
+    "wrong_side"
+  ],
+  "frozen_at": "2026-07-21T00:00:00Z",
+  "partitions": [
+    "calibration",
+    "qualification_holdout"
+  ],
+  "schema_version": "1.0.0"
+}

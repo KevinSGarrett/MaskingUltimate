@@ -1,0 +1,43 @@
+{
+  "admission": {
+    "fresh_broker_route_required": "local_pod",
+    "gpu_requirement": "NVIDIA RTX 6000 Ada Generation",
+    "numeric_compute_processes_required": 0,
+    "pod_id": "68psfqtaogg7s7",
+    "pod_name": "vitreous_beige_centipede",
+    "timeout_seconds": 600,
+    "volume_id": "o9qv2ld91c",
+    "volume_mount": "/workspace"
+  },
+  "artifact_type": "sam3d_body_v3_host_adapter_launch_binding.v3",
+  "authority": {
+    "may_author_gold": false,
+    "may_promote_provider": false,
+    "provider_lifecycle_state": "installed_unqualified"
+  },
+  "bindings": {
+    "checkpoint_root": "/workspace/models/runtime_cache/sam3d_body_checkpoint_11aaa346",
+    "host_adapter_lock_sha256": "a506ff07ca3ee26b7089ae8e37cbd67a2b1494a4127175626ff60742f2b51bd6",
+    "image": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+    "image_sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63",
+    "previous_v2_receipt_file_sha256": "b5300145a82139c0b2d34cf97fc572ac250e9dec935cfda21e6f277e9a56eda6",
+    "previous_v2_receipt_self_sha256": "66c2de6c953fbedc4c53c99c6afdd5f88856e754e46b0afcc78da25bf2707332",
+    "runner_script_sha256": "2083381e34cc8fbe30ebed1d640a3495861d70dbad449534c04830af80d268ff",
+    "source_root": "/workspace/models/runtime_cache/sam-3d-body_b5c765a",
+    "source_tree_commit": "b5c765a0d89d789985e186d396315e7590887b94",
+    "v3_runner_sha256": "54f2d9f8b12daa444531b43ca250ff2134feec951568f75c44594d2a90b85dfb",
+    "v3_runtime_lock_sha256": "de207f0502299624c266f0325e92cc7c64dca832f6c2239688594237239e7b9f"
+  },
+  "command": [
+    "env",
+    "PYTHONPATH=src",
+    ".train_cu128_ada/bin/python",
+    "runtime_artifacts/sam3d_body_v3_host_adapter_runtime_20260725T193000Z_v3_workspace_models_closure/run_host_adapter.py"
+  ],
+  "input": {
+    "bbox_xyxy": [45.0, 390.0, 230.0, 920.0],
+    "image": "qa/fixtures/smoke/ultralytics_bus_adults.jpg"
+  },
+  "scope": "one fresh bounded V3 host-adapter execution using existing hash-verified /workspace/models source/checkpoint assets; preserves V2 and does not change provider authority",
+  "self_sha256": "cfd6049f176b25549d98c065e92bfba02f2ae903d00987a6289baf35b9f81289"
+}

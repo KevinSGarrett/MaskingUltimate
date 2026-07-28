@@ -1,0 +1,58 @@
+{
+  "artifact_type": "multi_person_static_contracts_report",
+  "authority": "multi_person_static_contracts_only_no_real_demo_kevin_sources_or_production_authority",
+  "checked_at": "2026-07-19T23:09:33Z",
+  "checks": {
+    "exclusivity_bleed_identity_contact_gates": "pass",
+    "residual_routing_and_split_integrity": "pass"
+  },
+  "doctor_green_claimed": false,
+  "gold_claimed": false,
+  "honest_non_claims": [
+    "mf_p8_11_07_real_demo",
+    "kevin_governed_multi_person_sources",
+    "d11_g9_headline_measurement",
+    "doctor_green",
+    "gold",
+    "production_evidence_pass"
+  ],
+  "implementation": {
+    "cli": "maskfactory autonomy verify-multi-person-static-contracts",
+    "module": "src/maskfactory/autonomy/multi_person_static_contracts.py",
+    "schema": "src/maskfactory/schemas/multi_person_static_contracts_report.schema.json",
+    "tests": [
+      "tests/test_multi_person_static_contracts.py"
+    ]
+  },
+  "items": [
+    "MF-P8-11.02",
+    "MF-P8-11.05",
+    "MF-P8-11.07"
+  ],
+  "kevin_multi_person_sources_required": true,
+  "main_complete_claimed": false,
+  "mf_p8_11_07_demo_complete": false,
+  "production_evidence_pass_claimed": false,
+  "proof_tier": "STATIC_PASS",
+  "real_10_20_image_demo_claimed": false,
+  "related_prior_contracts": [
+    "qa/live_verification/multi_person_lifecycle_route_contract_20260715.json"
+  ],
+  "report_id": "mpsc_78fb1acd900b4f515bbe4dd7",
+  "result": "pass_multi_person_static_contracts_fixture_seeded_only",
+  "schema_version": "1.0.0",
+  "seal_sha256": "78fb1acd900b4f515bbe4dd728227cd36dd5d2da22d84ea4153d75aae4d8ce41",
+  "seeded_gate_blocks": {
+    "bleed_qc036": true,
+    "contact_reciprocity_aut_mp_002_003": true,
+    "exclusivity_qc035": true,
+    "identity_containment_aut_mp_001": true
+  },
+  "seeded_routing_checks": {
+    "certified_duo_serves_without_routine_review": true,
+    "failed_gate_routes_residual": true,
+    "mixed_certified_residual_one_truth_partition": true
+  },
+  "sha256": "c1ba3b0850613c370d13f101d10e4693230ed94c52e91bfcd481c1c034a152cd",
+  "visual_qa_pass_claimed": false
+}

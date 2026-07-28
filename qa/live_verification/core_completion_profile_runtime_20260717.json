@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-17T18:03:22.1647822Z",
+  "result": "CORE_COMPLETION_PROFILE_RUNTIME_PASS",
+  "branch": "codex/maskfactory-runtime-implementation",
+  "authoritative_bridge": {
+    "producer_validation_head": "6361df208e01d183083ee6c113e016467a486706",
+    "reconciliation_manifest_sha256": "c948da1595f6c29ead2aeda950ac778717c6557f2ed5f6c4b0664e5052f3eb52",
+    "wire_contracts_exactly_unchanged": "12/12",
+    "runtime_handoff_manifest_sha256": "64f90c50d781729b1664b06ad852e8d065259f1323915145da77cdea4023742e"
+  },
+  "completion_registry": {
+    "file_sha256": "635bc5bd05a646527d50d6e6b8ac62b0e1ce8688314a0ee6b00e3d2292692ab1",
+    "canonical_content_sha256": "b6ba57e71e238cc30b71f8d1af20b49e2802cbbb7119bcf0c7d90475b82054b4",
+    "authoritative_spec_sha256": "e57e9892c18cc2a43440691d508daba44bc00413f063dfdad40861e2a654e90d",
+    "profile_count": 3,
+    "required_profile": "core_autonomous_runtime",
+    "optional_profile": "independent_real_accuracy",
+    "post_core_profile": "scale_daz_maturity"
+  },
+  "verification": {
+    "focused_command": "python -m pytest tests/test_tracker_completion_profiles.py tests/test_completion_bundle.py tests/test_mask_bridge_contracts_v1.py -q",
+    "focused_result": "70 passed",
+    "closed_registry_and_hash_drift_fixtures": "PASS",
+    "direct_and_transitive_core_dependency_firewall": "PASS",
+    "independent_profile_status_and_dashboard_rendering": "PASS",
+    "legacy_surface_claim_scope_audit": "PASS",
+    "certificate_and_receipt_claim_firewall": "PASS",
+    "historical_preservation_and_live_wire_freeze": "PASS"
+  },
+  "authority": {
+    "completion_profile_runtime_only": true,
+    "producer_runtime_complete": false,
+    "consumer_runtime_complete": false,
+    "end_to_end_release_complete": false,
+    "operational_certificate_issued": false,
+    "training_or_independent_accuracy_claimed": false,
+    "pr_merge_authorized_or_performed": false
+  }
+}

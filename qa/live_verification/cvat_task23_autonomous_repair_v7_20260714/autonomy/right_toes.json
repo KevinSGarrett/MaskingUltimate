@@ -1,0 +1,43 @@
+{
+  "authoritative_human_gold": false,
+  "certificate_reason": "certificate_absent_or_failed",
+  "certificate_valid": false,
+  "context": "solo",
+  "holdout_eligible": false,
+  "human_audit_required": true,
+  "image_id": "img_cdab0311dc96",
+  "instance_id": "p0",
+  "label": "right_toes",
+  "pipeline_fingerprint": "2b26192f38fe313bfe8d74a902627f140d9af7ec3698dc2f761be3be48fa3372",
+  "pseudo_train_eligible": false,
+  "ranking": [
+    {
+      "candidate_id": "s09_baseline",
+      "eligible": false,
+      "mask_sha256": "e41a3f9abcfa5521fdd8010b2aabbb8db9103ff754b2b93847d957a3f911684d",
+      "score": 0.4875,
+      "vetoes": [
+        "block_qc"
+      ]
+    },
+    {
+      "candidate_id": "civitai_specialist_raw",
+      "eligible": false,
+      "mask_sha256": "c6ceb70d0ca79c6379950e1abecebbc640b0fd2e662a547039205673cf06771b",
+      "score": 0.2383333333333333,
+      "vetoes": [
+        "insufficient_independent_sources"
+      ]
+    }
+  ],
+  "reason": "every candidate received a hard veto",
+  "schema_version": "2.0.0",
+  "serve_eligible": false,
+  "status": "residual_human_queue",
+  "training_loss_weight": 0.0,
+  "truth_tier": "machine_candidate",
+  "winner_id": null,
+  "winner_mask_path": null,
+  "winner_mask_sha256": null,
+  "winner_score": null
+}

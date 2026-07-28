@@ -1,0 +1,43 @@
+schema_version: "1.0.0"
+profile_id: "maskfactory-autonomous-certified-gold-admission-v1"
+enabled: false
+authority: "machine_verified_population_risk_evidence"
+governing_amendment: "Plan/SIDE_THREAD_HANDOFF_SAM31_AUTONOMOUS_GOLD_20260713.md#autonomous-gold-redesign"
+# Historical statistical evidence only (NOT per-record pixel authority).
+#
+# The Wilson calculations remain reproducible, but provider agreement cannot
+# establish pixel semantics. This profile is disabled for admission and may
+# only describe population-level machine evidence.
+authority_replacement:
+  replaces: "nothing_population_statistics_only"
+  does_not_weaken_wilson_math: true
+  preserves_exact_bounds: true
+  never_trains_against_human_anchor_holdout: true
+  correlated_sam_variants_are_not_independent: true
+  defect_signal: "independent_cross_family_disagreement"
+  serious_defect_signal: "independent_cross_family_serious_disagreement"
+# Independence + stability requirements every counted sample must satisfy.
+independent_provider_families_minimum: 3
+require_candidate_stability: true
+require_perturbation_stability: true
+require_complete_map_hard_veto_pass: true
+require_image_disjoint_corpus: true
+require_exact_pipeline_fingerprint: true
+# Statistical floors — identical rigor to the human-anchor certificate.
+statistical_floors:
+  confidence_level: 0.95
+  minimum_autonomous_verified_per_risk_bucket: 30
+  maximum_false_accept_upper_bound: 0.01
+  aggregate_false_accept_bound_method: "one_sided_wilson"
+  maximum_serious_false_accept_upper_bound: 0.005
+  serious_false_accept_bound_method: "exact_zero_failure"
+  maximum_certificate_age_days: 30
+claim_boundary:
+  is_operational_admission_authority: false
+  is_per_record_authority: false
+  is_autonomous_certified_gold_authority: false
+  requires_current_semantic_alignment_and_critic_quorum: true
+  is_not_independent_real_accuracy_claim: true
+  is_not_human_anchor_holdout: true
+  default_off_in_hot_tournament_path: true
+profile_sha256: "269e02c8cc345ea94654efcb8175c3fb573c848e1d20ba94c6db87fdcabb1d5d"

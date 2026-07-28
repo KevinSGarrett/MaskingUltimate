@@ -1,0 +1,27 @@
+{
+  "policy_id": "autonomous_gold_qa_threshold_calibration_policy_v1",
+  "policy_sha256": "1a27845fd35561010de8828390d8243cd3c65ae6ce3b4a79948029a3b8f3b946",
+  "frozen_at": "2026-07-23T00:00:00Z",
+  "minimum_calibration_positive_per_label": 20,
+  "minimum_calibration_negative_per_label": 20,
+  "minimum_holdout_positive_per_label": 10,
+  "minimum_holdout_negative_per_label": 10,
+  "required_domains": [
+    "photographic",
+    "generated",
+    "illustrated"
+  ],
+  "required_risks": [
+    "small_part",
+    "occlusion_contact",
+    "multi_person_overlap",
+    "crop_edge",
+    "unusual_pose"
+  ],
+  "required_size_buckets": [
+    "tiny",
+    "small",
+    "medium",
+    "large"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "artifact_type": "sam3d_body_bound_asset_recovery_bootstrap_failure.v1",
+  "created_at_utc": "2026-07-25T15:49:55.231479+00:00",
+  "execution_identity": {
+    "network_volume_id": "o9qv2ld91c",
+    "pod_id": "68psfqtaogg7s7",
+    "pod_name": "vitreous_beige_centipede",
+    "volume_mount": "/workspace"
+  },
+  "failure": {
+    "binding_sha256": "f73b97cd4e7de5cae27d4f791f7fd2a7b9138af5edf845a1f467a71ea6dbb71d",
+    "failed_before": "source clone, checkpoint staging, asset download, immutable receipt creation",
+    "interpreter": "env/.train_cu128_ada/bin/python",
+    "message": "No module named huggingface_hub",
+    "script_sha256": "81169d55076c94f14763e74ce5553ad7cd0b731914751a593d3177d6e35b6705",
+    "stderr_sha256": "72b5b38c57777daa5d0d8f659f1d73c8b3c008de6a9efb8e231585cacfdd00b3",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "type": "ModuleNotFoundError"
+  },
+  "next_safe_action": "Launch V2 exactly once after its immutable binding is sealed; preserve all V1 evidence.",
+  "no_asset_write_verified": {
+    "checkpoint_target_exists": false,
+    "recovery_receipt_exists": false,
+    "source_target_exists": false,
+    "staging_exists": false
+  },
+  "retry_prohibition": "Do not relaunch V1: its governed interpreter lacks huggingface_hub. V2 may use only runtime_artifacts/sam3d_body_runpod_env/bin/python and the same immutable source/checkpoint lock.",
+  "self_sha256": "27cda373c9bc5c4a9aef1f1e97c879f16357a6a99a059234c834223282e41e67",
+  "status": "RECOVERY_BOOTSTRAP_FAILURE_NO_ASSET_WRITE",
+  "superseded_by": "runtime_artifacts/sam3d_body_bound_asset_recovery_20260725T164500Z_v2_sam3d_runtime_hub/recovery_binding.json"
+}

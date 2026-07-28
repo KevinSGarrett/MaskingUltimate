@@ -1,0 +1,114 @@
+{
+  "artifact_type": "agent_queue_execution",
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-07-20T04:07:49Z",
+  "local_date": "2026-07-19",
+  "branch": "codex/maskfactory-runtime-implementation",
+  "project_head_at_authoring": "585c2c4294a8e57318ebcda4349fa7d8231c4407",
+  "authority": [
+    "qa/live_verification/needs_agent_actions_20260719.json",
+    "Plan/DOCKER_RUNTIME_AND_SESSION_USE.md",
+    "Plan/Instructions/02_AUTONOMOUS_OPERATING_RULES.md proof-tier vocabulary"
+  ],
+  "honesty_rules": [
+    "No tier inflation: doctor NOT all-green; champions=0; no gold/Main-complete/PRODUCTION_EVIDENCE_PASS",
+    "DVC lane is LOCAL-only (no cloud S3 push; dvc-s3 + AWS creds absent)",
+    "WSL repair genuinely elevation-gated; UAC/scheduled-task elevation unavailable non-interactively",
+    "Shadow currency seal rebind preserves the honest policy=fail of the current signed review (no pass invented)"
+  ],
+  "live_probe": {
+    "docker_server": "29.4.3 (context desktop-linux)",
+    "cvat_about": "http://localhost:8080/api/server/about -> 2.24.0",
+    "ollama_version": "http://127.0.0.1:11434/api/version -> 0.32.1",
+    "nuclio_pth_sam2": "healthy",
+    "wsl_ubuntu_2204": "Stopped; `wsl -d Ubuntu-22.04 -- /bin/true` -> distribution failed to start Error code 6 step 2 E_FAIL (on-disk ext4 corruption)",
+    "gpu": "RTX 5060 Laptop; driver 592.01; 8151 MiB total; ~377 MiB free (DAZStudio.exe pid52340 + Ollama llama-server pid45276 resident)",
+    "doctor_summary": "PASS=8 FAIL=4 (torch_cuda, registered_models, wsl_roundtrip = WSL ext4 VHD; ollama_image = 8GB VRAM contention this run)"
+  },
+  "actions_executed": {
+    "repair_ubuntu_2204_ext4_vhd": {
+      "status": "AGENT_EXECUTABLE_FROM_ELEVATED_SHELL_SUBSTITUTE_ACTIVE",
+      "elevation_probes": {
+        "is_administrator": false,
+        "schtasks_create_rl_highest": "Access is denied",
+        "runas_verb": "would require interactive UAC (human wait) — not attempted to preserve zero-human-wait"
+      },
+      "substitute_executed": {
+        "command": "docker run --rm --gpus all nvidia/cuda:12.8.0-base-ubuntu22.04 nvidia-smi",
+        "result": "RTX 5060 Laptop GPU; driver 592.01; 8151 MiB total",
+        "tier": "RUNTIME_PASS_BOUNDED"
+      },
+      "next_elevated_shell": "powershell -ExecutionPolicy Bypass -File tools/Repair-MaskFactoryWslVhd.ps1 -ConfirmRepair -StopDockerDesktop; then wsl -d Ubuntu-22.04 -- /bin/true (expect exit 0); rerun doctor + SAM 3.1 CUDA WSL smoke"
+    },
+    "dvc_push_local_first": {
+      "status": "DONE_LOCAL_TIER",
+      "dvc_version": "3.67.1 (installed this session)",
+      "junction_finding": "`dvc add data/packages` FAILS: the F: junction resolves 'data/packages' outside the git repository 'C:/Comfy_UI_Main_Masking' (dvc requires targets inside the git workdir). Local-first drill therefore used an in-repo package copy.",
+      "local_remote": "maskfactory-dvc-local -> F:/MaskFactory_DataRelocated/dvc_local_remote (.dvc/config.local; gitignored)",
+      "drill_target": "runtime_artifacts/b1_restore_drill/img_a3d2663ad90d",
+      "dvc_add": "52 objects; 6.06 MB cache populated (.dvc/cache)",
+      "dvc_push": "52 files pushed to maskfactory-dvc-local",
+      "dvc_status_c": "Cache and remote 'maskfactory-dvc-local' are in sync",
+      "tier": "RUNTIME_PASS_BOUNDED (local remote only)",
+      "cloud_deferred": "s3://maskfactory-dvc-dev push deferred (needs dvc-s3 + AWS creds); no idling"
+    },
+    "b1_restore_drill_local": {
+      "status": "DONE_LOCAL",
+      "seed_package": "img_a3d2663ad90d (252 files, 8.0 MB) restored via robocopy to runtime_artifacts/b1_restore_drill",
+      "verify_package": "PASS runtime_artifacts/b1_restore_drill/img_a3d2663ad90d/instances/p0 and p1 (~33s)",
+      "source_package_verify": "PASS data/packages/img_51945db358cb/instances/p0 (independent integrity confirmation)",
+      "tier": "RUNTIME_PASS_BOUNDED"
+    },
+    "multi_person_local_sources": {
+      "status": "STATIC_PASS_RESEALED",
+      "seal": "qa/live_verification/multi_person_static_contracts_20260719T2245.json",
+      "checks": "exclusivity_bleed_identity_contact_gates=pass; residual_routing_and_split_integrity=pass",
+      "honest_non_claim": "real 10-20 image demo / MF-P8-11.07 NOT claimed"
+    },
+    "cloud_teacher_local_corpus": {
+      "status": "STATIC_PASS",
+      "tests": "tests/test_cloud_teacher_static.py PASS (with multi_person + release static, 19 tests total PASS)",
+      "cloud_deferred": "paid cloud teacher calls deferred (no budget/env); local static circuit-breaker path only"
+    },
+    "main_adoption_agent_executable": {
+      "status": "PRODUCER_VERIFIED_MAIN_READY",
+      "main_repo_present": "C:/Comfy_UI_Main HEAD 2393fbb7c32c41e6637864b8b64845832d829123 (separate git; contract bridge only)",
+      "producer_bridge_tests": "90 focused PASS at HEAD (test_bridge_journal/recovery/failure_control/adoption_receipt_matrix, receipt_arbitration_conformance, main_consumer_conformance, producer_fixture_main_e2e, cross_project_qualification)",
+      "honest_non_claim": "HARD MF-P6-11.02 / 11.07 / 12.05 remain OPEN; real Main-side durable journal / live circuit-breaker / execution receipts require a dedicated cross-repo Main session (do NOT commit MaskFactory into Main)."
+    },
+    "shadow_currency_registry_seal_rebind": {
+      "status": "DONE_HONEST_REBIND",
+      "reason": "Current signed 90-day currency review was refreshed to 38a72efc (DECISIONS_LOG drift, earlier this session); the STATIC shadow currency-registry seal had drifted.",
+      "old_sha256": "ec2f1bc098369e00ee1bf115fe3f04fc54ae20f6b3a844893413872867d5df00",
+      "new_sha256": "b58bac741a4c1277084236397d46e0b03a89e8d1887b09425ba3c22990e6f66f",
+      "currency_policy_result": "fail (unchanged; not a pass claim)",
+      "seal": "qa/live_verification/host_side_shadow_currency_registry_static_20260719.json",
+      "tests": "tests/test_shadow_tournament_registration.py 7/7 PASS"
+    }
+  },
+  "champion_path_honest": {
+    "champions": 0,
+    "force_register": "FORBIDDEN (policy) — not performed",
+    "lifecycle_probe": "autonomy build-audit-queue --period-id 2026-W29 -> outcomes_status=empty, population_count=0, selected_count=0 (work/instances p0..p3 empty; no calibrated autoaccepted masks exist to certify)",
+    "blockers": [
+      "No calibrated autoaccepted masks in lifecycle (audit-queue empty) -> autonomous certificate pipeline has no input",
+      "autonomous_certified_gold still blocked by VISUAL_QA_REVIEWED_WITH_DEFECTS (garment bias / underfill / exclusivity bleed / multi-person half-fill)",
+      "live P5 training infeasible now: ~0.4 GiB free VRAM on shared 8GB GPU (DAZ + Ollama resident)",
+      "final leaderboard authority requires human_anchor holdout OR a governed autonomous-gold admission tier (human_anchor_train_count=0)",
+      "WSL Ubuntu-22.04 down (ext4 VHD) -> SAM 3.1 CUDA drafts/refine unavailable until scripted elevated e2fsck"
+    ],
+    "legitimate_next_measured_steps": "free VRAM (or dedicate a training window) + repair WSL -> run draft pipeline -> resolve visual defects to VISUAL_QA_PASS_BOUNDED -> autonomy calibration produces autoaccepted masks -> build-audit-queue/process-audits/evaluate-stability/build-certificate -> autonomous-certify-package -> P5 training -> measured D6/D7 holdout win -> promote champion_bodypart(+hand+clothing)."
+  },
+  "claims_not_established": [
+    "doctor_all_green",
+    "VISUAL_QA_PASS_BOUNDED",
+    "champions>0",
+    "Mode B champion-backed predict/refine RUNTIME_PASS_BOUNDED",
+    "dvc_s3_push_succeeded (cloud)",
+    "Main adoption / MF-P6-12.06 / core_autonomous_runtime complete",
+    "PRODUCTION_EVIDENCE_PASS",
+    "live SAM 3.1 CUDA WSL smoke"
+  ],
+  "no_open_human_stop_states": true,
+  "self_sha256": "c25b31a758219dedbec2f8025d92851f13f9bdddc39b5e8cea81d2bd6f465ee0"
+}

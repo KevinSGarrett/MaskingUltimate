@@ -1,0 +1,81 @@
+{
+  "authority": {
+    "api_calls": [
+      "GET /v1/pods/{id}"
+    ],
+    "credentials_read_or_emitted": false,
+    "mutating_api_calls": false,
+    "remote_operation": "read_only_root_and_hash_bound_inventory_snapshot_check"
+  },
+  "checks": {
+    "maskedwarehouse_exists": true,
+    "maskedwarehouse_local_count_matches_snapshot": true,
+    "maskedwarehouse_path_exact": true,
+    "maskedwarehouse_required_top_level_present": true,
+    "maskedwarehouse_sample_hashes_match": true,
+    "maskedwarehouse_sample_paths_exact": true,
+    "pod_running": true,
+    "remote_snapshot_exists": true,
+    "remote_snapshot_hash_matches": true,
+    "remote_snapshot_path_exact": true,
+    "ultimate_reference_library_exists": true,
+    "ultimate_reference_library_path_exact": true,
+    "ultimate_reference_library_required_top_level_present": true
+  },
+  "inventories": {
+    "maskedwarehouse": {
+      "path": "/workspace/assets/MaskedWarehouse",
+      "snapshot_bytes": 6866153864,
+      "snapshot_file_count": 489638,
+      "top_level": [
+        "Body",
+        "CelebAMask-HQ",
+        "LaPa"
+      ]
+    },
+    "ultimate_reference_library": {
+      "path": "/workspace/assets/Reference_Images/Ultimate_Masking_Reference_Images",
+      "snapshot_bytes": 11539355704,
+      "snapshot_file_count": 3711,
+      "top_level": [
+        "PURPOSE_AND_COVERAGE.md",
+        "benchmark_reference",
+        "clothed__one",
+        "contact_sheets",
+        "logs",
+        "manifests",
+        "mixed__one",
+        "mixed__two",
+        "nude__one",
+        "retrieval_reference",
+        "tools"
+      ]
+    }
+  },
+  "maskedwarehouse_local_remote_reconciliation": {
+    "inventory_file_sha256": "ff983e6c35545c29e2b3d58019837a1875d311f9f511e83e20f3b53b14e3fd18",
+    "inventory_path": "configs/maskedwarehouse_inventory.json",
+    "inventory_seal_sha256": "c0e044909a602906cac2282624d74d1cff16850a202cccb9a4c874bdf989ea4d",
+    "local_file_count": 489638,
+    "remote_snapshot_file_count": 489638,
+    "sample_count": 50,
+    "sample_set_sha256": "e6f92c3071ad2e1854af4deb75c6781a7f16ac85455084a1fa5cc7a613d2c598"
+  },
+  "pod": {
+    "desired_status": "RUNNING",
+    "id_sha256": "0e3fb937281672b1608acf3597081196014d49be623f2988576a10334c9793dd"
+  },
+  "recorded_at": "2026-07-22T07:27:12.022136Z",
+  "schema_version": "1.0.0",
+  "scope": "maskfactory_required_runpod_corpus_mirrors",
+  "source_snapshot": {
+    "path": "C:/Comfy_UI_Main_Masking/qa/live_verification/runpod_assets_authoritative_latest.json",
+    "sha256": "46f5fee69ef7acb0479c0c68c3fe07bedf351224f79f909a23bdf1ef5170a205",
+    "verified_at_utc": "20260721T060440Z"
+  },
+  "status": "RUNTIME_PASS_HASH_BOUND_SNAPSHOT",
+  "tool": {
+    "path": "tools/verify_runpod_corpus_mirrors.py",
+    "sha256": "8d629bfa9c090fe85a8a13aa8dd0c8caf9968174aeab292cc6696907e1ed07f0"
+  }
+}

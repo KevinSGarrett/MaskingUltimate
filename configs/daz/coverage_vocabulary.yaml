@@ -1,0 +1,119 @@
+schema_version: 1.0.0
+vocabulary_version: 1.0.0
+scope: daz_coverage_planning_and_reporting
+source_snapshots:
+  - {source_id: canonical_coverage, path: src/maskfactory/datasets/coverage.py, sha256: 9926b772cff8e75b766e298c59745e75e17e09ebf5fb3e3ab1009edcd88ed05d}
+  - {source_id: ontology_contract, path: src/maskfactory/models/ontology_contract.py, sha256: bc1361f161720908d3cb321d3132318c11edbe78c5c5f6c8da3a7683286f60e5}
+  - {source_id: character_profiles, path: configs/daz/character_profiles.yaml, sha256: a0766bc483014cfb69a08ab4059fd01b8db3d767683abd8fa7b1ec9d86c6c001}
+  - {source_id: appearance_selection, path: configs/daz/appearance_selection.yaml, sha256: 43dabbc2cfe8c2ace765698dfdaffc2fdebe4fc41cbf724d55a525381c012f1d}
+  - {source_id: solo_pose_selection, path: configs/daz/solo_pose_selection.yaml, sha256: 10013b1cdab746e0da884aaef3406a66179e11f162b24b02f677373a9443b639}
+  - {source_id: scene_formation_selection, path: configs/daz/scene_formation_selection.yaml, sha256: f3ab88b554b36918781d2234b2ef045698f13307eff411db458cc4309ab47ac4}
+  - {source_id: duo_recipe_selection, path: configs/daz/duo_recipe_selection.yaml, sha256: 5d09ccd4b0ab21315c502dfce00aafd4ce5945539be5bb32c877a41e2e73c44b}
+  - {source_id: render_pass_profiles, path: configs/daz/render_pass_profiles.yaml, sha256: 9f8cc8c44205ee8e1b479fad625f526ad91f7f0c8ff829da202eb00146703951}
+  - {source_id: asset_vocabularies, path: configs/daz/asset_vocabularies.yaml, sha256: a297ab89e6517c34b0c9e33853b200aeb8f7c92f3c97dbc864c2b436b43b0e01}
+axes:
+  - {axis_id: canonical_view, layer: canonical, unit: person_instance, authority: canonical_coverage, values: [front, back, left_profile, right_profile, left_3_4, right_3_4]}
+  - {axis_id: canonical_pose, layer: canonical, unit: person_instance, authority: canonical_coverage, values: [arms_raised, arms_down, arms_crossed, seated_or_crouched, lying, walking, leg_overlap]}
+  - {axis_id: instance_context, layer: canonical, unit: scene, authority: canonical_coverage, values: [solo, duo, small_group]}
+  - {axis_id: canonical_attribute, layer: canonical, unit: person_instance, authority: canonical_coverage, values: [hands_visible, feet_visible, hand_body_contact, hair_occlusion, clothing_boundary, bare_skin_dominant, tight_clothing, loose_clothing, back_visible, fingers_spread, fingers_merged, props_present]}
+  - {axis_id: ontology_version, layer: canonical, unit: person_instance, authority: maskfactory_ontology, values: [body_parts_v1, body_parts_v2]}
+  - {axis_id: ontology_label, layer: canonical, unit: person_instance, authority: maskfactory_ontology, values: [hair, head_face, neck, chest_upper_torso, left_breast, right_breast, abdomen_stomach, belly_button, pelvic_region, left_hip, right_hip, left_shoulder, right_shoulder, left_upper_arm, right_upper_arm, left_elbow, right_elbow, left_forearm, right_forearm, left_wrist, right_wrist, left_hand_base, right_hand_base, left_thumb, right_thumb, left_index_finger, right_index_finger, left_middle_finger, right_middle_finger, left_ring_finger, right_ring_finger, left_pinky, right_pinky, left_glute, right_glute, left_thigh, right_thigh, left_knee, right_knee, left_calf, right_calf, left_ankle, right_ankle, left_foot_base, right_foot_base, left_toes, right_toes, back_upper_torso, back_lower_torso, other_person, occluding_object, support_surface, accessory_or_prop, left_ear, right_ear, left_areola, right_areola, left_nipple, right_nipple, vulva, penis_shaft, glans_penis, left_scrotal_region, right_scrotal_region]}
+  - {axis_id: figure_generation, layer: generation, unit: person_instance, authority: asset_vocabularies, values: [genesis_9, genesis_8_1, genesis_8, generation_neutral, other_or_unknown]}
+  - {axis_id: anatomy_configuration, layer: generation, unit: person_instance, authority: appearance_selection, values: [adult_male_anatomy, adult_female_anatomy]}
+  - {axis_id: anatomy_composition, layer: generation, unit: scene, authority: daz_17, values: [solo_male, solo_female, MM, MF, FF, MMM, MMF, MFF, FFF, MMMM, MMMF, MMFF, MFFF, FFFF]}
+  - {axis_id: presentation, layer: generation, unit: person_instance, authority: daz_16, values: [masculine, feminine, androgynous, neutral, mixed_style]}
+  - {axis_id: adult_age_appearance, layer: generation, unit: person_instance, authority: character_profiles, values: [adult_21_29, adult_30_44, adult_45_64, adult_65_plus]}
+  - {axis_id: body_shape_tier, layer: generation, unit: person_instance, authority: character_profiles, values: [central, moderate, validated_extreme]}
+  - {axis_id: skin_tone_band, layer: generation, unit: person_instance, authority: daz_16, values: [tone_band_1, tone_band_2, tone_band_3, tone_band_4, tone_band_5, tone_band_6]}
+  - {axis_id: skin_undertone, layer: generation, unit: person_instance, authority: daz_16, values: [warm, cool, neutral, olive, red]}
+  - {axis_id: skin_response, layer: generation, unit: person_instance, authority: daz_16, values: [matte, balanced, oily_specular]}
+  - {axis_id: hair_construction, layer: generation, unit: person_instance, authority: daz_16, values: [none, scalp_cap_cards, polygon_strands_cards, strand_procedural_dynamic, fitted_hair, parented_prop_hair, facial_hair, brows_lashes, body_hair_overlay]}
+  - {axis_id: hair_length, layer: generation, unit: person_instance, authority: daz_16, values: [bald, shaved, very_short, short, chin_length, shoulder_length, mid_back, waist_length, very_long]}
+  - {axis_id: hair_texture, layer: generation, unit: person_instance, authority: daz_16, values: [straight, wavy, curly, coily, afro, braids, locs, twists, ponytail, pigtails, bun, updo, bangs, side_swept, wet_or_slicked, wind_displaced]}
+  - {axis_id: hair_occlusion, layer: generation, unit: person_instance, authority: daz_16, values: [face_clear, face_partial, ear, neck, shoulder_one, shoulders_both, chest, upper_back, torso_long_hair, arm_hand_interaction]}
+  - {axis_id: wardrobe_state, layer: generation, unit: person_instance, authority: appearance_selection, values: [unclothed, underwear_only, swimwear, minimal_clothing, tight_fitted, standard_casual, loose_clothing, layered_clothing, formal, athletic, sleepwear, outerwear, workwear_or_uniform_generic, costume_or_stylized_adult]}
+  - {axis_id: fit_profile, layer: generation, unit: person_instance, authority: appearance_selection, values: [skin_tight, fitted, regular, loose, very_loose]}
+  - {axis_id: opacity_class, layer: generation, unit: person_instance, authority: daz_16, values: [opaque, lace, sheer, cutout, mesh]}
+  - {axis_id: garment_layer_count, layer: generation, unit: person_instance, authority: daz_16, values: [none, single, double, three_plus]}
+  - {axis_id: clothing_boundary_property, layer: risk, unit: person_instance, authority: daz_16, values: [none, strap, waistband, lace, sheer, mesh, cutout]}
+  - {axis_id: pose_family, layer: generation, unit: person_instance, authority: solo_pose_selection, values: [neutral_calibration, locomotion, seated, crouching_kneeling, lying_reclining, athletic_dance_flexibility]}
+  - {axis_id: support_mode, layer: generation, unit: person_instance, authority: solo_pose_selection, values: [none, standing_feet, single_foot, airborne, seat, seat_and_feet, floor_body, knee_and_foot, both_knees, hands_and_feet, furniture_body, inversion_support]}
+  - {axis_id: self_occlusion, layer: risk, unit: person_instance, authority: solo_pose_selection, values: [arm_over_torso, forearm_over_face, hand_over_face, hand_over_chest, hand_over_pelvis, hand_over_leg, crossed_arms, crossed_legs, thigh_overlap, hair_over_face, hair_over_neck, hair_over_chest, hair_over_back, torso_twist_hides_far_arm, profile_hides_far_limbs, foreshortened_limb, prop_over_body, support_surface_over_body_boundary, crop_truncation]}
+  - {axis_id: relationship_family, layer: generation, unit: scene, authority: duo_recipe_selection, values: [no_contact, overlap_no_contact, contact_support]}
+  - {axis_id: instance_count, layer: generation, unit: scene, authority: daz_17, values: [1, 2, 3, 4]}
+  - {axis_id: camera_azimuth, layer: image_formation, unit: scene, authority: scene_formation_selection, values: [front, left_three_quarter_front, right_three_quarter_front, left_profile, right_profile, left_three_quarter_back, right_three_quarter_back, back]}
+  - {axis_id: camera_elevation, layer: image_formation, unit: scene, authority: scene_formation_selection, values: [ground_level, low, eye_level, high, overhead, near_top_down]}
+  - {axis_id: camera_roll, layer: image_formation, unit: scene, authority: scene_formation_selection, values: [level, mild, moderate, strong_dutch]}
+  - {axis_id: focal_family, layer: image_formation, unit: scene, authority: scene_formation_selection, values: [ultra_wide, wide, normal_wide, normal, portrait, telephoto, orthographic]}
+  - {axis_id: framing_profile, layer: image_formation, unit: scene, authority: scene_formation_selection, values: [full_body_margin, full_body_tight, three_quarter_body, waist_up, chest_head, head_shoulders, close_up_specialist, intentional_truncation, multi_person_group_full, multi_person_mixed_truncation, negative_space, off_center]}
+  - {axis_id: aspect_ratio, layer: image_formation, unit: scene, authority: scene_formation_selection, values: ['1:1', '4:5', '5:4', '2:3', '3:2', '9:16', '16:9']}
+  - {axis_id: resolution_profile, layer: image_formation, unit: scene, authority: scene_formation_selection, values: [smoke_512, pilot_768, pilot_1024, core_1536, specialist_2048]}
+  - {axis_id: depth_of_field_mode, layer: image_formation, unit: scene, authority: scene_formation_selection, values: ['off', mild, strong_person_relevant]}
+  - {axis_id: motion_blur_mode, layer: image_formation, unit: scene, authority: scene_formation_selection, values: ['off']}
+  - {axis_id: lighting_profile, layer: image_formation, unit: scene, authority: scene_formation_selection, values: [front_soft, three_point, beauty_clamshell, hard_single, side_split, overhead_top, underlight_stress, backlight_rim, high_key_white, low_key_dark, colored_gel_mixed, overcast_diffuse, open_shade, direct_midday_sun, low_angle_sun, window_light, indoor_practical_warm, fluorescent_cool, mixed_indoor_outdoor, hdri_soft, hdri_hard, hdri_colored]}
+  - {axis_id: exposure_profile, layer: image_formation, unit: scene, authority: scene_formation_selection, values: [normal, mild_under, mild_over, high_dynamic_range, deep_cast_shadow, low_subject_background_contrast, high_contrast_clipped_highlights]}
+  - {axis_id: environment_family, layer: image_formation, unit: scene, authority: scene_formation_selection, values: [controlled, indoor, outdoor]}
+  - {axis_id: environment_subfamily, layer: image_formation, unit: scene, authority: scene_formation_selection, values: [transparent_solid_neutral, solid_light_dark_skin_adjacent, gradients, simple_geometric_backdrop, patterned_high_frequency, studio, bedroom_living_room, kitchen_dining, office, gym_studio_generic, hallway_stairs, bathroom_hard_surfaces_no_mirrors, warehouse_industrial_generic, furnished_cluttered, open_sky_field, wooded_foliage, urban_street_plaza, beach_waterfront_no_reflective_ambiguity, rocky_desert, garden_park, day_evening_illumination]}
+  - {axis_id: context_complexity, layer: image_formation, unit: scene, authority: scene_formation_selection, values: [controlled, simple, furnished, cluttered]}
+  - {axis_id: prop_mode, layer: image_formation, unit: scene, authority: scene_formation_selection, values: [none, support_surface, handheld_worn, occluder]}
+  - {axis_id: prop_role, layer: image_formation, unit: scene, authority: scene_formation_selection, values: [support_surface, accessory_or_prop, occluding_object]}
+  - {axis_id: prop_anchor_type, layer: image_formation, unit: scene, authority: scene_formation_selection, values: [hand_grip, foot_floor, hip_seat, back_chair, elbow_table, foreground_occluder, shared_two_hand]}
+  - {axis_id: render_profile, layer: render, unit: scene, authority: render_pass_profiles, values: [engineering_minimal, training_standard, training_relationship, diagnostic_full, rgb_variant]}
+  - {axis_id: degradation_lane, layer: render, unit: scene, authority: daz_18, values: [pristine, color_only, resize_crop_pad, geometry_warp, noise, blur, compression, tone, diagnostic_only]}
+  - {axis_id: label_visibility_state, layer: label, unit: person_instance, authority: daz_19, values: [visible, partially_visible, occluded, cropped_out, not_applicable]}
+  - {axis_id: p_index_role, layer: multi_person, unit: person_instance, authority: daz_17, values: [p0, non_p0]}
+  - {axis_id: finger_configuration, layer: risk, unit: person_instance, authority: daz_19, values: [not_applicable, spread, merged, mixed]}
+  - {axis_id: footwear_state, layer: risk, unit: person_instance, authority: daz_19, values: [barefoot, sock, sandal, closed_shoe, boot, heel, other]}
+  - {axis_id: body_region_major, layer: risk, unit: person_instance, authority: daz_19, values: [head_face, ear, neck_shoulders, torso_front, torso_back, pelvis_hips, arm_hand, leg_foot, anatomy_atomic]}
+  - {axis_id: background_contrast, layer: risk, unit: scene, authority: daz_19, values: [low, medium, high, matching_hair]}
+  - {axis_id: appearance_similarity, layer: risk, unit: scene, authority: daz_19, values: [distinct, similar_clothing, similar_skin, similar_hair, near_symmetric]}
+  - {axis_id: crop_region, layer: risk, unit: person_instance, authority: daz_19, values: [none, top, bottom, left, right, limb, torso]}
+registry_axes:
+  - {axis_id: asset_product_family, layer: inventory, unit: scene, registry: daz_asset_registry, value_pattern: '^daz_product_[A-Za-z0-9_-]+$'}
+  - {axis_id: character_preset_id, layer: inventory, unit: person_instance, registry: daz_asset_registry, value_pattern: '^daz_asset_[A-Za-z0-9_-]+$'}
+  - {axis_id: skin_material_asset_id, layer: inventory, unit: person_instance, registry: daz_asset_registry, value_pattern: '^daz_asset_[A-Za-z0-9_-]+$'}
+  - {axis_id: hair_asset_id, layer: inventory, unit: person_instance, registry: daz_asset_registry, value_pattern: '^daz_asset_[A-Za-z0-9_-]+$'}
+  - {axis_id: garment_asset_id, layer: inventory, unit: person_instance, registry: daz_asset_registry, value_pattern: '^daz_asset_[A-Za-z0-9_-]+$'}
+  - {axis_id: pose_asset_id, layer: inventory, unit: person_instance, registry: daz_asset_registry, value_pattern: '^daz_asset_[A-Za-z0-9_-]+$'}
+  - {axis_id: environment_asset_id, layer: inventory, unit: scene, registry: daz_asset_registry, value_pattern: '^daz_asset_[A-Za-z0-9_-]+$'}
+  - {axis_id: recipe_family_id, layer: inventory, unit: scene, registry: daz_recipe_registry, value_pattern: '^daz_[A-Za-z0-9_-]+$'}
+continuous_axes:
+  - {axis_id: body_morph_value, unit: person_instance, minimum: -1.0, maximum: 1.0, authority: character_profiles}
+  - {axis_id: camera_azimuth_degrees, unit: scene, minimum: -180.0, maximum: 180.0, authority: scene_formation_selection}
+  - {axis_id: camera_elevation_degrees, unit: scene, minimum: -35.0, maximum: 85.0, authority: scene_formation_selection}
+  - {axis_id: camera_roll_degrees, unit: scene, minimum: -30.0, maximum: 30.0, authority: scene_formation_selection}
+  - {axis_id: focal_length_mm, unit: scene, minimum: 18.0, maximum: 135.0, authority: scene_formation_selection}
+  - {axis_id: prominence_score, unit: person_instance, minimum: 0.0, maximum: 1.0, authority: p_index_assignment}
+high_risk_intersections:
+  - {intersection_id: hands_fingers_framing, axes: [canonical_attribute, finger_configuration, framing_profile]}
+  - {intersection_id: hand_body_target, axes: [canonical_attribute, body_region_major, relationship_family]}
+  - {intersection_id: hands_prop_grip, axes: [canonical_attribute, prop_anchor_type, prop_role]}
+  - {intersection_id: feet_footwear_low_angle, axes: [canonical_attribute, footwear_state, camera_elevation]}
+  - {intersection_id: hair_region_occlusion, axes: [hair_length, hair_texture, hair_occlusion]}
+  - {intersection_id: hair_background_contrast, axes: [hair_texture, background_contrast, lighting_profile]}
+  - {intersection_id: skin_lighting, axes: [skin_tone_band, lighting_profile, exposure_profile]}
+  - {intersection_id: wardrobe_view, axes: [wardrobe_state, fit_profile, canonical_view]}
+  - {intersection_id: garment_skin_boundary, axes: [clothing_boundary_property, opacity_class, canonical_attribute]}
+  - {intersection_id: anatomy_visibility, axes: [anatomy_configuration, canonical_view, label_visibility_state, body_region_major]}
+  - {intersection_id: age_body_pose, axes: [adult_age_appearance, body_shape_tier, pose_family]}
+  - {intersection_id: wide_foreshortening, axes: [focal_family, framing_profile, self_occlusion]}
+  - {intersection_id: telephoto_multi_depth, axes: [focal_family, instance_count, relationship_family]}
+  - {intersection_id: multi_crossed_similar, axes: [instance_count, self_occlusion, appearance_similarity]}
+  - {intersection_id: anatomy_p_index_role, axes: [anatomy_configuration, p_index_role, relationship_family]}
+  - {intersection_id: crop_body_region, axes: [crop_region, body_region_major, canonical_view]}
+  - {intersection_id: support_pose, axes: [support_mode, pose_family, prop_role]}
+  - {intersection_id: prop_body_occlusion, axes: [prop_role, body_region_major, label_visibility_state]}
+reporting:
+  states: [planned, attempted, rendered, accepted, packaged, dataset_selected, consumed_by_training]
+  units: [scene, person_instance, effective_training_weight]
+  separate_marginal_pairwise_and_selected_three_way: true
+  accepted_only_updates_accepted_coverage: true
+  scene_count_is_not_person_instance_count: true
+  effective_weight_is_not_instance_count: true
+authority:
+  synthetic_counts_as_gold: false
+  synthetic_counts_as_real_accuracy: false
+  synthetic_diagnostic_is_promotion_authority: false
+  registry_values_require_versioned_snapshot: true
+  unknown_values_fail_closed: true
+publication: {immutable: true, atomic: true}

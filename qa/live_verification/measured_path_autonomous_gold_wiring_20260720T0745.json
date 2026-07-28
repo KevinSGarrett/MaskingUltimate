@@ -1,0 +1,61 @@
+{
+  "artifact_type": "measured_path_autonomous_gold_wiring",
+  "branch": "codex/maskfactory-runtime-implementation",
+  "claim_boundary": {
+    "certificate_minted": false,
+    "champion_promoted": false,
+    "gold_produced": false,
+    "is_not_a_runtime_or_production_evidence_pass": true,
+    "measured_path_plumbing_unblocked": true
+  },
+  "code_fixes": [
+    {
+      "change": "run_autonomous_correction_loop now accepts allow_autonomous_profile (default False) and forwards it to every run_candidate_tournament round.",
+      "default_off": true,
+      "file": "src/maskfactory/autonomy/controller.py"
+    },
+    {
+      "change": "run_s11_production now accepts autonomy_allow_autonomous_profile (default False) and threads it into the authoritative run_candidate_tournament call (the non-gold review-draft convergence tournament stays certificate=None).",
+      "default_off": true,
+      "file": "src/maskfactory/vlm/production.py"
+    },
+    {
+      "change": "New end-to-end proof: OFF -> machine_verified_candidate (population 0); ON + passing governed autonomous-gold cert -> calibrated_auto_accepted -> build_weekly_audit_queue population_count=30.",
+      "file": "tests/test_autonomous_gold_audit_queue_wiring.py"
+    }
+  ],
+  "honest_state": {
+    "approved_gold_packages": 0,
+    "audit_queue_population_count": 0,
+    "autonomous_certified_gold_packages": 0,
+    "autonomy_lifecycle_sidecars_in_runs": 0,
+    "champions_count": 0,
+    "mode_b_health_models_status": "RUNTIME_PASS_BOUNDED_draft_service_only",
+    "mode_b_predict_status": "AWAITING_RUNTIME",
+    "no_champion_force_registered": true,
+    "no_gold_fabricated": true,
+    "no_tier_inflation": true
+  },
+  "next_agent_step": "Run the multi-provider autonomous tournament in the GPU container on gold-volume sources to emit machine_verified_candidate sidecars under runs/, assemble a frozen image-disjoint corpus, mint a governed autonomous-gold certificate via tools/build_autonomous_gold_admission.py --corpus, place it at the scoped certificate root, then run s11 with autonomy_allow_autonomous_profile=True to populate the audit queue on the now-unblocked path.",
+  "parent_head_before_commit": "b634c103773bd0fcd06d53cb3c88bd55a52c31c8",
+  "recorded_at": "2026-07-20T07:52:46.423555Z",
+  "root_cause": "population_count=0 is the honest downstream symptom of zero certified gold. Independently, the autonomous-certified-gold authority (approved, default-OFF) was NOT reachable on the measured runtime path: run_autonomous_correction_loop dropped the allow_autonomous_profile flag and run_s11_production never forwarded it to run_candidate_tournament. A governed autonomous-gold certificate could therefore never raise a decision to calibrated_auto_accepted, so the audit queue could never see a population even once real gold/certs exist.",
+  "schema_version": "1.0.0",
+  "self_sha256": "8e98ec2040c310f72e40c59d84824d22990226a4df41cc61f131705e0bf43e7d",
+  "serve_mode_b": {
+    "champion_discovery": "create_production_runtime resolves champions via champion_status(); configures sequential predictor only when all champion_* roles are present; honest 503 (AWAITING_RUNTIME) when absent.",
+    "verified_no_bug": true
+  },
+  "stream": "certified_gold -> P5 entry -> shadow tournament -> champion promotion -> Mode B /predict",
+  "tests": {
+    "ruff": "PASS",
+    "test_architecture_boundaries": "PASS",
+    "test_autonomous_gold_admission": "PASS",
+    "test_autonomous_gold_audit_queue_wiring": "PASS (2)",
+    "test_autonomy": "PASS",
+    "test_cloud_teacher": "PASS",
+    "test_s11_production": "PASS",
+    "test_serve_api": "PASS",
+    "test_vlm_workhorse": "PASS"
+  }
+}

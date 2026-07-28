@@ -1,0 +1,30 @@
+{
+  "authority_claimed": false,
+  "first_fallback_attempt": {
+    "failure_reason": "response_json_parse_failed_after_healthy_server_response",
+    "gpu_contained_after_failure": true,
+    "server_engine_ready": true,
+    "server_log_sha256": "9b929eee76cc3d80819c90cb1616fe58dc3692f71ed437a4a0c75720d2fa2852",
+    "stderr_sha256": "675b75d8d7a0bc7cb695b06fcc632fcdb126ceb057b86e94b4c43b2b2b529dec"
+  },
+  "protocol_retry": {
+    "changes": [
+      "strict_json_schema_response_format",
+      "no_think_prompt_control",
+      "vllm_generation_config",
+      "raw_response_evidence",
+      "new_owned_job_directory"
+    ],
+    "job_dir": "/workspace/maskfactory/runtime_artifacts/visual_critic_qwen27_protocol_retry",
+    "pid_at_launch": 2762789,
+    "script_sha256": "d65fdf913fb16b62334eb3787e62ca3592da73085c0872cefe471f5281ba75c9",
+    "status": "RUNNING_AT_RECORD_TIME"
+  },
+  "recorded_at": "2026-07-21T23:02:14.6151271Z",
+  "schema_version": "1.0.0",
+  "source_sha256": {
+    "tests/test_runpod_critic_protocol_retry.py": "c9ce0fc071cb7839fe5cc48e4f1d83dd4256e217f0628d92d0a66f5b3303352c",
+    "tools/launch_runpod_critic_protocol_retry.py": "648ad659f0ed19c6b3d30129286742010cb60ce038436935e99e719e26ce24f9"
+  },
+  "status": "MATERIAL_PROTOCOL_RETRY_RUNNING"
+}

@@ -1,0 +1,49 @@
+{
+  "authority": "shadow_advisory_human_approval_required",
+  "image_id": "img_cdab0311dc96",
+  "instance_id": "p0",
+  "judgments": [
+    {
+      "confidence": 0.93,
+      "correction": {
+        "negative_points": [],
+        "polygon": [],
+        "positive_points": [],
+        "rationale": "No correction is needed; the existing mask has appropriate anatomy, side, coverage, topology, and visible-pixel boundaries.",
+        "tool": "none"
+      },
+      "defects": [],
+      "evidence": "The candidate is the anatomically correct right-toes region under the COCO semantic side contract. It covers the complete visible toe area as one connected component and respects the foot_mtp boundary.",
+      "latency_ms": 11576,
+      "model": "gpt-5.6-luna",
+      "observations": {
+        "contour": "The cyan contour follows the toe silhouette and the proximal foot-MTP boundary. The individual toe separations and outer toe tips appear plausibly represented.",
+        "full_context": "The visible forward foot at the bottom-right corresponds to the character's semantic right side according to the supplied pose-chain evidence; the target toes are clearly visible and unobscured.",
+        "mask": "The binary mask is a single connected component covering the visible toes, with no evident background or neighboring-foot inclusion. It excludes the main foot/ankle region above the toe boundary.",
+        "neighbor_overlap": "No meaningful overlap with the adjacent foot, ankle, leg, clothing, or background is visible; the neighboring rear foot remains outside the mask.",
+        "overlay": "The red overlay aligns with the visible toe pixels and follows the outer dorsal, lateral, and plantar contours without obvious clothing or background contamination.",
+        "source_crop": "The crop shows the complete visible right-toes region, including the distal portions of all visible toes and their natural outer contours. The proximal cutoff is at a plausible metatarsophalangeal split rather than including the whole foot."
+      },
+      "provider": "openai",
+      "response_sha256": "e49df00d1c70a37cba226e1d1b3a09d23e478d081d3cefed7157a71bbc9d83bf",
+      "usage": {
+        "cost_usd": 0.014403,
+        "input_tokens": 9903,
+        "output_tokens": 750
+      },
+      "verdict": "pass"
+    }
+  ],
+  "label": "right_toes",
+  "local_audit": {
+    "deterministic_overrides": [
+      "autoqa_aux_s11_001"
+    ],
+    "final_verdict": "uncertain",
+    "model": "qwen2.5vl:7b",
+    "model_verdict": "uncertain"
+  },
+  "schema_version": "1.0.0",
+  "sha256": "2c3934e519f5626e57d02fd126d1e448fbb77645179a6a1a78df996c659614a0",
+  "source_sha256": "d962e914116cdd97d00187c313fe94c99e9e725ab50d38b79d203f1ed47bae43"
+}

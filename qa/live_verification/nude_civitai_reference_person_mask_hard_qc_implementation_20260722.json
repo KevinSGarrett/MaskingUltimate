@@ -1,0 +1,63 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_civitai_reference_person_mask_hard_qc_implementation.v1",
+  "recorded_at": "2026-07-22T16:24:57Z",
+  "result": "STATIC_PASS_HARD_QC_EXECUTABLE_LIVE_MASKS_PENDING",
+  "base_commit": "57eea2f6ded55cde9eafce59dc51bd6b586738f8",
+  "product_behavior": {
+    "source_file_hash_and_decode_gate": "NREF-QC-000",
+    "artifact_path_and_hash_gate": "NREF-QC-001",
+    "strict_png_geometry_and_binary_gate": "NREF-QC-002",
+    "mask_pixel_hash_and_count_gate": "NREF-QC-003",
+    "prompt_hash_polarity_and_containment_gate": "NREF-QC-004",
+    "collapsed_mask_gate": "NREF-QC-005",
+    "topology_gate": "NREF-QC-006",
+    "duplicate_person_mask_gate": "NREF-QC-007",
+    "cross_person_exclusivity_gate": "NREF-QC-008",
+    "per_record_source_or_artifact_failure_continues_batch": true,
+    "hard_qc_may_be_overridden": false,
+    "policy_cannot_be_weakened": true,
+    "provider_specific_queue_checkpoint": true,
+    "queue_checkpoint_idempotent": true,
+    "terminal_queue_progress_advanced": false,
+    "runner_can_emit_hard_qc_immediately_after_generation": true,
+    "strict_visual_review_complete": false,
+    "production_mask_authority": false,
+    "operational_certificates_issued": false
+  },
+  "default_policy": {
+    "minimum_mask_to_prompt_box_ratio": 0.05,
+    "maximum_component_count": 16,
+    "minimum_largest_component_fraction": 0.5,
+    "maximum_cross_person_overlap_pixels": 0
+  },
+  "seeded_negative_controls": {
+    "collapsed_one_pixel_mask": "BLOCK_NREF-QC-005",
+    "cross_person_overlap": "BLOCK_NREF-QC-008",
+    "artifact_byte_tamper": "BLOCK_NREF-QC-001",
+    "source_hash_drift": "BLOCK_NREF-QC-000",
+    "authority_escalation": "REJECT_STRUCTURE",
+    "weakened_policy": "REJECT_POLICY"
+  },
+  "artifacts": {
+    "src/maskfactory/nude_reference_mask_hard_qc.py": "ea58b21e1e73f65e9e1bb4fea14a38694284197b6467d768805b6923c5d171fd",
+    "src/maskfactory/nude_box_mask_generation.py": "2f15dfbacdda1a7cb88095e59dbeb3ebcc8094186b0f8d7b0e7ee8cf8f72fc77",
+    "src/maskfactory/nude_batch_queue.py": "a1ef4b08bd8ca8befbd341813741f79615517397a07bf420f6ff1304a3561e28",
+    "tools/run_nude_box_prompt_masks.py": "307213122fc315804c8f0ed9e0dbcc720ea2b6010f3555f57d2141676b65fe09",
+    "tests/test_nude_reference_mask_hard_qc.py": "836e1abb8e69263a026aa2a1e3fea49da65dc741301f19eced6e4acb0b38049f",
+    "tests/test_nude_box_mask_generation.py": "e18aa395f3967f76fb0dc79227b90d3a72f98aab0f23ee0a006050156db06259",
+    "tests/test_nude_batch_queue.py": "71f2027a6032dab8608b3cc43bb71d3d968526849e9c7915abeb60f08108012e"
+  },
+  "validation": {
+    "focused_and_adjacent_tests": 242,
+    "focused_and_adjacent_test_result": "PASS",
+    "ruff": "PASS",
+    "black": "PASS",
+    "diff_integrity": "PASS"
+  },
+  "live_boundary": {
+    "live_generated_masks_evaluated": 0,
+    "reason": "shared RunPod coordinator remains RECOVERY_REQUIRED on an expired exact lease whose one-time authentication token is unavailable",
+    "coordinator_bypassed_or_edited": false,
+    "next_stage": "Run provider batches after authenticated GPU admission, apply these hard vetoes to every retained candidate, render passing source/mask/overlay/contour/ownership panels, then invoke strict per-record self-hosted visual review."
+  }
+}

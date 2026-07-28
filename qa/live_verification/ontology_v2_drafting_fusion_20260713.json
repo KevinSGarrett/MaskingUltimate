@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-13T23:42:43.1637883Z",
+  "outcome": "pass",
+  "scope": "inactive body_parts_v2 anatomy drafting, SAM2 routing, carve-out fusion, and review evidence",
+  "authority_boundary": {
+    "production_ontology": "body_parts_v1",
+    "v2_activation_claimed": false,
+    "human_review_claimed": false,
+    "gold_approval_claimed": false,
+    "output_authority": "non_gold_review_draft",
+    "allowed_intake_decisions": [
+      "clear_adult"
+    ],
+    "visible_surface_only": true
+  },
+  "artifacts": {
+    "config": {
+      "path": "configs/anatomy_v2_drafting.yaml",
+      "sha256_lf_normalized": "59ce5d8610008e96d49601577131203dd9601cf219caa243606c07f279302b62"
+    },
+    "implementation": {
+      "path": "src/maskfactory/anatomy_v2_drafting.py",
+      "sha256_lf_normalized": "c0cdf78eda96fcf599f59f2d84bdfae6448b76786f780d658b810000a9e8c4a3"
+    },
+    "tests": {
+      "path": "tests/test_anatomy_v2_drafting.py",
+      "sha256_lf_normalized": "a9c9db37d46d90a54bbf9f85b4c2bf244dc750c1032410309f75979c15ed7868"
+    }
+  },
+  "implemented_contract": {
+    "crop_proposals_assert_positive_anatomy": false,
+    "canonical_prompt_count": 9,
+    "aliases_persisted_as_prompt_labels": false,
+    "adult_gate_before_prompting": true,
+    "adult_gate_before_sam2": true,
+    "adult_provenance_rechecked_at_fusion": true,
+    "detector_boxes_may_write_final_masks": false,
+    "geometry_priors_may_write_final_masks": false,
+    "sam2_multimask_required_for_positive_candidates": true,
+    "sam2_low_confidence_prior_fallback_suppressed": true,
+    "same_side_chest_and_scrotal_priors": true,
+    "clothing_hair_and_ambiguity_clip_priors": true,
+    "nipple_owns_areola_overlap": true,
+    "glans_owns_shaft_overlap": true,
+    "breast_and_pelvic_carveouts_before_part_map": true,
+    "incompatible_overlap_becomes_ambiguity": true,
+    "unrelated_v1_overlap_becomes_ambiguity": true,
+    "review_bundle_has_strict_candidate_masks": true,
+    "review_bundle_has_part_map_panel_confidence_provenance_and_canonical_instructions": true,
+    "human_review_required": true,
+    "gold_approved": false
+  },
+  "required_scenarios": {
+    "nude": "visible proposals and bilateral priors",
+    "clothed": "no prompt request and no anatomy prior under clothing",
+    "partial": "only unblocked visible region remains eligible",
+    "distant": "review proposal remains non-authoritative",
+    "hair_occluded": "hair pixels are excluded from the visible prior",
+    "side_view": "hidden-side chest proposal is suppressed",
+    "cropped": "crop is frame-clamped and cropped_out produces no prompt request"
+  },
+  "verification": {
+    "focused_anatomy_tests_passed": 13,
+    "adjacent_regression_tests_passed": 52,
+    "ontology_v2_drift_check": "pass; inactive artifacts current",
+    "ruff_changed_surface": "pass",
+    "black_26_5_1_changed_surface": "pass",
+    "live_root_tests_collected": 807,
+    "live_root_tests_passed": 806,
+    "live_root_known_unrelated_failure": "tests/test_vlm_client_router.py::test_versioned_prompts_and_config_cover_all_three_contracts expects cloud_enabled=false while concurrent root config and cloud-teacher tests require true; anatomy files do not touch that surface",
+    "clean_publish_tests_collected": 794,
+    "clean_publish_tests_passed": 791,
+    "clean_publish_expected_runtime_artifact_skips": 3,
+    "clean_publish_verification": "pass"
+  }
+}

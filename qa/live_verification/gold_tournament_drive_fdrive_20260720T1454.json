@@ -1,0 +1,103 @@
+{
+  "artifact_type": "gold_tournament_drive_fdrive",
+  "authority": "autonomous_certified_gold_profile",
+  "evidence_tier": "RUNTIME_PROBE_BOUNDED",
+  "f_drive": {
+    "maskedwarehouse_fallback": true,
+    "named_sources": {
+      "DAZ": {
+        "candidates_probed": [
+          "F:\\DAZ"
+        ],
+        "path": "F:\\DAZ",
+        "present": true
+      },
+      "MaskedWarehouse": {
+        "candidates_probed": [
+          "F:\\MaskedWarehouse",
+          "F:\\MaskFactory_Offload_20260714\\MaskedWarehouse",
+          "F:\\MaskFactory_DataRelocated\\MaskedWarehouse"
+        ],
+        "path": null,
+        "present": false
+      },
+      "characters": {
+        "candidates_probed": [
+          "F:\\Characters"
+        ],
+        "path": "F:\\Characters",
+        "present": true
+      },
+      "reference_library": {
+        "candidates_probed": [
+          "F:\\Reference_Images"
+        ],
+        "path": "F:\\Reference_Images",
+        "present": true
+      }
+    },
+    "no_junction_created_to_f": true,
+    "no_runtime_data_written_to_f": true,
+    "present": true,
+    "used_read_only": true
+  },
+  "gold_counts": {
+    "approved_gold_count": 0,
+    "autonomous_certified_gold_count": 0,
+    "calibrated_auto_accepted_count": 0,
+    "champions": 0,
+    "human_anchor_gold_count": 0,
+    "machine_verified_candidate_count": 0
+  },
+  "honest_admission_state": {
+    "autonomous_verified_pool": {
+      "calibrated_auto_accepted_count": 0,
+      "lifecycle_sidecars_seen": 0,
+      "machine_root": "C:\\Comfy_UI_Main_Masking\\runs",
+      "machine_verified_candidate_count": 0
+    },
+    "certificate_passed": false,
+    "self_sha256": "9ff619a2beaca83f9c23bae734c6075cae19eb848b295dabd52c827853744ac5",
+    "status": "insufficient_autonomous_verified_samples"
+  },
+  "honesty_boundary": {
+    "external_and_reference_labels_not_treated_as_gold": true,
+    "f_used_read_only_no_junction": true,
+    "no_fabricated_wilson_samples": true,
+    "no_force_registered_champions": true,
+    "no_gpu_foreign_eviction": true,
+    "no_minted_certificate": true,
+    "no_prune_or_volume_wipe": true,
+    "wilson_and_zero_failure_math_unchanged": true
+  },
+  "instruction": "FULL AUTONOMY: F: USB online; use F: MaskedWarehouse/DAZ paths READ-ONLY for gold tournament/corpus when present; fall back if unplugged; do not junction critical runtime data to F:; drive tournament progress; seal; commit+push; return counts, HEAD.",
+  "next_agent_step": "Bring >=3 independent live mask families online (build the Docker GPU train/serve images so BiRefNet/DensePose/Sapiens/SCHP/SAM2 run alongside nuclio SAM2, OR repair the WSL Ubuntu-22.04 ext4 VHD via scripted elevated e2fsck), then GPU-sequence the >=3-family tournament over this staged F: source corpus to emit genuine machine_verified_candidate sidecars under runs/, then re-run build_autonomous_gold_admission.py --corpus to attempt an honest autonomous_certified_gold certificate.",
+  "progress_this_wave": [
+    "F: USB confirmed online; gold-volume source images located read-only (reference library present; DAZ content tree present; MaskedWarehouse absent -> honest fallback).",
+    "Staged a bounded, frozen, image-disjoint gold-volume SOURCE corpus manifest from F: (sha256-referenced, read-only, no bytes copied, no F: junction). This removes the 'gold-volume sources not present' blocker prior waves hit.",
+    "Re-ran build_autonomous_gold_admission.py (default) -> honest insufficient_autonomous_verified_samples (runs/ pool = 0)."
+  ],
+  "recorded_at": "2026-07-20T14:58:39.519694Z",
+  "schema_version": "1.0.0",
+  "self_sha256": "89dca236557bae5fe3347704636b2685b4b5fbc0d84302b8ac3ce963ec733c1d",
+  "staged_source_corpus": {
+    "collection_count": 8,
+    "frozen": true,
+    "image_disjoint": true,
+    "path": "qa/live_verification/f_drive_gold_source_corpus_20260720T1454.json",
+    "record_count": 41,
+    "self_sha256": "0984a0e36a11f395225cba8fa1926b35ea4df74cf53811c773bdecef8088ab02",
+    "source_roots_used": [
+      "F:\\Reference_Images"
+    ]
+  },
+  "tournament_runtime_blocker": {
+    "families_offline_reason": "BiRefNet/DensePose/Sapiens/SCHP/faceparse/vitmatte/host-SAM2 declare runtime WSL-...+cu128; Ubuntu-22.04 ext4 VHD is corrupt (read-only fallback/IO error) and host torch is CPU-only; only the Docker nuclio SAM2 interactor is live. Ollama VLM is critic-only (not a mask source).",
+    "live_independent_mask_families": [
+      "nuclio_pth_sam2"
+    ],
+    "live_independent_mask_families_count": 1,
+    "required_minimum_independent_families": 3,
+    "why_gold_stays_zero": "A genuine multi-provider (>=3 independent family) tournament cannot be assembled from 1 live family without fabrication; therefore no honest machine_verified_candidate sidecar can be emitted on the F: sources yet."
+  }
+}

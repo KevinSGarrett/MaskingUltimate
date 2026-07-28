@@ -1,0 +1,1 @@
+{"artifact_type":"external_supervision_remap_evidence","fixture":true,"gate":"deterministic_remap_tested","schema_version":"1.0.0","seal_sha256":"1fb5631a437b6c16e83760b6a9c6f400cb1e3c59848b96642214bcbb1e35d279","source":"celebamask_hq","source_masks_are_gold":false,"status":"PASS"}

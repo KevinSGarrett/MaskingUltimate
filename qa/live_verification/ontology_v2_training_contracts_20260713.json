@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-14T00:26:27.3661014Z",
+  "result": "PASS_MACHINE_CONTRACTS_REAL_DATA_GATES_OPEN",
+  "scope": "inactive body_parts_v2 dataset export, fine-tune sampling, holdouts, metrics, and promotion refusal",
+  "authority": {
+    "production_ontology": "body_parts_v1",
+    "v2_activation_status": "approved_design_not_active",
+    "adult_images_processed": 0,
+    "v2_gold_packages_created": 0,
+    "training_runs_launched": 0,
+    "promotion_claimed": false
+  },
+  "implemented": {
+    "supervision": {
+      "v1": "56-class pretraining only; IDs 56-64 receive no inferred negative labels",
+      "v2": "65-class fine-tune only after the shared full body_parts_v2 human-review eligibility gate passes"
+    },
+    "export": {
+      "class_ids": "0..64 unchanged",
+      "ignore_index": 255,
+      "repair": "separate v2 ambiguity masks are now burned to ignore instead of relying on an impossible ambiguous class ID in the authoritative map",
+      "fixture": "IDs 56..64 exported exactly while one independently masked ambiguous pixel becomes 255"
+    },
+    "sampling": {
+      "anatomy_positive_crop_min_fraction": 0.5,
+      "whole_body_anti_forgetting_min_fraction": 0.25,
+      "fabricated_hidden_positives_allowed": false,
+      "eligibility": "fully reviewed v2 samples only"
+    },
+    "configs": [
+      "configs/training/bodypart_v2_segformer_b3.yaml",
+      "configs/training/bodypart_v2_mask2former_swinb.yaml"
+    ],
+    "config_contract": {
+      "num_classes": 65,
+      "class_ids": "0..64 including background 0",
+      "obsolete_57_class_allowed": false,
+      "class_weighting": "inverse sqrt pixel frequency capped at x8",
+      "augmentations": "ontology-aware horizontal flip, rare anatomy crop, bounded color jitter, nearest-label rotation with 255 border"
+    },
+    "holdouts": {
+      "cohorts": [
+        "positive_holdout",
+        "clothed_negative_holdout"
+      ],
+      "identity_separation": true,
+      "phash_near_duplicate_separation": true,
+      "explicit_clothed_negative_review_required": true
+    },
+    "metrics": [
+      "per-class IoU",
+      "per-class boundary-F@2px",
+      "per-class positive recall",
+      "per-class clothed false-positive image and pixel rates",
+      "left/right swap rate for every sided addition"
+    ],
+    "promotion_refusal": [
+      "all nine classes must be present exactly once",
+      "each class needs at least 50 clear positive inventory instances",
+      "each class needs measured positive and clothed-negative holdouts",
+      "all required per-class metrics must be finite",
+      "any clothed false positive fails closed until a real calibration authorizes a different threshold"
+    ]
+  },
+  "verification": {
+    "focused_tests_passed": 48,
+    "focused_files": [
+      "tests/test_bodypart_v2_training_contract.py",
+      "tests/test_ontology_v2_migration.py",
+      "tests/test_dataset_builder.py",
+      "tests/test_training_augmentations.py",
+      "tests/test_mmseg_compile.py"
+    ],
+    "full_tests_collected_and_passed": 833,
+    "clean_publish_tests": {
+      "collected": 817,
+      "passed": 814,
+      "expected_runtime_artifact_skips": 3
+    },
+    "ruff": "pass on src, tests, and tools",
+    "black": "332 live-root and 323 clean-publish files format-clean with exact Black 26.5.1"
+  },
+  "sha256_lf_normalized": {
+    "src/maskfactory/datasets/builder.py": "10913f9c98f61cda52b28ff67dc9dc0922d4b70f4c77f6ac42187aa9a459face",
+    "src/maskfactory/training/bodypart/v2_contract.py": "1333350547156d2d954e37b12c23923fca099248bdf272d1a50e8e43fcb9e8ca",
+    "tests/test_bodypart_v2_training_contract.py": "b0f4fb08a930456ffab1c27742dc5e61530d28ff84afe90fc0eb9cc125c31305",
+    "configs/training/bodypart_v2_segformer_b3.yaml": "cd36c8d23fb1b27ed17a9b943ebb29bed9eb88226fa26c4b3f62c64c18c1673f",
+    "configs/training/bodypart_v2_mask2former_swinb.yaml": "55022d26a2e11c4e3c160e91c1d745525eb67a2db730bc64e3e8203dd8c8cc10"
+  },
+  "open_real_evidence_gates": [
+    "Reach 50-100 clear positive instances per new class",
+    "Run a real immutable v2 dataset and 65-class challenger",
+    "Publish real holdout IoU, boundary-F, recall, clothed false positives, and side-swap rates",
+    "Pass the separate real adult calibration and routing gates"
+  ]
+}

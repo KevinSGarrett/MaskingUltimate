@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-14T00:02:43.7302051Z",
+  "outcome": "pass",
+  "scope": "inactive body_parts_v2 QC-V2-001..012, seeded defects, clothed false-positive sweep, and QA-only VLM vocabulary",
+  "authority_boundary": {
+    "production_ontology": "body_parts_v1",
+    "v2_activation_claimed": false,
+    "real_adult_calibration_claimed": false,
+    "calibrated_recall_precision_claimed": false,
+    "human_review_claimed": false,
+    "gold_approval_claimed": false,
+    "qa_may_author_masks": false,
+    "qa_may_approve_gold": false,
+    "qa_may_clear_blocks": false
+  },
+  "artifacts": {
+    "config": {
+      "path": "configs/anatomy_v2_qa.yaml",
+      "sha256_lf_normalized": "2c19cc8e385c56e14fb05a0026e30c14550ff7cefd2147ee89f33acf4dcadc61"
+    },
+    "implementation": {
+      "path": "src/maskfactory/anatomy_v2_qa.py",
+      "sha256_lf_normalized": "fa123c46eba70935520bea70d3cb938b89ed2e87bb1871702f250ab29cf2de24"
+    },
+    "tests": {
+      "path": "tests/test_anatomy_v2_qa.py",
+      "sha256_lf_normalized": "1311ddab7bffd7621d76fe6d868bd837508a9612d226128f4befa69de8e51ffc"
+    }
+  },
+  "checks": {
+    "QC-V2-001": "all 65 states represented; approved/exported packages reject unreviewed additions and wrong reviewed ontology",
+    "QC-V2-002": "visible/null/occluded/ambiguous state and per-label mask/ignore consistency",
+    "QC-V2-003": "atomic exclusivity plus exact 65-class part-map reconstruction",
+    "QC-V2-004": "same-side nipple/areola adjacency or enclosure with midline integrity",
+    "QC-V2-005": "same-side breast carve-outs and exact full-surface restoration",
+    "QC-V2-006": "pelvic carve-outs and exact pelvic_anatomy_visible restoration",
+    "QC-V2-007": "shaft/glans exclusivity, adjacency, and connected topology unless honestly occluded",
+    "QC-V2-008": "character-perspective scrotal side integrity and ambiguity evidence",
+    "QC-V2-009": "occluded_by_clothing requires null anatomy and reviewed garment-material evidence",
+    "QC-V2-010": "projected/amodal sources cannot satisfy visible, QA, gold, or training authority",
+    "QC-V2-011": "every positive appended class requires clear_adult provenance and a permitted governed source origin",
+    "QC-V2-012": "aliases are rejected from manifest/mask/review/provenance namespaces and maps contain only canonical IDs"
+  },
+  "seeded_fixture_contract": {
+    "good_case_passes_all_twelve": true,
+    "named_defect_count": 12,
+    "every_named_defect_trips_its_check": true,
+    "synthetic_fixtures_grant_calibration_credit": false
+  },
+  "clothed_false_positive_sweep": {
+    "requires_reviewed_garment_pixels": true,
+    "allowed_anatomy_pixels_in_reviewed_clothing_roi": 0,
+    "clean_case_passes": true,
+    "four_pixel_seeded_false_positive_fails": true,
+    "production_activation_granted": false
+  },
+  "vlm": {
+    "role": "qa_only",
+    "canonical_vocabulary_count": 9,
+    "aliases_allowed_in_persisted_vocabulary": false,
+    "problem_types": [
+      "anatomy_boundary",
+      "anatomy_clothing_false_positive",
+      "anatomy_left_right_swap",
+      "anatomy_state_inconsistency",
+      "anatomy_topology"
+    ],
+    "may_author_masks": false,
+    "may_approve_gold": false,
+    "may_clear_blocks": false
+  },
+  "verification": {
+    "focused_tests_passed": 15,
+    "adjacent_v2_manifest_topology_tests_passed": 76,
+    "live_root_tests_collected": 825,
+    "live_root_tests_passed": 825,
+    "ruff_changed_surface": "pass",
+    "black_26_5_1_changed_surface": "pass",
+    "clean_publish_tests_collected": 809,
+    "clean_publish_tests_passed": 806,
+    "clean_publish_expected_runtime_artifact_skips": 3,
+    "clean_publish_verification": "pass"
+  },
+  "remaining_checklist_f_gates": [
+    "Build real adult calibration panels; synthetic near-duplicates are not gate authority",
+    "Pass calibrated recall/precision before anatomy routing is enabled"
+  ]
+}

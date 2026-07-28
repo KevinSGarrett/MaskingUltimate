@@ -1,0 +1,15 @@
+schema_version: 1.0.0
+source_origin: synthetic
+source_role: synthetic_geometry_exact
+truth_tier: weighted_pseudo_label
+truth_partition: train
+training_loss_weight: 0.20
+minimum_training_loss_weight: 0.10
+maximum_training_loss_weight: 0.25
+maximum_synthetic_image_fraction: 0.30
+holdout_eligible: false
+calibration_eligible: false
+dataset_volume_eligible: false
+counts_as_human_anchor_gold: false
+counts_as_autonomous_certified_gold: false
+group_by: [scene_family_id, pristine_image_id, variant_family_id]

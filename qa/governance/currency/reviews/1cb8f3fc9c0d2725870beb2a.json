@@ -1,0 +1,156 @@
+{
+  "active_role_digest": "e3a3b26cafd5807812acf1c8d6a8abbb30f8bcdad778625b998d3f10c4c631df",
+  "active_roles": [
+    {
+      "artifact_sha256": "b8a7382001b16e453bad95ca9dbc68ae8f2b839b304cf90eaf5c27fbdb4dae91",
+      "authority_key": "densepose_rcnn_r50_fpn_s1x",
+      "benchmark_certificate_sha256": null,
+      "benchmark_issued_at": null,
+      "content_compatibility": {
+        "adult_nonexplicit": "allowed",
+        "consensual_explicit_adult": "allowed"
+      },
+      "findings": [
+        "benchmark_certificate_missing",
+        "rollback_evidence_missing",
+        "rollback_provider_not_distinct"
+      ],
+      "license_status": "verified",
+      "lifecycle_state": "promoted",
+      "provider_alias": "densepose_r50_fpn_s1x",
+      "registry": "model_registry",
+      "role": "geometry_provider",
+      "rollback_evidence_sha256": null,
+      "rollback_provider": "densepose_r50_fpn_s1x",
+      "rollback_tested_at": null,
+      "runtime_identity": "WSL-detectron2-densepose-0.6+torch-2.11.0+cu128-sm_120",
+      "status": "fail"
+    },
+    {
+      "artifact_sha256": "2647878d5dfa5098f2f8649825738a9345572bae2d4350a2468587ece47dd318",
+      "authority_key": "sam2_1_hiera_large",
+      "benchmark_certificate_sha256": null,
+      "benchmark_issued_at": null,
+      "content_compatibility": {
+        "adult_nonexplicit": "allowed",
+        "consensual_explicit_adult": "allowed"
+      },
+      "findings": [
+        "benchmark_certificate_missing",
+        "rollback_evidence_missing",
+        "rollback_provider_not_distinct"
+      ],
+      "license_status": "verified",
+      "lifecycle_state": "promoted",
+      "provider_alias": "sam2_1_large",
+      "registry": "model_registry",
+      "role": "interactive_segmenter",
+      "rollback_evidence_sha256": null,
+      "rollback_provider": "sam2_1_large",
+      "rollback_tested_at": null,
+      "runtime_identity": "WSL-SAM-2-1.0+torch-2.11.0+cu128-bfloat16",
+      "status": "fail"
+    },
+    {
+      "artifact_sha256": "d5ffc1a674953a08e11a8d21e022781b1b23a19b730afc309290bd9fb5305b95",
+      "authority_key": "yolo11m",
+      "benchmark_certificate_sha256": null,
+      "benchmark_issued_at": null,
+      "content_compatibility": {
+        "adult_nonexplicit": "allowed",
+        "consensual_explicit_adult": "allowed"
+      },
+      "findings": [
+        "benchmark_certificate_missing",
+        "rollback_evidence_missing",
+        "rollback_provider_not_distinct"
+      ],
+      "license_status": "verified",
+      "lifecycle_state": "promoted",
+      "provider_alias": "yolo11m_person",
+      "registry": "model_registry",
+      "role": "person_detector",
+      "rollback_evidence_sha256": null,
+      "rollback_provider": "yolo11m_person",
+      "rollback_tested_at": null,
+      "runtime_identity": "ultralytics-8.4.87+torch-2.12.1-cpu-smoke",
+      "status": "fail"
+    },
+    {
+      "artifact_sha256": "724f4ff2439ed61afb86fb8a1951ec39c6220682803b4a8bd4f598cd913b1843",
+      "authority_key": "dwpose_133",
+      "benchmark_certificate_sha256": null,
+      "benchmark_issued_at": null,
+      "content_compatibility": {
+        "adult_nonexplicit": "allowed",
+        "consensual_explicit_adult": "allowed"
+      },
+      "findings": [
+        "benchmark_certificate_missing",
+        "rollback_evidence_missing",
+        "rollback_provider_not_distinct"
+      ],
+      "license_status": "verified",
+      "lifecycle_state": "promoted",
+      "provider_alias": "dwpose_133",
+      "registry": "model_registry",
+      "role": "pose_provider",
+      "rollback_evidence_sha256": null,
+      "rollback_provider": "dwpose_133",
+      "rollback_tested_at": null,
+      "runtime_identity": "WSL-onnxruntime-gpu-1.20.2",
+      "status": "fail"
+    },
+    {
+      "artifact_sha256": "9ab37426bf4de0567af6b5d21b16151357149139362e6e8992021b8ce356a154",
+      "authority_key": "birefnet_general",
+      "benchmark_certificate_sha256": null,
+      "benchmark_issued_at": null,
+      "content_compatibility": {
+        "adult_nonexplicit": "allowed",
+        "consensual_explicit_adult": "allowed"
+      },
+      "findings": [
+        "benchmark_certificate_missing",
+        "rollback_evidence_missing",
+        "rollback_provider_not_distinct"
+      ],
+      "license_status": "verified",
+      "lifecycle_state": "promoted",
+      "provider_alias": "birefnet_general",
+      "registry": "model_registry",
+      "role": "silhouette_provider",
+      "rollback_evidence_sha256": null,
+      "rollback_provider": "birefnet_general",
+      "rollback_tested_at": null,
+      "runtime_identity": "WSL-maskfactory-torch-2.11.0+cu128-transformers-4.47.1",
+      "status": "fail"
+    }
+  ],
+  "event": "scheduled_90_day",
+  "expires_at": "2026-10-13T18:56:53.885079Z",
+  "global_findings": [],
+  "input_hashes": {
+    "dependencies": {
+      "conda_environment": "27e18e50ccfb67be72c9fde0fb15281c5ac824425545396cb107ac11c9d162b5",
+      "governance_decisions": "f25d42bece937f9ad45f0e81dff6c48546f319496d6d430c160291bd9377e95f",
+      "python_lock": "7e2dcd6cef23dab483c6d8a75db7e73015d785c66dffd6f6d0d2885006634e01",
+      "python_project": "ffe586c8e684a8ff7a7a044101bb622dfa1f4e138d7bfeed8537bc378965b839"
+    },
+    "external_registry": "f9a9fd884b7bdaac0a23d1483d209bf9afb89ffd894b7972b0bb85d9141f4810",
+    "model_registry": "2054dacc31ae016a2706c64da4f3bd4ca61bdb6a22ca4f071706834b164ce678",
+    "pipeline": "a00c7e7c6c9582426b9ea66b9ec4c1419e38c538d989999de88e4d66c79551c3",
+    "rollback_evidence": "7fb23e4b131a335f41761aeaf187bd2f1b2f785314180b5d88408f64fd7edf6d"
+  },
+  "payload_sha256": "35bcb1d41969e2a1c7f0f064b9dfee7aaa778197d548752fec2996debe831057",
+  "previous_review_sha256": "801551be8ce7c5cc6e25c9fa1a4b7758d2803f0cac670659e2901c52bc5f29f9",
+  "review_id": "1cb8f3fc9c0d2725870beb2a",
+  "review_sha256": "e9bd11f9b38d854d2a8915fef748b8dec2e9ff1de31ecc89ad3d45e82162bf28",
+  "reviewed_at": "2026-07-15T18:56:53.885079Z",
+  "reviewer": "ai_agent",
+  "schema_version": "1.0.0",
+  "signature": "tpgs64WhZBFNKnUxCUV9G5hOf2VU8TsBwopOOyKFAe1P+Hl31NrPxzat5H0lEibObcBaIaXHpIxvq+W83PiECw==",
+  "signature_algorithm": "ed25519",
+  "signer_public_key_sha256": "5892e5151e01dc1264ad1dab8009f4d746568828a417e4b2f34835f03eb84512",
+  "status": "fail"
+}

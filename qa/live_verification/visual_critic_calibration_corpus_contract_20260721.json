@@ -1,0 +1,34 @@
+{
+  "authority_claimed": false,
+  "corpus_materialized": false,
+  "covered_negative_types": [
+    "anatomy",
+    "boundary",
+    "flood",
+    "leakage",
+    "missing_area",
+    "ownership",
+    "protected_region",
+    "transform",
+    "wrong_label",
+    "wrong_side"
+  ],
+  "focused_test_count": 22,
+  "focused_tests_status": "PASS",
+  "recorded_at": "2026-07-21T22:58:59.0932080Z",
+  "schema_version": "1.0.0",
+  "source_sha256": {
+    "src/maskfactory/vlm/calibration_corpus.py": "7733715fc28ab83f5a312ec90943009da84135b1058d1b25b5c0e1901fe6208d",
+    "tests/test_visual_critic_calibration_corpus.py": "4e82ca069898353132f2c820f92ebd7ab532558745730c188b03cf63722c7aa0"
+  },
+  "status": "STATIC_CONTRACT_PASS_CORPUS_PENDING",
+  "validated_failures": [
+    "all_valid",
+    "all_defect",
+    "duplicate_panel_set",
+    "image_partition_leak",
+    "target_contract_incomplete",
+    "source_or_candidate_hash_drift"
+  ],
+  "validation_boundary": "The closed manifest, exact target/panel binding, partition isolation, balance, and defect-coverage validator pass. No populated frozen corpus or visual-role qualification is claimed."
+}

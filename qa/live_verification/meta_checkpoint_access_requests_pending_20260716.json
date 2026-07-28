@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0.0",
+  "observed_at": "2026-07-16T01:28:40.112774Z",
+  "result": "authenticated_requests_pending_upstream_review",
+  "items": [
+    "MF-P0-17.04",
+    "MF-P2-11.07"
+  ],
+  "owner_authorization": {
+    "contact_and_license_forms_submitted": true,
+    "country_code_submitted": "US",
+    "sam3d_affiliation_submitted": "Independent / Personal",
+    "sam3d_job_title_submitted": "AI developer/engineer"
+  },
+  "huggingface": {
+    "username": "kevinkg",
+    "cli_authenticated": true,
+    "token_name": "maskfactory-local-20260715",
+    "token_type": "fineGrained",
+    "token_preset": "Read-Only",
+    "token_secret_recorded_in_evidence": false,
+    "git_credential_helper_modified": false,
+    "clipboard_cleared_after_login": true,
+    "access_requests": [
+      {
+        "group": "SAM3",
+        "repository": "facebook/sam3.1",
+        "status": "pending"
+      },
+      {
+        "group": "SAM 3D Body",
+        "repository": "facebook/sam-3d-body-dinov3",
+        "status": "pending"
+      }
+    ]
+  },
+  "checkpoint_probe": {
+    "request_method": "HEAD",
+    "credential_present": true,
+    "credential_redacted": true,
+    "downloaded_bytes": 0,
+    "result": "human_gate_pending",
+    "canonical_sha256": "df2781e1f7dd056103563fc2e2ccd6855dcc732abc7410c73d28aa7d58dc2b28",
+    "source_file": "runs/live_verification/meta_checkpoint_access_after_requests_20260715.json",
+    "source_file_sha256": "8f4e898932a2ee134b20ba84a088c465a3cb9d3f4d6cc9e1b0926eb21ceace8e",
+    "providers": [
+      {
+        "provider": "sam3_1",
+        "repository": "facebook/sam3.1",
+        "revision": "daa63191845a41281374e725f4c9e51c7a824460",
+        "files": [
+          {
+            "filename": "sam3.1_multiplex.pt",
+            "http_status": 403,
+            "state": "human_gate_pending"
+          }
+        ]
+      },
+      {
+        "provider": "sam3d_body",
+        "repository": "facebook/sam-3d-body-dinov3",
+        "revision": "11aaa346c7204874a1cbafe3d39a979080b2c55a",
+        "files": [
+          {
+            "filename": "model.ckpt",
+            "http_status": 403,
+            "state": "human_gate_pending"
+          },
+          {
+            "filename": "model_config.yaml",
+            "http_status": 403,
+            "state": "human_gate_pending"
+          },
+          {
+            "filename": "assets/mhr_model.pt",
+            "http_status": 403,
+            "state": "human_gate_pending"
+          }
+        ]
+      }
+    ]
+  },
+  "safety_boundary": {
+    "checkpoint_bytes_downloaded": 0,
+    "inference_run": false,
+    "provider_lifecycle_changed": false,
+    "production_route_changed": false,
+    "mask_truth_or_gold_authority_granted": false
+  },
+  "remaining_gate": "Meta repository authors must approve both pending gating-group requests before the frozen checkpoint files become accessible."
+}

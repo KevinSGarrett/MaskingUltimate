@@ -1,0 +1,106 @@
+{
+  "schema_version": "1.0.0",
+  "item_id": "MF-P0-17.04",
+  "checked_at": "2026-07-22T01:32:08Z",
+  "result": "runtime_pass_bounded",
+  "claim": "RUNTIME_PASS_BOUNDED",
+  "execution": {
+    "provider": "runpod",
+    "pod_id": "1q4ji0gg1fkhvt",
+    "persistent_root": "/workspace",
+    "gpu": "NVIDIA RTX 6000 Ada Generation"
+  },
+  "source": {
+    "path": "/workspace/models/runtime_cache/sam3_source_5dd401d1",
+    "commit": "5dd401d1c5c1d5c3eedff06d41b77af824517619",
+    "tree": "3ddfc8fc42fe1cac4e7d81d7476401fc497fe66e",
+    "tracked_tree_clean": true
+  },
+  "checkpoint": {
+    "path": "/workspace/models/runtime_cache/sam31_checkpoint_daa63191/sam3.1_multiplex.pt",
+    "size_bytes": 3502755717,
+    "sha256": "0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6"
+  },
+  "runtime": {
+    "environment": "/workspace/maskfactory/runtime_artifacts/sam31_runpod_env",
+    "python": "3.11.10",
+    "torch": "2.10.0+cu128",
+    "torchvision": "0.25.0+cu128",
+    "sam3": "0.1.0",
+    "requirements_lock_sha256": "9fbf4fdd79b64d38f7baa58d127d06098859d8408fb84e2592a1dbd862c9c871",
+    "pip_check": "pass"
+  },
+  "contract": {
+    "runner": "tools/smoke_sam31_multiplex_wsl.py",
+    "runner_sha256": "ba205656b1c07752c99482418f2795322d2073298945e0d323023b5ccdbf3383",
+    "session_compat": "tools/sam31_session_compat.py",
+    "session_compat_sha256": "9f250ce9f968dd834067f20bf308c602a3453f7185a08052b85500dc38147f5b",
+    "runtime_lock_sha256": "734f8017db6cd51c5093b23f3ef4f4c49861e41a39de60453d37fc006f03bee6",
+    "builder": "build_sam3_predictor",
+    "version": "sam3.1",
+    "prompt": {
+      "type": "text",
+      "concept": "person"
+    }
+  },
+  "fixture": {
+    "path": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+    "sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63"
+  },
+  "smoke": {
+    "repeats": 2,
+    "deterministic": true,
+    "object_count": 4,
+    "mask_pixel_count": 111488,
+    "artifact_shapes": {
+      "boxes_xywh": [4, 4],
+      "masks": [4, 1080, 810],
+      "object_ids": [4],
+      "probabilities": [4]
+    },
+    "mask_payload_sha256": "a2a6159797e5e4801067a8f0a49264d10132a7d6c762d27b86f90088bbebbb54",
+    "output_npz_sha256": "d9959f4e4f937fbaefe5b2dc94af91ccc4227275a42f4ea2ec0ea384687c3f75",
+    "model_load_latency_ms": 36277.09233760834,
+    "cold_latency_ms": 11076.3850659132,
+    "warm_latency_ms": 150.06010234355927,
+    "model_vram_bytes": 3926040576,
+    "peak_inference_vram_bytes": 6119682560,
+    "remote_stdout_sha256": "a128c19bb8ba89923f145ebc8c16563c002476e35c344b8196cd0391e4c72e9f",
+    "remote_stderr_sha256": "c1adb1a1a1835acb747c1ced8b4630c3f63883306d54d00382f8e672f2a3d603"
+  },
+  "host_verification": {
+    "verifier": "src/maskfactory/providers/sam31_multiplex.py",
+    "verifier_sha256": "01a44dd9cfec9a50f0859113cdf2b95eee0ad6df45a1f5b622e765a7832e60ec",
+    "result": "pass",
+    "object_count": 4,
+    "mask_pixel_count": 111488
+  },
+  "failure_behavior": {
+    "upstream_session_api_mismatch": {
+      "result": "fixed_by_fail_closed_compat_adapter",
+      "stderr_sha256": "e9a3b1ee38c406608f87b8fbacdc0c860e55c68fe36c586b66d20c6f5ad09f3d"
+    },
+    "point_refinement": {
+      "result": "blocked_empty_output",
+      "observed_geometry": {
+        "masks": [0, 1080, 810],
+        "object_ids": [0],
+        "probabilities": [0],
+        "boxes_xywh": [0, 4]
+      },
+      "diagnostic_stderr_sha256": "c7c386d011c496a8b4a9db180c24a44f95e33b5d6553a0533a06662b7455fcfd",
+      "corrected_person_point_stderr_sha256": "1060b5a65282c66bc2558001d85d4f1f03251d6dd3f4bb07743a6235d587f08f"
+    },
+    "text_discovery": {
+      "result": "pass"
+    }
+  },
+  "authority": "runtime_smoke_only_no_candidate_serving_or_gold_authority",
+  "claims_not_made": [
+    "point refinement passed",
+    "provider benchmark passed",
+    "champion promotion",
+    "production mask authority",
+    "gold authority"
+  ]
+}

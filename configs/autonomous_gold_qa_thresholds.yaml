@@ -1,0 +1,166 @@
+schema_version: 0.1.0
+registry_id: autonomous_gold_per_label_context_qa_candidate_v1
+qualification_status: uncalibrated_no_gold_authority
+authority_eligible: false
+ontology_path: configs/ontology_v2.yaml
+metric_catalog:
+  - expected_presence
+  - area_image
+  - area_person
+  - area_parent
+  - area_proposal
+  - connected_components
+  - holes
+  - owner_containment
+  - protected_region_overlap
+  - mutually_exclusive_overlap
+  - cross_person_bleed
+  - laterality_consistency
+  - front_back_consistency
+  - parent_child_coverage
+  - atomic_map_exclusivity
+  - boundary_edge_alignment
+  - boundary_precision
+  - boundary_recall
+  - boundary_f_score
+  - symmetric_boundary_distance
+  - p95_edge_error
+  - underfill
+  - overfill
+  - leakage
+  - missing_visible_area
+  - unsupported_pixels
+  - thin_structure_preservation
+  - topology_plausibility
+  - transform_roundtrip
+  - perturbation_stability
+  - duplicate_person
+  - duplicate_mask
+  - complete_map_recomposition
+
+# Frozen engineering-prior diagnostics, not calibrated authority thresholds.
+profiles:
+  atomic_exclusive: &atomic
+    default_max_components: 4
+    maximum_holes: 2
+    minimum_owner_containment: 0.95
+    maximum_protected_overlap: 0.00
+    maximum_exclusive_overlap: 0.00
+    maximum_cross_person_bleed: 0.00
+    minimum_boundary_edge_alignment: 0.80
+    minimum_boundary_precision: 0.85
+    minimum_boundary_recall: 0.85
+    minimum_boundary_f_score: 0.85
+    maximum_symmetric_boundary_distance_px: 4.0
+    maximum_p95_edge_error_px: 8.0
+    maximum_underfill_fraction: 0.10
+    maximum_overfill_fraction: 0.10
+    maximum_leakage_fraction: 0.02
+    maximum_missing_visible_fraction: 0.10
+    maximum_unsupported_fraction: 0.02
+    minimum_thin_structure_retention: 0.90
+  derived_union:
+    <<: *atomic
+    default_max_components: 8
+    maximum_holes: 4
+    maximum_exclusive_overlap: 1.00
+    minimum_boundary_edge_alignment: 0.75
+    minimum_boundary_precision: 0.80
+    minimum_boundary_recall: 0.80
+    minimum_boundary_f_score: 0.80
+    maximum_symmetric_boundary_distance_px: 6.0
+    maximum_p95_edge_error_px: 10.0
+    maximum_underfill_fraction: 0.12
+    maximum_overfill_fraction: 0.12
+    maximum_missing_visible_fraction: 0.12
+    minimum_thin_structure_retention: 0.85
+  material:
+    <<: *atomic
+    default_max_components: 16
+    maximum_holes: 8
+    minimum_owner_containment: 0.90
+    maximum_exclusive_overlap: 1.00
+    minimum_boundary_edge_alignment: 0.75
+    minimum_boundary_precision: 0.80
+    minimum_boundary_recall: 0.80
+    minimum_boundary_f_score: 0.80
+    maximum_symmetric_boundary_distance_px: 6.0
+    maximum_p95_edge_error_px: 10.0
+    maximum_underfill_fraction: 0.15
+    maximum_overfill_fraction: 0.15
+    maximum_leakage_fraction: 0.03
+    maximum_missing_visible_fraction: 0.15
+    maximum_unsupported_fraction: 0.03
+    minimum_thin_structure_retention: 0.85
+  region_band:
+    <<: *atomic
+    maximum_exclusive_overlap: 1.00
+    minimum_boundary_edge_alignment: 0.75
+    minimum_boundary_precision: 0.80
+    minimum_boundary_recall: 0.80
+    minimum_boundary_f_score: 0.80
+    maximum_symmetric_boundary_distance_px: 6.0
+    maximum_p95_edge_error_px: 10.0
+    maximum_underfill_fraction: 0.12
+    maximum_overfill_fraction: 0.12
+    maximum_missing_visible_fraction: 0.12
+    minimum_thin_structure_retention: 0.85
+  protected_qa:
+    <<: *atomic
+    default_max_components: 8
+    maximum_holes: 4
+    maximum_exclusive_overlap: 1.00
+    maximum_leakage_fraction: 0.00
+    maximum_unsupported_fraction: 0.00
+  projected_amodal:
+    <<: *atomic
+    minimum_owner_containment: 0.90
+    maximum_exclusive_overlap: 1.00
+    minimum_boundary_edge_alignment: 0.70
+    minimum_boundary_precision: 0.75
+    minimum_boundary_recall: 0.75
+    minimum_boundary_f_score: 0.75
+    maximum_symmetric_boundary_distance_px: 8.0
+    maximum_p95_edge_error_px: 12.0
+    maximum_underfill_fraction: 0.15
+    maximum_overfill_fraction: 0.15
+    maximum_missing_visible_fraction: 0.15
+    minimum_thin_structure_retention: 0.80
+
+contexts:
+  default: &default_context
+    expected_presence_policy: target_contract_exact
+    component_allowance: 0
+    edge_error_allowance_px: 0.0
+    cross_person_bleed_ceiling: 0.00
+  occlusion_contact:
+    <<: *default_context
+    component_allowance: 2
+    edge_error_allowance_px: 2.0
+  multi_person_overlap:
+    <<: *default_context
+    component_allowance: 2
+    edge_error_allowance_px: 2.0
+  crop_edge:
+    <<: *default_context
+    component_allowance: 1
+    edge_error_allowance_px: 2.0
+  out_of_frame:
+    <<: *default_context
+    expected_presence_policy: target_contract_exact_expected_empty_allowed
+  thin_structure:
+    <<: *default_context
+    component_allowance: 4
+    edge_error_allowance_px: 1.0
+
+thin_structure_labels:
+  [hair, left_hand, right_hand, left_foot, right_foot, left_index_finger,
+   right_index_finger, left_middle_finger, right_middle_finger,
+   left_ring_finger, right_ring_finger, left_toes, right_toes, all_fingers,
+   all_index_fingers, all_middle_fingers, all_ring_fingers, all_toes]
+calibration:
+  required: true
+  evidence_sha256: null
+  required_domains: [photographic, generated, illustrated]
+  required_risks: [small_part, occlusion_contact, multi_person_overlap, crop_edge, unusual_pose]
+  promotion_rule: new_immutable_registry_version_only

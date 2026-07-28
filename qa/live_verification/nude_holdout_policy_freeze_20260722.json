@@ -1,0 +1,40 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_holdout_freeze.v1",
+  "artifact_type": "adult_corpus_original_holdout_policy_freeze",
+  "recorded_at": "2026-07-22T11:45:00Z",
+  "status": "PASS_FROZEN_BEFORE_FIRST_EVALUATION",
+  "tracker_item": "MF-P5-11.02",
+  "policy_id": "porn_blocker_benchmark_v4_original_holdout_v1",
+  "policy_sha256": "86251a0672cd8dcc5e5d73baec0060b959889a3bf5ae5982fded4db541cbb529",
+  "adopted_registry_sha256": "785bfbcca98262a00519b53a360a67d22f23ec9e4b41c9bc38029f402eb9bbcf",
+  "adopted_shard_index_sha256": "16a958ffdc6c304174fa8ff5b9b656a607e8e8a9e9610dac9be4a8dbff3c994a",
+  "live_binding_result": {
+    "sample_count": 50,
+    "split_group_count": 46,
+    "holdout_group_member_count": 50,
+    "cross_partition_group_count": 0,
+    "assigned_partition": "holdout",
+    "training_eligible": false,
+    "critic_calibration_eligible": false,
+    "first_evaluation_completed": false
+  },
+  "set_bindings": {
+    "ordered_sample_ids_sha256": "66c34163abbca4e997b6aee91e49c2b3b68300e75047fbb191838e5cfddf7c28",
+    "source_bindings_sha256": "8162887a6fec8529e7736a8a4bde873175c0773f916b736cfe738dcabf9933ec",
+    "shard_descriptor_sha256": "002887d6e7b853a99c19cf18b65a69d3b3069c6c2681aa96278049c3906ec272",
+    "shard_file_sha256": "c6ed2e0acf188275c3b68c1c3f74b203467d3f33f010bca5862c3229ec9b8621",
+    "split_mapping_file_sha256": "cab2b74545177264bfad8b07ff51cf692c3eff4fe37612276a6e5381a7d2527a"
+  },
+  "implementation_sha256": {
+    "configs/nude_holdout_policy.json": "e527bb724f5e675797ef8035d163cb61d3ecbd786a9eb45c3f79fe8962f5ac0b",
+    "src/maskfactory/nude_holdout_policy.py": "96f6b155d3d88fc54dd83a8a45976c39f0352eeb6187bd2a0f9f1c4092ad7a5e",
+    "tests/test_nude_holdout_policy.py": "bfe5b122e171e8a68aedfff396d6ace03a971b7b7e44c95ebd31cc7f2129e299"
+  },
+  "validation": {
+    "focused_tests": "4 passed",
+    "ruff": "pass",
+    "black": "pass",
+    "live_validator": "PASS_FROZEN_HOLDOUT_BINDINGS"
+  },
+  "claim_boundary": "This freezes and validates the original 50-record evaluation holdout before its first model evaluation. Exact, perceptual, augmentation, and source-family correlations are controlled by the adopted full-corpus split-group mapping; every member of the 46 referenced groups is assigned holdout, with zero cross-partition group. This does not claim any model has passed the holdout or that adult-corpus training is complete."
+}

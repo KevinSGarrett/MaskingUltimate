@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0.0",
+  "status": "STATIC_PASS",
+  "authority_claimed": false,
+  "tracker_item": "MF-P4-11.26",
+  "commit": "c258e186c",
+  "product_outcome": "Consensus relabel outcomes can now be published as new immutable package versions instead of remaining non-executable proposals.",
+  "behavior": {
+    "parent_immutability": "The source package is read-only and every parent manifest/source binding is revalidated before publication.",
+    "pixel_integrity": "Source and target binary-mask bytes remain exact while the copied indexed ontology map and manifest label are remapped together.",
+    "authority_boundary": "A relabeled version is frozen as a machine_candidate with authority_claimed=false and requires fresh certification; stale parent certification is not inherited.",
+    "lineage": "Each version binds parent manifest/lineage/source hashes, plan, batch, result, critic quorum, ontology file, relabel map, and preserved target-mask hashes.",
+    "atomicity": "Publication uses a same-filesystem staging directory and atomic rename. Exact replays are idempotent; any existing byte drift or lineage conflict fails closed.",
+    "operator_output": "The CLI writes an immutable publication receipt and emits only the compact published count, receipt hash, and recertification requirement."
+  },
+  "source_sha256": {
+    "src/maskfactory/autonomy/package_semantic_alignment.py": "ea05cfed0e287a7474bb7e9bd3c592eff7a23ae877e816478de5f1656332b68b",
+    "src/maskfactory/cli.py": "206db0b24207c05d0912878b507796a7027e051945cb12ee8a1938af1679b0ca",
+    "tests/test_autonomous_package_semantic_alignment.py": "2581a9cd95dd782f3b8b603927eeb1d5d4576fdfb4a3d5907c397f79229c8e7f"
+  },
+  "verification": {
+    "focused_and_adjacent_tests": "32 passed",
+    "cli_publication": "PASS",
+    "ruff": "PASS",
+    "black": "PASS",
+    "diff_integrity": "PASS",
+    "push": "origin/codex/maskfactory-plan-modernization at c258e186c"
+  },
+  "remaining_acceptance": "Promote and certify the primary visual critic plus independent-family juror, execute all seven real 220-package batches, publish the resulting immutable versions and fresh package certificates, and record population-level outcomes."
+}

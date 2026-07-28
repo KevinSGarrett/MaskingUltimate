@@ -1,0 +1,104 @@
+{
+  "authority": "shadow_advisory_human_approval_required",
+  "image_id": "img_cdab0311dc96",
+  "instance_id": "p0",
+  "judgments": [
+    {
+      "confidence": 0.99,
+      "correction": {
+        "negative_points": [
+          [
+            600,
+            120
+          ],
+          [
+            820,
+            250
+          ],
+          [
+            950,
+            450
+          ],
+          [
+            150,
+            150
+          ],
+          [
+            250,
+            350
+          ],
+          [
+            120,
+            700
+          ]
+        ],
+        "polygon": [],
+        "positive_points": [
+          [
+            300,
+            520
+          ],
+          [
+            450,
+            650
+          ],
+          [
+            620,
+            760
+          ],
+          [
+            760,
+            850
+          ],
+          [
+            850,
+            900
+          ],
+          [
+            500,
+            850
+          ]
+        ],
+        "rationale": "Use positive points distributed across the visible ankle-foot, midfoot, ball, and toes, while suppressing the upper lower-leg/background region, gray floor, and the separate rear-foot area. Refine the ankle boundary and remove rectangular artifacts and holes.",
+        "tool": "points"
+      },
+      "defects": [
+        "includes_background",
+        "boundary_too_loose",
+        "missing_visible_area",
+        "other"
+      ],
+      "evidence": "Fail: the instance identity is consistent with right_foot_base, but the proposed mask is contaminated by background/adjacent ankle area and contains severe blocky artifacts and holes. A point-based SAM refinement is safer than a hand-traced polygon because the toe separations and ankle boundary are detailed.",
+      "latency_ms": 13870,
+      "model": "gpt-5.6-luna",
+      "observations": {
+        "contour": "The contour is jagged and discontinuous, with large artificial steps around the ankle and top of the foot. The toe edge is closer to correct but still inherits noisy boundaries.",
+        "full_context": "The candidate is the character's right foot according to the semantic pose-chain evidence, despite its viewer-side placement. The visible foot is planted in front of the other leg and has a clear ankle-to-toes silhouette.",
+        "mask": "The mask has numerous rectangular block artifacts and internal holes, extends into background near the upper/right ankle region, and does not provide a clean anatomically plausible foot contour.",
+        "neighbor_overlap": "There is likely overlap with the adjacent lower leg/ankle and background; the mask should stop at the visible foot-base/ankle boundary and exclude the separate rear foot and surrounding gray floor.",
+        "overlay": "Red coverage broadly follows the foot but spills into the gray background and upper ankle/lower-leg area. Several sharp horizontal and vertical edges are unrelated to the visible anatomy.",
+        "source_crop": "The foot and toes are clearly visible, but the ankle transition is complex and the crop also contains the lower leg and background around the foot."
+      },
+      "provider": "openai",
+      "response_sha256": "12213a6473b627ac1a1ee179c4b6bb454ad5f5acbe71d19e8335c8b43748c71e",
+      "usage": {
+        "cost_usd": 0.015603,
+        "input_tokens": 9759,
+        "output_tokens": 974
+      },
+      "verdict": "fail"
+    }
+  ],
+  "label": "right_foot_base",
+  "local_audit": {
+    "deterministic_overrides": [
+      "component_count_exceeds_ontology"
+    ],
+    "final_verdict": "fail",
+    "model": "qwen2.5vl:7b",
+    "model_verdict": "pass"
+  },
+  "schema_version": "1.0.0",
+  "sha256": "8f9b38da1d73acc6ff81e85d86f71415639e692beb34f956976fcb82770efbd1",
+  "source_sha256": "d962e914116cdd97d00187c313fe94c99e9e725ab50d38b79d203f1ed47bae43"
+}

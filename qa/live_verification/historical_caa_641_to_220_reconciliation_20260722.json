@@ -1,0 +1,69 @@
+{
+  "schema_version": "maskfactory.live_verification.historical_caa_reconciliation.v1",
+  "recorded_at": "2026-07-22T19:20:00Z",
+  "result": "FAIL_CLOSED_ALL_LEGACY_PACKAGES_QUARANTINED",
+  "tracker_items": [
+    "MF-P4-11.25",
+    "MF-P4-11.26"
+  ],
+  "runpod": {
+    "pod_id_sha256": "0e3fb937281672b1608acf3597081196014d49be623f2988576a10334c9793dd",
+    "workspace": "/workspace/maskfactory",
+    "operation": "read_only_sanitized_caa_reconciliation",
+    "audit_file_sha256": "dd69275760a4cb6296d50f89f0302987e778e3344658dfe45f5aac4bf03a9f80",
+    "audit_inventory_sha256": "4b1acb18100980f284c9c2f363911ef3a6783f1161a05156a60896edd21140aa"
+  },
+  "reconciliation": {
+    "database_lifecycle_record_count": 641,
+    "database_truth_row_count": 641,
+    "primary_materialized_package_count": 641,
+    "database_and_primary_id_set_sha256": "d9acc96f9e973ffc106038381290274f82fbf739ea49775803bc430d436a2c83",
+    "database_primary_exact_match": true,
+    "lifecycle_only_count": 0,
+    "primary_package_without_lifecycle_count": 0,
+    "isolated_audit_subset_count": 220,
+    "isolated_subset_id_sha256": "0592fc2b9a1eb22556b40830a3b433342a3c0192382a9443ac10043284b2e564",
+    "isolated_subset_overlap_with_primary_count": 220,
+    "isolated_is_exact_primary_subset": true,
+    "why_220_was_audited": "data/packages_caa_iso220 is a deterministic isolated 220-package subset of the complete data/packages population",
+    "source_hash_verified_count": 641,
+    "winner_mask_hash_verified_count": 641,
+    "lifecycle_path_exists_count": 641,
+    "current_lifecycle_byte_hash_verified_count": 0,
+    "current_semantic_alignment_and_quorum_binding_count": 0,
+    "current_authority_eligible_count": 0,
+    "quarantined_legacy_package_count": 641
+  },
+  "authority_classification": {
+    "machine_candidate_use_count": 0,
+    "operational_use_count": 0,
+    "autonomous_training_truth_count": 0,
+    "training_admission_allowed": false,
+    "production_mask_authority_allowed": false,
+    "historical_bytes_preserved": true,
+    "required_action": "publish new immutable package revisions with current semantic alignment and independent-family critic quorum"
+  },
+  "classification_report_sha256": "30c701d4a3e5e812b430c8d908dfbba2ecff0fba9dded1a6bd2b0e27ce539479",
+  "implementation_hashes": {
+    "tools/audit_runpod_caa_reconciliation.py": "ac83095d9cce1b5ee032eaec197889ed67abe95acef14d1dd81338a599103b75",
+    "src/maskfactory/autonomy/historical_caa_reconciliation.py": "0536fd8da0d8cb5da620e43475623e649ee90638ce52316f5742ba1ecb7dabd8",
+    "tests/test_historical_caa_reconciliation.py": "88b0675b0d6302349becd0fcf39157c27d8cb02553b3717969f3d96de7e7e1e3"
+  },
+  "validation": {
+    "focused_tests": {
+      "passed": 16,
+      "failed": 0,
+      "command": "python -m pytest -q tests/test_historical_caa_reconciliation.py tests/test_autonomous_package_semantic_alignment.py tests/test_dataset_builder.py -k 'semantic or autonomous or certificate'"
+    },
+    "ruff": "PASS",
+    "black": "PASS",
+    "secrets_or_endpoint_committed": false
+  },
+  "completion_boundary": {
+    "historical_population_reconciled": true,
+    "legacy_population_currently_eligible": false,
+    "bulk_requalification_complete": false,
+    "new_immutable_versions_published": 0,
+    "promoted_independent_critic_pair_available": false
+  }
+}

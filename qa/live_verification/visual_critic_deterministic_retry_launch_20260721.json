@@ -1,0 +1,25 @@
+{
+  "authority_claimed": false,
+  "prior_protocol_attempt": {
+    "process_1_response_sha256": "32730feb16a04b4a0b6d4fbc8fa583cf2508653e782e70717781782faf0d79af",
+    "process_2_response_sha256": "c4813bb4455a1df5e7cce4300c3bbb49b96c2686cae3a62c84cba7f9471232b3",
+    "reason": "free_text_summary_changed_across_process_restart",
+    "run_1_status": "pass",
+    "run_2_status": "pass",
+    "status": "DETERMINISM_FAIL"
+  },
+  "recorded_at": "2026-07-21T23:15:24.0311550Z",
+  "retry": {
+    "job_dir": "/workspace/maskfactory/runtime_artifacts/visual_critic_qwen27_deterministic_retry",
+    "pid_at_launch": 2818855,
+    "response_schema_change": "summary_is_exact_constant",
+    "script_sha256": "011bd115d64728b90385261521d85f2c15216a420c02eb5ea91d146b8922068f",
+    "status": "RUNNING_AT_RECORD_TIME"
+  },
+  "schema_version": "1.0.0",
+  "source_sha256": {
+    "tests/test_runpod_critic_deterministic_retry.py": "e42e45d021dfbc198071925a85e60abb40227842da9b76d7f72fa7a85ad4dea6",
+    "tools/launch_runpod_critic_deterministic_retry.py": "d46ec709463fa0c2a4bde9ae1375edad92ee41ddda63aa8ce6edb4ffc90086f0"
+  },
+  "status": "FINAL_DETERMINISM_RETRY_RUNNING"
+}

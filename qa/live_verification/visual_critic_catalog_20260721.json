@@ -1,0 +1,110 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-07-21T22:15:43Z",
+  "status": "STATIC_PASS",
+  "items": ["MF-P0-17.15", "MF-P0-17.20", "MF-P0-17.21", "MF-P0-17.22"],
+  "current_hardware": {
+    "tier_id": "runpod_single_gpu_48gb",
+    "gpu_name": "NVIDIA RTX 6000 Ada Generation",
+    "gpu_count": 1,
+    "vram_bytes_per_gpu": 51527024640,
+    "source_evidence": "qa/live_verification/runpod_persistence_binding_20260721.json",
+    "source_evidence_sha256": "601077f66b06614db6dff957ca07e343eb642007e7eb358630a86df06ae8446d"
+  },
+  "upstream_catalog_observations": [
+    {
+      "repository": "Qwen/Qwen3.6-35B-A3B-FP8",
+      "revision": "95a723d08a9490559dae23d0cff1d9466213d989",
+      "license": "apache-2.0",
+      "pipeline_tag": "image-text-to-text",
+      "file_count": 56,
+      "total_repository_bytes": 37493015668,
+      "weight_bytes": 37463662160,
+      "gated": false,
+      "runtime_contract": "vllm>=0.19.0",
+      "hardware_tier": "single_gpu_candidate"
+    },
+    {
+      "repository": "Qwen/Qwen3.5-122B-A10B-FP8",
+      "revision": "a099dee70ccfcd8d5dda56aaa0b60cb8ecadabc9",
+      "license": "apache-2.0",
+      "pipeline_tag": "image-text-to-text",
+      "file_count": 53,
+      "total_repository_bytes": 127195718583,
+      "weight_bytes": 127163011832,
+      "gated": false,
+      "runtime_contract": "vllm>=0.19.0",
+      "hardware_tier": "multi_gpu_required",
+      "minimum_gpu_count_by_weight_bytes": 3
+    },
+    {
+      "repository": "Qwen/Qwen3.5-397B-A17B-FP8",
+      "revision": "ea5b4f81096f3901c91dea97f81324302495781d",
+      "license": "apache-2.0",
+      "pipeline_tag": "image-text-to-text",
+      "file_count": 107,
+      "total_repository_bytes": 406198638888,
+      "weight_bytes": 406151669464,
+      "gated": false,
+      "runtime_contract": "vllm>=0.19.0",
+      "hardware_tier": "multi_gpu_required",
+      "minimum_gpu_count_by_weight_bytes": 8
+    },
+    {
+      "repository": "OpenGVLab/InternVL3_5-8B",
+      "revision": "9bb6a56ad9cc69db95e2d4eeb15a52bbcac4ef79",
+      "license": "apache-2.0",
+      "pipeline_tag": "image-text-to-text",
+      "file_count": 24,
+      "total_repository_bytes": 17072800269,
+      "weight_bytes": 17056729432,
+      "gated": false,
+      "runtime_contract": "transformers>=4.52.1",
+      "hardware_tier": "single_gpu_candidate"
+    },
+    {
+      "repository": "OpenGVLab/InternVL3_5-241B-A28B",
+      "revision": "8e5cfda1dabab9bdc76a3931bf77ecae150a33c8",
+      "license": "apache-2.0",
+      "pipeline_tag": "image-text-to-text",
+      "file_count": 141,
+      "total_repository_bytes": 481433952804,
+      "weight_bytes": 481403975520,
+      "gated": false,
+      "runtime_contract": "transformers>=4.52.1",
+      "hardware_tier": "multi_gpu_required",
+      "minimum_gpu_count_by_weight_bytes": 10
+    }
+  ],
+  "authority_result": {
+    "catalog_sha256": "b42f510b462374cba21a4ebe7aa1ef542436dd833d9f7049153cd07803b48ee4",
+    "model_roles": [
+      "fast_screener",
+      "primary_visual_critic",
+      "independent_juror",
+      "senior_arbiter"
+    ],
+    "deterministic_authority_is_model_assignable": false,
+    "promoted_model_count": 0,
+    "assigned_role_count": 0,
+    "live_qualification_claimed": false,
+    "multi_gpu_availability_claimed": false
+  },
+  "source_hashes": {
+    "configs/visual_critic_catalog.yaml": "171b965de634dfdd4c34d461418c8e74209d9c9a46370aed67a8bb731d5381ab",
+    "src/maskfactory/vlm/critic_catalog.py": "86dbdc316cd297bca01563e2a622d390a961334932c4f1da37d5c5f2f601fc0c",
+    "src/maskfactory/schemas/visual_critic_catalog.schema.json": "57e2df824db2e5e72e9e78f9a4cc0ad9b501da88c87d5240c407d41184cd1eb4",
+    "tests/test_visual_critic_catalog.py": "ced5f2a0aff8a3fae613ed290bdca635f9e6f8012df6d86ddad2de8941bbc47d"
+  },
+  "validation": {
+    "pytest": "11 passed",
+    "ruff": "pass",
+    "black": "pass",
+    "unknown_role_rejected": true,
+    "name_only_selection_rejected": true,
+    "premature_assignment_rejected": true,
+    "uncalibrated_promotion_rejected": true,
+    "single_gpu_multi_gpu_confusion_rejected": true,
+    "same_family_variants_count_once": true
+  }
+}

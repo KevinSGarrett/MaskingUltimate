@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "external_supervision_package_population_canary",
+  "status": "VISUAL_QA_PASS_BOUNDED",
+  "runtime_root": "runtime_artifacts/external_supervision/package_population_canary_20260722_v2",
+  "report_file_sha256": "65bae85e4564dd5f2df0ea88266fe9cc7c12c6139ea11cbb0107095c6daf3093",
+  "report_seal_sha256": "ee3d115149bff8652146e99eee5e8b9310b1df8e9ee08ea92b4436a70a0affb2",
+  "package_count": 3,
+  "packages": [
+    {
+      "image_id": "ext_celebamask_hq_00000_hair",
+      "source": "celebamask_hq",
+      "source_sha256": "92583489fae83d937ed33b51459e41bf52104b87b4214ea9390512d860c88c2d",
+      "annotation_sha256": "4d588a66304129e18b2899960632b057c94196cbf820c7776d688256ba0e329f",
+      "split_group_id": "external_group_0c1623267226d1566a2bb0bf",
+      "manifest_sha256": "a81f1ad487e511859e5b382427efa41d5ca5f61f563d99d7e2be415cf6bcebb2",
+      "part_map_sha256": "fca7856bb493f326694eef3c1785473b35c130cf4cabaaf86ed1b6ad0b21496c",
+      "material_map_sha256": "60a8590f6ec0be673745373547b5d96c7307ce0ccc053bd522b4fb6b612a290d",
+      "panel_sha256": "b44d9cd5403efcff10bae62715a790b178e32836e841ad15446aa33dba7325d0",
+      "dimensions": [512, 512],
+      "mapped_pixels": 129444,
+      "ignored_pixels": 132700,
+      "visual_observation": "Hair-only external scope follows the visible hair silhouette and excludes the face opening; this is not a whole-person mask."
+    },
+    {
+      "image_id": "ext_lapa_10001436895_0",
+      "source": "lapa",
+      "source_sha256": "bfeafa93dab56077f2560b00b73a693c5c8c9b0898283a3dfe019092a7e3be3e",
+      "annotation_sha256": "f55b63041d4cce8f588e927151569159f0fbaa4ba6435c54179a6743297d4cca",
+      "split_group_id": "external_group_ff18caf4fb6b9c1ee30d9cbe",
+      "manifest_sha256": "08314b17fd3f11d3a4011728904f00e05197f7e3b67714545aa602002a10bc60",
+      "part_map_sha256": "7dc5c5c363cae7c4cc9115628394127ba7426c22ad4f78d68f11a52d9f71b775",
+      "material_map_sha256": "df44a00deb0c572593f200e6a618a5ebcaf57f2fa28d247e91c1df7300e1b7d3",
+      "panel_sha256": "9d6705ee4b9034b74075641e0b58c6d0fc439eda8e510b18676ff3bbfc48911d",
+      "dimensions": [440, 492],
+      "mapped_pixels": 63029,
+      "ignored_pixels": 0,
+      "visual_observation": "The mapped head-face and hair union follows the visible face and windblown hair while excluding the helmet and clothing."
+    },
+    {
+      "image_id": "ext_lv_mhp_v1_0001_p01",
+      "source": "lv_mhp_v1",
+      "source_sha256": "adef946e161ab60130e63558d34b23ae77fdb7883e29e7563efb9df2b1e1ddb8",
+      "annotation_sha256": "34e7062a7452be2598d8babe97d325d9b49d9c859f9c6d34ef53b7fad95f4d7d",
+      "split_group_id": "external_group_092d9323f0b5504a2e47bb41",
+      "manifest_sha256": "7498d6caa2b2f2dec7839f08612234b2b7eb057db93707699aa1c3575008e05d",
+      "part_map_sha256": "a5c4a5cf09697a64acba839c0045cf312e4f780ac96db28951bc62b1d424c404",
+      "material_map_sha256": "0e28a4834b62e4378230583da53281a44180f98944d73b0b442f7be2113f5159",
+      "panel_sha256": "a0d65f396a918a5fe468fa19557b49a2db7fc951d6fb25ed2b91b672479aa8f0",
+      "dimensions": [600, 900],
+      "mapped_pixels": 14514,
+      "ignored_pixels": 63778,
+      "visual_observation": "Mapped head, hair, and bag stay on the female instance with no bleed into the adjacent male; coarse dress and arm regions remain ignored."
+    }
+  ],
+  "hard_qa": {
+    "qualification_verified": true,
+    "source_and_annotation_hashes_bound": true,
+    "split_group_ids_verified": true,
+    "package_file_hashes_verified": true,
+    "source_part_material_dimensions_match": true
+  },
+  "authority": {
+    "truth_tier": "weighted_pseudo_label",
+    "truth_partition": "train",
+    "training_batch_eligible": false,
+    "batch_cap_enforced": false,
+    "source_masks_are_gold": false,
+    "production_mask_authority_granted": false,
+    "strict_vlm_authority_claimed": false
+  },
+  "validation": {
+    "focused_tests_passed": 34,
+    "ruff_passed": true,
+    "black_passed": true,
+    "manual_panel_review": "VISUAL_QA_PASS_BOUNDED"
+  },
+  "self_sha256": "60cba86d0ac9e086a580c6cc68ea5e2022637763ffb3661ceaf03d01f0aace2d"
+}

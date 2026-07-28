@@ -1,0 +1,83 @@
+{
+  "artifact_type": "runpod_celebamask_exact_control_candidate_evidence",
+  "schema_version": "maskfactory.runpod_celebamask_exact_control_candidate_evidence.v1",
+  "observed_at": "2026-07-23",
+  "execution_location": {
+    "platform": "runpod",
+    "recorded_pod_id": "1q4ji0gg1fkhvt",
+    "gpu_observed": "NVIDIA RTX 6000 Ada Generation",
+    "persistent_project_root": "/workspace/maskfactory",
+    "persistent_source_root": "/workspace/assets/MaskedWarehouse/CelebAMask-HQ"
+  },
+  "source_inventory_observed": {
+    "source_image_file_count": 30000,
+    "annotation_component_file_count": 372777
+  },
+  "policy_bindings": {
+    "provenance_sha256": "3b1ce3d0146ac0c55a35f9e89ba93d6ff477963168bfb6b4df52f12ab61d344b",
+    "remap_sha256": "1317c2f5a4657f741391b034bffe2c7e9dabbc834289fa5c7802e6280022d515",
+    "license_status": "recorded_restricted_non_commercial",
+    "use_profile_id": "private_personal_noncommercial_non_distributed",
+    "permitted_role": "private_noncommercial_semantic_critic_calibration_after_qualification",
+    "direct_exact_mappings": {
+      "hair": "hair",
+      "neck": "neck"
+    }
+  },
+  "deployed_implementation": {
+    "selector_commit": "55653030a",
+    "selector_module_sha256": "6ea2cf206e34ed5de7f9e42bbb0685d7571c08147fe9ef82357ed7e7547e970f",
+    "panel_commit": "95769b706",
+    "panel_module_sha256": "c6a1602d83eb719fd1ef98ed4a238d1adca16705e64f59516975fb1a375bac5b",
+    "panel_tool_sha256": "e508aba194a382730ee4d326ea61a34cae651b3cda891edf4dbbcc408d7d4a25"
+  },
+  "candidate_output": {
+    "path": "/workspace/maskfactory/runtime_artifacts/visual_corpus_source_candidates/55653030a_celebamask/candidates.json",
+    "file_sha256": "436aa23f299a89b1ad2e07dabd425ffcafbb00ee802bc672d54115331f31790c",
+    "self_sha256": "cd2cf464aa20c7bca8d2b09bca1318c73392dde17f1478afa11e543af3e14757",
+    "selected_count": 32,
+    "selected_by_label": {
+      "hair": 16,
+      "neck": 16
+    },
+    "selected_by_partition": {
+      "qualification_test": 16,
+      "qualification_train": 16
+    },
+    "source_image_disjoint_across_partitions": true,
+    "identity_disjointness_proven": false
+  },
+  "panel_output": {
+    "path": "/workspace/maskfactory/runtime_artifacts/visual_corpus_source_panels/95769b706_celebamask",
+    "report_file_sha256": "5e5585c206282d9e76045603342e85860d00b1b45b96f0dc994146c166f1c1ca",
+    "report_self_sha256": "0ceec7899c60341dac6c543349d25d062b82a1d0dbea959b266527f693ca10a1",
+    "contact_sheet_sha256": "33c27ba411eaf923572d0efb6a84e5b827b2f0ce49c31151f5e6b02c36a48431",
+    "record_count": 32,
+    "panel_count": 192,
+    "panels_per_record": [
+      "source",
+      "binary_mask",
+      "overlay",
+      "contour",
+      "full_context",
+      "target_zoom"
+    ],
+    "contact_sheet_is_navigation_only": true
+  },
+  "authority": {
+    "candidate_selection_complete": true,
+    "exact_panel_materialization_complete": true,
+    "individual_visual_alignment_review_complete": false,
+    "external_reference_qualification_complete": false,
+    "critic_control_authority_granted": false,
+    "gold_or_production_authority_granted": false,
+    "certificates_issued": 0
+  },
+  "claim_limits": [
+    "The direct source labels and exact panel bytes are bound, but individual alignment review is still required.",
+    "Image partitioning is deterministic and source-image disjoint; person-identity disjointness is not established.",
+    "External masks remain non-gold and cannot mint certificates or production authority.",
+    "The contact sheet is a navigation aid and cannot substitute for per-record review."
+  ],
+  "next_required_stage": "Inspect every exact hair and neck record individually, reject or abstain misaligned cases, then bind only qualified positives into the frozen critic corpus."
+}

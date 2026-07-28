@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0.0",
+  "observed_at_utc": "2026-07-22T01:49:23Z",
+  "provider": "sam3d_body",
+  "result": "fail_repeatability",
+  "failure_scope": "sam3d_body_live_geometry_repeatability_only",
+  "runpod": {
+    "persistent_root": "/workspace",
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "gpu_memory_bytes": 51527024640,
+    "runtime_environment": "/workspace/maskfactory/runtime_artifacts/sam3d_body_runpod_env",
+    "python": "3.11.10",
+    "torch": "2.10.0+cu128",
+    "torchvision": "0.25.0+cu128",
+    "cuda": "12.8",
+    "detectron2": "0.6@a1ce2f956a1d2212ad672e3c47d53405c2fe4312",
+    "pip_check": "pass"
+  },
+  "source": {
+    "path": "/workspace/models/runtime_cache/sam-3d-body_b5c765a",
+    "commit": "b5c765a0d89d789985e186d396315e7590887b94",
+    "tracked_tree_clean": true
+  },
+  "checkpoint_assets": {
+    "model.ckpt": {
+      "size_bytes": 2109129346,
+      "sha256": "b5a2f9d305dd02626b967aa2e86021fba07065df66ce7a7e00ffb9664f150abf"
+    },
+    "model_config.yaml": {
+      "size_bytes": 1488,
+      "sha256": "1012fc3f39cb5e90e3f8fbadf7bded31604bfafdce0321d17a7c1a2d3f08b88d"
+    },
+    "assets/mhr_model.pt": {
+      "size_bytes": 696110248,
+      "sha256": "352e271a6c42729c68554ceaea0c955e866970160c31e35506d782dc0f7377bc"
+    }
+  },
+  "fixture": {
+    "path": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+    "sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63",
+    "requested_bbox_xyxy": [45.0, 390.0, 230.0, 920.0],
+    "selection": "one_explicit_visible_person_box",
+    "inference_type": "full"
+  },
+  "runner": {
+    "path": "tools/run_sam3d_body.py",
+    "sha256": "782511650206497f55c6f2f1204337f7aba764ae4e7a93e9884935176cd59b32",
+    "runtime_lock_sha256_used": "bfc1d8f6471f1f5403f63c59b7c1974ed57de3d7d2282f80723972c67ed252aa",
+    "requirements_lock_sha256": "bbe25357f69aa7b93fcee2fbb0289469ee8e294433b39e0cbcb3c926bd20b667",
+    "required_repeats": 2,
+    "exact_hash_gate_preserved": true
+  },
+  "attempts": [
+    {
+      "id": "baseline_seeded_deterministic_algorithms",
+      "result": "fail_exact_geometry_hash",
+      "geometry_output_sha256_by_repeat": [
+        "c05f646607a827197c326c3e5c072e8978011ae545fd362b40ff471ba4aff5cd",
+        "bb0bb5b3f1cc9fa0d8d15e58332ba8ac299e06fea0e41a96c83a0ffc08bd1bc0"
+      ],
+      "max_abs_difference": {
+        "bbox": 0.0,
+        "focal_length": 0.0,
+        "pred_cam_t": 0.000000476837158203125,
+        "pred_keypoints_2d": 0.00018310546875,
+        "pred_keypoints_3d": 0.00000016391277313232422,
+        "pred_vertices": 0.0000005317851901054382
+      },
+      "stdout_sha256": "5e1cc61f335b5200717bcb5f58682a8ed80063d6c8b6d02eac7f62359378b5a0",
+      "stderr_sha256": "5b440e540009ca418f1c23f23b86431bc6612749de3988e1dc44b4c9ec44f346"
+    },
+    {
+      "id": "tf32_and_fused_sdp_disabled_math_sdp_forced",
+      "result": "fail_exact_geometry_hash",
+      "geometry_output_sha256_by_repeat": [
+        "0c8db6e3c6eab7f142cfabffad8b3015a7ae48418420f38d57b0822d95c87d35",
+        "d1167523d5b27e1ee6ea56b76f365cdc4ce9a3ee876df494fd45a81a49e71e5c"
+      ],
+      "max_abs_difference": {
+        "bbox": 0.0,
+        "focal_length": 0.0,
+        "pred_cam_t": 0.00000011920928955078125,
+        "pred_keypoints_2d": 0.0001373291015625,
+        "pred_keypoints_3d": 0.00000033527612686157227,
+        "pred_vertices": 0.0000005438923835754395
+      },
+      "stdout_sha256": "5e1cc61f335b5200717bcb5f58682a8ed80063d6c8b6d02eac7f62359378b5a0",
+      "stderr_sha256": "ddc8d3fdce291eccf7bc3ac55f471264d4ddac5ba010bb124b6362a7ced40103"
+    }
+  ],
+  "observations": {
+    "single_requested_person_returned": true,
+    "all_required_geometry_arrays_nonempty_and_finite": true,
+    "bbox_exact_across_repeats": true,
+    "focal_length_exact_across_repeats": true,
+    "array_shapes_stable": true,
+    "exact_geometry_hash_repeatable": false,
+    "upstream_checkpoint_load_reported_missing_state_keys": true,
+    "missing_state_key_warning_classification": "pending",
+    "anti_spin_attempt_limit_reached": true
+  },
+  "qualification": {
+    "live_smoke_passed": false,
+    "benchmark_passed": false,
+    "promoted": false,
+    "active_provider": "densepose_r50_fpn_s1x",
+    "rollback_provider": "densepose_r50_fpn_s1x",
+    "may_author_gold": false,
+    "next_action": "classify upstream missing-state-key warning and design a versioned repeatability method without weakening the frozen exact-hash gate"
+  }
+}

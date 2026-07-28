@@ -1,0 +1,67 @@
+{
+  "authority_kind": "fixture_authority",
+  "claim_boundary": {
+    "artifact": "materialization_index",
+    "authority_kind": "fixture_authority",
+    "claims_kevin_sgarrett_comfy_ui_main_production_commit": false,
+    "consumer_kind": "synthetic_main_consumer",
+    "fixture_authority": true,
+    "main_adoption_complete": false,
+    "production_main_adoption_complete": false,
+    "synthetic_main_consumer": true,
+    "synthetic_main_git_commit": "204f21cfbaffd6fb92715092db508b7e2a51efa0",
+    "trusted_keys_usage_scope": "conformance_only"
+  },
+  "consumer_kind": "synthetic_main_consumer",
+  "decided_at": "2026-07-19T15:00:00Z",
+  "index_sha256": "517f2c69f7cb9f3a9a9d7f34a67bf4e3a3fe16ee7f116edc465221fe9d86cffd",
+  "paths": {
+    "adapter_observation": {
+      "path": "runtime_artifacts\\main_consumer_conformance\\inbox\\adapter_observation.json",
+      "sha256": "0d07e0871470d7089cf479153fdc19017c8f2978eca0b41c4306d9a952af65fa"
+    },
+    "adoption_receipt": {
+      "path": "runtime_artifacts\\main_consumer_conformance\\inbox\\adoption_receipt.json",
+      "sha256": "a4b0604372ce6530bdca388821d0dee653e7e903358967696f14e488a4b87e98"
+    },
+    "arbitration_decision": {
+      "path": "runtime_artifacts\\main_consumer_conformance\\arbitration\\main_decision.json",
+      "sha256": "21db901526ba0aacba35de72811a7843cafcac34c2f23843a6007100dc41220a"
+    },
+    "arbitration_evidence": {
+      "path": "runtime_artifacts\\main_consumer_conformance\\arbitration\\conformance_evidence.json",
+      "sha256": "a83a96f27194ba6edfe39169bafae1d889b147180c9875aa2e8db1f074385396"
+    },
+    "claim_boundary": {
+      "path": "runtime_artifacts\\main_consumer_conformance\\fixture_main_claim_boundary.json",
+      "sha256": "04ec7bad6dc14e8c368f8c84558d7b7017385f178721dd302384d01833fb6029"
+    },
+    "comfyui_result_history": {
+      "path": "runtime_artifacts\\main_consumer_conformance\\comfyui\\result_history_receipt.json",
+      "sha256": "6704bb60bd49654373289305aa8d30304be0e1151eabfe5683819a4e090208b9"
+    },
+    "failure_control_observation": {
+      "path": "runtime_artifacts\\main_consumer_conformance\\failure_control\\observation.json",
+      "sha256": "40bf110409f13c9ce656b5988fc9338b24f6af12401afe4e2686e581a1aab046"
+    },
+    "fault_injection_evidence": {
+      "path": "runtime_artifacts\\main_consumer_conformance\\failure_control\\fault_injection_evidence.json",
+      "sha256": "34c326f3ff64a41bc0b6f73d389c4e4eb9386d7777dea7984a2754ec94607b38"
+    },
+    "journal_bundle": {
+      "path": "runtime_artifacts\\main_consumer_conformance\\journal\\checkpoint_bundle.json",
+      "sha256": "cd1f2fdeba761116ee05ddcfdc69bbfb2f23fe17ce50f5330c6d7e9707dc74af"
+    },
+    "requirements_capability_bundle": {
+      "path": "runtime_artifacts\\main_consumer_conformance\\inbox\\requirements_capability_bundle.json",
+      "sha256": "168ac200f493f1d4d62f1c3ffbaa9c727836fb88234da55bc8c69939e995b1ab"
+    },
+    "restart_recovery_marker": {
+      "path": "runtime_artifacts\\main_consumer_conformance\\recovery\\restart_marker.json",
+      "sha256": "c2acad6ed2e466037e2daf6e03be731be19a0c0d2a6eb0d7bfa339188860f801"
+    }
+  },
+  "record_type": "fixture_main_materialization_index",
+  "schema_version": "1.0.0",
+  "synthetic_main_git_commit": "204f21cfbaffd6fb92715092db508b7e2a51efa0"
+}

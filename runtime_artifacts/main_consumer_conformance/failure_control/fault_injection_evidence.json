@@ -1,0 +1,100 @@
+{
+  "claim_boundary": {
+    "artifact": "fault_injection_evidence",
+    "authority_kind": "fixture_authority",
+    "claims_kevin_sgarrett_comfy_ui_main_production_commit": false,
+    "consumer_kind": "synthetic_main_consumer",
+    "fixture_authority": true,
+    "main_adoption_complete": false,
+    "production_main_adoption_complete": false,
+    "synthetic_main_consumer": true,
+    "synthetic_main_git_commit": "204f21cfbaffd6fb92715092db508b7e2a51efa0",
+    "trusted_keys_usage_scope": "conformance_only"
+  },
+  "evidence": {
+    "admission": {
+      "deadline_met": true,
+      "detail": "provider admission refused",
+      "provider_invocation_permitted": false,
+      "resource_feasible": true
+    },
+    "circuit": {
+      "blocks_route": true,
+      "detail": "circuit blocks or invalid",
+      "evidence_valid": true,
+      "state": "open"
+    },
+    "decided_at": "2026-07-19T15:00:00Z",
+    "decision_sha256": "afbe45f6ea15ec8a0324e88bb477d4353073ec28a470d238683385828f0be3df",
+    "error_matrix_decision": {
+      "affected_scope": "request",
+      "decision_sha256": "e5c025369420a49f23a084b3bb6b56d57208c02ce12f5033509f4b2c6a144286",
+      "failure_domain": "availability",
+      "no_fallback_reason": "fallback_route_would_bypass_declared_availability_guards",
+      "retryable": true,
+      "status": "accepted"
+    },
+    "external_main_prerequisites": [
+      {
+        "detail": "circuit blocks or invalid",
+        "prerequisite": "main_circuit_breaker_execution",
+        "status": "met"
+      },
+      {
+        "detail": "scoped DAG block exact",
+        "prerequisite": "main_scoped_dag_blocking",
+        "status": "met"
+      },
+      {
+        "detail": "main retry evidence coherent",
+        "prerequisite": "main_retry_attempt_accounting",
+        "status": "met"
+      },
+      {
+        "detail": "error matrix decision bound",
+        "prerequisite": "main_signed_failure_evidence",
+        "status": "met"
+      }
+    ],
+    "fault_kind": "outage",
+    "no_silent_fallback": {
+      "allow_silent_fallback": false,
+      "detail": "no silent fallback artifact admitted",
+      "enforced": true,
+      "fallback_artifact_present": false,
+      "forbidden_kinds_observed": []
+    },
+    "pass_id": "pass_predict",
+    "policy_id": "maskfactory-bridge-failure-control-v1",
+    "policy_sha256": "e5592becbe96432c28c021de72e7aad51b58b8839bb698b4ebfd1930e2af51b1",
+    "record_type": "bridge_failure_control_evidence",
+    "rejection_reasons": [],
+    "request_id": "mfareq_fixture_main_00000001",
+    "retry": {
+      "attempt_number": 1,
+      "detail": "main retry evidence coherent",
+      "maximum_attempts": 3,
+      "retry_only_typed_transient_errors": true,
+      "retry_permitted": false
+    },
+    "schema_version": "1.0.0",
+    "scoped_dag": {
+      "blocked_pass_ids": [
+        "pass_predict",
+        "pass_refine"
+      ],
+      "continuing_pass_ids": [
+        "pass_unrelated"
+      ],
+      "detail": "scoped DAG block exact",
+      "scope_exact": true
+    },
+    "status": "accepted"
+  },
+  "external_main_dependencies": [
+    "main_circuit_breaker_execution",
+    "main_scoped_dag_blocking",
+    "main_retry_attempt_accounting",
+    "main_signed_failure_evidence"
+  ]
+}

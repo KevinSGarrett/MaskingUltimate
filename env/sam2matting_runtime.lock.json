@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0.0",
+  "provider": "sam2matting_base_plus",
+  "status": "live_smoke_passed_shadow_boundary_challenger",
+  "source": {
+    "repository": "https://github.com/FudanCVL/SAM2Matting.git",
+    "commit": "73dd721d77b56749248aefe5e8824d7f61b9d13c",
+    "tree": "1ddcf4746771e2a0ecefe7356d151600f6037a33",
+    "local_path": "/workspace/models/runtime_cache/sam2matting_source_73dd721d",
+    "tracked_tree_clean": true,
+    "license": "CC BY-NC-SA 4.0",
+    "license_sha256": "314842166187b53934f8b32222f8e1dfb6cf47037e1b2634d36f9e02b6091384",
+    "requirements_sha256": "16723f014a42a68f828e332ccd01ba1da3497772188ab5f96f874b6a030f70ee",
+    "inference_image_sha256": "3dac6d1ed640e0751d5ffc78a8bb5dfa0ae42596790f6f982a1c454090f861ef"
+  },
+  "checkpoint": {
+    "repository": "FudanCVL/SAM2Matting",
+    "repository_revision": "4315db9c60d27fde396b09765748a0ca6c97bed5",
+    "filename": "checkpoints/SAM2Matting-SAM2.1Base+.pt",
+    "sha256": "1f0eb2eda3e8bc9101eafc0b30b8b8fcae1ff83d8fd3adc18e2f3b410fdaae60",
+    "size_bytes": 383180506,
+    "gating": "none",
+    "downloaded": true,
+    "local_path": "/workspace/models/runtime_cache/sam2matting_checkpoint_4315db9c/SAM2Matting-SAM2.1Base+.pt",
+    "installed_at": "2026-07-22T02:48:31Z"
+  },
+  "license_review": {
+    "source_url": "https://github.com/FudanCVL/SAM2Matting/blob/73dd721d77b56749248aefe5e8824d7f61b9d13c/LICENSE",
+    "snapshot_sha256": "314842166187b53934f8b32222f8e1dfb6cf47037e1b2634d36f9e02b6091384",
+    "reviewed_at": "2026-07-22T02:48:31Z",
+    "use_profile": "private_personal_noncommercial",
+    "decision": "allowed"
+  },
+  "runtime": {
+    "platform": "RunPod Linux-64 persistent volume",
+    "environment_path": "/workspace/maskfactory/runtime_artifacts/sam2matting_env",
+    "python": "3.10.12",
+    "torch": "2.8.0+cu128",
+    "torchvision": "0.23.0+cu128",
+    "cuda": "12.8",
+    "requirements_lock": "env/sam2matting_runtime.requirements.lock.txt",
+    "requirements_lock_sha256": "ca23ae0b030b078a81c9f23e0923eac612e59ac13aa73cdeea9cd83304a6ac11",
+    "runtime_fingerprint": "270da4b540d8bb8a033e380c913c9f59ceb78f5715c8d919dec145f65d39a5a5",
+    "pip_check": "pass"
+  },
+  "contract": {
+    "provider": "src/maskfactory/providers/sam2matting.py",
+    "runner": "tools/run_sam2matting.py",
+    "runner_sha256": "0f187148da678bfb1d89c648d8831d0ab060d6b0d4bd983974705eb7a997ea86",
+    "input": "source RGB plus exact same-geometry binary upstream prior",
+    "output": "float32 alpha matte plus fixed-threshold binary boundary proposal",
+    "semantic_authority": false,
+    "fallback": "explicit incumbent MattingRefiner only"
+  },
+  "live_smoke": {
+    "verified_at": "2026-07-22T02:48:31Z",
+    "evidence": "qa/live_verification/sam2matting_runpod_runtime_20260722.json",
+    "result": "pass"
+  }
+}

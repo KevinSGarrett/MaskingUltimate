@@ -1,0 +1,79 @@
+{
+  "artifact_type": "ops_bootstrap_static_report",
+  "authority": "ops_bootstrap_static_only_no_dvc_s3_push_no_b1_restore_no_human_anchor_package_authority",
+  "aws_credentials_present": false,
+  "b1_mirror_present": false,
+  "checked_at": "2026-07-19T23:58:37Z",
+  "checks": {
+    "dvc_wiring_honesty_binder": "pass",
+    "hash_manifest_integrity_binder": "pass",
+    "package_reindex_static_binder": "pass"
+  },
+  "doctor_green_claimed": false,
+  "dvc_push_attempted": false,
+  "dvc_runtime": {
+    "dvc_version_token": "3.67.1",
+    "executable_basename": "dvc.exe",
+    "remote_name": "maskfactory-dvc-dev",
+    "remote_url": "s3://maskfactory-dvc-dev"
+  },
+  "dvc_s3_push_succeeded": false,
+  "dvc_wiring_checks": {
+    "dvc_bootstrap_pins_match_lock": true,
+    "dvc_config_remote_bound": true,
+    "dvc_gitignore_descriptor_exceptions": true,
+    "dvc_push_not_attempted": true,
+    "dvc_remote_list_matches_config": true,
+    "dvc_resolver_available": true,
+    "mf_p1_07_09_overclaim_refused": true
+  },
+  "gold_claimed": false,
+  "hash_manifest_checks": {
+    "fixture_qc006_hash_integrity_pass": true,
+    "fixture_qc006_tamper_detected": true,
+    "fixture_qc006_untracked_detected": true
+  },
+  "honest_non_claims": [
+    "mf_p1_07_09_complete",
+    "mf_p1_09_05_complete",
+    "dvc_s3_push_succeeded",
+    "aws_credentials_present",
+    "b1_mirror_present",
+    "human_anchor_package_present",
+    "doctor_green",
+    "gold",
+    "PRODUCTION_EVIDENCE_PASS"
+  ],
+  "human_anchor_package_present": false,
+  "implementation": {
+    "module": "src/maskfactory/ops_bootstrap_static.py",
+    "scripts": [
+      "tools/bootstrap_dvc.ps1",
+      ".dvc/config"
+    ],
+    "tests": [
+      "tests/test_ops_bootstrap_static.py"
+    ]
+  },
+  "items": [
+    "MF-P1-09.03",
+    "MF-P1-09.05",
+    "MF-P1-07.09",
+    "MF-P7-03.04"
+  ],
+  "kevin_b1_restore_required": true,
+  "kevin_dvc_s3_push_required": true,
+  "mf_p1_07_09_complete": false,
+  "mf_p1_09_05_complete": false,
+  "package_reindex_checks": {
+    "multi_package_reindex_dry_run_zero_diff": true,
+    "multi_package_reindex_missing_before_rebuild": true,
+    "multi_package_reindex_rebuild_clean": true
+  },
+  "production_evidence_pass_claimed": false,
+  "proof_tier": "STATIC_PASS",
+  "report_id": "obs_955bca97ae3286fcb47f998c",
+  "schema_version": "1.0.0",
+  "seal_sha256": "955bca97ae3286fcb47f998cbdb4246d800737c89251265edaaf1e1097071750",
+  "sha256": "8e30e83c00e626bf10e70abe8613f8da406712c2b1d0b257b4a6f9961393e28d"
+}

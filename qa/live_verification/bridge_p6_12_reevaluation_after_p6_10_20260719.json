@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_bridge_p6_12_reevaluation_after_p6_10",
+  "recorded_at": "2026-07-19T20:30:00Z",
+  "lane": "autonomous_p6_12_reevaluation",
+  "prerequisite_context": {
+    "MF-P6-08.08": "complete",
+    "MF-P6-10.01": "complete",
+    "MF-P6-10.02": "complete",
+    "MF-P6-10.03": "complete",
+    "MF-P6-10.04": "complete",
+    "MF-P6-10.05": "complete",
+    "MF-P6-10.06": "complete",
+    "MF-P6-10.07": "complete",
+    "MF-P6-07.07": "complete"
+  },
+  "focused_pytest": {
+    "command": "python -m pytest tests/test_integration_release.py tests/test_mode_a_vertical_slice.py tests/test_multi_person_mode_a_vertical_slice.py tests/test_mode_b_vertical_slice.py tests/test_cross_project_qualification.py tests/test_bridge_final_release_handoff.py tests/test_bridge_autonomy_registration.py -q",
+    "passed": 54,
+    "failed": 0
+  },
+  "ruff": {
+    "scoped_bridge_and_tests": "clean"
+  },
+  "outcomes": {
+    "MF-P6-12.01": {
+      "status": "complete",
+      "percent_complete": 100,
+      "rationale": "Verify clause (clean install + stale-node negative without dirty-source authority) satisfied by producer fixtures after MF-P6-10.04 complete. Integration release accepts producer_partial recovery evidence; remaining Main restart-store/live pack activation is outside this verify clause and is not claimed."
+    },
+    "MF-P6-12.02": {
+      "status": "blocked",
+      "percent_complete": 84,
+      "rationale": "Producer fixture slice complete; verify still requires Main adapter + ComfyUI inpaint/edit result/history hashes. MF-P6-12.01 producer prerequisite cleared; MF-P6-11.02 and Main/ComfyUI remain."
+    },
+    "MF-P6-12.03": {
+      "status": "blocked",
+      "percent_complete": 80,
+      "rationale": "Producer overlapping/contact duo fixture complete with seeded fault rejection; remains blocked on MF-P6-12.02 and Main/ComfyUI two-person execution."
+    },
+    "MF-P6-12.04": {
+      "status": "blocked",
+      "percent_complete": 86,
+      "rationale": "Producer verify vectors for draft/self-promote/refinement ceiling/certified+abstained are fixture-satisfied and MF-P6-08.08 is complete. Remains blocked on MF-P6-11.03/11.07 plus true live GPU champion and Windows loopback gaps; claim_boundary.mf_p6_12_04_complete stays false."
+    },
+    "MF-P6-12.05": {
+      "status": "blocked",
+      "percent_complete": 82,
+      "rationale": "Producer matrix executable as producer_partial. HARD BLOCKER remains: MF-P6-12.02 through 12.04 incomplete plus absent Main-runtime commit/adoption/qualification bindings."
+    },
+    "MF-P6-12.06": {
+      "status": "blocked",
+      "percent_complete": 76,
+      "rationale": "Handoff evaluator/profile regeneration/claim firewall fixture-proven; MF-P6-07.07 already complete. Remains blocked on MF-P6-12.05 and missing Main adoption/reciprocal/core-met receipts."
+    }
+  },
+  "truth_boundary": [
+    "producer_fixture_verify_clause_evidence_only",
+    "no_main_adapter_or_comfyui_execution_fabricated",
+    "no_live_gpu_champion_prediction_claimed",
+    "no_production_qualification_bundle_or_final_handoff_claimed",
+    "no_reset_clean_stage_commit"
+  ]
+}

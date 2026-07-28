@@ -1,0 +1,78 @@
+{
+  "abstention_reasons": [
+    "clusterer_extra_reasons",
+    "clusterer_invalid_output",
+    "clusterer_missing_reasons",
+    "empty_unresolved_queue",
+    "overclaim_d4_or_vlm_calibration",
+    "priority_inputs_invalid",
+    "schema_validation_failed",
+    "text_llm_unavailable"
+  ],
+  "action_kinds": [
+    "collect_cell_reannotate_holdout",
+    "reannotate_skeleton_audit",
+    "reannotate_label_proposal",
+    "v2_governed_acquisition"
+  ],
+  "artifact_type": "failure_mining_static_report",
+  "authority": "failure_mining_static_only_no_d4_vlm_calibration_or_human_anchor_authority",
+  "checks": {
+    "abstention_routing": "pass",
+    "acquisition_plan_schema": "pass",
+    "priority_formula": "pass",
+    "top20_cap": "pass"
+  },
+  "d4_complete": false,
+  "doctor_green_claimed": false,
+  "gold_claimed": false,
+  "honest_non_claims": [
+    "d4_complete",
+    "vlm_calibration_complete",
+    "human_anchor_authority",
+    "doctor_green",
+    "gold",
+    "PRODUCTION_EVIDENCE_PASS"
+  ],
+  "human_anchor_authority": false,
+  "implementation": {
+    "module": "src/maskfactory/qa/failure_mining_static.py",
+    "schemas": [
+      "src/maskfactory/schemas/acquisition_plan.schema.json",
+      "src/maskfactory/schemas/failure_mining_static_report.schema.json"
+    ],
+    "tests": [
+      "tests/test_failure_mining_static.py"
+    ]
+  },
+  "items": [
+    "MF-P4-03.03",
+    "MF-P4-11.14",
+    "MF-P4-EXIT"
+  ],
+  "priority_weights": {
+    "class_error_rate": 0.4,
+    "coverage_deficit": 0.3,
+    "downstream_use_weight": 0.2,
+    "recency": 0.1
+  },
+  "production_evidence_pass_claimed": false,
+  "proof_tier": "STATIC_PASS",
+  "pytest_exit_code": 0,
+  "pytest_summary": [
+    "18 focused mining/static + coverage/ontology tests passed"
+  ],
+  "report_id": "fms_8aa5a8ca9b9289cf2c305ba3",
+  "result": "pass_failure_mining_static",
+  "schema_version": "1.0.0",
+  "seal_sha256": "8aa5a8ca9b9289cf2c305ba322960c112fd2bdcdfd8129b79ef23ad8079a5805",
+  "seeded_fixture_blocks": {
+    "acquisition_plan_validates": true,
+    "empty_queue_abstains": true,
+    "invalid_clusterer_abstains": true,
+    "overclaim_d4_refused": true
+  },
+  "sha256": "8be69f37649841cc1be342c5d82ed1650aa92eb92d935ba68b0fdbbd94585117",
+  "top_action_cap": 20,
+  "vlm_calibration_complete": false
+}

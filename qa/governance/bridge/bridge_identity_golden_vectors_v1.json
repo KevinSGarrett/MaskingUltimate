@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "bridge_identity_golden_vectors",
+  "policy_id": "maskfactory-bridge-canonical-identity-v1",
+  "policy_relative_path": "configs/bridge_identity_policy.yaml",
+  "cases": [
+    {"case_id": "still_single_exchange", "expect_status": "accepted", "expect_replays": 0},
+    {"case_id": "video_frame_exchange", "expect_status": "accepted", "expect_replays": 0},
+    {"case_id": "exact_same_body_replay", "expect_status": "accepted", "expect_replays": 1},
+    {"case_id": "assignment_evidence_drift", "expect_status": "rejected", "collision_code": "assignment_evidence_drift"},
+    {"case_id": "character_revision_collision", "expect_status": "rejected", "collision_code": "character_revision_collision"},
+    {"case_id": "duplicate_intent_collision", "expect_status": "rejected", "collision_code": "duplicate_intent_collision"},
+    {"case_id": "provider_person_index_collision", "expect_status": "rejected", "collision_code": "provider_person_index_collision"},
+    {"case_id": "artifact_identity_collision", "expect_status": "rejected", "collision_code": "artifact_identity_collision"},
+    {"case_id": "same_key_different_body_replay", "expect_status": "rejected", "collision_code": "idempotency_replay_collision"},
+    {"case_id": "pixel_drift", "expect_status": "rejected", "rejection_reason": "identity_pixel_drift"},
+    {"case_id": "decoder_drift", "expect_status": "rejected", "rejection_reason": "identity_decoder_drift"},
+    {"case_id": "time_drift", "expect_status": "rejected", "rejection_reason": "identity_time_drift"},
+    {"case_id": "owner_omitted", "expect_status": "rejected", "rejection_reason": "identity_owner_omitted"},
+    {"case_id": "owner_ambiguous", "expect_status": "rejected", "rejection_reason": "identity_owner_ambiguous"},
+    {"case_id": "input_order_invariance", "expect_status": "accepted", "expect_replays": 0}
+  ]
+}

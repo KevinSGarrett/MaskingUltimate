@@ -1,0 +1,26 @@
+{
+  "dataset": "atr",
+  "device": "NVIDIA GeForce RTX 5060 Laptop GPU",
+  "foreground_fraction": 0.041264,
+  "label_map_shape": [
+    512,
+    512
+  ],
+  "logits_shape": [
+    1,
+    18,
+    512,
+    512
+  ],
+  "num_classes": 18,
+  "output_sha256": "3dbf93127a736e745abd4f3659f8d2cbaafbd04ab17ee54448e98d6f84e05157",
+  "passed": true,
+  "source_revision": "eb84c432cc697f494d99662a05f2335eb2f26095",
+  "torch": "2.11.0+cu128",
+  "unique_labels": [
+    0,
+    4
+  ],
+  "family": "schp_atr",
+  "runtime": "local_cuda_comfyui_venv"
+}

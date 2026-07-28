@@ -1,0 +1,59 @@
+{
+  "artifact_type": "specialist_static_contracts_report",
+  "authority": "specialist_static_contracts_only_no_sop_cadence_100_certified_or_p3_exit_authority",
+  "certified_package_count": 0,
+  "checked_at": "2026-07-19T23:35:55Z",
+  "checks": {
+    "hand_chest_hair_feet_lane_contracts": "pass",
+    "qc_panel_fixtures": "pass",
+    "residual_and_preselected_audit_routing": "pass"
+  },
+  "doctor_green_claimed": false,
+  "gold_claimed": false,
+  "honest_non_claims": [
+    "mf_p3_07_sop_cadence",
+    "mf_p3_07_100_certified_packages",
+    "mf_p3_07_kevin_review_minutes",
+    "mf_p3_07_fresh_day_second_look",
+    "mf_p3_exit",
+    "doctor_green",
+    "gold",
+    "production_evidence_pass"
+  ],
+  "kevin_sop_cadence_required": true,
+  "main_complete_claimed": false,
+  "mf_p3_07_01_sop_cadence_complete": false,
+  "mf_p3_07_02_100_certified_complete": false,
+  "mf_p3_07_03_labor_metrics_complete": false,
+  "mf_p3_07_04_second_look_complete": false,
+  "mf_p3_exit_complete": false,
+  "production_evidence_pass_claimed": false,
+  "proof_tier": "STATIC_PASS",
+  "report_id": "ssc_447b9f712f6f8a9131529288",
+  "schema_version": "1.0.0",
+  "seal_sha256": "447b9f712f6f8a9131529288dd37a6f8a7da236385d3e5744448446b7baf7429",
+  "seeded_lane_checks": {
+    "chest_visible_truth_and_boundary_band": true,
+    "feet_shod_material_and_toes_not_visible": true,
+    "hair_shoulder_zorder_and_face_protect": true,
+    "hand_gap_ownership_and_finger_merge_residual": true
+  },
+  "seeded_panel_checks": {
+    "hairline_panel_2560x512": true,
+    "mandatory_chest_panel_2560x512": true
+  },
+  "seeded_routing_checks": {
+    "certificate_covered_serves_without_routine_review": true,
+    "preselected_audit_destination": true,
+    "review_sample_excludes_certificate_covered_routine": true,
+    "uncertified_routes_residual_only": true
+  },
+  "sha256": "e98add1a522cb25281f5eb496dbe6c774f7129b448e541d006fc0e26b8cf3e94",
+  "specialist_labels": [
+    "left_hand_base",
+    "left_breast",
+    "hair",
+    "left_foot_base"
+  ],
+  "visual_qa_pass_claimed": false
+}

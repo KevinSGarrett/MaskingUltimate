@@ -1,0 +1,58 @@
+{
+  "authority": "parallel_assistance_live_evidence_only_no_provider_promotion_task_mutation_gold_training_or_completion_authority",
+  "bound_artifacts": {
+    "migration_evidence_sha256": "837ef644dda187a3ccdc3337d42b046a8a15e73cab4efbcfab8131d5a4b339c8",
+    "parallel_override_sha256": "b1929498258934884b96b39d1c00235e4fb5c509893f777ede7222de1f91e306",
+    "source_sam2_smoke_sha256": "f1517f415e21555ba02793a8234d2eeb61a1d359ccab3d83bb4ebb46afd30969"
+  },
+  "captured_at": "2026-07-15T15:24:33.611738Z",
+  "preserved_task": {
+    "dimension": "2d",
+    "id": 1,
+    "mode": "annotation",
+    "name": "MaskFactory SAM2 synthetic smoke",
+    "project_id": null,
+    "size": 1,
+    "subset": ""
+  },
+  "production_annotations_or_task_state_mutated": false,
+  "result": "sam2_pass_sam31_checkpoint_pending",
+  "sam31_assistance": {
+    "authority_granted": false,
+    "status": "pending_gated_checkpoint",
+    "tracker_item": "MF-P0-17.04"
+  },
+  "schema_version": "1.0.0",
+  "sha256": "3c11a4cca2ea43c2ddb8f9c1118f2e075aad572ee9f7463b0582a0d40c518d82",
+  "target_interactor": {
+    "id": "pth-sam2",
+    "kind": "interactor",
+    "name": "Segment Anything 2.1 (CPU)",
+    "version": 2
+  },
+  "target_sam2_inference": {
+    "array_sha256": "48a57d6aac9d4be6ca359b8e36afdce584a8657de4debb6564410af218177047",
+    "checks": {
+      "binary_0_255": true,
+      "negative_point_background": true,
+      "nonempty_foreground": true,
+      "positive_point_foreground": true,
+      "shape_256x256": true
+    },
+    "foreground_pixels": 21491,
+    "latency_seconds": 4.219,
+    "shape": [
+      256,
+      256
+    ],
+    "unique_values": [
+      0,
+      255
+    ]
+  },
+  "task_identity_matches_exactly": true,
+  "versions": {
+    "incumbent": "2.24.0",
+    "parallel_target": "2.69.0"
+  }
+}

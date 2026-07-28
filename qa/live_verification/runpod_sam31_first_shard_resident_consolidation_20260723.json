@@ -1,0 +1,92 @@
+{
+  "schema_version": "maskfactory.runpod_sam31_resident_consolidation.v1",
+  "recorded_at": "2026-07-23T08:32:50.9638322Z",
+  "status": "FULL_SHARD_PROVIDER_AND_HARD_QC_CONSOLIDATED_NONTERMINAL",
+  "repository": {
+    "branch": "codex/maskfactory-plan-modernization",
+    "consolidator_commit": "52693eb306a1f2c94ee91f256f98041c8d83b47b",
+    "atomic_publication_commit": "302ffc2d6"
+  },
+  "execution": {
+    "platform": "directly_selected_runpod",
+    "pod_id": "1q4ji0gg1fkhvt",
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "persistent_root": "/workspace/maskfactory/runtime_artifacts/nude_sam31_shard0001_consolidated_resident_52693eb30_v1",
+    "source_shard": "/workspace/assets/MaskedWarehouse/Nude/_MASKFACTORY_INTAKE/batch_shards/runpod/reference_and_tournament_input.0001.json",
+    "source_role": "reference_and_tournament_input",
+    "source_is_pixel_truth": false,
+    "gpu_or_vram_governance_used": false
+  },
+  "provider_identity": {
+    "contract_version": "1.0.0",
+    "model_family": "sam3",
+    "provider_key": "sam3_1",
+    "role": "interactive_segmenter",
+    "runtime_fingerprint": "1cf09344fe0f36eb26417d53c2e96d06d1d3ffd13f18005ac9a9d5a8ee072c0b",
+    "source_commit": "5dd401d1c5c1d5c3eedff06d41b77af824517619"
+  },
+  "resident_runtime_unification": {
+    "historical_record_count_rerun": 64,
+    "model_load_count": 1,
+    "request_count": 65,
+    "successful_request_count": 61,
+    "failed_request_count": 4,
+    "candidate_count": 51,
+    "clean_shutdown": true,
+    "stderr_bytes": 0,
+    "resident_json_sha256": "bda3c1de87228a89fc1e59e5a6fb445b122d08025162e329521dbf039acd0995",
+    "resident_self_sha256": "dd8fddd6dcfea8de9459e3293f6a0b8c5166561fa5736b19c3364f0583ab1480"
+  },
+  "consolidated_package": {
+    "record_count": 256,
+    "candidate_count": 133,
+    "provider_status_counts": {
+      "catalog_abstain": 99,
+      "generated": 132,
+      "provider_abstain": 25
+    },
+    "hard_qc_status_counts": {
+      "pass": 119,
+      "fail": 13,
+      "upstream_abstain": 124
+    },
+    "quarantined_unreferenced_count": 1,
+    "provider_json_sha256": "f26121822bc26c77c701b2511ca8e06fec511f6e690b18c3e831d6c6e27cd2e0",
+    "provider_self_sha256": "13829a79c31270fe7fe3257ab36f4a3145705b98ff7e433390e76a0816150597",
+    "hard_qc_json_sha256": "0ea5de5defb1ce2b579a2e4818c2643732bf038a27704e79c5faf5218178ebf1",
+    "hard_qc_self_sha256": "8a9caeddf9dbdbe1228b5bf1b91bf9d47a7be18e57ca64480bf3f6a2cf7acf8f",
+    "quarantine_json_sha256": "36095ebb2a7bb5e80e41cd4aebd17efca48bb9efb6b828cd7ce6b1607846dd47",
+    "quarantine_self_sha256": "b26611c11ccfdefe45f66ea6b6ce462db83f88b14c8d4e3aef4576b39d5ac305",
+    "manifest_json_sha256": "efe74313aecbe3ca57d83f06f0d3e226612435697d21b3262a990e8a2d2e03b4",
+    "manifest_self_sha256": "0e8ad756ccd64cca7f94eff46b536551a56b4a730482a76b461e69b609c16230"
+  },
+  "validation": {
+    "all_four_input_reports_validated": true,
+    "all_provider_identities_equal": true,
+    "all_eligible_records_present_exactly_once": true,
+    "all_candidate_input_hashes_verified": true,
+    "all_candidate_copy_hashes_verified": true,
+    "deterministic_hard_qc_rerun_from_consolidated_candidates": true,
+    "atomic_output_publication": true,
+    "unreferenced_historical_artifact_excluded_and_quarantined": true,
+    "precommit_test_count": 80,
+    "post_run_proportional_test_count": 35,
+    "focused_tests": "PASS",
+    "ruff": "PASS",
+    "black": "PASS",
+    "diff_integrity": "PASS"
+  },
+  "authority_boundary": {
+    "provider_generation_stage_coverage_complete": true,
+    "deterministic_hard_qc_stage_coverage_complete": true,
+    "strict_visual_review_complete": false,
+    "repair_stage_complete": false,
+    "terminal_record_count": 0,
+    "certificate_count": 0,
+    "autonomous_certified_gold_count": 0,
+    "training_truth_count": 0,
+    "shard_complete": false,
+    "claim": "All 256 records in reference shard 0001 are consolidated into one immutable SAM3.1 resident-runtime provider and deterministic-hard-QC package. The 133 masks remain non-authoritative drafts. Qualified visual review, independent juror review, bounded repair, terminal receipts, certification, gold, and shard completion remain open."
+  },
+  "self_sha256": "47978a9b2076596d3caa3ed7b332ca5f2e09140ac7075cce759003e66a7523d0"
+}

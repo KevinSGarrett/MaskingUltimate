@@ -1,0 +1,77 @@
+{
+  "authority": {
+    "gold_authority": false,
+    "lifecycle_state": "installed",
+    "official_reference": "sam3_1",
+    "production_authority": false,
+    "promotion_claimed": false,
+    "role_eligibility": "shadow_only_experiment",
+    "substitution_forbidden": true
+  },
+  "captured_at": "2026-07-15T16:07:50.659160+00:00",
+  "checkpoint": {
+    "filename": "model.safetensors",
+    "path": "/home/kevin/mfmodels/sam3-litetext-s0-b09766e5",
+    "revision": "b09766e54f5d2eba021119ec7feff13e74c0f8fc",
+    "sha256": "69c86fda4d53492cca2a362dae050f3c2b92afa4faedf44262a6b6d082da9906",
+    "size_bytes": 2117074488
+  },
+  "comparison": {
+    "human_anchor_benchmark": "pending",
+    "lower_memory_than_official_claimed": false,
+    "official_sam31_checkpoint_available": false,
+    "quality_noninferiority_claimed": false
+  },
+  "failure_behavior": "local_missing_checkpoint_refused_without_network_fallback",
+  "fixture": {
+    "height": 1080,
+    "path": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+    "prompt": "person",
+    "sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63",
+    "width": 810
+  },
+  "manifest_sha256": "d19c54e9e676a6d190b093fde6f59f923863ee784fc0bd0862bf98dbb6d61cff",
+  "observations": {
+    "boxes_sha256": "4f8a3e3d6b4236dd5b2f91070f375000303d287de8bcaee0061a3b28747350e6",
+    "deterministic_two_run": true,
+    "foreground_pixels": [
+      20986,
+      11325,
+      46308,
+      32825
+    ],
+    "inference_seconds": [
+      2.148611,
+      0.323472
+    ],
+    "instance_count": 4,
+    "load_seconds": 2.103725,
+    "mask_stack_sha256": "dc6dc62a2c3bf9d47396a61970cb2ac0896f40c065a0ee67dceac48a9ecd0733",
+    "persisted_mask_file_sha256": "51def5d1804fb6e7a7223f04f87b4953e611af4546d3f002353ce3c7f972988c",
+    "persisted_mask_path": "qa/live_verification/sam3_litetext_s0_person_mask_20260715.png",
+    "scores_sha256": "d3dd86458fe3656440de1e8c9c41467def268565aab0a7f4457c6e63011352c9",
+    "strict_binary_png": true,
+    "union_mask_sha256": "feae824f1a2373f99a22ba16a57e9738c5ccb031b4fee25c19fe1bc66ae59ec4"
+  },
+  "provider": "sam3_litetext_s0",
+  "result": "pass_installed_shadow_smoke_official_comparison_pending",
+  "runtime": {
+    "capability": [
+      12,
+      0
+    ],
+    "cuda": "12.8",
+    "device": "NVIDIA GeForce RTX 5060 Laptop GPU",
+    "device_free_before_bytes": 7374635008,
+    "device_total_bytes": 8546484224,
+    "dtype": "bfloat16",
+    "environment": "/home/kevin/mfenvs/sam3-litetext-b09766e5",
+    "peak_allocated_bytes": 1479608320,
+    "peak_reserved_bytes": 1660944384,
+    "python": "3.12.13",
+    "torch": "2.10.0+cu128",
+    "transformers": "5.13.1"
+  },
+  "schema_version": "1.0.0",
+  "source_commit": "bef17f5c24dc5ef19dc1d8e9663345a2ae7f2f5a"
+}

@@ -1,0 +1,122 @@
+schema_version: 1.0.0
+manifest_id: mfst_example_g9_body_morph
+manifest_revision: 1
+record_state: runtime_inspected
+created_at: '2026-07-14T12:00:00Z'
+updated_at: '2026-07-14T12:20:00Z'
+created_by: example_only
+updated_by: example_only
+canonical_asset_id: ast_example_body_shape
+supersedes: []
+superseded_by: []
+product:
+  product_id: prd_example_body_shapes
+  source_name: local_example
+  source_product_id: EXAMPLE-001
+  title: Example Genesis 9 Body Shape Pack
+  creators: [Example Creator]
+  declared_content_types: [body morph]
+  tags: [genesis 9, body shape, proportions]
+  local_record_refs: []
+packages:
+  - package_id: pkg_example_body_shapes_win
+    product_id: prd_example_body_shapes
+    global_id: EXAMPLE-001-01
+    name: Example Body Shapes
+    version: '1.0'
+    platform: win
+    archive:
+      filename: EXAMPLE-001-01.zip
+      absolute_path: 'F:\DAZ\02_installers\manual_packages\asset_dropzone\genesis_9\01_body_modifiers_and_morphs\05_proportions\EXAMPLE-001-01.zip'
+      sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+      size_bytes: 1048576
+      compression: zip
+    dropzone_relative_path: genesis_9/01_body_modifiers_and_morphs/05_proportions
+    extraction_state: installed
+    member_file_ids: [fil_example_duf, fil_example_dsf, fil_example_png]
+files:
+  - {file_id: fil_example_duf, package_id: pkg_example_body_shapes_win, archive_member_path: 'Content/People/Genesis 9/Shapes/Example Body Shape.duf', content_root_id: mf_daz_library, installed_relative_path: 'People\Genesis 9\Shapes\Example Body Shape.duf', installed_absolute_path: 'F:\DAZ\03_content\libraries\MaskFactory_DAZ_Library\People\Genesis 9\Shapes\Example Body Shape.duf', canonical_comparison_path: 'people/genesis 9/shapes/example body shape.duf', logical_uri: '/People/Genesis 9/Shapes/Example Body Shape.duf', role: user_facing_preset, extension: .duf, detected_format: dson_json, sha256: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb, size_bytes: 4096, existence: present, is_primary: true, owner_asset_ids: [ast_example_body_shape], references: ['/data/Example/BodyShapes/G9/ExampleShape.dsf#ExampleShape'], referenced_by: [], errors: []}
+  - {file_id: fil_example_dsf, package_id: pkg_example_body_shapes_win, archive_member_path: 'Content/data/Example/BodyShapes/G9/ExampleShape.dsf', content_root_id: mf_daz_library, installed_relative_path: 'data\Example\BodyShapes\G9\ExampleShape.dsf', installed_absolute_path: 'F:\DAZ\03_content\libraries\MaskFactory_DAZ_Library\data\Example\BodyShapes\G9\ExampleShape.dsf', canonical_comparison_path: 'data/example/bodyshapes/g9/exampleshape.dsf', logical_uri: '/data/Example/BodyShapes/G9/ExampleShape.dsf', role: morph_delta, extension: .dsf, detected_format: dson_json, sha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc, size_bytes: 32768, existence: present, is_primary: false, owner_asset_ids: [ast_example_body_shape], references: [], referenced_by: ['/People/Genesis 9/Shapes/Example Body Shape.duf'], errors: []}
+  - {file_id: fil_example_png, package_id: pkg_example_body_shapes_win, archive_member_path: 'Content/People/Genesis 9/Shapes/Example Body Shape.duf.png', content_root_id: mf_daz_library, installed_relative_path: 'People\Genesis 9\Shapes\Example Body Shape.duf.png', installed_absolute_path: 'F:\DAZ\03_content\libraries\MaskFactory_DAZ_Library\People\Genesis 9\Shapes\Example Body Shape.duf.png', canonical_comparison_path: 'people/genesis 9/shapes/example body shape.duf.png', role: thumbnail, extension: .png, detected_format: png, sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd, size_bytes: 8192, existence: present, is_primary: false, owner_asset_ids: [ast_example_body_shape], references: [], referenced_by: [], errors: []}
+assets:
+  - asset_id: ast_example_body_shape
+    source_file_id: fil_example_duf
+    dson_asset_id: ExampleBodyShape
+    asset_uri: '/People/Genesis 9/Shapes/Example Body Shape.duf#ExampleBodyShape'
+    asset_type_raw: modifier/shape
+    name: ExampleBodyShape
+    label: Example Body Shape
+    description: Demonstration full-body proportion morph.
+    author: Example Creator
+    revision: '1.0'
+    primary_class: body_morph
+    secondary_classes: [full_character_shape]
+    content_type_raw: Actor/People/Real World
+    categories_raw: ['/Default/Shapes/People/Full Body']
+    tags: [body, proportion]
+    figure_generations: [genesis_9]
+    compatibility_bases: [/Genesis 9/Base]
+    compatibility_filters: [Genesis 9]
+    load_mode: apply_to_selected_figure
+    static_findings: {file_version: '0.6.0.0', modifier_count: 1, compressed: false}
+components:
+  - component_id: cmp_example_g9_figure
+    asset_id: ast_example_body_shape
+    component_type: figure
+    action: modified
+    scene_locator: /Genesis9
+    asset_uri: /data/DAZ 3D/Genesis 9/Base/Genesis9.dsf#Genesis9
+    name: Genesis9
+    label: Genesis 9
+    skeleton: Genesis9
+    geometry_counts: {vertices: 17418, facets: 16996}
+    topology_signature: example_only
+properties:
+  - property_id: prp_example_body_shape
+    owner_component_id: cmp_example_g9_figure
+    asset_uri: '/data/Example/BodyShapes/G9/ExampleShape.dsf#ExampleShape'
+    name: ExampleShape
+    label: Example Body Shape
+    group_path: Actor/Full Body/People
+    presentation_type: Modifier/Shape
+    region: Full Body
+    value_type: float
+    units: normalized
+    minimum: 0.0
+    maximum: 1.0
+    default: 0.0
+    current: 1.0
+    sensitivity: 0.01
+    flags: {clamped: true, hidden: false, locked: false, keyable: true, auto_follow: true}
+    morph_subtype: shape
+    controllers_in: []
+    controllers_out: []
+    affected_entities: [Genesis9.geometry]
+    safe_sampling_range: [0.0, 1.0]
+    evidence: {method: runtime_api, reference: 'inspection/runtime_diff.json', confidence: 1.0, observed_at: '2026-07-14T12:15:00Z', tool: MaskFactory DAZ Inspector}
+classifications:
+  primary_asset_class: body_morph
+  secondary_asset_classes: [full_character_shape]
+  dropzone_generation: genesis_9
+  dropzone_category: 01_body_modifiers_and_morphs/05_proportions
+  confidence: 1.0
+  evidence_refs: [inspection/runtime_diff.json]
+body_associations:
+  - {entity_id: prp_example_body_shape, taxon_id: body.whole_body, level: major, relationship: changes_shape, side: bilateral, evidence: {method: runtime_api, reference: 'inspection/runtime_diff.json', confidence: 1.0}, review_state: machine_observed}
+maskfactory_mappings:
+  - {taxon_id: body.whole_body, ontology_version: body_parts_v1, relationship: contains, status: descriptive_only, evidence: {method: dson_parse, reference: 'full-body affected region', confidence: 0.95}}
+capability_profiles:
+  morph_profile: {delta_file_id: fil_example_dsf, affected_vertex_count: 12000, auto_follow: true, compatible_topology: Genesis9Base}
+dependencies:
+  - {dependency_id: dep_example_g9, source_entity_id: ast_example_body_shape, target_kind: figure, target_locator: Genesis 9 Base, relation: requires, version_constraint: any, required: true, resolution_state: resolved, resolved_entity_id: cmp_example_g9_figure, evidence: {method: runtime_api, reference: 'inspection/load.json', confidence: 1.0}}
+compatibility_results:
+  - {test_id: ins_example_load, operation: apply_and_render, fixture: Genesis9Base, outcome: pass, observed_at: '2026-07-14T12:18:00Z', application_version: example, renderer: iray, duration_ms: 1200, warnings: [], errors: [], evidence_refs: ['inspection/render.png']}
+inspections:
+  - {inspection_id: ins_example_static, stage: static_dson, tool: MaskFactory DSON Scanner, tool_version: 1.0.0, observed_at: '2026-07-14T12:10:00Z', outcome: pass, evidence_refs: ['inspection/static.json'], summary: DSON references resolved.}
+  - {inspection_id: ins_example_runtime, stage: runtime_diff, tool: MaskFactory DAZ Inspector, tool_version: 1.0.0, observed_at: '2026-07-14T12:15:00Z', outcome: pass, evidence_refs: ['inspection/runtime_diff.json'], summary: One morph property added to Genesis 9.}
+search: {summary: 'Genesis 9 full-body proportion morph with one adjustable slider.', tokens: [genesis9, body, proportion, morph, slider], aliases: [ExampleShape], body_taxa: [body.whole_body], generations: [genesis_9], file_extensions: [.duf, .dsf, .png]}
+technical_lineage: []
+conflicts: []
+unknowns: []
+validation: {schema_valid: true, vocabulary_valid: true, reference_valid: true, path_valid: true, hash_valid: true, validated_at: '2026-07-14T12:20:00Z', validator_version: example, errors: [], warnings: []}
+notes: [Fictitious example; hashes and geometry counts are illustrative.]

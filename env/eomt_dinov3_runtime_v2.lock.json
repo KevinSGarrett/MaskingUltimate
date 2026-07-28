@@ -1,0 +1,56 @@
+{
+  "schema_version": "2.0.0",
+  "created_at_utc": "2026-07-25T17:55:00Z",
+  "supersedes": {
+    "path": "env/eomt_dinov3_runtime.lock.json",
+    "sha256": "ac988f5a3d5e94259d7f52064c2d228ec4c34b7f594f9e9a3c817f38aa66b6b8",
+    "reason": "Historical lock's 65-class target and reproduction hashes no longer describe the active 66-class contract. It remains preserved as historical evidence."
+  },
+  "source": {
+    "repository": "tue-mps/eomt-dinov3-coco-panoptic-small-640",
+    "revision": "602edaa2839daf6cb3de3ad46c176098c3be9090",
+    "license": "MIT",
+    "transformers_model": "EomtDinov3ForUniversalSegmentation"
+  },
+  "snapshot": {
+    "local_path": "models/runtime_cache/eomt_dinov3_small_602edaa",
+    "checkpoint_sha256": "1fed3231445cce739e368c1828f49215459ca33ba56b6712d48e3058274c5d6f",
+    "files": [
+      {"filename": "model.safetensors", "size_bytes": 93450628, "sha256": "1fed3231445cce739e368c1828f49215459ca33ba56b6712d48e3058274c5d6f"},
+      {"filename": "config.json", "size_bytes": 6703, "sha256": "8baa79f9cc2d41a4e01f575efb97b0aad1353ce955c9e95b7da4c8f61f1034d3"},
+      {"filename": "preprocessor_config.json", "size_bytes": 436, "sha256": "ce1554014d6dcea56b2f352e564275c9ec4a07c5efee704742fe3ed128550e2e"},
+      {"filename": "README.md", "size_bytes": 3118, "sha256": "1e13062ee2842cd1e92206b7a7ecd3944a243b169d0da8f43e04d94a31794165"}
+    ]
+  },
+  "target_contract": {
+    "ontology_version": "body_parts_v2",
+    "class_count": 66,
+    "class_names_sha256": "69591268cb7314d19d71af6fa9c7d4076b6f8c4caaee88670b2854b14f386b2e",
+    "ignore_index": 255,
+    "pretrained_head": "discard_coco_panoptic_head",
+    "target_head_initialization": "random",
+    "authority": "training_and_shadow_evaluation_only"
+  },
+  "reproduction": {
+    "training_config": "configs/training/eomt_dinov3_small_v2.yaml",
+    "training_config_sha256": "a0d21b8b8c1da900b6f354e1a244537db5f85a6b2650aae007ddb3195644466f",
+    "smoke_script": "tools/smoke_eomt_dinov3.py",
+    "smoke_script_sha256": "ef7bffa41a284a875a7a3b285918306d6336c08b9989718be34a6644de0ff236",
+    "contract": "src/maskfactory/providers/eomt_dinov3.py",
+    "contract_sha256": "d039ddcc8beac7d98e2e43cd9a710fd527502c15ed54030812d5a30d67471bd6",
+    "tests": "tests/test_eomt_dinov3_contract.py",
+    "tests_sha256": "4b5904a4e78231afe71bf6cda213dc168b28bb21c54054e4649b33d4424adebd"
+  },
+  "runtime": {
+    "status": "not_installed",
+    "current_66_class_runtime_claimed": false,
+    "historical_65_class_runtime_evidence": "qa/live_verification/eomt_dinov3_runtime_20260715.json",
+    "next_required_binding": "A separate immutable RunPod Python/cu128/Transformers closure followed by a 66-class shadow-only runtime smoke."
+  },
+  "authority": {
+    "provider_promotion": false,
+    "gold_authority": false,
+    "active": null,
+    "baselines": ["segformer_b3", "mask2former_swin_b"]
+  }
+}

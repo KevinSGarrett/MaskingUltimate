@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-17T18:22:01.2740010Z",
+  "result": "OPERATIONAL_CERTIFICATE_ISSUANCE_RUNTIME_PASS",
+  "branch": "codex/maskfactory-runtime-implementation",
+  "item_ids": ["MF-P6-08.01", "MF-P6-08.02"],
+  "implementation": {
+    "module": "src/maskfactory/authority/operational_certificate.py",
+    "module_sha256": "d0222655a9b6aa7ca48f03bb127a540c17d8c3e1d3f3d09030bae396b78517da",
+    "test_sha256": "45301cf04acc34b9ecb0e22cea3da22f540bb53ba50919012359dc0897a65568",
+    "frozen_certificate_schema_sha256": "9846b5afb7898a0af6f9b8f7169fe1eb5cc71ded1a3c0c37b28ed281d849bee8",
+    "frozen_wire_schema_changed": false
+  },
+  "issuance_contract": {
+    "source_encoded_and_decoded_raster_recomputed": true,
+    "mask_encoded_decoded_and_semantic_identity_recomputed": true,
+    "adopted_authority_bindings_exactly_compared": true,
+    "protected_input_authority_and_revocation_freshness_required": true,
+    "signed_journal_forks_rejected": true,
+    "runtime_evidence_and_qa_pass_required": true,
+    "ed25519_producer_authority_production_key_required": true,
+    "post_signature_frozen_semantic_validation_required": true,
+    "training_or_independent_accuracy_truth_forbidden": true
+  },
+  "negative_evidence": [
+    "draft_or_unqualified_candidate",
+    "source_encoded_or_decoded_hash_drift",
+    "mask_bytes_summary_or_semantic_identity_drift",
+    "authority_binding_or_owner_mismatch",
+    "scope_or_lineage_mismatch",
+    "future_or_expired_certificate",
+    "revoked_or_stale_scope",
+    "weak_or_stale_protected_input",
+    "signed_journal_fork",
+    "untrusted_substituted_wrong_role_or_inactive_key",
+    "blocking_qa_gate"
+  ],
+  "verification": {
+    "issuance_and_bridge_command": "python -m pytest tests/test_operational_certificate_issuance.py tests/test_mask_bridge_contracts_v1.py -q",
+    "issuance_and_bridge_result": "31 passed",
+    "combined_completion_and_bridge_result": "76 passed",
+    "full_asset_aware_repository_result": "3157 passed; exit 0",
+    "ruff_changed_files": "PASS",
+    "ruff_repository": "PASS",
+    "black_changed_files": "PASS",
+    "black_src_tests_tools": "PASS: 644 files unchanged",
+    "tracker_validation": "PASS: 798 non-orphaned items",
+    "git_diff_check": "PASS"
+  },
+  "authority": {
+    "runtime_issuer_implemented": true,
+    "real_production_certificate_issued": false,
+    "producer_runtime_complete": false,
+    "end_to_end_release_complete": false,
+    "independent_accuracy_or_training_gold_claimed": false
+  }
+}

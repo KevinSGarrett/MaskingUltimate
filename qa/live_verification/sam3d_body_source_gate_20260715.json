@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-15T00:20:00Z",
+  "result": "blocked_at_human_license_gate",
+  "source": {
+    "repository": "https://github.com/facebookresearch/sam-3d-body",
+    "commit": "b5c765a0d89d789985e186d396315e7590887b94",
+    "tree": "7b5a2a23619659a679d64f096201c6504cbebe30",
+    "local_path": "models/runtime_cache/sam-3d-body_b5c765a",
+    "clean": true,
+    "license_sha256": "315341214aa835fd11de2922fbeae30f741d1c8ba214173974bbf0046ef9afa5"
+  },
+  "checkpoint_repository": {
+    "repository": "facebook/sam-3d-body-dinov3",
+    "revision": "11aaa346c7204874a1cbafe3d39a979080b2c55a",
+    "listed_files": [
+      "LICENSE",
+      "README.md",
+      "assets/mhr_model.pt",
+      "model.ckpt",
+      "model_config.yaml"
+    ],
+    "license_bytes": 8204,
+    "license_sha256": "b3a5a0e2d973ab80e6610ccf1cffc40756050d0ace3cd4fec879b3ec290b2e9b",
+    "readme_bytes": 5761,
+    "readme_sha256": "93d4d9b963b2b8d30c465f3b7b06843576e0c0a8c12711a8d03c9dc47817ddba",
+    "access_probes": {
+      "model_config.yaml": "HTTP 401 GatedRepo",
+      "model.ckpt": "HTTP 401 GatedRepo",
+      "assets/mhr_model.pt": "HTTP 401 GatedRepo"
+    }
+  },
+  "local_authentication": {
+    "huggingface_token_available": false,
+    "checkpoint_access_claimed": false
+  },
+  "blocker": "NEEDS KEVIN: log into Hugging Face and accept Meta's SAM License/contact-sharing terms for facebook/sam-3d-body-dinov3; billable work is not involved",
+  "remaining_after_gate": [
+    "download and hash model.ckpt, model_config.yaml, and MHR assets",
+    "build isolated runtime and pass CUDA inference",
+    "validate coordinate/frame and requested-person identity mapping",
+    "validate OOM fallback to DensePose and exact provenance",
+    "run frozen human-anchor geometry benchmark before any promotion"
+  ],
+  "authority": {
+    "lifecycle_state": "planned",
+    "source_only": true,
+    "active": "densepose_r50_fpn_s1x",
+    "rollback": "densepose_r50_fpn_s1x",
+    "may_author_gold": false,
+    "promotion_claimed": false
+  }
+}

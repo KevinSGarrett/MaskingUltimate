@@ -1,0 +1,142 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-17T05:26:00Z",
+  "item": "MF-P9-09.02",
+  "status": "partially_complete",
+  "percent_complete": 85,
+  "result": {
+    "offline_implementation_complete": true,
+    "permutation_verify_clause_passed": true,
+    "qualified_live_final_camera_evidence_available": false
+  },
+  "final_camera_contract": {
+    "ranking_stage": "after_final_camera",
+    "source": "exact_uint16_construction_ownership_raster",
+    "caller_supplied_area_measurements_accepted": false,
+    "normalized_camera_readback_must_equal_final_camera": true,
+    "resolution_and_crop_bound": true,
+    "resolved_state_and_scene_state_hashes_bound": true,
+    "construction_raster_file_hash_and_bytes_bound": true,
+    "unknown_construction_ids_rejected": true
+  },
+  "prominence_and_ranking": {
+    "formula": "visible_pixels_divided_by_final_output_pixels",
+    "minimum_visible_area_fraction": 0.04,
+    "minimum_matches_live_instance_pass_policy": true,
+    "deterministic_tie_break": [
+      "prominence_desc",
+      "visible_area_desc",
+      "construction_id_asc"
+    ],
+    "bbox_derived_from_raster": true,
+    "visible_pixels_derived_from_raster": true,
+    "maximum_people": 4,
+    "duo_slots_are_not_p_indices": true
+  },
+  "promotion_and_failure_contract": {
+    "accepted_scene_emits_complete_contiguous_mapping": true,
+    "mapping_namespace": [
+      {"p_index": "p0", "instance_id": 1},
+      {"p_index": "p1", "instance_id": 2},
+      {"p_index": "p2", "instance_id": 3},
+      {"p_index": "p3", "instance_id": 4}
+    ],
+    "maximum_framing_retries": 2,
+    "promotion_required_below_floor_before_budget": "retry_framing",
+    "below_floor_after_budget_or_not_required": "reject_resample",
+    "partial_mapping_forbidden": true,
+    "silent_person_drop_forbidden": true,
+    "all_background_raster_handled_without_fabricated_people": true
+  },
+  "permutation_fixtures": {
+    "construction_owner_input_order_permuted": "pass",
+    "source_instance_ids_permuted": "pass",
+    "raster_namespace_permuted": "pass",
+    "prominence_scores_preserved": true,
+    "final_mapping_preserved": true,
+    "equal_prominence_construction_id_tie_break": "pass",
+    "larger_visible_c1_ranked_p0_over_construction_order_c0": "pass"
+  },
+  "lineage_and_replay": {
+    "duo_selection_id_and_hash_bound": true,
+    "resolved_state_id_and_hash_bound": true,
+    "scene_state_hash_bound": true,
+    "policy_hash_bound": true,
+    "closed_json_schema": true,
+    "assignment_id_and_hash_recomputed": true,
+    "semantic_invariants_recomputed_on_validation": true,
+    "atomic_idempotent_publication": true,
+    "conflicting_publication_rejected": true,
+    "cli": "maskfactory daz recipes assign-p-indices"
+  },
+  "negative_fixtures": {
+    "changed_policy_floor": "rejected",
+    "camera_readback_mismatch": "rejected",
+    "unknown_raster_id": "rejected",
+    "raster_resolution_mismatch": "rejected",
+    "construction_owner_mismatch": "rejected",
+    "unknown_schema_field": "rejected",
+    "assignment_hash_tamper": "rejected",
+    "partial_mapping": "rejected",
+    "publication_conflict": "rejected"
+  },
+  "authority_boundary": {
+    "owner": "maskfactory",
+    "stage": "technical_post_camera_assignment",
+    "training_truth_tier_created": false,
+    "human_gold_created_or_mutated": false,
+    "autonomous_certified_gold_created_or_mutated": false,
+    "mode_b_or_inferred_authority_allowed": false,
+    "construction_raster_is_gold": false,
+    "final_assignment_can_raise_mask_authority": false
+  },
+  "wave64_integration_boundary": {
+    "main_repository_modified": false,
+    "main_side_files_preserved": true,
+    "provider_tier_ontology_owner_transform_certificate_authority_unchanged": true,
+    "downstream_selector_may_consume_versioned_mapping_and_transform_evidence": true,
+    "downstream_selector_may_not_infer_stronger_mask_authority": true
+  },
+  "lineage_hashes": {
+    "policy_sha256": "615d8a31f6cc18b9dd545d760e4192e4c892d0a39fdf11c0de32062cf24c7292",
+    "schema_sha256": "4953851851777abd01ca827d7c7ba5b41472c9a6d31ad22850f281cc62a027a6",
+    "implementation_sha256": "620e7654251381ed7f88ebf28a2815a640a7248ea251304e83324987a6a75356",
+    "cli_sha256": "e3e341deda8d9dd87397b6ad68157ed0376389cdb766215ad3e613fe86ec7563",
+    "validation_registry_sha256": "9137ba84ed478ce2fec7eb6d183759b0351147ef83a1f982808a9562dfd44f3b",
+    "tests_sha256": "52cda0ed6de88c0ccd9039affaea84166256da55350b6ad891c39f0cf1708c7b"
+  },
+  "verification": {
+    "focused_tests_collected": 9,
+    "focused_tests_passed": 9,
+    "daz_tests_collected": 1194,
+    "daz_tests_passed": 1194,
+    "full_repository_tests_collected": 2955,
+    "full_repository_tests_passed": 2955,
+    "full_repository_tests_failed": 0,
+    "ruff_repository_lint": "pass",
+    "black_changed_surface_format": "pass",
+    "maskfactory_json_schemas_parsed": 127,
+    "daz_yaml_documents_parsed": 34,
+    "git_diff_check": "pass"
+  },
+  "asset_and_storage_boundary": {
+    "download_install_daz_launch_render_or_live_validation_started_by_this_task": false,
+    "assets_moved_or_relabelled_by_this_task": false,
+    "f_drive_soft_hold_respected": true,
+    "main_repository_modified_by_this_task": false
+  },
+  "remaining_live_dependency": {
+    "software_and_permutation_verify_clause_complete": true,
+    "qualified_live_d5_d7_authority_available": false,
+    "live_final_camera_construction_raster_available": false,
+    "reason": "The closed policy, raster-derived implementation, schema, replay validation, CLI, publication, retry/resample behavior, and construction-order permutation fixtures pass. A qualified live final-camera construction-ownership raster has not run through the contract, so no rendered p-index assignment is claimed."
+  },
+  "not_claimed": [
+    "live DAZ duo assembly or render",
+    "live final-camera p-index result",
+    "solved anatomical contact",
+    "pixel ownership or exclusivity acceptance",
+    "dataset or training admission",
+    "human or autonomous-certified gold"
+  ]
+}

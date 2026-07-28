@@ -1,0 +1,152 @@
+{
+  "artifact_type": "sam3d_body_v3_host_adapter_runtime_receipt.v1",
+  "authority": {
+    "may_author_gold": false,
+    "may_promote_provider": false,
+    "provider_lifecycle_state": "installed_unqualified",
+    "provider_matrix_or_registry_changed": false
+  },
+  "bindings": {
+    "bbox_xyxy": [
+      45.0,
+      390.0,
+      230.0,
+      920.0
+    ],
+    "checkpoint_root": "/workspace/models/runtime_cache/sam3d_body_checkpoint_11aaa346",
+    "image": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+    "source_root": "/workspace/models/runtime_cache/sam-3d-body_b5c765a",
+    "supersedes": {
+      "file_sha256": "b5300145a82139c0b2d34cf97fc572ac250e9dec935cfda21e6f277e9a56eda6",
+      "path": "runtime_artifacts/sam3d_body_v3_host_adapter_runtime_20260725T162500Z_v2_numeric_pid_preflight/HOST_ADAPTER_RUNTIME_RECEIPT.json",
+      "reason": "V2 preserved its terminal failure; V3 corrects only the root binding to the already hash-verified /workspace/models assets.",
+      "self_sha256": "66c2de6c953fbedc4c53c99c6afdd5f88856e754e46b0afcc78da25bf2707332"
+    }
+  },
+  "ended_at_utc": "2026-07-25T18:52:52.897853+00:00",
+  "execution_identity": {
+    "gpu_requirement": "NVIDIA RTX 6000 Ada Generation",
+    "network_volume_id": "o9qv2ld91c",
+    "pod_id": "68psfqtaogg7s7",
+    "pod_name": "vitreous_beige_centipede",
+    "volume_mount": "/workspace"
+  },
+  "next_safe_action": "Retain installed-unqualified shadow-only status; no provider promotion, matrix update, production routing, gold, or certification authority follows from this receipt.",
+  "preflight": {
+    "closure_sha256": {
+      "assets/mhr_model.pt": "352e271a6c42729c68554ceaea0c955e866970160c31e35506d782dc0f7377bc",
+      "host_adapter_lock": "a506ff07ca3ee26b7089ae8e37cbd67a2b1494a4127175626ff60742f2b51bd6",
+      "image": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63",
+      "model.ckpt": "b5a2f9d305dd02626b967aa2e86021fba07065df66ce7a7e00ffb9664f150abf",
+      "model_config.yaml": "1012fc3f39cb5e90e3f8fbadf7bded31604bfafdce0321d17a7c1a2d3f08b88d",
+      "prior_v2_receipt_file": "b5300145a82139c0b2d34cf97fc572ac250e9dec935cfda21e6f277e9a56eda6",
+      "source_commit": "b5c765a0d89d789985e186d396315e7590887b94",
+      "v3_runner": "54f2d9f8b12daa444531b43ca250ff2134feec951568f75c44594d2a90b85dfb",
+      "v3_runtime_lock": "de207f0502299624c266f0325e92cc7c64dca832f6c2239688594237239e7b9f"
+    },
+    "gpu_csv": "NVIDIA RTX 6000 Ada Generation, 2, 49140",
+    "numeric_compute_processes": []
+  },
+  "result": {
+    "geometry_output_sha256": "d1167523d5b27e1ee6ea56b76f365cdc4ce9a3ee876df494fd45a81a49e71e5c",
+    "observed_bbox_xyxy": [
+      45.0,
+      390.0,
+      230.0,
+      920.0
+    ],
+    "person_instance_key": "sam3d_body_v3_workspace_models_bus_person",
+    "postrun_gpu_csv": "NVIDIA RTX 6000 Ada Generation, 2, 49140",
+    "provider": "sam3d_body",
+    "requested_bbox_xyxy": [
+      45.0,
+      390.0,
+      230.0,
+      920.0
+    ],
+    "runtime_evidence": {
+      "authority": "shadow_geometry_challenger_only",
+      "deterministic": true,
+      "geometry_output_sha256": "d1167523d5b27e1ee6ea56b76f365cdc4ce9a3ee876df494fd45a81a49e71e5c",
+      "inference_type": "full",
+      "measured_latency_ms": [
+        982.5671166181564,
+        1104.736853390932
+      ],
+      "measured_outputs": [
+        {
+          "array_shapes": {
+            "bbox": [
+              4
+            ],
+            "focal_length": [],
+            "pred_cam_t": [
+              3
+            ],
+            "pred_keypoints_2d": [
+              70,
+              2
+            ],
+            "pred_keypoints_3d": [
+              70,
+              3
+            ],
+            "pred_vertices": [
+              18439,
+              3
+            ]
+          },
+          "geometry_sha256": "d1167523d5b27e1ee6ea56b76f365cdc4ce9a3ee876df494fd45a81a49e71e5c",
+          "npz_sha256": "d77d05c9367247247033ff1746a516ade1fa108762237a8fdc1a57c3631cb9d4",
+          "path": "measured_repeat_1.npz"
+        },
+        {
+          "array_shapes": {
+            "bbox": [
+              4
+            ],
+            "focal_length": [],
+            "pred_cam_t": [
+              3
+            ],
+            "pred_keypoints_2d": [
+              70,
+              2
+            ],
+            "pred_keypoints_3d": [
+              70,
+              3
+            ],
+            "pred_vertices": [
+              18439,
+              3
+            ]
+          },
+          "geometry_sha256": "d1167523d5b27e1ee6ea56b76f365cdc4ce9a3ee876df494fd45a81a49e71e5c",
+          "npz_sha256": "d77d05c9367247247033ff1746a516ade1fa108762237a8fdc1a57c3631cb9d4",
+          "path": "measured_repeat_2.npz"
+        }
+      ],
+      "measured_repeats": 2,
+      "model_load_latency_ms": 25810.68718060851,
+      "model_vram_bytes": 3538315264,
+      "peak_inference_vram_bytes": 3841769984,
+      "raw_npz_sha256": "d77d05c9367247247033ff1746a516ade1fa108762237a8fdc1a57c3631cb9d4",
+      "repeat_comparison": {
+        "all_arrays_exact": true
+      },
+      "schema_version": "3.0.0",
+      "source_tree_clean": true,
+      "warmup": {
+        "evaluated_for_repeatability": false,
+        "geometry_sha256": "0c8db6e3c6eab7f142cfabffad8b3015a7ae48418420f38d57b0822d95c87d35",
+        "latency_ms": 4589.892741292715,
+        "peak_vram_bytes": 3841769984
+      }
+    }
+  },
+  "scope": "one immutable fixture/box through a fresh V3 host-adapter binding with explicit existing /workspace/models source/checkpoint roots; one non-evaluated warm-up and two exact measured outputs only",
+  "self_sha256": "6d4c694b481c6886a72445d5482f52f4d4d54bbd9e5378d7033ba07e2fd31d77",
+  "started_at_utc": "2026-07-25T18:51:43.915868+00:00",
+  "status": "RUNTIME_PASS_BOUNDED_HOST_ADAPTER_WORKSPACE_MODELS_CLOSURE"
+}

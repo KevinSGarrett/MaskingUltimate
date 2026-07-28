@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0.0",
+  "observed_at": "2026-07-15T23:59:00Z",
+  "result": "pass_contract_and_s11_orchestration_official_checkpoint_inference_pending",
+  "items": [
+    "MF-P2-11.04"
+  ],
+  "authority": "contract_and_fixture_execution_only_no_checkpoint_inference_active_map_serving_semantic_mask_truth_or_gold_authority",
+  "implemented_contract": {
+    "production_stage": "S11",
+    "provider_key": "sam3_1",
+    "provider_role": "interactive_segmenter",
+    "runnable_lifecycle_states": [
+      "installed",
+      "benchmarked",
+      "promoted"
+    ],
+    "noncompletion_records": [
+      "skipped_unavailable",
+      "complete_no_candidates",
+      "failed"
+    ],
+    "request_bindings": [
+      "source_image_sha256",
+      "provider_identity",
+      "pipeline_sha256",
+      "semantic_label",
+      "repair_roi",
+      "positive_points",
+      "negative_points",
+      "current_mask_sha256",
+      "protected_mask_sha256",
+      "person_bbox"
+    ],
+    "maximum_candidates_per_label": 12,
+    "guards": [
+      "prompt_polarity",
+      "roi_containment",
+      "ordinary_or_reconstruction_changed_fraction",
+      "protected_region_overlap",
+      "outside_roi_fraction",
+      "component_limit",
+      "expected_area_sanity"
+    ],
+    "strict_binary_png_only": true,
+    "rejected_masks_persisted": false,
+    "active_pipeline_mutation": false,
+    "s09_map_mutation": false,
+    "direct_gold_authority": false,
+    "downstream_gold_gate": "human_anchor_or_exact_scope_autonomous_certificate"
+  },
+  "current_runtime_state": {
+    "official_sam31_lifecycle": "planned",
+    "official_checkpoint_downloaded": false,
+    "official_checkpoint_inference_observed": false,
+    "production_provider_changed": false,
+    "incumbent_interactive_provider": "sam2_1_large",
+    "planned_runtime_behavior": "write an explicit skipped_unavailable zero-authority record"
+  },
+  "governance": {
+    "pipeline_sha256": "bf3f2c49b6f882ae7d37b348e98910d3dcc0ea51c8960d4efac8d6b2de03c144",
+    "provider_matrix_policy_sha256": "8131b18526f16c563850517fb146a34bea30c6504d6e7b52f8d42e497f9b181a",
+    "mediapipe_vote_ablation_policy_sha256": "ebc61d39aeadd14a3cb8f7add01c814dc986d699be712d2c86eaa84c72442f67",
+    "silhouette_variant_policy_sha256": "627594af54ae48081344086356409a3ef02f2c49fae7646b429d0841fa4fbd09",
+    "serving_workflow_policy_sha256": "7498c02a5b9450449ae33722a45dd3c2ba409da1046bc8ceb22d167af4f44f16",
+    "currency_review_id": "415eafc3d7acb8c642dc04e9",
+    "currency_review_sha256": "b9fab128d4c578c87b63cb446f9f391b03f875ccf07a7249806f8ddd64621c92",
+    "currency_review_file_sha256": "73d91cd7e17438db857885b640e0bf404c4c35656852393f01ee75b225ab6290",
+    "currency_review_signature_and_current_inputs_verified": true,
+    "currency_review_status": "fail_expected_missing_real_role_certificates_and_distinct_tested_rollbacks"
+  },
+  "verification": {
+    "sam31_repair_dedicated": "3/3 passed",
+    "production_provider_and_workhorse_focused": "passed",
+    "pipeline_bound_policy_and_transaction_focused": "passed",
+    "currency_chain_focused": "44/44 passed",
+    "complete_repository": "1662/1662 passed",
+    "ruff_repository": "passed",
+    "black_repository": "passed",
+    "git_diff_check": "passed"
+  },
+  "implementation_sha256": {
+    "configs/pipeline.yaml": "bf3f2c49b6f882ae7d37b348e98910d3dcc0ea51c8960d4efac8d6b2de03c144",
+    "Plan/21_AUTONOMOUS_REPAIR_EXECUTION_SPEC.md": "3d93f1883ab6c563220d42cfc6a3b7c0906b8a8262714c9e1de9e763b0b2b8b8",
+    "src/maskfactory/providers/sam31_repair.py": "20578cabe296728836dcdf0202dc186d15d902ea39226b726e77849410717164",
+    "src/maskfactory/schemas/sam31_repair_orchestration.schema.json": "b06b2b55cdeda59271e1a3c039bb54af57d6d68a71af59a8fa0c78e988565276",
+    "src/maskfactory/stages/production.py": "85db902698bdc9f25f2b62aaf563e4007c9680625deca23b35bb876f1cd882c2",
+    "src/maskfactory/validation.py": "0f19092d12d8111073e842706d588068270eb6e60d268c4d84d0ac45bde70e93",
+    "src/maskfactory/vlm/workhorse.py": "6b51e1afdb3840d0fc1ca0ac39995e2d8b7e0ba6e699c320f9b9f0f38f151428",
+    "src/maskfactory/vlm/production.py": "79ef75124c2bb6fe95280d182e179d9fd506e04a4d01279b61cf555aa28de5d0",
+    "tests/test_sam31_repair.py": "d3b099723ac8bac2d9b18876eb2a38929980d365b412ee1f6506feba7e84ca9f"
+  },
+  "not_claimed": [
+    "official SAM3.1 checkpoint access or download",
+    "official SAM3.1 live GPU inference",
+    "real-image SAM3.1 repair quality",
+    "benchmark winner or noninferiority",
+    "active provider promotion",
+    "production mask authority",
+    "autonomous-certified-gold authority",
+    "headline or Definition-of-Done completion"
+  ]
+}

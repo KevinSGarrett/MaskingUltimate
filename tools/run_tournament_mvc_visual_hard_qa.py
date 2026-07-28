@@ -16,8 +16,6 @@ Never labels warehouse/DAZ/source masks as gold. Never claims VISUAL_QA_PASS_BOU
 from residual structural defects. qwen alone is never a rubber stamp.
 
 Usage:
-  python tools/gpu_sequencer.py sequence --consumer ollama-vlm \\
-      --json qa/live_verification/gpu_sequence_ollama_mvc_visual.json
   python tools/run_tournament_mvc_visual_hard_qa.py \\
       --machine-root runs/autonomous_gold_tournament_20260720_cbackup \\
       --limit 24 \\
@@ -806,7 +804,7 @@ def main() -> int:
             "configs/vlm.yaml governance (may_author_masks=false, may_approve_gold=false)",
             "src/maskfactory/vlm/strict_gate.py",
             "src/maskfactory/autonomy/visual_defect_policy.py",
-            "tools/gpu_sequencer.py ollama-vlm consumer",
+            "direct selected-RunPod execution; GPU/VRAM telemetry has no authority",
         ],
         "honesty_rules": [
             "NOT a draft-corpus VISUAL_QA_REVIEWED_WITH_DEFECTS seal",

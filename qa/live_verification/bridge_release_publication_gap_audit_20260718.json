@@ -1,0 +1,125 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "maskfactory_release_publication_gap_audit",
+  "recorded_at": "2026-07-19T00:07:42Z",
+  "project_head": "ebcfbc6db19da2af3aea30578dd569c6f3abc494",
+  "tracker_item": "MF-P6-10.01",
+  "audit_status": "PREREQUISITE_OPEN_ADDITIVE_PUBLICATION_EVIDENCE_READY",
+  "completion_credit": false,
+  "runtime_dependency": false,
+  "governing_requirement": "Publish a closed, byte-verified MaskFactory release identity that proves the actual clean repository/build, one exact runtime provenance branch, complete contract and artifact catalogs, trusted role/revocation/journal state, and reproducible install/rollback identities without changing the frozen v1 wire contract.",
+  "prerequisites": [
+    "MF-P6-09.07 remains open; publication evidence must bind the adopted executable crosswalk rather than invent a parallel compatibility claim."
+  ],
+  "existing_enforcement": [
+    "The frozen release snapshot is strict, canonical-hashed and Ed25519-signed with a producer-release role and production trust-anchor check.",
+    "The validator requires dirty=false, the exact 12-schema set, exact schema name/id/path relationships, all three completion profiles, a self-hashed artifact-security policy, a current journal checkpoint, and the six required artifact kinds.",
+    "Bundle validation resolves contained regular files, verifies raw hashes and declared sizes, rejects path escape, symlink/reparse/hardlink-like paths, archive hazards, case aliases and unmanifested files.",
+    "Release/adoption validation already separates fixture-only evidence from published runtime evidence and rejects fixture publication as production authority."
+  ],
+  "confirmed_gaps": [
+    {
+      "gap": "no_release_runtime_provenance",
+      "observed": "maskfactory_release_snapshot has no runtime provenance field. It cannot select exactly one native_venv or container branch or bind interpreter/environment/CUDA/driver versus image/config/digest identities."
+    },
+    {
+      "gap": "git_identity_is_signed_but_not_observed",
+      "probe": "Replace repository_id, git_commit and git_tree with arbitrary well-formed values, retain dirty=false, then re-sign with the trusted producer-release key.",
+      "observed_validators": [],
+      "interpretation": "The signed declaration is internally authentic but no publisher compares it to the actual canonical repository, HEAD, tree or porcelain state."
+    },
+    {
+      "gap": "install_and_rollback_identities_are_not_byte_resolved",
+      "probe": "Replace installer, install-manifest, verification-workflow and rollback/evidence IDs and hashes with invented well-formed values, then re-sign with the trusted producer-release key.",
+      "observed_validators": [],
+      "interpretation": "Installation and rollback fields have no relative paths, are not included in the release-root catalog, and are not independently resolved to actual bytes or execution evidence."
+    },
+    {
+      "gap": "trust_policy_and_checkpoint_inputs_are_not_complete_release_files",
+      "observed": "Key-set, rotation-policy, revocation-policy and journal validator identities are declared, but the release bundle does not enumerate and verify the underlying policy/registry/checkpoint evidence bytes as a closed catalog."
+    },
+    {
+      "gap": "no_production_publisher_or_release_record",
+      "observed": "The repository contains conformance fixture builders and validators but no production publisher that observes the live Git/runtime/build state, materializes the exact release root, emits the signed publication decision, and refuses publication on drift."
+    }
+  ],
+  "implementation_packet": {
+    "work_unit_id": "MF-CURSOR-10.01-RELEASE-PUBLICATION-EVIDENCE",
+    "objective": "Implement additive fail-closed production release publication evidence over the frozen v1 snapshot, binding actual Git, runtime, artifact, trust, journal, install and rollback observations without modifying the frozen v1 contracts.",
+    "state": "PREPARED_PREREQUISITE_HELD_NOT_DISPATCHED",
+    "candidate_paths": [
+      "Plan/24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md",
+      "qa/governance/bridge/mask_bridge_semantic_invariants_v1.json",
+      "src/maskfactory/schemas/maskfactory_release_snapshot.schema.json",
+      "src/maskfactory/validation.py",
+      "tests/test_mask_bridge_contracts_v1.py",
+      "tests/fixtures/mask_bridge_contracts/build_contract_fixtures.py"
+    ],
+    "allowed_paths": [
+      "configs/bridge_release_publication_policy.yaml",
+      "src/maskfactory/bridge/release_publication.py",
+      "src/maskfactory/schemas/maskfactory_release_publication_evidence.schema.json",
+      "tools/publish_maskfactory_release.py",
+      "tests/test_bridge_release_publication.py"
+    ],
+    "path_state": "All five allowed paths are absent and clean. Candidate paths are read-only; src/maskfactory/validation.py is already dirty in the preserved 08.05 scope and must not be a worker candidate or mutation target. Allowed paths are disjoint from all held 09.01-09.07 work units.",
+    "frozen_v1_contract_mutation_allowed": false,
+    "validator_commands": [
+      "python -m pytest -q tests/test_bridge_release_publication.py tests/test_mask_bridge_contracts_v1.py -k release",
+      "python -m ruff check src/maskfactory/bridge/release_publication.py tools/publish_maskfactory_release.py tests/test_bridge_release_publication.py",
+      "python -m black --check src/maskfactory/bridge/release_publication.py tools/publish_maskfactory_release.py tests/test_bridge_release_publication.py",
+      "python -m json.tool src/maskfactory/schemas/maskfactory_release_publication_evidence.schema.json"
+    ],
+    "acceptance_criteria": [
+      "Publish a strict self-hashed and trusted-signed publication-evidence record binding the exact frozen release ID/payload/document hash and adopted 09.07 crosswalk ID/hash.",
+      "Observe and compare the canonical repository identity, exact 40-hex HEAD and tree, and an actually clean worktree including untracked files; a caller-supplied dirty=false cannot override observation.",
+      "Require exactly one typed runtime branch: native_venv binds executable/build, Python/platform, environment-lock, installed-distribution, CUDA/driver/GPU identities; container binds immutable image/config/runtime digests and rejects native-only fields.",
+      "Resolve every catalog row to contained regular bytes and close the catalog over wheel, node pack, OpenAPI, all schemas, semantic/crosswalk/completion profiles, package/ontology/workflow/fixture/evidence records, trusted role-key registry, revocation state and journal checkpoint evidence.",
+      "Regenerate OpenAPI and inventories deterministically and reject mismatch with packaged bytes, schema IDs/versions/hashes, entry points or node inventory.",
+      "Resolve installer, install manifest, verification workflow, rollback command and rollback verification evidence to exact cataloged bytes; use structured argv/IDs, never an untrusted shell string.",
+      "Reject self-signed, wrong-role, expired, not-yet-valid, substituted or revoked release keys and drift in key-set, rotation, revocation or checkpoint inputs.",
+      "Emit a closed publication decision with deterministic ordered reasons; any unknown, missing, duplicate, extra, mismatched, stale or fixture-only input denies publication.",
+      "Negative tests cover fake Git identity, dirty/untracked worktree, both/neither runtime branches, fake container provenance, changed environment lock, unmanifested or path-escaping bytes, stale/revoked trust, fake installer/rollback and non-reproducible canonical output.",
+      "Frozen v1 schemas, fixtures, validation.py and all held worker paths remain byte-identical. Full clean-build reconstruction remains MF-P6-10.04-owned and is not falsely claimed by this unit."
+    ]
+  },
+  "observed_verification": [
+    {
+      "command": "trusted re-sign probe: substitute producer repository_id/git_commit/git_tree",
+      "result": "VALIDATOR_CLEAN",
+      "validators": []
+    },
+    {
+      "command": "trusted re-sign probe: substitute installer/install-manifest/verification-workflow and rollback/evidence identities",
+      "result": "VALIDATOR_CLEAN",
+      "validators": []
+    },
+    {
+      "command": "python -m pytest -q tests/test_mask_bridge_contracts_v1.py -k 'release_requires_exact_profile_documents or release_bundle_is_exact_byte_closed or archive_indirection'",
+      "result": "PASS",
+      "tests_passed": 5
+    },
+    {
+      "command": "python -m ruff check src/maskfactory/validation.py tests/test_mask_bridge_contracts_v1.py",
+      "result": "PASS"
+    }
+  ],
+  "source_hashes": {
+    "Plan/24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md": "e57e9892c18cc2a43440691d508daba44bc00413f063dfdad40861e2a654e90d",
+    "src/maskfactory/schemas/maskfactory_release_snapshot.schema.json": "3f5e267c79c18c79212e2b69947f204d08335ae652f31cd859dae5c250b89f5b",
+    "src/maskfactory/validation.py": "777ed34e25de193a51d9005e68a34fa918aa90d9c9b3869d6a2335fd6d0e6300",
+    "tests/test_mask_bridge_contracts_v1.py": "a8bd203a58995a06f2ef1725cf2f068abd1a3635d38a3662aae278b94ce1369b",
+    "tests/fixtures/mask_bridge_contracts/build_contract_fixtures.py": "3832f6437aaf2d2e8ea59700ec6284534a4cffc5e1e110899707cea1fd44e4a8",
+    "qa/governance/bridge/mask_bridge_semantic_invariants_v1.json": "0292d3714a2ddfe74ef59dceee98630b48f9400f50ef2b07dcbbe123d36d3a67"
+  },
+  "preservation": {
+    "completion_status_changed": false,
+    "completion_credit_awarded": false,
+    "frozen_v1_contracts_modified": false,
+    "held_or_queued_worker_paths_modified": false,
+    "worker_dispatched": false,
+    "docker_or_wsl_actions_performed": false,
+    "runtime_or_provider_actions_performed": false
+  },
+  "claim_boundary": "This audit proves existing frozen release validation strengths and isolates missing production-publication authority. It does not publish a release, complete MF-P6-10.01, prove a clean build/runtime, issue a runtime certificate, or claim Main adoption or end-to-end execution."
+}

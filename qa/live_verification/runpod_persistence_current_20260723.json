@@ -1,0 +1,87 @@
+{
+  "authority": {
+    "api_calls": [
+      "GET /v1/pods/{id}",
+      "GET /v1/networkvolumes/{id}"
+    ],
+    "credentials_read_or_emitted": false,
+    "mutating_api_calls": false,
+    "ssh_scope": "bounded_workspace_sentinel_and_read_only_runtime_probe"
+  },
+  "checks": {
+    "container_root_is_bounded": true,
+    "gpu_identity_present": true,
+    "network_volume_attached": true,
+    "network_volume_identity_matches": true,
+    "network_volume_size_positive": true,
+    "paths_env_present": true,
+    "pod_running": true,
+    "sentinel_read_from_distinct_process": true,
+    "sentinel_readback_matches": true,
+    "workspace_capacity_consistent_with_api": true,
+    "workspace_has_free_space": true,
+    "workspace_is_distinct_device_from_container_root": true,
+    "workspace_mount_path_exact": true
+  },
+  "filesystem": {
+    "container_root": {
+      "free_bytes": 9856098304,
+      "total_bytes": 21474836480
+    },
+    "mount": {
+      "fstype": "fuse",
+      "source_present": true,
+      "source_sha256": "b73e64ddfabc74170f7582ee948bf3f6b71e3612b467c961928077f3e0984ad9",
+      "target": "/workspace"
+    },
+    "paths_env": {
+      "exists": true,
+      "sha256": "f48511fc6fd2663a2fa1b2ca4e1e9cfac9113c5abf3a875d5e1b1a6642ae7abf"
+    },
+    "sentinel": {
+      "distinct_processes": true,
+      "path": "/workspace/maskfactory/runtime_artifacts/.maskfactory_persistence_probe",
+      "read_pid": 3504394,
+      "readback_matches": true,
+      "sha256": "ede87e27c7907d53ae3f5fd8585452d871023a0daf4257f3d715937c42e5bd85",
+      "write_pid": 3504393
+    },
+    "workspace": {
+      "free_bytes": 139817302491136,
+      "total_bytes": 525782544482304
+    }
+  },
+  "network_volume": {
+    "data_center_id_sha256": "d01b8184622ddb5724a678579f164ef2679e1fd7895aa7ae9761a1288cae53b9",
+    "id_sha256": "8e11b96558ceaa17496307a398346011a5c2b0e28c94772d837d164ba4c13ea1",
+    "name_sha256": "9d0ca3060ef7d86ce2355bc13207ee113c485fe2cd360b8342f35039af41cc46",
+    "size_gib": 1150
+  },
+  "pod": {
+    "container_disk_gib": 20,
+    "desired_status": "RUNNING",
+    "id_sha256": "0e3fb937281672b1608acf3597081196014d49be623f2988576a10334c9793dd",
+    "image_sha256": "a77f6decdc6f5010d4dc0abf717548c09410d81aceb7ccfe7b907ae94fc80224",
+    "pod_volume_gib": 0,
+    "volume_mount_path": "/workspace"
+  },
+  "recorded_at": "2026-07-23T02:29:29.464528Z",
+  "runtime": {
+    "gpu": {
+      "driver_version": "550.127.05",
+      "memory_mib": 49140,
+      "name": "NVIDIA RTX 6000 Ada Generation"
+    }
+  },
+  "schema_version": "1.0.0",
+  "scope": "maskfactory_runpod_persistent_volume_binding",
+  "source_evidence": {
+    "path": "qa/live_verification/runpod_sam31_discovery_ownership_abstain_20260723.json",
+    "sha256": "2988ec5993288b64f953c89a107de7d2c458c20397b00660c53a4f50334b4c9d"
+  },
+  "status": "RUNTIME_PASS_BOUNDED",
+  "tool": {
+    "path": "tools/verify_runpod_persistence.py",
+    "sha256": "0bf5c78c303c5e4ccf14183dd64589451317ce1dd54b771d30e1c1e3c648b2f1"
+  }
+}

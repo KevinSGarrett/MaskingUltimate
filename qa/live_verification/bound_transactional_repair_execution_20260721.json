@@ -1,0 +1,22 @@
+{
+  "authority_claimed": false,
+  "focused_test_count": 21,
+  "focused_tests_status": "PASS",
+  "recorded_at": "2026-07-21T23:18:23.6327901Z",
+  "schema_version": "1.0.0",
+  "source_sha256": {
+    "src/maskfactory/autonomy/operational_repair.py": "e92ad066e1e4ae481838397de66212b25e5aaebcf08803e4d38d850b894da6f3",
+    "src/maskfactory/vlm/repair_execution.py": "62a3e464e2dd9bf9278bfc9ea0361428c81e4434cd006a46392dec545e2fc356",
+    "tests/test_bound_repair_execution.py": "d41dcbf97776f828b0c97a76d819133623752ad5e5953e07a8e102a3ec2965bf"
+  },
+  "status": "STATIC_PASS",
+  "verified_paths": [
+    "successful_complete_map_recomposition",
+    "hard_qa_rollback",
+    "no_progress_abstention",
+    "attempt_cap_abstention",
+    "duplicate_hypothesis_abstention",
+    "immutable_parent_preservation",
+    "durable_exact_evidence_binding"
+  ]
+}

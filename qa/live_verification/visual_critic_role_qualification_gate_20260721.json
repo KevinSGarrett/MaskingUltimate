@@ -1,0 +1,36 @@
+{
+  "authority_claimed": false,
+  "corpus_canonical_sha256": "ba983fe792a2c83a004099b1f9f2a5403ad8260f16b32e7d2455e16670d30e74",
+  "focused_test_count": 11,
+  "focused_tests_status": "PASS",
+  "gate_behavior": {
+    "all_abstain": "FAIL_UNAVAILABLE",
+    "all_reject": "FAIL_UNAVAILABLE",
+    "context_hallucination": "FAIL_CONTEXT_BINDING",
+    "deterministic_replay_drift": "FAIL",
+    "hardware_drift": "REJECT_EVIDENCE",
+    "latency_or_vram_excess": "FAIL",
+    "schema_drift": "REJECT_OR_FAIL",
+    "serious_false_pass": "FAIL"
+  },
+  "measured_dimensions": [
+    "valid_mask_pass_rate",
+    "defect_recall",
+    "precision",
+    "serious_false_pass_rate",
+    "abstention_rate",
+    "schema_compliance_rate",
+    "context_binding_rate",
+    "deterministic_replay_rate",
+    "p95_latency_ms",
+    "peak_vram_fraction"
+  ],
+  "recorded_at": "2026-07-21T23:30:48.3473951Z",
+  "schema_version": "1.0.0",
+  "source_sha256": {
+    "src/maskfactory/vlm/critic_qualification.py": "7ca61dc4e129ab4e6cd92cea084d1d72e8bb5af07b35b56514402dd928e8bf4c",
+    "tests/test_visual_critic_qualification.py": "41c42ccb643b9e8816781c68c2a8516e708470a6a54d98e85b02acae350eb203"
+  },
+  "status": "STATIC_PASS",
+  "threshold_binding": "role-specific constants are canonically hashed into every qualification report"
+}

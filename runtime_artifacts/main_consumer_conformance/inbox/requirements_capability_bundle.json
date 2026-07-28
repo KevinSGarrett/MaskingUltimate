@@ -1,0 +1,611 @@
+{
+  "claim_boundary": {
+    "artifact": "requirements_capability_bundle",
+    "authority_kind": "fixture_authority",
+    "claims_kevin_sgarrett_comfy_ui_main_production_commit": false,
+    "consumer_kind": "synthetic_main_consumer",
+    "fixture_authority": true,
+    "main_adoption_complete": false,
+    "production_main_adoption_complete": false,
+    "synthetic_main_consumer": true,
+    "synthetic_main_git_commit": "204f21cfbaffd6fb92715092db508b7e2a51efa0",
+    "trusted_keys_usage_scope": "conformance_only"
+  },
+  "expected_status": "accepted",
+  "observed_at": "2026-07-17T00:01:00Z",
+  "offered_capabilities": [
+    {
+      "access_modes": [
+        "mode_a_package_read",
+        "mode_b_live_predict"
+      ],
+      "artifact_kinds": [
+        "atomic_visible",
+        "protected_qa"
+      ],
+      "authority_states": [
+        "qa_passed_noncertified",
+        "certified"
+      ],
+      "capability_id": "mask.package.read",
+      "certificate_kinds": [
+        "exact_serving_route_output"
+      ],
+      "evidence": [
+        {
+          "evidence_id": "certificate",
+          "kind": "authority_certificate",
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        {
+          "evidence_id": "benchmark",
+          "kind": "route_benchmark",
+          "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        }
+      ],
+      "issuer_kinds": [
+        "maskfactory_autonomous"
+      ],
+      "labels": [
+        "left_hand",
+        "torso"
+      ],
+      "maximum_person_count": 2,
+      "media_scopes": [
+        "still_image"
+      ],
+      "runtime": {
+        "maximum_output_bytes": 1000000,
+        "maximum_p50_latency_ms": 2000,
+        "maximum_p95_latency_ms": 4000,
+        "maximum_ram_mb": 16384,
+        "maximum_vram_mb": 8192,
+        "minimum_concurrency": 1
+      },
+      "transform_operations": [
+        "inverse_project"
+      ],
+      "truth_tiers": [
+        "machine_candidate",
+        "qa_passed_machine_candidate",
+        "operationally_certified_artifact"
+      ],
+      "versions": {
+        "api_contracts": [
+          "maskfactory-api/1.0"
+        ],
+        "node_pack_versions": [
+          "1.0.0"
+        ],
+        "ontology_versions": [
+          "body_parts_v1"
+        ],
+        "package_formats": [
+          "maskfactory-package/1.0"
+        ]
+      }
+    }
+  ],
+  "requirements": {
+    "accepted_media_scopes": [
+      "still_image"
+    ],
+    "accepted_wire_schemas": [
+      {
+        "name": "maskfactory_release_snapshot",
+        "relative_path": "src/maskfactory/schemas/maskfactory_release_snapshot.schema.json",
+        "schema_id": "https://maskfactory.local/schemas/maskfactory_release_snapshot.schema.json",
+        "sha256": "3f5e267c79c18c79212e2b69947f204d08335ae652f31cd859dae5c250b89f5b",
+        "version": "1.0.0"
+      },
+      {
+        "name": "maskfactory_capability_snapshot",
+        "relative_path": "src/maskfactory/schemas/maskfactory_capability_snapshot.schema.json",
+        "schema_id": "https://maskfactory.local/schemas/maskfactory_capability_snapshot.schema.json",
+        "sha256": "68244dc62eae41b1ed6f045d43ac4f26e5c9b3beff2a65b3981dcd3afee9dc58",
+        "version": "1.0.0"
+      },
+      {
+        "name": "maskfactory_consumer_requirements",
+        "relative_path": "src/maskfactory/schemas/maskfactory_consumer_requirements.schema.json",
+        "schema_id": "https://maskfactory.local/schemas/maskfactory_consumer_requirements.schema.json",
+        "sha256": "8d16b7d3829d810ad904b9427a3011bdc217d6030750bc978f62f53b41a6d3e8",
+        "version": "1.0.0"
+      },
+      {
+        "name": "mask_acquisition_request",
+        "relative_path": "src/maskfactory/schemas/mask_acquisition_request.schema.json",
+        "schema_id": "https://maskfactory.local/schemas/mask_acquisition_request.schema.json",
+        "sha256": "2160fd336a8ab25c25dd86babe418c7f2cf072a341c7e7bd94c00743e9103f72",
+        "version": "1.0.0"
+      },
+      {
+        "name": "mask_acquisition_receipt",
+        "relative_path": "src/maskfactory/schemas/mask_acquisition_receipt.schema.json",
+        "schema_id": "https://maskfactory.local/schemas/mask_acquisition_receipt.schema.json",
+        "sha256": "2a16bf9fe3f9e46e14c02a1cee287f09a821eca20023124d852a4aaf5dc5f18d",
+        "version": "1.0.0"
+      },
+      {
+        "name": "mask_bridge_error",
+        "relative_path": "src/maskfactory/schemas/mask_bridge_error.schema.json",
+        "schema_id": "https://maskfactory.local/schemas/mask_bridge_error.schema.json",
+        "sha256": "c65a4fc9e8c4c1df8c63911c653e91e364ae23387758c4c9ed617f86e69e7219",
+        "version": "1.0.0"
+      },
+      {
+        "name": "maskfactory_adoption_receipt",
+        "relative_path": "src/maskfactory/schemas/maskfactory_adoption_receipt.schema.json",
+        "schema_id": "https://maskfactory.local/schemas/maskfactory_adoption_receipt.schema.json",
+        "sha256": "9edaf568c39b8bcf69e064d260425a411b8ac2addf19ae06b3b5a4269c56d5cc",
+        "version": "1.0.0"
+      },
+      {
+        "name": "mask_authority_invalidation_event",
+        "relative_path": "src/maskfactory/schemas/mask_authority_invalidation_event.schema.json",
+        "schema_id": "https://maskfactory.local/schemas/mask_authority_invalidation_event.schema.json",
+        "sha256": "72b072a1d239057a574ea9ff6dd8536e072d47f13b3b16f2edd6890a0ecb0920",
+        "version": "1.0.0"
+      },
+      {
+        "name": "mask_repair_feedback",
+        "relative_path": "src/maskfactory/schemas/mask_repair_feedback.schema.json",
+        "schema_id": "https://maskfactory.local/schemas/mask_repair_feedback.schema.json",
+        "sha256": "602413b3bcd84b4656218c3a9a27dd4157466674b3221989b5862003c837df26",
+        "version": "1.0.0"
+      },
+      {
+        "name": "mask_bridge_event",
+        "relative_path": "src/maskfactory/schemas/mask_bridge_event.schema.json",
+        "schema_id": "https://maskfactory.local/schemas/mask_bridge_event.schema.json",
+        "sha256": "d1d707b460bfcb273c8e6929d1811d04b3eacf346f2c20dc9e46ecef81aa4407",
+        "version": "1.0.0"
+      },
+      {
+        "name": "operational_autonomy_certificate",
+        "relative_path": "src/maskfactory/schemas/operational_autonomy_certificate.schema.json",
+        "schema_id": "https://maskfactory.local/schemas/operational_autonomy_certificate.schema.json",
+        "sha256": "9846b5afb7898a0af6f9b8f7169fe1eb5cc71ded1a3c0c37b28ed281d849bee8",
+        "version": "1.0.0"
+      },
+      {
+        "name": "mask_bridge_semantic_invariant_profile",
+        "relative_path": "src/maskfactory/schemas/mask_bridge_semantic_invariant_profile.schema.json",
+        "schema_id": "https://maskfactory.local/schemas/mask_bridge_semantic_invariant_profile.schema.json",
+        "sha256": "0cd46afbdf7a2fdc07f4e693bd83e47f14683bb8778e10802f054e5640253bf4",
+        "version": "1.0.0"
+      }
+    ],
+    "authentication": {
+      "authority": "Comfy_UI_Main",
+      "credential_material_included": false,
+      "expires_at": "2026-07-17T00:05:00Z",
+      "issued_at": "2026-07-16T23:59:59Z",
+      "nonce": "requirements-fixture-nonce-0001",
+      "principal_id": "fixture:consumer_requirements",
+      "replay_window_seconds": 300,
+      "role": "consumer_requirements"
+    },
+    "authority_requirements": {
+      "accepted_certificate_kinds": [
+        "exact_serving_route_output"
+      ],
+      "accepted_issuer_kinds": [
+        "maskfactory_autonomous"
+      ],
+      "accepted_mode_a_truth_tiers": [
+        "machine_candidate",
+        "qa_passed_machine_candidate",
+        "operationally_certified_artifact"
+      ],
+      "access_mode_determines_authority": false,
+      "allow_consumer_truth_escalation": false,
+      "require_exact_scope_match": true,
+      "require_unrevoked_certificate": true
+    },
+    "bridge_contract": "maskfactory-comfyui-bridge/1.0",
+    "canonicalization": {
+      "algorithm": "maskfactory-canonical-json-v1",
+      "excluded_top_level_fields": [
+        "requirements_sha256",
+        "signature"
+      ]
+    },
+    "compatibility": {
+      "api_contracts": [
+        "maskfactory-api/1.0"
+      ],
+      "node_pack_versions": [
+        "1.0.0"
+      ],
+      "ontology_versions": [
+        "body_parts_v1"
+      ],
+      "package_formats": [
+        "maskfactory-package/1.0"
+      ]
+    },
+    "consumer": {
+      "controller_version": "1.0.0",
+      "git_commit": "1111111111111111111111111111111111111111",
+      "project": "Comfy_UI_Main"
+    },
+    "created_at": "2026-07-17T00:00:00Z",
+    "minimum_person_count": 2,
+    "optional_capabilities": [
+      {
+        "access_mode": "mode_b_live_predict",
+        "artifact_kinds": [
+          "atomic_visible"
+        ],
+        "capability_id": "mask.live.predict",
+        "labels": [
+          "left_hand"
+        ],
+        "minimum_authority_state": "certified"
+      }
+    ],
+    "record_type": "maskfactory_consumer_requirements",
+    "required_access_modes": [
+      "mode_a_package_read",
+      "mode_b_live_predict"
+    ],
+    "required_artifact_kinds": [
+      "atomic_visible",
+      "protected_qa"
+    ],
+    "required_capabilities": [
+      {
+        "access_mode": "mode_a_package_read",
+        "artifact_kinds": [
+          "atomic_visible"
+        ],
+        "capability_id": "mask.package.read",
+        "labels": [
+          "left_hand"
+        ],
+        "minimum_authority_state": "qa_passed_noncertified"
+      }
+    ],
+    "required_coordinate_spaces": [
+      "source_pixel",
+      "output_pixel"
+    ],
+    "required_labels": [
+      "left_hand",
+      "torso"
+    ],
+    "required_semantic_invariant_profile": {
+      "profile_id": "maskfactory-comfyui-bridge-semantics",
+      "profile_version": "1.0.0",
+      "require_all_validation_layers": true,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "required_transform_operations": [
+      "inverse_project"
+    ],
+    "requirements_id": "mfreq_0123456789abcdef01234567",
+    "requirements_sha256": "2bcd82b4de188923c5ff668dc76b0305646406b0b19e2f7dc75a2199f99ee35d",
+    "runtime_requirements": {
+      "circuit_breaker_required": true,
+      "fail_closed_on_mismatch": true,
+      "idempotency_required": true,
+      "maximum_output_bytes": 1000000,
+      "maximum_p50_latency_ms": 2000,
+      "maximum_p95_latency_ms": 4000,
+      "maximum_queue_ms": 1000,
+      "maximum_ram_mb": 16384,
+      "maximum_retries": 2,
+      "maximum_vram_mb": 8192,
+      "minimum_concurrency": 1,
+      "request_timeout_ms": 10000
+    },
+    "schema_version": "1.0.0",
+    "signature": {
+      "algorithm": "ed25519",
+      "key_id": "comfy-main-requirements-fixture",
+      "public_key_base64": "bnoc3Smwt4/ROvTFWY/v9O8qlxZuPKby5Pv8zYBQW/E=",
+      "signed_payload_format": "sha256_digest_bytes",
+      "signed_payload_sha256": "2bcd82b4de188923c5ff668dc76b0305646406b0b19e2f7dc75a2199f99ee35d",
+      "value_base64": "ljcsCGBNYNPUtn3KINFhZU7xq1SQJAxogA6xyHgOgW5Pbin43G/ynR7+rpQrtl91gEtp8StHGGMUjGCdgoRZBQ=="
+    },
+    "trust_binding": {
+      "key_role": "consumer_requirements",
+      "key_set_id": "comfy-main-fixture-trust-set",
+      "key_set_sha256": "39ccd77fccd407c90638280a28584c716fde4d98197754dc4cdb96d4eabd79f5",
+      "key_set_version": "1.0.0",
+      "revocation_policy_sha256": "0d0a427e07e5071102bc413ee4e863518ad75c7b52316556541f8e4c61bb5e69",
+      "rotation_policy_sha256": "26e69fdc949c88a5d387e72c6fa5ff302be3c6f14a39bf29cbdfc2c0234c96c8",
+      "signing_key_id": "comfy-main-requirements-fixture",
+      "signing_public_key_sha256": "7599776c3085e3f9da0d13071eb0b4ab50fd2bf64c06dd92c2365af3a328eca3"
+    },
+    "trusted_signing_key_sets": [
+      {
+        "authority": "MaskFactory",
+        "key_set_id": "mf-fixture-trust-set",
+        "key_set_sha256": "be53b481e5ba5ac5dba64005fa76ee28bafeef40e04c342ccaf4142c54506ee5",
+        "key_set_version": "1.0.0",
+        "revocation_policy_id": "MaskFactory-revocation-v1",
+        "revocation_policy_sha256": "d5cfeef6ca4cbe66d9cb76a884980f4038699b888eed2fcfd2966baaa70ddfab",
+        "rotation_policy_id": "MaskFactory-rotation-v1",
+        "rotation_policy_sha256": "db4b913c5d9522b8fe03f6b893f3f034780ccdd7934e180d937d5235d29708d7",
+        "trusted_keys": [
+          {
+            "key_id": "mf-release-fixture",
+            "public_key_sha256": "34750f98bd59fcfc946da45aaabe933be154a4b5094e1c4abf42866505f3c97e",
+            "roles": [
+              "producer_release"
+            ],
+            "status": "active",
+            "usage_scope": "conformance_only",
+            "valid_from": "2026-01-01T00:00:00Z",
+            "valid_until": "2027-01-01T00:00:00Z"
+          },
+          {
+            "key_id": "mf-authority-fixture",
+            "public_key_sha256": "6a3803d5f059902a1c6dafbc9ba4729212f7caac08634cc3ae76b27529f03827",
+            "roles": [
+              "producer_authority"
+            ],
+            "status": "active",
+            "usage_scope": "conformance_only",
+            "valid_from": "2026-01-01T00:00:00Z",
+            "valid_until": "2027-01-01T00:00:00Z"
+          },
+          {
+            "key_id": "mf-receipt-fixture",
+            "public_key_sha256": "b62e867fa2f33afe62d5d6b1642e1621d543307846b2a57b897e710919b76709",
+            "roles": [
+              "producer_receipt"
+            ],
+            "status": "active",
+            "usage_scope": "conformance_only",
+            "valid_from": "2026-01-01T00:00:00Z",
+            "valid_until": "2027-01-01T00:00:00Z"
+          },
+          {
+            "key_id": "mf-journal-fixture",
+            "public_key_sha256": "c5b940ed3f65c391965de8295fc5d25f474fa57b48d36eb10ad363b8539c1b79",
+            "roles": [
+              "producer_journal"
+            ],
+            "status": "active",
+            "usage_scope": "conformance_only",
+            "valid_from": "2026-01-01T00:00:00Z",
+            "valid_until": "2027-01-01T00:00:00Z"
+          }
+        ]
+      },
+      {
+        "authority": "Comfy_UI_Main",
+        "key_set_id": "comfy-main-fixture-trust-set",
+        "key_set_sha256": "39ccd77fccd407c90638280a28584c716fde4d98197754dc4cdb96d4eabd79f5",
+        "key_set_version": "1.0.0",
+        "revocation_policy_id": "Comfy_UI_Main-revocation-v1",
+        "revocation_policy_sha256": "0d0a427e07e5071102bc413ee4e863518ad75c7b52316556541f8e4c61bb5e69",
+        "rotation_policy_id": "Comfy_UI_Main-rotation-v1",
+        "rotation_policy_sha256": "26e69fdc949c88a5d387e72c6fa5ff302be3c6f14a39bf29cbdfc2c0234c96c8",
+        "trusted_keys": [
+          {
+            "key_id": "comfy-main-requirements-fixture",
+            "public_key_sha256": "7599776c3085e3f9da0d13071eb0b4ab50fd2bf64c06dd92c2365af3a328eca3",
+            "roles": [
+              "consumer_requirements"
+            ],
+            "status": "active",
+            "usage_scope": "conformance_only",
+            "valid_from": "2026-01-01T00:00:00Z",
+            "valid_until": "2027-01-01T00:00:00Z"
+          },
+          {
+            "key_id": "comfy-main-request-fixture",
+            "public_key_sha256": "72456720412037a6b339f884ce6d91bb4cc163a7dc3e4c58c658e6c2097b92a2",
+            "roles": [
+              "consumer_request"
+            ],
+            "status": "active",
+            "usage_scope": "conformance_only",
+            "valid_from": "2026-01-01T00:00:00Z",
+            "valid_until": "2027-01-01T00:00:00Z"
+          },
+          {
+            "key_id": "comfy-main-feedback-fixture",
+            "public_key_sha256": "fe812c12f3ab4ce6ac5db69ac352f906cb1b11ef43fb33e252ef7ff552263889",
+            "roles": [
+              "consumer_feedback"
+            ],
+            "status": "active",
+            "usage_scope": "conformance_only",
+            "valid_from": "2026-01-01T00:00:00Z",
+            "valid_until": "2027-01-01T00:00:00Z"
+          },
+          {
+            "key_id": "comfy-main-qualification-fixture",
+            "public_key_sha256": "5c29b78f10a35a49a6231d08ee840a04bcc3a37a4f9d46df327dec56b8a9b7c9",
+            "roles": [
+              "consumer_qualification"
+            ],
+            "status": "active",
+            "usage_scope": "conformance_only",
+            "valid_from": "2026-01-01T00:00:00Z",
+            "valid_until": "2027-01-01T00:00:00Z"
+          },
+          {
+            "key_id": "comfy-main-adoption-fixture",
+            "public_key_sha256": "dbc298251c51321b7266e78d1c151c2b62aff8cb95b293096d3463018544face",
+            "roles": [
+              "consumer_adoption"
+            ],
+            "status": "active",
+            "usage_scope": "conformance_only",
+            "valid_from": "2026-01-01T00:00:00Z",
+            "valid_until": "2027-01-01T00:00:00Z"
+          },
+          {
+            "key_id": "comfy-main-journal-fixture",
+            "public_key_sha256": "506ef1879d748ce0713b0dd01da32ad2a4b1ce97b5a852ff18800c1e52982376",
+            "roles": [
+              "consumer_journal"
+            ],
+            "status": "active",
+            "usage_scope": "conformance_only",
+            "valid_from": "2026-01-01T00:00:00Z",
+            "valid_until": "2027-01-01T00:00:00Z"
+          }
+        ]
+      }
+    ]
+  },
+  "trusted_signing_keys": {
+    "comfy-main-adoption-fixture": {
+      "authority": "Comfy_UI_Main",
+      "key_id": "comfy-main-adoption-fixture",
+      "key_set_id": "comfy-main-fixture-trust-set",
+      "key_set_sha256": "39ccd77fccd407c90638280a28584c716fde4d98197754dc4cdb96d4eabd79f5",
+      "key_set_version": "1.0.0",
+      "public_key_sha256": "dbc298251c51321b7266e78d1c151c2b62aff8cb95b293096d3463018544face",
+      "roles": [
+        "consumer_adoption"
+      ],
+      "status": "active",
+      "usage_scope": "conformance_only",
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_until": "2027-01-01T00:00:00Z"
+    },
+    "comfy-main-feedback-fixture": {
+      "authority": "Comfy_UI_Main",
+      "key_id": "comfy-main-feedback-fixture",
+      "key_set_id": "comfy-main-fixture-trust-set",
+      "key_set_sha256": "39ccd77fccd407c90638280a28584c716fde4d98197754dc4cdb96d4eabd79f5",
+      "key_set_version": "1.0.0",
+      "public_key_sha256": "fe812c12f3ab4ce6ac5db69ac352f906cb1b11ef43fb33e252ef7ff552263889",
+      "roles": [
+        "consumer_feedback"
+      ],
+      "status": "active",
+      "usage_scope": "conformance_only",
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_until": "2027-01-01T00:00:00Z"
+    },
+    "comfy-main-journal-fixture": {
+      "authority": "Comfy_UI_Main",
+      "key_id": "comfy-main-journal-fixture",
+      "key_set_id": "comfy-main-fixture-trust-set",
+      "key_set_sha256": "39ccd77fccd407c90638280a28584c716fde4d98197754dc4cdb96d4eabd79f5",
+      "key_set_version": "1.0.0",
+      "public_key_sha256": "506ef1879d748ce0713b0dd01da32ad2a4b1ce97b5a852ff18800c1e52982376",
+      "roles": [
+        "consumer_journal"
+      ],
+      "status": "active",
+      "usage_scope": "conformance_only",
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_until": "2027-01-01T00:00:00Z"
+    },
+    "comfy-main-qualification-fixture": {
+      "authority": "Comfy_UI_Main",
+      "key_id": "comfy-main-qualification-fixture",
+      "key_set_id": "comfy-main-fixture-trust-set",
+      "key_set_sha256": "39ccd77fccd407c90638280a28584c716fde4d98197754dc4cdb96d4eabd79f5",
+      "key_set_version": "1.0.0",
+      "public_key_sha256": "5c29b78f10a35a49a6231d08ee840a04bcc3a37a4f9d46df327dec56b8a9b7c9",
+      "roles": [
+        "consumer_qualification"
+      ],
+      "status": "active",
+      "usage_scope": "conformance_only",
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_until": "2027-01-01T00:00:00Z"
+    },
+    "comfy-main-request-fixture": {
+      "authority": "Comfy_UI_Main",
+      "key_id": "comfy-main-request-fixture",
+      "key_set_id": "comfy-main-fixture-trust-set",
+      "key_set_sha256": "39ccd77fccd407c90638280a28584c716fde4d98197754dc4cdb96d4eabd79f5",
+      "key_set_version": "1.0.0",
+      "public_key_sha256": "72456720412037a6b339f884ce6d91bb4cc163a7dc3e4c58c658e6c2097b92a2",
+      "roles": [
+        "consumer_request"
+      ],
+      "status": "active",
+      "usage_scope": "conformance_only",
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_until": "2027-01-01T00:00:00Z"
+    },
+    "comfy-main-requirements-fixture": {
+      "authority": "Comfy_UI_Main",
+      "key_id": "comfy-main-requirements-fixture",
+      "key_set_id": "comfy-main-fixture-trust-set",
+      "key_set_sha256": "39ccd77fccd407c90638280a28584c716fde4d98197754dc4cdb96d4eabd79f5",
+      "key_set_version": "1.0.0",
+      "public_key_sha256": "7599776c3085e3f9da0d13071eb0b4ab50fd2bf64c06dd92c2365af3a328eca3",
+      "roles": [
+        "consumer_requirements"
+      ],
+      "status": "active",
+      "usage_scope": "conformance_only",
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_until": "2027-01-01T00:00:00Z"
+    },
+    "mf-authority-fixture": {
+      "authority": "MaskFactory",
+      "key_id": "mf-authority-fixture",
+      "key_set_id": "mf-fixture-trust-set",
+      "key_set_sha256": "be53b481e5ba5ac5dba64005fa76ee28bafeef40e04c342ccaf4142c54506ee5",
+      "key_set_version": "1.0.0",
+      "public_key_sha256": "6a3803d5f059902a1c6dafbc9ba4729212f7caac08634cc3ae76b27529f03827",
+      "roles": [
+        "producer_authority"
+      ],
+      "status": "active",
+      "usage_scope": "conformance_only",
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_until": "2027-01-01T00:00:00Z"
+    },
+    "mf-journal-fixture": {
+      "authority": "MaskFactory",
+      "key_id": "mf-journal-fixture",
+      "key_set_id": "mf-fixture-trust-set",
+      "key_set_sha256": "be53b481e5ba5ac5dba64005fa76ee28bafeef40e04c342ccaf4142c54506ee5",
+      "key_set_version": "1.0.0",
+      "public_key_sha256": "c5b940ed3f65c391965de8295fc5d25f474fa57b48d36eb10ad363b8539c1b79",
+      "roles": [
+        "producer_journal"
+      ],
+      "status": "active",
+      "usage_scope": "conformance_only",
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_until": "2027-01-01T00:00:00Z"
+    },
+    "mf-receipt-fixture": {
+      "authority": "MaskFactory",
+      "key_id": "mf-receipt-fixture",
+      "key_set_id": "mf-fixture-trust-set",
+      "key_set_sha256": "be53b481e5ba5ac5dba64005fa76ee28bafeef40e04c342ccaf4142c54506ee5",
+      "key_set_version": "1.0.0",
+      "public_key_sha256": "b62e867fa2f33afe62d5d6b1642e1621d543307846b2a57b897e710919b76709",
+      "roles": [
+        "producer_receipt"
+      ],
+      "status": "active",
+      "usage_scope": "conformance_only",
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_until": "2027-01-01T00:00:00Z"
+    },
+    "mf-release-fixture": {
+      "authority": "MaskFactory",
+      "key_id": "mf-release-fixture",
+      "key_set_id": "mf-fixture-trust-set",
+      "key_set_sha256": "be53b481e5ba5ac5dba64005fa76ee28bafeef40e04c342ccaf4142c54506ee5",
+      "key_set_version": "1.0.0",
+      "public_key_sha256": "34750f98bd59fcfc946da45aaabe933be154a4b5094e1c4abf42866505f3c97e",
+      "roles": [
+        "producer_release"
+      ],
+      "status": "active",
+      "usage_scope": "conformance_only",
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_until": "2027-01-01T00:00:00Z"
+    }
+  }
+}

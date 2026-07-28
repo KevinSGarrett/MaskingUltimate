@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0.0",
+  "status": "STATIC_PASS",
+  "authority_claimed": false,
+  "tracker_item": "MF-P4-11.18",
+  "product_outcome": "Real visual-critic inputs retain fine mask evidence instead of collapsing every full diagnostic composite to one 448x448 image; future frozen corpora also contain deterministic target-focused zooms.",
+  "observed_failure": {
+    "model_id": "internvl3_5_8b_bf16",
+    "report_sha256": "b981d28355e6bc49c250856ffada295bfd6ef884f8d77c14efbfba37c10fbbe6",
+    "valid_mask_pass_rate": 0.0,
+    "defect_recall": 1.0,
+    "failure": "valid_mask_pass_rate_below_minimum",
+    "signature": "Every case was called a boundary defect; response hashes repeated by context-tag group. Both retained valid controls were visually confirmed as correct visible right-arm masks."
+  },
+  "root_causes": [
+    {
+      "id": "single_patch_resolution_collapse",
+      "before": "Each portrait, side-by-side diagnostic composite was padded into one 448x448 InternVL patch.",
+      "after": "Each composite uses the documented deterministic dynamic-resolution layout, bounded to six detail tiles plus one thumbnail; the two valid controls each produce 21 patches across three composites."
+    },
+    {
+      "id": "full_frame_zoom_duplicate",
+      "before": "The real-corpus builder passed the full image as crop_xyxy, so valid uncertainty_zoom panels duplicated full-frame overlays.",
+      "after": "Corpus v2 derives a padded crop from the union of exact target and candidate pixels, bounded to source geometry."
+    }
+  ],
+  "commits": {
+    "dynamic_resolution": "4261a46cddf652e8908d99081d54d8fcd9b1a326",
+    "focused_real_corpus": "f573b58a9e059ad6f275f45c5718af35fe86eee0"
+  },
+  "source_sha256": {
+    "tools/run_visual_critic_calibration.py": "d4d2eaa3578ca4e5b31eaad8bfe1b63c0adf5d790be6eab359f4c3dc05f56267",
+    "tools/build_real_visual_critic_calibration_corpus.py": "529084a63c92ceacc5982679ff1a3e9bd4b96ca45328b5638e618a670462a7f1",
+    "tests/test_visual_critic_runner_resolution.py": "944d1c2208cd99bfd79e5eb01f4538e0c4d6c9bd234f923883f6e45c25649e39",
+    "tests/test_visual_critic_real_corpus_policy.py": "24075ed9232f81f94b86da522ad18864173342b72ccea430bc6ab1b5dfa0973a"
+  },
+  "real_corpus_v2": {
+    "local_root": "runtime_artifacts/visual_critic_real_corpus_v2_focus",
+    "runpod_root": "/workspace/maskfactory_runtime/critic_f573b58a9/corpus/visual_critic_real_corpus_v2_focus",
+    "case_count": 12,
+    "corpus_sha256": "bc53b4074cc1b1478474394969f6b8b294c978f7d5c448f0db9446dc89e11309",
+    "source_bindings_sha256": "eb46647bfc87b134f090c3b02bb7ea3e4e7bd77f6aa9fc5d1726b242787ad7ec",
+    "manifest_file_sha256": "c1f39c61b1500075c924eee0b150cf151d650f18f35e15272f9e4e5a29c1838e",
+    "source_bindings_file_sha256": "91b9255395416be8daca2bf2e72145a371c6b1e3db24649f527435059529c59f",
+    "archive_sha256": "a29caed10e29ad1018590995d45f01037051c5b5ea7bea9a55ab2e7215927957",
+    "payload_archive_sha256": "d52128766269093abcdc073071b207ef4d8539b6ec77c7284848962b8dfbe9a8",
+    "visual_inspection": "vcr_001_valid and vcr_007_valid focused overlays visibly retain the selected arm/hand boundary and surrounding owner/contact context."
+  },
+  "verification": {
+    "focused_tests": "35 passed for the dynamic runner wave; 23 passed for the focused-corpus wave",
+    "ruff": "PASS",
+    "black": "PASS",
+    "diff_integrity": "PASS"
+  },
+  "live_qualification": {
+    "status": "PENDING_COORDINATOR_RECOVERY",
+    "request_id": "req_46e0cdbd288540a49ebf09579def20c4",
+    "lease_id": "lease_f31c0165ee8f4c9bb31e5ef96ef87d22",
+    "provider_started": false,
+    "gpu_load_started": false,
+    "reason": "The one-time token from the initial queued response was overwritten by an idempotent status replay after grant. The corrected wrapper retains the original process-local token; the unusable existing lease must be reconciled only through the coordinator authority."
+  },
+  "remaining_acceptance": "Run a current primary and independent-family model on the exact positive/negative corpus; both must satisfy unchanged role thresholds before any role promotion or 220-package batch authority."
+}

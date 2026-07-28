@@ -1,0 +1,39 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_terminal_batch_executor.v1",
+  "recorded_at_utc": "2026-07-22T19:49:49.7866933Z",
+  "tracker_items": [
+    "MF-P4-12.03",
+    "MF-P4-12.09"
+  ],
+  "result": "STATIC_PASS_EXECUTABLE_TERMINAL_BATCH_LIVE_INPUTS_OPEN",
+  "implemented_behavior": {
+    "accepted_and_repaired_route_to_full_terminal_qualification": true,
+    "abstained_and_rejected_route_to_nonacceptance_receipts": true,
+    "quarantined_and_holdout_inputs_never_fabricate_masks": true,
+    "one_malformed_record_does_not_stop_the_batch": true,
+    "one_immutable_receipt_or_typed_error_per_input": true,
+    "source_manifest_and_record_inputs_are_sha256_bound": true,
+    "output_root_is_bound_to_one_exact_source_manifest": true,
+    "exact_replay_is_idempotent": true,
+    "conflicting_existing_bytes_fail_closed": true,
+    "partial_files_are_atomically_replaced_or_removed": true,
+    "certificate_or_gold_authority_granted": false
+  },
+  "validation": {
+    "focused_and_adjacent_pytest": "PASS_74",
+    "ruff": "PASS",
+    "black": "PASS",
+    "cli_help": "PASS",
+    "implementation_sha256": {
+      "src/maskfactory/nude_terminal_batch.py": "447ca982b691d4c97870e463a1ac91656abf936bb166ca62728903d4add1cf5a",
+      "tools/run_nude_terminal_batch.py": "20b95c31d01f428f6b0a63476062131da57892b383e7d4947797ae486eecf3c6",
+      "tests/test_nude_terminal_batch.py": "23acc30df8bac015f9cfc42116a0608bcfb7aabb03d91464a281e4348accb7c4"
+    }
+  },
+  "live_boundary": {
+    "real_terminal_records_processed": 0,
+    "live_certificates_issued": 0,
+    "completion_claimed": false,
+    "remaining": "Feed real provider, hard-QC, ownership, panel, and qualified independent-review outputs into this executor after admitted RunPod generation and review."
+  }
+}

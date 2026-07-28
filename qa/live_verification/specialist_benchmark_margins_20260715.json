@@ -1,0 +1,131 @@
+{
+  "authority": "pre_result_policy_verification_only_no_benchmark_or_promotion_authority",
+  "benchmark_results_claimed": false,
+  "captured_at": "2026-07-15T01:07:23.668001Z",
+  "expanded_bucket_count": 406,
+  "frozen_at": "2026-07-15T01:00:00Z",
+  "locked_sha256": "605f79e0d4f8354a7a4d445a0a5725af829cd78b85e2e36f91b065576553a739",
+  "manifest_id": "specialist_noninferiority_v1",
+  "manifest_sha256": "605f79e0d4f8354a7a4d445a0a5725af829cd78b85e2e36f91b065576553a739",
+  "negative_probes": {
+    "average_win_with_hard_bucket_regression_rejected": true,
+    "hard_bucket_regression_reason": "specialist benchmark non-inferiority failed for context:clothing_materials:boundary_f_2px",
+    "post_freeze_margin_edit_reason": "specialist margin manifest differs from locked hash",
+    "post_freeze_margin_edit_rejected": true
+  },
+  "promotion_claimed": false,
+  "result": "pass",
+  "results_state": "sealed_before_results",
+  "role_count": 9,
+  "roles": {
+    "chest_pelvic_segmentation": {
+      "expanded_bucket_count": 75,
+      "hard_label_count": 19,
+      "high_risk_context_count": 3,
+      "primary_objective": {
+        "metric": "correction_pixels_per_100k",
+        "minimum_improvement": 0.05
+      },
+      "target_provider_role": "interactive_segmenter",
+      "zero_regression_metric_count": 9
+    },
+    "clothing_accessory_segmentation": {
+      "expanded_bucket_count": 52,
+      "hard_label_count": 11,
+      "high_risk_context_count": 4,
+      "primary_objective": {
+        "metric": "correction_pixels_per_100k",
+        "minimum_improvement": 0.05
+      },
+      "target_provider_role": "custom_segmenter",
+      "zero_regression_metric_count": 7
+    },
+    "foot_toe_segmentation": {
+      "expanded_bucket_count": 37,
+      "hard_label_count": 6,
+      "high_risk_context_count": 4,
+      "primary_objective": {
+        "metric": "correction_pixels_per_100k",
+        "minimum_improvement": 0.05
+      },
+      "target_provider_role": "interactive_segmenter",
+      "zero_regression_metric_count": 7
+    },
+    "geometry_provider": {
+      "expanded_bucket_count": 42,
+      "hard_label_count": 10,
+      "high_risk_context_count": 7,
+      "primary_objective": {
+        "metric": "image_projection_consistency",
+        "minimum_improvement": 0.01
+      },
+      "target_provider_role": "geometry_provider",
+      "zero_regression_metric_count": 8
+    },
+    "hair_matting": {
+      "expanded_bucket_count": 24,
+      "hard_label_count": 2,
+      "high_risk_context_count": 4,
+      "primary_objective": {
+        "metric": "boundary_f_2px",
+        "minimum_improvement": 0.01
+      },
+      "target_provider_role": "silhouette_provider",
+      "zero_regression_metric_count": 6
+    },
+    "hand_finger_segmentation": {
+      "expanded_bucket_count": 61,
+      "hard_label_count": 14,
+      "high_risk_context_count": 4,
+      "primary_objective": {
+        "metric": "correction_pixels_per_100k",
+        "minimum_improvement": 0.05
+      },
+      "target_provider_role": "interactive_segmenter",
+      "zero_regression_metric_count": 7
+    },
+    "pose_provider": {
+      "expanded_bucket_count": 35,
+      "hard_label_count": 8,
+      "high_risk_context_count": 7,
+      "primary_objective": {
+        "metric": "normalized_keypoint_accuracy",
+        "minimum_improvement": 0.01
+      },
+      "target_provider_role": "pose_provider",
+      "zero_regression_metric_count": 5
+    },
+    "repeated_instance_segmentation": {
+      "expanded_bucket_count": 57,
+      "hard_label_count": 7,
+      "high_risk_context_count": 10,
+      "primary_objective": {
+        "metric": "instance_recall",
+        "minimum_improvement": 0.01
+      },
+      "target_provider_role": "concept_detector",
+      "zero_regression_metric_count": 6
+    },
+    "silhouette_provider": {
+      "expanded_bucket_count": 23,
+      "hard_label_count": 2,
+      "high_risk_context_count": 4,
+      "primary_objective": {
+        "metric": "boundary_f_2px",
+        "minimum_improvement": 0.01
+      },
+      "target_provider_role": "silhouette_provider",
+      "zero_regression_metric_count": 5
+    }
+  },
+  "schema_version": "1.0.0",
+  "sha256": "6232b9bb8c72138a91e92cc92a79c6f0d8a100e849adf07f00b640c64029ccab",
+  "source_hashes": {
+    "configs/anatomy_v2_qa.yaml": "aee3bfac0ca9949cd6bede328355e64f1a95538ae5e36e2814ac44bf47f50430",
+    "configs/autonomy_multi_person_risk_buckets.yaml": "981fdfd8a436a3563ecc51fc8cd6bd4ff03b6113338eb6ea995e9cfbd46eabf1",
+    "configs/autonomy_risk_buckets.yaml": "7cbc3262595ebe4fb675c93d1d4631b7e0a09e58886a94ec8ac8006e7cc9ec1a",
+    "configs/ontology.yaml": "d28f66ab1b9a40241d253b9befe0f45c8b9e384cd7ce1fc32005d8cbdf49b451",
+    "configs/ontology_v2.yaml": "8772941dc92d89db8dfb03e48f7d0ccdb2e350be0fb345c90e49a47cb6d098c2",
+    "configs/qa.yaml": "87fc4754eeeaea3e1a3b44b57c946ffb19af0f753857a2ab973f0030531d702d"
+  }
+}

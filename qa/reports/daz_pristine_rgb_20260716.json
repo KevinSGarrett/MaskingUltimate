@@ -1,0 +1,134 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-16T17:02:13Z",
+  "item": "MF-P9-07.02",
+  "status": "partially_complete",
+  "policy": {
+    "path": "configs/daz/pristine_rgb.yaml",
+    "file_sha256": "fd1b271b467014f3b105df0173e931444a89bc6e4279dea7a37d453a78fa08f4",
+    "version": "1.0.0",
+    "eligible_pass_profiles": [
+      "training_standard",
+      "training_relationship",
+      "diagnostic_full"
+    ],
+    "role": "rgb_pristine",
+    "encoding": "lossless_rgb_png",
+    "container_format": "PNG",
+    "pixel_mode": "RGB",
+    "engine_id": "iray",
+    "render_mode": "photoreal",
+    "source_kind": "direct_renderer_pristine",
+    "wall_clock_limit_allowed": false,
+    "derived_effects_allowed": []
+  },
+  "request_controls": {
+    "resolved_state_schema_id_and_hash_recomputed": true,
+    "render_pass_plan_schema_id_and_hash_recomputed": true,
+    "exact_scene_resolved_state_and_plan_lineage_required": true,
+    "exact_rgb_pristine_role_and_encoding_required": true,
+    "renderer_id_and_version_must_match_resolved_state": true,
+    "render_seed_max_samples_convergence_filter_explicit": true,
+    "tone_mapping_and_denoiser_state_explicit": true,
+    "depth_of_field_and_motion_blur_match_frozen_camera": true,
+    "transparent_background_false": true,
+    "srgb_8_bit_lossless_png_required": true,
+    "exact_resolution_and_crop_required": true,
+    "camera_and_lighting_hashes_required": true,
+    "content_addressed_request_replay": true,
+    "immutable_publication": true,
+    "cli": [
+      "daz recipes plan-pristine-rgb",
+      "daz recipes validate-pristine-rgb-fixture"
+    ]
+  },
+  "fixture_controls": {
+    "exact_file_sha256_and_byte_count_required": true,
+    "png_rgb_resolution_decode_required": true,
+    "minimum_unique_colors": 2,
+    "all_black_all_white_and_uniform_outputs_rejected": true,
+    "completed_true_and_interrupted_false_required": true,
+    "direct_renderer_source_and_zero_derived_effects_required": true,
+    "renderer_settings_readback_exact": true,
+    "before_sidecar_after_and_terminal_scene_hashes_exact": true,
+    "sidecar_plan_and_request_hashes_exact": true,
+    "report_replay_and_immutable_publication": true
+  },
+  "closed_fixture_coverage": {
+    "focused_tests_collected": 52,
+    "focused_tests_passed": 52,
+    "focused_tests_failed": 0,
+    "combined_completion_tracker_and_pristine_tests_collected": 83,
+    "combined_completion_tracker_and_pristine_tests_passed": 83,
+    "request_refusals": [
+      "ineligible engineering or RGB-variant profile",
+      "renderer identity or version drift",
+      "non-photoreal render mode",
+      "invalid seed samples convergence or filter",
+      "non-boolean tone mapping or denoiser",
+      "camera DOF or motion mismatch",
+      "transparent background",
+      "color space bit depth encoding resolution or crop drift",
+      "camera or lighting hash drift"
+    ],
+    "fixture_refusals": [
+      "before sidecar after or terminal state mutation",
+      "sidecar plan or request drift",
+      "renderer readback drift",
+      "role encoding resolution crop source or derived-effect drift",
+      "file hash or byte-count drift",
+      "interrupted or incomplete output",
+      "wrong format mode or resolution",
+      "all-black all-white or uniform image",
+      "request report or publication tamper"
+    ]
+  },
+  "lineage": {
+    "implementation_sha256": "2899ddefaa554be13f4e1ff9e00dacda5fbcdcf8d1839cbaf9996ff6b4d4efef",
+    "request_schema_sha256": "ae396df9c00bf303bcf4817c61d1149cabc02c34ad90e233c9e5ba8d32138df4",
+    "fixture_report_schema_sha256": "abbdac74e1dab6ed8c35a6e8c3f6eea0609124f636a5e6a397162cdad5a9d999",
+    "test_sha256": "7d4fe03151d9802d01e611fba0bd81474827da3383fcab43e18238c3cafdbac0"
+  },
+  "concurrent_state_reconciliation": {
+    "preserved_commits": [
+      "e4f80c2 chore: prioritize live DAZ vertical slice",
+      "9f7aaa8 docs: keep DAZ live metrics evidence-bound"
+    ],
+    "tracker_source_sha256": "60919b2214775657a8999e4f37dc4d364ec02f85bf8c9a10e8b301e7de288bae",
+    "completion_policy_path": "qa/governance/completion/modernization_completion_v1.json",
+    "completion_policy_file_sha256": "0b0d37a5963f8ce605bbe1344f7bbaed15b1b2d761036e660eeabb1714554fad",
+    "completion_policy_seal": "0f6386cd8aedc8ef2f795e9fd359a9605f7fe9a2f0544e23031f318543ad9032",
+    "completion_bundle_tests_pass": true,
+    "concurrent_work_reverted": false
+  },
+  "verification": {
+    "full_repository_tests_collected": 2215,
+    "full_repository_tests_passed": 2215,
+    "full_repository_tests_failed": 0,
+    "test_files_collected": 222,
+    "ruff_lint": "pass",
+    "black_files_checked": 472,
+    "black_format": "pass",
+    "git_diff_check": "pass"
+  },
+  "storage_boundary": {
+    "free_bytes": 150760443904,
+    "free_gib": 140.407,
+    "capacity_state": "soft",
+    "new_work_allowed": false,
+    "active_job_allowed": true,
+    "new_asset_or_render_work_started": false
+  },
+  "live_boundary": {
+    "live_iray_fixture_rendered": false,
+    "live_renderer_readback_recorded": false,
+    "live_pristine_rgb_accepted": false,
+    "reason": "The request, renderer-readback, image-inspection, state-freeze, replay, and publication contracts pass against generated closed fixtures. Completion requires the hidden DAZ worker to render a qualified real scene under the sealed request and return a matching live Iray readback and accepted PNG fixture."
+  },
+  "not_claimed": [
+    "a live Iray or DAZ render",
+    "photographic quality from the generated contract fixture",
+    "live renderer readback",
+    "completion of MF-P9-07.02"
+  ]
+}

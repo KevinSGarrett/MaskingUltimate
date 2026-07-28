@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0.0",
+  "review_date": "2026-07-12",
+  "data_path": "C:\\Comfy_UI_Main_Masking\\data",
+  "volume": "C:",
+  "total_gib": 951.65,
+  "used_gib": 854.59,
+  "free_gib": 97.05,
+  "doctor_status": "WARN",
+  "thresholds_gib": {
+    "target": 200,
+    "warning": 150,
+    "block_ingest": 75
+  },
+  "ingest_blocked": false,
+  "junction_move_required": true,
+  "visible_filesystem_volumes": ["C:"],
+  "larger_target_available": false,
+  "rehearsal_command": "powershell -File tools/move_data_to_junction.ps1 -Name data -Target D:\\MaskFactory\\data -WhatIf",
+  "rehearsal_result": "no-write plan produced; target volume D: unavailable, so apply correctly not attempted",
+  "next_action": "Provision or attach a governed fixed volume with sufficient capacity, rerun rehearsal, then use -Apply and retain rollback directory until verify/reindex/doctor are reviewed."
+}

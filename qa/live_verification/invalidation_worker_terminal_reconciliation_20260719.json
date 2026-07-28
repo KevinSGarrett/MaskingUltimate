@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "artifact_type": "worker_terminal_reconciliation",
+  "captured_at": "2026-07-19T00:46:46.9991813Z",
+  "item_id": "MF-P6-08.07",
+  "repository": {
+    "branch": "codex/maskfactory-runtime-implementation",
+    "commit": "1285e8137ef5b901df277d51ba1b6f2d7e1fb23c"
+  },
+  "request": {
+    "request_id": "p000_20260718T200915215Z_mf_cursor_08_07_invalidation_r3_e143d970",
+    "intent_id": "intent_20260718T200909936Z_mf_cursor_08_07_invalidation_r3_e6dc7e99",
+    "origin_task_id": "019f4cfc-60c3-7500-8626-261dcf70db5d",
+    "base_commit": "093b9b1d74fb21ec5653d9dae395af878a8f0909",
+    "isolated_project_root": "C:/w/mask8s_e0f53b6f",
+    "request_sha256": "878919dcd3e7908e9e822b7a5a2208b1cd640dc5b1458cbf658360f77aa7c7e8",
+    "request_signature_sha256": "8ba9366d1d6c04fb39abfd22eb3e1825f71f09c1682be8907469040294f3f2ca"
+  },
+  "terminal_result": {
+    "status": "FAIL",
+    "classification": "AI_WORKER_RETRY_BUDGET_EXHAUSTED",
+    "issue": "AI_WORKER_WORKTREE_MATERIALIZATION_TIMEOUT: isolated worktree add exceeded 120s.",
+    "worker_artifact_count": 0,
+    "scope_files_unchanged": true,
+    "scope_mutation_paths": [],
+    "worktree_retained_for_codex_review": false,
+    "adoption_status": "NOT_APPLICABLE",
+    "dispatch_record_sha256": "dca8bce63660f549be1ef36012248a0dc250114ad0401777947bcdf320ad7ed4",
+    "dispatch_signature_sha256": "499a71336f45dc41aedd18ace5457d1d21cd5f0d91f015216df9e3596352d54e",
+    "failure_evidence_sha256": "9eb2e38247dfb4c202c9b8b185ffca1e85016b4991ae80fd62fc6508f88314e8",
+    "failure_evidence_hash_matches_dispatch_record": true
+  },
+  "scope_review": {
+    "allowed_paths": [
+      "src/maskfactory/authority/operational_invalidation.py",
+      "src/maskfactory/schemas/mask_authority_invalidation_event.schema.json",
+      "tests/fixtures/mask_bridge_contracts/positive_operational_autonomy_certificate_v1.json",
+      "tests/test_operational_invalidation.py"
+    ],
+    "frozen_v1_paths_were_permitted_by_obsolete_request": true,
+    "frozen_v1_paths_changed": false,
+    "future_reissue_requirement": "Use additive implementation/schema/test paths and exclude all 12 frozen v1 contracts and positive contract fixtures."
+  },
+  "adoption_verdict": {
+    "verdict": "NOT_APPLICABLE",
+    "reason": "No provider packet, patch, worker artifact, or scope mutation exists to review or adopt.",
+    "adopted_paths": [],
+    "completion_credit_added": 0
+  },
+  "project_state": {
+    "item_status": "blocked",
+    "percent_complete": 50,
+    "existing_gap_evidence": "qa/live_verification/operational_certificate_invalidation_gap_revalidation_20260719.json",
+    "next_action": "Authorized control must issue a new additive, correctly rooted, frozen-v1-preserving exact-task request; do not wake or duplicate the terminal request."
+  },
+  "truth_boundary": "This reconciles a signed terminal worker failure only. It does not claim worker implementation, adoption, operational invalidation, a certificate, release, or runtime completion."
+}

@@ -1,0 +1,157 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-17T07:31:08Z",
+  "item": "MF-P9-10.01",
+  "status": "partially_complete",
+  "percent_complete": 85,
+  "result": {
+    "offline_implementation_complete": true,
+    "schema_and_report_verify_clause_passed": true,
+    "qualified_live_d0_d5_coverage_inputs_available": false
+  },
+  "closed_vocabulary": {
+    "vocabulary_version": "1.0.0",
+    "closed": true,
+    "fixed_axis_count": 56,
+    "fixed_value_count": 445,
+    "registry_axis_count": 8,
+    "continuous_axis_count": 6,
+    "mandatory_high_risk_intersection_count": 18,
+    "unknown_axis_or_value_fails_closed": true,
+    "fixed_registry_and_continuous_axes_are_disjoint": true
+  },
+  "source_binding": {
+    "source_snapshot_count": 9,
+    "source_hashes_match_live_repository": true,
+    "canonical_views_poses_contexts_and_attributes_crosswalk_exact": true,
+    "canonical_ontology_label_crosswalk_exact": true,
+    "daz_character_profile_crosswalk_exact": true,
+    "daz_appearance_crosswalk_exact": true,
+    "daz_solo_pose_crosswalk_exact": true,
+    "daz_scene_formation_crosswalk_exact": true,
+    "daz_duo_relationship_crosswalk_exact": true,
+    "daz_render_pass_crosswalk_exact": true,
+    "daz_asset_registry_vocabulary_crosswalk_exact": true
+  },
+  "coverage_layers": {
+    "canonical_layer": "MaskFactory canonical scene and person coverage axes",
+    "generation_layer": "DAZ construction, appearance, pose, camera, lighting, environment, relationship, and render-pass axes",
+    "intersection_layer": "mandatory selected two-through-four-axis high-risk intersections",
+    "layers_are_reported_separately": true
+  },
+  "reporting_contract": {
+    "states": [
+      "planned",
+      "attempted",
+      "rendered",
+      "accepted",
+      "packaged",
+      "dataset_selected",
+      "consumed_by_training"
+    ],
+    "units": [
+      "scene",
+      "person_instance",
+      "effective_training_weight"
+    ],
+    "marginal_coverage_required": true,
+    "pairwise_coverage_required": true,
+    "selected_three_way_coverage_required": true,
+    "accepted_only_coverage_required": true,
+    "planned_attempted_rendered_and_accepted_are_not_conflated": true
+  },
+  "high_risk_intersections": {
+    "all_references_resolve_to_closed_axes": true,
+    "canonical_and_daz_generation_axes_are_combined_explicitly": true,
+    "person_relationship_and_contact_risk_is_represented": true,
+    "camera_pose_occlusion_and_crop_risk_is_represented": true,
+    "appearance_hair_wardrobe_anatomy_and_material_risk_is_represented": true,
+    "render_pass_and_identity_risk_is_represented": true
+  },
+  "publication": {
+    "report_id": "dcvr_f3b4c3927cc77cb389904bfc",
+    "report_sha256": "f3b4c3927cc77cb389904bfcee91811106f1adb4e07cc4fe9a88e3d1c555a50a",
+    "path": "qa/reports/daz_coverage_vocabulary/dcvr_f3b4c3927cc77cb389904bfc.json",
+    "closed_json_schema": true,
+    "schema_registered": true,
+    "semantic_replay": true,
+    "source_hash_replay": true,
+    "atomic_immutable_idempotent_publication": true,
+    "first_publication_created": true,
+    "second_publication_reused_identical_artifact": true,
+    "cli": "maskfactory daz coverage vocabulary-report"
+  },
+  "authority_boundary": {
+    "owner": "maskfactory",
+    "stage": "technical_coverage_vocabulary",
+    "synthetic_counts_are_gold_counts": false,
+    "synthetic_counts_are_real_image_accuracy_evidence": false,
+    "synthetic_counts_can_promote_a_model": false,
+    "training_truth_tier_created": false,
+    "human_gold_created_or_mutated": false,
+    "autonomous_certified_gold_created_or_mutated": false,
+    "mode_b_or_inferred_authority_allowed": false,
+    "adult_synthetic_anatomy_and_wardrobe_coverage_permitted": true,
+    "minor_content_permitted": false
+  },
+  "wave64_integration_boundary": {
+    "main_repository_modified": false,
+    "main_side_files_preserved": true,
+    "separate_autonomy_bridge_worktree_preserved": true,
+    "provider_tier_ontology_owner_transform_certificate_authority_unchanged": true,
+    "downstream_qualifiers_may_consume_versioned_coverage_context": true,
+    "downstream_qualifiers_may_not_infer_stronger_mask_authority": true
+  },
+  "lineage_hashes": {
+    "policy_sha256": "d9504f88f2b5767fa200296f7ac9697017e6bf64d6e817e222a014379d06f970",
+    "schema_sha256": "ca6e06c19c967d83ed781ba30f826ad6b50c5445ba59ba4d249ad0535518c6dc",
+    "implementation_sha256": "b80499b6ce6d73ae5a1c8d581ab2963980c1a80281c8892451be6e6f3ee17bcd",
+    "package_init_sha256": "757a749bd5a814834bb2053b1804edb2cd0b2e61981067e45ab0c7f884e4cd6f",
+    "cli_sha256": "2c55f164d136c812fce6dad0c748dac01186e2b3d2cd33ff4f3d44ceb2a7fdd5",
+    "validation_registry_sha256": "dc371a87d6e9319c7fcc9cfd429b2a81ca698497d55c936789ceb8d8429bfc44",
+    "tests_sha256": "748a23774a93e9940b41c1d462967ea601407d8389b63c1b5389cecf18b426cd",
+    "published_report_file_sha256": "3eba0471e227e958910c6e2542faeed3b65b4ac2242751b1a955320bcd507779"
+  },
+  "verification": {
+    "focused_vocabulary_tests_collected": 14,
+    "focused_vocabulary_tests_passed": 14,
+    "canonical_coverage_tests_collected": 5,
+    "canonical_coverage_tests_passed": 5,
+    "source_policy_tests_collected": 6,
+    "source_policy_tests_passed": 6,
+    "directly_relevant_tests_collected": 25,
+    "directly_relevant_tests_passed": 25,
+    "current_daz_wide_pass_claimed": false,
+    "current_full_repository_pass_claimed": false,
+    "resource_boundary": "Verification was intentionally split into bounded focused processes because live ComfyUI, WSL, and Docker leave limited physical memory; every claimed process completed normally.",
+    "ruff_changed_surface_lint": "pass",
+    "black_changed_surface_format": "pass",
+    "json_schema_meta_validation": "pass",
+    "maskfactory_json_schemas_parsed": 130,
+    "daz_yaml_documents_parsed": 37,
+    "git_diff_check": "pass"
+  },
+  "asset_and_storage_boundary": {
+    "download_install_daz_launch_render_or_live_validation_started_by_this_task": false,
+    "assets_moved_or_relabelled_by_this_task": false,
+    "f_drive_soft_hold_respected": true,
+    "main_repository_modified_by_this_task": false,
+    "autonomy_bridge_worktree_modified_by_this_task": false,
+    "wsl_docker_or_live_comfyui_process_terminated_by_this_task": false
+  },
+  "remaining_live_dependency": {
+    "software_schema_and_report_verify_clause_complete": true,
+    "qualified_d0_inventory_snapshot_available": false,
+    "qualified_d5_ontology_and_asset_mapping_available": false,
+    "accepted_live_coverage_observations_available": false,
+    "reason": "The closed vocabulary, source crosswalk, schema, report compiler, semantic replay, CLI, immutable publication, and focused verification pass. Qualified D0 inventory and D5 mapping inputs have not yet populated a live coverage ledger or accepted corpus report."
+  },
+  "not_claimed": [
+    "live DAZ inventory coverage",
+    "planned or generated live corpus",
+    "accepted synthetic package coverage",
+    "dataset or training consumption",
+    "human or autonomous-certified gold",
+    "current DAZ-wide or full-repository pass"
+  ]
+}

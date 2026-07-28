@@ -1,0 +1,70 @@
+{
+  "artifact_type": "isolated_main_consumer_qual_firewall_climb_wave",
+  "authority": "autonomous_isolated_main_consumer_qual_firewall_climb_zero_human_wait",
+  "branch": "codex/maskfactory-runtime-implementation",
+  "champions": 0,
+  "claims_not_established": [
+    "real_comfyui_main_adoption",
+    "main_adoption_complete / MF-P6-12.06 core close",
+    "champions>0",
+    "PRODUCTION_EVIDENCE_PASS"
+  ],
+  "companion_waves": [
+    "qa/live_verification/isolated_consumer_dod_climb_20260720T0810.json",
+    "qa/live_verification/isolated_consumer_dod_climb2_20260720.json"
+  ],
+  "hard_blockers_still_open": [
+    "MF-P6-11.02",
+    "MF-P6-11.07",
+    "MF-P6-12.05",
+    "MF-P6-12.06"
+  ],
+  "is_real_comfyui_main": false,
+  "main_adoption_complete": false,
+  "new_depth_checks_this_wave": {
+    "isolated_cross_project_qualification_depth_matrix": {
+      "baseline_decision_sha256": "873b8c116fb91ff629da7cc6b704ac88ee52a1a7163fde5c54609adb2c237dc7",
+      "covers": [
+        "honest producer_partial baseline (all matrix rows pass, no overclaim)",
+        "fabricated Main receipt -> rejected (not fabricated pass)",
+        "fixture evidence claimed as production -> rejected",
+        "failed currency-review relabelled pass -> rejected",
+        "tampered decision_sha256 -> decision_hash_drift detected",
+        "forged mf_p6_12_05_complete claim -> completion_overclaim detected",
+        "dropped matrix row -> matrix_row_set_drift detected",
+        "pinned Main commit ALONE -> still producer_partial, no production qualification",
+        "real build/validate_cross_project_qualification_evidence"
+      ],
+      "item": "MF-P6-12.05",
+      "passed": true
+    },
+    "isolated_final_release_firewall_depth_matrix": {
+      "covers": [
+        "no Main adoption -> incomplete_core, core close refused",
+        "fabricated core-complete claim -> rejected",
+        "fixture-only release -> published-release gate refused",
+        "fixture-authority adoption receipt -> cannot close core",
+        "adoption not pinning exact release id/hash -> refused",
+        "optional profiles independent; cannot revoke/force core",
+        "tampered decision_sha256 -> decision_hash_drift detected",
+        "dropped close gate -> gate_set_drift detected",
+        "real evaluate/validate_final_release_handoff"
+      ],
+      "honest_decision_sha256": "323bffebb62fe55218fc57fc1b18973f6df825c0b866366525c4d8e107fac272",
+      "item": "MF-P6-12.06",
+      "passed": true
+    }
+  },
+  "next_agent_step": "Real receipts require a dedicated Comfy_UI_Main-side integration on an isolated clean maskfactory branch that consumes the producer adapter package and emits Main-signed adoption/qualification/adapter-execution/result-history artifacts pinned back here. Comfy_UI_Main is a dirty Wave64 tree and was NOT touched.",
+  "producer_git_commit": "a8016e4e3ec99382871836afee641c9cbd606c90",
+  "run_evidence": {
+    "all_pass": true,
+    "checks_passed": 2,
+    "checks_total": 2,
+    "path": "runtime_artifacts/main_consumer/isolated_consumer_qual_firewall_run_evidence_20260720T0934.json",
+    "self_sha256": "49a527b9d66b690b91744172b2c813a687649b14dfd365c59e2febdacff140c6"
+  },
+  "runner": "tools/run_isolated_main_consumer_qual_firewall.py",
+  "self_sha256": "8fac63201120652d165e8db9e45e4086b054610a15f52070380465a18b7ba19c",
+  "tier_note": "STATIC_PASS producer + isolated-consumer evidence only. These matrices DEEPEN real-machinery adversarial DoD surface for the producer boundary (MF-P6-12.05 / 12.06); they do NOT advance AWAITING_MAIN, do NOT close any HARD blocker, authorize NO core close, and mint no certificate. is_real_comfyui_main=false."
+}

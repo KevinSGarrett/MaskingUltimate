@@ -1,0 +1,45 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_pixel_semantic_visual_evidence.v1",
+  "artifact_type": "adult_corpus_per_record_pixel_semantic_visual_evidence",
+  "recorded_at": "2026-07-22T12:11:19Z",
+  "status": "PASS_BOUNDED_REAL_CANARY",
+  "tracker_items": [
+    "MF-P4-12.02",
+    "MF-P4-12.05",
+    "MF-P4-12.07"
+  ],
+  "verified_behavior": {
+    "source_view_decodes_to_exact_original_pixels": true,
+    "mask_view_decodes_to_exact_shape_bound_mask": true,
+    "overlay_changes_only_inside_selected_mask": true,
+    "contour_changes_only_near_selected_boundary": true,
+    "ownership_marks_only_target_bbox_region": true,
+    "all_views_match_source_geometry": true,
+    "file_hash_refresh_cannot_hide_semantic_view_tampering": true
+  },
+  "real_canary": {
+    "record_count": 12,
+    "unique_split_group_count": 12,
+    "pixel_semantic_evidence_pass_count": 12,
+    "report_sha256": "2910626d4c172610214e4ff9d03b58332593838443ea0ffad6403a8d3bb71b67",
+    "contact_sheet_sha256": "ad532c2366e1cbef974806f509a9bd8f6847406f0c6cbb34891f35bb5b7c733e"
+  },
+  "negative_control": {
+    "case": "overlay pixel changed outside selected mask and file SHA refreshed",
+    "result": "rejected_overlay_view_semantics_invalid"
+  },
+  "implementation_sha256": {
+    "src/maskfactory/nude_visual_evidence.py": "285911ee7746f5ac3268fe83b162266fc0e831a050fea2e75613b65e08fe2dbc",
+    "src/maskfactory/nude_polygon_refinement.py": "60424861e57cb951b11d107b99949a528e0c5f168f7d306bae0eef1a425aed20",
+    "tests/test_nude_visual_evidence.py": "04b870b26cfee17a5765b945a9293391ae857cdf1faba5062ca750266140b1ce",
+    "tests/test_nude_polygon_refinement.py": "bcfb020471567bfa17a59ce19008e8b2b1793f39f10a16de1692becae614dafd"
+  },
+  "authority": {
+    "visual_evidence_semantics_verified": true,
+    "person_instance_ownership_verified": false,
+    "strict_vlm_verdicts_present": false,
+    "independent_critic_quorum_passed": false,
+    "production_mask_authority_granted": false
+  },
+  "remaining": "Bind this evidence into live provider candidates and run current independent per-record strict-VLM verdicts. Pixel-semantic panel verification does not itself establish label correctness, person ownership, or mask authority."
+}

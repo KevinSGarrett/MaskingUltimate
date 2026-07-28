@@ -1,0 +1,122 @@
+{
+  "authority": "shadow_advisory_human_approval_required",
+  "image_id": "img_cdab0311dc96",
+  "instance_id": "p0",
+  "judgments": [
+    {
+      "confidence": 0.95,
+      "correction": {
+        "negative_points": [],
+        "polygon": [],
+        "positive_points": [
+          [
+            510,
+            250
+          ],
+          [
+            650,
+            430
+          ],
+          [
+            780,
+            570
+          ]
+        ],
+        "rationale": "Add positive points on the excluded skin of the foot's instep to extend the boundary to its correct physical edge.",
+        "tool": "points"
+      },
+      "defects": [
+        "boundary_too_tight"
+      ],
+      "evidence": "The mask boundary on the top-right slope (dorsum/instep) is too tight, excluding a strip of foot skin.",
+      "latency_ms": 14984,
+      "model": "gemini-3.5-flash",
+      "observations": {
+        "contour": "The white contour clearly runs inside the actual physical boundary of the foot on its upper slope.",
+        "full_context": "The right foot base is visible at the bottom right of the image, resting on the floor.",
+        "mask": "The mask covers most of the foot but is truncated along the upper right slope.",
+        "neighbor_overlap": "No neighbor overlap issues are present here.",
+        "overlay": "The red overlay reveals a noticeable strip of uncovered skin along the top-right instep of the foot.",
+        "source_crop": "The right foot is viewed from the medial side. The skin of the dorsum/instep is clearly visible."
+      },
+      "provider": "gemini",
+      "response_sha256": "ad2ecc806af11e9c763692d21c28e55de0fad1a40379d30782423ae501473697",
+      "usage": {
+        "cost_usd": 0.0086625,
+        "input_tokens": 9510,
+        "output_tokens": 340
+      },
+      "verdict": "fail"
+    },
+    {
+      "confidence": 0.94,
+      "correction": {
+        "negative_points": [],
+        "polygon": [],
+        "positive_points": [],
+        "rationale": "No correction is needed; the existing mask adequately segments the visible right foot base.",
+        "tool": "none"
+      },
+      "defects": [],
+      "evidence": "The candidate matches the character-right foot identified by the COCO semantic chain and covers the full visible target within the ROI with a clean, plausible silhouette boundary.",
+      "latency_ms": 10981,
+      "model": "gpt-5.6-luna",
+      "observations": {
+        "contour": "The cyan contour is anatomically plausible and tracks the visible silhouette. The flat upper segment corresponds to the crop-visible ankle transition rather than an erroneous extension into hidden anatomy.",
+        "full_context": "The foreground foot is the character's right foot according to the semantic pose-chain evidence; it is the visible foot enclosed by the cyan ROI and is distinct from the crossed rear foot.",
+        "mask": "The binary mask covers the visible foot base continuously, including the instep, heel-side edge, forefoot, and toes, without apparent holes or disconnected components.",
+        "neighbor_overlap": "No meaningful overlap with the crossed rear foot or other neighboring body part is visible; the mask is confined to the foreground right foot.",
+        "overlay": "The red overlay aligns closely with the visible foot pixels; the boundary follows the ankle transition, dorsal edge, plantar edge, and toe contours with no meaningful spill into the background or rear foot.",
+        "source_crop": "The crop shows a complete visible right foot base from the ankle transition through the toes, with clear skin-background boundaries and no clothing in the target region."
+      },
+      "provider": "openai",
+      "response_sha256": "77605352c6b89b85a490a57ca11c27e8136e20096275e897638e973e840d9258",
+      "usage": {
+        "cost_usd": 0.013487,
+        "input_tokens": 9653,
+        "output_tokens": 639
+      },
+      "verdict": "pass"
+    },
+    {
+      "confidence": 0.83,
+      "correction": {
+        "negative_points": [],
+        "polygon": [],
+        "positive_points": [],
+        "rationale": "Mask boundary, coverage, and side assignment are correct and consistent with pose-chain evidence and visible pixels; no correction needed.",
+        "tool": "none"
+      },
+      "defects": [],
+      "evidence": "The mask corresponds to the character's right foot per COCO pose-chain nearest-distance evidence, fully covers the visible foot region (ankle joint to toes) with a tight, anatomically plausible boundary and no contamination from background, clothing, or the neighboring leg.",
+      "latency_ms": 25215,
+      "model": "claude-sonnet-5",
+      "observations": {
+        "contour": "White contour line tracks the foot outline accurately, including the ankle bone bump, top ridge notch, and toe tips; no visible leakage onto background or onto the other leg.",
+        "full_context": "Cyan ROI box tightly bounds the forward-most foot at the bottom of the image; pose-chain evidence confirms this foot (centroid ~1102,5262) is nearest the right ankle/knee/hip chain (263px) vs left chain (788px), so this is the character's right foot despite screen-left position from crossed legs.",
+        "mask": "Binary mask is a single solid blob shaped like the foot with a small stepped notch at the top matching the ankle-shin junction; no holes or stray fragments.",
+        "neighbor_overlap": "No overlap markers or bleed onto the adjacent leg/ankle visible in this crop; the boundary stops cleanly at the ankle joint without extending into calf or other leg.",
+        "overlay": "Red overlay aligns closely with the foot silhouette in the source crop, covering ankle through toes with edges hugging the skin boundary, including toe separations and nail area.",
+        "source_crop": "High-res crop shows a complete foot from ankle to toe tips, standing on floor, viewed from a side/three-quarter angle with visible sole edge, top-of-foot tendons, and toenails."
+      },
+      "provider": "anthropic",
+      "response_sha256": "6e6fe96f7cc494864beb6c8da274883cccd0dafb3cfc42ed1c0a214279a86284",
+      "usage": {
+        "cost_usd": 0.043886,
+        "input_tokens": 12378,
+        "output_tokens": 1913
+      },
+      "verdict": "pass"
+    }
+  ],
+  "label": "right_foot_base",
+  "local_audit": {
+    "deterministic_overrides": [],
+    "final_verdict": "pass",
+    "model": "qwen2.5vl:7b",
+    "model_verdict": "pass"
+  },
+  "schema_version": "1.0.0",
+  "sha256": "9216511ad4c08f9f69bba0441fe664b2016691d12d7a5426f43dc684bd304547",
+  "source_sha256": "d962e914116cdd97d00187c313fe94c99e9e725ab50d38b79d203f1ed47bae43"
+}

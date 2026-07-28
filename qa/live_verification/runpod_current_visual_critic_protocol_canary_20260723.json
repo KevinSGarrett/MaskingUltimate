@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-07-23T01:53:54Z",
+  "scope": "runpod_current_protocol_behavior_canary_only",
+  "authority_claimed": false,
+  "role_certificates_issued": 0,
+  "promotion_allowed": false,
+  "runpod": {
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "persistent_output_root": "/workspace/maskfactory_runtime/critic_current_protocol_20260723",
+    "shared_coordinator_used": true,
+    "terminal_mode": "ON_IDLE",
+    "terminal_gpu_used_memory_mb": 648,
+    "terminal_gpu_free_memory_mb": 47993
+  },
+  "corpus": {
+    "sha256": "7064d190fb6535f09482ef504e18f4b2ff12c7ab5254ae96003e756ffc8cc9d0",
+    "case_count": 12,
+    "qualification_scope": "right_arm_protocol_behavior_canary_only",
+    "full_66_class_role_qualification": false
+  },
+  "prompt_sha256": "cea805d38d18ee96d5c82251a665a8064a947c47e39d47688754e3904e8221a6",
+  "candidates": [
+    {
+      "role_id": "primary_visual_critic",
+      "model_id": "qwen3_vl_30b_a3b_instruct_fp8",
+      "family_id": "qwen",
+      "revision": "d9748a51ae66354c4dad665aab2c71f26cf2c8cd",
+      "artifact_tree_sha256": "dbb7d33b3ab68a356069bc577692fd347c4103c2c59ead3a65943d664a8c8d4a",
+      "runtime_fingerprint_sha256": "724d78445b999d54ed2620e58b2f386384e6a428772061ee619846e503af401f",
+      "qualification_file_sha256": "997fa9ac8f081f3126b53ce4e9d8cb4d986c36ceef8c3a2952f7a8243908120a",
+      "report_sha256": "3bf1a61ba2fe0589f763b6d3991387dc2300ec2e5b20aa9f30f61d9056e11621",
+      "status": "fail",
+      "authority_claimed": false,
+      "metrics": {
+        "valid_mask_pass_rate": 0.0,
+        "defect_recall": 1.0,
+        "precision": 0.8333333333333334,
+        "serious_false_pass_rate": 0.0,
+        "abstention_rate": 0.0,
+        "schema_compliance_rate": 1.0,
+        "context_binding_rate": 1.0,
+        "evidence_localization_rate": 1.0,
+        "ownership_accuracy": 0.0,
+        "label_accuracy": 0.5,
+        "deterministic_replay_rate": 0.8333333333333334,
+        "p95_latency_ms": 2381.786420941353,
+        "peak_vram_fraction": 0.8884818884818885
+      },
+      "failures": [
+        "valid_mask_pass_rate_below_minimum",
+        "ownership_accuracy_below_minimum",
+        "label_accuracy_below_minimum",
+        "deterministic_replay_rate_below_minimum"
+      ]
+    },
+    {
+      "role_id": "independent_juror",
+      "model_id": "internvl3_5_8b_bf16",
+      "family_id": "internvl",
+      "revision": "9bb6a56ad9cc69db95e2d4eeb15a52bbcac4ef79",
+      "artifact_tree_sha256": "e1a117fa9589a7f7bf67ff0eaf1b0c75dfd6ff24bf99142e48aa5d79897eed65",
+      "runtime_fingerprint_sha256": "6434ef28bd337ef7c81b5f62c2036e7edce14cdf91c5455fcc7b3adfd16e2b41",
+      "qualification_file_sha256": "8b695eb08c834eb333cf35a743be30db476bf9169cb64b0b371e9600f3380c88",
+      "report_sha256": "e28abb2bff1792f3bb0798e0dd0c67a0d9783a7e262ba44645eae61eb2d70e47",
+      "status": "fail",
+      "authority_claimed": false,
+      "metrics": {
+        "valid_mask_pass_rate": 0.0,
+        "defect_recall": 0.0,
+        "precision": 0.0,
+        "serious_false_pass_rate": 0.0,
+        "abstention_rate": 1.0,
+        "schema_compliance_rate": 0.0,
+        "context_binding_rate": 0.0,
+        "evidence_localization_rate": 0.0,
+        "ownership_accuracy": 0.0,
+        "label_accuracy": 0.0,
+        "deterministic_replay_rate": 1.0,
+        "p95_latency_ms": 6359.673760831356,
+        "peak_vram_fraction": 0.4142043142043142
+      },
+      "failures": [
+        "valid_mask_pass_rate_below_minimum",
+        "defect_recall_below_minimum",
+        "precision_below_minimum",
+        "schema_compliance_rate_below_minimum",
+        "context_binding_rate_below_minimum",
+        "evidence_localization_rate_below_minimum",
+        "ownership_accuracy_below_minimum",
+        "label_accuracy_below_minimum",
+        "abstention_rate_above_maximum"
+      ]
+    }
+  ],
+  "decision": {
+    "primary_visual_critic": "unavailable_unpromoted",
+    "independent_juror": "unavailable_unpromoted",
+    "strict_visual_authority": "VISUAL_CRITIC_BLOCKED",
+    "segmentation_and_deterministic_qa_may_continue": true,
+    "autonomous_certification_allowed": false,
+    "reason": "Neither independent model family passed the frozen positive-and-negative protocol canary. Full 66-class, risk, adult-anatomy, and multi-person qualification remains required even after a protocol canary passes."
+  },
+  "self_sha256": "b0cbd3e5573bd18752a0790956ef2f464ac5b92b2fd710671dd52bc337ca7e65"
+}

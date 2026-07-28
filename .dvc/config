@@ -1,0 +1,4 @@
+[core]
+    remote = maskfactory-dvc-local
+['remote "maskfactory-dvc-local"']
+    url = F:/MaskFactory_DataRelocated/dvc_local_remote

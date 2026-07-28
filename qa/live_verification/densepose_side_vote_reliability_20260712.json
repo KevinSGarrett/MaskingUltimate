@@ -1,0 +1,20 @@
+{
+  "audit_date": "2026-07-12",
+  "corpus_instances": 29,
+  "densepose_side_vote_contract": {
+    "minimum_sided_pixels": 32,
+    "minimum_mask_coverage": 0.01,
+    "minimum_majority_margin": 0.1,
+    "weak_or_trace_evidence_action": "no_vote"
+  },
+  "qc014_before": {
+    "fail": 16,
+    "pass": 13
+  },
+  "qc014_after_reliability_filter": {
+    "fail": 16,
+    "pass": 13
+  },
+  "instances_whose_qc014_result_changed": [],
+  "interpretation": "Trace or weak DensePose overlap no longer masquerades as an independent side signal. All existing ambiguous or contradictory cases remain BLOCK; no threshold or override was relaxed."
+}

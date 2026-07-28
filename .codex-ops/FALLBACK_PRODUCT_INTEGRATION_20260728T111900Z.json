@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "artifact_type": "maskfactory_fallback_product_integration",
+  "created_at_utc": "2026-07-28T11:19:00Z",
+  "normalization_branch": "codex/normalize-maskfactory-main-20260728",
+  "reconciliation_parent": "432141c106d6a6d6c1665008e42269e3b8b31a32",
+  "fallback_product_parent": "7d66ca27781d899a43eb644c0378bcf1478045a7",
+  "merge_mode": {
+    "preserve_both_histories": true,
+    "strategy": "recursive_ort_with_hunk_level_ours_bias",
+    "whole_tree_ours_strategy": false,
+    "staged_paths": 2658,
+    "insertions": 525996,
+    "deletions": 71
+  },
+  "conflict_resolution": {
+    "unresolved_after_strategy": 1,
+    "path": "tools/run_with_shared_pod_gpu_lease.py",
+    "classification": "add_add_safety_critical",
+    "content_disposition": "accepted_hardened_reconciliation_version",
+    "mode_disposition": "retained_fallback_executable_bit_100755",
+    "working_file_sha256": "4d80a869da57242c81cfbe6a70072f278e3db6db54a90ceaf14c9ee206ce4cbc",
+    "unmerged_paths_after_resolution": 0
+  },
+  "authority_disposition": {
+    "standing_orders_changed": false,
+    "pursuing_goal_changed_by_merge": false,
+    "tracker_program_changed": false,
+    "tracker_json_changed": false,
+    "pyproject_changed": false,
+    "freeze_registry_updated_for_new_pursuing_goal_hash": true,
+    "freeze_registry_sha256": "af89bdb73de7d88979d3658e0434a313daf84e66a0f3184f0428788c3231dcaa"
+  },
+  "validation": {
+    "git_diff_check": "PASS",
+    "python_compileall_src_tools": "PASS",
+    "tracker_items": 906,
+    "tracker_unresolved_hard_blockers": 54,
+    "tracker_structural_errors": 0,
+    "focused_test_files": 43,
+    "focused_tests_collected": 420,
+    "focused_tests_passed": 419,
+    "focused_tests_expected_skips": 1,
+    "focused_tests_failed": 0
+  },
+  "limitations": [
+    "The divergent serverless post-split cohort is not yet reconciled.",
+    "Historical agent-only candidates are not yet semantically dispositioned.",
+    "The dirty canonical checkout is still protected and unreconciled.",
+    "The complete product suite has not yet run on this integration.",
+    "This receipt does not authorize main promotion or branch deletion."
+  ]
+}

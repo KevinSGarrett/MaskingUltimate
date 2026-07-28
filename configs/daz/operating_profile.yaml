@@ -1,0 +1,12 @@
+schema_version: 1.0.0
+profile_id: private_personal_local_v1
+execution_location: local_machine
+commercial_deployment: false
+public_hosting: false
+distribution: false
+automatic_asset_purchase: false
+automatic_account_login: false
+character_scope:
+  person_count: [1, 2, 3, 4]
+  presentation: [male, female]
+  wardrobe_states: [clothed, partially_clothed, underwear, swimwear, unclothed]

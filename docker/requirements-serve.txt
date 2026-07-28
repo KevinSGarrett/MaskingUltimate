@@ -1,0 +1,41 @@
+# Curated Mode-B SERVE runtime subset (governed, pinned to env/requirements.lock.txt).
+#
+# Why a curated subset instead of env/requirements.lock.txt directly:
+#   env/requirements.lock.txt pins local file:// (detectron2), git+ (SAM-2,
+#   GroundingDINO), and an editable maskfactory entry that only resolve on
+#   Kevin's WSL build host. Those are irrelevant to starting the localhost
+#   Mode-B FastAPI service. This file keeps the exact same versions for every
+#   dependency `maskfactory serve` (create_app -> /health, /models) and
+#   `maskfactory doctor` need, so the container is reproducible and honest.
+#
+# torch/torchvision are installed separately from the cu128 index in the
+# Dockerfile (they are too large / index-specific to pin here).
+
+numpy==1.26.4
+pillow==12.2.0
+scipy==1.17.1
+scikit-image==0.26.0
+fastapi==0.139.0
+starlette==1.3.1
+uvicorn==0.51.0
+pydantic==2.13.4
+pydantic_core==2.46.4
+annotated-types==0.7.0
+python-multipart==0.0.32
+click==8.4.2
+PyYAML==6.0.3
+jsonschema==4.26.0
+jsonschema-specifications==2025.9.1
+referencing==0.37.0
+rpds-py==2026.6.3
+loguru==0.7.3
+rich==15.0.0
+Pygments==2.20.0
+cryptography==49.0.0
+cffi==2.1.0
+pycparser==3.0
+typing_extensions==4.15.0
+anyio==4.14.1
+h11==0.16.0
+idna==3.18
+sniffio==1.3.1

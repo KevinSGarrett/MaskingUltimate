@@ -1,0 +1,100 @@
+schema_version: 1.0.0
+profile_version: 1.0.0
+algorithm: sha256_namespaced_box_muller_factor_model_v1
+normalized_range: [-1.0, 1.0]
+distribution_tiers:
+  central: {weight: 0.50, minimum_abs: 0.0, maximum_abs: 0.35}
+  moderate: {weight: 0.35, minimum_abs: 0.35, maximum_abs: 0.70}
+  validated_extreme: {weight: 0.15, minimum_abs: 0.70, maximum_abs: 1.0}
+body_factors: [scale, mass, muscle, frame, limb, curvature]
+body_axes:
+  stature: {loadings: {scale: 0.65, limb: 0.35}, noise_weight: 0.30}
+  overall_scale: {loadings: {scale: 0.90}, noise_weight: 0.25}
+  body_mass: {loadings: {mass: 0.90, frame: 0.15}, noise_weight: 0.25}
+  body_fat_distribution: {loadings: {mass: 0.75, curvature: 0.30}, noise_weight: 0.35}
+  muscularity_total: {loadings: {muscle: 0.90, mass: -0.15}, noise_weight: 0.25}
+  upper_body_muscularity: {loadings: {muscle: 0.80, frame: 0.25}, noise_weight: 0.30}
+  lower_body_muscularity: {loadings: {muscle: 0.75, curvature: 0.20}, noise_weight: 0.35}
+  shoulder_width: {loadings: {frame: 0.80, muscle: 0.25}, noise_weight: 0.30}
+  chest_depth: {loadings: {frame: 0.55, mass: 0.35, muscle: 0.20}, noise_weight: 0.35}
+  chest_or_bust_volume: {loadings: {curvature: 0.60, mass: 0.35, frame: 0.15}, noise_weight: 0.40}
+  waist_width: {loadings: {mass: 0.70, frame: 0.30}, noise_weight: 0.35}
+  abdomen_prominence: {loadings: {mass: 0.80, curvature: 0.20}, noise_weight: 0.30}
+  pelvis_width: {loadings: {frame: 0.65, curvature: 0.30}, noise_weight: 0.35}
+  hip_width: {loadings: {frame: 0.50, curvature: 0.55, mass: 0.20}, noise_weight: 0.30}
+  glute_volume: {loadings: {curvature: 0.70, mass: 0.30, muscle: 0.15}, noise_weight: 0.35}
+  torso_length: {loadings: {scale: 0.35, limb: -0.45}, noise_weight: 0.45}
+  arm_length: {loadings: {limb: 0.75, scale: 0.25}, noise_weight: 0.30}
+  forearm_proportion: {loadings: {limb: 0.55}, noise_weight: 0.55}
+  hand_scale: {loadings: {limb: 0.45, scale: 0.30}, noise_weight: 0.45}
+  leg_length: {loadings: {limb: 0.80, scale: 0.25}, noise_weight: 0.25}
+  thigh_volume: {loadings: {mass: 0.40, muscle: 0.45, curvature: 0.25}, noise_weight: 0.40}
+  calf_volume: {loadings: {muscle: 0.50, mass: 0.20}, noise_weight: 0.50}
+  foot_scale: {loadings: {limb: 0.40, scale: 0.35}, noise_weight: 0.45}
+  head_scale: {loadings: {scale: 0.25, frame: -0.15}, noise_weight: 0.60}
+  neck_length: {loadings: {limb: 0.35, scale: 0.15}, noise_weight: 0.60}
+face_factors: [cranial, angularity, feature_scale, vertical, projection, soft_tissue]
+face_axes:
+  head_width: {loadings: {cranial: 0.80, angularity: 0.15}, noise_weight: 0.30}
+  head_height: {loadings: {cranial: 0.45, vertical: 0.65}, noise_weight: 0.30}
+  head_depth: {loadings: {cranial: 0.60, projection: 0.35}, noise_weight: 0.35}
+  jaw_width: {loadings: {angularity: 0.75, cranial: 0.25}, noise_weight: 0.35}
+  jaw_angle: {loadings: {angularity: 0.80}, noise_weight: 0.35}
+  chin_projection: {loadings: {projection: 0.70, angularity: 0.20}, noise_weight: 0.40}
+  chin_height: {loadings: {vertical: 0.55, angularity: 0.25}, noise_weight: 0.45}
+  cheek_volume: {loadings: {soft_tissue: 0.75, feature_scale: 0.20}, noise_weight: 0.35}
+  cheek_height: {loadings: {vertical: 0.45, angularity: 0.25}, noise_weight: 0.50}
+  forehead_shape: {loadings: {cranial: 0.45, vertical: 0.30}, noise_weight: 0.55}
+  nose_length: {loadings: {vertical: 0.55, feature_scale: 0.35}, noise_weight: 0.40}
+  nose_width: {loadings: {feature_scale: 0.60, cranial: 0.20}, noise_weight: 0.45}
+  nose_projection: {loadings: {projection: 0.75, feature_scale: 0.15}, noise_weight: 0.35}
+  eye_spacing: {loadings: {cranial: 0.35, feature_scale: -0.20}, noise_weight: 0.60}
+  eye_size: {loadings: {feature_scale: 0.65, soft_tissue: 0.15}, noise_weight: 0.45}
+  eye_tilt: {loadings: {angularity: 0.35}, noise_weight: 0.70}
+  brow_shape: {loadings: {angularity: 0.50, vertical: 0.15}, noise_weight: 0.60}
+  lip_shape: {loadings: {soft_tissue: 0.45, feature_scale: 0.20}, noise_weight: 0.60}
+  lip_volume: {loadings: {soft_tissue: 0.70, feature_scale: 0.20}, noise_weight: 0.40}
+  ear_size: {loadings: {feature_scale: 0.40, cranial: 0.20}, noise_weight: 0.65}
+  ear_projection: {loadings: {projection: 0.35}, noise_weight: 0.70}
+  neck_thickness: {loadings: {angularity: 0.35, soft_tissue: 0.30}, noise_weight: 0.60}
+constraints:
+  shoulder_torso_max_delta: 0.65
+  pelvis_hip_max_delta: 0.45
+  arm_hand_max_delta: 0.55
+  leg_foot_max_delta: 0.55
+  stature_scale_max_delta: 0.60
+age_categories:
+  adult_21_29:
+    center: 0.08
+    spread: 0.10
+    skin_detail_tags: [adult_smooth, optional_freckles]
+    hair_density_tags: [full, ordinary]
+    hair_color_tags: [natural_varied]
+    posture_tags: [neutral_adult]
+  adult_30_44:
+    center: 0.28
+    spread: 0.12
+    skin_detail_tags: [adult_texture, optional_expression_lines]
+    hair_density_tags: [full, ordinary, mild_variation]
+    hair_color_tags: [natural_varied, optional_early_gray]
+    posture_tags: [neutral_adult, mild_variation]
+  adult_45_64:
+    center: 0.58
+    spread: 0.14
+    skin_detail_tags: [adult_mature_texture, expression_lines, optional_spots]
+    hair_density_tags: [ordinary, mild_thinning, varied]
+    hair_color_tags: [natural_varied, mixed_gray]
+    posture_tags: [neutral_adult, mature_variation]
+  adult_65_plus:
+    center: 0.84
+    spread: 0.12
+    skin_detail_tags: [adult_senior_texture, wrinkles, optional_spots]
+    hair_density_tags: [ordinary, thinning, varied]
+    hair_color_tags: [gray, white, natural_varied]
+    posture_tags: [neutral_adult, senior_variation]
+age_channels:
+  - mf://age/face
+  - mf://age/body
+  - mf://age/skin
+  - mf://age/posture
+  - mf://age/hair

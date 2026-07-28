@@ -1,0 +1,74 @@
+{
+  "schema_version": "maskfactory.live_verification.nude_dataset_coverage_reporting.v1",
+  "artifact_type": "adult_corpus_dataset_level_coverage_reporting",
+  "recorded_at": "2026-07-22T12:34:33Z",
+  "status": "HARD_QA_PASS_BOUNDED",
+  "tracker_items": [
+    "MF-P4-12.09"
+  ],
+  "product_behavior": {
+    "all_registry_records_reconciled": true,
+    "raw_labels_preserved": true,
+    "anatomy_action_scene_separated": true,
+    "dataset_role_domain_split_lineage_axes": true,
+    "provider_agreement_axis": true,
+    "hard_qc_axis": true,
+    "repair_axis": true,
+    "abstention_and_quarantine_axes": true,
+    "certification_yield_axis": true,
+    "unprocessed_strata_explicit": true,
+    "processed_source_hash_reverified": true
+  },
+  "initial_full_queue_report": {
+    "registry_record_count": 81910,
+    "processed_record_count": 0,
+    "remaining_record_count": 81910,
+    "certification_yield": 0.0,
+    "report_self_sha256": "6db9a96dba0ad68702f8bc996ca1623bdd36236fa21fdc43cd0fca3df4b716af",
+    "report_file_sha256": "24c69ff4ef2e7b72941e283a4ed2c5e129984a951600de218a90193c2ca1fad1"
+  },
+  "completed_holdout_report": {
+    "registry_record_count": 81910,
+    "processed_record_count": 50,
+    "remaining_record_count": 81860,
+    "outcome_counts": {
+      "holdout": 50
+    },
+    "processed_label_kind_counts": {
+      "anatomy": 100
+    },
+    "provider_agreement_status_counts": {
+      "not_applicable": 50
+    },
+    "hard_qc_status_counts": {
+      "not_applicable": 50
+    },
+    "repair_status_counts": {
+      "not_applicable": 50
+    },
+    "certification_status_counts": {
+      "not_issued": 50
+    },
+    "certification_yield": 0.0,
+    "report_self_sha256": "9479e18e7da5c8c060a1388496995312e147c3b501dc314e992f3c82dd4eca49",
+    "report_file_sha256": "bca4f1f62a4d3e7498f2375725287952d224916c113e75a397b31d77fb36073a"
+  },
+  "validation": {
+    "focused_and_neighbor_tests": "30 passed",
+    "ruff": "PASS",
+    "black": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "implementation_sha256": {
+    "src/maskfactory/nude_dataset_coverage.py": "6e2c7a681c7fc2d4384848c187c9dced367b071bed38da9bc8277aa2f51d4ebe",
+    "tools/build_nude_dataset_coverage.py": "5a81b6da31e54272daa3c22b098ae54b949a7ca52b72c978c5446cad6d1d5a3a",
+    "tests/test_nude_dataset_coverage.py": "e614417d1e8df7d00810a4b7f559647d5990a81c069a73c34930453b71bf528e"
+  },
+  "authority_boundary": {
+    "provider_records_processed": 0,
+    "accepted_or_repaired_count": 0,
+    "certificates_issued": 0,
+    "production_mask_authority_granted": false
+  },
+  "remaining": "Populate provider, hard-QC, repair, abstention, quarantine, and certificate strata with real generation/review outcomes during the representative canaries and first 1,000-record wave."
+}

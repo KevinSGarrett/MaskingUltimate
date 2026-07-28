@@ -1,0 +1,17 @@
+{
+  "authority_ceiling": "proposal_boxes_only",
+  "binding_self_sha256": "cbcee39d9d2f05da52c02b51f8ee5559fbd6027e7e85e6a6649b9542e3e31dbb",
+  "claims": {
+    "masks_emitted": false,
+    "person_ownership": false,
+    "queue_terminal_progress": false,
+    "training_eligibility": false,
+    "visual_review": false
+  },
+  "exit_code": 1,
+  "report_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "schema_version": "maskfactory.p4_groundingdino_cpu_provider_receipt.v1",
+  "self_sha256": "7455a9185659cbd1185295449659fa2a996b4422c75e8284be37b252ec0475d4",
+  "state": "failed",
+  "stderr_sha256": "49f581e0447f0904e8d1711e8d604d68afd4a17b1bc9999b3e6e5b21cc4a6704"
+}

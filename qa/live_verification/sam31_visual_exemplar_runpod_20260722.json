@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0.0",
+  "item_id": "MF-P2-11.03",
+  "checked_at": "2026-07-22T02:10:33Z",
+  "result": "runtime_pass_bounded",
+  "claim": "RUNTIME_PASS_BOUNDED",
+  "operation": "same_image_visual_exemplar_discovery",
+  "execution": {
+    "provider": "runpod",
+    "pod_id": "1q4ji0gg1fkhvt",
+    "persistent_root": "/workspace",
+    "gpu": "NVIDIA RTX 6000 Ada Generation",
+    "fresh_process_repeats": 2
+  },
+  "source": {
+    "commit": "5dd401d1c5c1d5c3eedff06d41b77af824517619",
+    "tracked_tree_clean": true,
+    "checkpoint_sha256": "0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6",
+    "runtime_lock_sha256": "734f8017db6cd51c5093b23f3ef4f4c49861e41a39de60453d37fc006f03bee6",
+    "requirements_lock_sha256": "9fbf4fdd79b64d38f7baa58d127d06098859d8408fb84e2592a1dbd862c9c871",
+    "runner_sha256": "2fa8491b34cb896389d9ab5596aabf4381c4c93d866f65d4c604450d8cca1d91",
+    "session_compat_sha256": "9f250ce9f968dd834067f20bf308c602a3453f7185a08052b85500dc38147f5b"
+  },
+  "fixture": {
+    "path": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
+    "encoded_sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63",
+    "rgb_sha256": "980cdc2df8461b8ed040e886f790886656bec2af9e3bb482c9c12bb57118c6d5",
+    "width": 810,
+    "height": 1080
+  },
+  "request": {
+    "sha256": "9836a698b0ea859bd1e4696ebfa7fca63d46f753f30541e9104f2d2131d5c235",
+    "concept": "person",
+    "positive_bbox_xyxy": [52.0, 399.0, 244.0, 900.0],
+    "exemplar_document_sha256": "860d1066d0d85965f593fc42587c36a01644681d77e6c8c6f30c45ab5d1b241d",
+    "exemplar_file_sha256": "58076d06d2a09825ed8950ab98a867e054514e8e10d02f6d5dc2d2b570a7244d",
+    "prompt_npz_sha256": "94ffec835baab969224c2eceb52977063e1ff6fd0e2c3ccad15f2319da4c81f6",
+    "translation": "text_plus_same_image_visual_box_exemplars_exact"
+  },
+  "result_summary": {
+    "candidate_count": 4,
+    "mask_pixel_count": 111517,
+    "artifact_shapes": {
+      "masks": [4, 1080, 810],
+      "object_ids": [4],
+      "probabilities": [4],
+      "boxes_xywh": [4, 4],
+      "concept_indices": [4]
+    },
+    "payload_sha256": "4b9d417cc59958461386c54e41fda8d676fd41b62c96996674fab996063e1375",
+    "output_npz_sha256": "40df32d5532230731172919ae22c55596c631603ce4cce6999c5c5f2219712a0",
+    "fresh_process_payloads_identical": true,
+    "fresh_process_npz_bytes_identical": true,
+    "host_contract_validation": "pass_both_repeats"
+  },
+  "measurements": {
+    "run_1": {
+      "model_load_latency_ms": 29159.123562276363,
+      "inference_latency_ms": 2493.663363158703,
+      "model_vram_bytes": 3926040576,
+      "peak_inference_vram_bytes": 6111454208,
+      "stdout_sha256": "2fdb4491297e5f0827874626f77c8deb1a280523bf44b03832e6947522ff4109",
+      "stderr_sha256": "a1112a8cbb812112573b6ceca99cbc0f3af94ded11868511680a0663bb4a6053"
+    },
+    "run_2": {
+      "model_load_latency_ms": 25756.76053017378,
+      "inference_latency_ms": 767.0147716999054,
+      "model_vram_bytes": 3926040576,
+      "peak_inference_vram_bytes": 6111454208,
+      "stdout_sha256": "ba2e653474f5f31fbbdbffd19e9717b6abb3e5faed530fc05af0d7d33903bcb7",
+      "stderr_sha256": "0ccec58ba4dbf676b04d9a03a55fc60daca9258cf0e0532307e3380c2becbd47"
+    }
+  },
+  "comparison_to_text_only_discovery": {
+    "text_candidate_count": 4,
+    "exemplar_candidate_count": 4,
+    "object_ids_stable": true,
+    "per_object_iou": [
+      0.9972023329697947,
+      0.9951379066478077,
+      0.996469853843339,
+      0.9974714394516375
+    ],
+    "minimum_iou": 0.9951379066478077,
+    "probabilities_changed": true
+  },
+  "non_mutation": {
+    "git_head": "cfc4c780fa6f1a34a6431a662657fd6f0cd257a4",
+    "pipeline_config_sha256": "bf3f2c49b6f882ae7d37b348e98910d3dcc0ea51c8960d4efac8d6b2de03c144",
+    "external_sources_sha256": "b4ad38e516fa0da301b5d3d9acc0c3ba5f55e61cecdf2ddbf678b6a6404d460b",
+    "active_map_written": false,
+    "production_registry_changed": false
+  },
+  "authority": "official_sam31_runtime_draft_candidates_only_no_gold_or_active_map_authority",
+  "claims_not_made": [
+    "interactive refinement passed",
+    "provider benchmark passed",
+    "champion promotion",
+    "active map changed",
+    "production mask authority",
+    "gold authority"
+  ]
+}

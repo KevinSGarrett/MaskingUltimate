@@ -2,17 +2,25 @@
 
 Updated authority: 2026-07-28
 
-## 0A. Completed foundation phase: physical consolidation and authority convergence
+## 0A. Active terminal recovery pass: stash/reflog and physical authority convergence
 
-This no-loss local-consolidation phase is complete. Continue the broader
-MaskFactory E2E pursuing goal below from the clean physical canonical root;
-reopen this foundation only if a newly discovered byte is not covered by the
-committed path ledger, preservation receipts, or explicit retained authority.
+The branch/worktree/directory consolidation passed, but the terminal audit
+found five live historical stashes and one generated pre-commit cache that
+were outside the earlier path ledger. This foundation is reopened until the
+recovered functional cohort, exhaustive stash matrix, Plan/Item/Instruction/
+Tracker bindings, complete tests, clean export, zero-residue status, final
+receipt, and local/remote parity all pass.
 
 Current phase state:
 
 - the 137 meaningful source/control files have exact semantic dispositions
   with zero unresolved rows;
+- the late stash audit adds 4,008 path rows with zero unresolved semantic
+  dispositions, 18 exact source/control adoptions, and six bounded semantic
+  ports on later main;
+- five stash merge/index/untracked-parent states are independently preserved
+  in a verified 27,007,381-byte incremental bundle before live stash
+  retirement;
 - the 65 missing historical tracker events were restored without stale-state
   replay;
 - 33,308 hash-listed dirty-root files, 3,679 empty directories, and 28
@@ -77,8 +85,9 @@ runtime, visual-authority, campaign, or E2E completion tier.
 
 This phase is complete only when:
 
-1. all 137 meaningful files and any later arrivals have exact semantic and
-   preservation dispositions;
+1. all 137 original meaningful files, every `refs/stash` worktree/index/
+   untracked parent, reflog-only recovery candidate, hook cache, and any later
+   arrival have exact semantic and preservation dispositions;
 2. every useful capability is present in clean `main` and fully represented in
    Plan, Items, Instructions, tracker/DAG, evidence, and tests;
 3. shared `C:\w` has no unowned or unclassified byte and only intentionally
@@ -95,7 +104,7 @@ This phase is complete only when:
 8. storage constraints and any retained recovery/VHD/data/evidence roots are
    explicit external authorities, not unreviewed clutter.
 
-## 0B. Repository-normalization gate: complete
+## 0B. Repository branch normalization: complete; terminal source recovery active
 
 The lossless repository-normalization and `main`-promotion phase completed on
 2026-07-28. Its immutable validation/branch plan is
@@ -113,10 +122,11 @@ Current verified state:
   full/connectivity Git-integrity gates pass;
 - remote heads are reduced from 30 to seven: `main` plus six explicit recovery
   refs;
-- local branches are reduced from 21 to two: `main` plus the branch checked
-  out by the protected dirty recovery checkout;
-- exactly two Masking worktrees remain: clean promoted `main` and the protected
-  dirty recovery checkout; and
+- local branches are reduced from 21 to one: `main`;
+- exactly one Masking worktree remains at the physical canonical root;
+- five late historical stashes are now independently bundled and retired,
+  and the generated pre-commit cache is absent; final push parity remains the
+  terminal gate for this recovery pass; and
 - Consumer, recovery archives, VHDX files, Main-owned paths, and shared
   `C:\w` were not mutated.
 

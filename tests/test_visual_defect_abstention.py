@@ -211,3 +211,16 @@ def test_seeded_garment_bias_morphology_abstains_without_material_clear() -> Non
     assert decision.may_promote is False
     assert decision.outcome == "ABSTAIN_BOUNDED"
     assert BLOCKED_VISUAL_PASS_CLAIM not in decision.outcome
+
+
+def test_morphology_still_abstains_on_fragmentation() -> None:
+    decision = decide_visual_repair_promotion(
+        defect_class="fragmentation",
+        hypothesis_id="remove_small_components_max_ontology",
+        executor_accepted=True,
+        drop_px=500,
+        baseline_excess=76,
+        hard_qc_passed=True,
+    )
+    assert decision.may_promote is False
+    assert decision.outcome == "ABSTAIN_BOUNDED"

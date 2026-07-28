@@ -268,6 +268,44 @@ The retirement receipt explicitly records that a physical 45-row `.git`-file
 manifest was not captured; the directory registry binds its count/bytes and
 the Main commit/tree binds its semantic content.
 
+## Late historical-stash reconciliation
+
+The final repository-state audit found five historical stashes after branch
+and worktree normalization. All five stash merge commits, their index
+parents, and their untracked parents are preserved in the verified
+incremental bundle at
+`C:\MaskFactory_TierA_Backups\historical_stashes_20260728T182808Z`.
+The bundle SHA-256 is
+`f4fb70e328a171d7e9896130decac4fd7701b0238712d8a30b5f7232dfbc6398`.
+
+The exhaustive matrix covers 4,008 candidate path rows:
+
+- 1,976 are already exact in current main;
+- 18 are adopted exactly from the verified stash;
+- nine stash rows map to six bounded semantic ports on current main;
+- one duplicate fixed-script path is adopted to its canonical tool name;
+- 379 are exact historical bytes already contained in main history and
+  superseded by later main;
+- three form an incomplete certifiable-subset prototype and remain preserved
+  but unadopted;
+- seven are superseded by current RunPod/shared-lease or protected
+  Consumer/real-Main authority;
+- twelve are stale control snapshots archived without replay;
+- 1,561 are historical evidence/runtime payloads;
+- 27 are generated pre-commit cache entries; and
+- 15 are other historical non-source payloads.
+
+The semantic-disposition matrix SHA-256 is
+`4fcd20a9f49600f7fdf3dd8528e48f427ba5857b14cf26091ecb1202138d7b65`
+with zero unresolved rows. The useful recovery cohorts restore Docker serve
+contract/schema/tool coverage, measured-champion and production-audit glue,
+Nuclio SAM2 bounded repair helpers, robust Windows PID/VHD repair behavior,
+read-only gold-volume inputs, and matching tests/CLI wiring. Focused tests,
+Ruff, YAML/PowerShell parsing, CLI help, and the fail-closed Docker contract
+tool pass. Tracker row `MF-P6-20.01` was reopened during this work and may be
+closed again only after complete-suite, export, clean-status, push-parity,
+and terminal-receipt gates pass.
+
 ## Physical canonical root
 
 `C:\Comfy_UI_Main_Masking` is now the sole registered MaskFactory worktree and

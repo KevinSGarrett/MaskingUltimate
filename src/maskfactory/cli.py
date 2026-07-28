@@ -2082,8 +2082,12 @@ def autonomy_tournament(
 @click.option(
     "--lifecycle-root",
     type=click.Path(path_type=Path, file_okay=False, exists=True),
-    default=Path("work/instances"),
+    default=Path("runs"),
     show_default=True,
+    help=(
+        "Root containing autonomy lifecycle sidecars. Production path is runs/ "
+        "(discovers **/autonomy/*.json). Demo/test roots may be a flat lifecycle dir."
+    ),
 )
 @click.option("--period-id", required=True, help="Stable ISO period such as 2026-W28.")
 @click.option(
@@ -2099,11 +2103,11 @@ def autonomy_build_audit_queue(
 ) -> None:
     """Select the deterministic weekly sample from calibrated autoaccepted masks."""
     from .autonomy.calibration import AutonomyCalibrationError, load_autonomy_config
-    from .autonomy.operations import build_weekly_audit_queue
+    from .autonomy.production_audit import build_production_weekly_audit_queue
 
     try:
         config = load_autonomy_config(config_path)
-        queue = build_weekly_audit_queue(
+        queue = build_production_weekly_audit_queue(
             lifecycle_root,
             output,
             period_id=period_id,
@@ -10280,12 +10284,9 @@ def autonomous_semantic_requalification_execute_command(
         if captured.tzinfo is None:
             raise ValueError("--as-of must include a timezone")
         plan = json.loads(plan_path.read_text(encoding="utf-8"))
-        reviews = tuple(
-            json.loads(path.read_text(encoding="utf-8")) for path in review_paths
-        )
+        reviews = tuple(json.loads(path.read_text(encoding="utf-8")) for path in review_paths)
         certificates = tuple(
-            json.loads(path.read_text(encoding="utf-8"))
-            for path in critic_certificate_paths
+            json.loads(path.read_text(encoding="utf-8")) for path in critic_certificate_paths
         )
         catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
         result = execute_semantic_requalification_batch(
@@ -11539,6 +11540,49 @@ def models_register_training_candidate(
     click.echo(
         f"{entry['key']}: role={entry['role']} run={entry['training_run']} "
         f"sha256={entry['sha256']} verified=true"
+    )
+
+
+@models.command("mark-benchmarked")
+@click.argument("candidate_key")
+@click.option(
+    "--certificate",
+    "certificate_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    required=True,
+    help="Validated custom-segmenter promotion certificate (lifecycle_state=benchmarked).",
+)
+@click.option(
+    "--registry",
+    "registry_path",
+    type=click.Path(path_type=Path, dir_okay=False),
+    default=DEFAULT_REGISTRY,
+    show_default=True,
+)
+@click.option(
+    "--models-root",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=DEFAULT_REGISTRY.parent,
+    show_default=True,
+)
+def models_mark_benchmarked(
+    candidate_key: str, certificate_path: Path, registry_path: Path, models_root: Path
+) -> None:
+    """Raise an installed challenger to lifecycle benchmarked (never assigns champion_*)."""
+    from .models.benchmark import mark_benchmarked_candidate
+
+    try:
+        entry = mark_benchmarked_candidate(
+            candidate_key,
+            certificate=certificate_path,
+            registry_path=registry_path,
+            models_root=models_root,
+        )
+    except (OSError, ValueError, json.JSONDecodeError, ModelRegistryError) as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(
+        f"{entry['key']}: role={entry['role']} lifecycle_state={entry['lifecycle_state']} "
+        f"benchmarked_at={entry.get('benchmarked_at')}"
     )
 
 

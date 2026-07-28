@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maskfactory.local/schemas/docker_serve_contract_report.schema.json",
+  "title": "MaskFactory Docker serve-image STATIC contract report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "proof_tier",
+    "authority",
+    "checked_at",
+    "lock_ref",
+    "dockerfile_ref",
+    "requirements_ref",
+    "compose_ref",
+    "compose_service",
+    "image_tag",
+    "dockerfile_checks",
+    "requirements_checks",
+    "compose_checks",
+    "checks",
+    "build_attempted",
+    "image_built_claimed",
+    "torch_cuda_in_container_claimed",
+    "serve_health_green_claimed",
+    "champion_claimed",
+    "predict_refine_backed_claimed",
+    "gold_claimed",
+    "honest_non_claims",
+    "report_id",
+    "seal_sha256",
+    "sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "artifact_type": {"const": "docker_serve_contract_report"},
+    "proof_tier": {"const": "STATIC_PASS"},
+    "authority": {
+      "const": "docker_serve_image_spec_coherence_only_no_build_no_health_green_no_champion"
+    },
+    "checked_at": {"type": "string", "minLength": 1},
+    "lock_ref": {"const": "env/requirements.lock.txt"},
+    "dockerfile_ref": {"const": "docker/Dockerfile.serve"},
+    "requirements_ref": {"const": "docker/requirements-serve.txt"},
+    "compose_ref": {"const": "docker/compose.gpu.yml"},
+    "compose_service": {"const": "maskfactory-serve"},
+    "image_tag": {"const": "maskfactory/serve:cu128"},
+    "dockerfile_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "base_is_slim_python_not_cuda_devel",
+        "torch_pin_matches_lock",
+        "torchvision_pin_matches_lock",
+        "torch_cu128_index_used",
+        "libgomp_runtime_dep_present",
+        "requirements_serve_copied_and_installed",
+        "maskfactory_package_installed_no_deps",
+        "serve_default_cmd",
+        "loopback_serve_port_exposed",
+        "container_runtime_env_declared"
+      ],
+      "properties": {
+        "base_is_slim_python_not_cuda_devel": {"const": true},
+        "torch_pin_matches_lock": {"const": true},
+        "torchvision_pin_matches_lock": {"const": true},
+        "torch_cu128_index_used": {"const": true},
+        "libgomp_runtime_dep_present": {"const": true},
+        "requirements_serve_copied_and_installed": {"const": true},
+        "maskfactory_package_installed_no_deps": {"const": true},
+        "serve_default_cmd": {"const": true},
+        "loopback_serve_port_exposed": {"const": true},
+        "container_runtime_env_declared": {"const": true}
+      }
+    },
+    "requirements_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "no_pin_contradicts_lock",
+        "fastapi_uvicorn_stack_present",
+        "serve_core_runtime_present",
+        "no_wsl_only_editable_git_or_file_deps"
+      ],
+      "properties": {
+        "no_pin_contradicts_lock": {"const": true},
+        "fastapi_uvicorn_stack_present": {"const": true},
+        "serve_core_runtime_present": {"const": true},
+        "no_wsl_only_editable_git_or_file_deps": {"const": true}
+      }
+    },
+    "compose_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "serve_service_present",
+        "image_tag_matches",
+        "build_dockerfile_matches",
+        "gpus_all_requested",
+        "repo_bind_mount_present",
+        "no_lan_exposed_ports",
+        "serve_command",
+        "container_runtime_env_declared"
+      ],
+      "properties": {
+        "serve_service_present": {"const": true},
+        "image_tag_matches": {"const": true},
+        "build_dockerfile_matches": {"const": true},
+        "gpus_all_requested": {"const": true},
+        "repo_bind_mount_present": {"const": true},
+        "no_lan_exposed_ports": {"const": true},
+        "serve_command": {"const": true},
+        "container_runtime_env_declared": {"const": true}
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dockerfile_spec_coherence",
+        "requirements_subset_coherence",
+        "compose_service_coherence"
+      ],
+      "properties": {
+        "dockerfile_spec_coherence": {"const": "pass"},
+        "requirements_subset_coherence": {"const": "pass"},
+        "compose_service_coherence": {"const": "pass"}
+      }
+    },
+    "build_attempted": {"const": false},
+    "image_built_claimed": {"const": false},
+    "torch_cuda_in_container_claimed": {"const": false},
+    "serve_health_green_claimed": {"const": false},
+    "champion_claimed": {"const": false},
+    "predict_refine_backed_claimed": {"const": false},
+    "gold_claimed": {"const": false},
+    "honest_non_claims": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "report_id": {"type": "string", "pattern": "^dsc_[a-f0-9]{24}$"},
+    "seal_sha256": {"$ref": "#/$defs/sha256"},
+    "sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

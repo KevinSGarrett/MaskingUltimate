@@ -49,7 +49,7 @@ $AuditCommand = @(
     "cd /mnt/c/Comfy_UI_Main_Masking"
     "&&"
     "PYTHONPATH=src python -m maskfactory.cli autonomy build-audit-queue"
-    "--lifecycle-root work/instances"
+    "--lifecycle-root runs"
     "--period-id $Week"
     "--config configs/autonomous_masks.yaml"
     "--output qa/autonomy/audit_queues/$Week.json"

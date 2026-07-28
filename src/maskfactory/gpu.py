@@ -46,21 +46,34 @@ def pid_exists(pid: int) -> bool:
 
 
 def _windows_pid_exists(pid: int) -> bool:
-    """Query a Windows PID without using os.kill(pid, 0), which terminates it."""
+    """Query a Windows PID without using os.kill(pid, 0), which terminates it.
+
+    ``OpenProcess`` can still succeed for a zombie/exited process object, so
+    liveness requires ``GetExitCodeProcess`` == ``STILL_ACTIVE`` (259).
+    """
     import ctypes
+    from ctypes import wintypes
 
     process_query_limited_information = 0x1000
     error_access_denied = 5
+    still_active = 259
     kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
     kernel32.OpenProcess.argtypes = (ctypes.c_uint32, ctypes.c_int, ctypes.c_uint32)
     kernel32.OpenProcess.restype = ctypes.c_void_p
+    kernel32.GetExitCodeProcess.argtypes = (ctypes.c_void_p, ctypes.POINTER(wintypes.DWORD))
+    kernel32.GetExitCodeProcess.restype = ctypes.c_int
     kernel32.CloseHandle.argtypes = (ctypes.c_void_p,)
     kernel32.CloseHandle.restype = ctypes.c_int
     handle = kernel32.OpenProcess(process_query_limited_information, False, pid)
-    if handle:
+    if not handle:
+        return ctypes.get_last_error() == error_access_denied
+    try:
+        code = wintypes.DWORD()
+        if not kernel32.GetExitCodeProcess(handle, ctypes.byref(code)):
+            return False
+        return int(code.value) == still_active
+    finally:
         kernel32.CloseHandle(handle)
-        return True
-    return ctypes.get_last_error() == error_access_denied
 
 
 def read_lock(path: Path = DEFAULT_GPU_LOCK_PATH) -> dict[str, Any] | None:

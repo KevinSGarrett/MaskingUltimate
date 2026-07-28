@@ -1,6 +1,7 @@
 """Model checkpoint acquisition and verified-registry access."""
 
 from . import smoke as _smoke  # noqa: F401 - registers built-in smoke runners
+from .benchmark import mark_benchmarked_candidate
 from .registry import (
     DEFAULT_CATALOG,
     DEFAULT_REGISTRY,
@@ -29,6 +30,7 @@ __all__ = [
     "fetch_models",
     "load_registered_model",
     "load_specialist_promotion_transaction",
+    "mark_benchmarked_candidate",
     "promote_model_role",
     "register_ollama_models",
     "register_smoke_runner",

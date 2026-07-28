@@ -16,6 +16,7 @@ authority: gold_volume_tournament_input_path_map
 governing_configs:
   - configs/autonomous_masks.yaml
   - configs/autonomy_autonomous_gold_profile.yaml
+  - configs/multiprovider_tournament_families.yaml
   - configs/reference_library.yaml
   - configs/maskedwarehouse_inventory.json
 claim_boundary:
@@ -69,6 +70,21 @@ volumes:
       annotations: 'F:\DAZ\13_annotations'
       datasets: 'F:\DAZ\15_datasets'
       exports: 'F:\DAZ\16_maskfactory_exports'
+      scene_packages: 'F:\DAZ\14_scene_packages'
+
+  characters:
+    role: character_reference_stills
+    truth_authority: none
+    host_root: 'F:\Characters'
+    container_root: /gold/characters
+    mount_mode: ro
+
+  shoot:
+    role: shoot_processed_jpgs
+    truth_authority: none
+    host_root: 'F:\Shoot'
+    container_root: /gold/shoot
+    mount_mode: ro
 
 container_env:
   MASKFACTORY_GOLD_VOLUME_MAP: /opt/maskfactory/configs/gold_volume_tournament_inputs.yaml

@@ -1,14 +1,17 @@
 ﻿# Current Task
 
 Task ID: MASKFACTORY-ULTIMATE-MASKING-E2E-20260727
-Updated UTC: 2026-07-28T17:21:53Z
+Updated UTC: 2026-07-28T18:45:00Z
 
-## Completed foundation phase: second-phase local consolidation
+## Active terminal phase: late stash/reflog source recovery
 
 The repository-promotion, physical-root, and shared-directory transitions are
-complete. The repaired fail-closed hash authorities and the 5,148-node
-complete suite now pass; terminal tracker/receipt commit and parity are the
-remaining mechanical closeout.
+complete. A terminal audit then found five historical Git stashes and one
+generated pre-commit cache that were not included in the earlier branch and
+worktree counts. `MF-P6-20.01` is therefore reopened until the useful
+accidental-mass-deletion residuals are adopted and revalidated, every stash
+path is receipt-bound, the live stashes/cache are absent, and final
+local/remote parity is proven.
 
 - physical canonical root: clean `main`, one registered worktree, zero status
   rows, local/remote equality at
@@ -34,6 +37,17 @@ remaining mechanical closeout.
 - destructive boundary: no dirty-root move, shared-path removal, source
   adoption, branch/ref change, or tracker advancement before exact ownership,
   semantic review, independent coverage, and coordination.
+- late stash checkpoint:
+  `C:\MaskFactory_TierA_Backups\historical_stashes_20260728T182808Z`;
+- late stash bundle SHA-256:
+  `f4fb70e328a171d7e9896130decac4fd7701b0238712d8a30b5f7232dfbc6398`;
+- stash semantic matrix: 4,008 rows, zero unresolved, SHA-256
+  `4fcd20a9f49600f7fdf3dd8528e48f427ba5857b14cf26091ecb1202138d7b65`;
+- live stash/cache state: five stashes retired after bundle/fsck gates;
+  `.pre-commit-home-climb4` retired as 3,575 generated files /
+  83,803,840 logical bytes after no-process/non-reparse proof; and
+- recovered source status: 18 exact file adoptions and six semantic ports are
+  in focused validation; incomplete/stale prototypes remain archive-only.
 
 Plan 29 and
 `Plan/LOCAL_AUTHORITY_RECONCILIATION_LEDGER_20260728.md` now govern this

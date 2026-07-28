@@ -19,7 +19,10 @@ param(
     [switch]$AllowAggressiveRepair,
 
     [Parameter(Mandatory = $true)]
-    [switch]$ConfirmRepair
+    [switch]$ConfirmRepair,
+
+    [Parameter()]
+    [string]$ExistingBackupPath
 )
 
 Set-StrictMode -Version Latest
@@ -70,10 +73,37 @@ function Get-WslBlockDevices {
 }
 
 function Get-DockerProcesses {
-    return @(
-        Get-Process -ErrorAction SilentlyContinue |
-            Where-Object { $_.ProcessName -match "^(Docker Desktop|com\.docker\.|docker-agent)" }
+    # Unary comma prevents PowerShell from unwrapping a single Process under
+    # Set-StrictMode (single object has no .Count -> PropertyNotFoundException).
+    # Match Docker Desktop core + backend; CLI helper procs are not required to exit.
+    return ,(
+        @(
+            Get-Process -ErrorAction SilentlyContinue |
+                Where-Object {
+                    $_.ProcessName -match "^(Docker Desktop|docker-desktop|com\.docker\.|docker-agent|docker-backend)$" -or
+                    $_.ProcessName -eq "com.docker.backend"
+                }
+        )
     )
+}
+
+function Stop-DockerDesktopProcesses {
+    param([int]$TimeoutSeconds = 180)
+    if (Get-Command docker.exe -ErrorAction SilentlyContinue) {
+        try {
+            Invoke-CheckedNative -FilePath "docker.exe" -ArgumentList @("desktop", "stop") -AcceptedExitCodes @(0, 1) | Out-Null
+        } catch {
+            Write-Warning "docker desktop stop reported: $($_.Exception.Message)"
+        }
+    }
+    $deadline = [DateTime]::UtcNow.AddSeconds($TimeoutSeconds)
+    while (@((Get-DockerProcesses)).Count -gt 0 -and [DateTime]::UtcNow -lt $deadline) {
+        Get-DockerProcesses | Stop-Process -Force -ErrorAction SilentlyContinue
+        Start-Sleep -Seconds 2
+    }
+    if (@((Get-DockerProcesses)).Count -gt 0) {
+        throw "Docker Desktop did not stop cleanly within $TimeoutSeconds seconds."
+    }
 }
 
 if (-not $ConfirmRepair) {
@@ -106,15 +136,20 @@ if ($registeredVhd -ne [IO.Path]::GetFullPath($resolvedVhd)) {
     throw "The configured VHD is not the registered disk for $Distribution."
 }
 
+# wsl --list emits UTF-16LE; PowerShell may surface NULs. Must use the string
+# Replace overload: .Replace([char]0, "") throws MethodException because "" is
+# not a Char. Cast the NUL to [string] so the (string,string) overload binds.
+$nullChar = [string][char]0
 $repairDistroPresent = @(
     & wsl.exe --list --quiet 2>$null |
-        ForEach-Object { "$($_)".Replace([char]0, "").Trim() }
+        ForEach-Object { ("$($_)".Replace($nullChar, "")).Trim() } |
+        Where-Object { $_ }
 ) -contains $RepairDistribution
 if (-not $repairDistroPresent) {
     throw "The repair distribution is unavailable: $RepairDistribution"
 }
 
-$dockerWasRunning = (Get-DockerProcesses).Count -gt 0
+$dockerWasRunning = @((Get-DockerProcesses)).Count -gt 0
 if ($dockerWasRunning -and -not $StopDockerDesktop) {
     throw "Docker Desktop is running. Re-run with -StopDockerDesktop so it is stopped cleanly before WSL shutdown."
 }
@@ -126,15 +161,27 @@ $backupDirectory = Join-Path $BackupRoot $Distribution
 New-Item -ItemType Directory -Force -Path $backupDirectory | Out-Null
 $stamp = [DateTime]::UtcNow.ToString("yyyyMMddTHHmmssZ")
 $backupPath = Join-Path $backupDirectory "ext4_before_repair_$stamp.vhdx"
-if (Test-Path -LiteralPath $backupPath) {
-    throw "Backup destination already exists: $backupPath"
+$reusedExistingBackup = $false
+if ($ExistingBackupPath) {
+    $existing = Get-Item -LiteralPath $ExistingBackupPath
+    if ($existing.Length -ne $vhd.Length) {
+        throw "ExistingBackupPath size mismatch: $($existing.Length) vs $($vhd.Length)"
+    }
+    $backupPath = $existing.FullName
+    $reusedExistingBackup = $true
 }
-$backupDrive = Get-PSDrive -Name ([IO.Path]::GetPathRoot($backupPath).Substring(0, 1))
-$requiredFree = $vhd.Length + 5GB
-if ($backupDrive.Free -lt $requiredFree) {
-    throw "Insufficient backup capacity: free=$($backupDrive.Free) required=$requiredFree"
+else {
+    if (Test-Path -LiteralPath $backupPath) {
+        throw "Backup destination already exists: $backupPath"
+    }
+    $backupDrive = Get-PSDrive -Name ([IO.Path]::GetPathRoot($backupPath).Substring(0, 1))
+    $requiredFree = $vhd.Length + 5GB
+    if ($backupDrive.Free -lt $requiredFree) {
+        throw "Insufficient backup capacity: free=$($backupDrive.Free) required=$requiredFree"
+    }
 }
 
+$attached = $false
 $attached = $false
 $dockerStopped = $false
 $repairOutput = @()
@@ -150,30 +197,64 @@ $operationError = $null
 try {
     try {
         if ($dockerWasRunning) {
-            Invoke-CheckedNative -FilePath "docker.exe" -ArgumentList @("desktop", "stop") | Out-Null
+            Stop-DockerDesktopProcesses -TimeoutSeconds 180
             $dockerStopped = $true
-            $deadline = [DateTime]::UtcNow.AddMinutes(2)
-            while ((Get-DockerProcesses).Count -gt 0 -and [DateTime]::UtcNow -lt $deadline) {
-                Start-Sleep -Seconds 2
+        }
+
+        # Terminate then either reuse ExistingBackupPath or shared-read copy
+        # before full shutdown (shutdown has dropped removable F: mid-copy).
+        Invoke-CheckedNative -FilePath "wsl.exe" -ArgumentList @("--terminate", $Distribution) -AcceptedExitCodes @(0, 1) | Out-Null
+        Invoke-CheckedNative -FilePath "wsl.exe" -ArgumentList @("--terminate", $RepairDistribution) -AcceptedExitCodes @(0, 1) | Out-Null
+        Start-Sleep -Seconds 2
+
+        if (-not $reusedExistingBackup) {
+            $copyDeadline = [DateTime]::UtcNow.AddMinutes(45)
+            $copied = $false
+            $lastCopyError = $null
+            while (-not $copied -and [DateTime]::UtcNow -lt $copyDeadline) {
+                try {
+                    if (-not (Test-Path -LiteralPath $resolvedVhd)) {
+                        throw "VHD path not visible (drive may have disconnected): $resolvedVhd"
+                    }
+                    $probe = [System.IO.File]::Open($resolvedVhd, 'Open', 'Read', 'Read')
+                    $probe.Close()
+                    Copy-Item -LiteralPath $resolvedVhd -Destination $backupPath -Force
+                    if ((Get-Item -LiteralPath $backupPath).Length -ne $vhd.Length) {
+                        throw "Backup size mismatch after copy"
+                    }
+                    $copied = $true
+                }
+                catch {
+                    $lastCopyError = $_
+                    Write-Warning "VHD backup retry: $($_.Exception.Message)"
+                    Start-Sleep -Seconds 3
+                }
             }
-            if ((Get-DockerProcesses).Count -gt 0) {
-                throw "Docker Desktop did not stop cleanly within two minutes."
+            if (-not $copied) {
+                throw "Failed to back up VHD while F: remained available. Last error: $lastCopyError"
             }
+        }
+        else {
+            Write-Output "Reusing existing backup (size-matched): $backupPath"
+        }
+
+        $preRepairHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $resolvedVhd).Hash.ToLowerInvariant()
+        $backupHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $backupPath).Hash.ToLowerInvariant()
+        if ($preRepairHash -ne $backupHash) {
+            throw "The VHD backup hash does not match the source disk."
         }
 
         Invoke-CheckedNative -FilePath "wsl.exe" -ArgumentList @("--shutdown") | Out-Null
         Start-Sleep -Seconds 3
 
-        Copy-Item -LiteralPath $resolvedVhd -Destination $backupPath
-        if ((Get-Item -LiteralPath $backupPath).Length -ne $vhd.Length) {
-            throw "The VHD backup size does not match the source."
+        $vhdDeadline = [DateTime]::UtcNow.AddMinutes(10)
+        while (-not (Test-Path -LiteralPath $resolvedVhd) -and [DateTime]::UtcNow -lt $vhdDeadline) {
+            Write-Warning "Waiting for VHD path to reappear after wsl --shutdown: $resolvedVhd"
+            Start-Sleep -Seconds 2
         }
-        $preRepairHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $resolvedVhd).Hash.ToLowerInvariant()
-        $backupHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $backupPath).Hash.ToLowerInvariant()
-        if ($preRepairHash -ne $backupHash) {
-            throw "The VHD backup hash does not match the stopped source disk."
+        if (-not (Test-Path -LiteralPath $resolvedVhd)) {
+            throw "VHD path did not reappear after wsl --shutdown: $resolvedVhd"
         }
-
         $baselineDevices = Get-WslBlockDevices -Distro $RepairDistribution
         Invoke-CheckedNative -FilePath "wsl.exe" -ArgumentList @(
             "--mount", $resolvedVhd, "--vhd", "--bare"
@@ -291,6 +372,7 @@ $evidence = [ordered]@{
     docker_stopped_cleanly = $dockerStopped
     docker_restart_requested = $dockerRestarted
     source_backup_hash_match = ($preRepairHash -eq $backupHash)
+    reused_existing_backup = [bool]$reusedExistingBackup
     authority = [ordered]@{
         distribution_unregistered = $false
         vhd_moved_or_replaced = $false

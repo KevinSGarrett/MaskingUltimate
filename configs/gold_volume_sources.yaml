@@ -59,6 +59,37 @@ sources:
       - path: "F:\\DAZ"
         media: removable_usb
         priority: 10
+  characters:
+    role: tournament_character_reference_input
+    description: "F:\\Characters governed character reference stills (read-when-present; not MaskFactory gold)."
+    required_child_any:
+      - "Character_1"
+      - "Character_2"
+      - "06_references"
+    candidates:
+      - path: "F:\\Characters"
+        media: removable_usb
+        priority: 10
+  shoot:
+    role: tournament_shoot_stills_input
+    description: "F:\\Shoot processed JPG stills (read-when-present; not MaskFactory gold)."
+    required_child_any:
+      - "05-25-26"
+      - "DCIM"
+    candidates:
+      - path: "F:\\Shoot"
+        media: removable_usb
+        priority: 10
+  reference_images_root:
+    role: tournament_reference_collections_input
+    description: "Broader F:\\Reference_Images collections beyond Ultimate_Masking_Reference_Images."
+    required_child_any:
+      - "Ultimate_Masking_Reference_Images"
+      - "1000+ Art Female Sketching Poses"
+    candidates:
+      - path: "F:\\Reference_Images"
+        media: removable_usb
+        priority: 10
 dataset_hints:
   maskedwarehouse:
     - relative: "Body/LV-MHP-v1"

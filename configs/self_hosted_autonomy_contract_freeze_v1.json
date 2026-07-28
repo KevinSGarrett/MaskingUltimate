@@ -1,7 +1,7 @@
 {
   "schema_version": "maskfactory_self_hosted_autonomy_contract_freeze.v1",
   "registry_id": "maskfactory_self_hosted_autonomy_contract_v1",
-  "frozen_at": "2026-07-28T11:15:00Z",
+  "frozen_at": "2026-07-28T18:50:00Z",
   "incomplete_claim": "SELF_HOSTED_AUTONOMOUS_LLM_THROUGHPUT_INCOMPLETE",
   "authority_files": [
     {
@@ -18,11 +18,11 @@
     },
     {
       "path": "Plan/Instructions/18_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md",
-      "sha256": "66a65af8ef6fa53b36a171fec9ea6d213a2f564d6d426224296dde53c919aa05"
+      "sha256": "ba5f27b27fe24a89f8e1c47816422b195446d39db4ba6be042bb4f4536f94517"
     },
     {
       "path": "Plan/SELF_HOSTED_AUTONOMOUS_LLM_PURSUING_GOAL_MESSAGE.md",
-      "sha256": "dec3b49f5bcc6f8e6896dc90f2770c61ac3bedf78da68acfe116dc2362e1c036"
+      "sha256": "d87df4303eaeeab356b54901c6c552aee29c532a9c481d30300099ec8e211ce5"
     },
     {
       "path": "Plan/Items/23_ITEMS_P6_SELF_HOSTED_AUTONOMOUS_LLM_OPERATIONS.md",
@@ -30,7 +30,7 @@
     },
     {
       "path": "Plan/Items/24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md",
-      "sha256": "aadf018ef99b2332c70f37dba10f66b395608aa2872415766b122aa1c581dd7a"
+      "sha256": "2f39194ba9499443c4a237d8bd95198b28ad7fb1e667895269ac06f9d7705c87"
     }
   ],
   "schema_files": [
@@ -85,5 +85,5 @@
     "MF-P6-22.03",
     "MF-P6-22.04"
   ],
-  "registry_sha256": "9aa7a48505594fc06be3f094bfb77f6c5b1fe84d320e7035a4cf134aac1dbba2"
+  "registry_sha256": "e59fdbf0d50e71a08d217b72aa63d96fc1c36272b99ad9df3253b82d6c982d4f"
 }

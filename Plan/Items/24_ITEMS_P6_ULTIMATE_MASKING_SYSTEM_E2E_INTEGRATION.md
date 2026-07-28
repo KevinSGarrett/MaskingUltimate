@@ -18,6 +18,12 @@ Frozen authority and evidence contracts:
     physical root is clean `main`; shared `C:\w` has zero direct children
     under the coordinated 5,654-file receipt. Terminal quality results are
     bound by the final convergence receipt.
+  - The terminal inventory also includes `refs/stash`, stash index/untracked
+    parents, reflog-only work, and generated hook caches. Five late-discovered
+    stashes are bound by a verified incremental bundle and a 4,008-row
+    per-path semantic matrix. Useful accidental-mass-deletion residuals are
+    adopted only after focused tests; incomplete prototypes and stale runtime
+    policy remain archive-only with zero product-completion credit.
 - [ ] MF-P6-20.02 Produce one canonical integrated source tree containing product code, autonomy/runtime code, package metadata, configs, schemas, CLIs, services, tests, and operating procedures · Verify: clean diff/secret/schema/import/package checks prove both source lines' required behavior survives · Blocked by: MF-P6-20.01 · HARD BLOCKER
 - [ ] MF-P6-20.03 Classify and repair the complete product test baseline, including completion-policy drift and every external-asset dependency · Verify: each collected test is passing or has a governed explicit environment prerequisite that cannot be misreported as pass; no unexplained collection/runtime failure remains · Blocked by: MF-P6-20.02 · HARD BLOCKER
 - [ ] MF-P6-20.04 Prove clean-export installation, exact-byte runtime closure, focused/integration/full-suite execution, bounded service health, and owned shutdown · Verify: an independent reconstruction receipt binds source, environment, commands, results, processes, ports, and zero leaked resources · Blocked by: MF-P6-20.03 · HARD BLOCKER

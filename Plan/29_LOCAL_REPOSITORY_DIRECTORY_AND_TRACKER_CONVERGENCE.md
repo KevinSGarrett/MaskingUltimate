@@ -187,3 +187,38 @@ This phase is complete only when:
 - focused and complete tests, clean build/install/import, credential/diff
   checks, tracker validation, and full/connectivity fsck pass; and
 - rollback is independently reconstructable without conversational context.
+
+## 10. Late stash and reflog closure
+
+The terminal audit must include live Git stashes even when branches,
+worktrees, and ordinary status rows are already normalized. On 2026-07-28,
+five historical stashes remained under `refs/stash`. Their worktree, index,
+and untracked-parent commits are preserved in:
+
+`C:\MaskFactory_TierA_Backups\historical_stashes_20260728T182808Z`
+
+The incremental bundle is 27,007,381 bytes with SHA-256
+`f4fb70e328a171d7e9896130decac4fd7701b0238712d8a30b5f7232dfbc6398`.
+`git bundle verify` and full Git fsck pass. The 4,008-row path matrix has
+SHA-256
+`ca838138dec5571570194139d214d6be1490548f20b9af7715fc7ab671abbd11`;
+its per-row semantic-disposition matrix has SHA-256
+`4fcd20a9f49600f7fdf3dd8528e48f427ba5857b14cf26091ecb1202138d7b65`
+and zero unresolved rows.
+
+The review identified the accidental 100,032-line mass-deletion commit
+`f60690db85d8b8fe362e3ac406a5584d792f837f`. Eighteen source/config/test/tool
+paths are adopted byte-for-byte from the verified stash and six later-main
+paths receive bounded semantic ports. Three certifiable-subset prototype
+paths remain preserved but unadopted because focused tests prove their
+tournament/admission wiring was incomplete. Historical local-GPU policy,
+generated tracker snapshots, stale OPS/handoff variants, and obsolete
+Consumer scaffolds remain archived or superseded and cannot change product
+completion.
+
+Only after this matrix, bundle, focused tests, and fsck passed were the five
+live stashes retired. The reproducible `.pre-commit-home-climb4` cache was
+then removed after exact non-reparse/no-process validation: 3,575 files,
+552 child directories, and 83,803,840 logical bytes. The terminal receipt
+must prove zero stashes, zero temporary recovery refs, zero cache residue,
+and a clean physical canonical checkout.

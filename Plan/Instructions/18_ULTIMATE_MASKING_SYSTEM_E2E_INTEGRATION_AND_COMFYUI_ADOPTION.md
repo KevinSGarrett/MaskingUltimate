@@ -38,7 +38,10 @@ Frozen authority and campaign evidence contracts:
 
 ## Source convergence procedure
 
-1. Inventory the full-product and autonomy lines by exact Git objects.
+1. Inventory the full-product and autonomy lines by exact Git objects,
+   including `refs/stash`, every stash worktree/index/untracked parent,
+   reflog-only recovery state, and hook/tool caches that can keep a checkout
+   physically dirty after branch/worktree cleanup.
 2. Produce a path table: identical, required product-only, required
    autonomy-only, generated, evidence-only, superseded, user-owned, or conflict.
 3. Take a scoped verified backup of overlapping paths.

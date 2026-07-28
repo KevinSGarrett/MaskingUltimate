@@ -7,6 +7,7 @@
     "schema_version",
     "action",
     "transaction_kind",
+    "install_kind",
     "transaction_id",
     "recorded_at",
     "candidate_key",
@@ -29,17 +30,18 @@
     "sha256"
   ],
   "properties": {
-    "schema_version": {"const": "3.0.0"},
+    "schema_version": {"const": "3.1.0"},
     "action": {"const": "promote"},
     "transaction_kind": {"const": "custom_segmenter_champion"},
+    "install_kind": {"enum": ["incumbent_swap", "first_role_install"]},
     "transaction_id": {"$ref": "#/$defs/transaction_id"},
     "recorded_at": {"type": "string", "format": "date-time"},
     "candidate_key": {"type": "string", "minLength": 1},
     "candidate_previous_role": {"type": "string", "minLength": 1, "not": {"const": "champion_bodypart"}},
     "candidate_previous_lifecycle_state": {"const": "benchmarked"},
     "incumbent_key": {"type": "string", "minLength": 1},
-    "incumbent_previous_role": {"const": "champion_bodypart"},
-    "incumbent_previous_lifecycle_state": {"const": "promoted"},
+    "incumbent_previous_role": {"type": "string", "minLength": 1},
+    "incumbent_previous_lifecycle_state": {"enum": ["promoted", "absent"]},
     "champion_role": {"const": "champion_bodypart"},
     "matrix_role": {"const": "custom_segmenter"},
     "matrix_certificate_id": {"type": "string", "pattern": "^[a-f0-9]{24}$"},
@@ -53,6 +55,30 @@
     "serving_smoke": {"$ref": "#/$defs/smoke"},
     "sha256": {"$ref": "#/$defs/sha256"}
   },
+  "allOf": [
+    {
+      "if": {"properties": {"install_kind": {"const": "incumbent_swap"}}, "required": ["install_kind"]},
+      "then": {
+        "properties": {
+          "incumbent_previous_role": {"const": "champion_bodypart"},
+          "incumbent_previous_lifecycle_state": {"const": "promoted"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"install_kind": {"const": "first_role_install"}}, "required": ["install_kind"]},
+      "then": {
+        "properties": {
+          "incumbent_key": {"const": "__maskfactory_genesis_no_incumbent__"},
+          "incumbent_previous_role": {"const": "__none__"},
+          "incumbent_previous_lifecycle_state": {"const": "absent"},
+          "incumbent_checkpoint_sha256": {
+            "const": "0000000000000000000000000000000000000000000000000000000000000000"
+          }
+        }
+      }
+    }
+  ],
   "$defs": {
     "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
     "transaction_id": {"type": "string", "pattern": "^[a-f0-9]{32}$"},

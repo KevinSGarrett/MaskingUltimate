@@ -61,6 +61,11 @@ def _result(name: str, status: Status, detail: str, hint: str = "") -> CheckResu
     return CheckResult(name=name, status=status, detail=detail, hint=hint)
 
 
+def _windows_host() -> bool:
+    """True only on Windows hosts that own the Ubuntu-22.04 WSL pin."""
+    return os.name == "nt"
+
+
 def _clean_wsl_text(value: str) -> str:
     """Normalize WSL's UTF-16-looking redirected diagnostics into readable evidence."""
     return str(value or "").replace("\x00", "").replace("\\x00", "").strip()
@@ -138,12 +143,80 @@ def _p1_started() -> bool:
     )
 
 
+_CVAT_NUCLIO_DEFERRED_HINT = (
+    "CVAT/Nuclio deferred on this pod class; continue tournament on native mask families. "
+    "Next: RunPod bare-metal/privileged product grant or a separate docker-host pod when available."
+)
+
+
+def _cvat_nuclio_runtime_blocked() -> str | None:
+    """Return a SKIP reason when native Linux cannot run Docker-backed CVAT/Nuclio."""
+    if _windows_host():
+        return None
+    docker_sock = Path("/var/run/docker.sock")
+    if not docker_sock.exists():
+        return (
+            "RUNTIME_BLOCKED_POD_CLASS: no docker.sock; nested RunPod pod cannot bootstrap "
+            "CVAT compose"
+        )
+    try:
+        process = subprocess.run(
+            ["docker", "run", "--rm", "hello-world"],
+            capture_output=True,
+            text=True,
+            timeout=30,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        return f"RUNTIME_BLOCKED_POD_CLASS: docker cannot create containers ({exc})"
+    if process.returncode != 0:
+        detail = (_clean_wsl_text(process.stderr) or _clean_wsl_text(process.stdout)).strip()
+        detail = detail or f"docker run hello-world exited {process.returncode}"
+        return f"RUNTIME_BLOCKED_POD_CLASS: docker cannot create containers ({detail})"
+    return None
+
+
 def check_torch_cuda() -> CheckResult:
     script = (
         "import json,torch; print(json.dumps({'torch':torch.__version__,"
         "'cuda':torch.version.cuda,'available':torch.cuda.is_available(),"
         "'capability':list(torch.cuda.get_device_capability(0)) if torch.cuda.is_available() else []}))"
     )
+    if not _windows_host():
+        try:
+            process = subprocess.run(
+                [__import__("sys").executable, "-c", script],
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=False,
+            )
+            if process.returncode:
+                raise RuntimeError(
+                    (process.stderr or process.stdout or f"exit {process.returncode}").strip()
+                )
+            payload = json.loads(process.stdout.splitlines()[-1])
+        except (
+            OSError,
+            subprocess.TimeoutExpired,
+            RuntimeError,
+            IndexError,
+            json.JSONDecodeError,
+        ) as exc:
+            return _result(
+                "torch_cuda",
+                "FAIL",
+                str(exc),
+                "Install CUDA-enabled torch in the active native Linux environment.",
+            )
+        if payload.get("available") is True and payload.get("cuda") and payload.get("capability"):
+            return _result("torch_cuda", "PASS", json.dumps(payload, sort_keys=True))
+        return _result(
+            "torch_cuda",
+            "FAIL",
+            json.dumps(payload, sort_keys=True),
+            "Expose a CUDA GPU to the active Python environment and rerun doctor.",
+        )
     command = [
         "wsl",
         "-d",
@@ -198,14 +271,10 @@ def _provider_lifecycle_inventory(
         state = str(entry["lifecycle_state"])
         inventory[state].append(str(name))
         if state == "promoted":
-            issues = {
-                lane: provider_activation_issues(entry, content_lane=lane)
-                for lane in ("adult_nonexplicit", "consensual_explicit_adult")
-            }
-            flattened = [f"{lane}: {issue}" for lane, values in issues.items() for issue in values]
-            if flattened:
+            issues = provider_activation_issues(entry)
+            if issues:
                 raise RuntimeError(
-                    f"promoted provider {name} is not activation-ready: " + "; ".join(flattened)
+                    f"promoted provider {name} is not activation-ready: " + "; ".join(issues)
                 )
     return {state: tuple(sorted(names)) for state, names in inventory.items()}
 
@@ -248,6 +317,9 @@ def check_registered_models() -> CheckResult:
 
 
 def check_cvat_api() -> CheckResult:
+    blocked = _cvat_nuclio_runtime_blocked()
+    if blocked:
+        return _result("cvat_api", "SKIP", blocked, _CVAT_NUCLIO_DEFERRED_HINT)
     try:
         about = _json_request(CVAT_BASE_URL + "/api/server/about")
     except (OSError, HTTPError, URLError, json.JSONDecodeError) as exc:
@@ -258,6 +330,9 @@ def check_cvat_api() -> CheckResult:
 
 
 def check_cvat_project() -> CheckResult:
+    blocked = _cvat_nuclio_runtime_blocked()
+    if blocked:
+        return _result("cvat_project", "SKIP", blocked, _CVAT_NUCLIO_DEFERRED_HINT)
     token = _env_values().get("CVAT_TOKEN")
     if not token:
         if _p1_started():
@@ -290,6 +365,9 @@ def check_cvat_project() -> CheckResult:
 
 
 def check_nuclio_interactor() -> CheckResult:
+    blocked = _cvat_nuclio_runtime_blocked()
+    if blocked:
+        return _result("nuclio_interactor", "SKIP", blocked, _CVAT_NUCLIO_DEFERRED_HINT)
     token = _env_values().get("CVAT_TOKEN")
     if not token:
         return _result("nuclio_interactor", "FAIL", "CVAT_TOKEN absent", "Set CVAT_TOKEN in .env.")
@@ -556,6 +634,8 @@ def _wsl_path(path: Path) -> str:
 
 
 def check_wsl_roundtrip() -> CheckResult:
+    if not _windows_host():
+        return _result("wsl_roundtrip", "SKIP", "Windows-only WSL /mnt/<drive> round-trip check")
     data_dir = ROOT / "data"
     data_dir.mkdir(parents=True, exist_ok=True)
     handle, name = tempfile.mkstemp(prefix=".doctor_roundtrip_", dir=data_dir)
@@ -671,6 +751,8 @@ _WSL_DEPENDENT_CHECKS = frozenset(
 
 def _wsl_preflight_failure() -> tuple[str, str] | None:
     """Return one shared WSL failure so doctor does not repeat an unavailable boundary."""
+    if not _windows_host():
+        return None
     try:
         process = subprocess.run(
             ["wsl", "-d", "Ubuntu-22.04", "--", "true"],
@@ -707,7 +789,8 @@ def run_doctor(
 ) -> list[CheckResult]:
     """Run checks in stable order and convert unexpected exceptions to actionable FAILs."""
     if preflight_wsl is None:
-        preflight_wsl = checks is DEFAULT_CHECKS
+        # Native Linux / RunPod must not require Ubuntu-22.04 WSL.
+        preflight_wsl = checks is DEFAULT_CHECKS and _windows_host()
     wsl_failure = _wsl_preflight_failure() if preflight_wsl else None
     results: list[CheckResult] = []
 

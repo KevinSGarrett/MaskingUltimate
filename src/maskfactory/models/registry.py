@@ -46,6 +46,15 @@ OLLAMA_MODEL_NAMES = (
     "qwen2.5:7b-instruct",
 )
 SERVING_CHAMPION_ROLES = {"champion_bodypart", "champion_hand", "champion_clothing"}
+# Governed first-install sentinel: allows promote when no promoted incumbent exists.
+# Certificates/packets must bind rollback incumbent_provider to this exact key.
+# This is NOT force-promote: matrix bundle + benchmarked candidate + smoke still required.
+GENESIS_INCUMBENT_KEY = "__maskfactory_genesis_no_incumbent__"
+GENESIS_PREVIOUS_ROLE = "__none__"
+GENESIS_PREVIOUS_LIFECYCLE = "absent"
+GENESIS_CHECKPOINT_SHA256 = "0" * 64
+SPECIALIST_TRANSACTION_SCHEMA_VERSION = "2.1.0"
+CUSTOM_SEGMENTER_TRANSACTION_SCHEMA_VERSION = "3.1.0"
 SPECIALIST_CHAMPION_MATRIX_ROLES = {
     "champion_hand": "hand_finger_segmentation",
     "champion_clothing": "clothing_accessory_segmentation",
@@ -598,17 +607,23 @@ def verify_registered_model_smokes(
         if catalog_path != DEFAULT_CATALOG:
             smoke_image = (catalog_path.parent / str(source.get("smoke_image", ""))).resolve()
         result = runner(path, smoke_image)
-        expected = entry.get("smoke_test", {}).get("output_sha256")
-        if result.get("passed") is not True or result.get("output_sha256") != expected:
+        smoke_meta = entry.get("smoke_test") or {}
+        expected = smoke_meta.get("output_sha256")
+        accepted = set(smoke_meta.get("accepted_output_sha256") or [])
+        if expected:
+            accepted.add(expected)
+        got_hash = result.get("output_sha256")
+        if result.get("passed") is not True or got_hash not in accepted:
             raise ModelRegistryError(
-                f"model smoke mismatch for {key}: expected {expected}, got {result}"
+                f"model smoke mismatch for {key}: expected one of "
+                f"{sorted(accepted)}, got {result}"
             )
         results.append(
             {
                 "key": key,
                 "lifecycle_state": entry.get("lifecycle_state"),
                 "sha256": entry.get("sha256"),
-                "output_sha256": expected,
+                "output_sha256": got_hash,
             }
         )
     return results
@@ -1115,6 +1130,7 @@ def _validate_specialist_transaction_record(record: dict[str, Any]) -> None:
         "schema_version",
         "action",
         "transaction_kind",
+        "install_kind",
         "transaction_id",
         "recorded_at",
         "candidate_key",
@@ -1136,21 +1152,39 @@ def _validate_specialist_transaction_record(record: dict[str, Any]) -> None:
         "serving_smoke",
         "sha256",
     }
-    if set(record) != required or record.get("schema_version") != "2.0.0":
+    if (
+        set(record) != required
+        or record.get("schema_version") != SPECIALIST_TRANSACTION_SCHEMA_VERSION
+    ):
         raise ModelRegistryError("specialist transaction record is incomplete")
     champion_role = record.get("champion_role")
+    install_kind = record.get("install_kind")
     if (
         record.get("action") != "promote"
         or record.get("transaction_kind") != "specialist_champion"
+        or install_kind not in {"incumbent_swap", "first_role_install"}
         or champion_role not in SPECIALIST_CHAMPION_MATRIX_ROLES
         or record.get("matrix_role") != SPECIALIST_CHAMPION_MATRIX_ROLES.get(champion_role)
         or record.get("candidate_previous_lifecycle_state") != "benchmarked"
-        or record.get("incumbent_previous_role") != champion_role
-        or record.get("incumbent_previous_lifecycle_state") != "promoted"
         or not isinstance(record.get("transaction_id"), str)
         or not re.fullmatch(r"[a-f0-9]{32}", record["transaction_id"])
     ):
         raise ModelRegistryError("specialist transaction record scope is invalid")
+    if install_kind == "incumbent_swap":
+        if (
+            record.get("incumbent_previous_role") != champion_role
+            or record.get("incumbent_previous_lifecycle_state") != "promoted"
+            or record.get("incumbent_key") == GENESIS_INCUMBENT_KEY
+        ):
+            raise ModelRegistryError("specialist incumbent_swap record scope is invalid")
+    else:
+        if (
+            record.get("incumbent_key") != GENESIS_INCUMBENT_KEY
+            or record.get("incumbent_previous_role") != GENESIS_PREVIOUS_ROLE
+            or record.get("incumbent_previous_lifecycle_state") != GENESIS_PREVIOUS_LIFECYCLE
+            or record.get("incumbent_checkpoint_sha256") != GENESIS_CHECKPOINT_SHA256
+        ):
+            raise ModelRegistryError("specialist first_role_install record scope is invalid")
     if (
         not isinstance(record.get("candidate_key"), str)
         or not record["candidate_key"]
@@ -1311,17 +1345,37 @@ def _promote_specialist_role_unlocked(
     if candidate.get("role") == role:
         raise ModelRegistryError(f"candidate already owns {role}")
     incumbents = [entry for entry in proposed["models"] if entry.get("role") == role]
-    if len(incumbents) != 1 or incumbents[0].get("lifecycle_state") != "promoted":
+    if len(incumbents) > 1:
+        raise ModelRegistryError("specialist promotion requires at most one promoted incumbent")
+    if len(incumbents) == 1 and incumbents[0].get("lifecycle_state") != "promoted":
         raise ModelRegistryError("specialist promotion requires exactly one promoted incumbent")
-    incumbent = incumbents[0]
-    if (
-        packet.get("candidate_key") != candidate_key
-        or binding.get("candidate_key") != candidate_key
-        or packet.get("rollback_evidence", {}).get("incumbent_provider") != incumbent.get("key")
-        or binding.get("incumbent_provider") != incumbent.get("key")
-        or binding.get("prerequisite_sha256") != packet.get("sha256")
-    ):
-        raise ModelRegistryError("matrix promotion candidate or incumbent binding is stale")
+
+    if len(incumbents) == 0:
+        install_kind = "first_role_install"
+        incumbent_key = GENESIS_INCUMBENT_KEY
+        if (
+            packet.get("candidate_key") != candidate_key
+            or binding.get("candidate_key") != candidate_key
+            or packet.get("rollback_evidence", {}).get("incumbent_provider")
+            != GENESIS_INCUMBENT_KEY
+            or binding.get("incumbent_provider") != GENESIS_INCUMBENT_KEY
+            or binding.get("prerequisite_sha256") != packet.get("sha256")
+        ):
+            raise ModelRegistryError(
+                "matrix promotion first_role_install binding must use genesis incumbent sentinel"
+            )
+    else:
+        install_kind = "incumbent_swap"
+        incumbent = incumbents[0]
+        incumbent_key = str(incumbent["key"])
+        if (
+            packet.get("candidate_key") != candidate_key
+            or binding.get("candidate_key") != candidate_key
+            or packet.get("rollback_evidence", {}).get("incumbent_provider") != incumbent.get("key")
+            or binding.get("incumbent_provider") != incumbent.get("key")
+            or binding.get("prerequisite_sha256") != packet.get("sha256")
+        ):
+            raise ModelRegistryError("matrix promotion candidate or incumbent binding is stale")
     identities = packet.get("identity_hashes", {})
     if identities.get("checkpoint_sha256") != candidate.get("sha256"):
         raise ModelRegistryError("specialist packet checkpoint differs from registry candidate")
@@ -1346,8 +1400,16 @@ def _promote_specialist_role_unlocked(
     candidate_previous_role = str(candidate["role"])
     candidate["role"] = role
     candidate["lifecycle_state"] = "promoted"
-    incumbent["role"] = candidate_previous_role
-    incumbent["lifecycle_state"] = "benchmarked"
+    if install_kind == "incumbent_swap":
+        incumbent["role"] = candidate_previous_role
+        incumbent["lifecycle_state"] = "benchmarked"
+        incumbent_checkpoint_sha256 = str(incumbent["sha256"])
+        incumbent_previous_role = role
+        incumbent_previous_lifecycle_state = "promoted"
+    else:
+        incumbent_checkpoint_sha256 = GENESIS_CHECKPOINT_SHA256
+        incumbent_previous_role = GENESIS_PREVIOUS_ROLE
+        incumbent_previous_lifecycle_state = GENESIS_PREVIOUS_LIFECYCLE
     smoke = _smoke_proposed_registry(
         proposed,
         registry_path=registry_path,
@@ -1358,17 +1420,18 @@ def _promote_specialist_role_unlocked(
     )
     timestamp = promoted_at or datetime.now(UTC).isoformat().replace("+00:00", "Z")
     record: dict[str, Any] = {
-        "schema_version": "2.0.0",
+        "schema_version": SPECIALIST_TRANSACTION_SCHEMA_VERSION,
         "action": "promote",
         "transaction_kind": "specialist_champion",
+        "install_kind": install_kind,
         "transaction_id": uuid.uuid4().hex,
         "recorded_at": timestamp,
         "candidate_key": candidate_key,
         "candidate_previous_role": candidate_previous_role,
         "candidate_previous_lifecycle_state": "benchmarked",
-        "incumbent_key": str(incumbent["key"]),
-        "incumbent_previous_role": role,
-        "incumbent_previous_lifecycle_state": "promoted",
+        "incumbent_key": incumbent_key,
+        "incumbent_previous_role": incumbent_previous_role,
+        "incumbent_previous_lifecycle_state": incumbent_previous_lifecycle_state,
         "champion_role": role,
         "matrix_role": matrix_role,
         "matrix_certificate_id": str(certificate["certificate_id"]),
@@ -1376,7 +1439,7 @@ def _promote_specialist_role_unlocked(
         "specialist_packet_sha256": str(packet["sha256"]),
         "benchmark_certificate_sha256": str(benchmark_certificate["sha256"]),
         "candidate_checkpoint_sha256": str(candidate["sha256"]),
-        "incumbent_checkpoint_sha256": str(incumbent["sha256"]),
+        "incumbent_checkpoint_sha256": incumbent_checkpoint_sha256,
         "registry_before_sha256": _registry_sha256(before),
         "registry_after_sha256": _registry_sha256(proposed),
         "serving_smoke": smoke,
@@ -1448,32 +1511,60 @@ def _rollback_specialist_role_unlocked(
     proposed = copy.deepcopy(before)
     by_key = {str(entry["key"]): entry for entry in proposed["models"]}
     candidate = by_key.get(str(record["candidate_key"]))
-    incumbent = by_key.get(str(record["incumbent_key"]))
-    if candidate is None or incumbent is None:
+    install_kind = str(record.get("install_kind") or "incumbent_swap")
+    if candidate is None:
         raise ModelRegistryError("cannot rollback specialist: recorded provider is missing")
     if (
         candidate.get("role") != record["champion_role"]
         or candidate.get("lifecycle_state") != "promoted"
-        or incumbent.get("role") != record["candidate_previous_role"]
-        or incumbent.get("lifecycle_state") != "benchmarked"
     ):
         raise ModelRegistryError("cannot rollback specialist: role or lifecycle changed")
     candidate["role"] = record["candidate_previous_role"]
     candidate["lifecycle_state"] = record["candidate_previous_lifecycle_state"]
-    incumbent["role"] = record["incumbent_previous_role"]
-    incumbent["lifecycle_state"] = record["incumbent_previous_lifecycle_state"]
-    if _registry_sha256(proposed) != record["registry_before_sha256"]:
-        raise ModelRegistryError(
-            "cannot rollback specialist: original registry is not reproducible"
+    if install_kind == "first_role_install":
+        if record["incumbent_key"] != GENESIS_INCUMBENT_KEY:
+            raise ModelRegistryError("cannot rollback specialist: genesis sentinel mismatch")
+        owners = [
+            entry for entry in proposed["models"] if entry.get("role") == record["champion_role"]
+        ]
+        if owners:
+            raise ModelRegistryError(
+                "cannot rollback specialist first_role_install: champion role still owned"
+            )
+        if _registry_sha256(proposed) != record["registry_before_sha256"]:
+            raise ModelRegistryError(
+                "cannot rollback specialist: original registry is not reproducible"
+            )
+        # No incumbent to re-smoke; sealed absence of the champion role is the gate.
+        smoke = {
+            "result": "pass",
+            "role": record["champion_role"],
+            "model_key": GENESIS_INCUMBENT_KEY,
+            "smoke": "first_role_install_absent",
+        }
+    else:
+        incumbent = by_key.get(str(record["incumbent_key"]))
+        if incumbent is None:
+            raise ModelRegistryError("cannot rollback specialist: recorded provider is missing")
+        if (
+            incumbent.get("role") != record["candidate_previous_role"]
+            or incumbent.get("lifecycle_state") != "benchmarked"
+        ):
+            raise ModelRegistryError("cannot rollback specialist: role or lifecycle changed")
+        incumbent["role"] = record["incumbent_previous_role"]
+        incumbent["lifecycle_state"] = record["incumbent_previous_lifecycle_state"]
+        if _registry_sha256(proposed) != record["registry_before_sha256"]:
+            raise ModelRegistryError(
+                "cannot rollback specialist: original registry is not reproducible"
+            )
+        smoke = _smoke_proposed_registry(
+            proposed,
+            registry_path=registry_path,
+            models_root=Path(models_root),
+            role=str(record["champion_role"]),
+            expected_key=str(record["incumbent_key"]),
+            smoke_runner=smoke_runner,
         )
-    smoke = _smoke_proposed_registry(
-        proposed,
-        registry_path=registry_path,
-        models_root=Path(models_root),
-        role=str(record["champion_role"]),
-        expected_key=str(record["incumbent_key"]),
-        smoke_runner=smoke_runner,
-    )
     rollback: dict[str, Any] = {
         "schema_version": "2.0.0",
         "action": "rollback",
@@ -1657,19 +1748,43 @@ def _promote_custom_segmenter_role_unlocked(
         raise ModelRegistryError("current checkpoint identity differs from the registry candidate")
 
     incumbents = [entry for entry in proposed["models"] if entry.get("role") == "champion_bodypart"]
-    if len(incumbents) != 1:
-        raise ModelRegistryError("custom segmenter promotion requires exactly one incumbent")
-    incumbent = incumbents[0]
-    if incumbent.get("key") != summary["rollback_provider"]:
-        raise ModelRegistryError("certificate rollback provider differs from the incumbent")
-    if incumbent.get("lifecycle_state") != "promoted":
+    if len(incumbents) > 1:
+        raise ModelRegistryError("custom segmenter promotion requires at most one incumbent")
+    if len(incumbents) == 1 and incumbents[0].get("lifecycle_state") != "promoted":
         raise ModelRegistryError("custom segmenter incumbent must have lifecycle promoted")
+
+    if len(incumbents) == 0:
+        install_kind = "first_role_install"
+        if summary["rollback_provider"] != GENESIS_INCUMBENT_KEY:
+            raise ModelRegistryError(
+                "custom segmenter first_role_install requires genesis rollback provider"
+            )
+        if matrix_binding.get("incumbent_provider") != GENESIS_INCUMBENT_KEY:
+            raise ModelRegistryError(
+                "matrix promotion first_role_install binding must use genesis incumbent sentinel"
+            )
+        incumbent_key = GENESIS_INCUMBENT_KEY
+        incumbent_checkpoint_sha256 = GENESIS_CHECKPOINT_SHA256
+        incumbent_previous_role = GENESIS_PREVIOUS_ROLE
+        incumbent_previous_lifecycle_state = GENESIS_PREVIOUS_LIFECYCLE
+    else:
+        install_kind = "incumbent_swap"
+        incumbent = incumbents[0]
+        if incumbent.get("key") != summary["rollback_provider"]:
+            raise ModelRegistryError("certificate rollback provider differs from the incumbent")
+        if matrix_binding.get("incumbent_provider") != incumbent.get("key"):
+            raise ModelRegistryError("matrix promotion custom segmenter binding is stale")
+        incumbent_key = str(incumbent["key"])
+        incumbent_checkpoint_sha256 = str(incumbent["sha256"])
+        incumbent_previous_role = "champion_bodypart"
+        incumbent_previous_lifecycle_state = "promoted"
 
     candidate_previous_role = str(candidate["role"])
     candidate["role"] = "champion_bodypart"
     candidate["lifecycle_state"] = "promoted"
-    incumbent["role"] = candidate_previous_role
-    incumbent["lifecycle_state"] = "benchmarked"
+    if install_kind == "incumbent_swap":
+        incumbent["role"] = candidate_previous_role
+        incumbent["lifecycle_state"] = "benchmarked"
     smoke = _smoke_proposed_registry(
         proposed,
         registry_path=registry_path,
@@ -1680,17 +1795,18 @@ def _promote_custom_segmenter_role_unlocked(
     )
     timestamp = promoted_at or datetime.now(UTC).isoformat().replace("+00:00", "Z")
     record: dict[str, Any] = {
-        "schema_version": "3.0.0",
+        "schema_version": CUSTOM_SEGMENTER_TRANSACTION_SCHEMA_VERSION,
         "action": "promote",
         "transaction_kind": "custom_segmenter_champion",
+        "install_kind": install_kind,
         "transaction_id": uuid.uuid4().hex,
         "recorded_at": timestamp,
         "candidate_key": candidate_key,
         "candidate_previous_role": candidate_previous_role,
         "candidate_previous_lifecycle_state": "benchmarked",
-        "incumbent_key": str(incumbent["key"]),
-        "incumbent_previous_role": "champion_bodypart",
-        "incumbent_previous_lifecycle_state": "promoted",
+        "incumbent_key": incumbent_key,
+        "incumbent_previous_role": incumbent_previous_role,
+        "incumbent_previous_lifecycle_state": incumbent_previous_lifecycle_state,
         "champion_role": "champion_bodypart",
         "matrix_role": "custom_segmenter",
         "matrix_certificate_id": str(matrix_certificate["certificate_id"]),
@@ -1698,7 +1814,7 @@ def _promote_custom_segmenter_role_unlocked(
         "custom_segmenter_certificate_sha256": str(certificate["sha256"]),
         "benchmark_results_sha256": str(certificate["benchmark_results"]["sha256"]),
         "candidate_checkpoint_sha256": str(candidate["sha256"]),
-        "incumbent_checkpoint_sha256": str(incumbent["sha256"]),
+        "incumbent_checkpoint_sha256": incumbent_checkpoint_sha256,
         "registry_before_sha256": _registry_sha256(before),
         "registry_after_sha256": _registry_sha256(proposed),
         "serving_smoke": smoke,
@@ -1755,6 +1871,7 @@ def _validate_custom_segmenter_transaction_record(record: dict[str, Any]) -> Non
         "schema_version",
         "action",
         "transaction_kind",
+        "install_kind",
         "transaction_id",
         "recorded_at",
         "candidate_key",
@@ -1776,20 +1893,38 @@ def _validate_custom_segmenter_transaction_record(record: dict[str, Any]) -> Non
         "serving_smoke",
         "sha256",
     }
-    if set(record) != required or record.get("schema_version") != "3.0.0":
+    if (
+        set(record) != required
+        or record.get("schema_version") != CUSTOM_SEGMENTER_TRANSACTION_SCHEMA_VERSION
+    ):
         raise ModelRegistryError("custom segmenter transaction record is incomplete")
+    install_kind = record.get("install_kind")
     if (
         record.get("action") != "promote"
         or record.get("transaction_kind") != "custom_segmenter_champion"
+        or install_kind not in {"incumbent_swap", "first_role_install"}
         or record.get("champion_role") != "champion_bodypart"
         or record.get("matrix_role") != "custom_segmenter"
         or record.get("candidate_previous_lifecycle_state") != "benchmarked"
-        or record.get("incumbent_previous_role") != "champion_bodypart"
-        or record.get("incumbent_previous_lifecycle_state") != "promoted"
         or not isinstance(record.get("transaction_id"), str)
         or not record["transaction_id"]
     ):
         raise ModelRegistryError("custom segmenter transaction record scope is invalid")
+    if install_kind == "incumbent_swap":
+        if (
+            record.get("incumbent_previous_role") != "champion_bodypart"
+            or record.get("incumbent_previous_lifecycle_state") != "promoted"
+            or record.get("incumbent_key") == GENESIS_INCUMBENT_KEY
+        ):
+            raise ModelRegistryError("custom segmenter incumbent_swap record scope is invalid")
+    else:
+        if (
+            record.get("incumbent_key") != GENESIS_INCUMBENT_KEY
+            or record.get("incumbent_previous_role") != GENESIS_PREVIOUS_ROLE
+            or record.get("incumbent_previous_lifecycle_state") != GENESIS_PREVIOUS_LIFECYCLE
+            or record.get("incumbent_checkpoint_sha256") != GENESIS_CHECKPOINT_SHA256
+        ):
+            raise ModelRegistryError("custom segmenter first_role_install record scope is invalid")
     if not re.fullmatch(r"[a-f0-9]{32}", record["transaction_id"]):
         raise ModelRegistryError("custom segmenter transaction id is invalid")
     if (
@@ -1895,32 +2030,57 @@ def _rollback_custom_segmenter_role_unlocked(
     proposed = copy.deepcopy(before)
     by_key = {str(entry["key"]): entry for entry in proposed["models"]}
     candidate = by_key.get(str(record["candidate_key"]))
-    incumbent = by_key.get(str(record["incumbent_key"]))
-    if candidate is None or incumbent is None:
+    install_kind = str(record.get("install_kind") or "incumbent_swap")
+    if candidate is None:
         raise ModelRegistryError("cannot rollback: recorded provider is missing")
     if (
         candidate.get("role") != "champion_bodypart"
         or candidate.get("lifecycle_state") != "promoted"
-        or incumbent.get("role") != record["candidate_previous_role"]
-        or incumbent.get("lifecycle_state") != "benchmarked"
     ):
         raise ModelRegistryError("cannot rollback: role or lifecycle changed after promotion")
     candidate["role"] = record["candidate_previous_role"]
     candidate["lifecycle_state"] = record["candidate_previous_lifecycle_state"]
-    incumbent["role"] = record["incumbent_previous_role"]
-    incumbent["lifecycle_state"] = record["incumbent_previous_lifecycle_state"]
-    if _registry_sha256(proposed) != record["registry_before_sha256"]:
-        raise ModelRegistryError(
-            "cannot rollback: exact pre-promotion registry is not reproducible"
+    if install_kind == "first_role_install":
+        if record["incumbent_key"] != GENESIS_INCUMBENT_KEY:
+            raise ModelRegistryError("cannot rollback: genesis sentinel mismatch")
+        owners = [entry for entry in proposed["models"] if entry.get("role") == "champion_bodypart"]
+        if owners:
+            raise ModelRegistryError(
+                "cannot rollback first_role_install: champion_bodypart still owned"
+            )
+        if _registry_sha256(proposed) != record["registry_before_sha256"]:
+            raise ModelRegistryError(
+                "cannot rollback: exact pre-promotion registry is not reproducible"
+            )
+        smoke = {
+            "result": "pass",
+            "role": "champion_bodypart",
+            "model_key": GENESIS_INCUMBENT_KEY,
+            "smoke": "first_role_install_absent",
+        }
+    else:
+        incumbent = by_key.get(str(record["incumbent_key"]))
+        if incumbent is None:
+            raise ModelRegistryError("cannot rollback: recorded provider is missing")
+        if (
+            incumbent.get("role") != record["candidate_previous_role"]
+            or incumbent.get("lifecycle_state") != "benchmarked"
+        ):
+            raise ModelRegistryError("cannot rollback: role or lifecycle changed after promotion")
+        incumbent["role"] = record["incumbent_previous_role"]
+        incumbent["lifecycle_state"] = record["incumbent_previous_lifecycle_state"]
+        if _registry_sha256(proposed) != record["registry_before_sha256"]:
+            raise ModelRegistryError(
+                "cannot rollback: exact pre-promotion registry is not reproducible"
+            )
+        smoke = _smoke_proposed_registry(
+            proposed,
+            registry_path=registry_path,
+            models_root=models_root,
+            role="champion_bodypart",
+            expected_key=str(record["incumbent_key"]),
+            smoke_runner=smoke_runner,
         )
-    smoke = _smoke_proposed_registry(
-        proposed,
-        registry_path=registry_path,
-        models_root=models_root,
-        role="champion_bodypart",
-        expected_key=str(record["incumbent_key"]),
-        smoke_runner=smoke_runner,
-    )
     timestamp = rolled_back_at or datetime.now(UTC).isoformat().replace("+00:00", "Z")
     rollback_record: dict[str, Any] = {
         "schema_version": "3.0.0",

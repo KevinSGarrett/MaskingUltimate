@@ -15,11 +15,72 @@ ROOT = Path(__file__).resolve().parents[3]
 
 def _wsl_path(path: Path) -> str:
     resolved = path.resolve()
+    # Native Linux / RunPod: already POSIX.
+    if not resolved.drive:
+        return resolved.as_posix()
     drive = resolved.drive.rstrip(":").lower()
     if not drive:
         raise ValueError(f"expected Windows drive path, got {resolved}")
     relative = resolved.as_posix().split(":", 1)[1]
     return f"/mnt/{drive}{relative}"
+
+
+def _rewrite_wsl_command(command: list[str]) -> list[str]:
+    """On native Linux, turn `wsl -d ... -- python script args` into local python."""
+    import sys
+
+    if not command or command[0] != "wsl":
+        return command
+    if Path(__file__).resolve().drive:
+        return command  # Windows host keeps WSL pin
+    # Expected: wsl -d Ubuntu-22.04 -- <python> <script> <args...>
+    # Also: wsl ... -- /usr/bin/env KEY=VAL /path/to/python script args
+    if "--" in command:
+        idx = command.index("--")
+        rest = list(command[idx + 1 :])
+    else:
+        rest = list(command[1:])
+    if not rest:
+        return command
+    # Doctor / shell builtins are not Python scripts.
+    if rest[0] in {"true", "false", "/bin/true", "/bin/false", "/usr/bin/true", "/usr/bin/false"}:
+        token = rest[0] if rest[0].startswith("/") else f"/bin/{rest[0]}"
+        return [token]
+
+    # Strip env wrapper and KEY=VALUE assignments; keep real argv.
+    if Path(rest[0]).name == "env" or rest[0] in {"/usr/bin/env", "/bin/env"}:
+        rest = rest[1:]
+    while rest:
+        token = rest[0]
+        if token.startswith("-") or "=" not in token:
+            break
+        key = token.split("=", 1)[0]
+        if not key.isidentifier():
+            break
+        # KEY=VALUE form from `env`; smoke scripts usually set their own library path.
+        rest = rest[1:]
+    if not rest:
+        return command
+
+    first_name = Path(rest[0]).name
+    if first_name in {"python", "python3"} or first_name.startswith("python"):
+        return [sys.executable, *rest[1:]]
+    # Already a script path (no interpreter token) — execute with local python.
+    if rest[0].endswith(".py"):
+        return [sys.executable, *rest]
+    return [sys.executable, *rest]
+
+
+_ORIG_SUBPROCESS_RUN = subprocess.run
+
+
+def _subprocess_run_linux_aware(command, *args, **kwargs):  # type: ignore[no-untyped-def]
+    if isinstance(command, (list, tuple)):
+        command = _rewrite_wsl_command(list(command))
+    return _ORIG_SUBPROCESS_RUN(command, *args, **kwargs)
+
+
+subprocess.run = _subprocess_run_linux_aware  # type: ignore[assignment]
 
 
 def yolo11_person_detector(checkpoint: Path, image: Path) -> dict[str, Any]:
@@ -404,6 +465,41 @@ def groundingdino_person_boxes_wsl(checkpoint: Path, image: Path) -> dict[str, A
 register_smoke_runner("groundingdino_person_boxes_wsl", groundingdino_person_boxes_wsl)
 
 
+def _densepose_config_path() -> str:
+    """Resolve DensePose R50-FPN config on WSL or native Linux/RunPod."""
+    candidates: list[Path] = []
+    try:
+        import densepose  # type: ignore
+
+        pkg = Path(densepose.__file__).resolve().parent
+        candidates.append(pkg.parent / "configs" / "densepose_rcnn_R_50_FPN_s1x.yaml")
+    except Exception:
+        pass
+    candidates.extend(
+        [
+            Path(
+                "/workspace/source/detectron2/projects/DensePose/configs/densepose_rcnn_R_50_FPN_s1x.yaml"
+            ),
+            Path(
+                "/home/kevin/mfwork/source/detectron2/projects/DensePose/configs/densepose_rcnn_R_50_FPN_s1x.yaml"
+            ),
+            ROOT
+            / "source"
+            / "detectron2"
+            / "projects"
+            / "DensePose"
+            / "configs"
+            / "densepose_rcnn_R_50_FPN_s1x.yaml",
+        ]
+    )
+    for candidate in candidates:
+        if candidate.is_file():
+            return str(candidate)
+    raise FileNotFoundError(
+        "DensePose config not found; install detectron2 DensePose project or set source tree"
+    )
+
+
 def densepose_r50_cuda_wsl(checkpoint: Path, image: Path) -> dict[str, Any]:
     """Run the pinned DensePose R50-FPN chart model on one CUDA image."""
     command = [
@@ -418,7 +514,7 @@ def densepose_r50_cuda_wsl(checkpoint: Path, image: Path) -> dict[str, Any]:
         "--image",
         _wsl_path(image),
         "--config",
-        "/home/kevin/mfwork/source/detectron2/projects/DensePose/configs/densepose_rcnn_R_50_FPN_s1x.yaml",
+        _densepose_config_path(),
     ]
     process = subprocess.run(command, capture_output=True, text=True, timeout=900, check=False)
     if process.returncode != 0:
@@ -442,8 +538,15 @@ register_smoke_runner("densepose_r50_cuda_wsl", densepose_r50_cuda_wsl)
 
 def faceparse_bisenet_cuda_local(checkpoint: Path, image: Path) -> dict[str, Any]:
     """Run the pinned BiSeNet locally, avoiding the degraded WSL VHD path."""
+    import sys
+
+    python_bin = (
+        sys.executable
+        if not Path(__file__).resolve().drive
+        else "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe"
+    )
     command = [
-        "C:/Comfy_UI_Main/ComfyUI/.venv/Scripts/python.exe",
+        python_bin,
         str(ROOT / "tools" / "smoke_faceparse_bisenet_wsl.py"),
         "--checkpoint",
         str(checkpoint.resolve()),

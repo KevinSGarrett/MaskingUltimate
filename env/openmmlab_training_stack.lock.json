@@ -50,6 +50,7 @@
     "torch": "2.11.0+cu128",
     "cuda": "12.8",
     "compute_capability": [12, 0],
+    "accepted_compute_capabilities": [[12, 0], [8, 9]],
     "build_env": {
       "CUDA_HOME": "$CONDA_PREFIX",
       "FORCE_CUDA": "1",
@@ -63,6 +64,7 @@
     "verified_at": "2026-07-12T23:59:00+00:00",
     "verified_device": "NVIDIA GeForce RTX 5060 Laptop GPU",
     "verified_compute_capability": [12, 0],
-    "evidence": "qa/live_verification/openmmlab_cuda_runtime_20260712.json"
+    "evidence": "qa/live_verification/openmmlab_cuda_runtime_20260712.json",
+    "runpod_ada_note": "accepted_compute_capabilities includes [8, 9] for RunPod RTX 6000 Ada native train when DinD/sm_120 image is unavailable; MMCV ops must be built with TORCH_CUDA_ARCH_LIST=8.9 in that env."
   }
 }

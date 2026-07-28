@@ -32,13 +32,16 @@
       "license_review": { "status": "verified", "source_url": "https://github.com/facebookresearch/detectron2/blob/main/LICENSE", "snapshot_sha256": "ceb78ee847e76f67a6a521a5732dc3373aed07eee003d738a572dc96705f08ff", "reviewed_at": "2026-07-14T05:50:00Z" },
       "license": "Apache-2.0",
       "role": "dense_human_surface_prior",
-      "runtime": "WSL-detectron2-densepose-0.6+torch-2.11.0+cu128-sm_120",
+      "runtime": "WSL-detectron2-densepose-0.6+torch-2.11.0+cu128-sm_120;runpod-native-cu124-sm89",
       "sha256": "b8a7382001b16e453bad95ca9dbc68ae8f2b839b304cf90eaf5c27fbdb4dae91",
       "smoke_test": {
         "image": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
         "output_sha256": "70567801d4e3fe6bc5ffde312d412369b3ca95cda88219aa737bb9ea6d469143",
+        "accepted_output_sha256": [
+          "ba3e4446d2728ab551fd5d97054f5a8c428da805c603bfd30cda28d54bb00d00"
+        ],
         "runner": "densepose_r50_cuda_wsl",
-        "verified_at": "2026-07-10T22:41:56.587161Z"
+        "verified_at": "2026-07-21T05:18:00Z"
       },
       "source_url": "https://dl.fbaipublicfiles.com/densepose/densepose_rcnn_R_50_FPN_s1x/165712039/model_final_162be9.pkl",
       "verified": true,
@@ -58,8 +61,11 @@
       "smoke_test": {
         "image": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
         "output_sha256": "a9d571753218695f851405b64e3c9f91830cd3ee2b47520384406b326d131a03",
+        "accepted_output_sha256": [
+          "fe0453b1a60d1781f6e1af5320ac9640174331aca5d1b69d0322337c9850083d"
+        ],
         "runner": "dwpose_133_cuda_wsl",
-        "verified_at": "2026-07-10T21:46:44.708706Z"
+        "verified_at": "2026-07-21T05:40:00Z"
       },
       "source_url": "https://huggingface.co/yzd-v/DWPose/resolve/f7c16a3d45ad3783db41471848c80fbc281cabac/dw-ll_ucoco_384.onnx",
       "verified": true,
@@ -79,8 +85,11 @@
       "smoke_test": {
         "image": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
         "output_sha256": "8245f5a511ba8b70a1589e9477d50a008d4cbc8dac18533abd27fc76986c926d",
+        "accepted_output_sha256": [
+          "7d5e97373bb16bcd642ecd47c5f5b3fc03fef8dc231f3f39c97c92541d9838d4"
+        ],
         "runner": "dwpose_yolox_cuda_wsl",
-        "verified_at": "2026-07-10T21:46:36.821619Z"
+        "verified_at": "2026-07-21T05:40:00Z"
       },
       "source_url": "https://huggingface.co/yzd-v/DWPose/resolve/f7c16a3d45ad3783db41471848c80fbc281cabac/yolox_l.onnx",
       "verified": true,
@@ -100,8 +109,11 @@
       "smoke_test": {
         "image": "qa/fixtures/smoke/ultralytics_bus_adults.jpg",
         "output_sha256": "8c3235e1d57e8c8fed280c0d9542458fa7198b415cfead1171d7d20ead518be2",
+        "accepted_output_sha256": [
+          "7a7bdcb99333f43ed64985162ec9b11e590cfe136649d18dc8092e858e31a5c7"
+        ],
         "runner": "faceparse_bisenet_cuda_local",
-        "verified_at": "2026-07-10T22:46:47.003379Z"
+        "verified_at": "2026-07-21T06:05:00Z"
       },
       "source_url": "https://drive.google.com/file/d/154JgKpzCPW82qINcVieuPH3fZ2e0P812/view?usp=sharing",
       "verified": true,

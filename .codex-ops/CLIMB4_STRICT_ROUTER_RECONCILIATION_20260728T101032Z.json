@@ -1,0 +1,36 @@
+{
+  "artifact_type": "maskfactory_climb4_strict_router_reconciliation_receipt",
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-07-28T10:10:32Z",
+  "source_worktree": "C:\\Comfy_UI_Main_Masking\\.wt_climb4",
+  "source_head": "6b1ad4ef965be08f7db13411f7d206d26d68f788",
+  "source_path": "tools/run_tournament_ollama_critic_router.py",
+  "integration_branch": "codex/reconcile-maskfactory-canonical-20260728",
+  "integration_commit": "8152ae86298f44851f0dcfde9ece3bb6179fa163",
+  "remote_ref": "refs/heads/codex/reconcile-maskfactory-canonical-20260728",
+  "disposition": "ADOPTED_MISSING_CONTROL_CLOSURE",
+  "reason": [
+    "The governing standing orders and strict-gate smoke tool reference this router, but it was absent from the clean integration tree.",
+    "The router consumes the newer canonical strict-gate implementation and current configs/vlm.yaml without replacing either.",
+    "It remains fail-closed: it cannot author masks, approve gold, or clear hard blocks."
+  ],
+  "validation": {
+    "ruff": "PASS",
+    "help": "PASS",
+    "empty_root_force_disabled_smoke": "PASS: exit 0, reviewed_n 0, no runtime invocation",
+    "strict_gate_tests": "PASS: 9 passed",
+    "external_model_or_gpu_invocation": false,
+    "git_diff_check": "PASS"
+  },
+  "preservation": {
+    "source_worktree_retained": true,
+    "checkpoint": "F:\\CodexRecovery\\maskfactory_reconciliation_checkpoint_20260728T042648Z",
+    "checkpoint_digest_sha256": "903b960291b049ef26c4c36fa55d568158a0918763aea4a830fce5d1f11f2b0a"
+  },
+  "boundary": {
+    "old_configs_vlm_adopted": false,
+    "obsolete_autonomous_gold_profile_adopted": false,
+    "main_paths_mutated": false,
+    "shared_worktrees_mutated": false
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "schema": "maskfactory.worktree_retirement_receipt.v1",
+  "created_at_utc": "2026-07-28T10:40:26Z",
+  "retired_path": "C:\\w\\mfw\\a1fed8eb1622c878",
+  "repository": "C:\\Comfy_UI_Main_Masking",
+  "git_common_dir": "C:\\Comfy_UI_Main_Masking\\.git",
+  "source_head": "093b9b1d74fb21ec5653d9dae395af878a8f0909",
+  "preconditions": {
+    "main_coordination": "CONFIRMED_NO_OWNERSHIP_OR_DEPENDENCY_CONFLICT",
+    "first_attempt": "STOPPED_WITHOUT_MUTATION_WHEN_TRANSIENT_GIT_LS_FILES_PROCESS_WAS_PRESENT",
+    "final_active_git_or_ssh_process": false,
+    "tracked_change_count": 0,
+    "untracked_file_count": 3,
+    "untracked_archive_readback": "3_OF_3_EXACT_SHA256_MATCH",
+    "tier_a_backup": "C:\\MaskFactory_TierA_Backups\\a1_repair_controller_20260728T103700Z",
+    "tier_a_backup_receipt_sha256": "b9914971eeed505291e142c746695d474a19b43100de1883c858f1126c106f69",
+    "original_checkpoint": "F:\\CodexRecovery\\maskfactory_reconciliation_checkpoint_20260728T042648Z"
+  },
+  "semantic_disposition": {
+    "classification": "PRESERVED_INCOMPLETE_REMEDIATION_REQUIRED_NOT_ADOPTABLE",
+    "disposition_commit": "bcac57a017f83b8f196b18cdcfb2da71c67b9ae4",
+    "missing_required_evidence_schema": true,
+    "missing_required_focused_test": true,
+    "migration_or_compatibility_contract_with_current_durable_executor": false,
+    "production_completion_claim": false
+  },
+  "operation": "git worktree remove --force -- C:\\w\\mfw\\a1fed8eb1622c878",
+  "logical_bytes_retired": 17472077,
+  "storage_measurement": {
+    "c_free_before": 61334925312,
+    "c_free_after": 61524213760,
+    "measured_delta": 189288448,
+    "interpretation": "The sampled free-space gain exceeds the worktree's logical bytes because other allocation changed concurrently; only logical_bytes_retired is attributed to this retirement."
+  },
+  "postconditions": {
+    "path_absent": true,
+    "registration_absent": true,
+    "masking_worktree_count_before": 3,
+    "masking_worktree_count_after": 2,
+    "source_head_reachable_ref_count": 2,
+    "source_head_reachable_refs": [
+      "refs/codex/snapshots/eight-cursor-mask-mask8s_e0f53b6f",
+      "refs/remotes/origin/codex/recovery-maskfactory-detached-base-20260728-093b9b1"
+    ],
+    "git_fsck_connectivity_only_no_dangling": "PASS",
+    "git_fsck_full_no_dangling": "PASS"
+  },
+  "remaining_masking_worktrees": [
+    "C:\\Comfy_UI_Main_Masking",
+    "C:\\Comfy_UI_Main_Masking\\.codex-ops\\worktrees\\canonical-reconciliation-20260728"
+  ],
+  "untouched_boundaries": [
+    "C:\\Comfy_UI_Main",
+    "all other C:\\w paths",
+    "C:\\Comfy_UI_Main_MaskFactory_Consumer",
+    "F:\\Codex_Recovery",
+    "F:\\CodexRecovery",
+    "MaskFactory VHDX backups"
+  ],
+  "authority_accounting": {
+    "qwen_openrouter_units": 0,
+    "claude_units": 0,
+    "cursor_units": 0,
+    "codex_units": "preservation, semantic disposition, exact removal, Git integrity, receipt, commit, push"
+  }
+}

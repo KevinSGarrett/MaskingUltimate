@@ -1,7 +1,7 @@
 ﻿# Current Task
 
 Task ID: MASKFACTORY-ULTIMATE-MASKING-E2E-20260727
-Updated UTC: 2026-07-28T21:27:49Z
+Updated UTC: 2026-07-28T21:34:55Z
 
 ## Active pursuing goal: full attribution and evidence-backed E2E closure
 
@@ -44,6 +44,12 @@ Post-correction row authority:
 4,008/4,008 unique rows with every required authority field, zero unknown
 Item IDs, zero duplicates, and zero unresolved bindings. Committed receipt:
 `.codex-ops/HISTORICAL_STASH_AUTHORITY_BINDING_20260728T212749Z.json`.
+
+The bounded correction implementation is committed at
+`611c4e0b0ed8ce01a63343a91d84845b6f1f9f80`. Its terminal receipt is
+`.codex-ops/RECOVERY_ATTRIBUTION_CONTROL_RELEASE_20260728T213455Z.json`.
+The receipt commit must be pushed non-forced and local `main` must equal
+`origin/main`; only then is this finite control release closed.
 
 ## Completed foundation: local/repository/stash authority convergence
 
@@ -266,9 +272,11 @@ Binding authorities:
 
 ## First next action
 
-Finish the finite 4,008-row Plan/Item/tracker authority expansion, validate
-every reference, and adjudicate `MF-P6-20.02` through `.04`. Then immediately
-continue the earliest dependency-ready core lane: `MF-P4-11.23`,
+Produce the exact current-tree acceptance manifest and remaining clean
+diff/secret/schema/import/package proof for `MF-P6-20.02`, then close the
+repository-wide test/skip inventory under `.03` and authorized
+runtime-health/restore/shutdown proof under `.04`. Continue the earliest
+dependency-ready core lanes: `MF-P4-11.23`,
 `MF-P4-12.11`, `MF-P6-18.03`, `MF-P6-11.01` coordination, and the Plan-28
 integration chain. Do not rerun accepted `MF-P6-19.01` or `.02`.
 

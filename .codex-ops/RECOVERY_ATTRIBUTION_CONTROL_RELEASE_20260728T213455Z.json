@@ -1,0 +1,101 @@
+{
+  "schema_version": "maskfactory_recovery_attribution_control_release.v1",
+  "created_utc": "2026-07-28T21:34:55Z",
+  "result": "PASS",
+  "scope": "Bounded post-recovery Plan, Item, tracker, repository-map, current-task, pursuing-goal, and 4,008-row authority correction. No product runtime, visual, campaign, release, or ComfyUI acceptance was executed or claimed.",
+  "base_main_oid": "68e159f4e43c656e3e5de61adc3acaed304debd6",
+  "validated_authority_source_oid": "611c4e0b0ed8ce01a63343a91d84845b6f1f9f80",
+  "receipt_commit_rule": "This receipt and terminal control text are committed after the validated authority source commit. Release completion requires the resulting main commit to be pushed non-forced and local main to equal origin/main.",
+  "pre_change_checkpoint": {
+    "path": "C:\\MaskFactory_TierA_Backups\\authority_attribution_before_change_20260728T201447Z",
+    "payloads": 17,
+    "bytes": 8472585,
+    "verification_failures": 0,
+    "manifest_sha256": "c3cece21605225ea35b6467bf8b35e4fc4819b4d683df8335ef8d063866e4f08"
+  },
+  "row_authority": {
+    "binding_receipt": ".codex-ops/HISTORICAL_STASH_AUTHORITY_BINDING_20260728T212749Z.json",
+    "binding_receipt_bytes": 2792,
+    "binding_receipt_sha256": "e245e6c7974fb7bdeac894d0251085e0c159462c22b08757ea474b54c2ab58f5",
+    "matrix": "C:\\MaskFactory_TierA_Backups\\historical_stashes_20260728T182808Z\\stash_semantic_authority_matrix_v2.json",
+    "matrix_bytes": 12426344,
+    "matrix_sha256": "a4436d4a17c7d37990e15c47623b3d51899e1ecba9f7db0b4f9507003dc54930",
+    "rows": 4008,
+    "unique_rows": 4008,
+    "unknown_item_ids": 0,
+    "duplicates": 0,
+    "unresolved": 0,
+    "all_required_authority_fields_present": true,
+    "deterministic_regeneration": "PASS",
+    "git_blob_sha256_readback": "PASS"
+  },
+  "tracker": {
+    "items": 906,
+    "structural_errors": 0,
+    "unresolved_hard_blockers": 53,
+    "tracker_json_sha256": "0661604f51e635a2900103625434fde8c154dadcd33e3786ae283e3f344b5f63",
+    "changelog_sha256": "bb9df65b041632da837e27066d1a412a73e65443fe914f85414aa05f57cd366a",
+    "adjudications": {
+      "MF-P6-20.02": {
+        "status": "in_progress",
+        "percent": 90,
+        "remaining": "Exact current-tree manifest and final clean diff/secret/schema/import/package section receipt."
+      },
+      "MF-P6-20.03": {
+        "status": "partially_complete",
+        "percent": 80,
+        "remaining": "Repository-wide Ruff debt and exact governed-skip/external-prerequisite inventory."
+      },
+      "MF-P6-20.04": {
+        "status": "partially_complete",
+        "percent": 65,
+        "remaining": "Authorized bounded service health, persistent restore, owned shutdown, and zero-leak reconstruction proof."
+      }
+    },
+    "functional_items_noted_without_status_change": 10
+  },
+  "validation": {
+    "enrichment_tests": "4 passed",
+    "tracker_tests": "26 passed",
+    "focused_total": "30 passed",
+    "ruff_changed_python": "PASS",
+    "black_changed_python": "PASS",
+    "tracker_rebuild": "906 kept, 0 new, 0 orphaned",
+    "tracker_report": "PASS",
+    "tracker_validate": "PASS_ZERO_STRUCTURAL_ERRORS",
+    "credential_shaped_staged_matches": 0,
+    "diff_check": "PASS",
+    "bundle_verify": "PASS",
+    "connectivity_fsck": "PASS",
+    "pre_commit_hooks": "PASS"
+  },
+  "topology_expected_after_receipt_commit_and_push": {
+    "canonical_root": "C:\\Comfy_UI_Main_Masking",
+    "branch": "main",
+    "local_branches": 1,
+    "worktrees": 1,
+    "stashes": 0,
+    "shared_cw_present": false,
+    "local_main_equals_origin_main": true,
+    "working_tree_status_rows": 0
+  },
+  "main_coordination": {
+    "task_id": "019fa6cc-eb76-74c1-8fd1-f062cec56dad",
+    "main_joint_recovery_receipt_oid": "9206ed7779ed28afd7e60465b6e648310b9eabba",
+    "ownership_conflicts": 0,
+    "boundary": "Main, shared C:\\w, Consumer, F:\\Codex_Recovery, and foreign-owned paths were not mutated."
+  },
+  "remaining_product_truth": {
+    "ultimate_masking_system_e2e": "INCOMPLETE",
+    "self_hosted_autonomous_llm_throughput": "INCOMPLETE",
+    "core_unresolved_dependencies": 34,
+    "core_unresolved_hard_blockers": 22,
+    "portfolio_hard_blockers_outside_completion_profiles": 31
+  },
+  "advisory_accounting": {
+    "qwen_openrouter_units": 0,
+    "claude_units": 0,
+    "cursor_units": 0,
+    "codex_authority": "all filesystem, Git, Plan, Item, tracker, recovery-attribution, testing, validation, and coordination decisions"
+  }
+}

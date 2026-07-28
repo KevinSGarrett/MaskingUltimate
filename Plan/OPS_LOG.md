@@ -11362,3 +11362,10 @@ received provenance-only notes with no status or percentage changes.
 Rebuild/report/validate preserve 906 Items, 53 unresolved hard blockers, and
 zero structural errors. Broader runtime/product work remains in the active
 pursuing goal and is not mixed into this recovery-control release.
+
+The bounded implementation is committed at
+`611c4e0b0ed8ce01a63343a91d84845b6f1f9f80`. All commit hooks passed. Terminal
+receipt
+`.codex-ops/RECOVERY_ATTRIBUTION_CONTROL_RELEASE_20260728T213455Z.json`
+records the exact remaining product boundaries and requires the receipt commit
+to be pushed non-forced with clean local/remote `main` parity.

@@ -1,12 +1,12 @@
 # MaskFactory repository map
 
-Updated UTC: 2026-07-28T21:27:49Z
+Updated UTC: 2026-07-28T21:34:55Z
 
 ## Live repository and ownership map
 
 | Path | Repository/role | Owner | Mutation rule |
 | --- | --- | --- | --- |
-| `C:\Comfy_UI_Main_Masking` | sole canonical MaskFactory worktree; local `main` based on remotely protected `68e159f4e43c656e3e5de61adc3acaed304debd6` with the bounded authority-attribution release in progress | Masking task | normal scoped MaskFactory development; restore clean local/remote parity at the release boundary |
+| `C:\Comfy_UI_Main_Masking` | sole canonical MaskFactory worktree; validated authority-attribution source at `611c4e0b0ed8ce01a63343a91d84845b6f1f9f80`, followed only by its terminal receipt commit | Masking task | normal scoped MaskFactory development; release requires clean local/remote `main` parity |
 | `C:\Comfy_UI_Main_MaskFactory_Consumer` | standalone isolated Consumer repository, clean at `1091a9c8cc01ff554907b97a7e754c6c884cee01` | Masking task | remotely protected; no rewrite; not canonical MaskFactory source |
 | `F:\CodexRecovery` | MaskFactory recovery/checkpoint authority | Masking task | preserve; F: remains below the 50 GiB allocation floor |
 | `C:\MaskFactory_TierA_Backups` | compact no-loss rollback, semantic-attribution, and restore authority | Masking task | add only storage-guard-admitted scoped checkpoints; verify every manifest |
@@ -69,3 +69,9 @@ Its 4,008 rows all bind Plan, Item, tracker, evidence, exact blob hashes,
 canonical location, rollback, limitations, and completion effect. The compact
 receipt is
 `.codex-ops/HISTORICAL_STASH_AUTHORITY_BINDING_20260728T212749Z.json`.
+
+The terminal bounded-release receipt is
+`.codex-ops/RECOVERY_ATTRIBUTION_CONTROL_RELEASE_20260728T213455Z.json`.
+It binds the validation gates and requires the resulting receipt commit to be
+pushed non-forced with one branch, one worktree, zero stashes, zero status
+rows, and local `main` equal to `origin/main`.

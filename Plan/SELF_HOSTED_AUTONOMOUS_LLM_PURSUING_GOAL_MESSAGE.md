@@ -30,9 +30,11 @@ pass the required row-level bindings with registry SHA-256
 `a4436d4a17c7d37990e15c47623b3d51899e1ecba9f7db0b4f9507003dc54930`.
 The tracker has been adjudicated without false closure:
 `MF-P6-20.02` is `in_progress` 90%, `.03` is `partially_complete` 80%, and
-`.04` is `partially_complete` 65%. The finite release still requires commit,
-push, clean parity, and a terminal receipt; the remaining acceptance clauses
-continue in the product phase below.
+`.04` is `partially_complete` 65%. The bounded implementation is committed at
+`611c4e0b0ed8ce01a63343a91d84845b6f1f9f80`; terminal receipt
+`.codex-ops/RECOVERY_ATTRIBUTION_CONTROL_RELEASE_20260728T213455Z.json`
+requires its final commit to be pushed with clean local/remote parity. The
+remaining acceptance clauses continue in the product phase below.
 
 Then complete the actual product dependency graph:
 

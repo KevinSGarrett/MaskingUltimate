@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 
+
 TOOL_PATH = (
     Path(__file__).resolve().parents[1]
     / "tools"

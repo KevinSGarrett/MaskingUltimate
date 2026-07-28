@@ -36,7 +36,9 @@ LAUNCH_RECEIPT_SCHEMA = "maskfactory_self_hosted_steward_launch_receipt.v1"
 SHUTDOWN_RECEIPT_SCHEMA = "maskfactory_self_hosted_steward_shutdown_receipt.v1"
 SUBMISSION_RECEIPT_SCHEMA = "maskfactory_self_hosted_steward_submission_receipt.v1"
 REQUEST_REJECTION_SCHEMA = "maskfactory_self_hosted_steward_request_rejection.v1"
-AMBIGUOUS_COMPLETION_SCHEMA = "maskfactory_self_hosted_steward_ambiguous_completion.v1"
+AMBIGUOUS_COMPLETION_SCHEMA = (
+    "maskfactory_self_hosted_steward_ambiguous_completion.v1"
+)
 SHA256_LENGTH = 64
 _UNAMBIGUOUS_REQUEST_REJECTION_STATUS = frozenset({400, 404, 405, 413, 415, 422})
 
@@ -139,7 +141,9 @@ def _require_positive_int(value: object, field: str) -> int:
     return value
 
 
-def _require_bounded_float(value: object, field: str, *, minimum: float, maximum: float) -> float:
+def _require_bounded_float(
+    value: object, field: str, *, minimum: float, maximum: float
+) -> float:
     if (
         not isinstance(value, (int, float))
         or isinstance(value, bool)
@@ -199,7 +203,9 @@ def load_runtime_contract(path: Path) -> dict[str, Any]:
         raise MissionBindingError("model quantization must remain fp8")
 
     engine = value["engine"]
-    _require_sha256(engine["vllm_executable_sha256"], "engine.vllm_executable_sha256")
+    _require_sha256(
+        engine["vllm_executable_sha256"], "engine.vllm_executable_sha256"
+    )
     server = value["server"]
     if server["host"] != "127.0.0.1":
         raise MissionBindingError("self-hosted endpoint must remain loopback-only")
@@ -214,8 +220,12 @@ def load_runtime_contract(path: Path) -> dict[str, Any]:
         minimum=0.1,
         maximum=0.95,
     )
-    _require_positive_int(server["startup_timeout_seconds"], "server.startup_timeout_seconds")
-    _require_positive_int(server["shutdown_timeout_seconds"], "server.shutdown_timeout_seconds")
+    _require_positive_int(
+        server["startup_timeout_seconds"], "server.startup_timeout_seconds"
+    )
+    _require_positive_int(
+        server["shutdown_timeout_seconds"], "server.shutdown_timeout_seconds"
+    )
     if server["seed"] != 1337:
         raise MissionBindingError("server seed must remain deterministic")
     if server["enforce_eager"] is not True or server["trust_remote_code"] is not True:
@@ -234,7 +244,9 @@ def load_runtime_contract(path: Path) -> dict[str, Any]:
     _require_positive_int(
         submission["request_timeout_seconds"], "submission.request_timeout_seconds"
     )
-    _require_positive_int(submission["max_output_tokens"], "submission.max_output_tokens")
+    _require_positive_int(
+        submission["max_output_tokens"], "submission.max_output_tokens"
+    )
 
     authority = value["authority"]
     if (
@@ -318,7 +330,9 @@ def validate_runtime_files(
     return observed
 
 
-def build_vllm_command(contract: Mapping[str, Any], *, port: int | None = None) -> list[str]:
+def build_vllm_command(
+    contract: Mapping[str, Any], *, port: int | None = None
+) -> list[str]:
     server = contract["server"]
     selected_port = server["default_port"] if port is None else port
     if (
@@ -382,7 +396,9 @@ def _atomic_write_bytes(path: Path, body: bytes) -> None:
 
 
 def atomic_write_json(path: Path, value: Mapping[str, Any]) -> None:
-    body = (json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False) + "\n").encode("utf-8")
+    body = (
+        json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+    ).encode("utf-8")
     _atomic_write_bytes(path, body)
 
 
@@ -421,7 +437,9 @@ def endpoint_health(
     return {"url": url, "served_model": contract["server"]["served_model"]}
 
 
-def validate_request(contract: Mapping[str, Any], request_document: Mapping[str, Any]) -> None:
+def validate_request(
+    contract: Mapping[str, Any], request_document: Mapping[str, Any]
+) -> None:
     expected_keys = {
         "model",
         "messages",
@@ -452,9 +470,10 @@ def validate_request(contract: Mapping[str, Any], request_document: Mapping[str,
     ):
         raise MissionBindingError("request must use strict JSON schema")
     template = request_document["chat_template_kwargs"]
-    if not isinstance(template, dict) or template != {
-        "enable_thinking": submission["thinking_enabled"]
-    }:
+    if (
+        not isinstance(template, dict)
+        or template != {"enable_thinking": submission["thinking_enabled"]}
+    ):
         raise MissionBindingError("request thinking mode does not match contract")
 
 
@@ -626,7 +645,9 @@ class StewardRuntimeController:
                 "created_at": time.time(),
             }
             atomic_write_json(self.launch_receipt_path, receipt)
-            deadline = time.monotonic() + self.contract["server"]["startup_timeout_seconds"]
+            deadline = (
+                time.monotonic() + self.contract["server"]["startup_timeout_seconds"]
+            )
             while time.monotonic() < deadline:
                 if process.poll() is not None:
                     raise MissionConflictError("owned vLLM process exited before ready")
@@ -642,7 +663,9 @@ class StewardRuntimeController:
             binding = self._binding()
             mission = self.ledger.get(binding["session_id"], binding["job_id"])
             if mission and mission["state"] in {"admitted", "running"}:
-                self.ledger.fail(binding["session_id"], binding["job_id"], "runtime_launch_failed")
+                self.ledger.fail(
+                    binding["session_id"], binding["job_id"], "runtime_launch_failed"
+                )
             raise
         finally:
             log_stream.close()
@@ -666,7 +689,9 @@ class StewardRuntimeController:
         self.health()
         request_path = Path(request_path)
         try:
-            request_relative = request_path.resolve().relative_to(self.mission_root.resolve())
+            request_relative = request_path.resolve().relative_to(
+                self.mission_root.resolve()
+            )
         except ValueError as exc:
             raise MissionBindingError("request path escapes mission root") from exc
         if len(request_relative.parts) != 1:
@@ -689,7 +714,8 @@ class StewardRuntimeController:
         runs: list[dict[str, Any]] = []
         for run_number in range(1, self.contract["submission"]["replay_runs"] + 1):
             request = urllib.request.Request(
-                _endpoint_url(self.contract, self.port) + self.contract["submission"]["path"],
+                _endpoint_url(self.contract, self.port)
+                + self.contract["submission"]["path"],
                 data=network_body,
                 headers={"Content-Type": "application/json"},
                 method="POST",
@@ -703,7 +729,9 @@ class StewardRuntimeController:
                     raw = response.read()
             except urllib.error.HTTPError as exc:
                 raw = exc.read()
-                _atomic_write_bytes(response_path, raw + (b"" if raw.endswith(b"\n") else b"\n"))
+                _atomic_write_bytes(
+                    response_path, raw + (b"" if raw.endswith(b"\n") else b"\n")
+                )
                 if exc.code in _UNAMBIGUOUS_REQUEST_REJECTION_STATUS:
                     response_sha256 = file_sha256(response_path)
                     rejection = {
@@ -754,7 +782,9 @@ class StewardRuntimeController:
                     "retry_permitted": False,
                     "created_at": time.time(),
                 }
-                atomic_write_json(self.mission_root / "ambiguous_completion.json", ambiguous)
+                atomic_write_json(
+                    self.mission_root / "ambiguous_completion.json", ambiguous
+                )
                 raise AmbiguousMissionError(
                     "model request completion is ambiguous; do not reissue"
                 ) from exc
@@ -773,11 +803,15 @@ class StewardRuntimeController:
                     "retry_permitted": False,
                     "created_at": time.time(),
                 }
-                atomic_write_json(self.mission_root / "ambiguous_completion.json", ambiguous)
+                atomic_write_json(
+                    self.mission_root / "ambiguous_completion.json", ambiguous
+                )
                 raise AmbiguousMissionError(
                     "model request completion is ambiguous; do not reissue"
                 ) from exc
-            _atomic_write_bytes(response_path, raw + (b"" if raw.endswith(b"\n") else b"\n"))
+            _atomic_write_bytes(
+                response_path, raw + (b"" if raw.endswith(b"\n") else b"\n")
+            )
             try:
                 envelope = json.loads(raw)
                 proposal = json.loads(envelope["choices"][0]["message"]["content"])
@@ -839,7 +873,9 @@ class StewardRuntimeController:
     def reconcile(self) -> dict[str, Any]:
         binding = self._binding()
         terminal = (
-            read_json(self.terminal_receipt_path) if self.terminal_receipt_path.exists() else None
+            read_json(self.terminal_receipt_path)
+            if self.terminal_receipt_path.exists()
+            else None
         )
         return self.ledger.reconcile_recorded_owner(
             binding["session_id"],
@@ -867,7 +903,9 @@ class StewardRuntimeController:
             if os.getpgid(pid) != int(launch["process_group_id"]):
                 raise MissionConflictError("recorded process group identity mismatch")
             os.killpg(int(launch["process_group_id"]), signal.SIGTERM)
-            deadline = time.monotonic() + self.contract["server"]["shutdown_timeout_seconds"]
+            deadline = (
+                time.monotonic() + self.contract["server"]["shutdown_timeout_seconds"]
+            )
             while time.monotonic() < deadline:
                 if not StewardLedger.owner_process_alive(pid, start_token):
                     terminated = True
@@ -895,7 +933,8 @@ class StewardRuntimeController:
                 or receipt.get("job_id") != binding["job_id"]
                 or receipt.get("pid") != pid
                 or receipt.get("owner_start_token") != start_token
-                or receipt.get("process_group_id") != int(launch["process_group_id"])
+                or receipt.get("process_group_id")
+                != int(launch["process_group_id"])
                 or receipt.get("owned_process_absent") is not True
                 or receipt.get("loopback_port_closed") is not True
             ):

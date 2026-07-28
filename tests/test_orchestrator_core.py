@@ -14,24 +14,8 @@ from maskfactory.orchestrator import (
 
 def test_stage_planner_is_complete_and_rejects_conflicting_controls() -> None:
     assert STAGE_ORDER == (
-        "S00",
-        "S01",
-        "S02",
-        "S03",
-        "S04",
-        "S05",
-        "S06",
-        "S07",
-        "S08",
-        "S08.5",
-        "S09",
-        "S09.5",
-        "S10",
-        "S11",
-        "S12",
-        "S13",
-        "S14",
-        "S15",
+        "S00", "S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08",
+        "S08.5", "S09", "S09.5", "S10", "S11", "S12", "S13", "S14", "S15",
     )
     plan = plan_stages(
         selected=("S04", "S03", "S02"),

@@ -138,7 +138,9 @@ def _validate_binding(binding: Mapping[str, Any]) -> dict[str, Any]:
         "binding_sha256": _sha256(binding["binding_sha256"], "binding_sha256"),
         "model_tree_sha256": _sha256(binding["model_tree_sha256"], "model_tree_sha256"),
         "runtime_sha256": _sha256(binding["runtime_sha256"], "runtime_sha256"),
-        "output_namespace": _output_namespace(binding["output_namespace"], session_id, job_id),
+        "output_namespace": _output_namespace(
+            binding["output_namespace"], session_id, job_id
+        ),
     }
     inputs = binding["input_sha256"]
     if not isinstance(inputs, Mapping) or not inputs:
@@ -468,7 +470,8 @@ class StewardLedger:
             if prior and (
                 any(row["request_sha256"] != digests["request_sha256"] for row in prior)
                 or any(
-                    row["proposal_canonical_sha256"] != digests["proposal_canonical_sha256"]
+                    row["proposal_canonical_sha256"]
+                    != digests["proposal_canonical_sha256"]
                     for row in prior
                 )
             ):
@@ -515,7 +518,9 @@ class StewardLedger:
         authority_claimed: bool,
         _from_reconciliation: bool = False,
     ) -> dict[str, Any]:
-        proposal_digest = _sha256(proposal_canonical_sha256, "proposal_canonical_sha256")
+        proposal_digest = _sha256(
+            proposal_canonical_sha256, "proposal_canonical_sha256"
+        )
         if authority_claimed is not False:
             self.fail(session_id, job_id, "model output exceeded authority ceiling")
             raise AuthorityCeilingError("model output exceeded authority ceiling")
@@ -533,7 +538,9 @@ class StewardLedger:
             if mission["state"] == "completed":
                 return dict(mission)
             allowed_states = (
-                {"running", "recovery_required"} if _from_reconciliation else {"running"}
+                {"running", "recovery_required"}
+                if _from_reconciliation
+                else {"running"}
             )
             if mission["state"] not in allowed_states:
                 raise MissionConflictError(f"mission cannot complete from {mission['state']}")
@@ -628,7 +635,9 @@ class StewardLedger:
                 completed = self.complete(
                     session_id,
                     job_id,
-                    proposal_canonical_sha256=terminal_receipt["proposal_canonical_sha256"],
+                    proposal_canonical_sha256=terminal_receipt[
+                        "proposal_canonical_sha256"
+                    ],
                     authority_claimed=False,
                     _from_reconciliation=True,
                 )
@@ -699,7 +708,9 @@ class StewardLedger:
         if owner_pid <= 0 or not owner_start_token:
             return False
         try:
-            stat = (Path(proc_root) / str(owner_pid) / "stat").read_text(encoding="utf-8")
+            stat = (Path(proc_root) / str(owner_pid) / "stat").read_text(
+                encoding="utf-8"
+            )
         except (FileNotFoundError, OSError, UnicodeError):
             return False
         closing_parenthesis = stat.rfind(")")
@@ -765,7 +776,10 @@ class StewardLedger:
             if mission is None or mission["state"] not in TERMINAL_STATES:
                 raise MissionConflictError("release evidence requires a terminal mission")
             if mission["release_sha256"] is not None:
-                if mission["release_kind"] == release_kind and mission["release_sha256"] == digest:
+                if (
+                    mission["release_kind"] == release_kind
+                    and mission["release_sha256"] == digest
+                ):
                     return dict(mission)
                 raise MissionConflictError("different release evidence already exists")
             connection.execute(

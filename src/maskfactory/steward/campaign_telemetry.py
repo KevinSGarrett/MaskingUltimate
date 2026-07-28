@@ -22,7 +22,9 @@ SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 CAMPAIGN_KINDS = frozenset({"engineering", "mask", "mixed"})
 ROUTES = ("local_pod", "serverless", "openrouter_advisory", "cpu_safe")
 MASK_OUTCOMES = ("accept", "repair", "abstain", "reject", "quarantine")
-CODEX_INTERVENTIONS = frozenset({"routine_handoff", "exception_escalation", "terminal_adoption"})
+CODEX_INTERVENTIONS = frozenset(
+    {"routine_handoff", "exception_escalation", "terminal_adoption"}
+)
 EVENT_KINDS = frozenset(
     {
         "planned",
@@ -55,7 +57,9 @@ EVENT_KINDS = frozenset(
         "artifact_accepted",
     }
 )
-TIMING_KINDS = frozenset({"model_startup", "inference", "idle_gpu", "codex_intervention"})
+TIMING_KINDS = frozenset(
+    {"model_startup", "inference", "idle_gpu", "codex_intervention"}
+)
 SUBJECT_KINDS = frozenset(
     {
         "local_gpu_work_cell",
@@ -194,7 +198,11 @@ def _validate_event_fields(
         raise CampaignTelemetryError("telemetry event schema mismatch")
     _identifier(event.get("campaign_id"), field="campaign_id")
     sequence = event.get("sequence")
-    if not isinstance(sequence, int) or isinstance(sequence, bool) or sequence <= 0:
+    if (
+        not isinstance(sequence, int)
+        or isinstance(sequence, bool)
+        or sequence <= 0
+    ):
         raise CampaignTelemetryError("event sequence must be positive")
     kind = event.get("kind")
     if kind not in EVENT_KINDS:
@@ -301,7 +309,8 @@ def _validate_source(source: Mapping[str, Any]) -> dict[str, Any]:
         or isinstance(limitations, (str, bytes))
         or not limitations
         or any(
-            not isinstance(value, str) or not value or len(value) > 1024 for value in limitations
+            not isinstance(value, str) or not value or len(value) > 1024
+            for value in limitations
         )
         or len(set(limitations)) != len(limitations)
     ):
@@ -346,7 +355,9 @@ def _mission_sets(events: Sequence[Mapping[str, Any]]) -> dict[str, set[str]]:
         if kind in singleton_kinds:
             identity = (kind, mission_id)
             if identity in seen:
-                raise CampaignTelemetryError(f"mission has duplicate singleton event: {kind}")
+                raise CampaignTelemetryError(
+                    f"mission has duplicate singleton event: {kind}"
+                )
             seen.add(identity)
             sets[kind].add(mission_id)
     planned = sets["planned"]
@@ -411,10 +422,14 @@ def reconcile_campaign_telemetry(
         )
 
     local_cell_counts = Counter(
-        event["subject_id"] for event in normalized_events if event["kind"] == "local_gpu_work_cell"
+        event["subject_id"]
+        for event in normalized_events
+        if event["kind"] == "local_gpu_work_cell"
     )
     local_release_counts = Counter(
-        event["subject_id"] for event in normalized_events if event["kind"] == "local_gpu_release"
+        event["subject_id"]
+        for event in normalized_events
+        if event["kind"] == "local_gpu_release"
     )
     if any(count != 1 for count in local_cell_counts.values()):
         raise CampaignTelemetryError("local GPU work cell evidence is duplicated")
@@ -426,10 +441,14 @@ def reconcile_campaign_telemetry(
         raise CampaignTelemetryError("local release lacks a matching work cell")
 
     produced_counts = Counter(
-        event["subject_id"] for event in normalized_events if event["kind"] == "artifact_produced"
+        event["subject_id"]
+        for event in normalized_events
+        if event["kind"] == "artifact_produced"
     )
     accepted_counts = Counter(
-        event["subject_id"] for event in normalized_events if event["kind"] == "artifact_accepted"
+        event["subject_id"]
+        for event in normalized_events
+        if event["kind"] == "artifact_accepted"
     )
     if any(count != 1 for count in produced_counts.values()):
         raise CampaignTelemetryError("produced artifact evidence is duplicated")
@@ -446,23 +465,33 @@ def reconcile_campaign_telemetry(
         if event["kind"] == "inference_submission"
     )
     promotion_counts = Counter(
-        event["subject_id"] for event in normalized_events if event["kind"] == "promotion"
+        event["subject_id"]
+        for event in normalized_events
+        if event["kind"] == "promotion"
     )
-    codex_events = [event for event in normalized_events if event["kind"] == "codex_intervention"]
+    codex_events = [
+        event for event in normalized_events if event["kind"] == "codex_intervention"
+    ]
     codex_usage = sum(float(event["numeric_value"]) for event in codex_events)
     if not accepted_artifacts and codex_usage:
         raise CampaignTelemetryError(
             "Codex usage per accepted artifact is undefined with zero accepted artifacts"
         )
-    observed_usage = codex_usage / len(accepted_artifacts) if accepted_artifacts else 0.0
+    observed_usage = (
+        codex_usage / len(accepted_artifacts) if accepted_artifacts else 0.0
+    )
     timing = {
         kind: sum(
-            float(event["duration_seconds"]) for event in normalized_events if event["kind"] == kind
+            float(event["duration_seconds"])
+            for event in normalized_events
+            if event["kind"] == kind
         )
         for kind in ("model_startup", "inference", "idle_gpu")
     }
     gpu_hours = sum(timing.values()) / 3600.0
-    mask_events = [event for event in normalized_events if event["kind"] == "mask_terminal"]
+    mask_events = [
+        event for event in normalized_events if event["kind"] == "mask_terminal"
+    ]
     mask_counts = Counter(event["value"] for event in mask_events)
     telemetry = {
         "schema_version": OUTPUT_SCHEMA,
@@ -481,8 +510,12 @@ def reconcile_campaign_telemetry(
         },
         "codex": {
             "interventions": len(codex_events),
-            "routine_handoffs": sum(event["value"] == "routine_handoff" for event in codex_events),
-            "review_seconds": sum(float(event["duration_seconds"]) for event in codex_events),
+            "routine_handoffs": sum(
+                event["value"] == "routine_handoff" for event in codex_events
+            ),
+            "review_seconds": sum(
+                float(event["duration_seconds"]) for event in codex_events
+            ),
             "baseline_usage_units_per_accepted_artifact": normalized_source[
                 "baseline_usage_units_per_accepted_artifact"
             ],
@@ -504,7 +537,9 @@ def reconcile_campaign_telemetry(
             "duplicate_inference_submissions": sum(
                 max(0, count - 1) for count in submission_counts.values()
             ),
-            "duplicate_promotions": sum(max(0, count - 1) for count in promotion_counts.values()),
+            "duplicate_promotions": sum(
+                max(0, count - 1) for count in promotion_counts.values()
+            ),
             "admitted_missions": len(sets["admitted"]),
             "terminally_reconciled_missions": len(sets["terminal_reconciled"]),
             "submitted_unknown_events": len(sets["submitted_unknown"]),
@@ -519,7 +554,9 @@ def reconcile_campaign_telemetry(
             ),
         },
         "engineering": {
-            "patch_attempts": sum(event["kind"] == "patch_attempt" for event in normalized_events),
+            "patch_attempts": sum(
+                event["kind"] == "patch_attempt" for event in normalized_events
+            ),
             "focused_test_runs": sum(
                 event["kind"] == "focused_test_run" for event in normalized_events
             ),
@@ -530,9 +567,13 @@ def reconcile_campaign_telemetry(
                 event["kind"] == "repair_exhaustion" for event in normalized_events
             ),
         },
-        "masks": {outcome: mask_counts.get(outcome, 0) for outcome in MASK_OUTCOMES}
+        "masks": {
+            outcome: mask_counts.get(outcome, 0) for outcome in MASK_OUTCOMES
+        }
         | {
-            "hard_qa_vetoes": sum(event["reason"] == "hard_qa_veto" for event in mask_events),
+            "hard_qa_vetoes": sum(
+                event["reason"] == "hard_qa_veto" for event in mask_events
+            ),
             "critic_disagreements": sum(
                 event["reason"] == "critic_disagreement" for event in mask_events
             ),
@@ -541,9 +582,13 @@ def reconcile_campaign_telemetry(
             "produced": len(produced_artifacts),
             "accepted": len(accepted_artifacts),
             "gpu_hours": gpu_hours,
-            "accepted_per_gpu_hour": (len(accepted_artifacts) / gpu_hours if gpu_hours else 0.0),
+            "accepted_per_gpu_hour": (
+                len(accepted_artifacts) / gpu_hours if gpu_hours else 0.0
+            ),
         },
-        "event_sha256": [event["event_sha256"] for event in normalized_events],
+        "event_sha256": [
+            event["event_sha256"] for event in normalized_events
+        ],
         "limitations": normalized_source["limitations"],
     }
     validate_campaign_document(Path(repo_root), telemetry, kind="telemetry")

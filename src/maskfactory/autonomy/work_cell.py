@@ -1183,7 +1183,9 @@ class AutonomousWorkCell:
                     "stage": str(row["stage"]),
                     "outcome": None if outcome is None else str(outcome),
                     "reason_code": (
-                        str(last_error) if last_error else f"terminal_outcome:{outcome}"
+                        str(last_error)
+                        if last_error
+                        else f"terminal_outcome:{outcome}"
                     ),
                     "repair_attempt_count": int(row["repair_attempt_count"]),
                     "processing_attempt_count": int(row["processing_attempt_count"]),
@@ -1205,7 +1207,8 @@ class AutonomousWorkCell:
         previous_counts = {} if previous is None else previous.get("outcome_counts", {})
         current_counts = current["outcome_counts"]
         outcome_deltas = {
-            outcome: int(current_counts.get(outcome, 0)) - int(previous_counts.get(outcome, 0))
+            outcome: int(current_counts.get(outcome, 0))
+            - int(previous_counts.get(outcome, 0))
             for outcome in sorted(set(current_counts) | set(previous_counts))
         }
         metric_deltas = {
@@ -1214,7 +1217,8 @@ class AutonomousWorkCell:
             "terminal_record_count_delta": (
                 None
                 if previous is None
-                else int(current["terminal_record_count"]) - int(previous["terminal_record_count"])
+                else int(current["terminal_record_count"])
+                - int(previous["terminal_record_count"])
             ),
             "remaining_record_count_delta": (
                 None
@@ -1225,12 +1229,14 @@ class AutonomousWorkCell:
             "stage_receipt_count_delta": (
                 None
                 if previous is None
-                else int(current["stage_receipt_count"]) - int(previous["stage_receipt_count"])
+                else int(current["stage_receipt_count"])
+                - int(previous["stage_receipt_count"])
             ),
             "repair_attempt_count_delta": (
                 None
                 if previous is None
-                else int(current["repair_attempt_count"]) - int(previous["repair_attempt_count"])
+                else int(current["repair_attempt_count"])
+                - int(previous["repair_attempt_count"])
             ),
             "outcome_count_deltas": outcome_deltas if previous is not None else {},
         }
@@ -1263,8 +1269,9 @@ class AutonomousWorkCell:
             "exception_queue_total_count": len(exceptions),
             "material_incidents": current["material_incidents"],
             "threshold_breach_candidates": [],
-            "panel_paths_complete": bool(exceptions)
-            and all(bool(row["panel_paths_verified"]) for row in exceptions),
+            "panel_paths_complete": bool(exceptions) and all(
+                bool(row["panel_paths_verified"]) for row in exceptions
+            ),
             "authority_claimed": False,
             "role_certificate_issuance_allowed": False,
             "gold_or_training_truth_allowed": False,
@@ -1304,6 +1311,7 @@ class AutonomousWorkCell:
         )
         temporary.replace(output_path)
         return bundle
+
 
     @staticmethod
     def _owned_record(

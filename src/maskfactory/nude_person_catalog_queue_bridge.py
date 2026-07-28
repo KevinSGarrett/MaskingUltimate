@@ -1,28 +1,22 @@
 """Fail-closed bridge from a sealed person-catalog batch to durable stage evidence."""
-
 from __future__ import annotations
-
 import hashlib
 import json
 import os
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
-
 from .nude_batch_queue import NudeBatchQueue
 from .nude_corpus_intake import canonical_sha256, sha256_file, validate_shard
 from .nude_person_catalog import build_person_catalog_stage_receipt
 
 SCHEMA_VERSION = "maskfactory.nude_person_catalog_queue_bridge.v1"
 
-
 class NudePersonCatalogQueueBridgeError(ValueError):
     """A catalog batch cannot safely cross the durable queue boundary."""
 
-
 def _file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
-
 
 def _atomic_write_exact(path: Path, document: Mapping[str, Any]) -> str:
     encoded = json.dumps(document, indent=2, sort_keys=True, ensure_ascii=False).encode() + b"\n"
@@ -38,7 +32,6 @@ def _atomic_write_exact(path: Path, document: Mapping[str, Any]) -> str:
     finally:
         temporary.unlink(missing_ok=True)
     return _file_sha256(path)
-
 
 def _load_batch(path: Path) -> dict[str, Any]:
     document = json.loads(path.read_text(encoding="utf-8"))
@@ -63,17 +56,7 @@ def _load_batch(path: Path) -> dict[str, Any]:
         raise NudePersonCatalogQueueBridgeError("catalog_batch_contract_invalid")
     return document
 
-
-def bridge_person_catalog_batch_to_queue(
-    *,
-    catalog_batch_path: Path,
-    nude_shard_path: Path,
-    output_path: Path,
-    queue: NudeBatchQueue,
-    platform: str,
-    shard_path: str,
-    lease_token: str,
-) -> dict[str, Any]:
+def bridge_person_catalog_batch_to_queue(*, catalog_batch_path: Path, nude_shard_path: Path, output_path: Path, queue: NudeBatchQueue, platform: str, shard_path: str, lease_token: str) -> dict[str, Any]:
     """Checkpoint exact nonterminal catalog evidence under one pre-owned lease."""
     batch = _load_batch(catalog_batch_path)
     if batch["platform"] != platform:
@@ -86,11 +69,7 @@ def bridge_person_catalog_batch_to_queue(
         raise NudePersonCatalogQueueBridgeError("catalog_batch_record_count_mismatch")
     receipts = []
     for index, (sample, report) in enumerate(zip(samples, records, strict=True)):
-        if (
-            not isinstance(report, Mapping)
-            or report.get("sample_id") != sample.get("sample_id")
-            or report.get("source_sha256") != sample.get("source_sha256")
-        ):
+        if not isinstance(report, Mapping) or report.get("sample_id") != sample.get("sample_id") or report.get("source_sha256") != sample.get("source_sha256"):
             raise NudePersonCatalogQueueBridgeError("catalog_record_shard_alignment_mismatch")
         receipts.append({**build_person_catalog_stage_receipt(report), "sample_index": index})
     if output_path.exists():
@@ -113,9 +92,7 @@ def bridge_person_catalog_batch_to_queue(
         if any(existing.get(key) != value for key, value in expected.items()):
             raise NudePersonCatalogQueueBridgeError(f"immutable_output_conflict:{output_path.name}")
         return existing
-    checkpoint = queue.checkpoint_person_catalogs(
-        platform=platform, shard_path=shard_path, lease_token=lease_token, receipts=receipts
-    )
+    checkpoint = queue.checkpoint_person_catalogs(platform=platform, shard_path=shard_path, lease_token=lease_token, receipts=receipts)
     body: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
         "artifact_type": "adult_corpus_person_catalog_queue_bridge",
@@ -138,9 +115,4 @@ def bridge_person_catalog_batch_to_queue(
     _atomic_write_exact(output_path, report)
     return report
 
-
-__all__ = [
-    "NudePersonCatalogQueueBridgeError",
-    "SCHEMA_VERSION",
-    "bridge_person_catalog_batch_to_queue",
-]
+__all__ = ["NudePersonCatalogQueueBridgeError", "SCHEMA_VERSION", "bridge_person_catalog_batch_to_queue"]

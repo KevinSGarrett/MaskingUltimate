@@ -10,13 +10,21 @@ from typing import Any, Mapping
 
 FREEZE_SCHEMA_VERSION = "maskfactory_self_hosted_autonomy_contract_freeze.v1"
 FREEZE_REGISTRY_PATH = Path("configs/self_hosted_autonomy_contract_freeze_v1.json")
-TELEMETRY_SCHEMA_PATH = Path("configs/self_hosted_autonomy_campaign_telemetry_v1.schema.json")
+TELEMETRY_SCHEMA_PATH = Path(
+    "configs/self_hosted_autonomy_campaign_telemetry_v1.schema.json"
+)
 ACCEPTANCE_SCHEMA_PATH = Path("configs/self_hosted_autonomy_acceptance_v1.schema.json")
 AUTHORITY_PATHS = (
     Path("Plan/27_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS_SPEC.md"),
     Path("Plan/28_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md"),
-    Path("Plan/Instructions/" "16_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS.md"),
-    Path("Plan/Instructions/" "18_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md"),
+    Path(
+        "Plan/Instructions/"
+        "16_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS.md"
+    ),
+    Path(
+        "Plan/Instructions/"
+        "18_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md"
+    ),
     Path("Plan/SELF_HOSTED_AUTONOMOUS_LLM_PURSUING_GOAL_MESSAGE.md"),
     Path("Plan/Items/23_ITEMS_P6_SELF_HOSTED_AUTONOMOUS_LLM_OPERATIONS.md"),
     Path("Plan/Items/24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md"),
@@ -91,7 +99,11 @@ def _validate_rows(
             continue
         relative = row["path"]
         expected = row["sha256"]
-        if not isinstance(relative, str) or not relative or Path(relative).is_absolute():
+        if (
+            not isinstance(relative, str)
+            or not relative
+            or Path(relative).is_absolute()
+        ):
             problems.append(f"{label}[{index}] path is invalid")
             continue
         if Path(relative).as_posix() != relative or ".." in Path(relative).parts:
@@ -107,7 +119,9 @@ def _validate_rows(
             continue
         observed = file_sha256(target)
         if observed != expected:
-            problems.append(f"{label}[{index}] stale hash for {relative}: {observed} != {expected}")
+            problems.append(
+                f"{label}[{index}] stale hash for {relative}: {observed} != {expected}"
+            )
     if len(paths) != len(set(paths)):
         problems.append(f"{label} contains duplicate paths")
     return problems, paths
@@ -128,7 +142,9 @@ def validate_freeze_registry(repo_root: Path) -> list[str]:
     if set(registry) != _REGISTRY_FIELDS:
         unknown = sorted(set(registry) - _REGISTRY_FIELDS)
         missing = sorted(_REGISTRY_FIELDS - set(registry))
-        problems.append(f"freeze registry fields differ: unknown={unknown} missing={missing}")
+        problems.append(
+            f"freeze registry fields differ: unknown={unknown} missing={missing}"
+        )
     if registry.get("schema_version") != FREEZE_SCHEMA_VERSION:
         problems.append("freeze registry schema_version drifted")
     if registry.get("registry_id") != "maskfactory_self_hosted_autonomy_contract_v1":
@@ -155,7 +171,9 @@ def validate_freeze_registry(repo_root: Path) -> list[str]:
 
     expected_authority_paths = {path.as_posix() for path in AUTHORITY_PATHS}
     if set(authority_paths) != expected_authority_paths:
-        problems.append("freeze authority_files do not match the closed v1 authority set")
+        problems.append(
+            "freeze authority_files do not match the closed v1 authority set"
+        )
     expected_schema_paths = {
         TELEMETRY_SCHEMA_PATH.as_posix(),
         ACCEPTANCE_SCHEMA_PATH.as_posix(),
@@ -164,7 +182,9 @@ def validate_freeze_registry(repo_root: Path) -> list[str]:
         problems.append("freeze schema_files do not match the closed v1 schema set")
 
     item_ids = registry.get("item_ids")
-    if not isinstance(item_ids, list) or not all(isinstance(item_id, str) for item_id in item_ids):
+    if not isinstance(item_ids, list) or not all(
+        isinstance(item_id, str) for item_id in item_ids
+    ):
         problems.append("freeze item_ids must be an array of strings")
         item_ids = []
     if len(item_ids) != len(set(item_ids)):
@@ -173,7 +193,9 @@ def validate_freeze_registry(repo_root: Path) -> list[str]:
     for item_path in ITEM_PATHS:
         item_file = repo_root / item_path
         if item_file.is_file():
-            observed_item_ids.extend(_ITEM_ID.findall(item_file.read_text(encoding="utf-8")))
+            observed_item_ids.extend(
+                _ITEM_ID.findall(item_file.read_text(encoding="utf-8"))
+            )
     if len(observed_item_ids) != len(set(observed_item_ids)):
         problems.append("P6 item authority contains duplicate item IDs")
     if item_ids != observed_item_ids:
@@ -187,10 +209,14 @@ def validate_freeze_registry(repo_root: Path) -> list[str]:
     for relative in authority_paths:
         text = (repo_root / relative).read_text(encoding="utf-8")
         missing = sorted(
-            reference for reference in required_cross_references if reference not in text
+            reference
+            for reference in required_cross_references
+            if reference not in text
         )
         if missing:
-            problems.append(f"authority file {relative} misses cross-references: {missing}")
+            problems.append(
+                f"authority file {relative} misses cross-references: {missing}"
+            )
 
     try:
         from jsonschema import Draft202012Validator

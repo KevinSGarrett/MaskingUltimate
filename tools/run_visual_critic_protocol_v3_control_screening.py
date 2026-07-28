@@ -26,9 +26,9 @@ try:
 except ModuleNotFoundError:
     import run_visual_critic_calibration as legacy_runner
 
-from maskfactory.vlm.critic_catalog import canonical_sha256  # noqa: E402
-from maskfactory.vlm.critic_protocol_v3 import parse_protocol_v3_description  # noqa: E402
-from maskfactory.vlm.critic_protocol_v3_control_screening import (  # noqa: E402
+from maskfactory.vlm.critic_catalog import canonical_sha256
+from maskfactory.vlm.critic_protocol_v3 import parse_protocol_v3_description
+from maskfactory.vlm.critic_protocol_v3_control_screening import (
     CONTROL_PROTOCOL_ID,
     CriticProtocolV3ControlScreeningError,
     build_control_description_prompt,
@@ -64,45 +64,22 @@ def _data_url(path: Path) -> str:
     return "data:image/png;base64," + base64.b64encode(path.read_bytes()).decode("ascii")
 
 
-def _openai_text(
-    endpoint: str, model_id: str, prompt: str, images: list[Path]
-) -> tuple[str, float]:
+def _openai_text(endpoint: str, model_id: str, prompt: str, images: list[Path]) -> tuple[str, float]:
     content = [{"type": "image_url", "image_url": {"url": _data_url(path)}} for path in images]
     content.append({"type": "text", "text": prompt})
     request = urllib.request.Request(
         endpoint.rstrip("/") + "/v1/chat/completions",
-        data=json.dumps(
-            {
-                "model": model_id,
-                "messages": [{"role": "user", "content": content}],
-                "temperature": 0,
-                "seed": 1337,
-                "max_tokens": 256,
-            }
-        ).encode(),
+        data=json.dumps({"model": model_id, "messages": [{"role": "user", "content": content}], "temperature": 0, "seed": 1337, "max_tokens": 256}).encode(),
         headers={"Content-Type": "application/json"},
         method="POST",
     )
     started = time.perf_counter()
     with urllib.request.urlopen(request, timeout=300) as response:
         body = json.load(response)
-    return (
-        str(body["choices"][0]["message"].get("content") or "").strip(),
-        (time.perf_counter() - started) * 1000,
-    )
+    return str(body["choices"][0]["message"].get("content") or "").strip(), (time.perf_counter() - started) * 1000
 
 
-def _run_pass(
-    *,
-    backend: str,
-    model_id: str,
-    endpoint: str | None,
-    model: Any,
-    tokenizer: Any,
-    prompt: str,
-    images: list[Path],
-    schema: dict[str, Any] | None,
-) -> tuple[str, float, list[int]]:
+def _run_pass(*, backend: str, model_id: str, endpoint: str | None, model: Any, tokenizer: Any, prompt: str, images: list[Path], schema: dict[str, Any] | None) -> tuple[str, float, list[int]]:
     if backend == "internvl":
         return legacy_runner._run_internvl(
             model=model,
@@ -116,12 +93,7 @@ def _run_pass(
     if schema is None:
         raw, latency = _openai_text(endpoint, model_id, prompt, images)
         return raw, latency, []
-    return (
-        *legacy_runner._run_openai(
-            endpoint=endpoint, model_id=model_id, prompt=prompt, images=images, schema=schema
-        ),
-        [],
-    )
+    return (*legacy_runner._run_openai(endpoint=endpoint, model_id=model_id, prompt=prompt, images=images, schema=schema), [])
 
 
 def _json_object(raw: str) -> Mapping[str, Any]:
@@ -146,11 +118,7 @@ def _format_repair_projection(value: Mapping[str, Any]) -> dict[str, Any]:
         raise ValueError("format-repair findings are invalid")
     projection: dict[str, Any] = {"description": value["description"], "findings": {}}
     for dimension, finding in findings.items():
-        if (
-            not isinstance(dimension, str)
-            or not isinstance(finding, Mapping)
-            or "severity" not in finding
-        ):
+        if not isinstance(dimension, str) or not isinstance(finding, Mapping) or "severity" not in finding:
             raise ValueError("format-repair finding is invalid")
         projection["findings"][dimension] = (
             {"severity": finding["severity"]} if finding["severity"] == "none" else dict(finding)
@@ -205,10 +173,7 @@ def _deterministic_transport_repair(raw: str) -> tuple[dict[str, Any], str]:
     for finding in repaired_findings.values():
         if not isinstance(finding, dict) or finding.get("severity") != "none":
             continue
-        if (
-            finding.get("cited_evidence_panels") != []
-            or finding.get("localization_xyxy") is not None
-        ):
+        if finding.get("cited_evidence_panels") != [] or finding.get("localization_xyxy") is not None:
             finding["cited_evidence_panels"] = []
             finding["localization_xyxy"] = None
             changed_none_metadata = True
@@ -222,9 +187,7 @@ def _deterministic_transport_repair(raw: str) -> tuple[dict[str, Any], str]:
     return repaired, repaired_raw
 
 
-def _parse_with_bounded_format_repair(
-    *, raw: str
-) -> tuple[dict[str, Any], str | None, float, list[int]]:
+def _parse_with_bounded_format_repair(*, raw: str) -> tuple[dict[str, Any], str | None, float, list[int]]:
     try:
         return parse_control_screening_response(raw), None, 0.0, []
     except CriticProtocolV3ControlScreeningError as exc:
@@ -250,39 +213,20 @@ def _abstain(
     replay_judgement_format_repair_response: str | None = None,
 ) -> dict[str, Any]:
     return {
-        "case_id": case["case_id"],
-        "reference_case_id": case["reference_case_id"],
-        "schema_valid": False,
-        "deterministic_replay": False,
-        "description_response": description_response,
-        "judgement_response": judgement_response,
+        "case_id": case["case_id"], "reference_case_id": case["reference_case_id"],
+        "schema_valid": False, "deterministic_replay": False,
+        "description_response": description_response, "judgement_response": judgement_response,
         "replay_description_response": replay_description_response,
         "replay_judgement_response": replay_judgement_response,
         "judgement_format_repair_response": judgement_format_repair_response,
         "replay_judgement_format_repair_response": replay_judgement_format_repair_response,
-        "latency_ms": 0.0,
-        "peak_vram_bytes": legacy_runner._peak_vram_bytes(),
-        "screening": {
-            "protocol_id": CONTROL_PROTOCOL_ID,
-            "screening_outcome": "abstain",
-            "reason": reason,
-            "authority_claimed": False,
-        },
+        "latency_ms": 0.0, "peak_vram_bytes": legacy_runner._peak_vram_bytes(),
+        "screening": {"protocol_id": CONTROL_PROTOCOL_ID, "screening_outcome": "abstain", "reason": reason, "authority_claimed": False},
         "error": None if error is None else str(error),
     }
 
 
-def _record(
-    *,
-    case: dict[str, Any],
-    panel_root: Path,
-    temp_root: Path,
-    backend: str,
-    model_id: str,
-    endpoint: str | None,
-    model: Any,
-    tokenizer: Any,
-) -> dict[str, Any]:
+def _record(*, case: dict[str, Any], panel_root: Path, temp_root: Path, backend: str, model_id: str, endpoint: str | None, model: Any, tokenizer: Any) -> dict[str, Any]:
     description_raw = None
     judgement_raw = None
     replay_description_raw = None
@@ -290,88 +234,21 @@ def _record(
     judgement_format_repair_raw = None
     replay_judgement_format_repair_raw = None
     try:
-        candidate = materialize_control_evidence_board(
-            side=case["candidate"],
-            panel_root=panel_root,
-            output_path=temp_root / case["case_id"] / "candidate.png",
-        )
-        reference = materialize_control_evidence_board(
-            side=case["reference"],
-            panel_root=panel_root,
-            output_path=temp_root / case["case_id"] / "reference.png",
-        )
+        candidate = materialize_control_evidence_board(side=case["candidate"], panel_root=panel_root, output_path=temp_root / case["case_id"] / "candidate.png")
+        reference = materialize_control_evidence_board(side=case["reference"], panel_root=panel_root, output_path=temp_root / case["case_id"] / "reference.png")
         images = [candidate["path"], reference["path"]]
-        description_prompt = build_control_description_prompt(
-            label_id=case["label_id"],
-            label_scale=case["label_scale"],
-            reference_case_id=case["reference_case_id"],
-        )
-        description_raw, first_latency, first_patches = _run_pass(
-            backend=backend,
-            model_id=model_id,
-            endpoint=endpoint,
-            model=model,
-            tokenizer=tokenizer,
-            prompt=description_prompt,
-            images=images,
-            schema=None,
-        )
+        description_prompt = build_control_description_prompt(label_id=case["label_id"], label_scale=case["label_scale"], reference_case_id=case["reference_case_id"])
+        description_raw, first_latency, first_patches = _run_pass(backend=backend, model_id=model_id, endpoint=endpoint, model=model, tokenizer=tokenizer, prompt=description_prompt, images=images, schema=None)
         description = parse_protocol_v3_description(description_raw)
-        judgement_prompt = build_control_judgement_prompt(
-            description=description,
-            label_id=case["label_id"],
-            label_scale=case["label_scale"],
-            reference_case_id=case["reference_case_id"],
-        )
-        judgement_raw, judgement_latency, judgement_patches = _run_pass(
-            backend=backend,
-            model_id=model_id,
-            endpoint=endpoint,
-            model=model,
-            tokenizer=tokenizer,
-            prompt=judgement_prompt,
-            images=images,
-            schema=control_response_schema(),
-        )
-        parsed, judgement_format_repair_raw, judgement_repair_latency, judgement_repair_patches = (
-            _parse_with_bounded_format_repair(raw=judgement_raw)
-        )
-        replay_description_raw, replay_desc_latency, replay_desc_patches = _run_pass(
-            backend=backend,
-            model_id=model_id,
-            endpoint=endpoint,
-            model=model,
-            tokenizer=tokenizer,
-            prompt=description_prompt,
-            images=images,
-            schema=None,
-        )
+        judgement_prompt = build_control_judgement_prompt(description=description, label_id=case["label_id"], label_scale=case["label_scale"], reference_case_id=case["reference_case_id"])
+        judgement_raw, judgement_latency, judgement_patches = _run_pass(backend=backend, model_id=model_id, endpoint=endpoint, model=model, tokenizer=tokenizer, prompt=judgement_prompt, images=images, schema=control_response_schema())
+        parsed, judgement_format_repair_raw, judgement_repair_latency, judgement_repair_patches = _parse_with_bounded_format_repair(raw=judgement_raw)
+        replay_description_raw, replay_desc_latency, replay_desc_patches = _run_pass(backend=backend, model_id=model_id, endpoint=endpoint, model=model, tokenizer=tokenizer, prompt=description_prompt, images=images, schema=None)
         replay_description = parse_protocol_v3_description(replay_description_raw)
-        replay_prompt = build_control_judgement_prompt(
-            description=replay_description,
-            label_id=case["label_id"],
-            label_scale=case["label_scale"],
-            reference_case_id=case["reference_case_id"],
-        )
-        replay_judgement_raw, replay_judgement_latency, replay_judgement_patches = _run_pass(
-            backend=backend,
-            model_id=model_id,
-            endpoint=endpoint,
-            model=model,
-            tokenizer=tokenizer,
-            prompt=replay_prompt,
-            images=images,
-            schema=control_response_schema(),
-        )
-        (
-            replay_parsed,
-            replay_judgement_format_repair_raw,
-            replay_judgement_repair_latency,
-            replay_judgement_repair_patches,
-        ) = _parse_with_bounded_format_repair(raw=replay_judgement_raw)
-        screening = derive_control_screening_verdict(
-            response=parsed, geometry_wh=case["candidate"]["geometry_wh"]
-        )
+        replay_prompt = build_control_judgement_prompt(description=replay_description, label_id=case["label_id"], label_scale=case["label_scale"], reference_case_id=case["reference_case_id"])
+        replay_judgement_raw, replay_judgement_latency, replay_judgement_patches = _run_pass(backend=backend, model_id=model_id, endpoint=endpoint, model=model, tokenizer=tokenizer, prompt=replay_prompt, images=images, schema=control_response_schema())
+        replay_parsed, replay_judgement_format_repair_raw, replay_judgement_repair_latency, replay_judgement_repair_patches = _parse_with_bounded_format_repair(raw=replay_judgement_raw)
+        screening = derive_control_screening_verdict(response=parsed, geometry_wh=case["candidate"]["geometry_wh"])
         deterministic = (
             description == replay_description
             and json.dumps(parsed, sort_keys=True) == json.dumps(replay_parsed, sort_keys=True)
@@ -380,20 +257,14 @@ def _record(
             and judgement_repair_patches == replay_judgement_repair_patches
         )
         return {
-            "case_id": case["case_id"],
-            "reference_case_id": case["reference_case_id"],
-            "candidate_board_sha256": candidate["sha256"],
-            "reference_board_sha256": reference["sha256"],
-            "description_response": description_raw,
-            "judgement_response": judgement_raw,
-            "replay_description_response": replay_description_raw,
-            "replay_judgement_response": replay_judgement_raw,
+            "case_id": case["case_id"], "reference_case_id": case["reference_case_id"],
+            "candidate_board_sha256": candidate["sha256"], "reference_board_sha256": reference["sha256"],
+            "description_response": description_raw, "judgement_response": judgement_raw,
+            "replay_description_response": replay_description_raw, "replay_judgement_response": replay_judgement_raw,
             "judgement_format_repair_response": judgement_format_repair_raw,
             "replay_judgement_format_repair_response": replay_judgement_format_repair_raw,
-            "format_repair_applied": judgement_format_repair_raw is not None
-            or replay_judgement_format_repair_raw is not None,
-            "schema_valid": True,
-            "deterministic_replay": deterministic,
+            "format_repair_applied": judgement_format_repair_raw is not None or replay_judgement_format_repair_raw is not None,
+            "schema_valid": True, "deterministic_replay": deterministic,
             "model_input_patch_counts": {
                 "description": first_patches,
                 "judgement": judgement_patches,
@@ -402,15 +273,8 @@ def _record(
                 "replay_judgement": replay_judgement_patches,
                 "replay_judgement_format_repair": replay_judgement_repair_patches,
             },
-            "latency_ms": first_latency
-            + judgement_latency
-            + judgement_repair_latency
-            + replay_desc_latency
-            + replay_judgement_latency
-            + replay_judgement_repair_latency,
-            "peak_vram_bytes": legacy_runner._peak_vram_bytes(),
-            "screening": screening,
-            "error": None,
+            "latency_ms": first_latency + judgement_latency + judgement_repair_latency + replay_desc_latency + replay_judgement_latency + replay_judgement_repair_latency,
+            "peak_vram_bytes": legacy_runner._peak_vram_bytes(), "screening": screening, "error": None,
         }
     except Exception as exc:
         return _abstain(
@@ -441,54 +305,21 @@ def main() -> int:
     if args.backend == "internvl":
         model, tokenizer = legacy_runner._load_internvl(args.model_path)
     with tempfile.TemporaryDirectory(prefix="maskfactory-v3-control-screen-") as temporary:
-        records = [
-            _record(
-                case=case,
-                panel_root=args.panel_root,
-                temp_root=Path(temporary),
-                backend=args.backend,
-                model_id=args.model_id,
-                endpoint=args.endpoint,
-                model=model,
-                tokenizer=tokenizer,
-            )
-            for case in execution["cases"]
-        ]
+        records = [_record(case=case, panel_root=args.panel_root, temp_root=Path(temporary), backend=args.backend, model_id=args.model_id, endpoint=args.endpoint, model=model, tokenizer=tokenizer) for case in execution["cases"]]
     bundle = {
-        "schema_version": "1.0.0",
-        "artifact_type": "protocol_v3_session_agent_control_screening_bundle",
-        "protocol_id": CONTROL_PROTOCOL_ID,
-        "protocol_version": registry["protocol_version"],
-        "backend": args.backend,
-        "model_id": args.model_id,
-        "runtime_sha256": args.runtime_sha256,
-        "execution_manifest_sha256": execution["execution_manifest_sha256"],
-        "registry_sha256": control_registry_sha256(registry),
-        "records": records,
-        "authority_claimed": False,
-        "role_certificate_issuance_allowed": False,
-        "strict_visual_authority_allowed": False,
-        "gold_or_training_authority_allowed": False,
-        "production_authority_allowed": False,
-        "calibration_fitting_allowed": False,
+        "schema_version": "1.0.0", "artifact_type": "protocol_v3_session_agent_control_screening_bundle",
+        "protocol_id": CONTROL_PROTOCOL_ID, "protocol_version": registry["protocol_version"],
+        "backend": args.backend, "model_id": args.model_id, "runtime_sha256": args.runtime_sha256,
+        "execution_manifest_sha256": execution["execution_manifest_sha256"], "registry_sha256": control_registry_sha256(registry),
+        "records": records, "authority_claimed": False, "role_certificate_issuance_allowed": False,
+        "strict_visual_authority_allowed": False, "gold_or_training_authority_allowed": False,
+        "production_authority_allowed": False, "calibration_fitting_allowed": False,
         "holdout_role_qualification_allowed": False,
     }
     bundle["bundle_sha256"] = canonical_sha256(bundle)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(bundle, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print(
-        json.dumps(
-            {
-                "records": len(records),
-                "abstentions": sum(
-                    record["screening"]["screening_outcome"] == "abstain" for record in records
-                ),
-                "bundle_sha256": bundle["bundle_sha256"],
-                "authority_claimed": False,
-            },
-            sort_keys=True,
-        )
-    )
+    print(json.dumps({"records": len(records), "abstentions": sum(record["screening"]["screening_outcome"] == "abstain" for record in records), "bundle_sha256": bundle["bundle_sha256"], "authority_claimed": False}, sort_keys=True))
     return 0
 
 

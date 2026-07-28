@@ -88,10 +88,16 @@ def test_inventory_classifies_exact_union_and_preserves_dirty_worktree(
     }
     assert rows["src/shared.py"]["worktree"]["state"] == "tracked_modified_preserve"
     assert rows["src/shared.py"]["unresolved_conflict"] is True
-    assert rows["src/full_only.py"]["worktree"]["state"] == "untracked_full_product_exact_preserve"
+    assert (
+        rows["src/full_only.py"]["worktree"]["state"]
+        == "untracked_full_product_exact_preserve"
+    )
     assert inventory["safety"]["wholesale_merge_authorized"] is False
     assert inventory["safety"]["reset_authorized"] is False
-    assert rows["tools/user_owned.py"]["owner"] == "working_tree_user_preserved"
+    assert (
+        rows["tools/user_owned.py"]["owner"]
+        == "working_tree_user_preserved"
+    )
     validate_inventory(inventory)
 
 
@@ -169,7 +175,9 @@ def test_exact_resolution_evidence_closes_only_bound_conflict(
                     "verification": {
                         "commands": ["python -m pytest tests/test_full.py -q"],
                         "passed_test_count": 1,
-                        "candidate_test_git_object_ids": {"tests/test_full.py": test_object},
+                        "candidate_test_git_object_ids": {
+                            "tests/test_full.py": test_object
+                        },
                         "result": "pass",
                     },
                     "limitations": ["This resolves only src/shared.py."],
@@ -231,14 +239,18 @@ def test_authority_supersession_requires_exact_authority_and_test_lineage(
                     "full_product_git_object_id": _git(
                         repo, "rev-parse", "full-product:src/shared.py"
                     ),
-                    "autonomy_git_object_id": _git(repo, "rev-parse", "HEAD:src/shared.py"),
+                    "autonomy_git_object_id": _git(
+                        repo, "rev-parse", "HEAD:src/shared.py"
+                    ),
                     "worktree_sha256": hashlib.sha256(
                         (repo / "src/shared.py").read_bytes()
                     ).hexdigest(),
                     "verification": {
                         "commands": ["python -m pytest tests/test_full.py -q"],
                         "passed_test_count": 1,
-                        "candidate_test_git_object_ids": {"tests/test_full.py": test_object},
+                        "candidate_test_git_object_ids": {
+                            "tests/test_full.py": test_object
+                        },
                         "result": "pass",
                     },
                     "limitations": ["This resolves only src/shared.py."],
@@ -247,7 +259,9 @@ def test_authority_supersession_requires_exact_authority_and_test_lineage(
             "self_sha256": "0" * 64,
         }
     )
-    superseded_raw = (json.dumps(superseded, indent=2, sort_keys=True) + "\n").encode("utf-8")
+    superseded_raw = (
+        json.dumps(superseded, indent=2, sort_keys=True) + "\n"
+    ).encode("utf-8")
     superseded_path = repo / "qa/old-resolution.json"
     superseded_path.parent.mkdir(parents=True, exist_ok=True)
     superseded_path.write_bytes(superseded_raw)
@@ -273,7 +287,9 @@ def test_authority_supersession_requires_exact_authority_and_test_lineage(
                     "full_product_git_object_id": _git(
                         repo, "rev-parse", "full-product:src/shared.py"
                     ),
-                    "autonomy_git_object_id": _git(repo, "rev-parse", "HEAD:src/shared.py"),
+                    "autonomy_git_object_id": _git(
+                        repo, "rev-parse", "HEAD:src/shared.py"
+                    ),
                     "worktree_sha256": hashlib.sha256(
                         (repo / "src/shared.py").read_bytes()
                     ).hexdigest(),
@@ -362,9 +378,15 @@ def test_authority_aligned_resolution_can_bootstrap_without_prior_same_commit(
                 {
                     "path": path,
                     "resolution_kind": "authority_aligned_supersession",
-                    "full_product_git_object_id": _git(repo, "rev-parse", f"full-product:{path}"),
-                    "autonomy_git_object_id": _git(repo, "rev-parse", f"HEAD:{path}"),
-                    "worktree_sha256": hashlib.sha256((repo / path).read_bytes()).hexdigest(),
+                    "full_product_git_object_id": _git(
+                        repo, "rev-parse", f"full-product:{path}"
+                    ),
+                    "autonomy_git_object_id": _git(
+                        repo, "rev-parse", f"HEAD:{path}"
+                    ),
+                    "worktree_sha256": hashlib.sha256(
+                        (repo / path).read_bytes()
+                    ).hexdigest(),
                     "verification": {
                         "commands": ["python -m pytest tests/test_full.py -q"],
                         "passed_test_count": 1,

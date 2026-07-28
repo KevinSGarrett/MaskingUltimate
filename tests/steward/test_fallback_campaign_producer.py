@@ -135,7 +135,9 @@ def test_produces_one_bounded_unblocked_cluster_and_is_idempotent(tmp_path: Path
         },
     )
     assert (
-        route.decide(pod_state="unavailable", serverless_state="unavailable")["state"]
+        route.decide(pod_state="unavailable", serverless_state="unavailable")[
+            "state"
+        ]
         == "cpu_fallback"
     )
 

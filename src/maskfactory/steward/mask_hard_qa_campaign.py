@@ -173,10 +173,12 @@ def _hard_qa(
         _check(
             name="ontology",
             passed=(
-                candidate_label_id == target_label_id and candidate_label_id in ontology_label_ids
+                candidate_label_id == target_label_id
+                and candidate_label_id in ontology_label_ids
             ),
             detail=(
-                f"candidate_label_id={candidate_label_id} " f"target_label_id={target_label_id}"
+                f"candidate_label_id={candidate_label_id} "
+                f"target_label_id={target_label_id}"
             ),
         ),
         _check(
@@ -238,7 +240,10 @@ def _default_repair(
         labels, count = ndimage.label(mask)
         if count <= 1:
             return mask.copy()
-        areas = [int(np.count_nonzero(labels == index)) for index in range(1, count + 1)]
+        areas = [
+            int(np.count_nonzero(labels == index))
+            for index in range(1, count + 1)
+        ]
         return labels == (int(np.argmax(areas)) + 1)
     if hypothesis == "fill_holes":
         return ndimage.binary_fill_holes(mask)
@@ -256,11 +261,7 @@ def _hypothesis_for(checks: Sequence[Mapping[str, str]], failure: str) -> str | 
         return "preserve_complete_map"
     if failure == "topology":
         detail = next(row["detail"] for row in checks if row["name"] == "topology")
-        return (
-            "fill_holes"
-            if "holes=1" in detail and "components=1;" in detail
-            else "largest_component"
-        )
+        return "fill_holes" if "holes=1" in detail and "components=1;" in detail else "largest_component"
     return None
 
 
@@ -346,7 +347,9 @@ def evaluate_mask_candidate(
                 name=name,
                 passed=False,
                 detail=(
-                    format_detail if name == "format" else "blocked by candidate format failure"
+                    format_detail
+                    if name == "format"
+                    else "blocked by candidate format failure"
                 ),
             )
             for name in CHECK_NAMES
@@ -403,7 +406,10 @@ def evaluate_mask_candidate(
                 repairer(
                     hypothesis,
                     current.copy(),
-                    {key: value.copy() for key, value in normalized_resources.items()},
+                    {
+                        key: value.copy()
+                        for key, value in normalized_resources.items()
+                    },
                     target_label_id,
                 )
             )
@@ -523,7 +529,11 @@ def evaluate_mask_record(
                     "left_provider_id": left_id,
                     "right_provider_id": right_id,
                     "iou": iou,
-                    "status": ("PASS" if iou >= limits.disagreement_iou_floor else "DISAGREE"),
+                    "status": (
+                        "PASS"
+                        if iou >= limits.disagreement_iou_floor
+                        else "DISAGREE"
+                    ),
                 }
             )
     has_disagreement = any(row["status"] == "DISAGREE" for row in disagreements)
@@ -579,7 +589,9 @@ def evaluate_mask_campaign(
             )
         except MaskHardQAError as exc:
             record_id = (
-                record.get("record_id") if isinstance(record, Mapping) else f"record-index-{index}"
+                record.get("record_id")
+                if isinstance(record, Mapping)
+                else f"record-index-{index}"
             )
             try:
                 safe_record_id = _identifier(record_id, field="record_id")
@@ -604,7 +616,9 @@ def evaluate_mask_campaign(
             "schema_version": SCHEMA_VERSION,
             "records": outputs,
             "record_count": len(outputs),
-            "passed_record_count": sum(row["record_outcome"] == "PASS" for row in outputs),
+            "passed_record_count": sum(
+                row["record_outcome"] == "PASS" for row in outputs
+            ),
             "campaign_sha256": ZERO_SHA256,
         },
         "campaign_sha256",
@@ -638,7 +652,9 @@ def validate_mask_campaign(
             _verify_self_hash(result, "result_sha256")
     expected = evaluate_mask_campaign(records, limits=limits)
     if dict(campaign) != expected:
-        raise MaskHardQAError("campaign evidence differs from deterministic hard-QA replay")
+        raise MaskHardQAError(
+            "campaign evidence differs from deterministic hard-QA replay"
+        )
     return expected
 
 

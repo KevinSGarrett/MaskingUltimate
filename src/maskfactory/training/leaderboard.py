@@ -208,7 +208,6 @@ def compare_runs(rows: Iterable[dict[str, Any]], run_a: str, run_b: str) -> dict
         },
     }
 
-
 def format_comparison_table(comparison: dict[str, Any]) -> str:
     """Render pooled, class, group, and context deltas as a stable Markdown table."""
     lines = [

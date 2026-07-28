@@ -15,7 +15,6 @@ if str(SRC) not in sys.path:
 
 from maskfactory.nude_batch_queue import NudeBatchQueue  # noqa: E402
 
-
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--queue", type=Path, required=True)

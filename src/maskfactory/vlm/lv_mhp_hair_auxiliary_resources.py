@@ -126,9 +126,7 @@ def _build_plan(
         target_instance not in instances
         or candidate.get("instance_annotation_relative_path") not in annotations
     ):
-        raise LvMhpHairAuxiliaryResourceError(
-            f"candidate annotation drift:{candidate['sample_id']}"
-        )
+        raise LvMhpHairAuxiliaryResourceError(f"candidate annotation drift:{candidate['sample_id']}")
     image_path = _inside(content, str(candidate["source_relative_path"]))
     if sha256_file(image_path) != candidate.get("source_sha256"):
         raise LvMhpHairAuxiliaryResourceError(f"source hash drift:{candidate['sample_id']}")
@@ -266,15 +264,9 @@ def materialize_lv_mhp_hair_auxiliary_resources(
                 plan["neighbor_annotation"],
             )
             roles = {
-                "neighbor_mask": _write_mask(
-                    *neighbor_args[:2], "neighbor_mask", *neighbor_args[2:]
-                ),
-                "other_owner_mask": _write_mask(
-                    *neighbor_args[:2], "other_owner_mask", *neighbor_args[2:]
-                ),
-                "protected_region_mask": _write_mask(
-                    *face_args[:2], "protected_region_mask", *face_args[2:]
-                ),
+                "neighbor_mask": _write_mask(*neighbor_args[:2], "neighbor_mask", *neighbor_args[2:]),
+                "other_owner_mask": _write_mask(*neighbor_args[:2], "other_owner_mask", *neighbor_args[2:]),
+                "protected_region_mask": _write_mask(*face_args[:2], "protected_region_mask", *face_args[2:]),
                 "wrong_label_mask": _write_mask(*face_args[:2], "wrong_label_mask", *face_args[2:]),
             }
             records.append(
@@ -333,7 +325,9 @@ def materialize_lv_mhp_hair_auxiliary_resources(
             "next_required_stage": "seal a source-governed hair laterality resource before atomic ten-class emission",
         }
         report["self_sha256"] = canonical_sha256(report)
-        (stage / "report.json").write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
+        (stage / "report.json").write_text(
+            json.dumps(report, indent=2, sort_keys=True) + "\n"
+        )
         verify_lv_mhp_hair_auxiliary_resource_report(report, stage)
         os.replace(stage, output)
         return report
@@ -342,14 +336,17 @@ def materialize_lv_mhp_hair_auxiliary_resources(
         raise
 
 
-def verify_lv_mhp_hair_auxiliary_resource_report(document: Mapping[str, Any], root: Path) -> None:
+def verify_lv_mhp_hair_auxiliary_resource_report(
+    document: Mapping[str, Any], root: Path
+) -> None:
     """Verify every resource byte and the immutable no-laterality ceiling."""
     expected = canonical_sha256(
         {key: value for key, value in document.items() if key != "self_sha256"}
     )
     if (
         document.get("schema_version") != SCHEMA
-        or document.get("artifact_type") != "lv_mhp_v1_hair_auxiliary_seeded_defect_resources"
+        or document.get("artifact_type")
+        != "lv_mhp_v1_hair_auxiliary_seeded_defect_resources"
         or document.get("status") != "PARTIAL_RESOURCE_SET_SEALED"
         or document.get("self_sha256") != expected
         or document.get("all_seeded_defect_resources_materialized") is not False
@@ -375,7 +372,8 @@ def verify_lv_mhp_hair_auxiliary_resource_report(document: Mapping[str, Any], ro
             record.get("authority_claimed") is not False
             or record.get("seeded_defect_taxonomy_emission_allowed") is not False
             or set(roles) != set(RESOURCE_ROLES)
-            or record.get("opposite_side_mask", {}).get("status") != "DEFERRED_SOURCE_SEMANTICS"
+            or record.get("opposite_side_mask", {}).get("status")
+            != "DEFERRED_SOURCE_SEMANTICS"
         ):
             raise LvMhpHairAuxiliaryResourceError("auxiliary-resource record contract drift")
         for role, entry in roles.items():
@@ -386,20 +384,32 @@ def verify_lv_mhp_hair_auxiliary_resource_report(document: Mapping[str, Any], ro
             try:
                 path.relative_to(output)
             except ValueError as exc:
-                raise LvMhpHairAuxiliaryResourceError("auxiliary-resource path escape") from exc
-            expected_label = FACE if role in {"protected_region_mask", "wrong_label_mask"} else HAIR
-            if entry.get("source_label_value") != expected_label or sha256_file(path) != entry.get(
-                "encoded_png_sha256"
+                raise LvMhpHairAuxiliaryResourceError(
+                    "auxiliary-resource path escape"
+                ) from exc
+            expected_label = (
+                FACE
+                if role in {"protected_region_mask", "wrong_label_mask"}
+                else HAIR
+            )
+            if (
+                entry.get("source_label_value") != expected_label
+                or sha256_file(path) != entry.get("encoded_png_sha256")
             ):
-                raise LvMhpHairAuxiliaryResourceError("auxiliary-resource encoded hash drift")
+                raise LvMhpHairAuxiliaryResourceError(
+                    "auxiliary-resource encoded hash drift"
+                )
             with Image.open(path) as image:
                 value = np.asarray(image.convert("L"), dtype=np.uint8)
             if (
                 value.ndim != 2
                 or not np.isin(value, [0, 255]).all()
                 or not np.count_nonzero(value)
-                or [int(value.shape[1]), int(value.shape[0])] != entry.get("dimensions")
+                or [int(value.shape[1]), int(value.shape[0])]
+                != entry.get("dimensions")
                 or int(np.count_nonzero(value)) != entry.get("pixel_count")
                 or mask_sha256(value) != entry.get("raster_sha256")
             ):
-                raise LvMhpHairAuxiliaryResourceError("auxiliary-resource raster drift")
+                raise LvMhpHairAuxiliaryResourceError(
+                    "auxiliary-resource raster drift"
+                )

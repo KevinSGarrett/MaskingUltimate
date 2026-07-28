@@ -283,7 +283,9 @@ def test_invalid_scope_authority_and_noop_edits_fail_closed(tmp_path: Path) -> N
             "edits": [
                 {
                     "path": "src/worker.py",
-                    "expected_sha256": (__import__("hashlib").sha256(b"same\n").hexdigest()),
+                    "expected_sha256": (
+                        __import__("hashlib").sha256(b"same\n").hexdigest()
+                    ),
                     "replacement_text": "same\n",
                 }
             ],
@@ -320,18 +322,14 @@ def test_terminal_verifier_rejects_path_substitution_and_extra_files(
     (root / "unexpected.json").unlink()
     terminal["attempts"][0]["proposal_file"] = "../outside.json"
     terminal["terminal_sha256"] = "0" * 64
-    terminal["terminal_sha256"] = (
-        __import__("hashlib")
-        .sha256(
-            json.dumps(
-                terminal,
-                sort_keys=True,
-                separators=(",", ":"),
-                ensure_ascii=False,
-            ).encode("utf-8")
-        )
-        .hexdigest()
-    )
+    terminal["terminal_sha256"] = __import__("hashlib").sha256(
+        json.dumps(
+            terminal,
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=False,
+        ).encode("utf-8")
+    ).hexdigest()
     (root / TERMINAL_NAME).write_text(
         json.dumps(terminal, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",

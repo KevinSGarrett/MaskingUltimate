@@ -42,10 +42,12 @@ def main() -> int:
     repo_root = args.repo_root.resolve()
     authorities = {
         "Plan/28_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md": _file_sha256(
-            repo_root / "Plan/28_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md"
+            repo_root
+            / "Plan/28_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md"
         ),
         "Plan/Items/24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md": _file_sha256(
-            repo_root / "Plan/Items/24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md"
+            repo_root
+            / "Plan/Items/24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md"
         ),
         "Plan/SELF_HOSTED_AUTONOMOUS_LLM_PURSUING_GOAL_MESSAGE.md": _file_sha256(
             repo_root / "Plan/SELF_HOSTED_AUTONOMOUS_LLM_PURSUING_GOAL_MESSAGE.md"
@@ -59,7 +61,9 @@ def main() -> int:
         try:
             resolution_path = resolution_file.relative_to(repo_root).as_posix()
         except ValueError as exc:
-            raise SystemExit("resolution evidence must be inside the repository") from exc
+            raise SystemExit(
+                "resolution evidence must be inside the repository"
+            ) from exc
         raw = resolution_file.read_bytes()
         resolution_raw_sha256 = hashlib.sha256(raw).hexdigest()
         resolution_evidence = json.loads(raw)

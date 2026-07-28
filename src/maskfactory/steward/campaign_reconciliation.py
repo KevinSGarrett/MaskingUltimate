@@ -122,7 +122,11 @@ def _validate_artifact_manifest(
         raise CampaignReconciliationError("artifact manifest schema mismatch")
     _identifier(manifest.get("campaign_id"), field="artifact campaign_id")
     rows = manifest.get("artifacts")
-    if not isinstance(rows, Sequence) or isinstance(rows, (str, bytes)) or not rows:
+    if (
+        not isinstance(rows, Sequence)
+        or isinstance(rows, (str, bytes))
+        or not rows
+    ):
         raise CampaignReconciliationError("artifact manifest must be non-empty")
     normalized: list[dict[str, Any]] = []
     subjects: set[str] = set()
@@ -141,7 +145,11 @@ def _validate_artifact_manifest(
         subject_id = _identifier(raw["subject_id"], field="artifact subject_id")
         relative_path = _relative_path(raw["relative_path"])
         byte_count = raw["bytes"]
-        if not isinstance(byte_count, int) or isinstance(byte_count, bool) or byte_count < 0:
+        if (
+            not isinstance(byte_count, int)
+            or isinstance(byte_count, bool)
+            or byte_count < 0
+        ):
             raise CampaignReconciliationError("artifact bytes must be nonnegative")
         if not isinstance(raw["accepted"], bool):
             raise CampaignReconciliationError("artifact accepted must be boolean")
@@ -162,7 +170,9 @@ def _validate_artifact_manifest(
             }
         )
     if normalized != sorted(normalized, key=lambda row: row["subject_id"]):
-        raise CampaignReconciliationError("artifact rows must be sorted by subject_id")
+        raise CampaignReconciliationError(
+            "artifact rows must be sorted by subject_id"
+        )
     if verify_hash:
         declared = _sha256(
             manifest.get("manifest_sha256"),
@@ -171,7 +181,9 @@ def _validate_artifact_manifest(
         zeroed = deepcopy(dict(manifest))
         zeroed["manifest_sha256"] = ZERO_SHA256
         if _canonical_sha256(zeroed) != declared:
-            raise CampaignReconciliationError("artifact manifest self-hash mismatch")
+            raise CampaignReconciliationError(
+                "artifact manifest self-hash mismatch"
+            )
     return normalized
 
 
@@ -307,7 +319,9 @@ def _event_maps(
         }
     planned = mission_sets["planned"]
     if any(mission_sets[kind] != planned for kind in mission_sets):
-        raise CampaignReconciliationError("closed campaign mission event sets do not reconcile")
+        raise CampaignReconciliationError(
+            "closed campaign mission event sets do not reconcile"
+        )
     route_by_mission = {
         str(event["mission_id"]): str(event["route"])
         for event in events
@@ -322,7 +336,9 @@ def _event_maps(
         if event.get("kind") == "artifact_produced"
     }
     accepted = {
-        str(event["subject_id"]) for event in events if event.get("kind") == "artifact_accepted"
+        str(event["subject_id"])
+        for event in events
+        if event.get("kind") == "artifact_accepted"
     }
     return planned, route_by_mission, produced, accepted
 
@@ -378,7 +394,9 @@ def reconcile_closed_campaign(
     planned, route_by_mission, produced_events, accepted_events = _event_maps(events)
     ledger_mission_ids = {str(row["work_id"]) for row in mission_rows}
     if ledger_mission_ids != planned:
-        raise CampaignReconciliationError("planned missions and ledger missions differ")
+        raise CampaignReconciliationError(
+            "planned missions and ledger missions differ"
+        )
     mission_evidence: list[dict[str, Any]] = []
     for row in mission_rows:
         mission_id = str(row["work_id"])
@@ -409,14 +427,21 @@ def reconcile_closed_campaign(
         )
 
     cells_by_mission = Counter(
-        str(event["mission_id"]) for event in events if event.get("kind") == "local_gpu_work_cell"
+        str(event["mission_id"])
+        for event in events
+        if event.get("kind") == "local_gpu_work_cell"
     )
     releases_by_mission = Counter(
-        str(event["mission_id"]) for event in events if event.get("kind") == "local_gpu_release"
+        str(event["mission_id"])
+        for event in events
+        if event.get("kind") == "local_gpu_release"
     )
     for mission_id, route in route_by_mission.items():
         expected = 1 if route == "local_pod" else 0
-        if cells_by_mission[mission_id] != expected or releases_by_mission[mission_id] != expected:
+        if (
+            cells_by_mission[mission_id] != expected
+            or releases_by_mission[mission_id] != expected
+        ):
             raise CampaignReconciliationError(
                 "local route work-cell release evidence is incomplete"
             )
@@ -429,10 +454,14 @@ def reconcile_closed_campaign(
     }
     manifest_paths = {row["relative_path"] for row in manifest_rows}
     if actual_paths != manifest_paths:
-        raise CampaignReconciliationError("artifact root and manifest path sets differ")
+        raise CampaignReconciliationError(
+            "artifact root and manifest path sets differ"
+        )
     manifest_by_subject = {row["subject_id"]: row for row in manifest_rows}
     if set(manifest_by_subject) != set(produced_events):
-        raise CampaignReconciliationError("artifact manifest and produced events differ")
+        raise CampaignReconciliationError(
+            "artifact manifest and produced events differ"
+        )
     artifact_evidence: list[dict[str, Any]] = []
     for subject_id, row in sorted(manifest_by_subject.items()):
         mission_id, produced_event_sha256 = produced_events[subject_id]
@@ -443,7 +472,9 @@ def reconcile_closed_campaign(
             or path.stat().st_size != row["bytes"]
             or _file_sha256(path) != row["sha256"]
         ):
-            raise CampaignReconciliationError("artifact bytes or event binding drifted")
+            raise CampaignReconciliationError(
+                "artifact bytes or event binding drifted"
+            )
         artifact_evidence.append(
             {
                 **row,
@@ -496,7 +527,9 @@ def validate_closed_campaign_reconciliation(
 
     expected = reconcile_closed_campaign(**kwargs)
     if dict(receipt) != expected:
-        raise CampaignReconciliationError("closed campaign reconciliation replay mismatch")
+        raise CampaignReconciliationError(
+            "closed campaign reconciliation replay mismatch"
+        )
 
 
 def evaluate_reconciled_campaign_slo(
@@ -535,7 +568,9 @@ def evaluate_reconciled_campaign_slo(
         reconciliation.get("campaign_id") != slo["campaign_id"]
         or reconciliation.get("telemetry_canonical_sha256") != telemetry_sha256
     ):
-        raise CampaignReconciliationError("SLO and reconciliation campaign bindings differ")
+        raise CampaignReconciliationError(
+            "SLO and reconciliation campaign bindings differ"
+        )
     return _seal(
         {
             "schema_version": RECONCILED_SLO_SCHEMA,
@@ -565,7 +600,9 @@ def validate_reconciled_campaign_slo_replay(
 
     expected = evaluate_reconciled_campaign_slo(**kwargs)
     if dict(result) != expected:
-        raise CampaignReconciliationError("reconciled campaign SLO replay mismatch")
+        raise CampaignReconciliationError(
+            "reconciled campaign SLO replay mismatch"
+        )
 
 
 __all__ = [

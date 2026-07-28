@@ -82,7 +82,9 @@ def test_prepared_workload_materializes_once_and_dispatcher_accepts_it(
             "mission_id": manifest["mission_id"],
             "created": True,
             "payload_sha256": manifest["payload_sha256"],
-            "work_item_sha256": file_sha256(inbox / manifest["mission_id"] / WORK_ITEM_NAME),
+            "work_item_sha256": file_sha256(
+                inbox / manifest["mission_id"] / WORK_ITEM_NAME
+            ),
         }
     ]
     assert second == [
@@ -92,7 +94,9 @@ def test_prepared_workload_materializes_once_and_dispatcher_accepts_it(
             "terminal_reused": False,
         }
     ]
-    item = json.loads((inbox / manifest["mission_id"] / WORK_ITEM_NAME).read_text(encoding="utf-8"))
+    item = json.loads(
+        (inbox / manifest["mission_id"] / WORK_ITEM_NAME).read_text(encoding="utf-8")
+    )
     assert item["route"] == "serverless_overflow"
     assert item["payload_sha256"] == manifest["payload_sha256"]
     assert item["requested_seconds"] == 180
@@ -124,7 +128,8 @@ def test_manifest_identity_mismatch_fails_closed(tmp_path: Path) -> None:
     manifest = json.loads(path.read_text(encoding="utf-8"))
     manifest["mission_id"] = "a" * 64
     path.write_text(
-        json.dumps(seal_serverless_workload(manifest), sort_keys=True, indent=2) + "\n",
+        json.dumps(seal_serverless_workload(manifest), sort_keys=True, indent=2)
+        + "\n",
         encoding="utf-8",
     )
 

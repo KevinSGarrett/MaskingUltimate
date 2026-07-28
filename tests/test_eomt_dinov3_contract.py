@@ -75,7 +75,10 @@ def test_eomt_v2_lock_binds_current_66_class_contract_without_runtime_claim() ->
     )["providers"]["eomt_dinov3"]
     assert lock["schema_version"] == "2.0.0"
     assert lock["supersedes"]["path"] == "env/eomt_dinov3_runtime.lock.json"
-    assert hashlib.sha256(HISTORICAL_LOCK.read_bytes()).hexdigest() == lock["supersedes"]["sha256"]
+    assert (
+        hashlib.sha256(HISTORICAL_LOCK.read_bytes()).hexdigest()
+        == lock["supersedes"]["sha256"]
+    )
     assert registry["lifecycle_state"] == "installed"
     assert registry["verify_license"] is False
     assert registry["source_revision"] == lock["source"]["revision"]

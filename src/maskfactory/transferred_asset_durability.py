@@ -101,7 +101,9 @@ def _load_registry(path: Path, allowed_root: Path) -> list[dict[str, Any]]:
     assets = document.get("assets")
     if not isinstance(assets, list) or not assets:
         raise DurabilityRegistryError("registry assets must be a non-empty list")
-    identifiers = [str(row.get("asset_id") or "") for row in assets if isinstance(row, dict)]
+    identifiers = [
+        str(row.get("asset_id") or "") for row in assets if isinstance(row, dict)
+    ]
     if len(identifiers) != len(assets) or any(not item for item in identifiers):
         raise DurabilityRegistryError("every asset requires asset_id")
     if len(set(identifiers)) != len(identifiers):
@@ -131,7 +133,9 @@ def _audit_package_sync(
     self_hash = manifest.get("manifest_sha256")
     unsigned = dict(manifest)
     unsigned.pop("manifest_sha256", None)
-    checks["manifest_self_hash"] = _is_sha256(self_hash) and canonical_sha256(unsigned) == self_hash
+    checks["manifest_self_hash"] = (
+        _is_sha256(self_hash) and canonical_sha256(unsigned) == self_hash
+    )
     if not checks["manifest_self_hash"]:
         issues.append(_issue("MANIFEST_SELF_HASH_DRIFT", str(manifest_path)))
     checks["manifest_self_hash_binding"] = row.get("manifest_self_sha256") == self_hash
@@ -141,7 +145,9 @@ def _audit_package_sync(
     chunks = manifest.get("chunks")
     chunks_valid = isinstance(chunks, list) and bool(chunks)
     if chunks_valid:
-        indices = [item.get("index") if isinstance(item, dict) else None for item in chunks]
+        indices = [
+            item.get("index") if isinstance(item, dict) else None for item in chunks
+        ]
         chunks_valid = indices == list(range(len(chunks)))
     checks["chunk_order_contiguous"] = chunks_valid
     if not chunks_valid:
@@ -172,7 +178,10 @@ def _audit_package_sync(
                 issues.append(_issue("CHUNK_SIZE_DRIFT", str(chunk_path)))
                 chunks_valid = False
                 continue
-            if not _is_sha256(expected_hash) or sha256_file(chunk_path) != expected_hash:
+            if (
+                not _is_sha256(expected_hash)
+                or sha256_file(chunk_path) != expected_hash
+            ):
                 issues.append(_issue("CHUNK_HASH_DRIFT", str(chunk_path)))
                 chunks_valid = False
                 continue
@@ -226,7 +235,8 @@ def _audit_package_sync(
                     for name, expected_hash in files.items():
                         if (
                             not _is_sha256(expected_hash)
-                            or hashlib.sha256(archive.read(name)).hexdigest() != expected_hash
+                            or hashlib.sha256(archive.read(name)).hexdigest()
+                            != expected_hash
                         ):
                             payload_matches = False
                             break

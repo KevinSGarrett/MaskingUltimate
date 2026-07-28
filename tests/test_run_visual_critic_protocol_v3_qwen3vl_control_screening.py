@@ -7,11 +7,8 @@ from pathlib import Path
 
 import pytest
 
-TOOL = (
-    Path(__file__).parents[1]
-    / "tools"
-    / "run_visual_critic_protocol_v3_qwen3vl_control_screening.py"
-)
+
+TOOL = Path(__file__).parents[1] / "tools" / "run_visual_critic_protocol_v3_qwen3vl_control_screening.py"
 SPEC = importlib.util.spec_from_file_location("qwen3vl_v3_launcher", TOOL)
 assert SPEC and SPEC.loader
 launcher = importlib.util.module_from_spec(SPEC)
@@ -22,12 +19,7 @@ SPEC.loader.exec_module(launcher)
 def test_build_server_argv_preserves_retained_qwen3vl_runtime_contract(tmp_path: Path) -> None:
     argv = launcher.build_server_argv(tmp_path / "python", tmp_path / "model", 18003)
 
-    assert argv[:4] == [
-        str(tmp_path / "python"),
-        "-m",
-        "vllm.entrypoints.openai.api_server",
-        "--model",
-    ]
+    assert argv[:4] == [str(tmp_path / "python"), "-m", "vllm.entrypoints.openai.api_server", "--model"]
     assert argv[argv.index("--served-model-name") + 1] == "qwen3_vl_30b_a3b_instruct_fp8"
     assert argv[argv.index("--gpu-memory-utilization") + 1] == "0.92"
     assert argv[argv.index("--max-model-len") + 1] == "16384"

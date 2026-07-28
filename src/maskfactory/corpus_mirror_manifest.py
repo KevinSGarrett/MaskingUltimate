@@ -157,24 +157,31 @@ def _tree_summary(
 
 
 def _source_files(source_root: Path, output_dir: Path) -> list[Path]:
-    output_paths = {(output_dir / name).resolve(strict=False) for name in EXCLUDED_ARTIFACTS}
+    output_paths = {
+        (output_dir / name).resolve(strict=False) for name in EXCLUDED_ARTIFACTS
+    }
     files: list[Path] = []
     casefolded: dict[str, str] = {}
     for path in source_root.rglob("*"):
         if path.resolve(strict=False) in output_paths:
             continue
         if path.is_symlink():
-            raise CorpusMirrorManifestError(f"symlink is not allowed in corpus mirror: {path}")
+            raise CorpusMirrorManifestError(
+                f"symlink is not allowed in corpus mirror: {path}"
+            )
         if not path.is_file():
             continue
         relative = path.relative_to(source_root).as_posix()
-        if relative in EXCLUDED_ARTIFACTS or relative.lower().endswith(EPHEMERAL_SQLITE_SUFFIXES):
+        if relative in EXCLUDED_ARTIFACTS or relative.lower().endswith(
+            EPHEMERAL_SQLITE_SUFFIXES
+        ):
             continue
         _safe_relative(relative)
         folded = relative.casefold()
         if folded in casefolded and casefolded[folded] != relative:
             raise CorpusMirrorManifestError(
-                "case-insensitive path collision: " f"{casefolded[folded]!r} and {relative!r}"
+                "case-insensitive path collision: "
+                f"{casefolded[folded]!r} and {relative!r}"
             )
         casefolded[folded] = relative
         files.append(path)
@@ -211,7 +218,9 @@ def build_corpus_mirror_manifest(
     manifest_path = output_dir / MANIFEST_NAME
     progress_path = output_dir / PROGRESS_NAME
     if manifest_path.exists():
-        raise CorpusMirrorManifestError("sealed manifest already exists; refuse overwrite")
+        raise CorpusMirrorManifestError(
+            "sealed manifest already exists; refuse overwrite"
+        )
 
     connection = _connect_inventory(inventory_path)
     try:
@@ -257,7 +266,9 @@ def build_corpus_mirror_manifest(
                     before_hash.st_size != after_hash.st_size
                     or before_hash.st_mtime_ns != after_hash.st_mtime_ns
                 ):
-                    raise CorpusMirrorManifestError(f"source changed while hashing: {relative}")
+                    raise CorpusMirrorManifestError(
+                        f"source changed while hashing: {relative}"
+                    )
                 connection.execute(
                     """
                     INSERT INTO files(path, bytes, mtime_ns, sha256)
@@ -278,7 +289,9 @@ def build_corpus_mirror_manifest(
             if index % batch_size == 0:
                 connection.commit()
                 progress = {
-                    "schema_version": ("maskfactory.corpus_mirror_migration_progress.v1"),
+                    "schema_version": (
+                        "maskfactory.corpus_mirror_migration_progress.v1"
+                    ),
                     "asset_id": asset_id,
                     "source_root": str(source_root),
                     "destination_root": destination_binding,
@@ -292,7 +305,9 @@ def build_corpus_mirror_manifest(
                 progress["self_sha256"] = canonical_sha256(progress)
                 _write_json_atomic(progress_path, progress)
 
-        existing_paths = {str(row[0]) for row in connection.execute("SELECT path FROM files")}
+        existing_paths = {
+            str(row[0]) for row in connection.execute("SELECT path FROM files")
+        }
         stale = existing_paths - current_paths
         if stale:
             connection.executemany(
@@ -302,7 +317,9 @@ def build_corpus_mirror_manifest(
         final_files = _source_files(source_root, output_dir)
         final_paths = {path.relative_to(source_root).as_posix() for path in final_files}
         if final_paths != current_paths:
-            raise CorpusMirrorManifestError("source file set changed before manifest seal")
+            raise CorpusMirrorManifestError(
+                "source file set changed before manifest seal"
+            )
         indexed_stats = {
             str(path): (int(size), int(mtime_ns))
             for path, size, mtime_ns in connection.execute(
@@ -383,7 +400,9 @@ def _load_manifest(
     destination_root: Path,
 ) -> tuple[dict[str, Any], Path]:
     if manifest_path.parent != destination_root:
-        raise CorpusMirrorManifestError("manifest must be stored at the destination root")
+        raise CorpusMirrorManifestError(
+            "manifest must be stored at the destination root"
+        )
     try:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
@@ -431,14 +450,18 @@ def verify_corpus_mirror_manifest(
     }
     issues: list[dict[str, str]] = []
     if not checks["inventory_present"]:
-        issues.append({"code": "CORPUS_INVENTORY_MISSING", "detail": str(inventory_path)})
+        issues.append(
+            {"code": "CORPUS_INVENTORY_MISSING", "detail": str(inventory_path)}
+        )
         return {"checks": checks, "issues": issues, "detail": {}}
     checks["inventory_raw_hash"] = (
         _is_sha256(inventory_binding.get("raw_sha256"))
         and sha256_file(inventory_path) == inventory_binding["raw_sha256"]
     )
     if not checks["inventory_raw_hash"]:
-        issues.append({"code": "CORPUS_INVENTORY_HASH_DRIFT", "detail": str(inventory_path)})
+        issues.append(
+            {"code": "CORPUS_INVENTORY_HASH_DRIFT", "detail": str(inventory_path)}
+        )
         return {"checks": checks, "issues": issues, "detail": {}}
 
     try:
@@ -449,7 +472,9 @@ def verify_corpus_mirror_manifest(
         finally:
             connection.close()
     except sqlite3.DatabaseError as exc:
-        raise CorpusMirrorManifestError(f"inventory database is invalid: {exc}") from exc
+        raise CorpusMirrorManifestError(
+            f"inventory database is invalid: {exc}"
+        ) from exc
     expected_count, expected_bytes, expected_tree = _tree_summary(rows)
     checks["inventory_complete"] = metadata.get("complete") == "true"
     checks["inventory_metadata_binding"] = (
@@ -467,7 +492,9 @@ def verify_corpus_mirror_manifest(
         and metadata.get("tree_sha256") == expected_tree
     )
     if not checks["inventory_complete"]:
-        issues.append({"code": "CORPUS_INVENTORY_INCOMPLETE", "detail": str(inventory_path)})
+        issues.append(
+            {"code": "CORPUS_INVENTORY_INCOMPLETE", "detail": str(inventory_path)}
+        )
     if not checks["inventory_metadata_binding"]:
         issues.append(
             {
@@ -476,7 +503,9 @@ def verify_corpus_mirror_manifest(
             }
         )
     if not checks["inventory_summary_binding"]:
-        issues.append({"code": "CORPUS_INVENTORY_SUMMARY_DRIFT", "detail": str(inventory_path)})
+        issues.append(
+            {"code": "CORPUS_INVENTORY_SUMMARY_DRIFT", "detail": str(inventory_path)}
+        )
 
     expected_paths = {relative for relative, _, _ in rows}
     bytes_valid = True
@@ -512,7 +541,9 @@ def verify_corpus_mirror_manifest(
         if not child.is_file():
             continue
         relative = child.relative_to(destination_root).as_posix()
-        if relative in EXCLUDED_ARTIFACTS or relative.lower().endswith(EPHEMERAL_SQLITE_SUFFIXES):
+        if relative in EXCLUDED_ARTIFACTS or relative.lower().endswith(
+            EPHEMERAL_SQLITE_SUFFIXES
+        ):
             continue
         actual_paths.add(relative)
     extras = sorted(actual_paths - expected_paths)

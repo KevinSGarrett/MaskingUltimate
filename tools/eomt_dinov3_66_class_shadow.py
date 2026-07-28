@@ -103,16 +103,12 @@ def _verify_runtime(binding: dict[str, Any]) -> None:
 def _verify_admission() -> dict[str, Any]:
     if os.environ.get("CUDA_VISIBLE_DEVICES") != "0":
         raise ShadowBindingError("CUDA_VISIBLE_DEVICES must be exactly 0")
-    gpu = (
-        subprocess.run(
-            ["nvidia-smi", "--query-gpu=name,memory.total", "--format=csv,noheader"],
-            check=True,
-            text=True,
-            capture_output=True,
-        )
-        .stdout.strip()
-        .splitlines()
-    )
+    gpu = subprocess.run(
+        ["nvidia-smi", "--query-gpu=name,memory.total", "--format=csv,noheader"],
+        check=True,
+        text=True,
+        capture_output=True,
+    ).stdout.strip().splitlines()
     if len(gpu) != 1 or "NVIDIA RTX 6000 Ada Generation" not in gpu[0] or "49140 MiB" not in gpu[0]:
         raise ShadowBindingError(f"unexpected GPU inventory: {gpu}")
     processes = subprocess.run(
@@ -163,11 +159,7 @@ def _verify_contract_and_inputs(binding: dict[str, Any]) -> tuple[Path, Path, li
     class_names = [
         label["name"]
         for label in sorted(
-            [
-                label
-                for label in ontology["labels"]
-                if label.get("map") == "part" and label.get("id") is not None
-            ],
+            [label for label in ontology["labels"] if label.get("map") == "part" and label.get("id") is not None],
             key=lambda label: int(label["id"]),
         )
     ]
@@ -239,17 +231,13 @@ def run(binding_path: Path) -> dict[str, Any]:
         if config.num_labels != 66:
             raise ShadowBindingError("target config did not resolve to 66 labels")
         started = time.perf_counter()
-        model = (
-            EomtDinov3ForUniversalSegmentation.from_pretrained(
-                model_directory,
-                config=config,
-                local_files_only=True,
-                ignore_mismatched_sizes=True,
-                dtype=torch.float16,
-            )
-            .cuda()
-            .eval()
-        )
+        model = EomtDinov3ForUniversalSegmentation.from_pretrained(
+            model_directory,
+            config=config,
+            local_files_only=True,
+            ignore_mismatched_sizes=True,
+            dtype=torch.float16,
+        ).cuda().eval()
         if model.class_predictor.out_features != 67:
             raise ShadowBindingError("target classifier does not include 66 labels plus no-object")
         random_head_sha256 = _head_hash(model)
@@ -259,11 +247,9 @@ def run(binding_path: Path) -> dict[str, Any]:
             image = opened.convert("RGB")
         inputs = processor(images=image, return_tensors="pt")
         inputs = {
-            key: (
-                (value.cuda().half() if value.is_floating_point() else value.cuda())
-                if isinstance(value, torch.Tensor)
-                else value
-            )
+            key: (value.cuda().half() if value.is_floating_point() else value.cuda())
+            if isinstance(value, torch.Tensor)
+            else value
             for key, value in inputs.items()
         }
         calls = []
@@ -358,27 +344,12 @@ def main() -> int:
     if args.preflight_only:
         binding = _read_binding(args.binding)
         outputs = binding["outputs"]
-        if (
-            _relative_path(outputs["success_receipt"]).exists()
-            or _relative_path(outputs["failure_receipt"]).exists()
-        ):
+        if _relative_path(outputs["success_receipt"]).exists() or _relative_path(outputs["failure_receipt"]).exists():
             raise ShadowBindingError("terminal receipt already exists; binding is single-use")
         _verify_runtime(binding)
         admission = _verify_admission()
         model_directory, fixture, class_names = _verify_contract_and_inputs(binding)
-        print(
-            json.dumps(
-                {
-                    "preflight": "pass",
-                    "binding_self_sha256": binding["self_sha256"],
-                    "admission": admission,
-                    "model_directory": str(model_directory.relative_to(ROOT)),
-                    "fixture": str(fixture.relative_to(ROOT)),
-                    "class_count": len(class_names),
-                },
-                sort_keys=True,
-            )
-        )
+        print(json.dumps({"preflight": "pass", "binding_self_sha256": binding["self_sha256"], "admission": admission, "model_directory": str(model_directory.relative_to(ROOT)), "fixture": str(fixture.relative_to(ROOT)), "class_count": len(class_names)}, sort_keys=True))
         return 0
     print(json.dumps(run(args.binding), sort_keys=True))
     return 0

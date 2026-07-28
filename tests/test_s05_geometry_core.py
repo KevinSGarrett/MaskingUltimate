@@ -19,13 +19,7 @@ def test_s05_partitions_front_torso_into_disjoint_named_priors() -> None:
         view="front",
     )
 
-    assert {
-        "chest_upper_torso",
-        "abdomen_stomach",
-        "pelvic_region",
-        "left_hip",
-        "right_hip",
-    } <= set(priors)
+    assert {"chest_upper_torso", "abdomen_stomach", "pelvic_region", "left_hip", "right_hip"} <= set(priors)
     assert priors["chest_upper_torso"].dtype == bool
     assert not np.any(priors["left_hip"] & priors["right_hip"])
 

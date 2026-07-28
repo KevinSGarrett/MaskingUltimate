@@ -57,7 +57,9 @@ def _validate_candidate(candidate: CampaignCandidate) -> None:
     ):
         raise CampaignBuildError(f"{candidate.item_id}: invalid payload SHA-256")
     if candidate.estimated_context_tokens <= 0 or candidate.record_count <= 0:
-        raise CampaignBuildError(f"{candidate.item_id}: resource estimates must be positive")
+        raise CampaignBuildError(
+            f"{candidate.item_id}: resource estimates must be positive"
+        )
     if len(candidate.dependency_ids) != len(set(candidate.dependency_ids)):
         raise CampaignBuildError(f"{candidate.item_id}: duplicate dependencies")
 
@@ -165,7 +167,9 @@ def build_campaigns(
                 work_kind=work_kind,
                 compatibility_key=compatibility_key,
                 item_ids=tuple(candidate.item_id for candidate in current),
-                payload_sha256s=tuple(candidate.payload_sha256 for candidate in current),
+                payload_sha256s=tuple(
+                    candidate.payload_sha256 for candidate in current
+                ),
                 total_context_tokens=sum(
                     candidate.estimated_context_tokens for candidate in current
                 ),
@@ -178,8 +182,14 @@ def build_campaigns(
     for candidate in eligible:
         key = (candidate.work_kind, candidate.compatibility_key)
         candidate_units = candidate.record_count if candidate.work_kind == "mask" else 1
-        current_units = sum(row.record_count if row.work_kind == "mask" else 1 for row in current)
-        unit_cap = mask_record_cap if candidate.work_kind == "mask" else engineering_mission_cap
+        current_units = sum(
+            row.record_count if row.work_kind == "mask" else 1 for row in current
+        )
+        unit_cap = (
+            mask_record_cap
+            if candidate.work_kind == "mask"
+            else engineering_mission_cap
+        )
         would_exceed = bool(
             current
             and (

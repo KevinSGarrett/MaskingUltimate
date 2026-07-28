@@ -90,9 +90,7 @@ def validate_control_screening_registry(registry: Mapping[str, Any]) -> None:
         or registry["authority_ceiling"] != "session_agent_control_screening_only"
         or registry["minor_budget"] != 0
     ):
-        raise CriticProtocolV3ControlScreeningError(
-            "control-screening registry identity is invalid"
-        )
+        raise CriticProtocolV3ControlScreeningError("control-screening registry identity is invalid")
     for field in (
         "role_certificate_issuance_allowed",
         "strict_visual_authority_allowed",
@@ -102,18 +100,14 @@ def validate_control_screening_registry(registry: Mapping[str, Any]) -> None:
         "holdout_role_qualification_allowed",
     ):
         if registry[field] is not False:
-            raise CriticProtocolV3ControlScreeningError(
-                f"control-screening registry {field} drifted"
-            )
+            raise CriticProtocolV3ControlScreeningError(f"control-screening registry {field} drifted")
     for field in (
         "requires_reference_exemplar",
         "requires_describe_then_judge",
         "requires_coherent_localization",
     ):
         if registry[field] is not True:
-            raise CriticProtocolV3ControlScreeningError(
-                f"control-screening registry {field} drifted"
-            )
+            raise CriticProtocolV3ControlScreeningError(f"control-screening registry {field} drifted")
 
 
 def control_registry_sha256(registry: Mapping[str, Any]) -> str:
@@ -163,9 +157,7 @@ def _bound_panels(record: Mapping[str, Any], panel_root: Path) -> dict[str, Any]
         with Image.open(path) as opened:
             image = opened.convert("L") if name == "binary_mask" else opened.convert("RGB")
             if image.width < 2 or image.height < 2:
-                raise CriticProtocolV3ControlScreeningError(
-                    f"{sample_id}.{name} panel is degenerate"
-                )
+                raise CriticProtocolV3ControlScreeningError(f"{sample_id}.{name} panel is degenerate")
             if name in {"source", "binary_mask"}:
                 if geometry is None:
                     geometry = image.size
@@ -229,9 +221,7 @@ def build_control_screening_execution(
             raise CriticProtocolV3ControlScreeningError(f"{case_id} lacks a known-good reference")
         candidate, reference = bound[case_id], bound[references[0]]
         if candidate["panel_sha256s"]["source"] == reference["panel_sha256s"]["source"]:
-            raise CriticProtocolV3ControlScreeningError(
-                f"{case_id} reference is not image-disjoint"
-            )
+            raise CriticProtocolV3ControlScreeningError(f"{case_id} reference is not image-disjoint")
         cases.append(
             {
                 "case_id": case_id,
@@ -241,12 +231,8 @@ def build_control_screening_execution(
                 "label_scale": candidate["label_scale"],
                 "expected_outcome": record["expected_outcome"],
                 "defect_type": record["defect_type"],
-                "candidate": {
-                    key: value for key, value in candidate.items() if key != "label_scale"
-                },
-                "reference": {
-                    key: value for key, value in reference.items() if key != "label_scale"
-                },
+                "candidate": {key: value for key, value in candidate.items() if key != "label_scale"},
+                "reference": {key: value for key, value in reference.items() if key != "label_scale"},
             }
         )
     value: dict[str, Any] = {
@@ -272,38 +258,19 @@ def build_control_screening_execution(
     return value
 
 
-def validate_control_screening_execution(
-    value: Mapping[str, Any], registry: Mapping[str, Any]
-) -> None:
+def validate_control_screening_execution(value: Mapping[str, Any], registry: Mapping[str, Any]) -> None:
     """Validate the sealed execution before a backend is allowed to load."""
 
     validate_control_screening_registry(registry)
     required = {
-        "schema_version",
-        "artifact_type",
-        "execution_id",
-        "registry_sha256",
-        "control_admission_file_sha256",
-        "control_admission_self_sha256",
-        "case_count",
-        "cases",
-        "authority_claimed",
-        "role_certificate_issuance_allowed",
-        "strict_visual_authority_allowed",
-        "gold_or_training_authority_allowed",
-        "production_authority_allowed",
-        "calibration_fitting_allowed",
-        "holdout_role_qualification_allowed",
+        "schema_version", "artifact_type", "execution_id", "registry_sha256", "control_admission_file_sha256",
+        "control_admission_self_sha256", "case_count", "cases", "authority_claimed",
+        "role_certificate_issuance_allowed", "strict_visual_authority_allowed", "gold_or_training_authority_allowed",
+        "production_authority_allowed", "calibration_fitting_allowed", "holdout_role_qualification_allowed",
         "execution_manifest_sha256",
     }
-    if (
-        not isinstance(value, Mapping)
-        or set(value) != required
-        or value["schema_version"] != SCHEMA_VERSION
-    ):
-        raise CriticProtocolV3ControlScreeningError(
-            "control-screening execution fields are invalid"
-        )
+    if not isinstance(value, Mapping) or set(value) != required or value["schema_version"] != SCHEMA_VERSION:
+        raise CriticProtocolV3ControlScreeningError("control-screening execution fields are invalid")
     if (
         value["artifact_type"] != "protocol_v3_session_agent_control_screening_execution"
         or value["registry_sha256"] != control_registry_sha256(registry)
@@ -311,35 +278,21 @@ def validate_control_screening_execution(
     ):
         raise CriticProtocolV3ControlScreeningError("control-screening execution seal drifted")
     for field in (
-        "authority_claimed",
-        "role_certificate_issuance_allowed",
-        "strict_visual_authority_allowed",
-        "gold_or_training_authority_allowed",
-        "production_authority_allowed",
-        "calibration_fitting_allowed",
+        "authority_claimed", "role_certificate_issuance_allowed", "strict_visual_authority_allowed",
+        "gold_or_training_authority_allowed", "production_authority_allowed", "calibration_fitting_allowed",
         "holdout_role_qualification_allowed",
     ):
         if value[field] is not False:
-            raise CriticProtocolV3ControlScreeningError(
-                f"control-screening execution {field} drifted"
-            )
+            raise CriticProtocolV3ControlScreeningError(f"control-screening execution {field} drifted")
     cases = value["cases"]
     if not isinstance(cases, list) or not cases or value["case_count"] != len(cases):
         raise CriticProtocolV3ControlScreeningError("control-screening execution cases invalid")
-    if [str(case.get("case_id")) for case in cases] != sorted(
-        str(case.get("case_id")) for case in cases
-    ):
+    if [str(case.get("case_id")) for case in cases] != sorted(str(case.get("case_id")) for case in cases):
         raise CriticProtocolV3ControlScreeningError("control-screening order is nondeterministic")
 
 
-def build_control_description_prompt(
-    *, label_id: str, label_scale: str, reference_case_id: str
-) -> str:
-    if (
-        not isinstance(label_id, str)
-        or not label_id
-        or label_scale not in {"small", "medium", "large"}
-    ):
+def build_control_description_prompt(*, label_id: str, label_scale: str, reference_case_id: str) -> str:
+    if not isinstance(label_id, str) or not label_id or label_scale not in {"small", "medium", "large"}:
         raise CriticProtocolV3ControlScreeningError("control-screening prompt context invalid")
     return (
         "/no_think\nDescribe the proposed mask and image-disjoint known-good reference only. "
@@ -392,16 +345,8 @@ def control_response_schema() -> dict[str, Any]:
         "required": ["severity", "cited_evidence_panels", "localization_xyxy"],
         "properties": {
             "severity": {"type": "string", "enum": sorted(SEVERITIES)},
-            "cited_evidence_panels": {
-                "type": "array",
-                "items": {"type": "string", "enum": list(PANEL_LAYOUT)},
-            },
-            "localization_xyxy": {
-                "anyOf": [
-                    {"type": "null"},
-                    {"type": "array", "items": {"type": "number"}, "minItems": 4, "maxItems": 4},
-                ]
-            },
+            "cited_evidence_panels": {"type": "array", "items": {"type": "string", "enum": list(PANEL_LAYOUT)}},
+            "localization_xyxy": {"anyOf": [{"type": "null"}, {"type": "array", "items": {"type": "number"}, "minItems": 4, "maxItems": 4}]},
         },
     }
     return {
@@ -413,12 +358,7 @@ def control_response_schema() -> dict[str, Any]:
             "required": ["description", "findings"],
             "properties": {
                 "description": {"type": "string", "minLength": 1, "maxLength": 4096},
-                "findings": {
-                    "type": "object",
-                    "additionalProperties": False,
-                    "required": list(CHECK_KEYS),
-                    "properties": {key: finding for key in CHECK_KEYS},
-                },
+                "findings": {"type": "object", "additionalProperties": False, "required": list(CHECK_KEYS), "properties": {key: finding for key in CHECK_KEYS}},
             },
         },
     }
@@ -446,9 +386,7 @@ def parse_control_screening_response(raw: str) -> dict[str, Any]:
     try:
         value = json.loads(_strip_json(raw))
     except (TypeError, json.JSONDecodeError) as exc:
-        raise CriticProtocolV3ControlScreeningError(
-            "control-screening response is not JSON"
-        ) from exc
+        raise CriticProtocolV3ControlScreeningError("control-screening response is not JSON") from exc
     if (
         not isinstance(value, Mapping)
         or set(value) != RESPONSE_KEYS

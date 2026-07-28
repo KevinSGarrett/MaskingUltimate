@@ -24,7 +24,9 @@ SHA256_RE = re.compile(r"^[a-f0-9]{64}$")
 GIT_OBJECT_RE = re.compile(r"^[a-f0-9]{40}$")
 TRACKER_ITEM_RE = re.compile(r"^MF-P[0-9]+-[0-9]+\.[0-9]+$")
 ARTIFACT_ROLES = frozenset({"input", "runtime", "output", "terminal", "release"})
-DISPOSITIONS = frozenset({"accepted", "blocked", "historical_provenance_only", "rejected"})
+DISPOSITIONS = frozenset(
+    {"accepted", "blocked", "historical_provenance_only", "rejected"}
+)
 
 
 class EvidenceLocatorError(RuntimeError):
@@ -133,7 +135,9 @@ def _repository_artifacts(entry: Mapping[str, Any]) -> dict[str, Mapping[str, An
         if location not in repository_locations:
             continue
         if location in artifacts_by_location:
-            raise EvidenceLocatorError(f"repository location binds multiple artifacts: {location}")
+            raise EvidenceLocatorError(
+                f"repository location binds multiple artifacts: {location}"
+            )
         artifacts_by_location[location] = artifact
     missing = sorted(set(repository_locations) - set(artifacts_by_location))
     if missing:
@@ -187,7 +191,9 @@ def _verify_source_bindings(locator: Mapping[str, Any], repository_root: Path) -
         _git_output(repository_root, "cat-file", "-e", f"{commit}^{{commit}}")
         observed_tree = _git_output(repository_root, "rev-parse", f"{commit}^{{tree}}")
         if observed_tree != declared_tree:
-            raise EvidenceLocatorError(f"source tree SHA-1 mismatch for {entry['tracker_item']}")
+            raise EvidenceLocatorError(
+                f"source tree SHA-1 mismatch for {entry['tracker_item']}"
+            )
         source_object = f"{commit}:{source_path}"
         _git_output(repository_root, "cat-file", "-e", source_object)
         if _git_output(repository_root, "cat-file", "-t", source_object) != "blob":
@@ -280,7 +286,9 @@ def validate_evidence_locator(value: Mapping[str, Any]) -> None:
         not isinstance(authority, Mapping)
         or not authority
         or any(
-            not isinstance(path, str) or not path or not SHA256_RE.fullmatch(str(digest))
+            not isinstance(path, str)
+            or not path
+            or not SHA256_RE.fullmatch(str(digest))
             for path, digest in authority.items()
         )
     ):
@@ -291,9 +299,7 @@ def validate_evidence_locator(value: Mapping[str, Any]) -> None:
     if not isinstance(entries, list) or not entries:
         raise EvidenceLocatorError("evidence locator entries are absent")
     keys = [_validate_entry(entry) for entry in entries]
-    if keys != sorted(keys, key=lambda item: (item[0], item[1] or "")) or len(keys) != len(
-        set(keys)
-    ):
+    if keys != sorted(keys, key=lambda item: (item[0], item[1] or "")) or len(keys) != len(set(keys)):
         raise EvidenceLocatorError("entries must be sorted and unique by tracker item and parent")
     limitations = value.get("limitations")
     if (
@@ -368,7 +374,9 @@ def verify_repository_evidence(locator: Mapping[str, Any], repository_root: Path
         try:
             resolved.relative_to(root)
         except ValueError as error:
-            raise EvidenceLocatorError(f"repository authority escapes root: {location}") from error
+            raise EvidenceLocatorError(
+                f"repository authority escapes root: {location}"
+            ) from error
         if _file_sha256(candidate) != expected_sha256:
             raise EvidenceLocatorError(f"repository authority SHA-256 mismatch: {location}")
     for entry in locator["entries"]:

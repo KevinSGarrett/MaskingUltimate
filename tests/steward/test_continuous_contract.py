@@ -168,7 +168,9 @@ def valid_acceptance(*, production: bool = False) -> dict:
             "final_mask": False,
             "final_adoption": False,
         },
-        "limitations": ([] if production else ["Required real campaigns have not yet passed."]),
+        "limitations": (
+            [] if production else ["Required real campaigns have not yet passed."]
+        ),
     }
 
 
@@ -222,22 +224,29 @@ def test_frozen_authority_schemas_and_item_ids_have_no_drift() -> None:
 def test_stale_authority_hash_fails_closed(tmp_path: Path) -> None:
     copy_frozen_contract(tmp_path)
     plan = tmp_path / "Plan/27_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS_SPEC.md"
-    plan.write_text(plan.read_text(encoding="utf-8") + "\nstale mutation\n", encoding="utf-8")
+    plan.write_text(
+        plan.read_text(encoding="utf-8") + "\nstale mutation\n", encoding="utf-8"
+    )
 
     problems = validate_freeze_registry(tmp_path)
 
-    assert any("stale hash" in problem and "Plan/27_" in problem for problem in problems)
+    assert any(
+        "stale hash" in problem and "Plan/27_" in problem for problem in problems
+    )
 
 
 def test_stale_schema_hash_fails_closed(tmp_path: Path) -> None:
     copy_frozen_contract(tmp_path)
     schema = tmp_path / TELEMETRY_SCHEMA_PATH
-    schema.write_text(schema.read_text(encoding="utf-8") + "\n", encoding="utf-8")
+    schema.write_text(
+        schema.read_text(encoding="utf-8") + "\n", encoding="utf-8"
+    )
 
     problems = validate_freeze_registry(tmp_path)
 
     assert any(
-        "stale hash" in problem and TELEMETRY_SCHEMA_PATH.as_posix() in problem
+        "stale hash" in problem
+        and TELEMETRY_SCHEMA_PATH.as_posix() in problem
         for problem in problems
     )
 
@@ -260,7 +269,8 @@ def test_missing_authority_cross_reference_fails_with_refreshed_hash(
     problems = validate_freeze_registry(tmp_path)
 
     assert any(
-        "misses cross-references" in problem and FREEZE_REGISTRY_PATH.as_posix() in problem
+        "misses cross-references" in problem
+        and FREEZE_REGISTRY_PATH.as_posix() in problem
         for problem in problems
     )
 
@@ -272,7 +282,8 @@ def test_duplicate_authority_item_id_fails_with_refreshed_hash(
     relative = ITEM_PATH.as_posix()
     authority = tmp_path / relative
     authority.write_text(
-        authority.read_text(encoding="utf-8") + "\n- [ ] MF-P6-13.01 duplicate authority fixture\n",
+        authority.read_text(encoding="utf-8")
+        + "\n- [ ] MF-P6-13.01 duplicate authority fixture\n",
         encoding="utf-8",
     )
     refresh_registry_binding(tmp_path, relative)
@@ -312,7 +323,10 @@ def test_registry_requires_exact_authority_path_set(tmp_path: Path) -> None:
 
     problems = validate_freeze_registry(tmp_path)
 
-    assert "freeze authority_files do not match the closed v1 authority set" in problems
+    assert (
+        "freeze authority_files do not match the closed v1 authority set"
+        in problems
+    )
 
 
 def test_duplicate_registry_item_id_fails_even_with_valid_self_hash(
@@ -334,7 +348,9 @@ def test_duplicate_registry_item_id_fails_even_with_valid_self_hash(
     assert "freeze item_ids contains duplicates" in problems
 
 
-def test_closed_telemetry_schema_accepts_complete_document_and_rejects_unknown() -> None:
+def test_closed_telemetry_schema_accepts_complete_document_and_rejects_unknown() -> (
+    None
+):
     root = repo_root()
     telemetry = valid_telemetry()
 

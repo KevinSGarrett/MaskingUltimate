@@ -185,7 +185,10 @@ def test_under_target_campaign_keeps_sustained_claim_false() -> None:
     events = [
         event
         for event in records[1]["events"]
-        if not (event["kind"] == "autonomously_prepared" and event["mission_id"] == "mission-19")
+        if not (
+            event["kind"] == "autonomously_prepared"
+            and event["mission_id"] == "mission-19"
+        )
     ]
     for sequence, event in enumerate(events, start=1):
         event["sequence"] = sequence
@@ -203,7 +206,9 @@ def test_under_target_campaign_keeps_sustained_claim_false() -> None:
         campaign_id=telemetry["campaign_id"],
         telemetry_events=events,
         exception_records=[],
-        terminal_adoption_packet_sha256=records[1]["terminal_adoption_packet_sha256"],
+        terminal_adoption_packet_sha256=records[1][
+            "terminal_adoption_packet_sha256"
+        ],
     )
 
     result = evaluate_sustained_campaign_slo(records, repo_root=REPO_ROOT)

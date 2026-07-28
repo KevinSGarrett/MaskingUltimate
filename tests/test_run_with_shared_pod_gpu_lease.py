@@ -9,7 +9,11 @@ import time
 import types
 from pathlib import Path
 
-SCRIPT = Path(__file__).resolve().parents[1] / "tools" / "run_with_shared_pod_gpu_lease.py"
+SCRIPT = (
+    Path(__file__).resolve().parents[1]
+    / "tools"
+    / "run_with_shared_pod_gpu_lease.py"
+)
 SPEC = importlib.util.spec_from_file_location("maskfactory_gpu_guard", SCRIPT)
 assert SPEC is not None and SPEC.loader is not None
 MODULE = importlib.util.module_from_spec(SPEC)
@@ -83,18 +87,24 @@ def run_args(tmp_path: Path) -> dict[str, object]:
     }
 
 
-def test_denied_lease_never_starts_local_gpu(tmp_path: Path, monkeypatch) -> None:
+def test_denied_lease_never_starts_local_gpu(
+    tmp_path: Path, monkeypatch
+) -> None:
     manager = FakeManager(acquired=False)
     monkeypatch.setattr(
         MODULE.subprocess,
         "Popen",
-        lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("child must not start")),
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("child must not start")
+        ),
     )
     result = MODULE.run_guarded(manager=manager, **run_args(tmp_path))
     assert result == MODULE.FALLBACK_REQUIRED
     assert manager.calls == ["token", "enqueue", "acquire", "withdraw"]
     assert not (tmp_path / "mask-owner.token").exists()
-    receipt = json.loads((tmp_path / "mission" / MODULE.RELEASE_RECEIPT_NAME).read_text())
+    receipt = json.loads(
+        (tmp_path / "mission" / MODULE.RELEASE_RECEIPT_NAME).read_text()
+    )
     assert receipt["disposition"] == "withdrawn_before_fallback"
     assert receipt["lease_state"] == "released"
 
@@ -108,12 +118,16 @@ def test_acquired_lease_wraps_child_and_terminally_releases(
     assert manager.calls[:3] == ["token", "enqueue", "acquire"]
     assert manager.calls[-1] == "release"
     assert not (tmp_path / "mask-owner.token").exists()
-    receipt = json.loads((tmp_path / "mission" / MODULE.RELEASE_RECEIPT_NAME).read_text())
+    receipt = json.loads(
+        (tmp_path / "mission" / MODULE.RELEASE_RECEIPT_NAME).read_text()
+    )
     assert receipt["disposition"] == "completed"
     assert receipt["child_returncode"] == 0
 
 
-def test_acquired_lease_passes_nonsecret_bound_child_context(tmp_path: Path, monkeypatch) -> None:
+def test_acquired_lease_passes_nonsecret_bound_child_context(
+    tmp_path: Path, monkeypatch
+) -> None:
     manager = FakeManager()
     observed: dict[str, object] = {}
 
@@ -138,7 +152,10 @@ def test_acquired_lease_passes_nonsecret_bound_child_context(tmp_path: Path, mon
     assert isinstance(environment, dict)
     assert environment["MASKFACTORY_SHARED_GPU_GUARD_ACTIVE"] == "1"
     assert environment["MASKFACTORY_SHARED_GPU_GUARD_JOB_ID"] == "mask-job"
-    assert environment["MASKFACTORY_SHARED_GPU_GUARD_PAYLOAD_SHA256"] == "a" * 64
+    assert (
+        environment["MASKFACTORY_SHARED_GPU_GUARD_PAYLOAD_SHA256"]
+        == "a" * 64
+    )
     assert environment["MASKFACTORY_SHARED_GPU_GUARD_REQUEST_ID"] == "gpu-mask-test"
     assert environment["MASKFACTORY_SHARED_GPU_GUARD_RECEIPT_ROOT"] == str(
         (tmp_path / "mission").resolve()
@@ -177,7 +194,9 @@ def test_existing_gpu_process_routes_to_fallback_before_enqueue(
     monkeypatch.setattr(
         MODULE.subprocess,
         "Popen",
-        lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("child must not start")),
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("child must not start")
+        ),
     )
     args = run_args(tmp_path)
     args["gpu_process_probe"] = lambda: ["69508"]
@@ -194,7 +213,9 @@ def test_gpu_process_race_releases_lease_without_starting_child(
     monkeypatch.setattr(
         MODULE.subprocess,
         "Popen",
-        lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("child must not start")),
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("child must not start")
+        ),
     )
     args = run_args(tmp_path)
     args["gpu_process_probe"] = lambda: next(observations)
@@ -203,17 +224,23 @@ def test_gpu_process_race_releases_lease_without_starting_child(
     assert manager.calls == ["token", "enqueue", "acquire", "release"]
     assert not (tmp_path / "mask-owner.token").exists()
     assert (
-        json.loads((tmp_path / "mission" / MODULE.RELEASE_RECEIPT_NAME).read_text())["disposition"]
+        json.loads(
+            (tmp_path / "mission" / MODULE.RELEASE_RECEIPT_NAME).read_text()
+        )["disposition"]
         == "failed_before_child_start"
     )
 
 
-def test_failed_preflight_never_enqueues_or_starts_child(tmp_path: Path, monkeypatch) -> None:
+def test_failed_preflight_never_enqueues_or_starts_child(
+    tmp_path: Path, monkeypatch
+) -> None:
     manager = FakeManager()
     monkeypatch.setattr(
         MODULE.subprocess,
         "Popen",
-        lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("child must not start")),
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("child must not start")
+        ),
     )
     args = run_args(tmp_path)
     args["preflight_probe"] = lambda: {"status": "FAIL"}
@@ -236,9 +263,9 @@ def test_child_crash_terminally_releases_failed(tmp_path: Path) -> None:
     assert result == 23
     assert manager.calls[-1] == "release"
     assert (
-        json.loads((tmp_path / "mission" / MODULE.RELEASE_RECEIPT_NAME).read_text())[
-            "child_returncode"
-        ]
+        json.loads(
+            (tmp_path / "mission" / MODULE.RELEASE_RECEIPT_NAME).read_text()
+        )["child_returncode"]
         == 23
     )
 
@@ -278,7 +305,9 @@ def test_atomic_runtime_deadline_stops_owned_child_and_releases(
 
     assert result == MODULE.CHILD_TIMEOUT
     assert time.monotonic() - started < 10
-    receipt = json.loads((tmp_path / "mission" / MODULE.RELEASE_RECEIPT_NAME).read_text())
+    receipt = json.loads(
+        (tmp_path / "mission" / MODULE.RELEASE_RECEIPT_NAME).read_text()
+    )
     assert receipt["child_returncode"] == MODULE.CHILD_TIMEOUT
     assert receipt["lease_state"] == "failed"
     assert not (tmp_path / "mask-owner.token").exists()
@@ -306,7 +335,9 @@ def test_owner_token_requires_exact_private_regular_file(
     owner_uid = path.stat().st_uid
 
     def metadata(mode: int) -> os.stat_result:
-        return os.stat_result((stat.S_IFREG | mode, 0, 0, 1, owner_uid, 0, len(token), 0, 0, 0))
+        return os.stat_result(
+            (stat.S_IFREG | mode, 0, 0, 1, owner_uid, 0, len(token), 0, 0, 0)
+        )
 
     monkeypatch.setattr(Path, "lstat", lambda _path: metadata(0o600))
     observed = MODULE.validate_owner_token_file(

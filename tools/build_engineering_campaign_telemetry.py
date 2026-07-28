@@ -128,8 +128,12 @@ def main() -> int:
         baseline_usage_units_per_accepted_artifact=(
             float(launch["baseline_usage_units_per_accepted_artifact"])
         ),
-        terminal_adoption_usage_units=float(launch["terminal_adoption_usage_units"]),
-        terminal_adoption_review_seconds=float(launch["terminal_adoption_review_seconds"]),
+        terminal_adoption_usage_units=float(
+            launch["terminal_adoption_usage_units"]
+        ),
+        terminal_adoption_review_seconds=float(
+            launch["terminal_adoption_review_seconds"]
+        ),
         limitations=list(launch["limitations"]),
     )
     print(

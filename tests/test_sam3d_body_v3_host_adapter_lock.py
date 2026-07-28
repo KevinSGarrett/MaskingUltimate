@@ -4,6 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 
+
 ROOT = Path(__file__).resolve().parents[1]
 LOCK_PATH = ROOT / "env/sam3d_body_runtime_v4_warmup.lock.json"
 
@@ -30,9 +31,7 @@ def test_v3_host_adapter_lock_binds_the_passing_repeatability_contract() -> None
     receipt = lock["inherits"]["v3_runtime_receipt"]
     receipt_path = ROOT / receipt["path"]
     assert _sha256(receipt_path) == receipt["file_sha256"]
-    assert (
-        receipt["self_sha256"] == "afe31a4a45f39791df6c7cda352d79acf103885a9221de700a69d01f9841c6ae"
-    )
+    assert receipt["self_sha256"] == "afe31a4a45f39791df6c7cda352d79acf103885a9221de700a69d01f9841c6ae"
     assert receipt["status"] == "RUNTIME_PASS_BOUNDED_V3_REQUALIFICATION_ONLY"
     assert runtime["contract"] == {
         "host_adapter_role": "shadow_only",

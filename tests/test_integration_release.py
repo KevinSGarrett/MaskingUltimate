@@ -47,12 +47,12 @@ def _wheel_with_closure(tmp_path: Path) -> Path:
     }
     record_rows = []
     for name, content in members.items():
-        digest = (
-            base64.urlsafe_b64encode(hashlib.sha256(content).digest()).rstrip(b"=").decode("ascii")
-        )
+        digest = base64.urlsafe_b64encode(hashlib.sha256(content).digest()).rstrip(b"=").decode("ascii")
         record_rows.append(f"{name},sha256={digest},{len(content)}")
     record_rows.append("maskfactory-1.0.0.dist-info/RECORD,,")
-    members["maskfactory-1.0.0.dist-info/RECORD"] = ("\n".join(record_rows) + "\n").encode("utf-8")
+    members["maskfactory-1.0.0.dist-info/RECORD"] = ("\n".join(record_rows) + "\n").encode(
+        "utf-8"
+    )
     with zipfile.ZipFile(wheel_path, "w") as archive:
         for name, content in members.items():
             archive.writestr(name, content)

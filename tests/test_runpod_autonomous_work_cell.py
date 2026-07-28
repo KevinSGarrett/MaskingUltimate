@@ -700,6 +700,7 @@ def test_mission_review_bundle_is_sealed_and_compacts_typed_exceptions(
         cell.mission_review_bundle(document["mission_id"], prior_report=forged)
 
 
+
 def test_visual_receipt_adapter_preserves_only_safe_optional_panel_path() -> None:
     artifact = {
         "panel_sha256": HEX,
@@ -745,7 +746,9 @@ def test_mission_review_bundle_rehashes_declared_panel_evidence(tmp_path: Path) 
     ):
         work = cell.claim(document["mission_id"], owner="worker")
         assert work is not None and work["stage"] == stage
-        cell.apply_result(document["mission_id"], "r1", work["lease_token"], receipt(stage, actor))
+        cell.apply_result(
+            document["mission_id"], "r1", work["lease_token"], receipt(stage, actor)
+        )
     work = cell.claim(document["mission_id"], owner="worker")
     assert work is not None and work["stage"] == "primary_visual_review"
     visual = receipt("primary_visual_review", "visual_critic", "abstain")
@@ -790,7 +793,9 @@ def test_visual_panel_path_must_stay_within_mission_output_prefix(tmp_path: Path
     ):
         work = cell.claim(document["mission_id"], owner="worker")
         assert work is not None and work["stage"] == stage
-        cell.apply_result(document["mission_id"], "r1", work["lease_token"], receipt(stage, actor))
+        cell.apply_result(
+            document["mission_id"], "r1", work["lease_token"], receipt(stage, actor)
+        )
     work = cell.claim(document["mission_id"], owner="worker")
     assert work is not None and work["stage"] == "primary_visual_review"
     visual = receipt("primary_visual_review", "visual_critic", "abstain")
@@ -798,7 +803,6 @@ def test_visual_panel_path_must_stay_within_mission_output_prefix(tmp_path: Path
     visual["detail"]["verdict"] = "abstain"
     with pytest.raises(WorkCellError, match="allowed_output_prefix"):
         cell.apply_result(document["mission_id"], "r1", work["lease_token"], visual)
-
 
 class _Handler:
     implementation_sha256 = HEX

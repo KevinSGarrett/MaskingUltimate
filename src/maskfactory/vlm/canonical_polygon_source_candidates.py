@@ -99,8 +99,10 @@ def source_label_contracts_from_document(document: Mapping[str, Any]) -> dict[st
     """Read an authority-ceiling config before allowing a non-default label."""
 
     if (
-        document.get("schema_version") != "maskfactory.canonical_polygon_source_label_contracts.v1"
-        or document.get("artifact_type") != "canonical_polygon_source_label_contracts"
+        document.get("schema_version")
+        != "maskfactory.canonical_polygon_source_label_contracts.v1"
+        or document.get("artifact_type")
+        != "canonical_polygon_source_label_contracts"
         or document.get("authority_claimed") is not False
         or document.get("critic_positive_control_authority_granted") is not False
         or document.get("gold_or_production_authority_granted") is not False
@@ -373,7 +375,10 @@ def verify_canonical_polygon_source_candidates(document: Mapping[str, Any]) -> N
         if (
             contract is None
             or row.get("canonical_label") != contract["canonical_label"]
-            or (not is_legacy_document and row.get("candidate_kind") != contract["candidate_kind"])
+            or (
+                not is_legacy_document
+                and row.get("candidate_kind") != contract["candidate_kind"]
+            )
             or (
                 is_legacy_document
                 and raw == "anus"

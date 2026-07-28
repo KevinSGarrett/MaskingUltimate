@@ -54,7 +54,9 @@ def _validate_inputs(
         or any(character in campaign_id for character in "/\\\0")
     ):
         raise HandoffSuppressionError("campaign_id is invalid")
-    if not isinstance(telemetry_events, Sequence) or isinstance(telemetry_events, (str, bytes)):
+    if not isinstance(telemetry_events, Sequence) or isinstance(
+        telemetry_events, (str, bytes)
+    ):
         raise HandoffSuppressionError("telemetry_events must be a sequence")
     normalized_events: list[dict[str, Any]] = []
     event_hashes: set[str] = set()
@@ -69,8 +71,12 @@ def _validate_inputs(
         normalized_events.append(event)
     expected_sequences = list(range(1, len(normalized_events) + 1))
     if [event["sequence"] for event in normalized_events] != expected_sequences:
-        raise HandoffSuppressionError("telemetry events must be ordered and contiguous")
-    if not isinstance(exception_records, Sequence) or isinstance(exception_records, (str, bytes)):
+        raise HandoffSuppressionError(
+            "telemetry events must be ordered and contiguous"
+        )
+    if not isinstance(exception_records, Sequence) or isinstance(
+        exception_records, (str, bytes)
+    ):
         raise HandoffSuppressionError("exception_records must be a sequence")
     escalations_by_mission: dict[str, dict[str, Any]] = {}
     result_hashes: set[str] = set()
@@ -82,7 +88,10 @@ def _validate_inputs(
         if not isinstance(event, Mapping) or not isinstance(result, Mapping):
             raise HandoffSuppressionError("exception record must contain objects")
         validate_exception_escalation_replay(result, event=event)
-        if event["campaign_id"] != campaign_id or result["campaign_id"] != campaign_id:
+        if (
+            event["campaign_id"] != campaign_id
+            or result["campaign_id"] != campaign_id
+        ):
             raise HandoffSuppressionError("exception campaign binding mismatch")
         result_hash = result["result_sha256"]
         if result_hash in result_hashes:
@@ -92,7 +101,9 @@ def _validate_inputs(
             continue
         mission_id = result["mission_id"]
         if mission_id in escalations_by_mission:
-            raise HandoffSuppressionError("multiple typed escalations target one mission")
+            raise HandoffSuppressionError(
+                "multiple typed escalations target one mission"
+            )
         escalations_by_mission[mission_id] = dict(result)
     return normalized_events, escalations_by_mission, sorted(result_hashes)
 
@@ -115,35 +126,61 @@ def audit_campaign_handoffs(
         telemetry_events=telemetry_events,
         exception_records=exception_records,
     )
-    codex_events = [event for event in events if event["kind"] == "codex_intervention"]
-    routine_events = [event for event in codex_events if event["value"] == "routine_handoff"]
+    codex_events = [
+        event for event in events if event["kind"] == "codex_intervention"
+    ]
+    routine_events = [
+        event for event in codex_events if event["value"] == "routine_handoff"
+    ]
     if routine_events:
-        raise HandoffSuppressionError("routine Codex handoff violates campaign-local execution")
-    terminal_events = [event for event in codex_events if event["value"] == "terminal_adoption"]
+        raise HandoffSuppressionError(
+            "routine Codex handoff violates campaign-local execution"
+        )
+    terminal_events = [
+        event for event in codex_events if event["value"] == "terminal_adoption"
+    ]
     if len(terminal_events) != 1:
-        raise HandoffSuppressionError("campaign requires exactly one terminal adoption handoff")
+        raise HandoffSuppressionError(
+            "campaign requires exactly one terminal adoption handoff"
+        )
     terminal_event = terminal_events[0]
     if terminal_event["mission_id"] is not None:
-        raise HandoffSuppressionError("terminal adoption must be campaign-scoped")
+        raise HandoffSuppressionError(
+            "terminal adoption must be campaign-scoped"
+        )
     if terminal_event["sequence"] != len(events):
-        raise HandoffSuppressionError("terminal adoption must be the final campaign event")
-    exception_events = [event for event in codex_events if event["value"] == "exception_escalation"]
+        raise HandoffSuppressionError(
+            "terminal adoption must be the final campaign event"
+        )
+    exception_events = [
+        event for event in codex_events if event["value"] == "exception_escalation"
+    ]
     exception_missions: set[str] = set()
     for event in exception_events:
         mission_id = event["mission_id"]
         if mission_id is None:
-            raise HandoffSuppressionError("exception escalation must bind a mission")
+            raise HandoffSuppressionError(
+                "exception escalation must bind a mission"
+            )
         if mission_id in exception_missions:
-            raise HandoffSuppressionError("duplicate Codex exception escalation for mission")
+            raise HandoffSuppressionError(
+                "duplicate Codex exception escalation for mission"
+            )
         exception_missions.add(mission_id)
         if mission_id not in escalations_by_mission:
-            raise HandoffSuppressionError("Codex exception event lacks a typed escalation decision")
+            raise HandoffSuppressionError(
+                "Codex exception event lacks a typed escalation decision"
+            )
     if exception_missions != set(escalations_by_mission):
-        raise HandoffSuppressionError("typed escalation decision lacks a Codex exception event")
+        raise HandoffSuppressionError(
+            "typed escalation decision lacks a Codex exception event"
+        )
     audit = {
         "schema_version": AUDIT_SCHEMA,
         "campaign_id": campaign_id,
-        "telemetry_event_sha256": [event["event_sha256"] for event in events],
+        "telemetry_event_sha256": [
+            event["event_sha256"] for event in events
+        ],
         "typed_exception_result_sha256": result_hashes,
         "terminal_adoption_packet_sha256": terminal_packet,
         "codex_interventions": len(codex_events),
@@ -185,7 +222,9 @@ def validate_campaign_handoff_audit_replay(
         terminal_adoption_packet_sha256=terminal_adoption_packet_sha256,
     )
     if dict(audit) != expected:
-        raise HandoffSuppressionError("handoff audit deterministic replay mismatch")
+        raise HandoffSuppressionError(
+            "handoff audit deterministic replay mismatch"
+        )
 
 
 __all__ = [

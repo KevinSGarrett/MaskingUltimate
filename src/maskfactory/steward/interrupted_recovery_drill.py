@@ -26,7 +26,9 @@ from .recovery_drill import (
 )
 from .runtime import atomic_write_json, file_sha256
 
-INTERRUPTED_RECOVERY_DRILL_SCHEMA = "maskfactory_self_hosted_steward_interrupted_recovery_drill.v1"
+INTERRUPTED_RECOVERY_DRILL_SCHEMA = (
+    "maskfactory_self_hosted_steward_interrupted_recovery_drill.v1"
+)
 CHILD_READY_SCHEMA = "maskfactory_self_hosted_steward_interrupted_child_ready.v1"
 RELEASE_SCHEMA = "maskfactory_self_hosted_steward_interrupted_release.v1"
 VERIFICATION_SCHEMA = "maskfactory_self_hosted_steward_interrupted_recovery_verification.v1"
@@ -110,7 +112,11 @@ def _run_child(
     proposal = {
         "schema_version": "maskfactory_interrupted_recovery_proposal.v1",
         "mission_id": job_id,
-        "decision": ("ADVISORY_ACCEPT" if scenario == "persisted_terminal" else "INCOMPLETE"),
+        "decision": (
+            "ADVISORY_ACCEPT"
+            if scenario == "persisted_terminal"
+            else "INCOMPLETE"
+        ),
         "authority_claimed": False,
     }
     run1 = _persist_run(
@@ -247,7 +253,9 @@ def _spawn_and_interrupt(
             proc_root=proc_root,
         )
         if not owner_alive_before_interrupt:
-            raise InterruptedRecoveryDrillError("real child was not live at interruption boundary")
+            raise InterruptedRecoveryDrillError(
+                "real child was not live at interruption boundary"
+            )
         if child_pid == process.pid:
             process.kill()
         else:
@@ -312,7 +320,9 @@ def run_interrupted_recovery_drill(
     )
     reconstructed = StewardLedger(database)
     terminal_receipt = json.loads(
-        (terminal["mission_root"] / "terminal_receipt.json").read_text(encoding="utf-8")
+        (terminal["mission_root"] / "terminal_receipt.json").read_text(
+            encoding="utf-8"
+        )
     )
     terminal_reconciliation = reconstructed.reconcile_recorded_owner(
         _SESSION_ID,
@@ -320,7 +330,9 @@ def run_interrupted_recovery_drill(
         terminal_receipt=terminal_receipt,
         proc_root=proc_root,
     )
-    terminal_runs_before = len(reconstructed.runs(_SESSION_ID, terminal["job_id"]))
+    terminal_runs_before = len(
+        reconstructed.runs(_SESSION_ID, terminal["job_id"])
+    )
     duplicate_admission = reconstructed.admit(terminal["binding"])
     terminal_resend_blocked = False
     terminal_resend_error = ""
@@ -333,7 +345,9 @@ def run_interrupted_recovery_drill(
     except MissionConflictError as exc:
         terminal_resend_blocked = True
         terminal_resend_error = f"{type(exc).__name__}: {exc}"
-    terminal_runs_after = len(reconstructed.runs(_SESSION_ID, terminal["job_id"]))
+    terminal_runs_after = len(
+        reconstructed.runs(_SESSION_ID, terminal["job_id"])
+    )
     release = {
         "schema_version": RELEASE_SCHEMA,
         "job_id": terminal["job_id"],
@@ -364,7 +378,9 @@ def run_interrupted_recovery_drill(
         ambiguous["job_id"],
         proc_root=proc_root,
     )
-    ambiguous_runs_before = len(restarted.runs(_SESSION_ID, ambiguous["job_id"]))
+    ambiguous_runs_before = len(
+        restarted.runs(_SESSION_ID, ambiguous["job_id"])
+    )
     ambiguous_resend_blocked = False
     ambiguous_resend_error = ""
     try:
@@ -372,7 +388,9 @@ def run_interrupted_recovery_drill(
     except AmbiguousMissionError as exc:
         ambiguous_resend_blocked = True
         ambiguous_resend_error = f"{type(exc).__name__}: {exc}"
-    ambiguous_runs_after = len(restarted.runs(_SESSION_ID, ambiguous["job_id"]))
+    ambiguous_runs_after = len(
+        restarted.runs(_SESSION_ID, ambiguous["job_id"])
+    )
 
     result: dict[str, Any] = {
         "schema_version": INTERRUPTED_RECOVERY_DRILL_SCHEMA,
@@ -387,11 +405,15 @@ def run_interrupted_recovery_drill(
             "request_sha256": terminal["request_sha256"],
             "child_pid": terminal["child_pid"],
             "child_returncode": terminal["child_returncode"],
-            "ready_receipt_sha256": file_sha256(terminal["mission_root"] / "child_ready.json"),
+            "ready_receipt_sha256": file_sha256(
+                terminal["mission_root"] / "child_ready.json"
+            ),
             "terminal_receipt_sha256": file_sha256(
                 terminal["mission_root"] / "terminal_receipt.json"
             ),
-            "actual_child_process_interrupted": terminal["actual_child_process_interrupted"],
+            "actual_child_process_interrupted": terminal[
+                "actual_child_process_interrupted"
+            ],
             "reconstruction_outcome": terminal_reconciliation["outcome"],
             "reconstructed_state": terminal_reconciliation["mission"]["state"],
             "duplicate_admission_outcome": duplicate_admission["outcome"],
@@ -399,7 +421,9 @@ def run_interrupted_recovery_drill(
             "resend_error": terminal_resend_error,
             "run_count_before_reconciliation_attempt": terminal_runs_before,
             "run_count_after_reconciliation_attempt": terminal_runs_after,
-            "release_sha256": file_sha256(terminal["mission_root"] / "release.json"),
+            "release_sha256": file_sha256(
+                terminal["mission_root"] / "release.json"
+            ),
         },
         "ambiguous_without_terminal_case": {
             "job_id": ambiguous["job_id"],
@@ -407,8 +431,12 @@ def run_interrupted_recovery_drill(
             "request_sha256": ambiguous["request_sha256"],
             "child_pid": ambiguous["child_pid"],
             "child_returncode": ambiguous["child_returncode"],
-            "ready_receipt_sha256": file_sha256(ambiguous["mission_root"] / "child_ready.json"),
-            "actual_child_process_interrupted": ambiguous["actual_child_process_interrupted"],
+            "ready_receipt_sha256": file_sha256(
+                ambiguous["mission_root"] / "child_ready.json"
+            ),
+            "actual_child_process_interrupted": ambiguous[
+                "actual_child_process_interrupted"
+            ],
             "terminal_receipt_present": False,
             "reconstruction_outcome": ambiguous_reconciliation["outcome"],
             "reconstructed_state": ambiguous_reconciliation["mission"]["state"],
@@ -423,7 +451,8 @@ def run_interrupted_recovery_drill(
                 and ambiguous["actual_child_process_interrupted"]
             ),
             "persisted_terminal_adopted_without_reissue": (
-                terminal_reconciliation["outcome"] == "reconciled_terminal_receipt"
+                terminal_reconciliation["outcome"]
+                == "reconciled_terminal_receipt"
                 and terminal_reconciliation["mission"]["state"] == "completed"
                 and duplicate_admission["outcome"] == "reconciled_terminal"
                 and terminal_resend_blocked
@@ -431,7 +460,8 @@ def run_interrupted_recovery_drill(
             ),
             "ambiguous_evidence_requires_recovery": (
                 ambiguous_reconciliation["outcome"] == "recovery_required"
-                and ambiguous_reconciliation["mission"]["state"] == "recovery_required"
+                and ambiguous_reconciliation["mission"]["state"]
+                == "recovery_required"
                 and ambiguous_resend_blocked
                 and ambiguous_runs_before == ambiguous_runs_after == 1
             ),
@@ -557,7 +587,9 @@ def verify_interrupted_recovery_drill(output_root: Path) -> dict[str, Any]:
     ambiguous_binding = _read_object(
         root / "ambiguous-without-terminal" / "binding.json", label="ambiguous binding"
     )
-    artifact_hashes["persisted_binding"] = file_sha256(root / "persisted-terminal" / "binding.json")
+    artifact_hashes["persisted_binding"] = file_sha256(
+        root / "persisted-terminal" / "binding.json"
+    )
     artifact_hashes["ambiguous_binding"] = file_sha256(
         root / "ambiguous-without-terminal" / "binding.json"
     )

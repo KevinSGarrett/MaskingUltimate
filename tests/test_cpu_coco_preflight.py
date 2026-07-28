@@ -69,9 +69,7 @@ def test_preflight_rejects_out_of_bounds_bbox(tmp_path: Path) -> None:
         build_cpu_safe_coco_preflight(invalid, image_root, max_images=2)
 
 
-def test_rasterization_uses_original_hash_bound_polygons_not_compact_manifest(
-    tmp_path: Path,
-) -> None:
+def test_rasterization_uses_original_hash_bound_polygons_not_compact_manifest(tmp_path: Path) -> None:
     image_root, coco = _dataset(tmp_path)
     manifest = build_cpu_safe_coco_preflight(coco, image_root, max_images=2)
 

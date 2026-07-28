@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.metadata
 import json
 import os
 import re
@@ -20,6 +21,7 @@ import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+
 
 EXPECTED_GPU_NAME = "NVIDIA RTX 6000 Ada Generation"
 MINIMUM_TOTAL_GPU_MIB = 49000
@@ -146,9 +148,7 @@ def wait_for_health(endpoint: str, child: subprocess.Popen[bytes], timeout_secon
     deadline = time.monotonic() + timeout_seconds
     while time.monotonic() < deadline:
         if child.poll() is not None:
-            raise RuntimeError(
-                f"vLLM server exited before health check with code {child.returncode}"
-            )
+            raise RuntimeError(f"vLLM server exited before health check with code {child.returncode}")
         try:
             with urllib.request.urlopen(endpoint.rstrip("/") + "/health", timeout=2) as response:
                 if response.status == 200:
@@ -199,9 +199,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--expected-model-config-sha256", required=True)
     parser.add_argument("--expected-model-index-sha256", required=True)
     parser.add_argument("--port", type=int, default=DEFAULT_PORT)
-    parser.add_argument(
-        "--startup-timeout-seconds", type=int, default=DEFAULT_STARTUP_TIMEOUT_SECONDS
-    )
+    parser.add_argument("--startup-timeout-seconds", type=int, default=DEFAULT_STARTUP_TIMEOUT_SECONDS)
     return parser.parse_args()
 
 

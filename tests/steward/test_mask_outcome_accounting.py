@@ -99,7 +99,9 @@ def _terminal(index: int, outcome: str) -> dict:
 def _campaign() -> tuple[list[dict], list[dict]]:
     inputs = [_input(index) for index in range(100)]
     outcomes = ("accept", "repair", "abstain", "reject", "quarantine")
-    terminals = [_terminal(index, outcomes[index % len(outcomes)]) for index in range(100)]
+    terminals = [
+        _terminal(index, outcomes[index % len(outcomes)]) for index in range(100)
+    ]
     return inputs, terminals
 
 

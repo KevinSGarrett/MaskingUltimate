@@ -88,9 +88,7 @@ def _bypass_upstream_verifiers(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(admission, "verify_candidate_panel_report", lambda *_: None)
 
 
-def test_builds_complete_calibration_only_receipt(
-    monkeypatch: pytest.MonkeyPatch, tmp_path
-) -> None:
+def test_builds_complete_calibration_only_receipt(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
     _bypass_upstream_verifiers(monkeypatch)
     candidates, panels = _inputs()
     document = admission.build_canonical_polygon_calibration_admission(
@@ -99,7 +97,9 @@ def test_builds_complete_calibration_only_receipt(
         panel_root=tmp_path,
         decisions=_decisions(),
     )
-    admission.verify_canonical_polygon_calibration_admission(document, candidates, panels, tmp_path)
+    admission.verify_canonical_polygon_calibration_admission(
+        document, candidates, panels, tmp_path
+    )
     assert document["admitted_calibration_only_count"] == 1
     assert document["abstained_count"] == 1
     assert document["rejected_count"] == 0
@@ -109,9 +109,7 @@ def test_builds_complete_calibration_only_receipt(
 def test_rejects_incomplete_or_invalid_decisions(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
     _bypass_upstream_verifiers(monkeypatch)
     candidates, panels = _inputs()
-    with pytest.raises(
-        admission.CanonicalPolygonCalibrationAdmissionError, match="every candidate"
-    ):
+    with pytest.raises(admission.CanonicalPolygonCalibrationAdmissionError, match="every candidate"):
         admission.build_canonical_polygon_calibration_admission(
             candidates=candidates,
             panel_report=panels,
@@ -120,9 +118,7 @@ def test_rejects_incomplete_or_invalid_decisions(monkeypatch: pytest.MonkeyPatch
         )
     decisions = _decisions()
     decisions[0]["evidence_panels"] = ["not_a_panel"]
-    with pytest.raises(
-        admission.CanonicalPolygonCalibrationAdmissionError, match="invalid exact-record"
-    ):
+    with pytest.raises(admission.CanonicalPolygonCalibrationAdmissionError, match="invalid exact-record"):
         admission.build_canonical_polygon_calibration_admission(
             candidates=candidates,
             panel_report=panels,
@@ -148,7 +144,9 @@ def test_accepts_only_sealed_legacy_anus_candidate_kind(
     )
     results_by_id = {result["sample_id"]: result for result in document["results"]}
     assert results_by_id["case_train"]["candidate_kind"] == "anatomy"
-    admission.verify_canonical_polygon_calibration_admission(document, candidates, panels, tmp_path)
+    admission.verify_canonical_polygon_calibration_admission(
+        document, candidates, panels, tmp_path
+    )
 
 
 def test_authority_mutation_breaks_receipt(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:

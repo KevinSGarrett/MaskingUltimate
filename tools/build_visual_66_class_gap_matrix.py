@@ -15,24 +15,16 @@ from maskfactory.steward.visual_66_class_gap_matrix import (
 
 
 def _git_bytes(repo: Path, revision: str, path: str) -> tuple[bytes, str, str]:
-    commit = (
-        subprocess.run(
-            ["git", "-C", str(repo), "rev-parse", f"{revision}^{{commit}}"],
-            check=True,
-            capture_output=True,
-        )
-        .stdout.decode("ascii")
-        .strip()
-    )
-    blob = (
-        subprocess.run(
-            ["git", "-C", str(repo), "rev-parse", f"{commit}:{path}"],
-            check=True,
-            capture_output=True,
-        )
-        .stdout.decode("ascii")
-        .strip()
-    )
+    commit = subprocess.run(
+        ["git", "-C", str(repo), "rev-parse", f"{revision}^{{commit}}"],
+        check=True,
+        capture_output=True,
+    ).stdout.decode("ascii").strip()
+    blob = subprocess.run(
+        ["git", "-C", str(repo), "rev-parse", f"{commit}:{path}"],
+        check=True,
+        capture_output=True,
+    ).stdout.decode("ascii").strip()
     value = subprocess.run(
         ["git", "-C", str(repo), "cat-file", "blob", blob],
         check=True,
@@ -73,7 +65,9 @@ def main() -> int:
     parser.add_argument("--observed-at-utc", required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    ontology, commit, blob = _git_bytes(args.repo, args.ontology_revision, args.ontology_path)
+    ontology, commit, blob = _git_bytes(
+        args.repo, args.ontology_revision, args.ontology_path
+    )
     receipt = build_visual_66_class_gap_matrix(
         ontology_bytes=ontology,
         ontology_git_commit=commit,

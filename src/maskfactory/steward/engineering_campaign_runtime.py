@@ -54,7 +54,9 @@ CAMPAIGN_SIZE = 25
 BINDING_SCHEMA = "maskfactory.engineering_campaign_runtime_binding.v1"
 TERMINAL_SCHEMA = "maskfactory.engineering_campaign_runtime_terminal.v1"
 FAILURE_SCHEMA = "maskfactory.engineering_campaign_mission_failure.v1"
-NO_PROCESS_RELEASE_SCHEMA = "maskfactory.engineering_campaign_no_process_release.v1"
+NO_PROCESS_RELEASE_SCHEMA = (
+    "maskfactory.engineering_campaign_no_process_release.v1"
+)
 BINDING_NAME = "engineering_campaign_runtime_binding.json"
 TERMINAL_NAME = "engineering_campaign_runtime_terminal.json"
 STATE_NAME = "engineering_campaign_runtime_state.json"
@@ -93,12 +95,16 @@ def _identity(value: object, field: str) -> str:
         or len(value) > 200
         or any(character in value for character in "/\\\0")
     ):
-        raise EngineeringCampaignRuntimeError(f"{field} must be a plain bounded identity")
+        raise EngineeringCampaignRuntimeError(
+            f"{field} must be a plain bounded identity"
+        )
     return value
 
 
 def _json_bytes(value: Mapping[str, Any]) -> bytes:
-    return (json.dumps(value, sort_keys=True, indent=2, ensure_ascii=False) + "\n").encode("utf-8")
+    return (
+        json.dumps(value, sort_keys=True, indent=2, ensure_ascii=False) + "\n"
+    ).encode("utf-8")
 
 
 def _write_exclusive_json(path: Path, value: Mapping[str, Any]) -> None:
@@ -113,7 +119,9 @@ def _write_exclusive_json(path: Path, value: Mapping[str, Any]) -> None:
 def _replace_json(path: Path, value: Mapping[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_name(f".{path.name}.{os.getpid()}.tmp")
-    descriptor = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    descriptor = os.open(
+        temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600
+    )
     try:
         with os.fdopen(descriptor, "wb") as stream:
             stream.write(_json_bytes(value))
@@ -132,7 +140,9 @@ def _relative_file(root: Path, path: Path, field: str) -> str:
     try:
         relative = path.resolve().relative_to(root.resolve())
     except ValueError as exc:
-        raise EngineeringCampaignRuntimeError(f"{field} escapes campaign root") from exc
+        raise EngineeringCampaignRuntimeError(
+            f"{field} escapes campaign root"
+        ) from exc
     if len(relative.parts) < 2 or any(part in {"", ".", ".."} for part in relative.parts):
         raise EngineeringCampaignRuntimeError(
             f"{field} must be inside a namespaced mission directory"
@@ -190,13 +200,17 @@ def build_engineering_campaign_runtime_binding(
         binding_path = mission_root / "binding.json"
         request_path = mission_root / request_name
         if not binding_path.is_file() or not request_path.is_file():
-            raise EngineeringCampaignRuntimeError("mission binding or request is missing")
+            raise EngineeringCampaignRuntimeError(
+                "mission binding or request is missing"
+            )
         binding = validate_binding(read_json(binding_path))
         request = read_json(request_path)
         validate_request(contract, request)
         request_sha256 = file_sha256(request_path)
         if binding["input_sha256"].get(request_name) != request_sha256:
-            raise EngineeringCampaignRuntimeError("mission request is not bound by exact SHA-256")
+            raise EngineeringCampaignRuntimeError(
+                "mission request is not bound by exact SHA-256"
+            )
         if binding["runtime_sha256"] != contract["contract_sha256"]:
             raise EngineeringCampaignRuntimeError(
                 "mission runtime binding differs from campaign runtime"
@@ -226,7 +240,9 @@ def build_engineering_campaign_runtime_binding(
             }
         )
     if len(sessions) != 1:
-        raise EngineeringCampaignRuntimeError("all campaign missions must use one session")
+        raise EngineeringCampaignRuntimeError(
+            "all campaign missions must use one session"
+        )
     value = {
         "schema_version": BINDING_SCHEMA,
         "campaign_id": campaign,
@@ -249,7 +265,9 @@ def build_engineering_campaign_runtime_binding(
             require_guard_binding=False,
         )
         if existing != sealed:
-            raise EngineeringCampaignRuntimeError("existing campaign runtime binding conflicts")
+            raise EngineeringCampaignRuntimeError(
+                "existing campaign runtime binding conflicts"
+            )
         sealed = existing
     else:
         _write_exclusive_json(output, sealed)
@@ -262,7 +280,9 @@ def build_engineering_campaign_runtime_binding(
             "model_tree_sha256": sealed["model_tree_sha256"],
             "runtime_sha256": sealed["runtime_contract_sha256"],
             "input_sha256": {BINDING_NAME: file_sha256(output)},
-            "output_namespace": (f"{sealed['session_id']}/{sealed['campaign_id']}"),
+            "output_namespace": (
+                f"{sealed['session_id']}/{sealed['campaign_id']}"
+            ),
             "requires_replay": False,
             "authority": {key: False for key in sorted(AUTHORITY_KEYS)},
         }
@@ -270,7 +290,9 @@ def build_engineering_campaign_runtime_binding(
     guard_path = root / "binding.json"
     if guard_path.exists():
         if validate_binding(read_json(guard_path)) != guard_binding:
-            raise EngineeringCampaignRuntimeError("existing campaign GPU guard binding conflicts")
+            raise EngineeringCampaignRuntimeError(
+                "existing campaign GPU guard binding conflicts"
+            )
     else:
         _write_exclusive_json(guard_path, guard_binding)
     return validate_engineering_campaign_runtime_binding(
@@ -302,12 +324,16 @@ def validate_engineering_campaign_runtime_binding(
         "binding_sha256",
     }
     if set(binding) != required or binding["schema_version"] != BINDING_SCHEMA:
-        raise EngineeringCampaignRuntimeError("campaign runtime binding field or schema mismatch")
+        raise EngineeringCampaignRuntimeError(
+            "campaign runtime binding field or schema mismatch"
+        )
     declared = _sha256(binding["binding_sha256"], "binding_sha256")
     zeroed = deepcopy(binding)
     zeroed["binding_sha256"] = "0" * SHA256_LENGTH
     if canonical_sha256(zeroed) != declared:
-        raise EngineeringCampaignRuntimeError("campaign runtime binding self-hash mismatch")
+        raise EngineeringCampaignRuntimeError(
+            "campaign runtime binding self-hash mismatch"
+        )
     _identity(binding["campaign_id"], "campaign_id")
     session = _identity(binding["session_id"], "session_id")
     if binding["mission_count"] != CAMPAIGN_SIZE:
@@ -323,7 +349,9 @@ def validate_engineering_campaign_runtime_binding(
         raise EngineeringCampaignRuntimeError("campaign runtime contract drift")
     entries = binding["mission_entries"]
     if not isinstance(entries, list) or len(entries) != CAMPAIGN_SIZE:
-        raise EngineeringCampaignRuntimeError("campaign requires exactly 25 mission entries")
+        raise EngineeringCampaignRuntimeError(
+            "campaign requires exactly 25 mission entries"
+        )
     jobs: set[str] = set()
     payloads: set[str] = set()
     roots: set[str] = set()
@@ -342,7 +370,9 @@ def validate_engineering_campaign_runtime_binding(
         if not isinstance(entry, dict) or set(entry) != expected_keys:
             raise EngineeringCampaignRuntimeError("mission entry field mismatch")
         if entry["sequence"] != expected_sequence or entry["session_id"] != session:
-            raise EngineeringCampaignRuntimeError("mission sequence or session mismatch")
+            raise EngineeringCampaignRuntimeError(
+                "mission sequence or session mismatch"
+            )
         relative = Path(entry["mission_root"])
         if (
             relative.is_absolute()
@@ -357,23 +387,32 @@ def validate_engineering_campaign_runtime_binding(
             raise EngineeringCampaignRuntimeError("mission root escapes campaign") from exc
         request_name = entry["request_file"]
         if Path(request_name).name != request_name or not request_name:
-            raise EngineeringCampaignRuntimeError("mission request must be a root filename")
+            raise EngineeringCampaignRuntimeError(
+                "mission request must be a root filename"
+            )
         try:
-            mission_binding = validate_binding(read_json(mission_root / "binding.json"))
+            mission_binding = validate_binding(
+                read_json(mission_root / "binding.json")
+            )
             request_path = mission_root / request_name
             request = read_json(request_path)
             validate_request(contract, request)
         except (MissionBindingError, MissionConflictError, OSError) as exc:
-            raise EngineeringCampaignRuntimeError("mission entry binding drift") from exc
+            raise EngineeringCampaignRuntimeError(
+                "mission entry binding drift"
+            ) from exc
         if (
             entry["job_id"] != mission_binding["job_id"]
             or entry["payload_sha256"] != mission_binding["payload_sha256"]
             or entry["binding_sha256"] != mission_binding["binding_sha256"]
-            or entry["binding_file_sha256"] != file_sha256(mission_root / "binding.json")
+            or entry["binding_file_sha256"]
+            != file_sha256(mission_root / "binding.json")
             or entry["request_sha256"] != file_sha256(request_path)
-            or mission_binding["input_sha256"].get(request_name) != entry["request_sha256"]
+            or mission_binding["input_sha256"].get(request_name)
+            != entry["request_sha256"]
             or mission_binding["runtime_sha256"] != contract["contract_sha256"]
-            or mission_binding["model_tree_sha256"] != contract["model"]["tree_sha256"]
+            or mission_binding["model_tree_sha256"]
+            != contract["model"]["tree_sha256"]
         ):
             raise EngineeringCampaignRuntimeError("mission entry binding drift")
         if (
@@ -381,14 +420,18 @@ def validate_engineering_campaign_runtime_binding(
             or entry["payload_sha256"] in payloads
             or entry["mission_root"] in roots
         ):
-            raise EngineeringCampaignRuntimeError("mission identities or roots are duplicated")
+            raise EngineeringCampaignRuntimeError(
+                "mission identities or roots are duplicated"
+            )
         jobs.add(entry["job_id"])
         payloads.add(entry["payload_sha256"])
         roots.add(entry["mission_root"])
     if require_guard_binding:
         guard_path = root / "binding.json"
         if not guard_path.is_file():
-            raise EngineeringCampaignRuntimeError("campaign GPU guard binding is missing")
+            raise EngineeringCampaignRuntimeError(
+                "campaign GPU guard binding is missing"
+            )
         guard = validate_binding(read_json(guard_path))
         if (
             guard["session_id"] != binding["session_id"]
@@ -400,7 +443,9 @@ def validate_engineering_campaign_runtime_binding(
             or guard["requires_replay"] is not False
             or any(guard["authority"].values())
         ):
-            raise EngineeringCampaignRuntimeError("campaign GPU guard binding mismatch")
+            raise EngineeringCampaignRuntimeError(
+                "campaign GPU guard binding mismatch"
+            )
     return binding
 
 
@@ -414,14 +459,18 @@ class EngineeringCampaignRuntimeController:
         campaign_root: Path,
         database: Path,
         port: int | None = None,
-        controller_factory: Callable[..., StewardRuntimeController] = (StewardRuntimeController),
+        controller_factory: Callable[..., StewardRuntimeController] = (
+            StewardRuntimeController
+        ),
         clock: Callable[[], float] = time.time,
     ) -> None:
         self.contract_path = Path(contract_path)
         self.campaign_root = Path(campaign_root)
         self.database = Path(database)
         self.contract = load_runtime_contract(self.contract_path)
-        self.port = self.contract["server"]["default_port"] if port is None else int(port)
+        self.port = (
+            self.contract["server"]["default_port"] if port is None else int(port)
+        )
         self.controller_factory = controller_factory
         self.clock = clock
         self.binding = validate_engineering_campaign_runtime_binding(
@@ -448,7 +497,9 @@ class EngineeringCampaignRuntimeController:
             int(launch["pid"]), str(launch["owner_start_token"])
         )
 
-    def _service_healthy(self, controller: StewardRuntimeController) -> bool:
+    def _service_healthy(
+        self, controller: StewardRuntimeController
+    ) -> bool:
         try:
             controller.health()
         except (MissionBindingError, MissionConflictError, OSError):
@@ -491,7 +542,10 @@ class EngineeringCampaignRuntimeController:
         mission = admitted["mission"]
         if admitted["outcome"] == "admitted":
             pass
-        elif admitted["outcome"] == "duplicate_nonterminal" and mission["state"] == "admitted":
+        elif (
+            admitted["outcome"] == "duplicate_nonterminal"
+            and mission["state"] == "admitted"
+        ):
             pass
         else:
             raise EngineeringCampaignRuntimeError(
@@ -511,13 +565,17 @@ class EngineeringCampaignRuntimeController:
             "command_sha256": owner_launch["command_sha256"],
             "created_at": self.clock(),
             "shared_runtime_owner_job_id": owner_launch["job_id"],
-            "owner_launch_receipt_sha256": file_sha256(owner_controller.launch_receipt_path),
+            "owner_launch_receipt_sha256": file_sha256(
+                owner_controller.launch_receipt_path
+            ),
         }
         if controller.launch_receipt_path.exists():
             existing = read_json(controller.launch_receipt_path)
             stable_fields = set(receipt) - {"created_at"}
             if any(existing.get(field) != receipt[field] for field in stable_fields):
-                raise EngineeringCampaignRuntimeError("existing shared launch receipt conflicts")
+                raise EngineeringCampaignRuntimeError(
+                    "existing shared launch receipt conflicts"
+                )
             receipt = existing
         else:
             _write_exclusive_json(controller.launch_receipt_path, receipt)
@@ -569,7 +627,9 @@ class EngineeringCampaignRuntimeController:
                 or existing.get("reason_code") != reason_code
                 or existing.get("retry_permitted") is not False
             ):
-                raise EngineeringCampaignRuntimeError("existing mission failure receipt conflicts")
+                raise EngineeringCampaignRuntimeError(
+                    "existing mission failure receipt conflicts"
+                )
             failure = existing
         else:
             _write_exclusive_json(failure_path, failure)
@@ -614,7 +674,9 @@ class EngineeringCampaignRuntimeController:
                 "shared owner process remains alive at attached release"
             )
         owner_launch = read_json(owner_controller.launch_receipt_path)
-        if self._port_open(self.contract["server"]["host"], int(owner_launch["port"])):
+        if self._port_open(
+            self.contract["server"]["host"], int(owner_launch["port"])
+        ):
             raise EngineeringCampaignRuntimeError(
                 "shared runtime port remains open at attached release"
             )
@@ -629,8 +691,12 @@ class EngineeringCampaignRuntimeController:
             "loopback_port_closed": True,
             "forced": owner_shutdown["forced"],
             "created_at": self.clock(),
-            "shared_runtime_owner_job_id": read_json(owner_controller.binding_path)["job_id"],
-            "owner_shutdown_sha256": file_sha256(owner_controller.shutdown_receipt_path),
+            "shared_runtime_owner_job_id": read_json(
+                owner_controller.binding_path
+            )["job_id"],
+            "owner_shutdown_sha256": file_sha256(
+                owner_controller.shutdown_receipt_path
+            ),
         }
         if controller.shutdown_receipt_path.exists():
             existing = read_json(controller.shutdown_receipt_path)
@@ -661,7 +727,9 @@ class EngineeringCampaignRuntimeController:
         binding = validate_binding(read_json(controller.binding_path))
         mission = controller.ledger.get(binding["session_id"], binding["job_id"])
         if mission is None or mission["state"] not in {"completed", "failed"}:
-            raise EngineeringCampaignRuntimeError("no-process release requires a terminal mission")
+            raise EngineeringCampaignRuntimeError(
+                "no-process release requires a terminal mission"
+            )
         if mission["release_sha256"] is not None:
             return {
                 "release_sha256": mission["release_sha256"],
@@ -676,8 +744,12 @@ class EngineeringCampaignRuntimeController:
         )
         if launch is not None:
             if self._owned_process_alive(launch):
-                raise EngineeringCampaignRuntimeError("recorded mission process is still alive")
-            if self._port_open(self.contract["server"]["host"], int(launch["port"])):
+                raise EngineeringCampaignRuntimeError(
+                    "recorded mission process is still alive"
+                )
+            if self._port_open(
+                self.contract["server"]["host"], int(launch["port"])
+            ):
                 raise EngineeringCampaignRuntimeError(
                     "recorded mission loopback port is still open"
                 )
@@ -688,7 +760,9 @@ class EngineeringCampaignRuntimeController:
             "binding_sha256": binding["binding_sha256"],
             "process_was_started": launch is not None,
             "pid": launch["pid"] if launch is not None else None,
-            "owner_start_token": (launch["owner_start_token"] if launch is not None else None),
+            "owner_start_token": (
+                launch["owner_start_token"] if launch is not None else None
+            ),
             "owned_process_absent": True,
             "loopback_port_closed": True,
             "authority_claimed": False,
@@ -728,7 +802,9 @@ class EngineeringCampaignRuntimeController:
             "job_id": entry["job_id"],
             "request_sha256": entry["request_sha256"],
             "state": terminal["state"],
-            "terminal_receipt_sha256": file_sha256(controller.terminal_receipt_path),
+            "terminal_receipt_sha256": file_sha256(
+                controller.terminal_receipt_path
+            ),
             "submission_receipt_sha256": (
                 file_sha256(controller.mission_root / "submission_receipt.json")
                 if (controller.mission_root / "submission_receipt.json").is_file()
@@ -747,14 +823,17 @@ class EngineeringCampaignRuntimeController:
                 "campaign cannot seal before every mission release"
             )
         passed = all(
-            outcome["state"] == "completed" and outcome["handoff_ready"] for outcome in outcomes
+            outcome["state"] == "completed" and outcome["handoff_ready"]
+            for outcome in outcomes
         )
         value = {
             "schema_version": TERMINAL_SCHEMA,
             "campaign_id": self.binding["campaign_id"],
             "binding_sha256": self.binding["binding_sha256"],
             "mission_count": CAMPAIGN_SIZE,
-            "completed_count": sum(outcome["state"] == "completed" for outcome in outcomes),
+            "completed_count": sum(
+                outcome["state"] == "completed" for outcome in outcomes
+            ),
             "failed_count": sum(outcome["state"] == "failed" for outcome in outcomes),
             "service_generation_count": service_generations,
             "outcome": "SUCCESS" if passed else "FAILED_CLOSED",
@@ -772,7 +851,9 @@ class EngineeringCampaignRuntimeController:
                 database=self.database,
             )
             if existing != terminal:
-                raise EngineeringCampaignRuntimeError("existing campaign terminal conflicts")
+                raise EngineeringCampaignRuntimeError(
+                    "existing campaign terminal conflicts"
+                )
             return existing
         _write_exclusive_json(self.terminal_path, terminal)
         return validate_engineering_campaign_runtime_terminal(
@@ -797,7 +878,11 @@ class EngineeringCampaignRuntimeController:
         launch_failed = False
         service_generations = 0
         for entry in self.binding["mission_entries"]:
-            launch_path = self.campaign_root / entry["mission_root"] / "runtime_launch_receipt.json"
+            launch_path = (
+                self.campaign_root
+                / entry["mission_root"]
+                / "runtime_launch_receipt.json"
+            )
             if launch_path.is_file():
                 launch = read_json(launch_path)
                 if "shared_runtime_owner_job_id" not in launch:
@@ -830,7 +915,9 @@ class EngineeringCampaignRuntimeController:
             for entry in self.binding["mission_entries"]:
                 controller = self._controller(entry)
                 binding = validate_binding(read_json(controller.binding_path))
-                mission = controller.ledger.get(binding["session_id"], binding["job_id"])
+                mission = controller.ledger.get(
+                    binding["session_id"], binding["job_id"]
+                )
                 if controller.terminal_receipt_path.exists():
                     terminal = read_json(controller.terminal_receipt_path)
                     controller.ledger.reconcile_recorded_owner(
@@ -838,7 +925,10 @@ class EngineeringCampaignRuntimeController:
                         binding["job_id"],
                         terminal_receipt=terminal,
                     )
-                    if owner is None and controller.launch_receipt_path.is_file():
+                    if (
+                        owner is None
+                        and controller.launch_receipt_path.is_file()
+                    ):
                         launch = read_json(controller.launch_receipt_path)
                         if (
                             "shared_runtime_owner_job_id" not in launch
@@ -847,12 +937,16 @@ class EngineeringCampaignRuntimeController:
                         ):
                             owner = controller
                             members = [controller]
-                    elif owner is not None and controller.launch_receipt_path.is_file():
+                    elif (
+                        owner is not None
+                        and controller.launch_receipt_path.is_file()
+                    ):
                         launch = read_json(controller.launch_receipt_path)
                         owner_binding = read_json(owner.binding_path)
                         owner_launch = read_json(owner.launch_receipt_path)
                         if (
-                            launch.get("shared_runtime_owner_job_id") == owner_binding["job_id"]
+                            launch.get("shared_runtime_owner_job_id")
+                            == owner_binding["job_id"]
                             and launch.get("pid") == owner_launch["pid"]
                             and controller not in members
                         ):
@@ -872,11 +966,14 @@ class EngineeringCampaignRuntimeController:
                     close_service()
                 if mission is not None and mission["state"] == "running":
                     if mission["request_sha256"] is not None:
-                        if owner is None and controller.launch_receipt_path.is_file():
+                        if (
+                            owner is None
+                            and controller.launch_receipt_path.is_file()
+                        ):
                             launch = read_json(controller.launch_receipt_path)
-                            if self._owned_process_alive(launch) and self._service_healthy(
-                                controller
-                            ):
+                            if self._owned_process_alive(
+                                launch
+                            ) and self._service_healthy(controller):
                                 owner = controller
                                 members = [controller]
                         self._terminalize_failure(
@@ -897,7 +994,9 @@ class EngineeringCampaignRuntimeController:
                         continue
                     if owner is None:
                         launch = read_json(controller.launch_receipt_path)
-                        if self._owned_process_alive(launch) and self._service_healthy(controller):
+                        if self._owned_process_alive(launch) and self._service_healthy(
+                            controller
+                        ):
                             owner = controller
                             members = [controller]
                         else:
@@ -915,7 +1014,8 @@ class EngineeringCampaignRuntimeController:
                         owner_binding = read_json(owner.binding_path)
                         owner_launch = read_json(owner.launch_receipt_path)
                         if (
-                            launch.get("shared_runtime_owner_job_id") != owner_binding["job_id"]
+                            launch.get("shared_runtime_owner_job_id")
+                            != owner_binding["job_id"]
                             or launch.get("pid") != owner_launch["pid"]
                             or not self._service_healthy(owner)
                         ):
@@ -956,16 +1056,18 @@ class EngineeringCampaignRuntimeController:
                     members.append(controller)
                 self._state(
                     owner_job_id=read_json(owner.binding_path)["job_id"],
-                    member_job_ids=[read_json(member.binding_path)["job_id"] for member in members],
+                    member_job_ids=[
+                        read_json(member.binding_path)["job_id"] for member in members
+                    ],
                     completed_count=sum(
-                        (
-                            self.campaign_root / item["mission_root"] / "terminal_receipt.json"
-                        ).is_file()
+                        (self.campaign_root / item["mission_root"] / "terminal_receipt.json").is_file()
                         for item in self.binding["mission_entries"]
                     ),
                 )
                 try:
-                    controller.submit(controller.mission_root / entry["request_file"])
+                    controller.submit(
+                        controller.mission_root / entry["request_file"]
+                    )
                 except AmbiguousMissionError as exc:
                     self._terminalize_failure(
                         controller,
@@ -1057,10 +1159,14 @@ def validate_engineering_campaign_runtime_terminal(
     )
     observed = [replay._outcome(entry) for entry in binding["mission_entries"]]
     if observed != terminal["mission_outcomes"]:
-        raise EngineeringCampaignRuntimeError("campaign mission terminal replay mismatch")
+        raise EngineeringCampaignRuntimeError(
+            "campaign mission terminal replay mismatch"
+        )
     completed = sum(row["state"] == "completed" for row in observed)
     failed = sum(row["state"] == "failed" for row in observed)
-    passed = all(row["state"] == "completed" and row["handoff_ready"] for row in observed)
+    passed = all(
+        row["state"] == "completed" and row["handoff_ready"] for row in observed
+    )
     if (
         terminal["completed_count"] != completed
         or terminal["failed_count"] != failed
@@ -1068,7 +1174,9 @@ def validate_engineering_campaign_runtime_terminal(
         or not all(row["handoff_ready"] for row in observed)
         or terminal["outcome"] != ("SUCCESS" if passed else "FAILED_CLOSED")
     ):
-        raise EngineeringCampaignRuntimeError("campaign terminal accounting mismatch")
+        raise EngineeringCampaignRuntimeError(
+            "campaign terminal accounting mismatch"
+        )
     return terminal
 
 

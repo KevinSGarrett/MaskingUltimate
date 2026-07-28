@@ -108,7 +108,9 @@ def test_alignment_evidence_pass_for_lapa_lv_and_celeba():
     celeba_manifest = json.loads(
         (ROOT / "qa/reports/celebamask_hq_alignment_manifest.json").read_text(encoding="utf-8")
     )
-    celeba_review = _alignment_review_fixture(manifest=celeba_manifest, sources=("celebamask_hq",))
+    celeba_review = _alignment_review_fixture(
+        manifest=celeba_manifest, sources=("celebamask_hq",)
+    )
 
     lapa = build_alignment_evidence(
         source="lapa", alignment_manifest=manifest, alignment_review=lapa_review
@@ -376,7 +378,9 @@ def test_produce_project_contained_evidence_writes_gap_without_claiming_admissio
     )
     review_path.write_text(
         json.dumps(
-            _alignment_review_fixture(manifest=copied_manifest, sources=("lapa", "lv_mhp_v1")),
+            _alignment_review_fixture(
+                manifest=copied_manifest, sources=("lapa", "lv_mhp_v1")
+            ),
             sort_keys=True,
         ),
         encoding="utf-8",

@@ -75,7 +75,9 @@ class _RepositoryPacketCacheEntry:
 
 
 def _json_bytes(value: Mapping[str, Any]) -> bytes:
-    return (json.dumps(value, sort_keys=True, indent=2, ensure_ascii=False) + "\n").encode("utf-8")
+    return (
+        json.dumps(value, sort_keys=True, indent=2, ensure_ascii=False) + "\n"
+    ).encode("utf-8")
 
 
 def _write_exclusive(path: Path, value: Mapping[str, Any]) -> None:
@@ -101,7 +103,9 @@ def _self_hash(value: Mapping[str, Any], field: str) -> None:
     zeroed = deepcopy(dict(value))
     zeroed[field] = ZERO_SHA256
     if canonical_sha256(zeroed) != declared:
-        raise EngineeringCampaignPreparationError(f"{field} canonical self-hash mismatch")
+        raise EngineeringCampaignPreparationError(
+            f"{field} canonical self-hash mismatch"
+        )
 
 
 def _identity(value: object, field: str) -> str:
@@ -139,17 +143,25 @@ def _source(path: Path) -> dict[str, Any]:
         "source_sha256",
     }
     if set(value) != required or value.get("schema_version") != SOURCE_SCHEMA:
-        raise EngineeringCampaignPreparationError("campaign source field or schema mismatch")
+        raise EngineeringCampaignPreparationError(
+            "campaign source field or schema mismatch"
+        )
     _self_hash(value, "source_sha256")
     _identity(value["session_id"], "session_id")
     _identity(value["tracker_item_id"], "tracker_item_id")
     _identity(value["compatibility_key"], "compatibility_key")
     if (
         not isinstance(value["completed_dependency_ids"], list)
-        or len(value["completed_dependency_ids"]) != len(set(value["completed_dependency_ids"]))
-        or any(not isinstance(item, str) or not item for item in value["completed_dependency_ids"])
+        or len(value["completed_dependency_ids"])
+        != len(set(value["completed_dependency_ids"]))
+        or any(
+            not isinstance(item, str) or not item
+            for item in value["completed_dependency_ids"]
+        )
     ):
-        raise EngineeringCampaignPreparationError("completed dependency identities are invalid")
+        raise EngineeringCampaignPreparationError(
+            "completed dependency identities are invalid"
+        )
     if (
         not isinstance(value["context_token_cap"], int)
         or isinstance(value["context_token_cap"], bool)
@@ -161,7 +173,9 @@ def _source(path: Path) -> dict[str, Any]:
         raise EngineeringCampaignPreparationError("campaign limits are invalid")
     missions = value["missions"]
     if not isinstance(missions, list) or len(missions) != CAMPAIGN_SIZE:
-        raise EngineeringCampaignPreparationError("campaign source requires exactly 25 missions")
+        raise EngineeringCampaignPreparationError(
+            "campaign source requires exactly 25 missions"
+        )
     seen: set[str] = set()
     for mission in missions:
         if not isinstance(mission, dict) or set(mission) != {
@@ -172,10 +186,14 @@ def _source(path: Path) -> dict[str, Any]:
             "estimated_context_tokens",
             "dependency_ids",
         }:
-            raise EngineeringCampaignPreparationError("campaign mission source fields differ")
+            raise EngineeringCampaignPreparationError(
+                "campaign mission source fields differ"
+            )
         mission_id = _identity(mission["mission_id"], "mission_id")
         if mission_id in seen:
-            raise EngineeringCampaignPreparationError("campaign mission identities must be unique")
+            raise EngineeringCampaignPreparationError(
+                "campaign mission identities must be unique"
+            )
         seen.add(mission_id)
         for field in ("source_paths", "scope_roots", "dependency_ids"):
             rows = mission[field]
@@ -185,14 +203,18 @@ def _source(path: Path) -> dict[str, Any]:
                 or len(rows) != len(set(rows))
                 or any(not isinstance(row, str) or not row for row in rows)
             ):
-                raise EngineeringCampaignPreparationError(f"{mission_id}: {field} is invalid")
+                raise EngineeringCampaignPreparationError(
+                    f"{mission_id}: {field} is invalid"
+                )
         _text(mission["task"], f"{mission_id}.task", MAX_TASK_BYTES)
         if (
             not isinstance(mission["estimated_context_tokens"], int)
             or isinstance(mission["estimated_context_tokens"], bool)
             or mission["estimated_context_tokens"] <= 0
         ):
-            raise EngineeringCampaignPreparationError(f"{mission_id}: estimated context is invalid")
+            raise EngineeringCampaignPreparationError(
+                f"{mission_id}: estimated context is invalid"
+            )
     return value
 
 
@@ -240,7 +262,9 @@ def _selection(
         inference_available=True,
     )
     if selection is None:
-        raise EngineeringCampaignPreparationError("tracker has no unblocked Plan-27 work")
+        raise EngineeringCampaignPreparationError(
+            "tracker has no unblocked Plan-27 work"
+        )
     if selection.item_id != source["tracker_item_id"]:
         raise EngineeringCampaignPreparationError(
             "campaign source does not target the current pursuing-goal item"
@@ -290,7 +314,9 @@ def _response_schema(
                         "recommendation",
                     ],
                     "properties": {
-                        "severity": {"enum": ["info", "low", "medium", "high", "critical"]},
+                        "severity": {
+                            "enum": ["info", "low", "medium", "high", "critical"]
+                        },
                         "path": {"type": "string", "minLength": 1, "maxLength": 300},
                         "evidence": {
                             "type": "string",
@@ -327,7 +353,8 @@ def _prompt(
         f"MISSION_ID: {mission['mission_id']}",
         f"PACKET_SHA256: {manifest['packet_sha256']}",
         f"TASK:\n{mission['task']}",
-        "IMMUTABLE_PACKET_MANIFEST:\n" + json.dumps(manifest, sort_keys=True, ensure_ascii=False),
+        "IMMUTABLE_PACKET_MANIFEST:\n"
+        + json.dumps(manifest, sort_keys=True, ensure_ascii=False),
     ]
     for row in manifest["files"]:
         source = packet_root / "files" / Path(row["path"])
@@ -368,9 +395,7 @@ def _materialize_repository_packet(
     packet_root: Path,
     mission: Mapping[str, Any],
     source: Mapping[str, Any],
-    packet_cache: dict[
-        tuple[tuple[str, ...], tuple[str, ...], str, int], _RepositoryPacketCacheEntry
-    ],
+    packet_cache: dict[tuple[tuple[str, ...], tuple[str, ...], str, int], _RepositoryPacketCacheEntry],
 ) -> dict[str, Any]:
     """Build once per exact source set, then copy immutable packet bytes per mission.
 
@@ -401,7 +426,9 @@ def _materialize_repository_packet(
 
     if packet_root.exists() or not packet_root.parent.is_dir():
         raise EngineeringCampaignPreparationError("repository packet destination is unavailable")
-    temporary = Path(tempfile.mkdtemp(prefix=f".{packet_root.name}.tmp-", dir=packet_root.parent))
+    temporary = Path(
+        tempfile.mkdtemp(prefix=f".{packet_root.name}.tmp-", dir=packet_root.parent)
+    )
     try:
         shutil.copytree(cached.packet_root, temporary, dirs_exist_ok=True)
         manifest = verify_repository_packet(temporary)
@@ -509,11 +536,15 @@ def _prepare_mission(
             "model_tree_sha256": contract["model"]["tree_sha256"],
             "runtime_sha256": contract["contract_sha256"],
             "input_sha256": {
-                PACKET_MANIFEST_NAME: file_sha256(mission_root / PACKET_MANIFEST_NAME),
+                PACKET_MANIFEST_NAME: file_sha256(
+                    mission_root / PACKET_MANIFEST_NAME
+                ),
                 PROMPT_NAME: file_sha256(mission_root / PROMPT_NAME),
                 REQUEST_NAME: file_sha256(mission_root / REQUEST_NAME),
             },
-            "output_namespace": (f"{source['session_id']}/{mission['mission_id']}"),
+            "output_namespace": (
+                f"{source['session_id']}/{mission['mission_id']}"
+            ),
             "requires_replay": True,
             "authority": {key: False for key in sorted(AUTHORITY_KEYS)},
         }
@@ -522,7 +553,9 @@ def _prepare_mission(
     return {
         "mission_id": mission["mission_id"],
         "packet_sha256": manifest["packet_sha256"],
-        "packet_manifest_file_sha256": file_sha256(mission_root / PACKET_MANIFEST_NAME),
+        "packet_manifest_file_sha256": file_sha256(
+            mission_root / PACKET_MANIFEST_NAME
+        ),
         "prompt_sha256": file_sha256(mission_root / PROMPT_NAME),
         "request_sha256": file_sha256(mission_root / REQUEST_NAME),
         "binding_sha256": binding["binding_sha256"],
@@ -559,30 +592,40 @@ def _validate_preparation(
         "completion_claimed",
         "preparation_sha256",
     }:
-        raise EngineeringCampaignPreparationError("prepared campaign field set mismatch")
+        raise EngineeringCampaignPreparationError(
+            "prepared campaign field set mismatch"
+        )
     if (
         preparation.get("schema_version") != PREPARATION_SCHEMA
         or preparation.get("campaign_id") != binding["campaign_id"]
         or preparation.get("session_id") != source["session_id"]
         or preparation.get("tracker_item_id") != source["tracker_item_id"]
         or preparation.get("source_sha256") != source["source_sha256"]
-        or preparation.get("source_file_sha256") != file_sha256(campaign_root / SOURCE_NAME)
-        or preparation.get("campaign_binding_sha256") != binding["binding_sha256"]
+        or preparation.get("source_file_sha256")
+        != file_sha256(campaign_root / SOURCE_NAME)
+        or preparation.get("campaign_binding_sha256")
+        != binding["binding_sha256"]
         or preparation.get("campaign_binding_file_sha256")
         != file_sha256(campaign_root / BINDING_NAME)
         or preparation.get("mission_count") != CAMPAIGN_SIZE
         or preparation.get("authority_claimed") is not False
         or preparation.get("completion_claimed") is not False
     ):
-        raise EngineeringCampaignPreparationError("prepared campaign binding mismatch")
+        raise EngineeringCampaignPreparationError(
+            "prepared campaign binding mismatch"
+        )
     if (campaign_root / SOURCE_NAME).read_bytes() != _json_bytes(source):
-        raise EngineeringCampaignPreparationError("prepared campaign source bytes drifted")
+        raise EngineeringCampaignPreparationError(
+            "prepared campaign source bytes drifted"
+        )
     evidence = preparation.get("mission_evidence")
     if not isinstance(evidence, list) or len(evidence) != CAMPAIGN_SIZE:
         raise EngineeringCampaignPreparationError(
             "prepared campaign mission evidence is incomplete"
         )
-    entry_by_id = {row["job_id"]: row for row in binding["mission_entries"]}
+    entry_by_id = {
+        row["job_id"]: row for row in binding["mission_entries"]
+    }
     if len(entry_by_id) != CAMPAIGN_SIZE:
         raise EngineeringCampaignPreparationError(
             "prepared campaign mission binding is contradictory"
@@ -616,7 +659,8 @@ def _validate_preparation(
             or row["prompt_sha256"] != file_sha256(mission_root / PROMPT_NAME)
             or row["request_sha256"] != file_sha256(mission_root / REQUEST_NAME)
             or row["binding_sha256"] != mission_binding.get("binding_sha256")
-            or row["binding_file_sha256"] != file_sha256(mission_root / "binding.json")
+            or row["binding_file_sha256"]
+            != file_sha256(mission_root / "binding.json")
         ):
             raise EngineeringCampaignPreparationError(
                 f"{mission_id}: prepared mission evidence drifted"
@@ -638,7 +682,9 @@ def prepare_engineering_campaign(
     source_file = Path(source_path)
     source = _source(source_file)
     if source_file.read_bytes() != _json_bytes(source):
-        raise EngineeringCampaignPreparationError("campaign source is not canonically materialized")
+        raise EngineeringCampaignPreparationError(
+            "campaign source is not canonically materialized"
+        )
     tracker = _load_tracker(Path(tracker_path))
     selection = _selection(tracker, source)
     candidates = [
@@ -679,7 +725,9 @@ def prepare_engineering_campaign(
             runtime_contract_path=runtime_contract_path,
         )
     contract = load_runtime_contract(runtime_contract_path)
-    temporary = Path(tempfile.mkdtemp(prefix=f".{batch.campaign_id}.tmp-", dir=inbox))
+    temporary = Path(
+        tempfile.mkdtemp(prefix=f".{batch.campaign_id}.tmp-", dir=inbox)
+    )
     created_packets: list[Path] = []
     packet_cache: dict[
         tuple[tuple[str, ...], tuple[str, ...], str, int], _RepositoryPacketCacheEntry
@@ -687,7 +735,9 @@ def prepare_engineering_campaign(
     try:
         missions_root = temporary / "missions"
         missions_root.mkdir()
-        source_by_id = {mission["mission_id"]: mission for mission in source["missions"]}
+        source_by_id = {
+            mission["mission_id"]: mission for mission in source["missions"]
+        }
         evidence: list[dict[str, Any]] = []
         mission_roots: list[Path] = []
         for mission_id in batch.item_ids:
@@ -731,7 +781,9 @@ def prepare_engineering_campaign(
                 "source_sha256": source["source_sha256"],
                 "source_file_sha256": file_sha256(temporary / SOURCE_NAME),
                 "campaign_binding_sha256": binding["binding_sha256"],
-                "campaign_binding_file_sha256": file_sha256(temporary / BINDING_NAME),
+                "campaign_binding_file_sha256": file_sha256(
+                    temporary / BINDING_NAME
+                ),
                 "mission_count": CAMPAIGN_SIZE,
                 "mission_evidence": evidence,
                 "authority_claimed": False,

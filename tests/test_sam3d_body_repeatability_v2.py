@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import numpy as np
 import pytest
+
 from tools.run_sam3d_body_repeatability_v2 import (
     _evaluate_measured_repeats,
     _persist_measured_output,

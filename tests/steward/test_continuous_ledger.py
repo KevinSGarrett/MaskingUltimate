@@ -189,5 +189,7 @@ def test_state_persists_across_ledger_reconstruction(tmp_path: Path) -> None:
 
     reconstructed = ContinuousWorkLedger(database)
 
-    assert reconstructed.get("session-1", "campaign", "campaign-1")["state"] == ("intent_persisted")
+    assert reconstructed.get("session-1", "campaign", "campaign-1")["state"] == (
+        "intent_persisted"
+    )
     assert len(reconstructed.transitions("session-1", "campaign", "campaign-1")) == 2

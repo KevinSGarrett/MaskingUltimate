@@ -308,13 +308,17 @@ def test_accepted_artifact_flag_must_match_telemetry(tmp_path: Path) -> None:
         CampaignReconciliationError,
         match="artifact bytes or event binding drifted",
     ):
-        reconcile_closed_campaign(**fixture["kwargs"] | {"artifact_manifest": manifest})
+        reconcile_closed_campaign(
+            **fixture["kwargs"] | {"artifact_manifest": manifest}
+        )
 
 
 def test_missing_local_release_fails_before_receipt(tmp_path: Path) -> None:
     fixture = _fixture(tmp_path)
     events = [
-        event for event in fixture["kwargs"]["events"] if event["kind"] != "local_gpu_release"
+        event
+        for event in fixture["kwargs"]["events"]
+        if event["kind"] != "local_gpu_release"
     ]
     for sequence, event in enumerate(events, start=1):
         event["sequence"] = sequence
@@ -337,7 +341,9 @@ def test_missing_local_release_fails_before_receipt(tmp_path: Path) -> None:
         CampaignReconciliationError,
         match="work-cell release evidence is incomplete",
     ):
-        reconcile_closed_campaign(**fixture["kwargs"] | {"events": events, "telemetry": telemetry})
+        reconcile_closed_campaign(
+            **fixture["kwargs"] | {"events": events, "telemetry": telemetry}
+        )
 
 
 def test_slo_gate_requires_and_replays_exact_reconciliation(

@@ -81,7 +81,9 @@ def test_convenience_and_bookkeeping_categories_continue_without_handoff(
 
 
 def test_ambiguity_continues_internal_recovery_until_exhausted() -> None:
-    result = evaluate_exception_escalation(_event("unreconciled_ambiguity", hard_failure=True))
+    result = evaluate_exception_escalation(
+        _event("unreconciled_ambiguity", hard_failure=True)
+    )
 
     assert result["disposition"] == "continue_recovery"
     assert result["reason_code"] == "ambiguity_requires_internal_reconciliation"

@@ -97,8 +97,12 @@ def _handoff(args: argparse.Namespace) -> dict:
         "gpu_name": name,
         "gpu_memory_used_mib": int(memory),
         "gpu_utilization_percent": int(utilization),
-        "compute_app_count": len(_nvidia_rows("compute-apps=pid,process_name,used_memory")),
-        "ports_open": {str(port): _port_open(port) for port in (8188, 18008, 18125)},
+        "compute_app_count": len(
+            _nvidia_rows("compute-apps=pid,process_name,used_memory")
+        ),
+        "ports_open": {
+            str(port): _port_open(port) for port in (8188, 18008, 18125)
+        },
         "active_lease_session_id": active_session,
         "active_lease_job_id": active_job,
         "campaign_lease_active": bool(

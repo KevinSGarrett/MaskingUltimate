@@ -97,9 +97,13 @@ def _read_object(path: Path) -> dict[str, Any]:
     try:
         value = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError) as exc:
-        raise VisualReferenceReadinessError(f"JSON source is unreadable: {path.name}") from exc
+        raise VisualReferenceReadinessError(
+            f"JSON source is unreadable: {path.name}"
+        ) from exc
     if not isinstance(value, dict):
-        raise VisualReferenceReadinessError(f"JSON source must be an object: {path.name}")
+        raise VisualReferenceReadinessError(
+            f"JSON source must be an object: {path.name}"
+        )
     return value
 
 
@@ -109,12 +113,19 @@ def _read_library(database: Path) -> dict[str, Any]:
     try:
         tables = {
             str(row[0])
-            for row in connection.execute("SELECT name FROM sqlite_master WHERE type = 'table'")
+            for row in connection.execute(
+                "SELECT name FROM sqlite_master WHERE type = 'table'"
+            )
         }
         required_tables = {"images", "pipeline_meta", "selections", "visual_index"}
         if not required_tables.issubset(tables):
-            raise VisualReferenceReadinessError("reference library required tables are unavailable")
-        columns = {str(row[1]) for row in connection.execute("PRAGMA table_info(visual_index)")}
+            raise VisualReferenceReadinessError(
+                "reference library required tables are unavailable"
+            )
+        columns = {
+            str(row[1])
+            for row in connection.execute("PRAGMA table_info(visual_index)")
+        }
         if not REQUIRED_VISUAL_INDEX_COLUMNS.issubset(columns):
             raise VisualReferenceReadinessError(
                 "reference library visual-index schema is unavailable"
@@ -126,7 +137,9 @@ def _read_library(database: Path) -> dict[str, Any]:
             try:
                 meta[str(key)] = json.loads(raw)
             except (TypeError, json.JSONDecodeError) as exc:
-                raise VisualReferenceReadinessError(f"pipeline metadata is invalid: {key}") from exc
+                raise VisualReferenceReadinessError(
+                    f"pipeline metadata is invalid: {key}"
+                ) from exc
         purpose = meta.get("library_purpose")
         selection = meta.get("selection")
         content_policy = meta.get("content_policy")
@@ -134,10 +147,9 @@ def _read_library(database: Path) -> dict[str, Any]:
             raise VisualReferenceReadinessError(
                 "reference library purpose or selection metadata is unavailable"
             )
-        if (
-            not isinstance(content_policy, dict)
-            or content_policy.get("content_state_is_organizational_only") is not True
-        ):
+        if not isinstance(content_policy, dict) or content_policy.get(
+            "content_state_is_organizational_only"
+        ) is not True:
             raise VisualReferenceReadinessError(
                 "reference library content-state authority boundary is unavailable"
             )
@@ -152,18 +164,22 @@ def _read_library(database: Path) -> dict[str, Any]:
             )
 
         counts = {
-            "images": int(connection.execute("SELECT COUNT(*) FROM images").fetchone()[0]),
+            "images": int(
+                connection.execute("SELECT COUNT(*) FROM images").fetchone()[0]
+            ),
             "visual_index": int(
                 connection.execute("SELECT COUNT(*) FROM visual_index").fetchone()[0]
             ),
             "benchmark_reference": int(
                 connection.execute(
-                    "SELECT COUNT(*) FROM selections " "WHERE tier = 'benchmark_reference'"
+                    "SELECT COUNT(*) FROM selections "
+                    "WHERE tier = 'benchmark_reference'"
                 ).fetchone()[0]
             ),
             "retrieval_reference": int(
                 connection.execute(
-                    "SELECT COUNT(*) FROM selections " "WHERE tier = 'retrieval_reference'"
+                    "SELECT COUNT(*) FROM selections "
+                    "WHERE tier = 'retrieval_reference'"
                 ).fetchone()[0]
             ),
         }
@@ -197,7 +213,9 @@ def _read_library(database: Path) -> dict[str, Any]:
             )
             strata[column] = {str(value): int(count) for value, count in rows}
     except sqlite3.Error as exc:
-        raise VisualReferenceReadinessError("reference library query failed closed") from exc
+        raise VisualReferenceReadinessError(
+            "reference library query failed closed"
+        ) from exc
     finally:
         connection.close()
 
@@ -219,7 +237,9 @@ def _read_inventory(database: Path) -> dict[str, int]:
     try:
         tables = {
             str(row[0])
-            for row in connection.execute("SELECT name FROM sqlite_master WHERE type = 'table'")
+            for row in connection.execute(
+                "SELECT name FROM sqlite_master WHERE type = 'table'"
+            )
         }
         if not {"images", "runs"}.issubset(tables):
             raise VisualReferenceReadinessError(
@@ -230,7 +250,9 @@ def _read_inventory(database: Path) -> dict[str, int]:
         )
         statuses = {str(status): int(count) for status, count in rows}
     except sqlite3.Error as exc:
-        raise VisualReferenceReadinessError("reference inventory query failed closed") from exc
+        raise VisualReferenceReadinessError(
+            "reference inventory query failed closed"
+        ) from exc
     finally:
         connection.close()
     return {
@@ -259,18 +281,24 @@ def _verify_annotation_registry(path: Path) -> dict[str, int]:
         root_value = dataset.get("path")
         annotations = dataset.get("annotation_files")
         if not isinstance(root_value, str) or not isinstance(annotations, list):
-            raise VisualReferenceReadinessError("dataset annotation registry is invalid")
+            raise VisualReferenceReadinessError(
+                "dataset annotation registry is invalid"
+            )
         bbox_annotations += int(dataset.get("bbox_annotations", 0))
         segmentation_annotations += int(dataset.get("segmentation_annotations", 0))
         root = Path(root_value).resolve(strict=True)
         try:
             root.relative_to(registry_root)
         except ValueError as exc:
-            raise VisualReferenceReadinessError("dataset source escapes the registry root") from exc
+            raise VisualReferenceReadinessError(
+                "dataset source escapes the registry root"
+            ) from exc
         for annotation in annotations:
             declared += 1
             if not isinstance(annotation, dict):
-                raise VisualReferenceReadinessError("dataset annotation entry is invalid")
+                raise VisualReferenceReadinessError(
+                    "dataset annotation entry is invalid"
+                )
             relative = annotation.get("path")
             expected = annotation.get("sha256")
             if (
@@ -280,7 +308,9 @@ def _verify_annotation_registry(path: Path) -> dict[str, int]:
                 or not isinstance(expected, str)
                 or len(expected) != 64
             ):
-                raise VisualReferenceReadinessError("dataset annotation binding is invalid")
+                raise VisualReferenceReadinessError(
+                    "dataset annotation binding is invalid"
+                )
             candidate = (registry_root / relative).resolve(strict=True)
             try:
                 candidate.relative_to(root)
@@ -289,7 +319,9 @@ def _verify_annotation_registry(path: Path) -> dict[str, int]:
                     "dataset annotation escapes its source root"
                 ) from exc
             if _file_evidence(candidate)["sha256"] != expected:
-                raise VisualReferenceReadinessError(f"dataset annotation hash mismatch: {relative}")
+                raise VisualReferenceReadinessError(
+                    f"dataset annotation hash mismatch: {relative}"
+                )
             verified += 1
     return {
         "datasets": len(datasets),
@@ -317,7 +349,9 @@ def build_visual_reference_readiness(
     inventory = _read_inventory(inventory_database)
     library = _read_library(library_database)
     annotation_registry = _verify_annotation_registry(dataset_registry)
-    catalog_source, catalog_snapshot, catalog_bytes = _critic_catalog_snapshot(critic_catalog_path)
+    catalog_source, catalog_snapshot, catalog_bytes = _critic_catalog_snapshot(
+        critic_catalog_path
+    )
     if summary.get("content_hint_is_organizational_only") is not True:
         raise VisualReferenceReadinessError(
             "inventory content-hint authority boundary is unavailable"
@@ -444,8 +478,12 @@ def validate_visual_reference_readiness(
         or boundary.get("qualified_independent_family_juror_present") is not False
         or readiness.get("ready_for_source_bound_candidate_screening") is not True
         or readiness.get("ready_for_source_bound_candidate_selection") is not False
-        or readiness.get("metadata_candidate_selection_requires_direct_visual_confirmation")
+        or readiness.get(
+            "metadata_candidate_selection_requires_direct_visual_confirmation"
+        )
         is not True
         or readiness.get("ready_for_visual_qualification") is not False
     ):
-        raise VisualReferenceReadinessError("readiness receipt exceeds reference-only authority")
+        raise VisualReferenceReadinessError(
+            "readiness receipt exceeds reference-only authority"
+        )

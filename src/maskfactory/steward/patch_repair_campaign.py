@@ -117,15 +117,12 @@ def _verify_self_hash(value: Mapping[str, Any], field: str) -> None:
 
 
 def _write_exclusive(path: Path, value: Mapping[str, Any]) -> None:
-    payload = (
-        json.dumps(
-            value,
-            indent=2,
-            sort_keys=True,
-            ensure_ascii=False,
-        ).encode("utf-8")
-        + b"\n"
-    )
+    payload = json.dumps(
+        value,
+        indent=2,
+        sort_keys=True,
+        ensure_ascii=False,
+    ).encode("utf-8") + b"\n"
     try:
         with path.open("xb") as handle:
             handle.write(payload)
@@ -247,7 +244,9 @@ def _validate_proposal(
             raise PatchRepairCampaignError("proposal edit field set mismatch")
         path = _relative_path(edit["path"], field="proposal edit path")
         if path not in editable:
-            raise PatchRepairCampaignError(f"{path}: proposal edit is outside the packet scope")
+            raise PatchRepairCampaignError(
+                f"{path}: proposal edit is outside the packet scope"
+            )
         if path in seen:
             raise PatchRepairCampaignError("proposal edit paths must be unique")
         seen.add(path)
@@ -558,7 +557,10 @@ def verify_campaign_terminal(campaign_root: Path) -> dict[str, Any]:
         if result_name is None and result_sha256 is None:
             continue
         expected_result_name = f"attempt_{index:03d}_result.json"
-        if result_name != expected_result_name or not isinstance(result_sha256, str):
+        if (
+            result_name != expected_result_name
+            or not isinstance(result_sha256, str)
+        ):
             raise PatchRepairCampaignError("terminal result binding is incomplete")
         expected_paths.add(expected_result_name)
         result = _read_json(root / result_name)
@@ -602,7 +604,11 @@ def verify_campaign_terminal(campaign_root: Path) -> dict[str, Any]:
         )
         if regenerated_result != result:
             raise PatchRepairCampaignError("terminal result semantic mismatch")
-    actual_paths = {path.relative_to(root).as_posix() for path in root.iterdir() if path.is_file()}
+    actual_paths = {
+        path.relative_to(root).as_posix()
+        for path in root.iterdir()
+        if path.is_file()
+    }
     if actual_paths != expected_paths:
         raise PatchRepairCampaignError("campaign contains an unexpected path set")
     return terminal

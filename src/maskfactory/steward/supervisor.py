@@ -23,7 +23,9 @@ STALE_OWNER_SCHEMA = "maskfactory_self_hosted_supervisor_stale_owner.v1"
 
 OWNER_STATES = frozenset({"running", "stopped"})
 CAMPAIGN_STATES = frozenset({"idle", "planned", "active", "blocked", "terminal"})
-EXCEPTION_KINDS = frozenset({"health", "queue", "campaign", "authority", "recovery", "shutdown"})
+EXCEPTION_KINDS = frozenset(
+    {"health", "queue", "campaign", "authority", "recovery", "shutdown"}
+)
 
 
 class SupervisorStateError(RuntimeError):
@@ -36,7 +38,9 @@ class SupervisorAlreadyRunning(SupervisorStateError):
 
 def _canonical_sha256(value: object) -> str:
     return hashlib.sha256(
-        json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+        json.dumps(
+            value, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+        ).encode("utf-8")
     ).hexdigest()
 
 
@@ -52,7 +56,9 @@ def _read_json(path: Path) -> dict[str, Any]:
 
 def _replace_json(path: Path, value: Mapping[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    body = (json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False) + "\n").encode("utf-8")
+    body = (
+        json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+    ).encode("utf-8")
     temporary = path.with_name(f".{path.name}.{os.getpid()}.tmp")
     descriptor = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
     try:
@@ -73,10 +79,14 @@ def _create_json(path: Path, value: Mapping[str, Any]) -> None:
     if path.exists():
         existing = _read_json(path)
         if existing != dict(value):
-            raise SupervisorStateError(f"immutable supervisor receipt conflicts: {path}")
+            raise SupervisorStateError(
+                f"immutable supervisor receipt conflicts: {path}"
+            )
         return
     path.parent.mkdir(parents=True, exist_ok=True)
-    body = (json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False) + "\n").encode("utf-8")
+    body = (
+        json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+    ).encode("utf-8")
     descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
     with os.fdopen(descriptor, "wb") as stream:
         stream.write(body)
@@ -146,8 +156,12 @@ class CpuSafeSupervisor:
         process_identity_probe: Callable[[int], str | None] = default_process_identity,
         clock: Callable[[], float] = time.time,
     ):
-        if not supervisor_id or any(character in supervisor_id for character in "/\\\0"):
-            raise SupervisorStateError("supervisor_id must be a plain non-empty identity")
+        if not supervisor_id or any(
+            character in supervisor_id for character in "/\\\0"
+        ):
+            raise SupervisorStateError(
+                "supervisor_id must be a plain non-empty identity"
+            )
         self.state_root = Path(state_root)
         self.supervisor_id = supervisor_id
         self.process_identity_probe = process_identity_probe
@@ -164,7 +178,9 @@ class CpuSafeSupervisor:
 
     @staticmethod
     def _safe_owner(owner: Mapping[str, Any]) -> dict[str, Any]:
-        return {key: value for key, value in owner.items() if key != "owner_token_sha256"}
+        return {
+            key: value for key, value in owner.items() if key != "owner_token_sha256"
+        }
 
     def _verify_current_owner(self) -> dict[str, Any]:
         if self._token is None or self._generation is None:
@@ -206,7 +222,9 @@ class CpuSafeSupervisor:
                     raise SupervisorStateError("owner state is invalid")
                 generation = int(previous.get("generation") or 0) + 1
                 if previous["state"] == "running":
-                    observed_identity = self.process_identity_probe(int(previous["pid"]))
+                    observed_identity = self.process_identity_probe(
+                        int(previous["pid"])
+                    )
                     if observed_identity == previous.get("process_start_token"):
                         raise SupervisorAlreadyRunning(
                             "matching live supervisor already owns the state root"
@@ -222,14 +240,17 @@ class CpuSafeSupervisor:
                         "recovered_at": self.clock(),
                     }
                     _create_json(
-                        self.state_root / f"stale_owner_{int(previous['generation']):06d}.json",
+                        self.state_root
+                        / f"stale_owner_{int(previous['generation']):06d}.json",
                         stale_receipt,
                     )
                     self._remove_bound_token(previous["owner_token_sha256"])
             if self.token_path.exists():
                 raise SupervisorStateError("unbound protected owner token exists")
             token = secrets.token_hex(32)
-            descriptor = os.open(self.token_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+            descriptor = os.open(
+                self.token_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600
+            )
             with os.fdopen(descriptor, "wb") as stream:
                 stream.write(token.encode("ascii"))
                 stream.flush()
@@ -292,7 +313,9 @@ class CpuSafeSupervisor:
         if len(normalized) != len(set(normalized)) or any(
             not isinstance(item_id, str) or not item_id for item_id in normalized
         ):
-            raise SupervisorStateError("queue item IDs must be unique non-empty strings")
+            raise SupervisorStateError(
+                "queue item IDs must be unique non-empty strings"
+            )
         document = {
             "schema_version": QUEUE_SCHEMA,
             "supervisor_id": self.supervisor_id,

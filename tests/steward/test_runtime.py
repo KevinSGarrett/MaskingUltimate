@@ -172,7 +172,9 @@ def test_runtime_byte_validation_covers_model_engine_and_successful_v3(
         (validated_root / file_name).write_bytes(file_name.encode("ascii"))
     contract["model"]["path"] = str(model_root)
     contract["model"]["config_sha256"] = file_sha256(model_root / "config.json")
-    contract["model"]["index_sha256"] = file_sha256(model_root / "model.safetensors.index.json")
+    contract["model"]["index_sha256"] = file_sha256(
+        model_root / "model.safetensors.index.json"
+    )
     contract["engine"]["vllm_executable"] = str(engine)
     contract["engine"]["vllm_executable_sha256"] = file_sha256(engine)
     contract["validated_runtime"]["mission_root"] = str(validated_root)
@@ -249,9 +251,9 @@ def test_submit_refuses_authority_claim_and_leaves_ambiguous_recovery(
     controller, _binding, request_path = prepare_controller(tmp_path)
     monkeypatch.setattr(controller, "health", lambda: {"status": "PASS"})
     unsafe = {"decision": "ADVISE", "authority_claimed": True}
-    envelope = json.dumps({"choices": [{"message": {"content": json.dumps(unsafe)}}]}).encode(
-        "utf-8"
-    )
+    envelope = json.dumps(
+        {"choices": [{"message": {"content": json.dumps(unsafe)}}]}
+    ).encode("utf-8")
     monkeypatch.setattr(
         "urllib.request.urlopen",
         lambda *_args, **_kwargs: FakeResponse(envelope),
@@ -262,7 +264,9 @@ def test_submit_refuses_authority_claim_and_leaves_ambiguous_recovery(
 
     assert controller.ledger.get("session-1", "runtime-job")["request_sha256"]
     assert controller.ledger.runs("session-1", "runtime-job") == []
-    reconciled = controller.ledger.reconcile("session-1", "runtime-job", owner_alive=False)
+    reconciled = controller.ledger.reconcile(
+        "session-1", "runtime-job", owner_alive=False
+    )
     assert reconciled["outcome"] == "recovery_required"
     assert not controller.terminal_receipt_path.exists()
 
@@ -298,9 +302,13 @@ def test_submit_persists_http_schema_rejection_and_terminalizes_failed(
 
     response_path = controller.mission_root / "response_run1.json"
     rejection = json.loads(
-        (controller.mission_root / "request_rejection.json").read_text(encoding="utf-8")
+        (controller.mission_root / "request_rejection.json").read_text(
+            encoding="utf-8"
+        )
     )
-    terminal = json.loads(controller.terminal_receipt_path.read_text(encoding="utf-8"))
+    terminal = json.loads(
+        controller.terminal_receipt_path.read_text(encoding="utf-8")
+    )
     assert response_path.read_bytes() == body + b"\n"
     assert rejection["schema_version"] == REQUEST_REJECTION_SCHEMA
     assert rejection["http_status"] == 400
@@ -331,7 +339,9 @@ def test_submit_transport_ambiguity_persists_no_resend_receipt(
         controller.submit(request_path)
 
     ambiguous = json.loads(
-        (controller.mission_root / "ambiguous_completion.json").read_text(encoding="utf-8")
+        (controller.mission_root / "ambiguous_completion.json").read_text(
+            encoding="utf-8"
+        )
     )
     assert ambiguous["schema_version"] == AMBIGUOUS_COMPLETION_SCHEMA
     assert ambiguous["response_persisted"] is False
@@ -346,9 +356,13 @@ def test_shutdown_records_terminal_release_without_touching_unowned_process(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     controller, binding, _request_path = prepare_controller(tmp_path)
-    request_sha256 = controller.ledger.get("session-1", "runtime-job")["request_sha256"]
+    request_sha256 = controller.ledger.get("session-1", "runtime-job")[
+        "request_sha256"
+    ]
     assert request_sha256 is None
-    controller.ledger.record_request_intent("session-1", "runtime-job", request_sha256="1" * 64)
+    controller.ledger.record_request_intent(
+        "session-1", "runtime-job", request_sha256="1" * 64
+    )
     for run_number, response, proposal in (
         (1, "2" * 64, "3" * 64),
         (2, "4" * 64, "5" * 64),
@@ -427,7 +441,9 @@ def test_comfyui_queue_probe_blocks_live_work_and_records_unavailable(
     monkeypatch.setattr(
         "urllib.request.urlopen",
         lambda *_args, **_kwargs: FakeResponse(
-            json.dumps({"queue_running": [["job"]], "queue_pending": []}).encode("utf-8")
+            json.dumps({"queue_running": [["job"]], "queue_pending": []}).encode(
+                "utf-8"
+            )
         ),
     )
     with pytest.raises(MissionConflictError, match="not empty"):

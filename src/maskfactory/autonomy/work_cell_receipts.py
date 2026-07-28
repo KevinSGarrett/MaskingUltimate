@@ -157,7 +157,11 @@ def _relative_panel_path(value: Any) -> str:
     if "\\" in value:
         raise WorkCellReceiptError("panel_path must use posix separators")
     path = PurePosixPath(value)
-    if path.is_absolute() or not path.parts or any(part in {".", ".."} for part in path.parts):
+    if (
+        path.is_absolute()
+        or not path.parts
+        or any(part in {".", ".."} for part in path.parts)
+    ):
         raise WorkCellReceiptError("panel_path must be a safe relative path")
     return path.as_posix()
 

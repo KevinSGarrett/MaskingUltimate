@@ -364,9 +364,7 @@ def _validate_alignment_review(
             f"{source}: alignment review source binding is invalid"
         )
     panels_by_source = alignment_review.get("panel_sha256_by_source")
-    reviewed_panels = (
-        panels_by_source.get(source) if isinstance(panels_by_source, Mapping) else None
-    )
+    reviewed_panels = panels_by_source.get(source) if isinstance(panels_by_source, Mapping) else None
     reviewed_counts = alignment_review.get("reviewed_record_count_by_source")
     reviewed_count = reviewed_counts.get(source) if isinstance(reviewed_counts, Mapping) else None
     expected_panels = sorted(str(record.get("panel_sha256") or "") for record in selected_records)
@@ -376,7 +374,9 @@ def _validate_alignment_review(
         or sorted(reviewed_panels) != expected_panels
         or reviewed_count != len(selected_records)
     ):
-        raise ExternalSupervisionProducerError(f"{source}: alignment review panel binding mismatch")
+        raise ExternalSupervisionProducerError(
+            f"{source}: alignment review panel binding mismatch"
+        )
 
 
 def materialize_sealed_artifact(

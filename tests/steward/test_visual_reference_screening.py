@@ -79,7 +79,9 @@ def test_validates_confirmed_reference_without_authority(tmp_path: Path) -> None
 
 
 def test_validates_rejection_with_required_reason(tmp_path: Path) -> None:
-    receipt = _receipt(tmp_path, decision="rejected_for_hand_finger_candidate_selection")
+    receipt = _receipt(
+        tmp_path, decision="rejected_for_hand_finger_candidate_selection"
+    )
     validate_direct_reference_screening(
         receipt,
         repository_root=tmp_path / "repo",
@@ -90,7 +92,9 @@ def test_validates_rejection_with_required_reason(tmp_path: Path) -> None:
 def test_rejects_authority_escalation(tmp_path: Path) -> None:
     receipt = _receipt(tmp_path)
     receipt["authority_boundary"]["promotion_allowed"] = True
-    receipt["self_sha256"] = canonical_sha256({**receipt, "self_sha256": "0" * 64})
+    receipt["self_sha256"] = canonical_sha256(
+        {**receipt, "self_sha256": "0" * 64}
+    )
     with pytest.raises(VisualReferenceScreeningError, match="authority boundary"):
         validate_direct_reference_screening(
             receipt,

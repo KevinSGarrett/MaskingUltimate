@@ -33,9 +33,7 @@ def test_zorder_boosts_only_authorized_contested_evidence() -> None:
         authority,
     )
 
-    assert [
-        (record.occluding_part, record.occluded_part, record.contested_pixels) for record in records
-    ] == [
+    assert [(record.occluding_part, record.occluded_part, record.contested_pixels) for record in records] == [
         ("hair", "head_face", 1),
         ("hair", "neck", 1),
         ("neck", "head_face", 1),

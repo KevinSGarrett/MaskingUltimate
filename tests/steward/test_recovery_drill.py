@@ -34,7 +34,9 @@ def test_real_recovery_drill_reconstructs_and_blocks_resend(tmp_path) -> None:
     assert ambiguous["run_count_after_restart"] == 1
     assert ambiguous["handoff_ready"] is False
 
-    persisted = json.loads((root / "recovery_drill_result.json").read_text(encoding="utf-8"))
+    persisted = json.loads(
+        (root / "recovery_drill_result.json").read_text(encoding="utf-8")
+    )
     declared = persisted.pop("result_sha256")
     assert canonical_sha256(persisted) == declared
     with pytest.raises(FileExistsError):

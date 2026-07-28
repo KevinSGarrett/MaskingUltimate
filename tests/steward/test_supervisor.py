@@ -313,7 +313,9 @@ def test_standalone_launcher_once_writes_terminal_state(tmp_path: Path) -> None:
     throughput = json.loads((state_root / "fallback_throughput.json").read_text())
     events = [
         json.loads(line)
-        for line in (state_root / "fallback_throughput_events.jsonl").read_text().splitlines()
+        for line in (state_root / "fallback_throughput_events.jsonl")
+        .read_text()
+        .splitlines()
     ]
     assert owner["state"] == "stopped"
     assert shutdown["reason"] == "signal_or_clean_exit"

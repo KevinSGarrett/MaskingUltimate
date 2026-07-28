@@ -134,7 +134,9 @@ def test_typed_exception_and_terminal_handoff_are_bound() -> None:
 
     assert audit["codex_interventions"] == 2
     assert audit["exception_escalations"] == 1
-    assert audit["typed_exception_result_sha256"] == [record["result"]["result_sha256"]]
+    assert audit["typed_exception_result_sha256"] == [
+        record["result"]["result_sha256"]
+    ]
 
 
 def test_campaign_local_non_escalation_is_bound_without_codex_handoff() -> None:
@@ -149,7 +151,9 @@ def test_campaign_local_non_escalation_is_bound_without_codex_handoff() -> None:
 
     assert audit["codex_interventions"] == 1
     assert audit["exception_escalations"] == 0
-    assert audit["typed_exception_result_sha256"] == [record["result"]["result_sha256"]]
+    assert audit["typed_exception_result_sha256"] == [
+        record["result"]["result_sha256"]
+    ]
 
 
 def test_routine_handoff_fails_campaign_audit() -> None:
@@ -273,8 +277,12 @@ def test_unordered_duplicate_and_cross_campaign_evidence_fail_closed() -> None:
     cross_campaign = _exception_record()
     cross_campaign["event"]["campaign_id"] = "other-campaign"
     cross_campaign["event"]["event_sha256"] = "0" * 64
-    cross_campaign["event"]["event_sha256"] = canonical_sha256(cross_campaign["event"])
-    cross_campaign["result"] = evaluate_exception_escalation(cross_campaign["event"])
+    cross_campaign["event"]["event_sha256"] = canonical_sha256(
+        cross_campaign["event"]
+    )
+    cross_campaign["result"] = evaluate_exception_escalation(
+        cross_campaign["event"]
+    )
     with pytest.raises(HandoffSuppressionError, match="campaign binding"):
         audit_campaign_handoffs(
             campaign_id=CAMPAIGN_ID,

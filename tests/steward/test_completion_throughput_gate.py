@@ -12,7 +12,9 @@ from jsonschema import Draft202012Validator
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 TRACKER_MODULE_PATH = PROJECT_ROOT / "Plan" / "Tracker" / "tracker.py"
 REGISTRY_PATH = PROJECT_ROOT / "Plan" / "Tracker" / "completion_track_registry.json"
-REGISTRY_SCHEMA_PATH = PROJECT_ROOT / "Plan" / "Tracker" / "completion_track_registry.schema.json"
+REGISTRY_SCHEMA_PATH = (
+    PROJECT_ROOT / "Plan" / "Tracker" / "completion_track_registry.schema.json"
+)
 
 
 @pytest.fixture(scope="module")
@@ -56,7 +58,9 @@ def test_v1_2_migration_preserves_prior_profile_evidence_and_adds_product_gates(
         "preserves_existing_item_evidence": True,
     }
     core_profile = next(
-        row for row in registry["profiles"] if row["profile_id"] == "core_autonomous_runtime"
+        row
+        for row in registry["profiles"]
+        if row["profile_id"] == "core_autonomous_runtime"
     )
     assert core_profile["required_item_ids"][0] == "MF-P6-07.01"
     assert core_profile["required_item_ids"][42] == "MF-P6-12.06"
@@ -102,7 +106,9 @@ def test_prior_core_evidence_cannot_satisfy_new_throughput_gate(tracker_module):
         simulated["items"][item_id]["status"] = "open"
 
     assert (
-        tracker_module.compute_completion_profile_status(simulated, "core_autonomous_runtime")
+        tracker_module.compute_completion_profile_status(
+            simulated, "core_autonomous_runtime"
+        )
         != "complete"
     )
     assert (
@@ -123,7 +129,9 @@ def test_throughput_gate_does_not_block_optional_accuracy_profile(tracker_module
         simulated["items"][item_id]["status"] = "open"
 
     assert (
-        tracker_module.compute_completion_profile_status(simulated, "independent_real_accuracy")
+        tracker_module.compute_completion_profile_status(
+            simulated, "independent_real_accuracy"
+        )
         == "complete"
     )
 
@@ -139,7 +147,9 @@ def test_registry_and_schema_are_closed_and_valid():
     assert list(validator.iter_errors(drifted))
 
 
-def test_tracker_validation_rejects_throughput_gate_drift(tracker_module, monkeypatch, tmp_path):
+def test_tracker_validation_rejects_throughput_gate_drift(
+    tracker_module, monkeypatch, tmp_path
+):
     registry = _load_json(REGISTRY_PATH)
     registry["throughput_gates"][0]["required_item_ids"].pop()
     drifted_path = tmp_path / "completion_track_registry.json"
@@ -153,4 +163,6 @@ def test_tracker_validation_rejects_throughput_gate_drift(tracker_module, monkey
         _load_json(tracker_module.TRACKER_JSON)
     )
 
-    assert any("throughput gate differs from tracker.py" in problem for problem in problems)
+    assert any(
+        "throughput gate differs from tracker.py" in problem for problem in problems
+    )

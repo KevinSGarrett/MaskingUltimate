@@ -81,10 +81,7 @@ def _identifier(value: object, *, field: str) -> str:
         not isinstance(value, str)
         or not value
         or len(value) > 160
-        or any(
-            character not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._:-"
-            for character in value
-        )
+        or any(character not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._:-" for character in value)
     ):
         raise VisualCriticQuorumError(f"{field} is invalid")
     return value
@@ -217,7 +214,9 @@ def _validate_certificate_fields(
         field="qualification_report_sha256",
     )
     required_capability = (
-        "high_end_multimodal" if expected_role == "primary" else "independent_multimodal_juror"
+        "high_end_multimodal"
+        if expected_role == "primary"
+        else "independent_multimodal_juror"
     )
     if certificate.get("capability_class") != required_capability:
         raise VisualCriticQuorumError("critic capability is not role-qualified")
@@ -436,13 +435,22 @@ def evaluate_visual_quorum(
     ):
         outcome = "ABSTAIN_CORRELATED_CRITICS"
         reason = "primary and juror are not independently bound models"
-    elif primary_response["status"] != "COMPLETE" or juror_response["status"] != "COMPLETE":
+    elif (
+        primary_response["status"] != "COMPLETE"
+        or juror_response["status"] != "COMPLETE"
+    ):
         outcome = "VISUAL_CRITIC_BLOCKED"
         reason = "one or more critics did not produce a complete response"
-    elif primary_response["verdict"] == "FAIL" or juror_response["verdict"] == "FAIL":
+    elif (
+        primary_response["verdict"] == "FAIL"
+        or juror_response["verdict"] == "FAIL"
+    ):
         outcome = "REJECT_VISUAL"
         reason = "at least one qualified visual role rejected the evidence"
-    elif primary_response["verdict"] != "PASS" or juror_response["verdict"] != "PASS":
+    elif (
+        primary_response["verdict"] != "PASS"
+        or juror_response["verdict"] != "PASS"
+    ):
         outcome = "ABSTAIN_VISUAL_DISAGREEMENT"
         reason = "qualified visual roles did not form a pass quorum"
     else:

@@ -166,17 +166,27 @@ def build_visual_66_class_gap_matrix(
 ) -> dict[str, Any]:
     """Return the current class-by-class evidence and qualification gaps."""
 
-    if len(ontology_git_commit) != 40 or len(ontology_git_blob) != 40 or not ontology_git_path:
+    if (
+        len(ontology_git_commit) != 40
+        or len(ontology_git_blob) != 40
+        or not ontology_git_path
+    ):
         raise Visual66ClassGapMatrixError("ontology Git provenance is invalid")
     readiness = _load_object(readiness_bytes, name="readiness receipt")
-    validate_visual_reference_readiness(readiness, critic_catalog_bytes=critic_catalog_bytes)
+    validate_visual_reference_readiness(
+        readiness, critic_catalog_bytes=critic_catalog_bytes
+    )
     crosswalk = _load_object(crosswalk_bytes, name="ontology crosswalk")
-    if crosswalk.get("schema_version") != ("maskfactory.nude_external_ontology_crosswalk.v1"):
+    if crosswalk.get("schema_version") != (
+        "maskfactory.nude_external_ontology_crosswalk.v1"
+    ):
         raise Visual66ClassGapMatrixError("ontology crosswalk schema is invalid")
     explicitly_missing = crosswalk.get("not_directly_supplied_as_reliable_fine_masks")
     if not isinstance(explicitly_missing, list):
         raise Visual66ClassGapMatrixError("crosswalk fine-mask exclusions are absent")
-    benchmark_counts = readiness["reference_library"]["benchmark_body_part_tag_counts"]
+    benchmark_counts = readiness["reference_library"][
+        "benchmark_body_part_tag_counts"
+    ]
     rows: list[dict[str, Any]] = []
     for label in _part_labels(ontology_bytes):
         name = str(label["name"])
@@ -194,11 +204,15 @@ def build_visual_66_class_gap_matrix(
                 "enabled": label.get("enabled") is True,
                 "reference_metadata_tag": reference_tag,
                 "reference_benchmark_count": (
-                    int(benchmark_counts.get(reference_tag, 0)) if reference_tag else 0
+                    int(benchmark_counts.get(reference_tag, 0))
+                    if reference_tag
+                    else 0
                 ),
                 "reference_metadata_is_mask_truth": False,
                 "external_annotation_candidate": external,
-                "crosswalk_explicitly_lacks_reliable_fine_mask": (explicit_crosswalk_gap),
+                "crosswalk_explicitly_lacks_reliable_fine_mask": (
+                    explicit_crosswalk_gap
+                ),
                 "completed_calibration_only": completed,
                 "current_qualified_mask_truth": False,
                 "current_qualified_primary": False,

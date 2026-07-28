@@ -50,7 +50,10 @@ def _write_package(root: Path) -> tuple[Path, Path]:
         "schema_version": "1.0.0",
         "archive_sha256": hashlib.sha256(archive_bytes).hexdigest(),
         "archive_bytes": len(archive_bytes),
-        "files": {name: hashlib.sha256(payload).hexdigest() for name, payload in payloads.items()},
+        "files": {
+            name: hashlib.sha256(payload).hexdigest()
+            for name, payload in payloads.items()
+        },
         "chunks": chunks,
     }
     manifest["manifest_sha256"] = canonical_sha256(manifest)
@@ -69,7 +72,9 @@ def _write_registry(
     *,
     kind: str = "package_sync_v1",
 ) -> Path:
-    manifest_doc = json.loads(manifest.read_text(encoding="utf-8")) if manifest.is_file() else {}
+    manifest_doc = (
+        json.loads(manifest.read_text(encoding="utf-8")) if manifest.is_file() else {}
+    )
     registry = seal_registry(
         {
             "schema_version": "maskfactory.transferred_asset_registry.v1",
@@ -80,7 +85,9 @@ def _write_registry(
                     "lifecycle": "active",
                     "manifest_kind": kind,
                     "manifest_path": str(manifest),
-                    "manifest_raw_sha256": (sha256_file(manifest) if manifest.is_file() else None),
+                    "manifest_raw_sha256": (
+                        sha256_file(manifest) if manifest.is_file() else None
+                    ),
                     "manifest_self_sha256": manifest_doc.get("manifest_sha256"),
                     "destination_path": str(destination),
                 }
@@ -245,7 +252,9 @@ def test_corpus_mirror_drift_fails_closed(tmp_path: Path) -> None:
     (destination / "asset.bin").write_bytes(b"drift")
     result = _audit(registry, tmp_path)
     assert result["status"] == "RUNTIME_BLOCKED_DURABILITY"
-    assert "CORPUS_FILE_DRIFT" in {item["code"] for item in result["assets"][0]["issues"]}
+    assert "CORPUS_FILE_DRIFT" in {
+        item["code"] for item in result["assets"][0]["issues"]
+    }
 
 
 def test_missing_manifest_fails_closed(tmp_path: Path) -> None:
@@ -298,7 +307,9 @@ def test_root_overlay_only_fails(tmp_path: Path) -> None:
     registry = _write_registry(tmp_path, manifest, archive)
     result = _audit(registry, tmp_path, destination_device=1)
     assert result["status"] == "RUNTIME_BLOCKED_DURABILITY"
-    assert "ROOT_OVERLAY_ONLY" in {item["code"] for item in result["assets"][0]["issues"]}
+    assert "ROOT_OVERLAY_ONLY" in {
+        item["code"] for item in result["assets"][0]["issues"]
+    }
 
 
 def test_unassembled_destination_fails(tmp_path: Path) -> None:
@@ -307,7 +318,9 @@ def test_unassembled_destination_fails(tmp_path: Path) -> None:
     archive.unlink()
     result = _audit(registry, tmp_path)
     assert result["status"] == "RUNTIME_BLOCKED_DURABILITY"
-    assert "UNASSEMBLED_DESTINATION" in {item["code"] for item in result["assets"][0]["issues"]}
+    assert "UNASSEMBLED_DESTINATION" in {
+        item["code"] for item in result["assets"][0]["issues"]
+    }
 
 
 def test_registry_tamper_and_duplicate_ids_fail(tmp_path: Path) -> None:
@@ -337,4 +350,6 @@ def test_unsupported_manifest_kind_fails(tmp_path: Path) -> None:
         kind="unknown_v1",
     )
     result = _audit(registry, tmp_path)
-    assert "UNSUPPORTED_MANIFEST_KIND" in {item["code"] for item in result["assets"][0]["issues"]}
+    assert "UNSUPPORTED_MANIFEST_KIND" in {
+        item["code"] for item in result["assets"][0]["issues"]
+    }

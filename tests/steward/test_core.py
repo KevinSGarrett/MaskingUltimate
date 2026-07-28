@@ -132,7 +132,9 @@ def test_binding_fails_closed_on_namespace_authority_or_self_hash(tmp_path) -> N
     ):
         authority = binding()
         authority["authority"][denied_authority] = True
-        authority = seal_binding({k: v for k, v in authority.items() if k != "binding_sha256"})
+        authority = seal_binding(
+            {k: v for k, v in authority.items() if k != "binding_sha256"}
+        )
         with pytest.raises(MissionBindingError, match="authority ceiling"):
             ledger.admit(authority)
 

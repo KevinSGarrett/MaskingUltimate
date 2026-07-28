@@ -32,7 +32,9 @@ def _source() -> dict:
         "started_at": "2026-07-26T06:00:00Z",
         "ended_at": "2026-07-26T07:00:00Z",
         "baseline_usage_units_per_accepted_artifact": 100.0,
-        "limitations": ["Static reconciliation fixture; no production campaign claim."],
+        "limitations": [
+            "Static reconciliation fixture; no production campaign claim."
+        ],
     }
 
 
@@ -219,7 +221,10 @@ def test_accepted_artifact_without_produced_evidence_fails_closed() -> None:
     events = [
         event
         for event in events
-        if not (event["kind"] == "artifact_produced" and event["subject_id"] == "artifact-00")
+        if not (
+            event["kind"] == "artifact_produced"
+            and event["subject_id"] == "artifact-00"
+        )
     ]
     for sequence, event in enumerate(events, start=1):
         event["sequence"] = sequence
@@ -277,7 +282,9 @@ def test_duplicate_release_evidence_fails_closed() -> None:
 
 def test_codex_usage_without_accepted_artifact_fails_closed() -> None:
     events = [
-        event for event in _events() if event["kind"] not in {"accepted", "artifact_accepted"}
+        event
+        for event in _events()
+        if event["kind"] not in {"accepted", "artifact_accepted"}
     ]
     for sequence, event in enumerate(events, start=1):
         event["sequence"] = sequence

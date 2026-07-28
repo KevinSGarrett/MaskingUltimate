@@ -124,9 +124,7 @@ def build_cpu_safe_coco_preflight(
             annotation.get("category_id"), f"annotation {annotation_id} category_id"
         )
         if image_id not in image_by_id:
-            raise CocoPreflightError(
-                f"annotation {annotation_id} refers to absent image {image_id}"
-            )
+            raise CocoPreflightError(f"annotation {annotation_id} refers to absent image {image_id}")
         if category_id not in category_by_id:
             raise CocoPreflightError(
                 f"annotation {annotation_id} refers to absent category {category_id}"
@@ -164,8 +162,7 @@ def build_cpu_safe_coco_preflight(
                         "category_id": _identifier(annotation["category_id"], "category id"),
                     }
                     for annotation in sorted(
-                        image_annotations,
-                        key=lambda record: _identifier(record["id"], "annotation id"),
+                        image_annotations, key=lambda record: _identifier(record["id"], "annotation id")
                     )
                 ],
                 "file_name": str(image["file_name"]),
@@ -190,10 +187,7 @@ def build_cpu_safe_coco_preflight(
         },
         "selected_images": selected_images,
         "selected_image_count": len(selected_images),
-        "selection_policy": {
-            "max_images": max_images,
-            "order": "file_name_ascending_then_image_id",
-        },
+        "selection_policy": {"max_images": max_images, "order": "file_name_ascending_then_image_id"},
         "total_annotation_count": len(annotations),
     }
 
@@ -208,9 +202,7 @@ def rasterize_authoritative_polygons(
     expected_document_hash = preflight.get("annotation_document_canonical_sha256")
     actual_document_hash = canonical_sha256(coco)
     if expected_document_hash != actual_document_hash:
-        raise CocoPreflightError(
-            "COCO document hash drifted after preflight; rasterization refused"
-        )
+        raise CocoPreflightError("COCO document hash drifted after preflight; rasterization refused")
     selected = preflight.get("selected_images")
     if not isinstance(selected, list) or not selected:
         raise CocoPreflightError("preflight has no selected image records")
@@ -225,9 +217,7 @@ def rasterize_authoritative_polygons(
     for annotation in _required_list(coco, "annotations"):
         if not isinstance(annotation, Mapping):
             raise CocoPreflightError("every annotations entry must be an object")
-        annotations_by_image[_identifier(annotation.get("image_id"), "annotation image_id")].append(
-            annotation
-        )
+        annotations_by_image[_identifier(annotation.get("image_id"), "annotation image_id")].append(annotation)
 
     destination = Path(output_dir)
     destination.mkdir(parents=True, exist_ok=True)
@@ -244,9 +234,7 @@ def rasterize_authoritative_polygons(
             raise CocoPreflightError(f"preflight filename drifted for image {image_id}")
         source_path = _safe_image_path(root, file_name)
         if sha256_file(source_path) != selected_image.get("source_sha256"):
-            raise CocoPreflightError(
-                f"source image hash drifted for {file_name}; rasterization refused"
-            )
+            raise CocoPreflightError(f"source image hash drifted for {file_name}; rasterization refused")
         width = _positive_integral(image.get("width"), f"image {image_id} width")
         height = _positive_integral(image.get("height"), f"image {image_id} height")
         if (width, height) != (selected_image.get("width"), selected_image.get("height")):
@@ -263,10 +251,7 @@ def rasterize_authoritative_polygons(
             for polygon in _validated_polygons(
                 annotation.get("segmentation"), width, height, annotation_id
             ):
-                draw.polygon(
-                    [(polygon[index], polygon[index + 1]) for index in range(0, len(polygon), 2)],
-                    fill=255,
-                )
+                draw.polygon([(polygon[index], polygon[index + 1]) for index in range(0, len(polygon), 2)], fill=255)
 
         foreground_pixels = mask.histogram()[255]
         total_pixels = width * height
@@ -346,57 +331,36 @@ def _positive_integral(value: Any, label: str) -> int:
 
 
 def _number(value: Any, label: str) -> float:
-    if (
-        isinstance(value, bool)
-        or not isinstance(value, (int, float))
-        or not math.isfinite(float(value))
-    ):
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(float(value)):
         raise CocoPreflightError(f"{label} must be finite numeric")
     return float(value)
 
 
-def _validated_bbox(
-    value: Any, width: int, height: int, annotation_id: str
-) -> tuple[float, float, float, float]:
+def _validated_bbox(value: Any, width: int, height: int, annotation_id: str) -> tuple[float, float, float, float]:
     if not isinstance(value, Sequence) or isinstance(value, (str, bytes)) or len(value) != 4:
         raise CocoPreflightError(f"annotation {annotation_id} bbox must contain four coordinates")
     x, y, box_width, box_height = tuple(
         _number(component, f"annotation {annotation_id} bbox") for component in value
     )
-    if (
-        x < 0
-        or y < 0
-        or box_width <= 0
-        or box_height <= 0
-        or x + box_width > width
-        or y + box_height > height
-    ):
+    if x < 0 or y < 0 or box_width <= 0 or box_height <= 0 or x + box_width > width or y + box_height > height:
         raise CocoPreflightError(f"annotation {annotation_id} bbox lies outside image bounds")
     return x, y, box_width, box_height
 
 
-def _validated_polygons(
-    value: Any, width: int, height: int, annotation_id: str
-) -> list[tuple[float, ...]]:
+def _validated_polygons(value: Any, width: int, height: int, annotation_id: str) -> list[tuple[float, ...]]:
     if not isinstance(value, list) or not value:
-        raise CocoPreflightError(
-            f"annotation {annotation_id} requires non-empty polygon segmentation"
-        )
+        raise CocoPreflightError(f"annotation {annotation_id} requires non-empty polygon segmentation")
     polygons: list[tuple[float, ...]] = []
     for index, raw_polygon in enumerate(value):
         if not isinstance(raw_polygon, list) or len(raw_polygon) < 6 or len(raw_polygon) % 2:
-            raise CocoPreflightError(
-                f"annotation {annotation_id} polygon {index} has invalid coordinate count"
-            )
+            raise CocoPreflightError(f"annotation {annotation_id} polygon {index} has invalid coordinate count")
         polygon = tuple(
             _number(coordinate, f"annotation {annotation_id} polygon {index}")
             for coordinate in raw_polygon
         )
         for x, y in zip(polygon[::2], polygon[1::2], strict=True):
             if x < 0 or y < 0 or x > width or y > height:
-                raise CocoPreflightError(
-                    f"annotation {annotation_id} polygon {index} lies outside image bounds"
-                )
+                raise CocoPreflightError(f"annotation {annotation_id} polygon {index} lies outside image bounds")
         area_twice = abs(
             sum(
                 polygon[offset] * polygon[(offset + 3) % len(polygon)]
@@ -416,15 +380,8 @@ def _verify_polygon_within_bbox(
     x, y, width, height = bbox
     epsilon = 1e-6
     for point_x, point_y in zip(polygon[::2], polygon[1::2], strict=True):
-        if (
-            point_x < x - epsilon
-            or point_x > x + width + epsilon
-            or point_y < y - epsilon
-            or point_y > y + height + epsilon
-        ):
-            raise CocoPreflightError(
-                f"annotation {annotation_id} polygon falls outside declared bbox"
-            )
+        if point_x < x - epsilon or point_x > x + width + epsilon or point_y < y - epsilon or point_y > y + height + epsilon:
+            raise CocoPreflightError(f"annotation {annotation_id} polygon falls outside declared bbox")
 
 
 def _verify_image_dimensions(path: Path, width: int, height: int) -> None:
@@ -435,9 +392,7 @@ def _verify_image_dimensions(path: Path, width: int, height: int) -> None:
     except (OSError, ValueError) as error:
         raise CocoPreflightError(f"cannot decode selected source image {path}: {error}") from error
     if actual != (width, height):
-        raise CocoPreflightError(
-            f"source dimensions {actual} disagree with COCO {(width, height)}: {path}"
-        )
+        raise CocoPreflightError(f"source dimensions {actual} disagree with COCO {(width, height)}: {path}")
 
 
 def _safe_image_path(root: Path, file_name: str) -> Path:

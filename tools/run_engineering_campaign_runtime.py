@@ -58,9 +58,7 @@ def _require_guard_context(
         "MASKFACTORY_SHARED_GPU_GUARD_ACTIVE": "1",
         "MASKFACTORY_SHARED_GPU_GUARD_JOB_ID": campaign_id,
         "MASKFACTORY_SHARED_GPU_GUARD_PAYLOAD_SHA256": payload_sha256,
-        "MASKFACTORY_SHARED_GPU_GUARD_RECEIPT_ROOT": str(
-            campaign_root.resolve()
-        ),
+        "MASKFACTORY_SHARED_GPU_GUARD_RECEIPT_ROOT": str(campaign_root.resolve()),
     }
     for name, value in expected.items():
         if os.environ.get(name) != value:

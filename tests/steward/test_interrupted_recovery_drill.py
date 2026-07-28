@@ -42,9 +42,7 @@ def test_actual_child_interruption_reconstructs_without_resend(tmp_path) -> None
     assert ambiguous["run_count_before_resume_attempt"] == 1
     assert ambiguous["run_count_after_resume_attempt"] == 1
 
-    persisted = json.loads(
-        (root / "interrupted_recovery_result.json").read_text(encoding="utf-8")
-    )
+    persisted = json.loads((root / "interrupted_recovery_result.json").read_text(encoding="utf-8"))
     declared = persisted.pop("result_sha256")
     assert canonical_sha256(persisted) == declared
     with pytest.raises(FileExistsError):
@@ -59,24 +57,26 @@ def test_existing_drill_verifier_replays_hashes_without_rerun(tmp_path) -> None:
 
     assert verification["status"] == "PASS"
     assert verification["result_sha256"] == original["result_sha256"]
-    assert verification["artifact_sha256"]["terminal_receipt"] == original[
-        "persisted_terminal_case"
-    ]["terminal_receipt_sha256"]
-    assert verification["artifact_sha256"]["release"] == original[
-        "persisted_terminal_case"
-    ]["release_sha256"]
+    assert (
+        verification["artifact_sha256"]["terminal_receipt"]
+        == original["persisted_terminal_case"]["terminal_receipt_sha256"]
+    )
+    assert (
+        verification["artifact_sha256"]["release"]
+        == original["persisted_terminal_case"]["release_sha256"]
+    )
 
     (root / "persisted-terminal" / "release.json").write_text("{}\n", encoding="utf-8")
     with pytest.raises(InterruptedRecoveryDrillError, match="release hash drifted"):
         verify_interrupted_recovery_drill(root)
 
 
-def test_relative_output_root_is_resolved_before_child_launch(
-    tmp_path, monkeypatch
-) -> None:
+def test_relative_output_root_is_resolved_before_child_launch(tmp_path, monkeypatch) -> None:
     monkeypatch.chdir(tmp_path)
 
     result = run_interrupted_recovery_drill("relative-interrupted-recovery")
 
     assert result["status"] == "PASS"
-    assert (tmp_path / "relative-interrupted-recovery" / "interrupted_recovery_result.json").is_file()
+    assert (
+        tmp_path / "relative-interrupted-recovery" / "interrupted_recovery_result.json"
+    ).is_file()

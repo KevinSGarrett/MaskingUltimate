@@ -27,9 +27,7 @@ def _manager_module():
 
 def _config(tmp_path: Path) -> OverflowConfig:
     document = yaml.safe_load(
-        (PROJECT_ROOT / "configs" / "runpod_serverless_overflow.yaml").read_text(
-            encoding="utf-8"
-        )
+        (PROJECT_ROOT / "configs" / "runpod_serverless_overflow.yaml").read_text(encoding="utf-8")
     )
     document["durability"]["runpod_root"] = str(tmp_path / "broker")
     config_path = tmp_path / "config.yaml"

@@ -58,13 +58,21 @@ def validate_wheel_runtime_closure(
             if len(set(names)) != len(names):
                 issues.append(("/wheel", "duplicate_member", "wheel has duplicate archive members"))
             metadata_names = [name for name in names if name.endswith(".dist-info/METADATA")]
-            entrypoint_names = [name for name in names if name.endswith(".dist-info/entry_points.txt")]
+            entrypoint_names = [
+                name for name in names if name.endswith(".dist-info/entry_points.txt")
+            ]
             record_names = [name for name in names if name.endswith(".dist-info/RECORD")]
             if len(metadata_names) != 1:
-                issues.append(("/metadata", "metadata_member", "wheel must contain one METADATA file"))
+                issues.append(
+                    ("/metadata", "metadata_member", "wheel must contain one METADATA file")
+                )
             if len(entrypoint_names) != 1:
                 issues.append(
-                    ("/entry_points", "entrypoint_member", "wheel must contain one entry_points file")
+                    (
+                        "/entry_points",
+                        "entrypoint_member",
+                        "wheel must contain one entry_points file",
+                    )
                 )
             if len(record_names) != 1:
                 issues.append(("/record", "record_member", "wheel must contain one RECORD file"))
@@ -118,21 +126,31 @@ def validate_wheel_runtime_closure(
                     )
                 )
 
-            record_rows = list(csv.reader(archive.read(record_names[0]).decode("utf-8").splitlines()))
+            record_rows = list(
+                csv.reader(archive.read(record_names[0]).decode("utf-8").splitlines())
+            )
             record_by_name: dict[str, tuple[str, str]] = {}
             for row in record_rows:
                 if len(row) != 3 or not row[0]:
                     issues.append(("/record", "record_row", "wheel RECORD contains an invalid row"))
                     continue
                 if row[0] in record_by_name:
-                    issues.append(("/record", "record_duplicate", "wheel RECORD has duplicate paths"))
+                    issues.append(
+                        ("/record", "record_duplicate", "wheel RECORD has duplicate paths")
+                    )
                     continue
                 record_by_name[row[0]] = (row[1], row[2])
 
             for name in names:
                 digest, size = record_by_name.get(name, (None, None))
                 if digest is None:
-                    issues.append(("/record", "record_missing_member", f"wheel member missing from RECORD: {name}"))
+                    issues.append(
+                        (
+                            "/record",
+                            "record_missing_member",
+                            f"wheel member missing from RECORD: {name}",
+                        )
+                    )
                     continue
                 if name == record_names[0]:
                     if digest or size:
@@ -141,9 +159,13 @@ def validate_wheel_runtime_closure(
                         )
                     continue
                 if not digest.startswith("sha256="):
-                    issues.append(("/record", "record_algorithm", f"wheel RECORD lacks sha256 for: {name}"))
+                    issues.append(
+                        ("/record", "record_algorithm", f"wheel RECORD lacks sha256 for: {name}")
+                    )
                     continue
-                expected_digest = base64.urlsafe_b64encode(hashlib.sha256(archive.read(name)).digest())
+                expected_digest = base64.urlsafe_b64encode(
+                    hashlib.sha256(archive.read(name)).digest()
+                )
                 expected_digest = expected_digest.rstrip(b"=").decode("ascii")
                 if digest.removeprefix("sha256=") != expected_digest:
                     issues.append(("/record", "record_hash", f"wheel RECORD hash mismatch: {name}"))
@@ -151,7 +173,9 @@ def validate_wheel_runtime_closure(
                     issues.append(("/record", "record_size", f"wheel RECORD size mismatch: {name}"))
             for name in record_by_name:
                 if name not in names:
-                    issues.append(("/record", "record_unknown_member", f"RECORD names absent member: {name}"))
+                    issues.append(
+                        ("/record", "record_unknown_member", f"RECORD names absent member: {name}")
+                    )
     except (OSError, UnicodeDecodeError, zipfile.BadZipFile) as exc:
         return (("/wheel", "wheel_decode", str(exc)),)
     return tuple(sorted(set(issues)))

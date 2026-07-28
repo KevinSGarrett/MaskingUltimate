@@ -26,8 +26,7 @@ def _auxiliary_payload_cache_available() -> bool:
         (ROOT / "configs" / "civitai_auxiliary_detectors.yaml").read_text(encoding="utf-8")
     )
     return all(
-        (ROOT / str(record["payload_path"])).is_file()
-        for record in registry.get("detectors", ())
+        (ROOT / str(record["payload_path"])).is_file() for record in registry.get("detectors", ())
     )
 
 

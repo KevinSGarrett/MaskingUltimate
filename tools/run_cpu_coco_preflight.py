@@ -23,10 +23,18 @@ from maskfactory.qa.coco_preflight import (
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--coco", required=True, type=Path, help="authoritative COCO annotations JSON")
-    parser.add_argument("--image-root", required=True, type=Path, help="root for COCO file_name values")
-    parser.add_argument("--output-dir", required=True, type=Path, help="new, immutable artifact directory")
-    parser.add_argument("--max-images", default=32, type=int, help="lexically selected images to validate")
+    parser.add_argument(
+        "--coco", required=True, type=Path, help="authoritative COCO annotations JSON"
+    )
+    parser.add_argument(
+        "--image-root", required=True, type=Path, help="root for COCO file_name values"
+    )
+    parser.add_argument(
+        "--output-dir", required=True, type=Path, help="new, immutable artifact directory"
+    )
+    parser.add_argument(
+        "--max-images", default=32, type=int, help="lexically selected images to validate"
+    )
     return parser.parse_args()
 
 
@@ -44,9 +52,7 @@ def main() -> int:
     staging = output_dir.parent / f".{output_dir.name}.staging-{uuid.uuid4().hex}"
     try:
         staging.mkdir(parents=True, exist_ok=False)
-        preflight = build_cpu_safe_coco_preflight(
-            document, image_root, max_images=args.max_images
-        )
+        preflight = build_cpu_safe_coco_preflight(document, image_root, max_images=args.max_images)
         preflight["annotation_file_sha256"] = sha256_file(coco_path)
         write_json_atomically(staging / "input_manifest.json", preflight)
         raster_qa = rasterize_authoritative_polygons(
@@ -65,9 +71,7 @@ def main() -> int:
             },
             "outputs": {
                 "input_manifest_sha256": sha256_file(staging / "input_manifest.json"),
-                "rasterized_masks_qa_sha256": sha256_file(
-                    staging / "rasterized_masks_qa.json"
-                ),
+                "rasterized_masks_qa_sha256": sha256_file(staging / "rasterized_masks_qa.json"),
             },
             "validation_contract": {
                 "authoritative_polygons_required": True,
@@ -81,7 +85,15 @@ def main() -> int:
         if staging.exists():
             shutil.rmtree(staging)
         raise
-    print(json.dumps({"output_dir": str(output_dir), "receipt_sha256": sha256_file(output_dir / "run_receipt.json")}, sort_keys=True))
+    print(
+        json.dumps(
+            {
+                "output_dir": str(output_dir),
+                "receipt_sha256": sha256_file(output_dir / "run_receipt.json"),
+            },
+            sort_keys=True,
+        )
+    )
     return 0
 
 

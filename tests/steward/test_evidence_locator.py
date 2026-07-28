@@ -128,7 +128,9 @@ def _entry(*, disposition: str = "accepted", parent: str | None = "campaign-25")
 def _locator(*, entries: list[dict] | None = None) -> dict:
     return build_evidence_locator(
         entries=entries or [_entry()],
-        authority_file_sha256={location: _sha(content) for location, content in AUTHORITY_CONTENT.items()},
+        authority_file_sha256={
+            location: _sha(content) for location, content in AUTHORITY_CONTENT.items()
+        },
         limitations=["The locator is an index, not a release or completion claim."],
     )
 
@@ -172,7 +174,9 @@ def test_tampering_relative_paths_hashes_and_duplicate_parent_are_rejected() -> 
 
     changed = copy.deepcopy(locator)
     changed["entries"].append(copy.deepcopy(changed["entries"][0]))
-    changed["entries"].sort(key=lambda entry: (entry["tracker_item"], entry["parent_campaign_id"] or ""))
+    changed["entries"].sort(
+        key=lambda entry: (entry["tracker_item"], entry["parent_campaign_id"] or "")
+    )
     with pytest.raises(EvidenceLocatorError, match="sorted and unique"):
         validate_evidence_locator(seal_evidence_locator(changed))
 

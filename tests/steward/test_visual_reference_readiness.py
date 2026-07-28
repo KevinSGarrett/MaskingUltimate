@@ -56,9 +56,7 @@ def _library(path: Path) -> None:
         "INSERT INTO pipeline_meta VALUES (?, ?)",
         [(key, json.dumps(value)) for key, value in meta.items()],
     )
-    connection.execute(
-        "INSERT INTO selections VALUES ('sample.png', 'benchmark_reference')"
-    )
+    connection.execute("INSERT INTO selections VALUES ('sample.png', 'benchmark_reference')")
     connection.execute(
         """
         INSERT INTO visual_index VALUES(
@@ -142,19 +140,14 @@ def test_builds_hash_bound_reference_only_readiness(tmp_path: Path) -> None:
     assert receipt["readiness"]["ready_for_visual_qualification"] is False
     assert receipt["readiness"]["ready_for_source_bound_candidate_screening"]
     assert receipt["readiness"]["ready_for_source_bound_candidate_selection"] is False
-    assert receipt["readiness"][
-        "metadata_candidate_selection_requires_direct_visual_confirmation"
-    ]
+    assert receipt["readiness"]["metadata_candidate_selection_requires_direct_visual_confirmation"]
     assert receipt["readiness"]["all_declared_body_part_focus_tags_represented"]
     assert receipt["annotation_registry"]["annotation_files_verified"] == 1
     assert receipt["reference_library"]["benchmark_body_part_tag_counts"] == {
         "part_foot_toes": 1,
         "part_hand_fingers": 1,
     }
-    assert all(
-        source["sha256"] and source["bytes"] > 0
-        for source in receipt["sources"].values()
-    )
+    assert all(source["sha256"] and source["bytes"] > 0 for source in receipt["sources"].values())
 
 
 def test_validator_rejects_authority_escalation(tmp_path: Path) -> None:
@@ -204,23 +197,16 @@ def test_builder_reports_missing_declared_tag(tmp_path: Path) -> None:
     connection.close()
     rebuilt = build_visual_reference_readiness(
         inventory_summary=Path(receipt["sources"]["inventory_summary"]["path"]),
-        inventory_database=Path(
-            receipt["sources"]["inventory_database"]["path"]
-        ),
+        inventory_database=Path(receipt["sources"]["inventory_database"]["path"]),
         library_database=database,
         dataset_registry=Path(receipt["sources"]["dataset_registry"]["path"]),
-        ontology_crosswalk=Path(
-            receipt["sources"]["ontology_crosswalk"]["path"]
-        ),
+        ontology_crosswalk=Path(receipt["sources"]["ontology_crosswalk"]["path"]),
         observed_at_utc="2026-07-27T00:00:00Z",
     )
-    assert rebuilt["reference_library"][
-        "benchmark_missing_body_part_focus_tags"
-    ] == ["part_missing"]
-    assert (
-        rebuilt["readiness"]["all_declared_body_part_focus_tags_represented"]
-        is False
-    )
+    assert rebuilt["reference_library"]["benchmark_missing_body_part_focus_tags"] == [
+        "part_missing"
+    ]
+    assert rebuilt["readiness"]["all_declared_body_part_focus_tags_represented"] is False
 
 
 def test_builder_rejects_annotation_hash_drift(tmp_path: Path) -> None:
@@ -234,18 +220,10 @@ def test_builder_rejects_annotation_hash_drift(tmp_path: Path) -> None:
         match="annotation hash mismatch",
     ):
         build_visual_reference_readiness(
-            inventory_summary=Path(
-                receipt["sources"]["inventory_summary"]["path"]
-            ),
-            inventory_database=Path(
-                receipt["sources"]["inventory_database"]["path"]
-            ),
-            library_database=Path(
-                receipt["sources"]["library_database"]["path"]
-            ),
+            inventory_summary=Path(receipt["sources"]["inventory_summary"]["path"]),
+            inventory_database=Path(receipt["sources"]["inventory_database"]["path"]),
+            library_database=Path(receipt["sources"]["library_database"]["path"]),
             dataset_registry=registry_path,
-            ontology_crosswalk=Path(
-                receipt["sources"]["ontology_crosswalk"]["path"]
-            ),
+            ontology_crosswalk=Path(receipt["sources"]["ontology_crosswalk"]["path"]),
             observed_at_utc="2026-07-27T00:00:00Z",
         )

@@ -46,7 +46,7 @@ maskfactory = ["schemas/*.json"]
 line-length = 100
 target-version = "py311"
 src = ["src", "tests"]
-extend-exclude = ["Plan", "cvat", "env", "build", "dist"]
+extend-exclude = ["Plan", "cvat", "env", "runtime_artifacts", "build", "dist"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "W"]
@@ -63,6 +63,20 @@ known-first-party = ["maskfactory"]
 [tool.black]
 line-length = 100
 target-version = ["py311"]
+# These five runtime/test launch surfaces are exact-byte inputs to deployed
+# GPU/runtime locks. Reformat them only as an explicit lock migration with
+# corresponding remote-runtime requalification.
+force-exclude = '''
+/(
+    runtime_artifacts/
+  |
+    tools/manage_shared_pod_gpu_lease_v2\.py
+  | tools/run_visual_critic_calibration\.py
+  | tools/eomt_dinov3_66_class_shadow\.py
+  | tools/run_sam3d_body_repeatability_v3\.py
+  | tests/test_eomt_dinov3_contract\.py
+)$
+'''
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

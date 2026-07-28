@@ -42,9 +42,7 @@ class StoragePolicy:
     def from_mapping(cls, value: Mapping[str, Any]) -> "StoragePolicy":
         if value.get("schema_version") != SCHEMA_VERSION:
             raise StorageGuardError("storage policy schema mismatch")
-        warning_gib = _positive_int(
-            value.get("warning_free_gib"), field="warning_free_gib"
-        )
+        warning_gib = _positive_int(value.get("warning_free_gib"), field="warning_free_gib")
         floor_gib = _positive_int(
             value.get("new_allocation_floor_gib"),
             field="new_allocation_floor_gib",
@@ -53,9 +51,7 @@ class StoragePolicy:
             raise StorageGuardError("allocation floor cannot exceed warning threshold")
         allowed = value.get("full_repository_bundle_allowed")
         if not isinstance(allowed, bool):
-            raise StorageGuardError(
-                "full_repository_bundle_allowed must be boolean"
-            )
+            raise StorageGuardError("full_repository_bundle_allowed must be boolean")
         return cls(
             warning_free_bytes=warning_gib * 1024**3,
             allocation_floor_bytes=floor_gib * 1024**3,
@@ -125,10 +121,7 @@ class LocalStorageGuard:
             raise StorageGuardError("expected_bytes must be a non-negative integer")
         if not isinstance(free_bytes, int) or free_bytes < 0:
             raise StorageGuardError("free_bytes must be a non-negative integer")
-        if (
-            kind == "full_repository_bundle"
-            and not self.policy.full_repository_bundle_allowed
-        ):
+        if kind == "full_repository_bundle" and not self.policy.full_repository_bundle_allowed:
             raise StorageGuardError("full repository bundles are prohibited")
         if (
             kind == "incremental_backup"
@@ -137,9 +130,7 @@ class LocalStorageGuard:
             raise StorageGuardError("incremental backup exceeds the local size cap")
         remaining = free_bytes - expected_bytes
         if remaining < self.policy.allocation_floor_bytes:
-            raise StorageGuardError(
-                "allocation would violate the local free-space floor"
-            )
+            raise StorageGuardError("allocation would violate the local free-space floor")
 
 
 def worktree_retirement_allowed(

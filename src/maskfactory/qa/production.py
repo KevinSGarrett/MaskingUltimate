@@ -47,6 +47,7 @@ _SKELETON_SIDE_CHAINS = {
     "toes": ((15,), (16,)),
 }
 
+
 def run_s10_production(
     *,
     image_id: str,

@@ -30,17 +30,10 @@ def test_all_route_fault_drill_interrupts_reconstructs_and_releases(
         for case in receipt["routes"]
     )
     assert all(case["final_state"] == "completed" for case in receipt["routes"])
-    assert all(
-        case["active_attempts_after_release"] == 0 for case in receipt["routes"]
-    )
+    assert all(case["active_attempts_after_release"] == 0 for case in receipt["routes"])
     assert all(case["protected_token_removed"] for case in receipt["routes"])
-    assert all(
-        not (root / case["route"] / "owner.token").exists()
-        for case in receipt["routes"]
-    )
-    persisted = json.loads(
-        (root / "route_fault_drill_receipt.json").read_text(encoding="utf-8")
-    )
+    assert all(not (root / case["route"] / "owner.token").exists() for case in receipt["routes"])
+    persisted = json.loads((root / "route_fault_drill_receipt.json").read_text(encoding="utf-8"))
     assert persisted == receipt
     validate_route_fault_drill_receipt(persisted)
 

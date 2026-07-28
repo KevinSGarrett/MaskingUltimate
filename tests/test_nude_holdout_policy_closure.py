@@ -63,7 +63,9 @@ def _write_fixture(tmp_path: Path) -> tuple[dict[str, object], Path, Path]:
         },
     ]
     split_path = tmp_path / "split_mapping.jsonl"
-    split_path.write_text("".join(f"{json.dumps(row, sort_keys=True)}\n" for row in split_rows), encoding="utf-8")
+    split_path.write_text(
+        "".join(f"{json.dumps(row, sort_keys=True)}\n" for row in split_rows), encoding="utf-8"
+    )
     bindings = [
         {
             "sample_id": row["sample_id"],
@@ -122,7 +124,9 @@ def test_exact_full_product_policy_contract_is_frozen_and_nontraining() -> None:
 
 def test_live_frozen_holdout_requires_exact_source_and_group_bindings(tmp_path: Path) -> None:
     policy, shard_path, split_path = _write_fixture(tmp_path)
-    result = validate_live_holdout_bindings(policy, shard_path=shard_path, split_mapping_path=split_path)
+    result = validate_live_holdout_bindings(
+        policy, shard_path=shard_path, split_mapping_path=split_path
+    )
     assert result["status"] == "PASS_FROZEN_HOLDOUT_BINDINGS"
     assert result["cross_partition_group_count"] == 0
 
@@ -145,7 +149,9 @@ def test_live_binding_rejects_cross_partition_related_group(tmp_path: Path) -> N
         "assigned_partition": "training",
         "source_sha256": "c" * 64,
     }
-    split_path.write_text(split_path.read_text(encoding="utf-8") + json.dumps(extra) + "\n", encoding="utf-8")
+    split_path.write_text(
+        split_path.read_text(encoding="utf-8") + json.dumps(extra) + "\n", encoding="utf-8"
+    )
     policy["split_mapping_file_sha256"] = hashlib.sha256(split_path.read_bytes()).hexdigest()
     policy["policy_sha256"] = policy_sha256(policy)
     with pytest.raises(NudeHoldoutPolicyError, match="holdout_group_partition_leak"):

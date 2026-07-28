@@ -68,9 +68,7 @@ def test_broker_paths_allow_explicit_execution_host_mapping() -> None:
     assert manager == Path(
         "/mnt/c/Comfy_UI_Main_Masking/tools/manage_runpod_serverless_overflow.py"
     )
-    assert config == Path(
-        "/mnt/c/Comfy_UI_Main_Masking/configs/runpod_serverless_overflow.yaml"
-    )
+    assert config == Path("/mnt/c/Comfy_UI_Main_Masking/configs/runpod_serverless_overflow.yaml")
     assert broker_root == Path("/workspace/.maskfactory/serverless_overflow")
 
 

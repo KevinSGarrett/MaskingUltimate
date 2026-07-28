@@ -56,6 +56,7 @@ def _providers(*, emit: bool = True):
                 "value": (2, 2, 8, 8),
             },
         )
+
     def refine(_embedding, *, prompt):
         mask = np.zeros((12, 16), dtype=bool)
         if prompt["box_xyxy"] is not None:

@@ -58,9 +58,7 @@ def _evaluate(mask: object, **kwargs: object) -> dict:
 
 
 def _check_status(result: dict, name: str) -> str:
-    return next(
-        row["status"] for row in result["initial_checks"] if row["name"] == name
-    )
+    return next(row["status"] for row in result["initial_checks"] if row["name"] == name)
 
 
 def test_valid_candidate_passes_every_hard_check_and_preserves_parent() -> None:
@@ -245,9 +243,7 @@ def test_provider_disagreement_abstains_without_blocking_unrelated_records() -> 
     }
     independent = {
         "record_id": "independent",
-        "candidates": [
-            {"provider_id": "c", "label_id": 1, "mask": _valid_mask()}
-        ],
+        "candidates": [{"provider_id": "c", "label_id": 1, "mask": _valid_mask()}],
         "resources": _resources(),
         "target_label_id": 1,
         "ontology_label_ids": [1, 2],
@@ -264,15 +260,16 @@ def test_provider_disagreement_abstains_without_blocking_unrelated_records() -> 
     assert campaign["records"][0]["reason"] == "provider_disagreement"
     assert campaign["records"][1]["record_outcome"] == "PASS"
     assert campaign["passed_record_count"] == 1
-    assert validate_mask_campaign(campaign, records=[disagreement, independent], limits=limits) == campaign
+    assert (
+        validate_mask_campaign(campaign, records=[disagreement, independent], limits=limits)
+        == campaign
+    )
 
 
 def test_bad_record_does_not_block_unrelated_record() -> None:
     good = {
         "record_id": "good",
-        "candidates": [
-            {"provider_id": "a", "label_id": 1, "mask": _valid_mask()}
-        ],
+        "candidates": [{"provider_id": "a", "label_id": 1, "mask": _valid_mask()}],
         "resources": _resources(),
         "target_label_id": 1,
         "ontology_label_ids": [1, 2],
@@ -290,19 +287,20 @@ def test_bad_record_does_not_block_unrelated_record() -> None:
     assert campaign["records"][0]["record_outcome"] == "ABSTAIN"
     assert campaign["records"][1]["record_outcome"] == "PASS"
     assert campaign["passed_record_count"] == 1
-    assert validate_mask_campaign(
-        campaign,
-        records=[bad, good],
-        limits=MaskHardQALimits(max_components=1, max_repair_attempts=0),
-    ) == campaign
+    assert (
+        validate_mask_campaign(
+            campaign,
+            records=[bad, good],
+            limits=MaskHardQALimits(max_components=1, max_repair_attempts=0),
+        )
+        == campaign
+    )
 
 
 def test_rehashed_campaign_outcome_drift_is_rejected() -> None:
     record = {
         "record_id": "good",
-        "candidates": [
-            {"provider_id": "a", "label_id": 1, "mask": _valid_mask()}
-        ],
+        "candidates": [{"provider_id": "a", "label_id": 1, "mask": _valid_mask()}],
         "resources": _resources(),
         "target_label_id": 1,
         "ontology_label_ids": [1, 2],
@@ -311,13 +309,19 @@ def test_rehashed_campaign_outcome_drift_is_rejected() -> None:
     campaign = evaluate_mask_campaign([record], limits=limits)
     campaign["passed_record_count"] = 0
     campaign["campaign_sha256"] = "0" * 64
-    campaign["campaign_sha256"] = __import__("hashlib").sha256(
-        __import__("json").dumps(
-            campaign,
-            sort_keys=True,
-            separators=(",", ":"),
-        ).encode("utf-8")
-    ).hexdigest()
+    campaign["campaign_sha256"] = (
+        __import__("hashlib")
+        .sha256(
+            __import__("json")
+            .dumps(
+                campaign,
+                sort_keys=True,
+                separators=(",", ":"),
+            )
+            .encode("utf-8")
+        )
+        .hexdigest()
+    )
 
     with pytest.raises(MaskHardQAError, match="differs from deterministic"):
         validate_mask_campaign(campaign, records=[record], limits=limits)

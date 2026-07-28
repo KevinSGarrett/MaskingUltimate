@@ -123,31 +123,24 @@ def evaluate_campaign_slo(
     if released_cells > local_cells:
         raise CampaignSloError("released local GPU work cells exceed admitted cells")
     release_fraction = (
-        _ratio(released_cells, local_cells, field="local GPU release")
-        if local_cells
-        else 1.0
+        _ratio(released_cells, local_cells, field="local GPU release") if local_cells else 1.0
     )
     metrics = {
         "autonomously_prepared_fraction": autonomous_fraction,
         "routine_handoffs_per_campaign_bound": handoffs_per_bound,
         "codex_usage_reduction_fraction": codex_reduction,
-        "duplicate_inference_submissions": integrity[
-            "duplicate_inference_submissions"
-        ],
+        "duplicate_inference_submissions": integrity["duplicate_inference_submissions"],
         "duplicate_promotions": integrity["duplicate_promotions"],
         "terminal_reconciliation_fraction": reconciliation_fraction,
         "local_gpu_release_fraction": release_fraction,
         "authority_bypasses": integrity["authority_bypasses"],
     }
     gates = {
-        "autonomous_preparation": (
-            autonomous_fraction >= AUTONOMOUS_PREPARATION_TARGET
-        ),
+        "autonomous_preparation": (autonomous_fraction >= AUTONOMOUS_PREPARATION_TARGET),
         "handoff_suppression": handoffs_per_bound <= 1.0,
         "codex_reduction": codex_reduction >= CODEX_REDUCTION_TARGET,
         "zero_duplicates": (
-            metrics["duplicate_inference_submissions"] == 0
-            and metrics["duplicate_promotions"] == 0
+            metrics["duplicate_inference_submissions"] == 0 and metrics["duplicate_promotions"] == 0
         ),
         "full_terminal_reconciliation": reconciliation_fraction == 1.0,
         "full_local_gpu_release": release_fraction == 1.0,

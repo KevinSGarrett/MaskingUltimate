@@ -275,9 +275,7 @@ class FallbackCampaignProducer:
                     payload_sha256=hashlib.sha256(encoded).hexdigest(),
                     estimated_context_tokens=max(256, (len(encoded) + 3) // 4),
                     dependency_ids=(
-                        ()
-                        if include_blocked_dependencies
-                        else tuple(packet["dependency_ids"])
+                        () if include_blocked_dependencies else tuple(packet["dependency_ids"])
                     ),
                     status=str(item.get("status")),
                 )
@@ -351,127 +349,127 @@ class FallbackCampaignProducer:
         work_kind: str,
         include_blocked: bool,
     ) -> dict[str, Any]:
-            prior_terminal = self._terminal_campaign(
-                campaign_id=campaign.campaign_id,
-                tracker_sha256=tracker_sha256,
-            )
-            if prior_terminal is not None:
-                return {
-                    "mission_id": prior_terminal,
-                    "campaign_id": campaign.campaign_id,
-                    "work_kind": work_kind,
-                    "item_ids": list(campaign.item_ids),
-                    "created": False,
-                    "terminal_reused": True,
-                }
-            packet = {
-                "schema_version": PRODUCER_SCHEMA,
-                "tracker_sha256": tracker_sha256,
-                "openrouter_manager_sha256": manager_sha256,
-                "openrouter_policy_sha256": policy_sha256,
+        prior_terminal = self._terminal_campaign(
+            campaign_id=campaign.campaign_id,
+            tracker_sha256=tracker_sha256,
+        )
+        if prior_terminal is not None:
+            return {
+                "mission_id": prior_terminal,
                 "campaign_id": campaign.campaign_id,
-                "campaign_kind": "plan27_engineering",
-                "advisory_work_kind": work_kind,
-                "blocked_dependency_analysis": include_blocked,
-                "item_count": len(campaign.item_ids),
+                "work_kind": work_kind,
                 "item_ids": list(campaign.item_ids),
-                "items": [packets[item_id] for item_id in campaign.item_ids],
-                "authority": AUTHORITY,
+                "created": False,
+                "terminal_reused": True,
             }
-            parent_contract_sha256 = _canonical_sha256(packet)
-            parent_campaign_id = _canonical_sha256(
-                {
-                    "schema_version": "maskfactory.steward.fallback_parent_identity.v1",
-                    "session_id": self.session_id,
-                    "source_campaign_id": campaign.campaign_id,
-                    "parent_contract_sha256": parent_contract_sha256,
-                }
-            )
-            prompt = _prompt(packet, work_kind=work_kind)
-            prompt_bytes = prompt.encode("utf-8")
-            prompt_sha256 = hashlib.sha256(prompt_bytes).hexdigest()
-            required_child_roles = ("consolidated_advisory",)
-            mission_id = fallback_child_mission_id(
-                session_id=self.session_id,
-                parent_campaign_id=parent_campaign_id,
-                parent_contract_sha256=parent_contract_sha256,
-                required_child_roles=required_child_roles,
-                child_role="consolidated_advisory",
-                route="openrouter_advisory",
-            )
-            if not SHA256_RE.fullmatch(mission_id):
-                raise FallbackCampaignProducerError("derived mission identity is invalid")
-            mission_root = self.inbox_root / mission_id
-            if mission_root.exists():
-                return {
-                    "mission_id": mission_id,
-                    "campaign_id": campaign.campaign_id,
-                    "parent_campaign_id": parent_campaign_id,
-                    "work_kind": work_kind,
-                    "item_ids": list(campaign.item_ids),
-                    "created": False,
-                }
-
-            temporary = self.inbox_root / f".{mission_id}.{os.getpid()}.tmp"
-            temporary.mkdir(mode=0o700)
-            try:
-                _write_exclusive(temporary / "campaign_input.json", _json_bytes(packet))
-                _write_exclusive(temporary / "prompt.txt", prompt_bytes)
-                request = {
-                    "schema_version": REQUEST_SCHEMA,
-                    "mission_id": mission_id,
-                    "session_id": self.session_id,
-                    "job_id": f"mf-plan27-{mission_id[:20]}",
-                    "parent_campaign_id": parent_campaign_id,
-                    "parent_contract_sha256": parent_contract_sha256,
-                    "child_role": "consolidated_advisory",
-                    "work_kind": work_kind,
-                    "model_tier": "routine",
-                    "materially_difficult": False,
-                    "prompt_sha256": prompt_sha256,
-                    "max_output_tokens": self.max_output_tokens,
-                    "attachments": [],
-                    "attachment_sha256": [],
-                    "system_prompt_file": None,
-                    "system_prompt_sha256": None,
-                    "authority": AUTHORITY,
-                }
-                _write_exclusive(temporary / "request.json", _json_bytes(request))
-                work_item = seal_fallback_work_item(
-                    {
-                        "schema_version": WORK_ITEM_SCHEMA,
-                        "mission_id": mission_id,
-                        "session_id": self.session_id,
-                        "parent_campaign_id": parent_campaign_id,
-                        "parent_contract_sha256": parent_contract_sha256,
-                        "required_child_roles": list(required_child_roles),
-                        "child_role": "consolidated_advisory",
-                        "route": "openrouter_advisory",
-                        "payload_sha256": _file_sha256(temporary / "request.json"),
-                        "request_file": "request.json",
-                        "prompt_file": "prompt.txt",
-                        "pod_state": "unavailable",
-                        "serverless_state": "available",
-                        "tracker_item_ids": list(campaign.item_ids),
-                        "openrouter_manager_sha256": manager_sha256,
-                        "openrouter_policy_sha256": policy_sha256,
-                    }
-                )
-                _write_exclusive(temporary / WORK_ITEM_NAME, _json_bytes(work_item))
-                os.replace(temporary, mission_root)
-            except BaseException:
-                shutil.rmtree(temporary, ignore_errors=True)
-                raise
+        packet = {
+            "schema_version": PRODUCER_SCHEMA,
+            "tracker_sha256": tracker_sha256,
+            "openrouter_manager_sha256": manager_sha256,
+            "openrouter_policy_sha256": policy_sha256,
+            "campaign_id": campaign.campaign_id,
+            "campaign_kind": "plan27_engineering",
+            "advisory_work_kind": work_kind,
+            "blocked_dependency_analysis": include_blocked,
+            "item_count": len(campaign.item_ids),
+            "item_ids": list(campaign.item_ids),
+            "items": [packets[item_id] for item_id in campaign.item_ids],
+            "authority": AUTHORITY,
+        }
+        parent_contract_sha256 = _canonical_sha256(packet)
+        parent_campaign_id = _canonical_sha256(
+            {
+                "schema_version": "maskfactory.steward.fallback_parent_identity.v1",
+                "session_id": self.session_id,
+                "source_campaign_id": campaign.campaign_id,
+                "parent_contract_sha256": parent_contract_sha256,
+            }
+        )
+        prompt = _prompt(packet, work_kind=work_kind)
+        prompt_bytes = prompt.encode("utf-8")
+        prompt_sha256 = hashlib.sha256(prompt_bytes).hexdigest()
+        required_child_roles = ("consolidated_advisory",)
+        mission_id = fallback_child_mission_id(
+            session_id=self.session_id,
+            parent_campaign_id=parent_campaign_id,
+            parent_contract_sha256=parent_contract_sha256,
+            required_child_roles=required_child_roles,
+            child_role="consolidated_advisory",
+            route="openrouter_advisory",
+        )
+        if not SHA256_RE.fullmatch(mission_id):
+            raise FallbackCampaignProducerError("derived mission identity is invalid")
+        mission_root = self.inbox_root / mission_id
+        if mission_root.exists():
             return {
                 "mission_id": mission_id,
                 "campaign_id": campaign.campaign_id,
                 "parent_campaign_id": parent_campaign_id,
                 "work_kind": work_kind,
                 "item_ids": list(campaign.item_ids),
-                "created": True,
-                "request_sha256": _file_sha256(mission_root / "request.json"),
-                "work_item_sha256": _file_sha256(mission_root / WORK_ITEM_NAME),
+                "created": False,
             }
+
+        temporary = self.inbox_root / f".{mission_id}.{os.getpid()}.tmp"
+        temporary.mkdir(mode=0o700)
+        try:
+            _write_exclusive(temporary / "campaign_input.json", _json_bytes(packet))
+            _write_exclusive(temporary / "prompt.txt", prompt_bytes)
+            request = {
+                "schema_version": REQUEST_SCHEMA,
+                "mission_id": mission_id,
+                "session_id": self.session_id,
+                "job_id": f"mf-plan27-{mission_id[:20]}",
+                "parent_campaign_id": parent_campaign_id,
+                "parent_contract_sha256": parent_contract_sha256,
+                "child_role": "consolidated_advisory",
+                "work_kind": work_kind,
+                "model_tier": "routine",
+                "materially_difficult": False,
+                "prompt_sha256": prompt_sha256,
+                "max_output_tokens": self.max_output_tokens,
+                "attachments": [],
+                "attachment_sha256": [],
+                "system_prompt_file": None,
+                "system_prompt_sha256": None,
+                "authority": AUTHORITY,
+            }
+            _write_exclusive(temporary / "request.json", _json_bytes(request))
+            work_item = seal_fallback_work_item(
+                {
+                    "schema_version": WORK_ITEM_SCHEMA,
+                    "mission_id": mission_id,
+                    "session_id": self.session_id,
+                    "parent_campaign_id": parent_campaign_id,
+                    "parent_contract_sha256": parent_contract_sha256,
+                    "required_child_roles": list(required_child_roles),
+                    "child_role": "consolidated_advisory",
+                    "route": "openrouter_advisory",
+                    "payload_sha256": _file_sha256(temporary / "request.json"),
+                    "request_file": "request.json",
+                    "prompt_file": "prompt.txt",
+                    "pod_state": "unavailable",
+                    "serverless_state": "available",
+                    "tracker_item_ids": list(campaign.item_ids),
+                    "openrouter_manager_sha256": manager_sha256,
+                    "openrouter_policy_sha256": policy_sha256,
+                }
+            )
+            _write_exclusive(temporary / WORK_ITEM_NAME, _json_bytes(work_item))
+            os.replace(temporary, mission_root)
+        except BaseException:
+            shutil.rmtree(temporary, ignore_errors=True)
+            raise
+        return {
+            "mission_id": mission_id,
+            "campaign_id": campaign.campaign_id,
+            "parent_campaign_id": parent_campaign_id,
+            "work_kind": work_kind,
+            "item_ids": list(campaign.item_ids),
+            "created": True,
+            "request_sha256": _file_sha256(mission_root / "request.json"),
+            "work_item_sha256": _file_sha256(mission_root / WORK_ITEM_NAME),
+        }
 
 
 __all__ = [

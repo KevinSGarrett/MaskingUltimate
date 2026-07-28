@@ -114,9 +114,7 @@ def test_qwen3_vl_config_is_exact_shadow_and_retains_incumbents() -> None:
         "challenger_mode": "shadow_only",
         "llava_retirement_requires_measured_replacement_win": True,
     }
-    assert {
-        key: vlm["models"][key] for key in expected_shadow_contract
-    } == expected_shadow_contract
+    assert {key: vlm["models"][key] for key in expected_shadow_contract} == expected_shadow_contract
     assert vlm["models"]["strict_gate_primary_vlm"] == "llava:13b"
     assert vlm["models"]["secondary_ensemble_vlm"] == "qwen2.5vl:7b"
     assert vlm["models"]["alternate_high_end_vlm"] == "llama3.2-vision:11b"

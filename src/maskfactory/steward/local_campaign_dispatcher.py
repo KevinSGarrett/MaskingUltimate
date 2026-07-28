@@ -44,9 +44,7 @@ class LocalCampaignDispatchError(RuntimeError):
 
 
 def _json_bytes(value: Mapping[str, Any]) -> bytes:
-    return (
-        json.dumps(value, sort_keys=True, indent=2, ensure_ascii=False) + "\n"
-    ).encode("utf-8")
+    return (json.dumps(value, sort_keys=True, indent=2, ensure_ascii=False) + "\n").encode("utf-8")
 
 
 def _write_exclusive(path: Path, value: Mapping[str, Any]) -> None:
@@ -130,9 +128,7 @@ class LocalEngineeringCampaignDispatcher:
         max_runtime_seconds: int = 3600,
         heartbeat_seconds: float = 25.0,
         popen_factory: Callable[..., subprocess.Popen[Any]] = subprocess.Popen,
-        process_identity_probe: Callable[[int], str | None] = (
-            default_process_identity
-        ),
+        process_identity_probe: Callable[[int], str | None] = (default_process_identity),
         process_discovery: Callable[[str, str], Sequence[tuple[int, str]]] | None = None,
         clock: Callable[[], float] = time.time,
     ) -> None:
@@ -183,19 +179,11 @@ class LocalEngineeringCampaignDispatcher:
             except OSError:
                 continue
             fields = [
-                item.decode("utf-8", errors="surrogateescape")
-                for item in body.split(b"\0")
-                if item
+                item.decode("utf-8", errors="surrogateescape") for item in body.split(b"\0") if item
             ]
-            if (
-                guard_tool in fields
-                and "--job-id" in fields
-            ):
+            if guard_tool in fields and "--job-id" in fields:
                 job_index = fields.index("--job-id")
-                if (
-                    job_index + 1 >= len(fields)
-                    or fields[job_index + 1] != campaign_id
-                ):
+                if job_index + 1 >= len(fields) or fields[job_index + 1] != campaign_id:
                     continue
                 token = default_process_identity(int(candidate.name))
                 if token:
@@ -215,28 +203,19 @@ class LocalEngineeringCampaignDispatcher:
     def discover(self) -> tuple[tuple[Path, dict[str, Any]], ...]:
         discovered: list[tuple[Path, dict[str, Any]]] = []
         for campaign_root in sorted(self.inbox_root.iterdir()):
-            if (
-                not campaign_root.is_dir()
-                or not (campaign_root / BINDING_NAME).is_file()
-            ):
+            if not campaign_root.is_dir() or not (campaign_root / BINDING_NAME).is_file():
                 continue
             binding = self._binding(campaign_root)
             if campaign_root.name != binding["campaign_id"]:
-                raise LocalCampaignDispatchError(
-                    "campaign directory and canonical identity differ"
-                )
+                raise LocalCampaignDispatchError("campaign directory and canonical identity differ")
             discovered.append((campaign_root, binding))
         return tuple(discovered)
 
     def pending_ids(self) -> tuple[str, ...]:
         pending: list[str] = []
         for campaign_root, binding in self.discover():
-            terminal = self._campaign_state_root(
-                binding["campaign_id"]
-            ) / DISPATCH_TERMINAL_NAME
-            if not terminal.is_file() and not (
-                campaign_root / TERMINAL_NAME
-            ).is_file():
+            terminal = self._campaign_state_root(binding["campaign_id"]) / DISPATCH_TERMINAL_NAME
+            if not terminal.is_file() and not (campaign_root / TERMINAL_NAME).is_file():
                 pending.append(binding["campaign_id"])
         return tuple(pending)
 
@@ -308,9 +287,7 @@ class LocalEngineeringCampaignDispatcher:
         detail: str,
         intent: Mapping[str, Any] | None,
     ) -> dict[str, Any]:
-        path = self._campaign_state_root(
-            str(binding["campaign_id"])
-        ) / DISPATCH_TERMINAL_NAME
+        path = self._campaign_state_root(str(binding["campaign_id"])) / DISPATCH_TERMINAL_NAME
         value = {
             "schema_version": TERMINAL_SCHEMA,
             "campaign_id": binding["campaign_id"],
@@ -320,9 +297,7 @@ class LocalEngineeringCampaignDispatcher:
                 if (campaign_root / TERMINAL_NAME).is_file()
                 else None
             ),
-            "launch_intent_sha256": (
-                intent.get("intent_sha256") if intent is not None else None
-            ),
+            "launch_intent_sha256": (intent.get("intent_sha256") if intent is not None else None),
             "outcome": outcome,
             "reason_code": reason_code,
             "detail": detail[:1000],
@@ -337,9 +312,7 @@ class LocalEngineeringCampaignDispatcher:
             existing = read_json(path)
             _validate_self_hash(existing, "terminal_sha256")
             if existing != sealed:
-                raise LocalCampaignDispatchError(
-                    "existing local dispatch terminal conflicts"
-                )
+                raise LocalCampaignDispatchError("existing local dispatch terminal conflicts")
             return existing
         _write_exclusive(path, sealed)
         return sealed
@@ -379,9 +352,7 @@ class LocalEngineeringCampaignDispatcher:
             or intent.get("campaign_id") != binding["campaign_id"]
             or intent.get("binding_sha256") != binding["binding_sha256"]
             or intent.get("command_sha256")
-            != canonical_sha256(
-                self._command(campaign_root=campaign_root, binding=binding)
-            )
+            != canonical_sha256(self._command(campaign_root=campaign_root, binding=binding))
         ):
             raise LocalCampaignDispatchError("local launch intent binding drift")
         if (campaign_root / TERMINAL_NAME).is_file():
@@ -410,10 +381,7 @@ class LocalEngineeringCampaignDispatcher:
                 updated["intent_sha256"] = ZERO_SHA256
                 updated = _seal(updated, "intent_sha256")
                 _replace(
-                    self._campaign_state_root(
-                        str(binding["campaign_id"])
-                    )
-                    / INTENT_NAME,
+                    self._campaign_state_root(str(binding["campaign_id"])) / INTENT_NAME,
                     updated,
                 )
             return self._status(
@@ -448,12 +416,8 @@ class LocalEngineeringCampaignDispatcher:
                 "schema_version": INTENT_SCHEMA,
                 "campaign_id": binding["campaign_id"],
                 "binding_sha256": binding["binding_sha256"],
-                "campaign_binding_file_sha256": file_sha256(
-                    campaign_root / BINDING_NAME
-                ),
-                "runtime_contract_file_sha256": file_sha256(
-                    self.runtime_contract_path
-                ),
+                "campaign_binding_file_sha256": file_sha256(campaign_root / BINDING_NAME),
+                "runtime_contract_file_sha256": file_sha256(self.runtime_contract_path),
                 "guard_tool_sha256": file_sha256(self.guard_tool_path),
                 "runtime_tool_sha256": file_sha256(self.runtime_tool_path),
                 "lease_manager_sha256": file_sha256(self.lease_manager_path),
@@ -545,8 +509,7 @@ class LocalEngineeringCampaignDispatcher:
                         campaign_id,
                         state="blocked",
                         detail=(
-                            "same identity exists in another route; no local "
-                            "launch occurred"
+                            "same identity exists in another route; no local " "launch occurred"
                         ),
                         pid=None,
                     )

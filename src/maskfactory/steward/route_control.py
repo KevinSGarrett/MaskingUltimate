@@ -158,13 +158,8 @@ class CanonicalParentChildLedger:
             existing = connection.execute(
                 "SELECT value FROM route_meta WHERE key='parent_schema_version'"
             ).fetchone()
-            if (
-                existing is None
-                or existing["value"] != PARENT_SCHEMA_VERSION
-            ):
-                raise ParentChildBindingError(
-                    "unsupported canonical parent-child ledger schema"
-                )
+            if existing is None or existing["value"] != PARENT_SCHEMA_VERSION:
+                raise ParentChildBindingError("unsupported canonical parent-child ledger schema")
 
     def _connect(self) -> sqlite3.Connection:
         connection = sqlite3.connect(
@@ -310,12 +305,9 @@ class CanonicalParentChildLedger:
                     connection.commit()
                     return self.inspect_parent(parent_campaign_id)
                 if child["owner_token_sha256"] != token_sha256:
-                    raise ParentChildAlreadyActive(
-                        "parent child role has another active owner"
-                    )
+                    raise ParentChildAlreadyActive("parent child role has another active owner")
             connection.execute(
-                "UPDATE parent_campaigns SET updated_at=? "
-                "WHERE parent_campaign_id=?",
+                "UPDATE parent_campaigns SET updated_at=? " "WHERE parent_campaign_id=?",
                 (now, parent_campaign_id),
             )
             connection.commit()
@@ -345,8 +337,7 @@ class CanonicalParentChildLedger:
             raise ParentChildBindingError("parent child state is invalid")
         if state in PARENT_FINAL_STATES:
             if terminal_disposition != state or not (
-                isinstance(result_sha256, str)
-                and SHA256_RE.fullmatch(result_sha256)
+                isinstance(result_sha256, str) and SHA256_RE.fullmatch(result_sha256)
             ):
                 raise ParentChildBindingError(
                     "terminal parent child state requires matching disposition and result"
@@ -372,15 +363,11 @@ class CanonicalParentChildLedger:
                     or child["terminal_disposition"] != terminal_disposition
                     or child["result_sha256"] != result_sha256
                 ):
-                    raise ParentChildBindingError(
-                        "terminal parent child role cannot be rewritten"
-                    )
+                    raise ParentChildBindingError("terminal parent child role cannot be rewritten")
                 connection.commit()
                 return self.inspect_parent(parent_campaign_id)
             if child["owner_token_sha256"] != token_sha256:
-                raise ParentChildAlreadyActive(
-                    "parent child owner token does not match"
-                )
+                raise ParentChildAlreadyActive("parent child owner token does not match")
             connection.execute(
                 """
                 UPDATE parent_route_children
@@ -399,8 +386,7 @@ class CanonicalParentChildLedger:
                 ),
             )
             connection.execute(
-                "UPDATE parent_campaigns SET updated_at=? "
-                "WHERE parent_campaign_id=?",
+                "UPDATE parent_campaigns SET updated_at=? " "WHERE parent_campaign_id=?",
                 (now, parent_campaign_id),
             )
             connection.commit()
@@ -421,9 +407,7 @@ class CanonicalParentChildLedger:
             if not isinstance(required_value, list) or not all(
                 isinstance(role, str) for role in required_value
             ):
-                raise ParentChildBindingError(
-                    "parent required child roles are unreadable"
-                )
+                raise ParentChildBindingError("parent required child roles are unreadable")
             required = tuple(required_value)
             children = [
                 self._child_value(row)
@@ -512,8 +496,7 @@ class CanonicalMissionRouteLedger:
                 """
             )
             connection.execute(
-                "INSERT OR IGNORE INTO route_meta(key, value) "
-                "VALUES('schema_version', ?)",
+                "INSERT OR IGNORE INTO route_meta(key, value) " "VALUES('schema_version', ?)",
                 (SCHEMA_VERSION,),
             )
             existing = connection.execute(

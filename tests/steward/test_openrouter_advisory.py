@@ -260,9 +260,7 @@ def test_legacy_unbound_request_fails_before_manager(tmp_path: Path) -> None:
         build(
             tmp_path,
             manager,
-            request_updates={
-                "schema_version": "maskfactory.openrouter_advisory_request.v1"
-            },
+            request_updates={"schema_version": "maskfactory.openrouter_advisory_request.v1"},
         )
     assert manager.commands == []
 

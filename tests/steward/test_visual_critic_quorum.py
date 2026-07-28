@@ -34,13 +34,9 @@ def _certificate(role: str, family: str) -> dict:
         runtime_sha256=hashlib.sha256(f"{role}-runtime".encode()).hexdigest(),
         family_id=family,
         capability_class=(
-            "high_end_multimodal"
-            if role == "primary"
-            else "independent_multimodal_juror"
+            "high_end_multimodal" if role == "primary" else "independent_multimodal_juror"
         ),
-        qualification_report_sha256=hashlib.sha256(
-            f"{role}-qualification".encode()
-        ).hexdigest(),
+        qualification_report_sha256=hashlib.sha256(f"{role}-qualification".encode()).hexdigest(),
         positive_calibration_passed=True,
         negative_calibration_passed=True,
     )

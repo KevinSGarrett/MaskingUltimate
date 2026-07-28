@@ -22,9 +22,7 @@ from maskfactory.benchmarking.reviewed_s02 import (
 
 ROOT = Path(__file__).resolve().parents[1]
 LIVE_EVIDENCE = ROOT / "qa" / "live_verification" / "sam3_litetext_reviewed_s02_20260715.json"
-REVIEWED_S02_ASSETS_AVAILABLE = (
-    ROOT / "data/images/img_c02019c4979c/source.jpg"
-).is_file() and (
+REVIEWED_S02_ASSETS_AVAILABLE = (ROOT / "data/images/img_c02019c4979c/source.jpg").is_file() and (
     ROOT / "work/instances/p2/s02/img_c02019c4979c/person_full_visible.png"
 ).is_file()
 

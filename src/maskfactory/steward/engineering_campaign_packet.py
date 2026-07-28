@@ -148,9 +148,7 @@ def _mission_evidence(
         root = Path(raw_root).resolve(strict=True)
         root_name = root.name
         if not root_name or root_name in seen_roots:
-            raise EngineeringCampaignPacketError(
-                "mission evidence root names must be unique"
-            )
+            raise EngineeringCampaignPacketError("mission evidence root names must be unique")
         seen_roots.add(root_name)
         terminal = verify_campaign_terminal(root)
         mission_id = terminal["mission_id"]
@@ -228,14 +226,10 @@ def _tracker_proposals(
             "percent",
             "evidence",
         }:
-            raise EngineeringCampaignPacketError(
-                "tracker proposal field set mismatch"
-            )
+            raise EngineeringCampaignPacketError("tracker proposal field set mismatch")
         item_id = _identifier(row["item_id"], field="tracker item")
         if item_id in seen:
-            raise EngineeringCampaignPacketError(
-                "tracker proposal identities must be unique"
-            )
+            raise EngineeringCampaignPacketError("tracker proposal identities must be unique")
         seen.add(item_id)
         status = row["status"]
         percent = row["percent"]
@@ -248,20 +242,10 @@ def _tracker_proposals(
             "failed",
             "deferred",
         }:
-            raise EngineeringCampaignPacketError(
-                "tracker proposal status is unsupported"
-            )
-        if (
-            not isinstance(percent, int)
-            or isinstance(percent, bool)
-            or not 0 <= percent <= 100
-        ):
-            raise EngineeringCampaignPacketError(
-                "tracker proposal percent is invalid"
-            )
-        if status == "complete" and (
-            recommendation != "ADOPT" or percent != 100
-        ):
+            raise EngineeringCampaignPacketError("tracker proposal status is unsupported")
+        if not isinstance(percent, int) or isinstance(percent, bool) or not 0 <= percent <= 100:
+            raise EngineeringCampaignPacketError("tracker proposal percent is invalid")
+        if status == "complete" and (recommendation != "ADOPT" or percent != 100):
             raise EngineeringCampaignPacketError(
                 "tracker completion proposal overclaims the recommendation"
             )
@@ -333,14 +317,10 @@ def _packet(
         or reconciled_slo_gate.get("campaign_id") != campaign_id
     ):
         raise EngineeringCampaignPacketError("campaign source bindings differ")
-    reconciliation_ids = [
-        row.get("mission_id") for row in reconciliation.get("missions", [])
-    ]
+    reconciliation_ids = [row.get("mission_id") for row in reconciliation.get("missions", [])]
     mission_order = [row["mission_id"] for row in mission_evidence]
     if reconciliation_ids != mission_order:
-        raise EngineeringCampaignPacketError(
-            "mission roots and reconciled ledger order differ"
-        )
+        raise EngineeringCampaignPacketError("mission roots and reconciled ledger order differ")
     all_success = all(row["outcome"] == "SUCCESS" for row in mission_evidence)
     if recommendation == "ADOPT" and (
         not all_success or reconciled_slo_gate.get("passed") is not True
@@ -350,9 +330,7 @@ def _packet(
         )
     normalized_limitations = _strings(limitations, field="limitations")
     if recommendation != "ADOPT" and not normalized_limitations:
-        raise EngineeringCampaignPacketError(
-            "non-ADOPT recommendation requires a limitation"
-        )
+        raise EngineeringCampaignPacketError("non-ADOPT recommendation requires a limitation")
     packet = {
         "schema_version": SCHEMA_VERSION,
         "campaign_id": campaign_id,
@@ -453,16 +431,17 @@ def build_engineering_campaign_packet(
         raise EngineeringCampaignPacketError(
             "output root must be an absent child of an existing directory"
         )
-    temporary = Path(
-        tempfile.mkdtemp(prefix=f".{destination.name}.tmp-", dir=destination.parent)
-    )
+    temporary = Path(tempfile.mkdtemp(prefix=f".{destination.name}.tmp-", dir=destination.parent))
     try:
-        payload = json.dumps(
-            packet,
-            indent=2,
-            sort_keys=True,
-            ensure_ascii=False,
-        ).encode("utf-8") + b"\n"
+        payload = (
+            json.dumps(
+                packet,
+                indent=2,
+                sort_keys=True,
+                ensure_ascii=False,
+            ).encode("utf-8")
+            + b"\n"
+        )
         with (temporary / PACKET_NAME).open("xb") as handle:
             handle.write(payload)
             handle.flush()
@@ -506,15 +485,9 @@ def validate_engineering_campaign_packet(
     """Reject packet, source, mission-tree, ledger, telemetry, or SLO drift."""
 
     root = Path(packet_root).resolve(strict=True)
-    actual_paths = {
-        path.relative_to(root).as_posix()
-        for path in root.rglob("*")
-        if path.is_file()
-    }
+    actual_paths = {path.relative_to(root).as_posix() for path in root.rglob("*") if path.is_file()}
     if actual_paths != {PACKET_NAME}:
-        raise EngineeringCampaignPacketError(
-            "exactly one engineering campaign packet is required"
-        )
+        raise EngineeringCampaignPacketError("exactly one engineering campaign packet is required")
     try:
         packet = json.loads((root / PACKET_NAME).read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError) as exc:
@@ -525,9 +498,7 @@ def validate_engineering_campaign_packet(
         or packet.get("schema_version") != SCHEMA_VERSION
         or packet.get("authority") != AUTHORITY
     ):
-        raise EngineeringCampaignPacketError(
-            "campaign packet field, schema, or authority mismatch"
-        )
+        raise EngineeringCampaignPacketError("campaign packet field, schema, or authority mismatch")
     declared = _sha256(packet.get("packet_sha256"), field="packet self hash")
     zeroed = deepcopy(packet)
     zeroed["packet_sha256"] = ZERO_SHA256

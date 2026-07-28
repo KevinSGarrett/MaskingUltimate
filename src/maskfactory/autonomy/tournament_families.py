@@ -149,7 +149,9 @@ def _validate_map(document: Mapping[str, Any]) -> TournamentFamilyMap:
         raise TournamentFamilyMapError("sam2_1_large must bind its local runner and BiRefNet prior")
     minimum = document["required_minimum_independent_families"]
     if not isinstance(minimum, int) or isinstance(minimum, bool) or minimum != 3:
-        raise TournamentFamilyMapError("required minimum independent families must be exactly three")
+        raise TournamentFamilyMapError(
+            "required minimum independent families must be exactly three"
+        )
     cli_tools_raw = document["cli_tools"]
     if not isinstance(cli_tools_raw, list) or not cli_tools_raw:
         raise TournamentFamilyMapError("family map must bind CLI tools")
@@ -161,9 +163,7 @@ def _validate_map(document: Mapping[str, Any]) -> TournamentFamilyMap:
         map_id=_required_text(document["map_id"], field="map_id"),
         authority=_required_text(document["authority"], field="authority"),
         required_minimum_independent_families=minimum,
-        local_cuda_python=_required_text(
-            document["local_cuda_python"], field="local_cuda_python"
-        ),
+        local_cuda_python=_required_text(document["local_cuda_python"], field="local_cuda_python"),
         families=families,
         cli_tools=cli_tools,
         gpu_sequence=tuple(sequence_raw),
@@ -192,11 +192,15 @@ def validate_runner_coverage(
 
     required = tuple(required_invocation_keys)
     if required != REQUIRED_CORE_INVOCATION_KEYS:
-        raise TournamentFamilyMapError("runner coverage must use the exact required family sequence")
+        raise TournamentFamilyMapError(
+            "runner coverage must use the exact required family sequence"
+        )
     available = set(available_runner_keys)
     missing = [key for key in required if key not in available]
     if missing:
-        raise TournamentFamilyMapError("required tournament runners are missing: " + ", ".join(missing))
+        raise TournamentFamilyMapError(
+            "required tournament runners are missing: " + ", ".join(missing)
+        )
 
 
 def assert_cli_invokes_configured_families(
@@ -210,8 +214,13 @@ def assert_cli_invokes_configured_families(
     validate_runner_coverage(required, required)
     missing = [key for key in required if key not in cli_source]
     if missing:
-        raise TournamentFamilyMapError("CLI omits required tournament families: " + ", ".join(missing))
-    if "load_tournament_family_map" not in cli_source or "validate_runner_coverage" not in cli_source:
+        raise TournamentFamilyMapError(
+            "CLI omits required tournament families: " + ", ".join(missing)
+        )
+    if (
+        "load_tournament_family_map" not in cli_source
+        or "validate_runner_coverage" not in cli_source
+    ):
         raise TournamentFamilyMapError("CLI does not bind the governed tournament family map")
     return list(required)
 

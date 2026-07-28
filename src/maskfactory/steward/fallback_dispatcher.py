@@ -106,11 +106,7 @@ def _serverless_disposition(result: Mapping[str, Any]) -> str:
         except json.JSONDecodeError:
             continue
         if isinstance(report, Mapping):
-            return (
-                "failed"
-                if report.get("native_box_runtime_ready") is False
-                else "completed"
-            )
+            return "failed" if report.get("native_box_runtime_ready") is False else "completed"
     return "completed"
 
 
@@ -266,12 +262,8 @@ class FallbackWorkDispatcher:
         if item.get("route") not in ROUTE_NAMES:
             raise FallbackDispatchError("fallback work item route is invalid")
         for field in ("parent_campaign_id", "parent_contract_sha256"):
-            if not isinstance(item.get(field), str) or not SHA256_RE.fullmatch(
-                item[field]
-            ):
-                raise FallbackDispatchError(
-                    f"fallback work item {field} is invalid"
-                )
+            if not isinstance(item.get(field), str) or not SHA256_RE.fullmatch(item[field]):
+                raise FallbackDispatchError(f"fallback work item {field} is invalid")
         required_roles = item.get("required_child_roles")
         if (
             not isinstance(required_roles, list)
@@ -280,18 +272,14 @@ class FallbackWorkDispatcher:
             or required_roles != sorted(set(required_roles))
             or any(role not in PARENT_CHILD_ROUTES for role in required_roles)
         ):
-            raise FallbackDispatchError(
-                "fallback work item required_child_roles are invalid"
-            )
+            raise FallbackDispatchError("fallback work item required_child_roles are invalid")
         child_role = item.get("child_role")
         if child_role not in required_roles:
             raise FallbackDispatchError(
                 "fallback work item child_role is not required by its parent"
             )
         if PARENT_CHILD_ROUTES.get(child_role) != item["route"]:
-            raise FallbackDispatchError(
-                "fallback work item child_role does not match its route"
-            )
+            raise FallbackDispatchError("fallback work item child_role does not match its route")
         expected_mission_id = fallback_child_mission_id(
             session_id=item["session_id"],
             parent_campaign_id=item["parent_campaign_id"],
@@ -301,9 +289,7 @@ class FallbackWorkDispatcher:
             route=item["route"],
         )
         if item["mission_id"] != expected_mission_id:
-            raise FallbackDispatchError(
-                "fallback child mission identity mismatch"
-            )
+            raise FallbackDispatchError("fallback child mission identity mismatch")
         if mission_root.name != item["mission_id"]:
             raise FallbackDispatchError("mission directory identity mismatch")
         if item["route"] == "serverless_overflow":
@@ -682,12 +668,8 @@ class FallbackWorkDispatcher:
                                 "schema_version": TERMINAL_SCHEMA,
                                 "mission_id": item["mission_id"],
                                 "parent_campaign_id": item["parent_campaign_id"],
-                                "parent_contract_sha256": item[
-                                    "parent_contract_sha256"
-                                ],
-                                "required_child_roles": item[
-                                    "required_child_roles"
-                                ],
+                                "parent_contract_sha256": item["parent_contract_sha256"],
+                                "required_child_roles": item["required_child_roles"],
                                 "child_role": item["child_role"],
                                 "route": item["route"],
                                 "disposition": "completed",
@@ -716,9 +698,7 @@ class FallbackWorkDispatcher:
                             state="failed",
                             detail=f"OpenRouter terminal failure: {durable['state']}",
                         )
-                        status_sha256 = _file_sha256(
-                            mission_root / STATUS_NAME
-                        )
+                        status_sha256 = _file_sha256(mission_root / STATUS_NAME)
                         parent_state = self.parent_ledger.mark_child(
                             parent_campaign_id=item["parent_campaign_id"],
                             child_role=item["child_role"],
@@ -733,15 +713,9 @@ class FallbackWorkDispatcher:
                             {
                                 "schema_version": TERMINAL_SCHEMA,
                                 "mission_id": item["mission_id"],
-                                "parent_campaign_id": item[
-                                    "parent_campaign_id"
-                                ],
-                                "parent_contract_sha256": item[
-                                    "parent_contract_sha256"
-                                ],
-                                "required_child_roles": item[
-                                    "required_child_roles"
-                                ],
+                                "parent_campaign_id": item["parent_campaign_id"],
+                                "parent_contract_sha256": item["parent_contract_sha256"],
+                                "required_child_roles": item["required_child_roles"],
                                 "child_role": item["child_role"],
                                 "route": item["route"],
                                 "disposition": "failed",
@@ -749,9 +723,7 @@ class FallbackWorkDispatcher:
                                 "result_sha256": status_sha256,
                                 "ledger_state": durable["state"],
                                 "parent_reconciliation": parent_state,
-                                "work_item_sha256": _file_sha256(
-                                    mission_root / WORK_ITEM_NAME
-                                ),
+                                "work_item_sha256": _file_sha256(mission_root / WORK_ITEM_NAME),
                                 "self_sha256": "0" * 64,
                             }
                         )
@@ -836,9 +808,7 @@ class FallbackWorkDispatcher:
                 )
             if not result_path.is_file():
                 raise FallbackDispatchError("terminal route result is absent during reconstruction")
-            disposition = (
-                "completed" if durable["state"] == "completed" else "failed"
-            )
+            disposition = "completed" if durable["state"] == "completed" else "failed"
             result_sha256 = _file_sha256(result_path)
             parent_state = self.parent_ledger.mark_child(
                 parent_campaign_id=item["parent_campaign_id"],
@@ -853,9 +823,7 @@ class FallbackWorkDispatcher:
                     "schema_version": TERMINAL_SCHEMA,
                     "mission_id": mission_id,
                     "parent_campaign_id": item["parent_campaign_id"],
-                    "parent_contract_sha256": item[
-                        "parent_contract_sha256"
-                    ],
+                    "parent_contract_sha256": item["parent_contract_sha256"],
                     "required_child_roles": item["required_child_roles"],
                     "child_role": item["child_role"],
                     "route": item["route"],
@@ -920,14 +888,10 @@ class FallbackWorkDispatcher:
                 parent_binding,
             )
             if prior_binding != parent_binding:
-                raise FallbackDispatchError(
-                    "fallback parent binding is contradictory"
-                )
+                raise FallbackDispatchError("fallback parent binding is contradictory")
             role_key = (parent_campaign_id, item["child_role"])
             if role_key in selected_roles:
-                raise FallbackDispatchError(
-                    "fallback parent child role is duplicated"
-                )
+                raise FallbackDispatchError("fallback parent child role is duplicated")
             route = item["route"]
             if route_counts[route] >= limits[route]:
                 continue

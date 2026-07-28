@@ -203,7 +203,8 @@ def verify_canonical_polygon_calibration_admission(
     if (
         document.get("schema_version") != SCHEMA_VERSION
         or document.get("candidate_set_self_sha256") != candidates.get("self_sha256")
-        or document.get("panel_report_candidate_set_sha256") != panel_report.get("candidate_set_sha256")
+        or document.get("panel_report_candidate_set_sha256")
+        != panel_report.get("candidate_set_sha256")
         or document.get("panel_report_self_sha256") != panel_report.get("self_sha256")
     ):
         raise CanonicalPolygonCalibrationAdmissionError("admission input binding drift")
@@ -221,7 +222,11 @@ def verify_canonical_polygon_calibration_admission(
     selected = candidates.get("selected")
     panel_rows = panel_report.get("records")
     results = document.get("results")
-    if not isinstance(selected, list) or not isinstance(panel_rows, list) or not isinstance(results, list):
+    if (
+        not isinstance(selected, list)
+        or not isinstance(panel_rows, list)
+        or not isinstance(results, list)
+    ):
         raise CanonicalPolygonCalibrationAdmissionError("admission records are invalid")
     candidates_by_id = {str(item.get("sample_id")): item for item in selected}
     panels_by_id = {str(item.get("sample_id")): item for item in panel_rows}

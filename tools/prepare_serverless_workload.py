@@ -72,9 +72,7 @@ def main() -> int:
                 "payload_file": PAYLOAD_NAME,
                 "payload_raw_sha256": file_sha256(target_payload),
                 "source_receipt_sha256": (
-                    file_sha256(args.source_receipt)
-                    if args.source_receipt is not None
-                    else None
+                    file_sha256(args.source_receipt) if args.source_receipt is not None else None
                 ),
             }
         )

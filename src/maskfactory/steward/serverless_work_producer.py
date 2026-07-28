@@ -70,9 +70,7 @@ def seal_serverless_workload(value: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def _json_bytes(value: Mapping[str, Any]) -> bytes:
-    return (
-        json.dumps(value, sort_keys=True, indent=2, ensure_ascii=False) + "\n"
-    ).encode("utf-8")
+    return (json.dumps(value, sort_keys=True, indent=2, ensure_ascii=False) + "\n").encode("utf-8")
 
 
 def _write_exclusive(path: Path, body: bytes) -> None:
@@ -96,9 +94,7 @@ class ServerlessWorkProducer:
         manifest_path = root / WORKLOAD_NAME
         payload_path = root / PAYLOAD_NAME
         if not manifest_path.is_file() or not payload_path.is_file():
-            raise ServerlessWorkProducerError(
-                f"prepared workload is incomplete: {root.name}"
-            )
+            raise ServerlessWorkProducerError(f"prepared workload is incomplete: {root.name}")
         try:
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
             payload = json.loads(payload_path.read_text(encoding="utf-8"))
@@ -133,12 +129,8 @@ class ServerlessWorkProducer:
         if not isinstance(manifest.get("session_id"), str) or not manifest["session_id"]:
             raise ServerlessWorkProducerError("prepared workload session is invalid")
         for field in ("parent_campaign_id", "parent_contract_sha256"):
-            if not isinstance(manifest.get(field), str) or not SHA256_RE.fullmatch(
-                manifest[field]
-            ):
-                raise ServerlessWorkProducerError(
-                    f"prepared workload {field} is invalid"
-                )
+            if not isinstance(manifest.get(field), str) or not SHA256_RE.fullmatch(manifest[field]):
+                raise ServerlessWorkProducerError(f"prepared workload {field} is invalid")
         required_roles = manifest.get("required_child_roles")
         if (
             not isinstance(required_roles, list)
@@ -146,13 +138,9 @@ class ServerlessWorkProducer:
             or any(role not in PARENT_CHILD_ROUTES for role in required_roles)
             or "serverless_execution" not in required_roles
         ):
-            raise ServerlessWorkProducerError(
-                "prepared workload required_child_roles are invalid"
-            )
+            raise ServerlessWorkProducerError("prepared workload required_child_roles are invalid")
         if manifest.get("child_role") != "serverless_execution":
-            raise ServerlessWorkProducerError(
-                "prepared workload child_role is invalid"
-            )
+            raise ServerlessWorkProducerError("prepared workload child_role is invalid")
         seconds = manifest.get("requested_seconds")
         if isinstance(seconds, bool) or not isinstance(seconds, int) or seconds <= 0:
             raise ServerlessWorkProducerError("requested_seconds must be positive")
@@ -205,12 +193,8 @@ class ServerlessWorkProducer:
                         "mission_id": mission_id,
                         "session_id": manifest["session_id"],
                         "parent_campaign_id": manifest["parent_campaign_id"],
-                        "parent_contract_sha256": manifest[
-                            "parent_contract_sha256"
-                        ],
-                        "required_child_roles": manifest[
-                            "required_child_roles"
-                        ],
+                        "parent_contract_sha256": manifest["parent_contract_sha256"],
+                        "required_child_roles": manifest["required_child_roles"],
                         "child_role": manifest["child_role"],
                         "route": "serverless_overflow",
                         "profile": manifest["profile"],

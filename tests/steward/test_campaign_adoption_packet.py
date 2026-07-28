@@ -203,10 +203,13 @@ def test_partial_packet_preserves_exceptions_and_noncomplete_tracker_proposal(
         ],
     )
 
-    assert validate_campaign_adoption_packet(
-        output,
-        campaign_root=campaign,
-    ) == packet
+    assert (
+        validate_campaign_adoption_packet(
+            output,
+            campaign_root=campaign,
+        )
+        == packet
+    )
     assert packet["exceptions"][0]["code"] == "FOCUSED_TEST_FAILURE"
 
 

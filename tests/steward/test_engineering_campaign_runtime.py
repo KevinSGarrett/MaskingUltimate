@@ -94,10 +94,7 @@ def test_engineering_telemetry_deployment_closure_and_short_launch(
 ) -> None:
     tool = _load_telemetry_tool()
     required = set(tool.REQUIRED_DEPLOYMENT_PATHS)
-    assert (
-        "src/maskfactory/steward/engineering_campaign_runtime_packet.py"
-        in required
-    )
+    assert "src/maskfactory/steward/engineering_campaign_runtime_packet.py" in required
     assert required == {
         "src/maskfactory/steward/engineering_campaign_runtime_packet.py",
         "src/maskfactory/steward/engineering_campaign_telemetry.py",
@@ -232,9 +229,7 @@ def _install_fake_runtime(
             "served_model": self.contract["server"]["served_model"],
         }
 
-    def fake_submit(
-        self: StewardRuntimeController, request_path: Path
-    ) -> dict:
+    def fake_submit(self: StewardRuntimeController, request_path: Path) -> dict:
         binding = read_json(self.binding_path)
         request_sha256 = file_sha256(request_path)
         self.ledger.record_request_intent(
@@ -351,9 +346,7 @@ def test_binding_requires_exact_unique_25_missions(tmp_path: Path) -> None:
         contract_path=CONTRACT_PATH,
     )
     assert binding["mission_count"] == 25
-    assert [entry["sequence"] for entry in binding["mission_entries"]] == list(
-        range(1, 26)
-    )
+    assert [entry["sequence"] for entry in binding["mission_entries"]] == list(range(1, 26))
 
     other = tmp_path / "too-small"
     (other / "missions").mkdir(parents=True)
@@ -395,12 +388,15 @@ def test_one_runtime_lifetime_executes_and_releases_all_25(
     assert state["shutdowns"] == 1
     assert state["submits"] == [f"mission-{index:02d}" for index in range(1, 26)]
     assert all(row["handoff_ready"] for row in terminal["mission_outcomes"])
-    assert validate_engineering_campaign_runtime_terminal(
-        campaign_root / "engineering_campaign_runtime_terminal.json",
-        campaign_root=campaign_root,
-        contract_path=CONTRACT_PATH,
-        database=database,
-    ) == terminal
+    assert (
+        validate_engineering_campaign_runtime_terminal(
+            campaign_root / "engineering_campaign_runtime_terminal.json",
+            campaign_root=campaign_root,
+            contract_path=CONTRACT_PATH,
+            database=database,
+        )
+        == terminal
+    )
 
     assert controller.run() == terminal
     assert state["launches"] == 1
@@ -529,9 +525,7 @@ def test_real_runtime_emits_one_exact_adoption_packet(
         baseline_usage_units_per_accepted_artifact=1,
         terminal_adoption_usage_units=1,
         terminal_adoption_review_seconds=0,
-        limitations=[
-            "The fixture measures campaign-level intervention units, not desktop tokens."
-        ],
+        limitations=["The fixture measures campaign-level intervention units, not desktop tokens."],
     )
     assert telemetry["telemetry"]["counts"] == {
         "planned": 25,
@@ -543,9 +537,7 @@ def test_real_runtime_emits_one_exact_adoption_packet(
     assert telemetry["telemetry"]["routes"]["local_pod"] == 25
     assert telemetry["telemetry"]["timing"]["local_gpu_work_cells"] == 1
     assert telemetry["telemetry"]["timing"]["local_gpu_released_work_cells"] == 1
-    assert telemetry["telemetry"]["integrity"][
-        "duplicate_inference_submissions"
-    ] == 0
+    assert telemetry["telemetry"]["integrity"]["duplicate_inference_submissions"] == 0
     assert telemetry["telemetry"]["artifacts"]["accepted"] == 25
     assert telemetry["slo"]["passed"] is True
     assert (
@@ -570,17 +562,20 @@ def test_real_runtime_emits_one_exact_adoption_packet(
         "active_lease_job_id": "foreign-job",
         "foreign_lease_active": True,
     }
-    assert build_engineering_campaign_runtime_packet(
-        campaign_root=campaign_root,
-        contract_path=CONTRACT_PATH,
-        database=database,
-        output_root=tmp_path / "foreign-occupied-packet",
-        handoff=foreign_handoff,
-        decision="ADOPT",
-        decision_reason="The completed campaign no longer owns the GPU.",
-        limitations=["A later foreign lease is recorded without becoming a veto."],
-        tracker_proposals=[],
-    )["resource_handoff"]["foreign_lease_active"] is True
+    assert (
+        build_engineering_campaign_runtime_packet(
+            campaign_root=campaign_root,
+            contract_path=CONTRACT_PATH,
+            database=database,
+            output_root=tmp_path / "foreign-occupied-packet",
+            handoff=foreign_handoff,
+            decision="ADOPT",
+            decision_reason="The completed campaign no longer owns the GPU.",
+            limitations=["A later foreign lease is recorded without becoming a veto."],
+            tracker_proposals=[],
+        )["resource_handoff"]["foreign_lease_active"]
+        is True
+    )
 
     with pytest.raises(
         EngineeringCampaignRuntimePacketError,
@@ -634,9 +629,9 @@ def test_ambiguous_request_is_never_reissued_and_unrelated_missions_continue(
     failure = read_json(mission_roots[4] / "campaign_failure_receipt.json")
     assert failure["reason_code"] == "ambiguous_request_completion"
     assert failure["retry_permitted"] is False
-    assert next(
-        row for row in terminal["mission_outcomes"] if row["job_id"] == "mission-05"
-    )["handoff_ready"]
+    assert next(row for row in terminal["mission_outcomes"] if row["job_id"] == "mission-05")[
+        "handoff_ready"
+    ]
 
 
 def test_restart_reconstructs_live_owned_service_without_second_launch(
@@ -693,9 +688,7 @@ def test_restart_with_durable_request_intent_never_reissues_and_continues(
     assert terminal["completed_count"] == 24
     assert terminal["failed_count"] == 1
     assert "mission-01" not in state["submits"]
-    assert state["submits"] == [
-        f"mission-{index:02d}" for index in range(2, 26)
-    ]
+    assert state["submits"] == [f"mission-{index:02d}" for index in range(2, 26)]
     assert state["launches"] == 1
     assert state["shutdowns"] == 1
     failure = read_json(mission_roots[0] / "campaign_failure_receipt.json")

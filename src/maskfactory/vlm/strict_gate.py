@@ -694,9 +694,11 @@ def run_strict_visual_review(
             ensemble_raw = _post_chat(
                 base_url=cfg.base_url,
                 model=cfg.secondary_ensemble_vlm,
-                prompt=prompt
-                if primary_parsed
-                else prompt + "\nCRITICAL: Return ONE JSON object only.",
+                prompt=(
+                    prompt
+                    if primary_parsed
+                    else prompt + "\nCRITICAL: Return ONE JSON object only."
+                ),
                 image_png=panel_bytes,
                 options=options,
             )

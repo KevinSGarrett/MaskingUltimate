@@ -76,8 +76,7 @@ def _identifier(value: object, *, field: str) -> str:
         or not value
         or len(value) > 160
         or any(
-            character
-            not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._:-"
+            character not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._:-"
             for character in value
         )
     ):
@@ -171,10 +170,7 @@ def _validate_terminal_fields(
                 "repair requires distinct parent/final masks and repair evidence"
             )
     elif terminal_outcome == "reject":
-        if (
-            hard_qa_outcome in PASSING_HARD_QA
-            and visual_outcome != "REJECT_VISUAL"
-        ):
+        if hard_qa_outcome in PASSING_HARD_QA and visual_outcome != "REJECT_VISUAL":
             raise MaskOutcomeAccountingError(
                 "reject requires deterministic or visual rejection evidence"
             )
@@ -313,9 +309,7 @@ def reconcile_mask_outcome_campaign(
         raise MaskOutcomeAccountingError("terminal record has no campaign input")
 
     counts = Counter(record["terminal_outcome"] for record in ordered_records)
-    outcome_counts = {
-        outcome: counts.get(outcome, 0) for outcome in TERMINAL_OUTCOMES
-    }
+    outcome_counts = {outcome: counts.get(outcome, 0) for outcome in TERMINAL_OUTCOMES}
     return _seal(
         {
             "schema_version": SCHEMA_VERSION,

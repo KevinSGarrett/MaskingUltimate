@@ -40,9 +40,7 @@ def write_item(
     required_child_roles: tuple[str, ...] | None = None,
 ) -> Path:
     child_role = (
-        "serverless_execution"
-        if route == "serverless_overflow"
-        else "consolidated_advisory"
+        "serverless_execution" if route == "serverless_overflow" else "consolidated_advisory"
     )
     required_child_roles = required_child_roles or (child_role,)
     mission_id = fallback_child_mission_id(
@@ -282,9 +280,7 @@ def test_serverless_and_openrouter_advance_concurrently_and_terminalize(
     assert (serverless / TERMINAL_NAME).is_file()
     assert (openrouter / TERMINAL_NAME).is_file()
     assert (
-        json.loads((serverless / TERMINAL_NAME).read_text(encoding="utf-8"))[
-            "disposition"
-        ]
+        json.loads((serverless / TERMINAL_NAME).read_text(encoding="utf-8"))["disposition"]
         == "completed"
     )
     assert dispatcher.pending_ids() == []
@@ -300,12 +296,8 @@ def test_serverless_and_openrouter_advance_concurrently_and_terminalize(
 def test_serverless_semantic_false_is_terminal_failure(tmp_path: Path) -> None:
     dispatcher = build(
         tmp_path,
-        serverless_factory=lambda **kwargs: SemanticFalseServerless(
-            threading.Barrier(1), **kwargs
-        ),
-        openrouter_factory=lambda **kwargs: FakeOpenRouter(
-            threading.Barrier(1), **kwargs
-        ),
+        serverless_factory=lambda **kwargs: SemanticFalseServerless(threading.Barrier(1), **kwargs),
+        openrouter_factory=lambda **kwargs: FakeOpenRouter(threading.Barrier(1), **kwargs),
     )
     serverless = write_item(
         dispatcher.inbox_root,
@@ -378,9 +370,7 @@ def test_manager_proven_openrouter_failure_is_terminal_and_not_repolled(
 ) -> None:
     dispatcher = build(
         tmp_path,
-        serverless_factory=lambda **kwargs: FakeServerless(
-            threading.Barrier(1), **kwargs
-        ),
+        serverless_factory=lambda **kwargs: FakeServerless(threading.Barrier(1), **kwargs),
         openrouter_factory=OutcomeUnknownThenFailedOpenRouter,
     )
     root = write_item(
@@ -407,12 +397,8 @@ def test_legacy_unbound_work_item_is_preserved_but_not_dispatched(
 ) -> None:
     dispatcher = build(
         tmp_path,
-        serverless_factory=lambda **kwargs: FakeServerless(
-            threading.Barrier(1), **kwargs
-        ),
-        openrouter_factory=lambda **kwargs: FakeOpenRouter(
-            threading.Barrier(1), **kwargs
-        ),
+        serverless_factory=lambda **kwargs: FakeServerless(threading.Barrier(1), **kwargs),
+        openrouter_factory=lambda **kwargs: FakeOpenRouter(threading.Barrier(1), **kwargs),
     )
     root = dispatcher.inbox_root / ("6" * 64)
     root.mkdir(parents=True)

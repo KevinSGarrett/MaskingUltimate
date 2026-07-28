@@ -47,7 +47,9 @@ def _write_wheel(path: Path) -> None:
     }
     record_rows = []
     for name, content in members.items():
-        digest = base64.urlsafe_b64encode(hashlib.sha256(content).digest()).rstrip(b"=").decode("ascii")
+        digest = (
+            base64.urlsafe_b64encode(hashlib.sha256(content).digest()).rstrip(b"=").decode("ascii")
+        )
         record_rows.append(f"{name},sha256={digest},{len(content)}")
     record_name = "maskfactory-1.0.0.dist-info/RECORD"
     members[record_name] = ("\n".join((*record_rows, f"{record_name},,")) + "\n").encode("utf-8")

@@ -98,9 +98,9 @@ def _sha_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _demonstration_critic_authority() -> tuple[
-    dict[str, Any], tuple[dict[str, Any], ...], CriticQuorumDecision
-]:
+def _demonstration_critic_authority() -> (
+    tuple[dict[str, Any], tuple[dict[str, Any], ...], CriticQuorumDecision]
+):
     """Build deterministic promoted critic identities for the synthetic demonstration."""
     catalog = copy.deepcopy(load_catalog())
     certificates: list[dict[str, Any]] = []

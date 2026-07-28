@@ -53,16 +53,12 @@ def _read_json(path: Path) -> dict[str, Any]:
             f"campaign evidence is unreadable: {path.name}"
         ) from exc
     if not isinstance(value, dict):
-        raise EngineeringCampaignTelemetryError(
-            f"campaign evidence is not an object: {path.name}"
-        )
+        raise EngineeringCampaignTelemetryError(f"campaign evidence is not an object: {path.name}")
     return value
 
 
 def _iso_timestamp(value: float) -> str:
-    return datetime.fromtimestamp(value, tz=timezone.utc).isoformat().replace(
-        "+00:00", "Z"
-    )
+    return datetime.fromtimestamp(value, tz=timezone.utc).isoformat().replace("+00:00", "Z")
 
 
 def _runtime_rows(
@@ -111,9 +107,7 @@ def _runtime_rows(
             run = dict(row)
             runs_by_job[str(run["job_id"])].append(run)
     except sqlite3.Error as exc:
-        raise EngineeringCampaignTelemetryError(
-            "runtime database schema is unavailable"
-        ) from exc
+        raise EngineeringCampaignTelemetryError("runtime database schema is unavailable") from exc
     finally:
         connection.close()
     return missions, dict(runs_by_job)
@@ -159,9 +153,7 @@ def _validate_runtime_rows(
         for run in runs:
             response_id = f"{job_id}:run-{run['run_number']}"
             if response_id in response_ids:
-                raise EngineeringCampaignTelemetryError(
-                    "runtime request identity is duplicated"
-                )
+                raise EngineeringCampaignTelemetryError("runtime request identity is duplicated")
             response_ids.add(response_id)
         proposal_path = campaign_root / "missions" / job_id / "proposal.json"
         proposal_sha256 = _file_sha256(proposal_path)
@@ -176,9 +168,7 @@ def _validate_runtime_rows(
                 "relative_path": proposal_path.relative_to(campaign_root).as_posix(),
                 "bytes": proposal_path.stat().st_size,
                 "sha256": proposal_sha256,
-                "proposal_canonical_sha256": runs[-1][
-                    "proposal_canonical_sha256"
-                ],
+                "proposal_canonical_sha256": runs[-1]["proposal_canonical_sha256"],
                 "accepted": True,
             }
         )
@@ -275,9 +265,7 @@ def _expected_bundle(
         database=database_path,
     )
     if packet["decision"] != "ADOPT":
-        raise EngineeringCampaignTelemetryError(
-            "runtime campaign was not independently adopted"
-        )
+        raise EngineeringCampaignTelemetryError("runtime campaign was not independently adopted")
     if (
         baseline_usage_units_per_accepted_artifact <= 0
         or terminal_adoption_usage_units < 0
@@ -296,9 +284,7 @@ def _expected_bundle(
     first_request_at = min(float(row["request_started_at"]) for row in missions)
     ended_at = max(float(row["updated_at"]) for row in missions)
     if not started_at <= first_request_at <= ended_at:
-        raise EngineeringCampaignTelemetryError(
-            "runtime campaign timestamps are contradictory"
-        )
+        raise EngineeringCampaignTelemetryError("runtime campaign timestamps are contradictory")
     source_document = _read_json(root / "engineering_campaign_source.json")
     source = {
         "schema_version": "maskfactory.campaign-telemetry-source.v1",
@@ -308,9 +294,7 @@ def _expected_bundle(
         "source_commit_sha256": source_document["source_sha256"],
         "started_at": _iso_timestamp(started_at),
         "ended_at": _iso_timestamp(ended_at),
-        "baseline_usage_units_per_accepted_artifact": (
-            baseline_usage_units_per_accepted_artifact
-        ),
+        "baseline_usage_units_per_accepted_artifact": (baseline_usage_units_per_accepted_artifact),
         "limitations": list(limitations),
     }
     events = _build_events(
@@ -384,9 +368,7 @@ def build_engineering_campaign_telemetry_bundle(
         contract_path=contract_path,
         database=database,
         runtime_packet_root=runtime_packet_root,
-        baseline_usage_units_per_accepted_artifact=(
-            baseline_usage_units_per_accepted_artifact
-        ),
+        baseline_usage_units_per_accepted_artifact=(baseline_usage_units_per_accepted_artifact),
         terminal_adoption_usage_units=terminal_adoption_usage_units,
         terminal_adoption_review_seconds=terminal_adoption_review_seconds,
         limitations=limitations,
@@ -396,16 +378,17 @@ def build_engineering_campaign_telemetry_bundle(
         raise EngineeringCampaignTelemetryError(
             "output root must be an absent child of an existing directory"
         )
-    temporary = Path(
-        tempfile.mkdtemp(prefix=f".{destination.name}.tmp-", dir=destination.parent)
-    )
+    temporary = Path(tempfile.mkdtemp(prefix=f".{destination.name}.tmp-", dir=destination.parent))
     try:
-        payload = json.dumps(
-            bundle,
-            indent=2,
-            sort_keys=True,
-            ensure_ascii=False,
-        ).encode("utf-8") + b"\n"
+        payload = (
+            json.dumps(
+                bundle,
+                indent=2,
+                sort_keys=True,
+                ensure_ascii=False,
+            ).encode("utf-8")
+            + b"\n"
+        )
         with (temporary / BUNDLE_NAME).open("xb") as handle:
             handle.write(payload)
             handle.flush()
@@ -437,11 +420,7 @@ def validate_engineering_campaign_telemetry_bundle(
     """Replay the telemetry bundle against exact terminal runtime bytes."""
 
     root = bundle_root.resolve(strict=True)
-    files = {
-        path.relative_to(root).as_posix()
-        for path in root.rglob("*")
-        if path.is_file()
-    }
+    files = {path.relative_to(root).as_posix() for path in root.rglob("*") if path.is_file()}
     if files != {BUNDLE_NAME}:
         raise EngineeringCampaignTelemetryError(
             "exactly one engineering telemetry bundle is required"
@@ -451,9 +430,7 @@ def validate_engineering_campaign_telemetry_bundle(
     zeroed = deepcopy(bundle)
     zeroed["bundle_sha256"] = ZERO_SHA256
     if not isinstance(declared, str) or canonical_sha256(zeroed) != declared:
-        raise EngineeringCampaignTelemetryError(
-            "engineering telemetry bundle self hash mismatch"
-        )
+        raise EngineeringCampaignTelemetryError("engineering telemetry bundle self hash mismatch")
     measurement = bundle.get("measurement_contract")
     if not isinstance(measurement, Mapping):
         raise EngineeringCampaignTelemetryError(
@@ -468,12 +445,8 @@ def validate_engineering_campaign_telemetry_bundle(
         baseline_usage_units_per_accepted_artifact=measurement[
             "baseline_usage_units_per_accepted_artifact"
         ],
-        terminal_adoption_usage_units=measurement[
-            "terminal_adoption_usage_units"
-        ],
-        terminal_adoption_review_seconds=measurement[
-            "terminal_adoption_review_seconds"
-        ],
+        terminal_adoption_usage_units=measurement["terminal_adoption_usage_units"],
+        terminal_adoption_review_seconds=measurement["terminal_adoption_review_seconds"],
         limitations=bundle["source"]["limitations"],
     )
     if bundle != expected:

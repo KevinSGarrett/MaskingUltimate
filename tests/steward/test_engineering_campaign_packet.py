@@ -299,9 +299,7 @@ def test_25_terminal_missions_emit_one_replayable_packet(tmp_path: Path) -> None
     assert len(packet["missions"]) == 25
     assert packet["recommendation"] == "ADOPT"
     assert packet["authority"]["final_adoption"] is False
-    assert set(path.name for path in (tmp_path / "packet").iterdir()) == {
-        PACKET_NAME
-    }
+    assert set(path.name for path in (tmp_path / "packet").iterdir()) == {PACKET_NAME}
     replay = validate_engineering_campaign_packet(
         tmp_path / "packet",
         **fixture,

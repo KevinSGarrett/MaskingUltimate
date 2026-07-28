@@ -34,6 +34,8 @@ from .providers.probe import (
     probe_external_sources,
 )
 
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
 
 @click.group(context_settings={"help_option_names": ["-h", "--help"]})
 @click.version_option(__version__, prog_name="maskfactory")
@@ -11241,14 +11243,52 @@ def comfy_verify_static_contracts(output: Path | None, installed_root: Path | No
 
 @main.command()
 @click.option("--port", type=click.IntRange(min=1, max=65535), default=8765, show_default=True)
-def serve(port: int) -> None:
+@click.option(
+    "--registry",
+    "registry_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=DEFAULT_REGISTRY,
+    show_default=True,
+)
+@click.option(
+    "--models-root",
+    type=click.Path(path_type=Path, file_okay=False, exists=True),
+    default=DEFAULT_REGISTRY.parent,
+    show_default=True,
+)
+@click.option(
+    "--pipeline-config",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=PROJECT_ROOT / "configs/pipeline.yaml",
+    show_default=True,
+)
+@click.option(
+    "--external-registry",
+    "external_registry_path",
+    type=click.Path(path_type=Path, dir_okay=False, exists=True),
+    default=PROJECT_ROOT / "configs/external_sources.yaml",
+    show_default=True,
+)
+def serve(
+    port: int,
+    registry_path: Path,
+    models_root: Path,
+    pipeline_config: Path,
+    external_registry_path: Path,
+) -> None:
     """Run the localhost-only MaskFactory Mode-B API."""
     try:
         import uvicorn
 
-        from .serve.api import create_app
+        from .serve.api import create_app, create_production_runtime
 
-        app = create_app()
+        runtime = create_production_runtime(
+            registry_path=registry_path,
+            models_root=models_root,
+            config_path=pipeline_config,
+            external_registry_path=external_registry_path,
+        )
+        app = create_app(runtime)
     except (ImportError, RuntimeError) as exc:
         raise click.ClickException(str(exc)) from exc
     uvicorn.run(app, host="127.0.0.1", port=port, log_level="info")

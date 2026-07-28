@@ -74,7 +74,7 @@ def _registry(path: Path) -> Path:
 
 
 def test_serve_cli_is_loopback_only_and_runtime_dependencies_are_locked(
-    monkeypatch,
+    monkeypatch, tmp_path: Path
 ) -> None:
     lock = Path("env/requirements.lock.txt").read_text(encoding="utf-8").splitlines()
     assert "fastapi==0.139.0" in lock
@@ -84,9 +84,51 @@ def test_serve_cli_is_loopback_only_and_runtime_dependencies_are_locked(
     fake_uvicorn = SimpleNamespace(run=lambda app, **kwargs: calls.append((app, kwargs)))
     monkeypatch.setitem(sys.modules, "uvicorn", fake_uvicorn)
     sentinel = object()
-    monkeypatch.setattr("maskfactory.serve.api.create_app", lambda: sentinel)
-    result = CliRunner().invoke(main, ["serve", "--port", "9876"])
+    runtime = object()
+    registry = tmp_path / "model_registry.json"
+    registry.write_text("{}", encoding="utf-8")
+    models_root = tmp_path / "models"
+    models_root.mkdir()
+    pipeline = tmp_path / "pipeline.yaml"
+    pipeline.write_text("{}\n", encoding="utf-8")
+    external = tmp_path / "external_sources.yaml"
+    external.write_text("{}\n", encoding="utf-8")
+    runtime_calls = []
+    monkeypatch.setattr(
+        "maskfactory.serve.api.create_production_runtime",
+        lambda **kwargs: runtime_calls.append(kwargs) or runtime,
+    )
+    monkeypatch.setattr(
+        "maskfactory.serve.api.create_app",
+        lambda configured_runtime: (
+            sentinel if configured_runtime is runtime else RuntimeError("wrong runtime")
+        ),
+    )
+    result = CliRunner().invoke(
+        main,
+        [
+            "serve",
+            "--port",
+            "9876",
+            "--registry",
+            str(registry),
+            "--models-root",
+            str(models_root),
+            "--pipeline-config",
+            str(pipeline),
+            "--external-registry",
+            str(external),
+        ],
+    )
     assert result.exit_code == 0, result.output
+    assert runtime_calls == [
+        {
+            "registry_path": registry,
+            "models_root": models_root,
+            "config_path": pipeline,
+            "external_registry_path": external,
+        }
+    ]
     assert calls == [(sentinel, {"host": "127.0.0.1", "port": 9876, "log_level": "info"})]
 
 

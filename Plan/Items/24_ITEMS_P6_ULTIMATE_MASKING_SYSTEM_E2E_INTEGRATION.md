@@ -57,11 +57,22 @@ Frozen authority and evidence contracts:
     This completes only `MF-P6-20.02`; it grants no lint-baseline, live
     runtime, campaign, visual, release, or ComfyUI-adoption credit.
 - [ ] MF-P6-20.03 Classify and repair the complete product test baseline, including completion-policy drift and every external-asset dependency · Verify: each collected test is passing or has a governed explicit environment prerequisite that cannot be misreported as pass; no unexplained collection/runtime failure remains · Blocked by: MF-P6-20.02 · HARD BLOCKER
-  - Existing evidence eligible for partial credit: 5,139 collected / 5,098
-    passed / 41 governed skips / zero failures plus 296 row-level test-baseline
-    bindings. Repository-wide Ruff debt and exact skip/prerequisite inventory
-    remain to be adjudicated; the passing suite is not permission to hide
-    either.
+  - Accepted 2026-07-28: clean published source
+    `ee306ebd8f0d13ac1d343c2dd18e459795512a5f` collected 5,154 tests:
+    5,113 passed, 41 remained explicit `skip_not_pass` prerequisites, and
+    zero failed or errored. Every test has a unique inventory row; every skip
+    is bound to one of 15 versioned external-asset/platform contracts and an
+    unknown skip fails closed. Repository-wide Ruff and Black checks pass.
+    Five deployed exact-byte runtime/test surfaces are excluded from Black
+    only through a versioned registry that revalidates each current SHA-256.
+    Receipt:
+    `qa/live_verification/environment_packaging_test_baseline_20260728T232959Z/section_03_test_baseline_receipt.json`
+    (file SHA-256
+    `0d7ce3b206dcafb8eb4cad4c9ea940092462b72b48a8bd7acd73404d3908cc71`);
+    independent validation self SHA-256
+    `30d8c80eb47f1509a53223a81281a8b319c0cb312ca7abd490b0c8a69b295d94`.
+    This satisfies `MF-P6-20.03` only and grants no runtime-lifecycle credit
+    to `MF-P6-20.04`.
 - [ ] MF-P6-20.04 Prove clean-export installation, exact-byte runtime closure, focused/integration/full-suite execution, bounded service health, and owned shutdown · Verify: an independent reconstruction receipt binds source, environment, commands, results, processes, ports, and zero leaked resources · Blocked by: MF-P6-20.03 · HARD BLOCKER
   - Existing evidence eligible for partial credit: exact clean archive/wheel,
     isolated install/import, focused/full-suite execution, and 311 row-level

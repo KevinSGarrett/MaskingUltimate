@@ -1,7 +1,7 @@
 ﻿# Current Task
 
 Task ID: MASKFACTORY-ULTIMATE-MASKING-E2E-20260727
-Updated UTC: 2026-07-28T22:11:24Z
+Updated UTC: 2026-07-28T23:31:08Z
 
 ## Active pursuing goal: full attribution and evidence-backed E2E closure
 
@@ -10,22 +10,23 @@ is now corrected: all 4,008 late-stash rows have explicit Plan, Item, tracker,
 evidence, exact stash/main blob, canonical-location, rollback, limitation, and
 completion-effect fields. The live Item catalog and tracker remain
 structurally synchronized at 906 IDs with zero metadata drift. The three
-successor Items were adjudicated honestly: `MF-P6-20.02` now has a
-production-evidence PASS at 100%, while `MF-P6-20.03` remains
-`partially_complete` at 80% and `MF-P6-20.04` remains
-`partially_complete` at 65%; neither successor is falsely complete.
+successor Items were adjudicated honestly: `MF-P6-20.02` and
+`MF-P6-20.03` now have independently validated production-evidence PASS
+receipts at 100%, while `MF-P6-20.04` remains `partially_complete` at 65%.
+No live runtime, campaign, visual, release, or adoption credit was inferred
+from the static/full-suite result.
 
 The active goal is therefore to:
 
 1. preserve the validated 4,008-row authority registry and reproduce it after
    any disposition-policy change;
-2. resolve all 34 unfinished `core_autonomous_runtime` dependencies, including
-   its 22 hard blockers, through real evidence;
+2. resolve all 32 unfinished `core_autonomous_runtime` dependencies, including
+   its 20 hard blockers, through real evidence;
 3. give all 31 unresolved portfolio hard blockers outside the core profile an
    explicit governed terminal disposition rather than ignoring or bulk-closing
    them; and
-4. finish the exact remaining clauses of `MF-P6-20.03` and `.04`, then
-   qualified visual authority, the real 100-mask and three mixed
+4. finish the exact remaining clauses of `MF-P6-20.04`, then qualified
+   visual authority, the real 100-mask and three mixed
    campaigns, evidence reconstruction, immutable release, Main/ComfyUI
    adoption, live E2E, rollback/restart, and final acceptance.
 
@@ -57,16 +58,32 @@ Section-02 acceptance authority:
 `qa/live_verification/canonical_source_integration_20260728T220939Z/`;
 source commit `ae6ce3d9561de3293403185f0969e9ff4c3cbe29`; tree
 `b280e334a80d459920c3fbb890b8857e3bdf996e`; all nine acceptance checks
-PASS. This closes only `MF-P6-20.02`; repository-wide Ruff/Black and
-skip/prerequisite classification stay in `.03`, while bounded service
-health, exact runtime closure, restore, owned shutdown, and zero-leak proof
-stay in `.04`.
+PASS. This closes only `MF-P6-20.02`. The repository-wide Ruff/Black and
+skip/prerequisite work that was pending at that point is now superseded by the
+accepted Section-03 authority below. Bounded service health, exact runtime
+closure, restore, owned shutdown, and zero-leak proof stay in `.04`.
+
+Section-03 test-baseline authority:
+`qa/live_verification/environment_packaging_test_baseline_20260728T232959Z/`;
+source commit `ee306ebd8f0d13ac1d343c2dd18e459795512a5f`;
+5,154 collected / 5,113 passed / 41 governed `skip_not_pass` prerequisites /
+zero failures or errors. The 5,154-row inventory has unique node IDs; all 41
+skips map to 15 versioned contracts; unknown skips fail closed; Ruff, Black,
+all hooks, and independent artifact/self-hash/count/source-reachability
+reconstruction pass. Receipt file SHA-256:
+`0d7ce3b206dcafb8eb4cad4c9ea940092462b72b48a8bd7acd73404d3908cc71`;
+independent validation self SHA-256:
+`30d8c80eb47f1509a53223a81281a8b319c0cb312ca7abd490b0c8a69b295d94`.
+This closes only `MF-P6-20.03`. The next Section-03 hard blocker is
+`MF-P6-20.04`: authorized bounded service health, exact runtime closure,
+persistent restore, owned shutdown, and zero leaked processes/ports/leases/
+reservations/GPU work.
 
 The bounded correction implementation is committed at
 `611c4e0b0ed8ce01a63343a91d84845b6f1f9f80`. Its terminal receipt is
 `.codex-ops/RECOVERY_ATTRIBUTION_CONTROL_RELEASE_20260728T213455Z.json`.
-The receipt commit must be pushed non-forced and local `main` must equal
-`origin/main`; only then is this finite control release closed.
+That finite control release is pushed and closed; it remains historical
+rollback/provenance authority rather than the current source tip.
 
 ## Completed foundation: local/repository/stash authority convergence
 
@@ -289,10 +306,10 @@ Binding authorities:
 
 ## First next action
 
-Close the repository-wide test/lint/skip/prerequisite inventory under
-`MF-P6-20.03`, then produce authorized
-runtime-health/restore/shutdown/zero-leak proof under `.04`. Continue the earliest
-dependency-ready core lanes: `MF-P4-11.23`,
+Produce authorized runtime-health/restore/shutdown/zero-leak proof under
+`MF-P6-20.04`; `MF-P6-20.03` is already accepted and must not be reopened by
+unrelated live-runtime work. Continue the earliest dependency-ready core lanes:
+`MF-P4-11.23`,
 `MF-P4-12.11`, `MF-P6-18.03`, `MF-P6-11.01` coordination, and the Plan-28
 integration chain. Do not rerun accepted `MF-P6-19.01` or `.02`.
 

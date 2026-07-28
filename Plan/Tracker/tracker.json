@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-28T22:13:03+00:00",
+    "generated_at": "2026-07-28T23:36:24+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 906,
     "total_tracked_including_orphaned": 906
@@ -4486,11 +4486,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-28T23:36:13+00:00",
+          "actor": "codex_section03_prerequisite_binding",
+          "text": "PROVENANCE/PREREQUISITE BINDING ONLY / NO STATUS ADVANCEMENT: MF-P6-20.03 full-suite evidence classifies skip-not-pass coverage for this row through contract(s): civitai_detector_cache. The absent asset/platform/evidence remains an explicit prerequisite and cannot count as a pass or satisfy this row's live Verify clause. Evidence: qa/live_verification/environment_packaging_test_baseline_20260728T232959Z/external_asset_contracts.json; source ee306ebd8f0d13ac1d343c2dd18e459795512a5f."
+        }
+      ],
       "evidence": "configs/civitai_auxiliary_runtime.yaml explicitly maps all 24 registered detectors with task/classes, tier, priority, ROI/context gates, and output kind; focused runtime tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-13T22:18:33+00:00",
-      "updated_at": "2026-07-13T22:19:25+00:00",
+      "updated_at": "2026-07-28T23:36:13+00:00",
       "orphaned": false
     },
     "MF-P2-09.02": {
@@ -4507,11 +4513,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-28T23:36:13+00:00",
+          "actor": "codex_section03_prerequisite_binding",
+          "text": "PROVENANCE/PREREQUISITE BINDING ONLY / NO STATUS ADVANCEMENT: MF-P6-20.03 full-suite evidence classifies skip-not-pass coverage for this row through contract(s): civitai_payload_cache. The absent asset/platform/evidence remains an explicit prerequisite and cannot count as a pass or satisfy this row's live Verify clause. Evidence: qa/live_verification/environment_packaging_test_baseline_20260728T232959Z/external_asset_contracts.json; source ee306ebd8f0d13ac1d343c2dd18e459795512a5f."
+        }
+      ],
       "evidence": "Implemented providers/civitai_auxiliary.py and tools/run_civitai_auxiliary.py: all selected checkpoints hash/class validated, sequential raw masks/boxes/provenance preserved; live 14-model run completed with 14/14 providers successful and 11 detections in 13.3 sec.",
       "blocked_reason": null,
       "created_at": "2026-07-13T22:18:33+00:00",
-      "updated_at": "2026-07-13T22:19:27+00:00",
+      "updated_at": "2026-07-28T23:36:13+00:00",
       "orphaned": false
     },
     "MF-P2-09.03": {
@@ -11046,12 +11058,17 @@
           "ts": "2026-07-22T01:37:22+00:00",
           "actor": "codex",
           "text": "2026-07-22: official SAM 3.1 text discovery passed a governed two-session deterministic RunPod CUDA smoke on the exact frozen source/checkpoint/runtime: 4 person masks, identical payload SHA-256 a2a61597..., model load 36.277 s, cold 11.076 s, warm 0.150 s, peak inference VRAM 6,119,682,560 bytes. Independent Windows host verification accepted the closed NPZ and all hashes. The upstream session-keyword incompatibility is fixed by a fail-closed adapter. Point refinement remains separately blocked on empty output and is not claimed by this item."
+        },
+        {
+          "ts": "2026-07-28T23:36:11+00:00",
+          "actor": "codex_section03_prerequisite_binding",
+          "text": "PROVENANCE/PREREQUISITE BINDING ONLY / NO STATUS ADVANCEMENT: MF-P6-20.03 full-suite evidence classifies skip-not-pass coverage for this row through contract(s): sam31_runtime_source_cache. The absent asset/platform/evidence remains an explicit prerequisite and cannot count as a pass or satisfy this row's live Verify clause. Evidence: qa/live_verification/environment_packaging_test_baseline_20260728T232959Z/external_asset_contracts.json; source ee306ebd8f0d13ac1d343c2dd18e459795512a5f."
         }
       ],
       "evidence": "qa/live_verification/sam31_runpod_runtime_smoke_20260722.json SHA-256 8cf2a320dd80b5a4f05fc71a78e29d6a613e19e1f1c2d099e721dcde81ac647e; 20 focused SAM31 tests pass; Ruff and Black clean; live report runtime_lock SHA-256 734f8017db6cd51c5093b23f3ef4f4c49861e41a39de60453d37fc006f03bee6; output NPZ SHA-256 d9959f4e4f937fbaefe5b2dc94af91ccc4227275a42f4ea2ec0ea384687c3f75.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-22T01:37:22+00:00",
+      "updated_at": "2026-07-28T23:36:11+00:00",
       "orphaned": false
     },
     "MF-P0-17.05": {
@@ -11131,11 +11148,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-28T23:36:12+00:00",
+          "actor": "codex_section03_prerequisite_binding",
+          "text": "PROVENANCE/PREREQUISITE BINDING ONLY / NO STATUS ADVANCEMENT: MF-P6-20.03 full-suite evidence classifies skip-not-pass coverage for this row through contract(s): vitmatte_payloads. The absent asset/platform/evidence remains an explicit prerequisite and cannot count as a pass or satisfy this row's live Verify clause. Evidence: qa/live_verification/environment_packaging_test_baseline_20260728T232959Z/external_asset_contracts.json; source ee306ebd8f0d13ac1d343c2dd18e459795512a5f."
+        }
+      ],
       "evidence": "Focused 2026-07-14 governance/truth/autonomy/CVAT suite passed 92 tests; combined modernization evidence suite passed 164 tests. Runtime validation uses JSON Schema plus governance; active legacy versions, per-provider missing decisions, unresolved license activation, duplicate YAML keys, invalid lifecycle transitions, hard-bucket promotion regressions, and unsafe CVAT publication are rejected. Evidence: configs/external_sources.yaml and structured catalog/governance tests; entries remain honest planned/reference states and do not claim installation.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:50:02+00:00",
+      "updated_at": "2026-07-28T23:36:12+00:00",
       "orphaned": false
     },
     "MF-P0-17.09": {
@@ -11173,11 +11196,17 @@
       "conditional": false,
       "status": "complete",
       "percent_complete": 100,
-      "notes": [],
+      "notes": [
+        {
+          "ts": "2026-07-28T23:36:12+00:00",
+          "actor": "codex_section03_prerequisite_binding",
+          "text": "PROVENANCE/PREREQUISITE BINDING ONLY / NO STATUS ADVANCEMENT: MF-P6-20.03 full-suite evidence classifies skip-not-pass coverage for this row through contract(s): eomt_runtime_snapshot. The absent asset/platform/evidence remains an explicit prerequisite and cannot count as a pass or satisfy this row's live Verify clause. Evidence: qa/live_verification/environment_packaging_test_baseline_20260728T232959Z/external_asset_contracts.json; source ee306ebd8f0d13ac1d343c2dd18e459795512a5f."
+        }
+      ],
       "evidence": "Focused 2026-07-14 governance/truth/autonomy/CVAT suite passed 92 tests; combined modernization evidence suite passed 164 tests. Runtime validation uses JSON Schema plus governance; active legacy versions, per-provider missing decisions, unresolved license activation, duplicate YAML keys, invalid lifecycle transitions, hard-bucket promotion regressions, and unsafe CVAT publication are rejected. Evidence: configs/external_sources.yaml and structured catalog/governance tests; entries remain honest planned/reference states and do not claim installation.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-14T07:50:03+00:00",
+      "updated_at": "2026-07-28T23:36:12+00:00",
       "orphaned": false
     },
     "MF-P0-17.11": {
@@ -11346,12 +11375,17 @@
           "ts": "2026-07-22T05:28:50+00:00",
           "actor": "codex",
           "text": "The provider aggregate remains 97%. EoMT static contracts now bind 66 classes, while its amended 66-class isolated live runtime requalification remains open alongside the already recorded exact provider gaps."
+        },
+        {
+          "ts": "2026-07-28T23:36:12+00:00",
+          "actor": "codex_section03_prerequisite_binding",
+          "text": "PROVENANCE/PREREQUISITE BINDING ONLY / NO STATUS ADVANCEMENT: MF-P6-20.03 full-suite evidence classifies skip-not-pass coverage for this row through contract(s): eomt_runtime_snapshot. The absent asset/platform/evidence remains an explicit prerequisite and cannot count as a pass or satisfy this row's live Verify clause. Evidence: qa/live_verification/environment_packaging_test_baseline_20260728T232959Z/external_asset_contracts.json; source ee306ebd8f0d13ac1d343c2dd18e459795512a5f."
         }
       ],
       "evidence": "env/provider_runtime_matrix.json canonical SHA-256 b6cf5e25a5f98dd421b71998c976b7a6a5e8956fa5dbf4dffb6dd8e4287090ef; ten provider runtimes, eight qualified, two exact pending, zero human gates, twenty-two exact artifacts. MatAnyone2 static and temporal routes are live-qualified; SAM 3.1 point refinement and SAM 3D Body byte-exact repeatability remain honestly pending. Evidence: qa/live_verification/matanyone2_runpod_capability_20260722.json, qa/live_verification/sam2matting_runpod_runtime_20260722.json, qa/live_verification/sam31_runpod_runtime_smoke_20260722.json, qa/live_verification/sam3d_body_runpod_runtime_smoke_20260722.json.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-22T05:28:50+00:00",
+      "updated_at": "2026-07-28T23:36:12+00:00",
       "orphaned": false
     },
     "MF-P0-17.14": {
@@ -13043,12 +13077,17 @@
           "ts": "2026-07-22T01:51:53+00:00",
           "actor": "codex",
           "text": "2026-07-22: exact SAM 3D Body source, checkpoint/config/MHR assets, Python 3.11/CUDA runtime, Detectron2 commit, pip integrity, and required imports are live on persistent RunPod. One exact person box returned finite geometry with stable shapes and identity, but two-repeat raw geometry hashes differed twice, including after TF32/fused SDP disablement. Maximum drift was 0.0001832 image pixel and 5.44e-7 mesh units. The exact-hash gate remains closed; DensePose remains active/rollback; no benchmark, promotion, or authority claim. Anti-spin limit reached for this failure class."
+        },
+        {
+          "ts": "2026-07-28T23:36:13+00:00",
+          "actor": "codex_section03_prerequisite_binding",
+          "text": "PROVENANCE/PREREQUISITE BINDING ONLY / NO STATUS ADVANCEMENT: MF-P6-20.03 full-suite evidence classifies skip-not-pass coverage for this row through contract(s): sam3d_body_v2_startup_receipt, sam3d_body_v3_runtime_receipt. The absent asset/platform/evidence remains an explicit prerequisite and cannot count as a pass or satisfy this row's live Verify clause. Evidence: qa/live_verification/environment_packaging_test_baseline_20260728T232959Z/external_asset_contracts.json; source ee306ebd8f0d13ac1d343c2dd18e459795512a5f."
         }
       ],
       "evidence": "qa/live_verification/sam3d_body_runpod_runtime_smoke_20260722.json SHA-256 cce59137fde35dd0ef8ae25813ce56807c4f1f9a748659d29338691397cc8a26; env/sam3d_body_runtime.lock.json; env/sam3d_body_runtime.requirements.lock.txt; 10 runner tests and 35 runtime-matrix/fallback tests pass; Ruff/Black/diff checks clean.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-22T01:51:53+00:00",
+      "updated_at": "2026-07-28T23:36:13+00:00",
       "orphaned": false
     },
     "MF-P2-11.08": {
@@ -13684,12 +13723,17 @@
           "ts": "2026-07-17T10:18:12+00:00",
           "actor": "ai_agent",
           "text": "2026-07-17: the frozen SAM 3D Body runner now emits the predeclared model-load/cold/warm latency, model/peak VRAM, deterministic geometry hash, exact person-box ownership, and OOM evidence needed by this benchmark. No benchmark row or measured result is claimed until live CUDA inference and the human-anchor holdout are available."
+        },
+        {
+          "ts": "2026-07-28T23:36:13+00:00",
+          "actor": "codex_section03_prerequisite_binding",
+          "text": "PROVENANCE/PREREQUISITE BINDING ONLY / NO STATUS ADVANCEMENT: MF-P6-20.03 full-suite evidence classifies skip-not-pass coverage for this row through contract(s): sam3d_body_v2_startup_receipt, sam3d_body_v3_runtime_receipt. The absent asset/platform/evidence remains an explicit prerequisite and cannot count as a pass or satisfy this row's live Verify clause. Evidence: qa/live_verification/environment_packaging_test_baseline_20260728T232959Z/external_asset_contracts.json; source ee306ebd8f0d13ac1d343c2dd18e459795512a5f."
         }
       ],
       "evidence": "2026-07-15: geometry_variant_benchmark_v1 canonical SHA-256 98810aa56d85381ec1f792edf6308f6f4bc1741304cccae312868716a6316aef binds nine contexts, exact artifact/runtime identities, projection/visibility/bleed/side/front-back/identity/QA denominators, latency/VRAM/OOM/determinism, 8 GiB gate, and DensePose fallback. Dedicated 30/30, focused 139/139, full 1445/1445 exit 0; Ruff/Black/CI YAML pass. Signed currency review d581b0d6fda7d26e99ecda00 verifies and remains honestly FAIL. qa/live_verification/geometry_variant_benchmark_contract_20260715.json.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-17T10:18:12+00:00",
+      "updated_at": "2026-07-28T23:36:13+00:00",
       "orphaned": false
     },
     "MF-P3-08.06": {
@@ -16019,12 +16063,17 @@
           "ts": "2026-07-15T20:29:52+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15: the serialized, schema-valid one-command interactive promotion/rollback now spans provider selection, S07 primary, external candidate lifecycle, model incumbent lifecycle, exact snapshots, and smoke evidence under one lock. Live SAM2.1 remains unchanged."
+        },
+        {
+          "ts": "2026-07-28T23:36:13+00:00",
+          "actor": "codex_section03_prerequisite_binding",
+          "text": "PROVENANCE/PREREQUISITE BINDING ONLY / NO STATUS ADVANCEMENT: MF-P6-20.03 full-suite evidence classifies skip-not-pass coverage for this row through contract(s): sam31_runtime_source_cache. The absent asset/platform/evidence remains an explicit prerequisite and cannot count as a pass or satisfy this row's live Verify clause. Evidence: qa/live_verification/environment_packaging_test_baseline_20260728T232959Z/external_asset_contracts.json; source ee306ebd8f0d13ac1d343c2dd18e459795512a5f."
         }
       ],
       "evidence": "Provider-neutral S07/S08 plus signed interactive transaction/rollback: qa/live_verification/provider_neutral_batch_interactive_runtime_20260715.json and qa/live_verification/interactive_provider_transaction_contract_20260715.json SHA-256 70f631c79fab23c5907ebf4fdb7d4711dfee9de13fad77e51a378c234af1963e. 189 focused and full 1653/1653 pass. Remaining 10%: official checkpoint, real benchmark winner, live production smoke/promotion, and observed rollback.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T20:34:02+00:00",
+      "updated_at": "2026-07-28T23:36:13+00:00",
       "orphaned": false
     },
     "MF-P6-06.04": {
@@ -16115,12 +16164,17 @@
           "ts": "2026-07-15T15:26:53+00:00",
           "actor": "ai_agent",
           "text": "2026-07-15: live parallel CVAT 2.69 now exposes and executes pth-sam2 against an exact preserved migrated task; fresh target-only stop/restart proves production CVAT 2.24 and SAM2 remain healthy. Remaining 15% is official SAM3.1 assistance after MF-P0-17.04 checkpoint authorization; no SAM3.1 or completion authority claimed."
+        },
+        {
+          "ts": "2026-07-28T23:36:14+00:00",
+          "actor": "codex_section03_prerequisite_binding",
+          "text": "PROVENANCE/PREREQUISITE BINDING ONLY / NO STATUS ADVANCEMENT: MF-P6-20.03 full-suite evidence classifies skip-not-pass coverage for this row through contract(s): cvat_label_mapping. The absent asset/platform/evidence remains an explicit prerequisite and cannot count as a pass or satisfy this row's live Verify clause. Evidence: qa/live_verification/environment_packaging_test_baseline_20260728T232959Z/external_asset_contracts.json; source ee306ebd8f0d13ac1d343c2dd18e459795512a5f."
         }
       ],
       "evidence": "qa/live_verification/cvat_parallel_assistance_recovery_bundle_20260715.json; versions 2.24.0/2.69.0, identical 21 tasks/21 jobs/367 shapes, target SAM2 strict 256x256 mask SHA-256 48a57d6a... in 4.219s, target-only rollback and 18-service restart pass; 49 focused tests pass. SAM3.1 remains gated.",
       "blocked_reason": null,
       "created_at": "2026-07-14T07:40:28+00:00",
-      "updated_at": "2026-07-15T15:26:53+00:00",
+      "updated_at": "2026-07-28T23:36:14+00:00",
       "orphaned": false
     },
     "MF-P6-06.08": {
@@ -23776,12 +23830,17 @@
           "ts": "2026-07-23T08:34:55+00:00",
           "actor": "codex",
           "text": "2026-07-23 first-shard immutable stage package: 256 records, 132 generated/25 provider abstain/99 catalog abstain, 133 draft masks, hard-QA 119 pass/13 fail/124 upstream abstain, one incident artifact quarantined. The package is provider-and-hard-QA stage evidence only; qualified critic/juror review, bounded repair, terminal receipts, certification, remaining 25 shards, gold, and training truth remain open."
+        },
+        {
+          "ts": "2026-07-28T23:36:13+00:00",
+          "actor": "codex_section03_prerequisite_binding",
+          "text": "PROVENANCE/PREREQUISITE BINDING ONLY / NO STATUS ADVANCEMENT: MF-P6-20.03 full-suite evidence classifies skip-not-pass coverage for this row through contract(s): civitai_bootstrap_manifest, civitai_detector_cache, civitai_payload_cache, civitai_pose_cache, civitai_pose_pack_cache. The absent asset/platform/evidence remains an explicit prerequisite and cannot count as a pass or satisfy this row's live Verify clause. Evidence: qa/live_verification/environment_packaging_test_baseline_20260728T232959Z/external_asset_contracts.json; source ee306ebd8f0d13ac1d343c2dd18e459795512a5f."
         }
       ],
       "evidence": "qa/live_verification/runpod_sam31_first_shard_resident_consolidation_20260723.json self SHA-256 47978a9b2076596d3caa3ed7b332ca5f2e09140ac7075cce759003e66a7523d0",
       "blocked_reason": null,
       "created_at": "2026-07-22T08:10:14+00:00",
-      "updated_at": "2026-07-23T08:34:55+00:00",
+      "updated_at": "2026-07-28T23:36:13+00:00",
       "orphaned": false
     },
     "MF-P4-12.05": {
@@ -25439,8 +25498,8 @@
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "partially_complete",
-      "percent_complete": 80,
+      "status": "complete",
+      "percent_complete": 100,
       "notes": [
         {
           "ts": "2026-07-28T18:16:44+00:00",
@@ -25451,12 +25510,17 @@
           "ts": "2026-07-28T21:30:38+00:00",
           "actor": "codex_recovery_attribution",
           "text": "Baseline credit recorded honestly: 5,139 collected, 5,098 passed, 41 governed skips, zero failures, plus 296 row-level test bindings. Repository-wide Ruff debt and exact skip/external-prerequisite inventory remain; no unexplained failure is hidden. .codex-ops/HISTORICAL_STASH_AUTHORITY_BINDING_20260728T212749Z.json; authority matrix sha256 a4436d4a17c7d37990e15c47623b3d51899e1ecba9f7db0b4f9507003dc54930."
+        },
+        {
+          "ts": "2026-07-28T23:32:00+00:00",
+          "actor": "codex_section03_acceptance",
+          "text": "VERIFY PASS: every collected test has an explicit outcome. The 5,154-row inventory contains 5,113 passes and 41 skip-not-pass rows bound to 15 versioned external-asset/platform prerequisite contracts; unknown skips fail closed. Repository-wide Ruff and Black checks pass, with five exact-byte runtime surfaces preserved by explicit hash-verified formatter exclusions. Independent reconstruction rehashed four artifacts, all JSON self hashes, unique node IDs, counts, contracts, static gates, and source reachability. No MF-P6-20.04 runtime/lifecycle credit granted."
         }
       ],
-      "evidence": null,
+      "evidence": "qa/live_verification/environment_packaging_test_baseline_20260728T232959Z/section_03_test_baseline_receipt.json SHA256=0d7ce3b206dcafb8eb4cad4c9ea940092462b72b48a8bd7acd73404d3908cc71; independent_validation.json self_sha256=30d8c80eb47f1509a53223a81281a8b319c0cb312ca7abd490b0c8a69b295d94; source ee306ebd8f0d13ac1d343c2dd18e459795512a5f; 5,154 collected / 5,113 passed / 41 governed skips / zero failures or errors; Ruff and Black PASS.",
       "blocked_reason": null,
       "created_at": "2026-07-27T01:34:03+00:00",
-      "updated_at": "2026-07-28T21:30:38+00:00",
+      "updated_at": "2026-07-28T23:32:00+00:00",
       "orphaned": false
     },
     "MF-P6-20.04": {
@@ -25467,7 +25531,7 @@
       "spec_ref": "28 §§2–5; 29",
       "description": "Prove clean-export installation, exact-byte runtime closure, focused/integration/full-suite execution, bounded service health, and owned shutdown · Verify: an independent reconstruction receipt binds source, environment, commands, results, processes, ports, and zero leaked resources · Blocked by: MF-P6-20.03 · HARD BLOCKER",
       "source_file": "24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md",
-      "source_line": 65,
+      "source_line": 76,
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
@@ -25478,12 +25542,17 @@
           "ts": "2026-07-28T21:30:38+00:00",
           "actor": "codex_recovery_attribution",
           "text": "Clean archive/wheel, isolated install/import, focused/full-suite execution, and 311 runtime-closure row bindings exist. Authorized bounded service health, persistent restore, owned shutdown, and zero-leak reconstruction proof remain. .codex-ops/HISTORICAL_STASH_AUTHORITY_BINDING_20260728T212749Z.json; authority matrix sha256 a4436d4a17c7d37990e15c47623b3d51899e1ecba9f7db0b4f9507003dc54930."
+        },
+        {
+          "ts": "2026-07-28T23:36:14+00:00",
+          "actor": "codex_section03_prerequisite_binding",
+          "text": "PROVENANCE/PREREQUISITE BINDING ONLY / NO STATUS ADVANCEMENT: MF-P6-20.03 full-suite evidence classifies skip-not-pass coverage for this row through contract(s): runpod_network_volume_linux, runpod_startup_linux. The absent asset/platform/evidence remains an explicit prerequisite and cannot count as a pass or satisfy this row's live Verify clause. Evidence: qa/live_verification/environment_packaging_test_baseline_20260728T232959Z/external_asset_contracts.json; source ee306ebd8f0d13ac1d343c2dd18e459795512a5f."
         }
       ],
       "evidence": null,
       "blocked_reason": null,
       "created_at": "2026-07-27T01:34:03+00:00",
-      "updated_at": "2026-07-28T21:30:38+00:00",
+      "updated_at": "2026-07-28T23:36:14+00:00",
       "orphaned": false
     },
     "MF-P6-21.01": {
@@ -25494,7 +25563,7 @@
       "spec_ref": "28 §§6–8",
       "description": "Publish a compact committed evidence locator for every completion-critical accepted runtime, routing, campaign, visual, release, and adoption milestone · Verify: every entry binds tracker item, parent, source, input/runtime/output/terminal/release hashes, locations, replay command, limitations, and supersession without secrets or large artifacts · Blocked by: MF-P6-20.02 · HARD BLOCKER",
       "source_file": "24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md",
-      "source_line": 72,
+      "source_line": 83,
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
@@ -25515,7 +25584,7 @@
       "spec_ref": "28 §§6–8",
       "description": "Make provider and critic disagreement fail closed as abstain/adjudicate/reject/quarantine, never an implicit pass; preserve hard-QA veto authority · Verify: focused and integrated tests prove disagreement blocks promotion, unqualified/unavailable critics abstain, and unrelated records continue with exact accounting · Blocked by: MF-P6-17.02, MF-P6-20.02 · HARD BLOCKER",
       "source_file": "24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md",
-      "source_line": 73,
+      "source_line": 84,
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
@@ -25542,7 +25611,7 @@
       "spec_ref": "28 §§6–8",
       "description": "Bind the current source-qualified 66-class visual gate, exact critic qualifications, and mask-campaign prerequisites into the canonical runtime without duplicating historical campaigns · Verify: missing/stale/historical-only visual evidence blocks promotion and accepted P4/P6 evidence reconstructs from the locator · Blocked by: MF-P4-11.23, MF-P6-17.03, MF-P6-21.01, MF-P6-21.02 · HARD BLOCKER",
       "source_file": "24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md",
-      "source_line": 74,
+      "source_line": 85,
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
@@ -25563,7 +25632,7 @@
       "spec_ref": "28 §§6–8",
       "description": "Reconstruct the accepted 25-mission/recovery evidence and the eventual 100-mask/three-mixed-campaign evidence from the canonical integrated tree · Verify: independent replay matches exact counts, decisions, source/runtime identities, terminal reconciliation, and release without rerunning immutable accepted work · Blocked by: MF-P6-19.04, MF-P6-20.04, MF-P6-21.01 · HARD BLOCKER",
       "source_file": "24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md",
-      "source_line": 75,
+      "source_line": 86,
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
@@ -25584,7 +25653,7 @@
       "spec_ref": "28 §§9–12",
       "description": "Assemble one immutable MaskFactory release candidate with exact commit/tree, package/deployment, ontology/API, runtime/model/config, test, campaign, visual, evidence-index, limitation, startup/shutdown, invalidation, and rollback bindings · Verify: release validator rejects mutable, missing, stale, contradictory, or overclaiming inputs · Blocked by: MF-P6-11.01 through MF-P6-12.06, MF-P6-19.04, MF-P6-20.04, MF-P6-21.04 · HARD BLOCKER",
       "source_file": "24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md",
-      "source_line": 78,
+      "source_line": 89,
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
@@ -25605,7 +25674,7 @@
       "spec_ref": "28 §§9–12",
       "description": "Deliver the pinned cross-session adoption packet from MaskFactory session `019f91d1-ea20-7d81-83ff-03d393eaa1f5` to ComfyUI session `019f9200-4805-7632-83d3-ee9ae614c603`; keep ComfyUI masking deferred before this gate · Verify: both sessions bind the same release, package/runtime, integration input, expected output, limitation, and rollback identities · Blocked by: MF-P6-22.01 · HARD BLOCKER",
       "source_file": "24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md",
-      "source_line": 79,
+      "source_line": 90,
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
@@ -25626,7 +25695,7 @@
       "spec_ref": "28 §§9–12",
       "description": "Run live bounded ComfyUI masking E2E against the pinned release for every required serving mode, including accept, provider/deterministic failure, abstain/quarantine, restart/replay, invalidation refusal, and rollback · Verify: exact workflow/request/mask/error/state hashes and zero duplicate or leaked-resource evidence receive independent ADOPT/PARTIALLY_ADOPT/REJECT disposition · Blocked by: MF-P6-22.02 · HARD BLOCKER",
       "source_file": "24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md",
-      "source_line": 80,
+      "source_line": 91,
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
@@ -25647,7 +25716,7 @@
       "spec_ref": "28 §§9–12",
       "description": "Publish the final Ultimate Masking System acceptance/reconstruction packet and close only the claims whose exact gates passed · Verify: tracker dependency closure, generated reports, clean full suite, real campaigns, visual authority, release, ComfyUI adoption, reconstruction, rollback, and both session states agree byte-for-byte; optional accuracy/scale claims remain separate · Blocked by: MF-P6-22.03 · HARD BLOCKER",
       "source_file": "24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md",
-      "source_line": 81,
+      "source_line": 92,
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,

@@ -108,8 +108,9 @@ Current phase state:
 - F: remains below the 50 GiB allocation floor, so retained recovery/runtime/
   VHDX authorities remain explicit external authorities and no new large local
   allocation is allowed;
-- a fresh full collection has 5,139 nodes: 5,098 passes, 41 governed skips,
-  zero failures, and six Pillow deprecation warnings;
+- the current published full collection has 5,154 nodes: 5,113 passes, 41
+  governed `skip_not_pass` prerequisites, zero failures/errors, and six Pillow
+  deprecation warnings;
 - the exact clean export builds, installs without dependencies, and imports;
   its source archive SHA-256 is
   `4d6aa42fb0a2d8c921822c20657995d530c50fa7a4a806cf9b71591931f9ec7f`
@@ -201,8 +202,9 @@ Current verified state:
 - the integrated product authority was validated at
   `752c0ebfbe97d080ed5ae16fed6f0bd885ff69dd` and promoted to `origin/main`
   through a non-forced fast-forward;
-- the fresh 5,139-node complete collection (5,098 passes, 41 governed skips,
-  zero failures), changed-file Ruff, compileall, tracker,
+- the current 5,154-node complete collection (5,113 passes, 41 governed
+  `skip_not_pass` prerequisites, zero failures/errors), repository-wide Ruff
+  and Black, tracker,
   clean-export install/import/focused tests, diff/credential, and
   full/connectivity Git-integrity gates pass;
 - remote heads are reduced from 30 to seven: `main` plus six explicit recovery
@@ -372,10 +374,10 @@ Still incomplete or unproven:
   `MF-P6-20.02`; its exact clean-tree, required-path, source/installed-import,
   schema, package/config-bundle, generated-cache, and hygiene gates now pass,
   without importing that credit into any successor;
-- complete baseline classification under `MF-P6-20.03`; the fresh suite
-  collected 5,139 nodes with 5,098 passes, 41 governed skips, and zero
-  failures, but every skip/external prerequisite and repository-wide lint
-  defect still requires explicit disposition;
+- preserve the accepted baseline classification under `MF-P6-20.03`: 5,154
+  unique test rows, 5,113 passes, 41 governed `skip_not_pass` prerequisites,
+  zero failures/errors, 15 versioned prerequisite contracts, and
+  repository-wide Ruff/Black PASS;
 - a committed, compact evidence locator that makes accepted runtime milestones
   independently discoverable and reconstructable;
 - hard-QA semantics that make provider disagreement block, abstain, or route to
@@ -495,6 +497,27 @@ Visual approval requires:
 
 Text-only reasoning cannot approve masks. Synthetic or static controls may
 test the control plane but cannot qualify real-image visual authority.
+
+## 6.1 Current canonical test-baseline authority
+
+`MF-P6-20.03` is complete at 100% from published source
+`ee306ebd8f0d13ac1d343c2dd18e459795512a5f`. Its acceptance root is
+`qa/live_verification/environment_packaging_test_baseline_20260728T232959Z/`.
+The complete collected surface is 5,154 tests: 5,113 pass, 41 are explicit
+`skip_not_pass` prerequisites, and zero fail or error. All test node IDs are
+unique; all skips bind to 15 versioned external-asset/platform contracts;
+unknown skips fail closed. Ruff and Black pass repository-wide, with only five
+deployed exact-byte surfaces excluded through hash-verified formatter
+contracts. Independent reconstruction revalidated all artifact bytes/hashes,
+JSON self hashes, counts, contracts, static gates, and source reachability.
+
+This proof is not live-runtime credit. `MF-P6-20.04` remains the immediate
+Section-03 gate and must prove the exact release bytes through authorized
+bounded startup, health, representative routes, persistent restore,
+owned shutdown, and zero leaked processes, ports, children, leases,
+reservations, or GPU work. No external-asset skip may be converted into a
+pass; provisioned lanes must execute when their downstream Item requires live
+authority.
 
 ## 7. Canonical product integration requirements
 

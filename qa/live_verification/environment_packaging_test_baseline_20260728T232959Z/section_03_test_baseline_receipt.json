@@ -1,0 +1,43 @@
+{
+  "acceptance": "PASS",
+  "artifacts": {
+    "external_asset_contracts.json": {
+      "bytes": 7654,
+      "sha256": "9b961a38e2696e06e4fa42fbc1be7ac3507ca49077ae595a094b5370f38b8239"
+    },
+    "full_suite_junit.xml": {
+      "bytes": 760111,
+      "sha256": "2d16ee4c5885043bc7df6329666d83642dab1c9ceae9feb6266ab1646b750025"
+    },
+    "static_baseline.json": {
+      "bytes": 2179,
+      "sha256": "80935f4780c77364e55872137705fbb93930f2e769faf225eaeef8bf3a61fe6d"
+    },
+    "test_inventory.json": {
+      "bytes": 1027435,
+      "sha256": "d5847e79ec6d40a9902d0183f600ea8b340b4015d952db786f48c2d01c7e1a09"
+    }
+  },
+  "completion_effect": {
+    "MF-P6-20.03": "eligible_for_complete_after_independent_receipt_validation",
+    "MF-P6-20.04": "no_completion_credit"
+  },
+  "external_prerequisite_contract_count": 15,
+  "generated_at_utc": "2026-07-28T23:29:59Z",
+  "item_id": "MF-P6-20.03",
+  "schema_version": "maskfactory.mf_p6_20_03_acceptance_receipt.v1",
+  "self_sha256": "b237ba25d0984a1358ed1d471157367e9bca9d331d95f4dd277cbd78c0c8e007",
+  "source_commit": "ee306ebd8f0d13ac1d343c2dd18e459795512a5f",
+  "static_gates": {
+    "black": "PASS",
+    "ruff": "PASS"
+  },
+  "summary": {
+    "errors": 0,
+    "failures": 0,
+    "governed_skips": 41,
+    "passed": 5113,
+    "tests": 5154
+  },
+  "unexplained_outcomes": 0
+}

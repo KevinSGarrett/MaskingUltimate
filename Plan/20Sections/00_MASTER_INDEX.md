@@ -2,6 +2,16 @@
 
 This package divides **all 285 unresolved tracker items** into exactly 20 dependency-ordered acceptance sections. Every unresolved item appears once and only once in `ITEM_COVERAGE_MAP.md` / `.json`.
 
+> **Snapshot/status rule:** item membership and dependency ordering in this
+> package are frozen to `SECTION_MANIFEST.json` source snapshot
+> `2c04e1a7f5adf5f6948af01423f67a867206e8c2`. Status and percentage columns
+> in the coverage map and section work packets are historical snapshot fields,
+> not live task authority. Always resolve current state through
+> `Plan/Tracker/tracker.py`. As of the accepted 2026-07-28 control release,
+> `MF-P6-20.01`, `.02`, and `.03` are complete at 100%; `MF-P6-20.04`
+> remains partially complete at 65%. The frozen mapping must not be mistaken
+> for a reason to reopen accepted work or grant successor completion credit.
+
 ## Required execution sequence
 
 | # | Section | Tracker items | Direct dependencies | Primary acceptance result |

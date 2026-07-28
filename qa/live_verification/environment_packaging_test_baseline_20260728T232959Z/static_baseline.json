@@ -1,0 +1,64 @@
+{
+  "byte_pinned_formatter_exclusions": [
+    {
+      "path": "tools/manage_shared_pod_gpu_lease_v2.py",
+      "reason": "deployed shared-pod lease manager bound by the guarded GPU launcher",
+      "sha256": "5f98839d8b0c7fd0a384a88e421088506dbb3ddd7546b7271dc5974f94e7e4c3"
+    },
+    {
+      "path": "tools/run_visual_critic_calibration.py",
+      "reason": "visual-critic runner bound by configs/vlm.yaml",
+      "sha256": "24e29322f10fcb5a5c4f453a001272c89c5b1468b3de1f913cd887e5c294d486"
+    },
+    {
+      "path": "tools/eomt_dinov3_66_class_shadow.py",
+      "reason": "EoMT GPU shadow runner bound by preserved launch receipts",
+      "sha256": "7e7906dfb5b250d074660ce12d83c33e3984fbe913ff5ca3e2687e102ad71e32"
+    },
+    {
+      "path": "tools/run_sam3d_body_repeatability_v3.py",
+      "reason": "SAM 3D Body runner bound by current runtime locks",
+      "sha256": "54f2d9f8b12daa444531b43ca250ff2134feec951568f75c44594d2a90b85dfb"
+    },
+    {
+      "path": "tests/test_eomt_dinov3_contract.py",
+      "reason": "EoMT contract test bound by env/eomt_dinov3_runtime_v2.lock.json",
+      "sha256": "a0c1abc2179274aef58487a24a9a5dac7feadec08126b5d9addbb3f88d4031e0"
+    }
+  ],
+  "gates": [
+    {
+      "argv": [
+        "C:\\Users\\kevin\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+        "-B",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "output": "All checks passed!",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "C:\\Users\\kevin\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+        "-B",
+        "-m",
+        "black",
+        "--check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "output": "All done! \\u2728 \\U0001f370 \\u2728\n1281 files would be left unchanged.",
+      "returncode": 0
+    }
+  ],
+  "generated_at_utc": "2026-07-28T23:29:59Z",
+  "result": "PASS",
+  "schema_version": "maskfactory.static_baseline.v1",
+  "self_sha256": "de7ca4cb88f006df0f8122285df7067e7478e09c618769448f3d1fa9237f93fe",
+  "source_commit": "ee306ebd8f0d13ac1d343c2dd18e459795512a5f"
+}

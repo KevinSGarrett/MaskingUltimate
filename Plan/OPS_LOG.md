@@ -11426,3 +11426,39 @@ This completion grants only `MF-P6-20.02`. Source-wide Ruff still reports 71
 findings and Black would reformat 68 files; exact skip/prerequisite
 classification remains `MF-P6-20.03`. Bounded service health, exact runtime
 closure, restore, owned shutdown, and zero-leak proof remain `MF-P6-20.04`.
+
+## 2026-07-28 23:31 UTC - Complete test baseline accepted
+
+**Result:** `PRODUCTION_EVIDENCE_PASS / MF-P6-20.03_COMPLETE`.
+
+The prior 46-test campaign failure was traced to three stale autonomy-freeze
+hashes and repaired without weakening the freeze contract. The complete
+published baseline then advanced to source
+`ee306ebd8f0d13ac1d343c2dd18e459795512a5f`: 5,154 tests collected,
+5,113 passed, 41 remained explicit governed skips, and zero failed or errored.
+Repository-wide Ruff and Black checks pass. Black preserves five deployed
+exact-byte runtime/test surfaces through
+`configs/test_external_prerequisite_contracts_v1.json`; every exclusion is
+accepted only when its exact SHA-256 revalidates.
+
+`tools/build_test_baseline_evidence.py` produced a unique row for every test
+and refused unknown/ambiguous skips, failures, errors, dirty Git, source-OID
+drift, pinned-byte drift, or a nonzero static gate. All 41 skip rows map to 15
+versioned external-asset/platform contracts with `skip_not_pass` semantics.
+Acceptance root:
+`qa/live_verification/environment_packaging_test_baseline_20260728T232959Z/`.
+Receipt file SHA-256:
+`0d7ce3b206dcafb8eb4cad4c9ea940092462b72b48a8bd7acd73404d3908cc71`.
+Independent standard-library reconstruction revalidated four artifact
+byte/hash bindings, four JSON self hashes, all unique node IDs/outcomes,
+contract counts, static gates, and source reachability; validation self
+SHA-256:
+`30d8c80eb47f1509a53223a81281a8b319c0cb312ca7abd490b0c8a69b295d94`.
+
+The tracker was changed only through `Plan/Tracker/tracker.py`:
+`MF-P6-20.03` moved from `partially_complete` 80% to `complete` 100%.
+Validation retains 906 non-orphaned Items, reduces unresolved hard blockers
+from 52 to 51, and reports zero structural errors. This grants no completion
+credit to `MF-P6-20.04`; authorized bounded service health, exact runtime
+closure, persistent restore, owned shutdown, and zero-leak reconstruction
+remain the next Section-03 gate.

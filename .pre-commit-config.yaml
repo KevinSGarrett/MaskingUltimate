@@ -2,7 +2,7 @@
 minimum_pre_commit_version: "3.5.0"
 # Keep hooks off the planning layer, the pinned env lockfiles, and the external
 # CVAT clone — those are not this repo's formatted source.
-exclude: '^(Plan/|env/|cvat/|runtime_artifacts/|KICKOFF_PROMPT\.md$)'
+exclude: '^(Plan/|env/|cvat/|qa/live_verification/|runtime_artifacts/|KICKOFF_PROMPT\.md$)'
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0

@@ -1,0 +1,197 @@
+{
+  "absence_semantics": "skip_not_pass",
+  "contracts": [
+    {
+      "category": "platform_capability",
+      "contract_id": "windows_symlink_privilege",
+      "minimum_observed": 1,
+      "observed_test_count": 1,
+      "prerequisite": "Windows Developer Mode or an elevated token with symbolic-link creation privilege",
+      "provisioned_lane": "authorized Windows symlink lane",
+      "skip_reason": "Windows symlink creation requires privileges not guaranteed in CI",
+      "tracker_refs": [
+        "MF-P6-20.03"
+      ]
+    },
+    {
+      "category": "external_asset",
+      "contract_id": "civitai_detector_cache",
+      "minimum_observed": 1,
+      "observed_test_count": 1,
+      "prerequisite": "the governed Plan/Civitai detector cache mounted at the test-declared path",
+      "provisioned_lane": "Civitai auxiliary detector lane",
+      "skip_reason": "external Plan/Civitai detector cache is not mounted in this checkout",
+      "tracker_refs": [
+        "MF-P2-09.01",
+        "MF-P4-12.04"
+      ]
+    },
+    {
+      "category": "external_asset",
+      "contract_id": "civitai_payload_cache",
+      "minimum_observed": 1,
+      "observed_test_count": 2,
+      "prerequisite": "the governed Civitai payload cache mounted at the test-declared path",
+      "provisioned_lane": "Civitai auxiliary runtime lane",
+      "skip_reason": "external Civitai payload cache is not mounted in this checkout",
+      "tracker_refs": [
+        "MF-P2-09.02",
+        "MF-P4-12.04"
+      ]
+    },
+    {
+      "category": "external_asset",
+      "contract_id": "civitai_bootstrap_manifest",
+      "minimum_observed": 1,
+      "observed_test_count": 1,
+      "prerequisite": "the governed Plan/Civitai bootstrap manifest and its referenced bytes",
+      "provisioned_lane": "Civitai classification lane",
+      "skip_reason": "external Plan/Civitai bootstrap manifest is not mounted in this checkout",
+      "tracker_refs": [
+        "MF-P4-12.04"
+      ]
+    },
+    {
+      "category": "external_asset",
+      "contract_id": "civitai_pose_cache",
+      "minimum_observed": 1,
+      "observed_test_count": 1,
+      "prerequisite": "the governed Plan/Civitai pose cache mounted at the test-declared path",
+      "provisioned_lane": "Civitai pose stress lane",
+      "skip_reason": "external Plan/Civitai pose cache is not mounted in this checkout",
+      "tracker_refs": [
+        "MF-P4-12.04"
+      ]
+    },
+    {
+      "category": "external_asset",
+      "contract_id": "civitai_pose_pack_cache",
+      "minimum_observed": 1,
+      "observed_test_count": 1,
+      "prerequisite": "the governed external Civitai pose-pack cache",
+      "provisioned_lane": "Civitai pose-pack runtime lane",
+      "skip_reason": "external Civitai pose-pack cache is not present in this source checkout",
+      "tracker_refs": [
+        "MF-P4-12.04"
+      ]
+    },
+    {
+      "category": "external_asset",
+      "contract_id": "cvat_label_mapping",
+      "minimum_observed": 1,
+      "observed_test_count": 2,
+      "prerequisite": "the governed CVAT label mapping exported from the preserved task data",
+      "provisioned_lane": "CVAT autonomy publication lane",
+      "skip_reason": "external CVAT label mapping is not present in this source checkout",
+      "tracker_refs": [
+        "MF-P6-06.07"
+      ]
+    },
+    {
+      "category": "external_asset",
+      "contract_id": "eomt_runtime_snapshot",
+      "minimum_observed": 1,
+      "observed_test_count": 1,
+      "prerequisite": "the hash-bound EoMT/DINOv3 runtime snapshot",
+      "provisioned_lane": "isolated EoMT runtime lane",
+      "skip_reason": "external EoMT runtime snapshot is not present in this source checkout",
+      "tracker_refs": [
+        "MF-P0-17.10",
+        "MF-P0-17.13"
+      ]
+    },
+    {
+      "category": "external_asset",
+      "contract_id": "vitmatte_payloads",
+      "minimum_observed": 1,
+      "observed_test_count": 1,
+      "prerequisite": "the three hash-reviewed ViTMatte evidence payloads named by the skip reason",
+      "provisioned_lane": "ViTMatte live evidence lane",
+      "skip_reason": "EXTERNAL_ASSET_NOT_PROVISIONED: tracked audit exists but ViTMatte artifact payloads are absent: ['hair_alpha_matte.png', 'hair_binary.png', 'hair_trimap.png']",
+      "tracker_refs": [
+        "MF-P0-17.08"
+      ]
+    },
+    {
+      "category": "external_asset",
+      "contract_id": "reviewed_s02_bytes",
+      "minimum_observed": 1,
+      "observed_test_count": 4,
+      "prerequisite": "the Kevin-reviewed S02 source and mask byte set",
+      "provisioned_lane": "reviewed S02 benchmark lane",
+      "skip_reason": "external Kevin-reviewed S02 source and mask bytes are not present",
+      "tracker_refs": [
+        "MF-P6-20.03"
+      ]
+    },
+    {
+      "category": "platform_capability",
+      "contract_id": "runpod_network_volume_linux",
+      "minimum_observed": 1,
+      "observed_test_count": 1,
+      "prerequisite": "native Linux filesystem link semantics on the governed RunPod network volume",
+      "provisioned_lane": "RunPod serverless network-volume lane",
+      "skip_reason": "network-volume compatibility-link semantics require native Linux",
+      "tracker_refs": [
+        "MF-P6-20.04"
+      ]
+    },
+    {
+      "category": "platform_capability",
+      "contract_id": "runpod_startup_linux",
+      "minimum_observed": 1,
+      "observed_test_count": 4,
+      "prerequisite": "native Linux filesystem startup/link semantics",
+      "provisioned_lane": "RunPod serverless startup lane",
+      "skip_reason": "startup link semantics require a native Linux filesystem",
+      "tracker_refs": [
+        "MF-P6-20.04"
+      ]
+    },
+    {
+      "category": "external_asset",
+      "contract_id": "sam31_runtime_source_cache",
+      "minimum_observed": 1,
+      "observed_test_count": 11,
+      "prerequisite": "the governed official SAM 3.1 runtime source cache",
+      "provisioned_lane": "isolated SAM 3.1 runtime lane",
+      "skip_reason": "external SAM 3.1 runtime source cache is not present in this checkout",
+      "tracker_refs": [
+        "MF-P0-17.04",
+        "MF-P6-06.03"
+      ]
+    },
+    {
+      "category": "external_evidence",
+      "contract_id": "sam3d_body_v2_startup_receipt",
+      "minimum_observed": 1,
+      "observed_test_count": 1,
+      "prerequisite": "the exact hash-bound SAM 3D Body V2 startup receipt",
+      "provisioned_lane": "SAM 3D Body repeatability lane",
+      "skip_reason": "external SAM 3D Body V2 startup receipt is not present",
+      "tracker_refs": [
+        "MF-P2-11.07",
+        "MF-P3-08.05"
+      ]
+    },
+    {
+      "category": "external_evidence",
+      "contract_id": "sam3d_body_v3_runtime_receipt",
+      "minimum_observed": 1,
+      "observed_test_count": 9,
+      "prerequisite": "the exact hash-bound SAM 3D Body V3 runtime receipt",
+      "provisioned_lane": "SAM 3D Body geometry/host-adapter lane",
+      "skip_reason": "external SAM 3D Body V3 runtime receipt is not present",
+      "tracker_refs": [
+        "MF-P2-11.07",
+        "MF-P3-08.05"
+      ]
+    }
+  ],
+  "generated_at_utc": "2026-07-28T23:29:59Z",
+  "schema_version": "maskfactory.external_asset_contracts.evidence.v1",
+  "self_sha256": "23daf0e6d1761fbf5ee173500f2c5fe376f116c3d884d887a00385acfc067368",
+  "source_contract_path": "configs/test_external_prerequisite_contracts_v1.json",
+  "source_contract_sha256": "b82f1e6bafc96a3c51b5fe39702c48ad636f3f40c5c7548d786fc813eb7f9234",
+  "unknown_skip_semantics": "fail_closed"
+}

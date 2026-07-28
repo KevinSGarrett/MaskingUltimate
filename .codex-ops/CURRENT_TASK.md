@@ -1,48 +1,35 @@
 ﻿# Current Task
 
 Task ID: MASKFACTORY-ULTIMATE-MASKING-E2E-20260727
-Updated UTC: 2026-07-28T15:18:02Z
+Updated UTC: 2026-07-28T15:23:59Z
 
-## Current blocking phase
+## Repository-normalization phase
 
-Normalize the repository and promote one complete, validated product authority
-to `main` without losing dirty, divergent, or historical work.
+**Status:** COMPLETE / POST-PROMOTION RECEIPT RECORDED.
 
-- `origin/main`: `d6a3c0e00d01536504f737aff84891cf8bd4efb3`
-- normalization branch:
-  `codex/normalize-maskfactory-main-20260728`
-- validated and pushed implementation checkpoint:
-  `dc99078b23838249dd383bee89de49c9b9ec6c27`
-- topology: `main` is 0 ahead / 909 behind normalization and is its ancestor
+- promoted `origin/main` content authority:
+  `752c0ebfbe97d080ed5ae16fed6f0bd885ff69dd`
 - validation: the 5,148-node complete suite, changed-file Ruff, tracker
   validate/report, clean-export wheel build/install/import/focused suite,
   diff/credential checks, and full/connectivity Git fsck all pass
 - pre-commit: every hook except Black passes; Black is deliberately skipped
   because it rewrites hash-governed source bytes and its attempted formatting
   was restored exactly before the validated commit
-- inventory: two registered Masking worktrees; branch names still require a
-  final exact containment/disposition pass before redundant names are retired
+- remote branches: 30 -> 7 (`main` plus six explicit recovery refs)
+- local branches: 21 -> 2 (`main` plus the branch checked out by the protected
+  dirty recovery checkout)
+- worktrees: exactly two; clean promoted `main` and protected dirty recovery
 - destructive boundary: the dirty canonical checkout, Consumer repository,
   recovery archives, VHDX files, foreign Main worktrees, and shared `C:\w`
   remain no-touch except through separately proven, receipt-backed
   dispositions
 
-The product, fallback/serverless, and historical capability lines are now
-integrated or explicitly dispositioned. The original dirty checkout is
-checkpoint-preserved and semantically reconciled; no executable source remains
-absent. The validation gates are now closed. Two unique topic OIDs are mirrored
-under explicit remote recovery refs; the Main coordination task has confirmed
-no ownership or dependency conflict. The remaining blocking sequence is:
-
-1. commit/push the validation and exact branch-disposition receipt;
-2. revalidate that stale `origin/main` is unchanged and is an ancestor of the
-   receipt-bearing tip;
-3. non-force fast-forward `origin/main`;
-4. re-fetch and require exact local/remote/main parity;
-5. remove only the 23 remote topic names and 20 local branch names covered by
-   the receipt, leaving `main` plus six explicit remote recovery refs; and
-6. run post-promotion tracker/ref/worktree/fsck checks and send the exact
-   promotion receipt to the coordinating Main task.
+The repository mess is normalized without loss. The one-branch local target
+was corrected to two because the second branch is actively checked out by the
+protected dirty recovery source and therefore is not deletion-eligible. The
+post-promotion receipt in this commit closes the normalization phase.
+Reconstruct the live tracker/DAG and resume the earliest dependency-ready real
+product gate; repository hygiene is no longer the blocking phase.
 
 ## Objective
 

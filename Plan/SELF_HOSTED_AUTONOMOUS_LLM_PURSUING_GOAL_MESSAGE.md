@@ -2,13 +2,32 @@
 
 Updated authority: 2026-07-28
 
-## 0. Immediate blocking phase: repository normalization and main promotion
+## 0. Repository-normalization gate: complete
 
-Continue autonomously until the MaskFactory repository and workspace are one
-lossless, clean, validated authority. Repository normalization is a product
-integration gate, not optional housekeeping.
+The lossless repository-normalization and `main`-promotion phase completed on
+2026-07-28. Its immutable validation/branch plan is
+`.codex-ops/NORMALIZATION_VALIDATION_AND_BRANCH_PLAN_20260728T151802Z.json`;
+the post-promotion receipt in `.codex-ops` is the final authority for the
+result.
 
-The verified topology at the start of this phase is:
+Current verified state:
+
+- the integrated product authority was validated at
+  `752c0ebfbe97d080ed5ae16fed6f0bd885ff69dd` and promoted to `origin/main`
+  through a non-forced fast-forward;
+- the 5,148-node complete suite, changed-file Ruff, compileall, tracker,
+  clean-export install/import/focused tests, diff/credential, and
+  full/connectivity Git-integrity gates pass;
+- remote heads are reduced from 30 to seven: `main` plus six explicit recovery
+  refs;
+- local branches are reduced from 21 to two: `main` plus the branch checked
+  out by the protected dirty recovery checkout;
+- exactly two Masking worktrees remain: clean promoted `main` and the protected
+  dirty recovery checkout; and
+- Consumer, recovery archives, VHDX files, Main-owned paths, and shared
+  `C:\w` were not mutated.
+
+The following was the verified topology at the start of this completed phase:
 
 - `origin/main` is `d6a3c0e00d01536504f737aff84891cf8bd4efb3`;
 - the clean normalization branch is
@@ -26,7 +45,7 @@ The verified topology at the start of this phase is:
 - the dirty canonical checkout is a checkpoint-protected recovery source, not
   a disposable working tree.
 
-The remaining normalization execution order is binding:
+The completed normalization execution record was:
 
 1. finish the active complete collected-suite run and repair any genuine
    failures without weakening external-asset, hash, or authority contracts;
@@ -45,8 +64,7 @@ The remaining normalization execution order is binding:
    ref and disposition receipt, then verify remote `main`, refs, worktrees,
    tracker, clean-export tests, and Git connectivity again.
 
-Repository normalization is complete only when all of these terminal
-conditions are true:
+The terminal conditions applied to this phase were:
 
 1. the complete collected suite passes, with every non-pass explicitly
    classified by a governed external-asset or platform contract;
@@ -62,6 +80,13 @@ conditions are true:
    commit; and
 8. the coordinating Main task has received and acknowledged the exact
    promoted commit and the shared-path boundary remains intact.
+
+All eight conditions passed. The local two-branch end state is intentional:
+the dirty checkout's branch remains checked out and is not deletion-eligible.
+Repository normalization completion does not mean the entire MaskFactory
+product is complete. Continue from the honest tracker/DAG; 54 hard blockers
+remain, including real visual-authority, 100-mask, sustained-campaign, release,
+and ComfyUI adoption gates.
 
 Do not mistake fewer branches for correctness. No branch or worktree may be
 deleted because of age, naming, or apparent duplication. No `git clean`,

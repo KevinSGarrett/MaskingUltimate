@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-07-28T15:23:59Z",
+  "repository": "https://github.com/KevinSGarrett/MaskingUltimate.git",
+  "validation_and_branch_plan": ".codex-ops/NORMALIZATION_VALIDATION_AND_BRANCH_PLAN_20260728T151802Z.json",
+  "pre_promotion_main": "d6a3c0e00d01536504f737aff84891cf8bd4efb3",
+  "promoted_content_authority": "752c0ebfbe97d080ed5ae16fed6f0bd885ff69dd",
+  "promotion": {
+    "method": "NON_FORCED_FAST_FORWARD",
+    "remote_main_before_was_ancestor": true,
+    "remote_main_after": "752c0ebfbe97d080ed5ae16fed6f0bd885ff69dd",
+    "local_main_after": "752c0ebfbe97d080ed5ae16fed6f0bd885ff69dd",
+    "parity": "PASS"
+  },
+  "remote_cleanup": {
+    "heads_before_recovery_mirrors": 28,
+    "heads_after_recovery_mirrors": 30,
+    "topic_names_deleted": 23,
+    "heads_remaining": 7,
+    "remaining": {
+      "main": "752c0ebfbe97d080ed5ae16fed6f0bd885ff69dd",
+      "codex/recovery-historical-agent-20260728-8550209": "8550209f2607369ab3e32053be86f2fa40a7db90",
+      "codex/recovery-main-before-maskfactory-normalization-20260728-d6a3c0e": "d6a3c0e00d01536504f737aff84891cf8bd4efb3",
+      "codex/recovery-maskfactory-20260728-61b4ffe": "61b4ffed850ab9570253acde5704a5bf44d4f7b6",
+      "codex/recovery-maskfactory-consumer-20260728-1091a9c": "1091a9c8cc01ff554907b97a7e754c6c884cee01",
+      "codex/recovery-maskfactory-detached-base-20260728-093b9b1": "093b9b1d74fb21ec5653d9dae395af878a8f0909",
+      "codex/recovery-runpod-overflow-20260728-966b95a": "966b95a3c36fb0ed9d6c236c97d97cc4fd6a352d"
+    }
+  },
+  "local_cleanup": {
+    "branches_before": 21,
+    "branches_deleted": 19,
+    "branches_remaining": 2,
+    "remaining": {
+      "main": "752c0ebfbe97d080ed5ae16fed6f0bd885ff69dd",
+      "codex/maskfactory-runtime-implementation": "61b4ffed850ab9570253acde5704a5bf44d4f7b6"
+    },
+    "plan_correction": "The pre-promotion plan expected one local branch. The protected dirty canonical checkout actively has codex/maskfactory-runtime-implementation checked out, so that branch is not deletion-eligible. Two is the correct no-loss local end state."
+  },
+  "worktrees": {
+    "count": 2,
+    "clean_main": "C:\\Comfy_UI_Main_Masking\\.codex-ops\\worktrees\\canonical-reconciliation-20260728",
+    "protected_dirty_recovery": "C:\\Comfy_UI_Main_Masking"
+  },
+  "post_promotion_validation": {
+    "tracker_validate": {
+      "result": "PASS",
+      "non_orphaned_items": 906,
+      "unresolved_hard_blockers": 54,
+      "structural_problems": 0
+    },
+    "tracker_report": "PASS",
+    "git_fsck_full_no_dangling": "PASS",
+    "git_fsck_connectivity_only_no_dangling": "PASS",
+    "remote_head_enumeration": "PASS",
+    "local_head_enumeration": "PASS",
+    "worktree_enumeration": "PASS"
+  },
+  "storage": {
+    "c_free_gib": 58.47,
+    "f_free_gib": 12.98,
+    "c_above_50_gib_floor": true,
+    "f_above_50_gib_floor": false,
+    "f_paths_mutated": false
+  },
+  "preservation_boundaries": {
+    "dirty_canonical_checkout_mutated": false,
+    "consumer_mutated": false,
+    "main_project_paths_mutated": false,
+    "shared_c_w_mutated": false,
+    "recovery_archives_mutated": false,
+    "vhdx_mutated": false
+  },
+  "coordination": {
+    "main_thread": "019fa6cc-eb76-74c1-8fd1-f062cec56dad",
+    "pre_promotion_acknowledgement": "RECEIVED",
+    "final_receipt_acknowledgement": "PENDING_OUT_OF_BAND_CONFIRMATION"
+  },
+  "authority_units": {
+    "qwen_openrouter": 0,
+    "claude_cursor": 0,
+    "codex": "all filesystem, Git, validation, tracker, branch-classification, cleanup, and promotion authority"
+  },
+  "status": "MASKFACTORY_REPOSITORY_NORMALIZATION_COMPLETE"
+}

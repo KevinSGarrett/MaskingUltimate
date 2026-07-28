@@ -11175,3 +11175,28 @@ Local cleanup is similarly bounded from 21 branch names to `main` only.
 The coordinating Main task confirmed no ownership or dependency conflict.
 No Main checkout/worktree, shared `C:\w`, `F:\Codex_Recovery`, Consumer,
 MaskFactory recovery archive, or VHDX path was modified.
+
+## 2026-07-28 15:23 UTC - Main promoted and branch names normalized
+
+**Result:** `MASKFACTORY_REPOSITORY_NORMALIZATION_COMPLETE`.
+
+`origin/main` advanced by ordinary non-forced fast-forward from
+`d6a3c0e00d01536504f737aff84891cf8bd4efb3` to the validated receipt-bearing
+content authority `752c0ebfbe97d080ed5ae16fed6f0bd885ff69dd`.
+Immediate re-fetch and `ls-remote` equality checks passed before any branch
+name was removed.
+
+Remote heads were reduced from 30 to seven: current `main` plus six explicit
+recovery refs. Twenty-three topic names were deleted only after ancestor
+containment or exact recovery-mirror equality was revalidated. Local branches
+were reduced from 21 to two. The pre-promotion one-branch target was corrected:
+the branch `codex/maskfactory-runtime-implementation` remains checked out by
+the protected dirty canonical recovery checkout and is therefore not
+deletion-eligible. The clean integration worktree now checks out `main`.
+
+Post-promotion tracker validation/report, remote/local ref enumeration,
+worktree enumeration, full Git fsck, and connectivity-only fsck pass. C: has
+58.47 GiB free and remains above the 50 GiB floor. F: has 12.98 GiB free and
+remains below its floor; no F: path was mutated during promotion or cleanup.
+The exact receipt is
+`.codex-ops/MAIN_PROMOTION_AND_BRANCH_CLEANUP_20260728T152359Z.json`.

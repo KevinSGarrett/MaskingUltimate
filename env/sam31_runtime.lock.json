@@ -91,7 +91,7 @@
       "visual_exemplar_schema": "src/maskfactory/schemas/sam31_visual_exemplar.schema.json",
       "visual_exemplar_schema_sha256": "b1a26125fb56d6f0d0464049072265bee0c3c46282b4bbf68019a2ed4f6eacf3",
       "isolated_runner": "tools/run_sam31_runtime.py",
-      "isolated_runner_sha256": "e7f6e8edd18e09a8f0c3560229bdc873deab8d6b3d201c201cade384df267577",
+      "isolated_runner_sha256": "e0a461a05c2b6e4e8131bc2d97d64f021ab2f846aefde87ec0de1cb393696eca",
       "resident_runner": "tools/run_sam31_resident_runtime.py",
       "resident_runner_sha256": "255576dd8b862465709cc25b6e3981067c64397c59ab7d84251aff360fcede40",
       "batch_runner": "tools/run_nude_box_prompt_masks.py",

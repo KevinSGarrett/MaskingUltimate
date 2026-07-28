@@ -5,6 +5,12 @@ is however much continuous work you do in one sitting — it might cover one
 item or a whole cluster; it ends whenever you're stopping, whether that's
 because the work is done or because context/time is running out.
 
+For semantic requalification, use qualified `C:\Comfy_UI_Main\MaskedWarehouse`
+labels or exact qualified package masks and `F:\Reference_Images` coverage inputs.
+Prefer deterministic bulk batches with a primary critic and independent-family juror;
+continue through malformed or uncertain cases, publish a compact exception report,
+and keep human review as the optional exception path.
+
 ---
 
 ## 1. Start-of-Session Checklist

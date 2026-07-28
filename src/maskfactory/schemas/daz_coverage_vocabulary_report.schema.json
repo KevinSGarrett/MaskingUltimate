@@ -49,7 +49,7 @@
       "required": ["closed", "source_hashes_match", "canonical_crosswalk_exact", "fixed_axis_count", "fixed_value_count", "registry_axis_count", "continuous_axis_count", "high_risk_intersection_count"],
       "properties": {
         "closed": {"const": true}, "source_hashes_match": {"const": true}, "canonical_crosswalk_exact": {"const": true},
-        "fixed_axis_count": {"const": 56}, "fixed_value_count": {"const": 445},
+        "fixed_axis_count": {"const": 56}, "fixed_value_count": {"const": 446},
         "registry_axis_count": {"const": 8}, "continuous_axis_count": {"const": 6}, "high_risk_intersection_count": {"const": 18}
       }
     }

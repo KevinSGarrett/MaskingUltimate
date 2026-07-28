@@ -1951,7 +1951,7 @@ def build_parser():
     p = argparse.ArgumentParser(
         prog="tracker.py",
         description=(
-            "MaskFactory project tracker -- 856 build items + independently scoped "
+            "MaskFactory project tracker -- 906 build items + independently scoped "
             "completion profiles + DoD/Goals rollups."
         ),
     )

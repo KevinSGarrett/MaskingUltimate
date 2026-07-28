@@ -81,10 +81,14 @@ def test_completion_registry_and_tracker_freeze_three_claim_scoped_profiles() ->
     assert set(profiles["core_autonomous_runtime"]["excluded_core_dependencies"]) == set(
         module["CORE_EXCLUDED_DEPENDENCIES"]
     )
+    required_core_source_files = {
+        "21_ITEMS_P6_AUTONOMOUS_CORE_AND_CROSS_PROJECT_BRIDGE.md",
+        "24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md",
+    }
     addendum_ids = {
         item_id
         for item_id, item in module["parse_items_files"]().items()
-        if item["source_file"] == "21_ITEMS_P6_AUTONOMOUS_CORE_AND_CROSS_PROJECT_BRIDGE.md"
+        if item["source_file"] in required_core_source_files
     }
     assert set(profiles["core_autonomous_runtime"]["required_item_ids"]) == addendum_ids
     assert (

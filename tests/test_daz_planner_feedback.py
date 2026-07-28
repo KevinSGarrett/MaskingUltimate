@@ -29,7 +29,7 @@ from maskfactory.daz.validation_registry import (
 from test_daz_concentration import _inputs
 
 ROOT = Path(__file__).resolve().parents[1]
-VOCABULARY_PATH = ROOT / "qa/reports/daz_coverage_vocabulary/dcvr_f3b4c3927cc77cb389904bfc.json"
+VOCABULARY_PATH = ROOT / "qa/reports/daz_coverage_vocabulary/dcvr_bdb07b054c356e509863f4ef.json"
 UTILITY_POLICY = ROOT / "configs/daz/candidate_utility.yaml"
 CONCENTRATION_POLICY = ROOT / "configs/daz/concentration_limits.yaml"
 FEEDBACK_POLICY = ROOT / "configs/daz/planner_feedback.yaml"

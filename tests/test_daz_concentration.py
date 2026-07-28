@@ -28,7 +28,7 @@ from maskfactory.daz.coverage import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
-VOCABULARY_PATH = ROOT / "qa/reports/daz_coverage_vocabulary/dcvr_f3b4c3927cc77cb389904bfc.json"
+VOCABULARY_PATH = ROOT / "qa/reports/daz_coverage_vocabulary/dcvr_bdb07b054c356e509863f4ef.json"
 CANDIDATE_POLICY = ROOT / "configs/daz/candidate_generation.yaml"
 UTILITY_POLICY = ROOT / "configs/daz/candidate_utility.yaml"
 DEFICIT_POLICY = ROOT / "configs/daz/deficit_signal_adapter.yaml"

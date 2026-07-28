@@ -21,6 +21,11 @@ from maskfactory.providers.sam3d_body import (
     sam3d_body_identity,
 )
 
+SAM3D_V3_RUNTIME_RECEIPT_AVAILABLE = Path(
+    "runtime_artifacts/sam3d_body_repeatability_v3_requalification_control_20260725T150946Z/"
+    "V3_RUNTIME_RECEIPT.json"
+).is_file()
+
 
 def _box() -> BoxProposal:
     return BoxProposal((10.0, 20.0, 110.0, 220.0), 0.99, "person", "p1")
@@ -314,6 +319,10 @@ def _isolated_v3_backend(tmp_path: Path) -> Sam3dBodyV3RunpodBackend:
     return Sam3dBodyV3RunpodBackend(source_root=source_root, checkpoint_root=checkpoint_root)
 
 
+@pytest.mark.skipif(
+    not SAM3D_V3_RUNTIME_RECEIPT_AVAILABLE,
+    reason="external SAM 3D Body V3 runtime receipt is not present",
+)
 def test_v3_host_adapter_binds_warmup_and_exact_measured_artifacts(tmp_path: Path) -> None:
     image = tmp_path / "person.png"
     image.write_bytes(b"governed-person-fixture")
@@ -350,6 +359,10 @@ def test_v3_host_adapter_binds_warmup_and_exact_measured_artifacts(tmp_path: Pat
         ),
     ],
 )
+@pytest.mark.skipif(
+    not SAM3D_V3_RUNTIME_RECEIPT_AVAILABLE,
+    reason="external SAM 3D Body V3 runtime receipt is not present",
+)
 def test_v3_host_adapter_rejects_contract_drift(tmp_path: Path, mutate, message: str) -> None:
     image = tmp_path / "person.png"
     image.write_bytes(b"governed-person-fixture")
@@ -359,6 +372,10 @@ def test_v3_host_adapter_rejects_contract_drift(tmp_path: Path, mutate, message:
         backend(image, bboxes=np.asarray([_box().bbox_xyxy], dtype=np.float32))
 
 
+@pytest.mark.skipif(
+    not SAM3D_V3_RUNTIME_RECEIPT_AVAILABLE,
+    reason="external SAM 3D Body V3 runtime receipt is not present",
+)
 def test_v3_cuda_oom_is_visible_to_densepose_router(tmp_path: Path) -> None:
     image = tmp_path / "person.png"
     image.write_bytes(b"governed-person-fixture")

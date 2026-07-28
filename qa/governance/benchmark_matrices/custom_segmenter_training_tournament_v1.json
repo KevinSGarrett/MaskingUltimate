@@ -116,9 +116,9 @@
     "configs/training/eomt_dinov3_small_v2.yaml": "a0d21b8b8c1da900b6f354e1a244537db5f85a6b2650aae007ddb3195644466f",
     "env/eomt_dinov3_runtime.lock.json": "ac988f5a3d5e94259d7f52064c2d228ec4c34b7f594f9e9a3c817f38aa66b6b8",
     "qa/governance/benchmark_matrices/custom_segmenter_margins_v1.json": "485f841139a9bf79b3e3cf60639bc7ff0fdbd09bfd942772576f466a907e19b4",
-    "src/maskfactory/training/bodypart/v2_contract.py": "692e5c4552bfbf4450b6116740c82ac94e86d9938f60b8e34563eb397105cf09",
+    "src/maskfactory/training/bodypart/v2_contract.py": "ed09d409223a3e1ccea641fc93285d6a6098adbf6053596019a32c8035049602",
     "src/maskfactory/training/mmseg_metric.py": "d5f25c481fae72dfaec5d752d5d2ef87eef3023035dd8b404c6f9e89611f1384",
     "src/maskfactory/training/run.py": "96b56d03859ea3582f326687e49d40a666076e997a1297c64703510333b09580"
   },
-  "sha256": "093eef03b2c7855f090dd1681aa0f0c9075d775009523574fb402a5fd427141c"
+  "sha256": "41db554bac994a8adf7df23d40fff78d4d9f27672d21702b0f58586d656ce71d"
 }

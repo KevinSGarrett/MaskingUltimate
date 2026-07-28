@@ -66,11 +66,11 @@
   ],
   "source_hashes": {
     "env/source_builds.lock": "2ac1032a2d40f0adaf028d26ae3a32833cc63e28fb5903f0e5aa301e9c50893c",
-    "qa/governance/benchmark_matrices/specialist_margins_v1.json": "a4c1d93af92142d2ed7cdd57efa55157b0ba0c14f21440a9099c0072c9e56cd0",
+    "qa/governance/benchmark_matrices/specialist_margins_v1.json": "077735ee8249de3e93c98c92c72b7a2f1dcfbb6e09fbb036a1d1e2505d9aa3f1",
     "qa/live_verification/sam3d_body_source_gate_20260715.json": "2e84034a199cabded783935a1fe54cfa38ba0ea879175e383320e16c28033c13",
     "src/maskfactory/lanes/prior3d.py": "cd8d174a2963ad7fbcef9d2d367bb2b5ce07dfc960e35da9537a3d4b1913e0fa",
-    "src/maskfactory/providers/contracts.py": "5dd377f42c6a438573ae751cd86c90191e3ecaa4fb682e3b2eb189389edf2ab2"
+    "src/maskfactory/providers/contracts.py": "77fbef550d83bb9203907406a6e46600acb915d2e89d7c821c9f1aeac0cc2a6e"
   },
   "authority_boundary": "pre_result_contract_only_no_installation_performance_promotion_mask_or_gold_authority",
-  "sha256": "914b6304f7e7598f62f6272ef4d5e7a0e049e76952912400e8d9af69f68d3944"
+  "sha256": "9f514992ec78aa90bf03a6b1a25111e04964295f551c1b76137624f5da65ef14"
 }

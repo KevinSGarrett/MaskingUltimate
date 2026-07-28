@@ -103,7 +103,7 @@ def test_qwen3_vl_fails_closed_on_digest_or_schema_drift(tmp_path: Path) -> None
 
 def test_qwen3_vl_config_is_exact_shadow_and_retains_incumbents() -> None:
     vlm = yaml.safe_load(Path("configs/vlm.yaml").read_text(encoding="utf-8"))
-    assert vlm["models"] == {
+    expected_shadow_contract = {
         "primary_vlm": "qwen2.5vl:7b",
         "fallback_vlm": "llava:13b",
         "text_llm": "qwen2.5:7b-instruct",
@@ -114,6 +114,12 @@ def test_qwen3_vl_config_is_exact_shadow_and_retains_incumbents() -> None:
         "challenger_mode": "shadow_only",
         "llava_retirement_requires_measured_replacement_win": True,
     }
+    assert {
+        key: vlm["models"][key] for key in expected_shadow_contract
+    } == expected_shadow_contract
+    assert vlm["models"]["strict_gate_primary_vlm"] == "llava:13b"
+    assert vlm["models"]["secondary_ensemble_vlm"] == "qwen2.5vl:7b"
+    assert vlm["models"]["alternate_high_end_vlm"] == "llama3.2-vision:11b"
     pipeline = yaml.safe_load(Path("configs/pipeline.yaml").read_text(encoding="utf-8"))
     assert pipeline["provider_roles"]["vlm_reviewer"]["active"] is None
     assert pipeline["provider_roles"]["vlm_reviewer"]["rollback"] == "qwen2_5_vl_7b"

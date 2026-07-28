@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_POLICY_PATH = (
     ROOT / "qa" / "governance" / "benchmark_matrices" / "mediapipe_vote_ablation_v1.json"
 )
-POLICY_SHA256 = "240a8baf54d146a45f35502570c9a9802456a82f2a0eacf45c7baa43b7ff60b7"
+POLICY_SHA256 = "95de7a721f164e46152605e1d2d5d0af844be11e9145c4856a1132bb0ab812b1"
 SOURCE_FILES = (
     "configs/pipeline.yaml",
     "configs/qa.yaml",

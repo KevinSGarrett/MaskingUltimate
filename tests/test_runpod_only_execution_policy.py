@@ -7,24 +7,21 @@ def _read(relative_path: str) -> str:
     return (ROOT / relative_path).read_text(encoding="utf-8")
 
 
-def test_agent_intake_selects_runpod_directly_without_shared_lease_veto() -> None:
+def test_agent_intake_requires_the_shared_gpu_lease_boundary() -> None:
     agents = _read("AGENTS.md")
     normalized = " ".join(agents.split())
 
     required = (
-        "RunPod execution is selected directly for the intended pod",
-        "No Windows-local shared scheduler, lease token, capacity reservation, "
-        "or cross-pod admission check is required",
-        "MaskFactory internal locks remain local critical-section evidence only",
-        "not a veto on another pod",
+        "Every RunPod local-GPU command must be launched through "
+        "`tools/run_with_shared_pod_gpu_lease.py`",
+        "shared_gpu_leases_v1.sqlite",
+        "No lease means no local GPU launch",
+        "Never kill or preempt another session's process",
     )
     for phrase in required:
         assert phrase in normalized
 
-    forbidden = (
-        "tools/run_with_shared_pod_gpu_lease.py",
-        "No lease means no local GPU launch",
-    )
+    forbidden = ("RunPod execution is selected directly for the intended pod",)
     for phrase in forbidden:
         assert phrase not in normalized
 
@@ -39,8 +36,8 @@ def test_authoritative_instructions_fail_closed_on_local_runtime() -> None:
     combined = "\n".join((standing, start, operating, playbook, local_policy, handoff))
 
     required = (
-        "Pursuing-goal execution invariant (fail closed)",
-        "RunPod unavailability never authorizes a local substitute",
+        "Local GPU/runtime operation is outside routine autonomous scope.",
+        "If RunPod is unavailable, continue CPU-only implementation",
         "A state-changing local runtime operation is authorized only when Kevin asks",
         "There is intentionally no automatic start/repair command sequence",
     )

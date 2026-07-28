@@ -6,6 +6,12 @@ Use this procedure with doc 25 whenever selecting a visual critic, approving
 strict-VLM evidence, adding proposal/refinement providers, or reconciling
 assets from AWS to RunPod.
 
+The durable corpus boundary is `C:\Comfy_UI_Main\MaskedWarehouse`, exact qualified
+MaskFactory packages, and `F:\Reference_Images`. Semantic requalification runs in
+deterministic bulk batches with an independent-family juror, continues through
+malformed or uncertain cases with a compact exception report, and uses human review
+only as an optional exception path.
+
 ## 1. Visual authority is earned, never named
 
 1. Load critic roles from the governed registry/config. Do not infer authority

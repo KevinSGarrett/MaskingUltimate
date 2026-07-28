@@ -37,9 +37,9 @@
     "smoke_script": "tools/smoke_eomt_dinov3.py",
     "smoke_script_sha256": "ef7bffa41a284a875a7a3b285918306d6336c08b9989718be34a6644de0ff236",
     "contract": "src/maskfactory/providers/eomt_dinov3.py",
-    "contract_sha256": "d039ddcc8beac7d98e2e43cd9a710fd527502c15ed54030812d5a30d67471bd6",
+    "contract_sha256": "a00170cd9f21a41f9365d25e997bdeefa21ade973f647aa32321bfbe98616d3f",
     "tests": "tests/test_eomt_dinov3_contract.py",
-    "tests_sha256": "4b5904a4e78231afe71bf6cda213dc168b28bb21c54054e4649b33d4424adebd"
+    "tests_sha256": "a0c1abc2179274aef58487a24a9a5dac7feadec08126b5d9addbb3f88d4031e0"
   },
   "runtime": {
     "status": "not_installed",

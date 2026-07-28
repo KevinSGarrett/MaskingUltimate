@@ -69,7 +69,7 @@
     "provider_adapter": "src/maskfactory/providers/qwen3_vl.py",
     "provider_adapter_sha256": "f95ee49780ab41ee43b0ce9ba392fd4251e445ea1d8dc088722d06d48f6352a9",
     "client": "src/maskfactory/vlm/client.py",
-    "client_sha256": "7d2b14b64b8d58f3cee9e4dd2cb7c79a58dcba0493acf9009903368718439bc5"
+    "client_sha256": "90e48fff7209a6603bfb18a9fc4c811d8412c4fbfdd8631ca649da715d82545b"
   },
   "smoke": {
     "evidence": "qa/live_verification/qwen3_vl_ollama_runtime_20260714.json",

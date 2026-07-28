@@ -9,6 +9,8 @@ from maskfactory.cvat_bridge.client import CvatApiError, load_cvat_config
 from maskfactory.cvat_bridge.push import _load_mapping
 from maskfactory.io.png_strict import write_label_map
 
+CVAT_LABEL_MAPPING_AVAILABLE = Path("data/cvat/label_mapping.json").is_file()
+
 
 def _draft(tmp_path: Path) -> Path:
     root = tmp_path / "review"
@@ -46,6 +48,10 @@ class FakeClient:
         raise AssertionError((method, path))
 
 
+@pytest.mark.skipif(
+    not CVAT_LABEL_MAPPING_AVAILABLE,
+    reason="external CVAT label mapping is not present in this source checkout",
+)
 def test_autonomous_publication_backs_up_replaces_only_auto_parts_and_stays_non_gold(
     tmp_path: Path, monkeypatch
 ):
@@ -90,6 +96,10 @@ def test_autonomous_publication_backs_up_replaces_only_auto_parts_and_stays_non_
     assert len(client.puts) == 1
 
 
+@pytest.mark.skipif(
+    not CVAT_LABEL_MAPPING_AVAILABLE,
+    reason="external CVAT label mapping is not present in this source checkout",
+)
 def test_autonomous_publication_refuses_to_overwrite_a_human_edited_part(tmp_path: Path):
     _project, mapping = _load_mapping(load_cvat_config(Path("configs/cvat.yaml")))
     client = FakeClient(

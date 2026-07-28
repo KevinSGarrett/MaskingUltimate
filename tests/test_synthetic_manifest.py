@@ -32,8 +32,8 @@ ROOT = Path(__file__).resolve().parents[1]
 V1_SCHEMA = ROOT / "src" / "maskfactory" / "schemas" / "manifest.schema.json"
 V2_SCHEMA = ROOT / "src" / "maskfactory" / "schemas" / "manifest_v2.schema.json"
 HISTORICAL_SCHEMA_SHA256S = {
-    "manifest": "d6e2f004a73099b3089d952f3d7479952d28b2b446c9741772931b909032f285",
-    "manifest_v2": "abb2f1afba611e0377952d0481e4ddc8e44644a22faf16047b68f20d433a7c2c",
+    "manifest": "924f48915eccb44710ecee69257a806fed17d4aaba12464c28785a2547b7acb9",
+    "manifest_v2": "51670bd194622941f7dd86c52cd28804b1441f6630464b5ef028e26e6c0298a8",
 }
 SHA = "a" * 64
 

@@ -17,6 +17,13 @@ from maskfactory.providers.sam31_multiplex import (
 
 ROOT = Path(__file__).resolve().parents[1]
 IMAGE = ROOT / "qa/fixtures/smoke/ultralytics_bus_adults.jpg"
+SAM31_RUNTIME_CACHE_AVAILABLE = (
+    ROOT / "models/runtime_cache/sam3_source_5dd401d1/sam3/model_builder.py"
+).is_file()
+pytestmark = pytest.mark.skipif(
+    not SAM31_RUNTIME_CACHE_AVAILABLE,
+    reason="external SAM 3.1 runtime source cache is not present in this checkout",
+)
 
 
 def _arrays() -> dict[str, np.ndarray]:

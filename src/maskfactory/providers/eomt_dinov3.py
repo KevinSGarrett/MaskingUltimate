@@ -60,10 +60,6 @@ class EomtDinov3TrainingContract:
         self.training_config = Path(training_config)
 
     def validate(self) -> dict[str, Any]:
-        for filename, expected in EOMT_FILES.items():
-            path = self.snapshot / filename
-            if not path.is_file() or _sha256(path) != expected:
-                raise EomtDinov3ContractError(f"EoMT snapshot drift: {filename}")
         config = yaml.safe_load(self.training_config.read_text(encoding="utf-8"))
         if (
             config.get("lifecycle_state") != "installed"
@@ -102,6 +98,10 @@ class EomtDinov3TrainingContract:
         if selection.get("pretraining_output_may_author_gold") is not False:
             raise EomtDinov3ContractError("EoMT pretraining output cannot author gold")
         self._validate_fair_training_surface(config)
+        for filename, expected in EOMT_FILES.items():
+            path = self.snapshot / filename
+            if not path.is_file() or _sha256(path) != expected:
+                raise EomtDinov3ContractError(f"EoMT snapshot drift: {filename}")
         return self.compile_head_spec()
 
     @staticmethod

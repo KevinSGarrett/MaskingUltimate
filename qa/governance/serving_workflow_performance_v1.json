@@ -183,17 +183,17 @@
     "frozen_artifacts_must_remain_unchanged": true
   },
   "source_hashes": {
-    "configs/pipeline.yaml": "bf3f2c49b6f882ae7d37b348e98910d3dcc0ea51c8960d4efac8d6b2de03c144",
-    "models/model_registry.json": "799cba987a44cf638f10413f7871951864e4d8aad1003ab0780fe60e778594f7",
-    "configs/external_sources.yaml": "e3cba6fc8ada84c014203efa2e30f6deb1ee8376a4b1bb0fa2ea213bff62e119",
-    "src/maskfactory/serve/api.py": "68d423add7c5bc1184efb82a7aa4bd0b95a2e39b9c4f47acea8d0dff4ecabce0",
+    "configs/pipeline.yaml": "e16c0235583271c856953c7a584a75becf95be9cad236afdb5a514116e17cc83",
+    "models/model_registry.json": "32bb8c7e3233bf6d685a04acb8899bd5d823b22c195954ef72ac085276031aa1",
+    "configs/external_sources.yaml": "759946a447c4bcbf2641cb54113ee725da52cd3dada4854d2791821859508972",
+    "src/maskfactory/serve/api.py": "ec6eed36091b8367931f0b0cc5266f9dc5d1576a83029edd3b4253b8a593761d",
     "src/maskfactory/serve/providers.py": "7d8fabe68d3b1eaea3b27df1777ef221bef99299da9cffa2cf644fb59d8764cd",
     "src/maskfactory/serve/comfy_export.py": "461ec9a4d1466894c790fca855edc3dcf77ff42e16fa4c9cc664bc9ee7187558",
-    "src/maskfactory/packager.py": "5ba72189f3d0b08777033da965caa77c1a38dca85809d16b04a2f03a245f11b4",
+    "src/maskfactory/packager.py": "08be8f5c25d94df06dea1e002faf723957cc9d2f8d2bf1d7126aef329508f08a",
     "src/maskfactory/serve/maskfactory_nodes/workflows/wf_inpaint_gold_hand.json": "81c2a3b809835bfa821f5775bd266644022b1f249ef3c3dac3a4563d52498cc1",
     "src/maskfactory/serve/maskfactory_nodes/workflows/wf_live_predict_inpaint.json": "8202244036cdc2d90ba744ebe1a8130a194224f995f6b0173724fa7ee87646cc",
     "src/maskfactory/serve/maskfactory_nodes/workflows/wf_multi_instance_p1.json": "3b7807f7055c1a345757d3702b40ed6be84a42035ef5978043aa9bf84b797418"
   },
   "authority": "pre_result_measurement_policy_only_no_serving_training_mask_truth_gold_promotion_or_completion_authority",
-  "sha256": "13f5a85079a124179eb67f6d0d6a8ae2397e5e956f7d69b1d933a3177fbdcd79"
+  "sha256": "91b3a3f0e3d4ef95aeee36e54514c9513dbf3f0db9ba7eae268dbd6b9b7ec6ff"
 }

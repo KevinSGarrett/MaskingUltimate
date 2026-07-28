@@ -4,14 +4,14 @@
   "completion_scope": "legacy_portfolio_research_evidence",
   "core_completion_authority": "none",
   "governing_source_hashes": {
-    "Plan/20_PROGRESSIVE_AUTONOMOUS_MASK_FACTORY_SPEC.md": "051c172fd17fdd4a7c09c080c0934dba577f35e162b01241a431c1297ddf61c9",
-    "Plan/22_TECHNOLOGY_CURRENCY_AND_MODEL_CHALLENGE_SPEC.md": "aff04f6699c7e585aa5082534635804423d573af7629bc63245f9503e77f957e",
-    "Plan/Items/00_ITEMS_MASTER_INDEX.md": "bdb255077d8236d6539c15c4a19bff4303b9598b6f80a489a383660b3b2f6ba2",
-    "Plan/23_EXTERNAL_SUPERVISION_REFERENCE_DAZ_AND_MINIMAL_REVIEW_SPEC.md": "b769a621b6ece466fda411f124c901321debd0c929d9e2a2d25437b6cd1f1c93",
-    "Plan/Items/20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md": "fd66bc85217cbc7b208b42dea4f9998172d2e9285564030cc08674e79b02e9b0",
-    "Plan/Items/18_ITEMS_P7_CURRENCY_OPERATIONS.md": "d101b45700e5f0287f68fda47e71c936a838b9b5d10b5b6f79bda0ada8b60084",
-    "Plan/SIDE_THREAD_HANDOFF_SAM31_AUTONOMOUS_GOLD_20260713.md": "6818856f7bdd2f034967043b2b7fef363e5b13676def797c05189b4e871253ec",
-    "Plan/Tracker/tracker.py": "1c10f94b0108c0a39d3ffedb371f750132776981f02bb56758757a1cf64e64b8"
+    "Plan/20_PROGRESSIVE_AUTONOMOUS_MASK_FACTORY_SPEC.md": "8e5fa8ed276449159d73c551839fafd5ea8cf19de2cff61f93ddfb93edacc8f6",
+    "Plan/22_TECHNOLOGY_CURRENCY_AND_MODEL_CHALLENGE_SPEC.md": "30971a9072af824d58f1b7bb8f427bbe0c4040622340a87b3337d4c83684a7f3",
+    "Plan/Items/00_ITEMS_MASTER_INDEX.md": "ae78c1f18b4d2985e4e374e448881c1f6e48cf2f027f2fa7320e741312287e50",
+    "Plan/23_EXTERNAL_SUPERVISION_REFERENCE_DAZ_AND_MINIMAL_REVIEW_SPEC.md": "b4d04cff2cc0edc7b292d8df40ee822c21d24e0880bc14b81ebd8e91e8b87edc",
+    "Plan/Items/20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md": "b4b6dd7ea79bfaef960058517a3402a3db4e9ed40595227a9d3017c4e39179a5",
+    "Plan/Items/18_ITEMS_P7_CURRENCY_OPERATIONS.md": "9759b88f5bace1c263ad8a2303348a42c39b861dd0311b3ce3f8260d44d693b0",
+    "Plan/SIDE_THREAD_HANDOFF_SAM31_AUTONOMOUS_GOLD_20260713.md": "d57837a1dc0e493b5ef6c9a301fab7d479803dec9ffdeae96ad515f9f6298b3e",
+    "Plan/Tracker/tracker.py": "c8859860c5d203653ffecd31bc557e59a35a5431beed1f47822ee2901b9caa99"
   },
   "policy_id": "modernization_completion_v1",
   "required_domains": {
@@ -182,7 +182,7 @@
     }
   },
   "schema_version": "1.0.0",
-  "sha256": "53794241b838451c794ea5b36f5f88dd2ec7612011c975521335e121fdbce80f",
+  "sha256": "7a973b95b200bac5c6a1998acfa9fffe519756fbc65e103474ff87b2b479b885",
   "tracker_requirements": {
     "allowed_terminal_statuses": ["complete", "not_applicable"],
     "excluded_item_ids": ["MF-P7-07.09"],

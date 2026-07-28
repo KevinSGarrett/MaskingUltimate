@@ -13,9 +13,10 @@ import json
 import math
 from collections import Counter
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import TYPE_CHECKING, Any, Mapping, Sequence
 
-import numpy as np
+if TYPE_CHECKING:
+    import numpy as np
 
 ADOPTED_REGISTRY_SHA256 = "785bfbcca98262a00519b53a360a67d22f23ec9e4b41c9bc38029f402eb9bbcf"
 ADOPTED_SHARD_INDEX_SHA256 = "16a958ffdc6c304174fa8ff5b9b656a607e8e8a9e9610dac9be4a8dbff3c994a"
@@ -325,7 +326,7 @@ def validate_shard(path: Path, *, expected_lane: str, platform: str) -> dict[str
 
 def rasterize_coco_segmentation(segmentation: Any, *, width: int, height: int) -> np.ndarray:
     """Rasterize COCO polygon or RLE masks without interpreting boxes as masks."""
-
+    import numpy as np
     from PIL import Image, ImageDraw
 
     if width < 1 or height < 1:

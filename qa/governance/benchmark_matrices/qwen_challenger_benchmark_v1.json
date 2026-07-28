@@ -86,16 +86,16 @@
   },
   "source_hashes": {
     "configs/cloud_teacher.yaml": "80f1d7496e42be2ebf8b802a3e597c1c819970820cfb39f5da1dbcc4b2171594",
-    "configs/external_sources.yaml": "e3cba6fc8ada84c014203efa2e30f6deb1ee8376a4b1bb0fa2ea213bff62e119",
-    "configs/vlm.yaml": "234d979a3debacb77fc6e4a6d3dfe3193e65e286036fc8ad215de8ee6aeafb49",
-    "env/qwen3_vl_ollama.lock.json": "fed13b69dd13ad3089fe5e6e0e3a41d6c14125b8d95c9c20960fc85cbf678fdc",
-    "models/model_registry.json": "799cba987a44cf638f10413f7871951864e4d8aad1003ab0780fe60e778594f7",
+    "configs/external_sources.yaml": "759946a447c4bcbf2641cb54113ee725da52cd3dada4854d2791821859508972",
+    "configs/vlm.yaml": "dee6b311ba1106b79667277ae7f4f49df079234e40d3e19d4596a7889e14bfd4",
+    "env/qwen3_vl_ollama.lock.json": "776cedfbe85a7583c30841c8e31f435e3e104096bddde2b8057940b9679b70c7",
+    "models/model_registry.json": "32bb8c7e3233bf6d685a04acb8899bd5d823b22c195954ef72ac085276031aa1",
     "src/maskfactory/providers/qwen3_vl.py": "f95ee49780ab41ee43b0ce9ba392fd4251e445ea1d8dc088722d06d48f6352a9",
-    "src/maskfactory/vlm/client.py": "7d2b14b64b8d58f3cee9e4dd2cb7c79a58dcba0493acf9009903368718439bc5",
+    "src/maskfactory/vlm/client.py": "90e48fff7209a6603bfb18a9fc4c811d8412c4fbfdd8631ca649da715d82545b",
     "src/maskfactory/vlm/cloud_teacher.py": "554a38e958e10fde2820079550b6f8fb93f7d0bdf716ac1ffea87b46f566ad0a",
     "src/maskfactory/vlm/eval.py": "3545daad88d3b5c4d018493b4f1588e23a2de0882d1e2692d8cbb50e76bf981c",
     "src/maskfactory/vlm/prompts/p_workhorse.txt": "2ffd407978a2f25c8e5f461ceb90f71a9acd35cc94dfed87419e46de5364365e"
   },
   "authority": "pre_result_policy_only_no_provider_mask_gold_or_block_clearance_authority",
-  "sha256": "b51cbc7af9d80cce6cb55aabd36614aa16e1c4a03104e225e4e256e68aaf4a9d"
+  "sha256": "a4b35a01cc6dc6f7306169589dcb49f5ffa4a488dac9b9d7787e75e5a63f0ab7"
 }

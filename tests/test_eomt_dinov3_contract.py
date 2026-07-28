@@ -19,8 +19,13 @@ ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "configs" / "training" / "eomt_dinov3_small_v2.yaml"
 LOCK = ROOT / "env" / "eomt_dinov3_runtime_v2.lock.json"
 HISTORICAL_LOCK = ROOT / "env" / "eomt_dinov3_runtime.lock.json"
+EOMT_SNAPSHOT = ROOT / "models" / "runtime_cache" / "eomt_dinov3_small_602edaa"
 
 
+@pytest.mark.skipif(
+    not (EOMT_SNAPSHOT / "model.safetensors").is_file(),
+    reason="external EoMT runtime snapshot is not present in this source checkout",
+)
 def test_eomt_contract_binds_exact_v2_vocabulary_and_discards_coco_head() -> None:
     contract = EomtDinov3TrainingContract()
     compiled = contract.validate()

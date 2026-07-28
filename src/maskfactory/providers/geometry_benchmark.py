@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_POLICY_PATH = (
     ROOT / "qa" / "governance" / "benchmark_matrices" / "geometry_variant_benchmark_v1.json"
 )
-POLICY_SHA256 = "914b6304f7e7598f62f6272ef4d5e7a0e049e76952912400e8d9af69f68d3944"
+POLICY_SHA256 = "9f514992ec78aa90bf03a6b1a25111e04964295f551c1b76137624f5da65ef14"
 PROVIDERS = ("densepose_r50_fpn_s1x", "sam3d_body")
 CONTEXTS = (
     "geometry_prior",

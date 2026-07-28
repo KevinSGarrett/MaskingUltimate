@@ -11,41 +11,57 @@ integration gate, not optional housekeeping.
 The verified topology at the start of this phase is:
 
 - `origin/main` is `d6a3c0e00d01536504f737aff84891cf8bd4efb3`;
-- the clean reconciliation authority is
-  `4316297024734d8741370905ad185a7fcccfeb8f`, 621 commits ahead and zero
+- the clean normalization branch is
+  `codex/normalize-maskfactory-main-20260728`; its last pushed checkpoint is
+  `23aadb993c0edbe40325ed8417c4e336b7adb600`, 908 commits ahead and zero
   commits behind `origin/main`;
 - `origin/main` is an ancestor of the clean reconciliation authority, so the
   eventual update must be a non-forced fast-forward;
-- the clean reconciliation authority is not yet the complete product tree;
-- the maximal current product/steward line is rooted at
-  `codex/fallback-dispatcher-podbase-20260726`;
-- `codex/runpod-serverless-overflow-20260724` contains a small divergent
-  post-split serverless cohort requiring semantic reconciliation;
-- `agent/maskfactory-build-progress-20260711` is a historical product-feature
-  reservoir whose unique paths require explicit adopt/supersede/archive
-  disposition; and
+- all previously identified product, steward, serverless, historical-agent,
+  and dirty-checkout source cohorts are integrated or explicitly preserved and
+  dispositioned; the current uncommitted normalization repair set remains to
+  pass the final gates and be committed;
+- exactly two registered Masking worktrees remain: the protected dirty
+  canonical recovery checkout and the clean normalization worktree; and
 - the dirty canonical checkout is a checkpoint-protected recovery source, not
   a disposable working tree.
 
-The immediate execution order is binding:
+The remaining normalization execution order is binding:
 
-1. preserve the old `main`, reconciliation tip, maximal product tips, and
-   dirty-checkout boundary with verified refs and a SHA disposition ledger;
-2. merge the maximal current product line into a dedicated normalization
-   branch, retaining reconciliation-side safety/control authority where
-   conflicts occur and reviewing every conflict cohort semantically;
-3. reconcile the serverless post-split cohort and the historical agent-only
-   source/test/config candidates without bulk importing obsolete state;
-4. classify every remaining dirty canonical-checkout byte as adopted,
-   superseded, generated/runtime-only, or independently preserved;
-5. prove package/install closure, focused tests, the complete collected suite,
-   tracker structure, evidence reconstruction, and full Git integrity from a
-   clean tree;
-6. push the validated normalization tip and fast-forward `origin/main`
+1. finish the active complete collected-suite run and repair any genuine
+   failures without weakening external-asset, hash, or authority contracts;
+2. prove package/install closure, focused tests, tracker structure, evidence
+   reconstruction, secret/credential hygiene, and full Git integrity from a
+   clean exported tree;
+3. commit and push the exact validated normalization tip, publish a durable
+   validation/reconciliation receipt, and exchange the exact commit with the
+   coordinating Main task;
+4. classify every local and remote branch as required authority, retained
+   rollback/recovery authority, merged redundant name, or uniquely preserved
+   history; record exact containment before deleting any name;
+5. fast-forward `origin/main` to the validated normalization tip
    without force or history rewrite; and
-7. retire only branches proven merged or protected by a durable archival ref
-   and disposition receipt. Recovery refs remain until the final rollback gate
-   is independently verified.
+6. retire only branch names proven merged or protected by a durable archival
+   ref and disposition receipt, then verify remote `main`, refs, worktrees,
+   tracker, clean-export tests, and Git connectivity again.
+
+Repository normalization is complete only when all of these terminal
+conditions are true:
+
+1. the complete collected suite passes, with every non-pass explicitly
+   classified by a governed external-asset or platform contract;
+2. a clean exported checkout installs and passes the required smoke,
+   reconstruction, policy, and integrity gates;
+3. the normalization worktree is clean and its exact commit is pushed;
+4. `origin/main` equals that validated commit after a non-forced fast-forward;
+5. every remaining local and remote branch has a durable disposition, and
+   only proven-redundant names have been removed;
+6. the dirty canonical recovery checkout and required recovery refs/archives
+   remain preserved and documented;
+7. tracker validation and generated authority reports agree with the promoted
+   commit; and
+8. the coordinating Main task has received and acknowledged the exact
+   promoted commit and the shared-path boundary remains intact.
 
 Do not mistake fewer branches for correctness. No branch or worktree may be
 deleted because of age, naming, or apparent duplication. No `git clean`,

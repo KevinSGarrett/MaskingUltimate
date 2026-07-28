@@ -4,15 +4,24 @@ import hashlib
 import json
 from pathlib import Path
 
+import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCK_PATH = ROOT / "env/sam3d_body_runtime_v4_warmup.lock.json"
+V3_RUNTIME_RECEIPT = ROOT / (
+    "runtime_artifacts/sam3d_body_repeatability_v3_requalification_control_20260725T150946Z/"
+    "V3_RUNTIME_RECEIPT.json"
+)
 
 
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+@pytest.mark.skipif(
+    not V3_RUNTIME_RECEIPT.is_file(),
+    reason="external SAM 3D Body V3 runtime receipt is not present",
+)
 def test_v3_host_adapter_lock_binds_the_passing_repeatability_contract() -> None:
     lock = json.loads(LOCK_PATH.read_text(encoding="utf-8"))
     assert lock["artifact"] == "sam3d_body_v3_host_adapter_activation"

@@ -8,6 +8,12 @@ in docs 06 and 10 and in Instruction 13 wherever those claims conflict with
 measured evidence. It also defines the permitted read-only AWS inventory and
 the governed AWS-to-RunPod migration path.
 
+The durable corpus boundary is `C:\Comfy_UI_Main\MaskedWarehouse`, exact qualified
+MaskFactory packages, and `F:\Reference_Images`. Semantic requalification executes
+in deterministic bulk batches with an independent-family juror, continues past
+malformed or uncertain cases with a compact exception report, and keeps human review
+as an optional exception path rather than the default throughput dependency.
+
 Planning text, a downloaded checkpoint, a successful JSON parse, or rejection
 of bad masks is not visual authority. A model earns a role only by passing the
 frozen positive-and-negative calibration contract in this document.

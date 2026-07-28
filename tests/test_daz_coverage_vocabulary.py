@@ -63,7 +63,7 @@ def test_live_sources_build_closed_vocabulary_and_exact_canonical_crosswalk() ->
         "source_hashes_match": True,
         "canonical_crosswalk_exact": True,
         "fixed_axis_count": 56,
-        "fixed_value_count": 445,
+        "fixed_value_count": 446,
         "registry_axis_count": 8,
         "continuous_axis_count": 6,
         "high_risk_intersection_count": 18,

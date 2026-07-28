@@ -1,7 +1,7 @@
 ﻿# Current Task
 
 Task ID: MASKFACTORY-ULTIMATE-MASKING-E2E-20260727
-Updated UTC: 2026-07-28T11:50:00Z
+Updated UTC: 2026-07-28T15:08:00Z
 
 ## Current blocking phase
 
@@ -11,11 +11,14 @@ to `main` without losing dirty, divergent, or historical work.
 - `origin/main`: `d6a3c0e00d01536504f737aff84891cf8bd4efb3`
 - normalization branch:
   `codex/normalize-maskfactory-main-20260728`
-- dirty-root reconciliation parent:
-  `f036d3f1e83bd64ab3660591a2fa9adbc4c78da8`
-- topology: `main` is 0 ahead / 621 behind reconciliation and is its ancestor
-- inventory: 20 local branches, 26 remote branches, two registered Masking
-  worktrees
+- last pushed normalization checkpoint:
+  `23aadb993c0edbe40325ed8417c4e336b7adb600`
+- topology: `main` is 0 ahead / 908 behind normalization and is its ancestor
+- active normalization delta: 69 changed paths before the final
+  validation/receipt update; no change is committed until the complete suite
+  and clean-export gates pass
+- inventory: two registered Masking worktrees; branch names still require a
+  final exact containment/disposition pass before redundant names are retired
 - destructive boundary: the dirty canonical checkout, Consumer repository,
   recovery archives, VHDX files, foreign Main worktrees, and shared `C:\w`
   remain no-touch except through separately proven, receipt-backed
@@ -24,9 +27,23 @@ to `main` without losing dirty, divergent, or historical work.
 The product, fallback/serverless, and historical capability lines are now
 integrated or explicitly dispositioned. The original dirty checkout is
 checkpoint-preserved and semantically reconciled; no executable source remains
-absent. The next blocking gate is the complete product validation suite,
-evidence reconstruction, Git integrity, and coordinated non-forced
-fast-forward of `main`.
+absent. The complete product suite is running against the current
+normalization delta. The remaining blocking gates are:
+
+1. complete-suite PASS with governed skips/non-passes explicitly classified;
+2. tracker, package/install, clean-export reconstruction, secret hygiene, and
+   full Git integrity PASS;
+3. durable receipt plus exact commit/push of the normalization delta;
+4. exact branch containment/disposition and removal of only proven-redundant
+   names;
+5. coordinated non-forced fast-forward of `origin/main`; and
+6. post-promotion verification that GitHub, tracker, refs, worktrees, and the
+   coordinating Main task agree on the same exact commit.
+
+If the active suite discovers no new defect, the expected remaining
+normalization effort is approximately three to six hours. This is a planning
+range, not permission to skip a terminal gate or a deadline-based completion
+claim.
 
 ## Objective
 

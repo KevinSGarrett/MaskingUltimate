@@ -4,6 +4,13 @@
 autonomous-build session/agent in this repository. Re-read mid-flight. Side-chat
 guidance does not auto-apply unless merged here. Prefer this file over chat-only memory.
 
+**Durable semantic-review boundary.** Qualified labeled inputs come from
+`C:\Comfy_UI_Main\MaskedWarehouse`, exact qualified MaskFactory packages, and
+coverage/retrieval inputs from `F:\Reference_Images`. Run label-aware review in
+deterministic bulk batches with a primary critic plus an independent-family juror.
+Continue past malformed or uncertain cases, emit a compact exception report, and
+keep human review as an optional exception path rather than the default throughput lane.
+
 **Canonical path:** `Plan/STANDING_ORDERS_AUTONOMOUS_BUILD.md`
 **Pointers only elsewhere** (CLAUDE.md / AGENTS.md / `.cursor/rules/` / handoffs) — do not fork a second full copy that can drift.
 
@@ -176,7 +183,7 @@ Reconstruct → select unblocked highest-value item → declare target tier → 
 See `Plan/Instructions/00_START_HERE.md`, `02_AUTONOMOUS_OPERATING_RULES.md`, and `03_SESSION_PLAYBOOK.md` for the full procedure. Binding loop: reconstruct → select → climb → evidence → tracker → **immediate next wave** → repeat until E2E complete or only true `NEEDS KEVIN` remain (with other lanes still running).
 
 FIRST ACTIONS NOW
-1) Live-probe Docker + Ollama + `maskfactory doctor` (snapshot only; do not stall).
+1) Inspect CPU-safe project state and prior runtime evidence; do not probe or start local Docker, Ollama, WSL, or GPU services.
 2) `tracker.py next` / hard-blockers for `core_autonomous_runtime`.
 3) Pick the highest-value climbable wave (prefer RUNTIME/VISUAL/HARD_QA-ready over more STATIC-only).
 4) Execute without waiting for Kevin — and do not stop until E2E complete.

@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_POLICY_PATH = (
     ROOT / "qa" / "governance" / "benchmark_matrices" / "silhouette_variant_benchmark_v1.json"
 )
-POLICY_SHA256 = "07bfddf8897826af6efae11ad4858d1a00492aab0ac6e0403bce3730b454e22d"
+POLICY_SHA256 = "d74cd68c49ec979fc28665259ec916fc2b13a5f2681bfee4aa6ee4bd2276295e"
 CONTEXTS = (
     "hair_boundaries",
     "multi_person_overlap",

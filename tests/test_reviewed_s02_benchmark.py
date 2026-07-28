@@ -22,6 +22,11 @@ from maskfactory.benchmarking.reviewed_s02 import (
 
 ROOT = Path(__file__).resolve().parents[1]
 LIVE_EVIDENCE = ROOT / "qa" / "live_verification" / "sam3_litetext_reviewed_s02_20260715.json"
+REVIEWED_S02_ASSETS_AVAILABLE = (
+    ROOT / "data/images/img_c02019c4979c/source.jpg"
+).is_file() and (
+    ROOT / "work/instances/p2/s02/img_c02019c4979c/person_full_visible.png"
+).is_file()
 
 
 def _reseal(document: dict) -> None:
@@ -30,6 +35,10 @@ def _reseal(document: dict) -> None:
     )
 
 
+@pytest.mark.skipif(
+    not REVIEWED_S02_ASSETS_AVAILABLE,
+    reason="external Kevin-reviewed S02 source and mask bytes are not present",
+)
 def test_policy_is_frozen_before_results_and_all_reference_bytes_are_current() -> None:
     policy = load_policy()
     assert policy["sha256"] == LOCKED_POLICY_SHA256
@@ -109,6 +118,10 @@ def test_geometry_and_degenerate_masks_fail_closed() -> None:
         match_best_instance([], valid)
 
 
+@pytest.mark.skipif(
+    not REVIEWED_S02_ASSETS_AVAILABLE,
+    reason="external Kevin-reviewed S02 source and mask bytes are not present",
+)
 def test_live_evidence_recomputes_metrics_from_persisted_strict_masks() -> None:
     document = json.loads(LIVE_EVIDENCE.read_text(encoding="utf-8"))
     result = verify_evidence(document)
@@ -118,6 +131,10 @@ def test_live_evidence_recomputes_metrics_from_persisted_strict_masks() -> None:
     assert result["minimum_boundary_f_2px"] > 0
 
 
+@pytest.mark.skipif(
+    not REVIEWED_S02_ASSETS_AVAILABLE,
+    reason="external Kevin-reviewed S02 source and mask bytes are not present",
+)
 def test_live_evidence_rejects_resealed_metric_tampering() -> None:
     document = json.loads(LIVE_EVIDENCE.read_text(encoding="utf-8"))
     document["cases"][0]["metrics"]["iou"] = 1.0
@@ -128,6 +145,10 @@ def test_live_evidence_rejects_resealed_metric_tampering() -> None:
         verify_evidence(document)
 
 
+@pytest.mark.skipif(
+    not REVIEWED_S02_ASSETS_AVAILABLE,
+    reason="external Kevin-reviewed S02 source and mask bytes are not present",
+)
 def test_live_evidence_rejects_resealed_tool_identity_tampering() -> None:
     document = json.loads(LIVE_EVIDENCE.read_text(encoding="utf-8"))
     document["execution_identity"]["tool_file_sha256"] = "0" * 64

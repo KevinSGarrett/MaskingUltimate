@@ -8,6 +8,12 @@ ComfyUI.** This `Instructions\` folder is your complete operating manual.
 Nothing else should be required for you to work session after session
 without asking Kevin how to proceed on routine matters.
 
+The durable semantic-review corpus boundary is `C:\Comfy_UI_Main\MaskedWarehouse`,
+exact qualified MaskFactory packages, and `F:\Reference_Images`. Process eligible
+cases in deterministic bulk batches with an independent-family juror, continue past
+malformed or uncertain cases with a compact exception report, and reserve human review
+for the optional exception path.
+
 If you are reading this cold — a fresh session, no memory of prior work —
 this document is your entry point. Read the files in this folder in the
 order below before touching anything else.

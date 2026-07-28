@@ -15,7 +15,10 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
+import numpy as np
 from PIL import Image, ImageDraw
+
+from maskfactory.io.png_strict import write_binary_mask
 
 
 class CocoPreflightError(ValueError):
@@ -262,7 +265,7 @@ def rasterize_authoritative_polygons(
         relative_output = Path(file_name).with_suffix(".png")
         output_path = _safe_output_path(destination, relative_output)
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        mask.save(output_path, format="PNG")
+        write_binary_mask(output_path, np.asarray(mask, dtype=np.uint8))
         masks.append(
             {
                 "coverage_fraction": foreground_pixels / total_pixels,

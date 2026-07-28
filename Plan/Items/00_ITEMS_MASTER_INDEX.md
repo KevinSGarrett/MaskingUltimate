@@ -26,7 +26,7 @@ doc-24 core exit). No legacy phase exit is global completion authority.
 | 08_ITEMS_P7_SCALE_OPERATIONS.md | P7 Optional Scale & Continuous | 17 | optional D5, D10, headline test |
 | 09_ITEMS_P0_EXTERNAL_BOOTSTRAP.md | P0 External Foundation Bootstrap | 24 | Existing-model/dataset foundation for D1/D5/D6/D8 |
 | 10_ITEMS_P8_MULTI_PERSON_MASKING.md | P8 Multi-Person / Multi-Character Masking (after P7) | 45 | D11, G9 |
-| 11_ITEMS_P0_MODERNIZATION_FOUNDATION.md | P0 v2/registry/provider foundation | 41 | reproducibility, registry governance, challenger installation, RunPod durability, AWS inventory/migration |
+| 11_ITEMS_P0_MODERNIZATION_FOUNDATION.md | P0 v2/registry/provider foundation | 42 | reproducibility, registry governance, challenger installation, RunPod durability, AWS inventory/migration |
 | 12_ITEMS_P1_ONTOLOGY_V2_AND_TRUTH.md | P1 ontology-v2 and truth authority | 36 | v2 generator/migration/CVAT, four truth tiers |
 | 13_ITEMS_P2_PROVIDER_MODERNIZATION.md | P2 provider-neutral modernization | 30 | v2 drafting, proposal diversity, disagreement maps, bounded repair, SAM 3.1/provider benchmark matrix |
 | 14_ITEMS_P3_MODERN_SPECIALISTS.md | P3 modern specialists | 10 | measured pose/geometry/silhouette/specialist challengers |
@@ -35,9 +35,9 @@ doc-24 core exit). No legacy phase exit is global completion authority.
 | 17_ITEMS_P6_MODERN_SERVING.md | P6 modern serving | 15 | v2 ComfyUI/API, provider-neutral serving, safe CVAT publication |
 | 18_ITEMS_P7_CURRENCY_OPERATIONS.md | P7 currency/autonomous operations | 20 | v2 activation, critic currency, RunPod asset durability, recurring reviews, revised headline evidence |
 | 19_ITEMS_P8_AUTONOMOUS_MULTI_PERSON.md | P8 autonomous multi-person | 8 | certificate-covered instances, residual/audit routing |
-| 20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md | P9 external supervision, reference intelligence, DAZ autonomy | 147 | qualified train-only labels, 83k reference lanes, exact synthetic truth, minimal binary review |
+| 20_ITEMS_P9_REFERENCE_DAZ_AUTONOMY.md | P9 external supervision, reference intelligence, DAZ autonomy | 148 | qualified train-only labels, 83k reference lanes, exact synthetic truth, minimal binary review |
 | 21_ITEMS_P6_AUTONOMOUS_CORE_AND_CROSS_PROJECT_BRIDGE.md | P6 autonomous core and cross-project ComfyUI bridge | 43 | required human-free runtime completion, exact-output authority, release/adoption bridge, recovery |
-| 22_ITEMS_P0_ADULT_CORPUS_AUTONOMY.md | P0/P4/P5/P7 adult-corpus autonomy | 23 | exact intake lineage, leakage-safe supervision, resumable mask generation/QA/repair, RunPod scale, training and release accounting |
+| 22_ITEMS_P0_ADULT_CORPUS_AUTONOMY.md | P0/P4/P5/P7 adult-corpus autonomy | 31 | exact intake lineage, leakage-safe supervision, resumable mask generation/QA/repair, RunPod scale, training and release accounting |
 | 23_ITEMS_P6_SELF_HOSTED_AUTONOMOUS_LLM_OPERATIONS.md | P6 continuous self-hosted autonomy | 28 | CPU supervisor, campaign batching, shared-GPU/fallback routing, engineering and mask work cells, micro-handoff reduction, sustained throughput acceptance |
 | 24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md | P6 whole-product integration and ComfyUI adoption | 12 | canonical product/autonomy tree, clean full suite, evidence reconstruction, mask-safety semantics, immutable release, pinned ComfyUI adoption |
 

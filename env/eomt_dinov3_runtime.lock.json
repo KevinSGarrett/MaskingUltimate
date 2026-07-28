@@ -39,11 +39,11 @@
     "training_config": "configs/training/eomt_dinov3_small_v2.yaml",
     "training_config_sha256": "6ac527c41e165a58d77bf163ae2be5ad9346353f114b7a9839990bd72de69a8c",
     "smoke_script": "tools/smoke_eomt_dinov3.py",
-    "smoke_script_sha256": "5f6413b78d2c684048cb5bf031fde7d9eee8bb7918ad961c4a85ffd3bac7d8b0",
+    "smoke_script_sha256": "ef7bffa41a284a875a7a3b285918306d6336c08b9989718be34a6644de0ff236",
     "contract": "src/maskfactory/providers/eomt_dinov3.py",
     "contract_sha256": "7ad329e9ef7e36d28ec7ecd1a343ff82bb184dfb9bd1f05b6d7fd0791e823467",
     "tests": "tests/test_eomt_dinov3_contract.py",
-    "tests_sha256": "1c172d3c43a3e312c66c8a7a0167a98bbf0222b06361bfe53ba047673ad6221a"
+    "tests_sha256": "5fb8e1c06905611e4e7714de5aae5218b3e709a8b881f4fb04a3528aba20745e"
   },
   "evidence": {
     "runtime": "qa/live_verification/eomt_dinov3_runtime_20260715.json",

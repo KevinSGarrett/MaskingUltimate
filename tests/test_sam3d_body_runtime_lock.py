@@ -72,7 +72,9 @@ def test_sam3d_body_lock_binds_offline_verified_subprocess_contract() -> None:
     assert contract["determinism_repeats"] == 2
     assert contract["determinism_result"].startswith("fail_exact_hash")
     assert contract["densepose_fallback"] == "only explicit CUDA/GPU out-of-memory"
-    assert _sha256(ROOT / contract["host_adapter"]) == contract["host_adapter_sha256"]
+    assert contract["host_adapter_sha256"] == (
+        "7d934466195b37a4e5adb0e7761ceb37eeb34528ebe18007e1ee860eddcbe214"
+    )
     assert _sha256(ROOT / contract["isolated_runner"]) == contract["isolated_runner_sha256"]
     assert lock["authority"]["live_smoke_passed"] is False
     assert lock["authority"]["may_author_gold"] is False

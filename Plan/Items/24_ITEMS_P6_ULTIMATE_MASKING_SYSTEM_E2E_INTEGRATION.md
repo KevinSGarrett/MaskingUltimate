@@ -30,9 +30,33 @@ Frozen authority and evidence contracts:
     `644f0aa34a466a11ff607d201d9d4344b994544dbf2b5588f5d82c9e7941c026`;
     zero stashes, cache residue, temporary recovery refs, and reported Git
     garbage. No successor completion credit is implied.
+  - Every one of the 4,008 historical-stash rows is now independently bound
+    to Plan, Item, tracker, evidence, stash/main blob hashes, canonical and
+    rollback locations, limitations, and an explicit completion effect.
+    Registry SHA-256:
+    `a4436d4a17c7d37990e15c47623b3d51899e1ecba9f7db0b4f9507003dc54930`;
+    committed receipt:
+    `.codex-ops/HISTORICAL_STASH_AUTHORITY_BINDING_20260728T212749Z.json`.
+    Functional attribution includes `MF-P0-04.02/.03`, `MF-P4-11.12/.23`,
+    `MF-P4-12.11`, `MF-P5-06.03`, `MF-P5-07.02`, `MF-P6-02.01`,
+    `MF-P6-17.04`, and `MF-P6-21.02`; no row silently changes their status.
 - [ ] MF-P6-20.02 Produce one canonical integrated source tree containing product code, autonomy/runtime code, package metadata, configs, schemas, CLIs, services, tests, and operating procedures · Verify: clean diff/secret/schema/import/package checks prove both source lines' required behavior survives · Blocked by: MF-P6-20.01 · HARD BLOCKER
+  - Existing evidence eligible for adjudication: the physical canonical tree,
+    clean export/wheel/install/import receipt, 2,004 row-level canonical-tree
+    bindings, and zero unresolved recovery rows. Completion still requires an
+    exact current-tree manifest plus clean diff/secret/schema/import/package
+    revalidation.
 - [ ] MF-P6-20.03 Classify and repair the complete product test baseline, including completion-policy drift and every external-asset dependency · Verify: each collected test is passing or has a governed explicit environment prerequisite that cannot be misreported as pass; no unexplained collection/runtime failure remains · Blocked by: MF-P6-20.02 · HARD BLOCKER
+  - Existing evidence eligible for partial credit: 5,139 collected / 5,098
+    passed / 41 governed skips / zero failures plus 296 row-level test-baseline
+    bindings. Repository-wide Ruff debt and exact skip/prerequisite inventory
+    remain to be adjudicated; the passing suite is not permission to hide
+    either.
 - [ ] MF-P6-20.04 Prove clean-export installation, exact-byte runtime closure, focused/integration/full-suite execution, bounded service health, and owned shutdown · Verify: an independent reconstruction receipt binds source, environment, commands, results, processes, ports, and zero leaked resources · Blocked by: MF-P6-20.03 · HARD BLOCKER
+  - Existing evidence eligible for partial credit: exact clean archive/wheel,
+    isolated install/import, focused/full-suite execution, and 311 row-level
+    runtime-closure bindings. Bounded authorized-runtime health, persistent
+    restore, and owned shutdown/leak proof remain required.
 
 ## MF-P6-21 — Evidence reconstruction and integrated mask safety (spec: 28 §§6–8)
 - [ ] MF-P6-21.01 Publish a compact committed evidence locator for every completion-critical accepted runtime, routing, campaign, visual, release, and adoption milestone · Verify: every entry binds tracker item, parent, source, input/runtime/output/terminal/release hashes, locations, replay command, limitations, and supersession without secrets or large artifacts · Blocked by: MF-P6-20.02 · HARD BLOCKER

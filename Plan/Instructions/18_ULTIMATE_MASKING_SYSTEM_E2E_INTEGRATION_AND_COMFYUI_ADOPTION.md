@@ -64,6 +64,17 @@ passes, 41 governed skips, and zero failures. The exact clean wheel SHA-256 is
 This closure grants no `MF-P6-20.02+`, runtime, campaign, visual, release, or
 ComfyUI-adoption credit.
 
+The 4,008-row stash authority is no longer only cohort-level. The v2 matrix at
+`C:\MaskFactory_TierA_Backups\historical_stashes_20260728T182808Z\stash_semantic_authority_matrix_v2.json`
+(SHA-256
+`a4436d4a17c7d37990e15c47623b3d51899e1ecba9f7db0b4f9507003dc54930`)
+binds every row to Plan, Item, tracker, evidence, exact Git-object bytes,
+canonical location, rollback, limitations, and completion effect. Reproduce
+it only with `tools/enrich_historical_stash_authority_matrix.py`; validation
+must keep all 4,008 row identities unique with no missing or unknown Item ID.
+The matrix is attribution authority, not permission to advance an Item
+without separately satisfying that Item's `Verify:` clause.
+
 ## Full-test procedure
 
 Run tests in tiers:

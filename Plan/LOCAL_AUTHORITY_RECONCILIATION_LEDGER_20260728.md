@@ -307,6 +307,21 @@ tool pass. Tracker row `MF-P6-20.01` was reopened during this work and may be
 closed again only after complete-suite, export, clean-status, push-parity,
 and terminal-receipt gates pass.
 
+The disposition matrix now also has a deterministic row-level authority
+registry rather than only cohort-level attribution. All 4,008 rows carry
+explicit `plan_refs`, `item_ids`, `tracker_ids`, evidence locators,
+stash/main Git-object byte counts and SHA-256 values, canonical location,
+verified-bundle rollback location, limitations, and completion effect. The
+12,426,344-byte registry is
+`C:\MaskFactory_TierA_Backups\historical_stashes_20260728T182808Z\stash_semantic_authority_matrix_v2.json`
+at SHA-256
+`a4436d4a17c7d37990e15c47623b3d51899e1ecba9f7db0b4f9507003dc54930`.
+Validation reports 4,008 unique row identities, zero unknown Item IDs, zero
+duplicates, and zero unresolved bindings. The compact committed receipt is
+`.codex-ops/HISTORICAL_STASH_AUTHORITY_BINDING_20260728T212749Z.json`.
+This closes the attribution defect without granting successor product,
+runtime, visual, campaign, or release completion credit.
+
 Those gates passed for executable source commit
 `bc4c36ff98ebc4cc9b706ba58a10ef559d0497ee`. The fresh full collection
 produced 5,098 passes, 41 governed skips, zero failures, and six warnings from

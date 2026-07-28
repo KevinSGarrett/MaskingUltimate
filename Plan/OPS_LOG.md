@@ -11302,3 +11302,63 @@ A separate exact manifest covers 26,256 ignored generated files totaling
 and its hash file were excluded from the tar and remain unmoved pending their
 own exact preservation receipt. No dirty-root file was changed or removed by
 this checkpoint.
+
+## 2026-07-28 20:14 UTC - Item/tracker attribution correction checkpoint
+
+**Result:** `CHECKPOINT_VERIFIED / AUTHORITY_CORRECTION_ACTIVE`.
+
+The terminal repository is clean and remotely protected, but a read-only
+control audit found two honest residual gaps: stale old-topology text remained
+in `.codex-ops\REPOSITORY_MAP.md` and lower sections of
+`.codex-ops\CURRENT_TASK.md`, and the 4,008-row historical-stash semantic
+matrix had no per-row Plan, Item, tracker, evidence, canonical-location,
+rollback, limitation, or completion-effect fields. The Item catalog and live
+tracker otherwise match exactly at 906 IDs with zero metadata drift, missing
+IDs, duplicates, or orphans.
+
+Before correction, the storage guard admitted a 15,000,000-byte scoped
+incremental checkpoint on C: with 73,296,908,288 bytes free. The verified
+checkpoint is
+`C:\MaskFactory_TierA_Backups\authority_attribution_before_change_20260728T201447Z`.
+It contains 17 payloads / 8,472,585 bytes: every affected control/Item/tracker
+authority, the original stash matrices/summaries, and clean Git/ref/status
+proof. All manifest rows rehashed with zero failures. `SHA256SUMS.tsv`
+SHA-256 is
+`c3cece21605225ea35b6467bf8b35e4fc4819b4d683df8335ef8d063866e4f08`.
+No full-repository bundle was created because such bundles are prohibited and
+clean `HEAD` already equaled remotely protected `origin/main`.
+
+## 2026-07-28 21:27 UTC - Row-level recovery attribution and successor adjudication
+
+**Result:** `ATTRIBUTION_PASS / TRACKER_PARTIAL_STATES_HONEST`.
+
+`tools/enrich_historical_stash_authority_matrix.py` deterministically expanded
+all 4,008 historical-stash disposition rows. Every row now contains explicit
+Plan refs, Item IDs, tracker IDs, evidence locators, stash/main Git-object
+sizes and SHA-256 values, canonical location, verified-bundle rollback
+location, limitations, and completion effect. The output has 4,008 unique row
+identities, zero missing bindings, zero unknown Item IDs, zero duplicates, and
+zero unresolved rows.
+
+Authority registry:
+`C:\MaskFactory_TierA_Backups\historical_stashes_20260728T182808Z\stash_semantic_authority_matrix_v2.json`;
+12,426,344 bytes; SHA-256
+`a4436d4a17c7d37990e15c47623b3d51899e1ecba9f7db0b4f9507003dc54930`.
+Summary SHA-256:
+`503d57bd1c70ba8a8bffa06572f28311e8adcc6eba75468930235caef421a5d0`.
+The original semantic matrix and bundle hashes remain unchanged. Focused
+enrichment tests pass 4/4 and Ruff passes.
+
+The tracker was updated only through `Plan/Tracker/tracker.py`. `MF-P6-20.02`
+is now honestly `in_progress` at 90%; it still needs the exact current-tree
+manifest and final clean diff/secret/schema/import/package receipt.
+`MF-P6-20.03` is `partially_complete` at 80%; its 5,139-node baseline has
+5,098 passes, 41 governed skips, and zero failures, while repository-wide
+Ruff and exact skip/prerequisite inventory remain. `MF-P6-20.04` is
+`partially_complete` at 65%; clean export/wheel/install/import and suite
+execution exist, while authorized bounded service health, persistent restore,
+owned shutdown, and zero-leak proof remain. Ten functional governing Items
+received provenance-only notes with no status or percentage changes.
+Rebuild/report/validate preserve 906 Items, 53 unresolved hard blockers, and
+zero structural errors. Broader runtime/product work remains in the active
+pursuing goal and is not mixed into this recovery-control release.

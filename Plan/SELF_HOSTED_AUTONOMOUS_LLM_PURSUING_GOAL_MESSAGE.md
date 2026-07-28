@@ -2,6 +2,73 @@
 
 Updated authority: 2026-07-28
 
+## Active pursuing goal — full attribution, blocker reconciliation, and E2E completion
+
+Continue autonomously until the recovered-work authority and the complete
+MaskFactory product are both genuinely closed. Do not stop at repository
+cleanliness, a large static-test count, or a generated tracker report.
+
+First, finish the finite authority-correction gate:
+
+1. correct every stale repository/current-task topology statement;
+2. extend every one of the 4,008 historical-stash rows with exact
+   `plan_refs`, `item_ids`, `tracker_ids`, dependency/verify bindings,
+   evidence/reconstruction locators, canonical/rollback locations,
+   limitations, and completion effect;
+3. prove every referenced Item exists and every adopted capability is
+   represented by the governing Plan, Item metadata, tracker state, tests,
+   and evidence;
+4. adjudicate `MF-P6-20.02`, `.03`, and `.04` against their exact verify
+   clauses, granting only the tier already proved and recording remaining
+   lint, external-prerequisite, runtime-health, exact-runtime, and shutdown
+   work honestly; and
+5. regenerate and validate the tracker/report/frozen authorities without
+   replaying stale state or granting product credit from preservation alone.
+
+Authority-correction progress at 2026-07-28T21:27:49Z: all 4,008 rows now
+pass the required row-level bindings with registry SHA-256
+`a4436d4a17c7d37990e15c47623b3d51899e1ecba9f7db0b4f9507003dc54930`.
+The tracker has been adjudicated without false closure:
+`MF-P6-20.02` is `in_progress` 90%, `.03` is `partially_complete` 80%, and
+`.04` is `partially_complete` 65%. The finite release still requires commit,
+push, clean parity, and a terminal receipt; the remaining acceptance clauses
+continue in the product phase below.
+
+Then complete the actual product dependency graph:
+
+- resolve all 34 unfinished `core_autonomous_runtime` dependencies, including
+  the 22 unresolved hard blockers in that profile;
+- give the 31 remaining portfolio hard blockers outside all completion
+  profiles an explicit governed terminal disposition—implemented, retained
+  portfolio work, deliberately deferred, or completion-policy reclassified
+  through the self-hashed registry—never silent deletion or bulk completion;
+- qualify `MF-P4-11.23` and `MF-P4-12.11` with real data and qualified visual
+  authority;
+- finish `MF-P6-17.03/.04`, `MF-P6-18.*`, the one governed 100-mask campaign
+  `MF-P6-19.03`, and the three consecutive mixed campaigns plus immutable
+  throughput packet in `MF-P6-19.04`;
+- finish canonical test/runtime closure, compact evidence reconstruction,
+  disagreement/abstention safety, immutable release, pinned Main/ComfyUI
+  adoption, live bounded masking E2E, restart/replay/invalidation/rollback,
+  and final byte-identical acceptance; and
+- keep local/remote Git, Plan, Items, Instructions, tracker/DAG, reports,
+  pursuing goal, current task, repository map, recovery ledgers, and both
+  coordinating tasks synchronized throughout.
+
+Every RunPod GPU child must use the shared FIFO lease launcher. Never EC2.
+Never use text-only reasoning to approve masks. Never rerun accepted
+`MF-P6-19.01` or `.02`. Continue CPU-safe work when a runtime lane is queued
+or unavailable. The completion claims remain
+`SELF_HOSTED_AUTONOMOUS_LLM_THROUGHPUT_INCOMPLETE` and
+`ULTIMATE_MASKING_SYSTEM_E2E_INCOMPLETE` until their exact terminal gates
+pass.
+
+The pre-change authority-correction checkpoint is
+`C:\MaskFactory_TierA_Backups\authority_attribution_before_change_20260728T201447Z`:
+17 payloads / 8,472,585 bytes, zero verification failures,
+`SHA256SUMS.tsv` SHA-256
+`c3cece21605225ea35b6467bf8b35e4fc4819b4d683df8335ef8d063866e4f08`.
+
 ## 0A. Completed foundation: stash/reflog and physical authority convergence
 
 The branch/worktree/directory consolidation passed, but the terminal audit
@@ -199,12 +266,13 @@ The terminal conditions applied to this phase were:
 8. the coordinating Main task has received and acknowledged the exact
    promoted commit and the shared-path boundary remains intact.
 
-All eight conditions passed. The local two-branch end state is intentional:
-the dirty checkout's branch remains checked out and is not deletion-eligible.
+All eight conditions passed. The subsequent physical-root convergence reduced
+the final live topology to one local branch and one worktree; the former dirty
+state remains checkpoint/recovery-ref protected without a live dirty checkout.
 Repository normalization completion does not mean the entire MaskFactory
-product is complete. Continue from the honest tracker/DAG; 53 hard blockers
-remain, including real visual-authority, 100-mask, sustained-campaign, release,
-and ComfyUI adoption gates.
+product is complete. The portfolio has 53 unresolved hard blockers: 22 are
+inside the required core dependency closure and 31 are currently outside all
+completion profiles. The core profile has 34 unresolved dependencies total.
 
 Do not mistake fewer branches for correctness. No branch or worktree may be
 deleted because of age, naming, or apparent duplication. No `git clean`,
@@ -298,16 +366,21 @@ Still incomplete or unproven:
   `18.02`, and `18.04`;
 - the original core runtime/ComfyUI bridge rows still open in
   `MF-P6-11.01` through `11.08` and `MF-P6-12.02` through `12.06`;
-- one canonical integrated source tree containing both the full MaskFactory
-  product and the accepted autonomy/runtime work;
-- a clean full-product test run. The audited full branch collected 4,446 tests
-  and stopped early after failures, including missing external assets and
-  completion-policy hash drift;
+- acceptance-grade adjudication of the canonical integrated source tree under
+  `MF-P6-20.02`; the physical tree, clean diff/secret/package checks, and
+  executable recovery exist, but that row has not yet been formally reviewed
+  against every dual-source behavior requirement;
+- complete baseline classification under `MF-P6-20.03`; the fresh suite
+  collected 5,139 nodes with 5,098 passes, 41 governed skips, and zero
+  failures, but every skip/external prerequisite and repository-wide lint
+  defect still requires explicit disposition;
 - a committed, compact evidence locator that makes accepted runtime milestones
   independently discoverable and reconstructable;
 - hard-QA semantics that make provider disagreement block, abstain, or route to
   adjudication instead of recording a misleading pass;
-- a clean-clone/install/reconstruction proof for the integrated product; and
+- exact runtime/service-health/owned-shutdown reconstruction under
+  `MF-P6-20.04`; clean-export build/install/import already passed but does not
+  prove live runtime closure; and
 - the final pinned MaskFactory release adoption and live masking proof in the
   ComfyUI session.
 

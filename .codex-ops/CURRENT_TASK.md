@@ -1,7 +1,49 @@
 ﻿# Current Task
 
 Task ID: MASKFACTORY-ULTIMATE-MASKING-E2E-20260727
-Updated UTC: 2026-07-28T19:21:34Z
+Updated UTC: 2026-07-28T21:27:49Z
+
+## Active pursuing goal: full attribution and evidence-backed E2E closure
+
+The repository/local cleanup foundation remains valid. The control-audit gap
+is now corrected: all 4,008 late-stash rows have explicit Plan, Item, tracker,
+evidence, exact stash/main blob, canonical-location, rollback, limitation, and
+completion-effect fields. The live Item catalog and tracker remain
+structurally synchronized at 906 IDs with zero metadata drift. The three
+successor Items were adjudicated honestly: `MF-P6-20.02` is `in_progress` at
+90%, `MF-P6-20.03` is `partially_complete` at 80%, and `MF-P6-20.04` is
+`partially_complete` at 65%; none is falsely complete.
+
+The active goal is therefore to:
+
+1. preserve the validated 4,008-row authority registry and reproduce it after
+   any disposition-policy change;
+2. resolve all 34 unfinished `core_autonomous_runtime` dependencies, including
+   its 22 hard blockers, through real evidence;
+3. give all 31 unresolved portfolio hard blockers outside the core profile an
+   explicit governed terminal disposition rather than ignoring or bulk-closing
+   them; and
+4. finish the exact remaining clauses of `MF-P6-20.02` through `.04`, then
+   qualified visual authority, the real 100-mask and three mixed
+   campaigns, evidence reconstruction, immutable release, Main/ComfyUI
+   adoption, live E2E, rollback/restart, and final acceptance.
+
+Binding claim state remains
+`SELF_HOSTED_AUTONOMOUS_LLM_THROUGHPUT_INCOMPLETE` and
+`ULTIMATE_MASKING_SYSTEM_E2E_INCOMPLETE`.
+
+Pre-change rollback authority:
+`C:\MaskFactory_TierA_Backups\authority_attribution_before_change_20260728T201447Z`;
+17 payloads / 8,472,585 bytes; zero verification failures; manifest SHA-256
+`c3cece21605225ea35b6467bf8b35e4fc4819b4d683df8335ef8d063866e4f08`.
+
+Post-correction row authority:
+`C:\MaskFactory_TierA_Backups\historical_stashes_20260728T182808Z\stash_semantic_authority_matrix_v2.json`;
+12,426,344 bytes; SHA-256
+`a4436d4a17c7d37990e15c47623b3d51899e1ecba9f7db0b4f9507003dc54930`;
+4,008/4,008 unique rows with every required authority field, zero unknown
+Item IDs, zero duplicates, and zero unresolved bindings. Committed receipt:
+`.codex-ops/HISTORICAL_STASH_AUTHORITY_BINDING_20260728T212749Z.json`.
 
 ## Completed foundation: local/repository/stash authority convergence
 
@@ -86,35 +128,29 @@ through `Plan/Tracker/tracker.py`.
 
 **Status:** COMPLETE / POST-PROMOTION RECEIPT RECORDED.
 
-- promoted `origin/main` content authority:
-  `752c0ebfbe97d080ed5ae16fed6f0bd885ff69dd`
-- current clean local/remote `main` after receipt and directory-ledger commits:
-  `55859a98147b18384ab5d8aa2a0757e13dfc69aa`
+- validated recovered executable source:
+  `bc4c36ff98ebc4cc9b706ba58a10ef559d0497ee`
+- clean local/remote `main` before this active authority-correction delta:
+  `68e159f4e43c656e3e5de61adc3acaed304debd6`
 - validation: the fresh 5,139-node complete collection (5,098 passes, 41
   governed skips, zero failures), changed-file Ruff, tracker
   validate/report, clean-export wheel build/install/import/focused suite,
   diff/credential checks, and full/connectivity Git fsck all pass
-- pre-commit: every hook except Black passes; Black is deliberately skipped
-  because it rewrites hash-governed source bytes and its attempted formatting
-  was restored exactly before the validated commit
+- pre-commit: all hooks passed for the terminal commits; the local hook no
+  longer forces generated cache data into the repository
 - remote branches: 30 -> 7 (`main` plus six explicit recovery refs)
-- local branches: 21 -> 2 (`main` plus the branch checked out by the protected
-  dirty recovery checkout)
-- worktrees: exactly two; clean promoted `main` and protected dirty recovery
+- local branches: 21 -> 1 (`main`)
+- worktrees: exactly one at the physical canonical root
 - original local-directory list: every path explicitly dispositioned in
   `.codex-ops/LOCAL_DIRECTORY_DISPOSITION_20260728T153321Z.md`; three verified
   zero-byte directory shells removed
-- destructive boundary: the dirty canonical checkout, Consumer repository,
-  recovery archives, VHDX files, foreign Main worktrees, and shared `C:\w`
-  remain no-touch except through separately proven, receipt-backed
-  dispositions
+- destructive boundary: Consumer, recovery archives, VHDX files, retained
+  data/runtime/evidence roots, and Main-owned paths remain receipt-governed;
+  former dirty checkout/worktree and shared `C:\w` paths are absent
 
-The repository branch topology is normalized without loss. The one-branch local target
-was corrected to two because the second branch is actively checked out by the
-protected dirty recovery source and therefore is not deletion-eligible. The
-post-promotion receipt in this commit closes the first normalization phase.
-Plan 29 supersedes the earlier claim that repository hygiene is no longer
-blocking: physical-root and scattered-directory convergence remain active.
+The repository branch topology and physical root are normalized without loss.
+The active gap is Plan/Item/Tracker attribution and downstream product proof,
+not another checkout or directory transition.
 
 ## Objective
 
@@ -230,13 +266,11 @@ Binding authorities:
 
 ## First next action
 
-Finish the 137-row source/control ledger and jointly receipt the remaining
-shared `C:\w` paths. Then create the exact rollback checkpoint and transition
-`C:\Comfy_UI_Main_Masking` itself to clean local/remote `main` before the final
-complete-product, package, tracker, pre-commit, and Git-integrity gates.
-the Main task, then fast-forward `origin/main` without rewriting history.
-Retire branch names only after the promotion receipt proves their unique work
-merged, patch-equivalent, superseded, or durably archived.
+Finish the finite 4,008-row Plan/Item/tracker authority expansion, validate
+every reference, and adjudicate `MF-P6-20.02` through `.04`. Then immediately
+continue the earliest dependency-ready core lane: `MF-P4-11.23`,
+`MF-P4-12.11`, `MF-P6-18.03`, `MF-P6-11.01` coordination, and the Plan-28
+integration chain. Do not rerun accepted `MF-P6-19.01` or `.02`.
 
 After that blocking phase, `MF-P6-19.01` is tracker-complete with the accepted
 25-mission campaign packet
@@ -398,11 +432,11 @@ incomplete status until `MF-P6-19.04` has its real sustained-campaign evidence.
 
 - Current concise ledger:
   `.codex-ops/RECOVERY_RECONCILIATION_FINAL_20260728.md`.
-- Clean integration branch:
-  `codex/reconcile-maskfactory-canonical-20260728`; local and remote must match.
-- Registered Masking worktrees are reduced from 17 to 2: the dirty,
-  checkpoint-protected canonical recovery checkout and the clean integration
-  authority. No noncanonical Masking worktree remains.
+- Clean authority is the physical canonical `main` checkout. Local and remote
+  were equal at
+  `68e159f4e43c656e3e5de61adc3acaed304debd6` before the active control delta.
+- Registered Masking worktrees are reduced from 17 to one; local branches are
+  reduced from 21 to one; no noncanonical Masking worktree remains.
 - Primary no-loss checkpoint:
   `F:\CodexRecovery\maskfactory_reconciliation_checkpoint_20260728T042648Z`,
   checksum-registry SHA-256
@@ -412,6 +446,6 @@ incomplete status until `MF-P6-19.04` has its real sustained-campaign evidence.
 - Tracker structure remains honest at 906 non-orphaned items and 53 unresolved
   hard blockers. Consumer static credit is 84%/79%; both items remain blocked
   and no E2E or production-completion tier changed.
-- Never clean/reset/delete the dirty canonical recovery checkout or bulk-delete
-  `C:\w`. Continue only through bounded semantic cohorts with preservation
-  receipts.
+- Former dirty-checkout bytes remain checkpoint/recovery-ref protected.
+  `C:\w` is absent. Continue only through bounded semantic and product cohorts
+  with preservation receipts.

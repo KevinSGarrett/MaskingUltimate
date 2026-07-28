@@ -23,6 +23,24 @@ files, refs, worktrees, and remote heads. The live source/control universe is
 137 unique files because `.codex-ops\CURRENT_TASK.md` is tracked but was not in
 the 136-file selection.
 
+Before the physical-root transition, a complete supplemental archive was
+created at
+`C:\MaskFactory_TierA_Backups\dirty_root_full_untracked_20260728T164707Z`.
+It contains and readback-verifies 7,081 remaining nonsnapshot entries (7,052
+files, 29 directories), 830,807,268 logical bytes, in an 843,448,320-byte tar
+with SHA-256
+`ec62c54e33a3de0b1a54c2b3d0f062bb642bc1b32ca2cbb5be6d6aaab61a9054`.
+The five-entry registry revalidates at SHA-256
+`2e0e3d6d617f442b2bfd3bf28efdb35398d1e2d5d2468a3bdad6da7998a436f3`.
+
+The same checkpoint contains an exact 26,256-file, 1,264,564,175-byte ignored
+inventory (SHA-256
+`4597333c85e668fb9740dd100cd5069f3c3a74d1553b7a53ed8387c3562ba6fc`).
+It consists of the reproducible `.venv`, pytest/Ruff caches, and tiny
+HuggingFace download metadata and is `GENERATED_RUNTIME_ONLY`; it is
+reconstructed from project/tool authorities, not adopted or backed up as
+source.
+
 ## Exhaustive result
 
 | Classification | Count | Canonical decision |
@@ -184,4 +202,3 @@ Main task `019fa6cc-eb76-74c1-8fd1-f062cec56dad`.
 
 The final shared-directory counts and receipts are appended only after Main
 returns its exact post-disposition authority.
-

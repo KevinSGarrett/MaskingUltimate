@@ -11282,3 +11282,23 @@ zero files, zero subdirectories, zero bytes, and no Git metadata, then removed
 non-recursively under
 `.codex-ops/MFW_EMPTY_NAMESPACE_RETIREMENT_20260728T163459Z.json`. Main-owned
 and neutral/foreign shared paths remain under the jointly agreed receipt gates.
+
+## 2026-07-28 16:47 UTC - Complete dirty-root byte checkpoint
+
+**Result:** `VERIFIED / PHYSICAL_TRANSITION_NOT_YET_EXECUTED`.
+
+The remaining nonsnapshot untracked tree is now independently protected at
+`C:\MaskFactory_TierA_Backups\dirty_root_full_untracked_20260728T164707Z`.
+The archive contains 7,081 entries and 830,807,268 logical bytes; its
+843,448,320-byte tar SHA-256 is
+`ec62c54e33a3de0b1a54c2b3d0f062bb642bc1b32ca2cbb5be6d6aaab61a9054`.
+All entries read back with zero missing or hash/size failures. The updated
+five-entry registry SHA-256 is
+`2e0e3d6d617f442b2bfd3bf28efdb35398d1e2d5d2468a3bdad6da7998a436f3`.
+
+A separate exact manifest covers 26,256 ignored generated files totaling
+1,264,564,175 bytes, principally the reproducible `.venv`; it is
+`GENERATED_RUNTIME_ONLY`, not source or completion evidence. The snapshot ZIP
+and its hash file were excluded from the tar and remain unmoved pending their
+own exact preservation receipt. No dirty-root file was changed or removed by
+this checkpoint.

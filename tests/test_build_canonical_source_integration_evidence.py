@@ -75,7 +75,7 @@ def test_build_frontend_targets_clean_export_from_external_working_directory(
 ) -> None:
     export = tmp_path / "export"
     output = tmp_path / "dist"
-    command = MODULE.build_frontend_command(export, output)
+    command = MODULE.build_frontend_command(["python"], export, output)
     assert command[-1] == str(export)
-    assert command[1:4] == ["-B", "-m", "build"]
-    assert "-I" not in command
+    assert command[1:5] == ["-I", "-B", "-m", "build"]
+    assert "--no-isolation" not in command

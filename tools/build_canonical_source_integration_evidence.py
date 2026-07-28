@@ -266,20 +266,53 @@ def safe_extract_git_archive(payload: bytes, destination: Path) -> None:
         archive.extractall(root)
 
 
-def build_frontend_command(export: Path, output: Path) -> list[str]:
-    """Use the installed frontend while building only the clean exported tree."""
+def build_frontend_command(python_command: list[str], export: Path, output: Path) -> list[str]:
+    """Use an installed frontend to build only the clean exported tree."""
     return [
-        sys.executable,
+        *python_command,
+        "-I",
         "-B",
         "-m",
         "build",
-        "--no-isolation",
         "--wheel",
         "--sdist",
         "--outdir",
         str(output),
         str(export),
     ]
+
+
+def select_build_frontend(cwd: Path, environment: dict[str, str]) -> dict[str, Any]:
+    candidates = [[sys.executable]]
+    if os.name == "nt":
+        candidates.extend([["py", "-3.12"], ["py", "-3.11"]])
+    probe = (
+        "import build, importlib.metadata, json, sys; "
+        "print(json.dumps({'interpreter': sys.executable, 'module': build.__file__, "
+        "'version': importlib.metadata.version('build')}))"
+    )
+    failures: list[dict[str, Any]] = []
+    for candidate in candidates:
+        completed = run(
+            [*candidate, "-I", "-B", "-c", probe],
+            cwd=cwd,
+            env=environment,
+            check=False,
+        )
+        if completed.returncode == 0:
+            return {
+                "python_command": candidate,
+                "probe": json.loads(completed.stdout.decode("utf-8")),
+                "failed_candidates": failures,
+            }
+        failures.append(
+            {
+                "python_command": candidate,
+                "exit_code": completed.returncode,
+                "stderr_tail": completed.stderr.decode("utf-8", errors="replace")[-1000:],
+            }
+        )
+    raise RuntimeError(f"no isolated Python build frontend is available: {failures}")
 
 
 def validate_schemas(entries: list[dict[str, Any]], blobs: dict[str, bytes]) -> dict[str, Any]:
@@ -340,23 +373,9 @@ def build_and_inspect_package(
                 "SOURCE_DATE_EPOCH": commit_epoch,
             }
         )
-        frontend_probe = run(
-            [
-                sys.executable,
-                "-B",
-                "-c",
-                (
-                    "import build, importlib.metadata, json; "
-                    "print(json.dumps({'module': build.__file__, "
-                    "'version': importlib.metadata.version('build')}))"
-                ),
-            ],
-            cwd=temporary,
-            env=environment,
-        )
-        frontend = json.loads(frontend_probe.stdout.decode("utf-8"))
+        frontend = select_build_frontend(temporary, environment)
         build = run(
-            build_frontend_command(export, output),
+            build_frontend_command(frontend["python_command"], export, output),
             cwd=temporary,
             env=environment,
         )
@@ -422,7 +441,7 @@ def build_and_inspect_package(
             "status": package_status,
             "git_archive_sha256": sha256_bytes(archive),
             "build_command": (
-                "python -B -m build --no-isolation --wheel --sdist "
+                "python -I -B -m build --wheel --sdist "
                 "--outdir <temporary-dist> <clean-git-export>"
             ),
             "build_frontend": frontend,

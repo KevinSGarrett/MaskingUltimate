@@ -266,6 +266,22 @@ def safe_extract_git_archive(payload: bytes, destination: Path) -> None:
         archive.extractall(root)
 
 
+def build_frontend_command(export: Path, output: Path) -> list[str]:
+    """Use the installed frontend while building only the clean exported tree."""
+    return [
+        sys.executable,
+        "-B",
+        "-m",
+        "build",
+        "--no-isolation",
+        "--wheel",
+        "--sdist",
+        "--outdir",
+        str(output),
+        str(export),
+    ]
+
+
 def validate_schemas(entries: list[dict[str, Any]], blobs: dict[str, bytes]) -> dict[str, Any]:
     rows: list[dict[str, Any]] = []
     for entry in entries:
@@ -321,24 +337,27 @@ def build_and_inspect_package(
         environment.update(
             {
                 "PYTHONDONTWRITEBYTECODE": "1",
-                "PYTHONNOUSERSITE": "1",
                 "SOURCE_DATE_EPOCH": commit_epoch,
             }
         )
-        build = run(
+        frontend_probe = run(
             [
                 sys.executable,
-                "-I",
                 "-B",
-                "-m",
-                "build",
-                "--no-isolation",
-                "--wheel",
-                "--sdist",
-                "--outdir",
-                str(output),
+                "-c",
+                (
+                    "import build, importlib.metadata, json; "
+                    "print(json.dumps({'module': build.__file__, "
+                    "'version': importlib.metadata.version('build')}))"
+                ),
             ],
-            cwd=export,
+            cwd=temporary,
+            env=environment,
+        )
+        frontend = json.loads(frontend_probe.stdout.decode("utf-8"))
+        build = run(
+            build_frontend_command(export, output),
+            cwd=temporary,
             env=environment,
         )
         wheels = sorted(output.glob("*.whl"))
@@ -402,7 +421,12 @@ def build_and_inspect_package(
         return {
             "status": package_status,
             "git_archive_sha256": sha256_bytes(archive),
-            "build_command": "python -I -B -m build --no-isolation --wheel --sdist",
+            "build_command": (
+                "python -B -m build --no-isolation --wheel --sdist "
+                "--outdir <temporary-dist> <clean-git-export>"
+            ),
+            "build_frontend": frontend,
+            "build_working_directory": "<temporary-parent-outside-clean-export>",
             "build_exit_code": build.returncode,
             "build_stderr_tail": build.stderr.decode("utf-8", errors="replace")[-2000:],
             "wheel": {

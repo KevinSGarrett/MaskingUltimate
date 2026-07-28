@@ -68,3 +68,14 @@ def test_canonical_path_key_normalizes_git_separator_spelling(tmp_path: Path) ->
     native.mkdir()
     git_spelling = str(native).replace("\\", "/")
     assert MODULE.canonical_path_key(native) == MODULE.canonical_path_key(git_spelling)
+
+
+def test_build_frontend_targets_clean_export_from_external_working_directory(
+    tmp_path: Path,
+) -> None:
+    export = tmp_path / "export"
+    output = tmp_path / "dist"
+    command = MODULE.build_frontend_command(export, output)
+    assert command[-1] == str(export)
+    assert command[1:4] == ["-B", "-m", "build"]
+    assert "-I" not in command

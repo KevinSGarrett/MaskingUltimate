@@ -59,7 +59,7 @@ three consecutive mixed campaigns and immutable operating packet in
 Before any local clone, worktree, backup, or large evidence allocation, also
 follow `17` and run the storage guard.
 For any whole-product completion, release, or ComfyUI masking claim, also
-follow Plan 28 and Instruction 18. The ComfyUI masking lane remains deferred
+follow Plans 28–29 and Instruction 18. The ComfyUI masking lane remains deferred
 until the pinned MaskFactory release is independently adopted.
 
 **Binding NO-STOP:** Standing Orders § **CONTINUOUS UNTIL E2E COMPLETE (NO STOP)** —

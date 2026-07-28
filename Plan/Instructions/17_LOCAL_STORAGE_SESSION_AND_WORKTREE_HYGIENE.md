@@ -63,8 +63,8 @@ recovery dependency is documented.
 
 ## 4. Worktree retirement
 
-A worktree is eligible only when every condition is proven immediately before
-retirement:
+A clean worktree is eligible only when every condition is proven immediately
+before retirement:
 
 - zero tracked or untracked dirty entries;
 - HEAD is contained by a remote branch;
@@ -76,7 +76,26 @@ Use `git worktree remove` without `--force`. If Git partially unregisters a
 tree or Windows reports access/reparse errors, stop and preserve the residual
 for explicit inspection.
 
-## 5. Artifact placement
+A dirty worktree is eligible only under the stricter Plan-29 recovery path:
+the exact tracked/index patch and every unique untracked byte have independent
+verified coverage; every source/control difference has an explicit semantic
+disposition and Plan/Item/tracker mapping; useful work is already adopted and
+remotely protected; the HEAD remains reachable; shared-path ownership is
+confirmed; and a durable receipt records the forced Git-managed removal and
+post-removal fsck. Never use this exception to avoid review.
+
+## 5. Canonical-root and shared-directory convergence
+
+`C:\Comfy_UI_Main_Masking` itself must be the clean canonical `main` checkout.
+A clean nested worktree does not close local hygiene while the physical root is
+dirty. Follow Plan 29 before relocating or replacing a dirty canonical root.
+
+Classify shared `C:\w` children by resolved Git common directory and explicit
+owner. Never remove `C:\w` wholesale. Exact empty shells require recursive
+zero-file/zero-byte proof; foreign or orphan worker residue requires an
+independent archive/readback receipt before removal.
+
+## 6. Artifact placement
 
 - Large runtime/model/media outputs: authorized RunPod volume.
 - Local repository: code, tests, compact schemas, manifests, and receipts.

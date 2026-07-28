@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-28T11:48:30+00:00",
+    "generated_at": "2026-07-28T16:39:45+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 906,
     "total_tracked_including_orphaned": 906
@@ -25300,20 +25300,26 @@
       "phase": "P6",
       "cluster_id": "MF-P6-20",
       "cluster_title": "Canonical product/autonomy source integration",
-      "spec_ref": "28 §§2–5",
-      "description": "Inventory and reconcile the full-product and accepted autonomy source lines by exact commit/tree/path ownership, preserving unrelated staged, dirty, and untracked work · Verify: a complete path classification has no unexplained deletion, overwrite, reset, replacement worktree, or unresolved conflict · Blocked by: MF-P6-19.01, MF-P6-19.02 · HARD BLOCKER",
+      "spec_ref": "28 §§2–5; 29",
+      "description": "Inventory and reconcile the full-product and accepted autonomy source lines plus every scattered local checkout, worktree, standalone repository, recovery/evidence root, and meaningful Plan/Item/Instruction/Tracker file by exact commit/tree/path ownership, preserving unrelated staged, dirty, untracked, recovery, runtime, dataset, VHDX, Consumer, and foreign-owned work · Verify: an exhaustive path-to-owner/hash/disposition/Plan/Item/tracker/test/canonical/rollback ledger has no unexplained deletion, overwrite, reset, replacement worktree, stale tracker replay, missing history, or unresolved conflict, and the physical canonical root is clean `main` · Blocked by: MF-P6-19.01, MF-P6-19.02 · HARD BLOCKER",
       "source_file": "24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md",
       "source_line": 14,
       "is_exit_gate": false,
       "hard_blocker": true,
       "conditional": false,
-      "status": "open",
-      "percent_complete": 0,
-      "notes": [],
-      "evidence": null,
+      "status": "in_progress",
+      "percent_complete": 60,
+      "notes": [
+        {
+          "ts": "2026-07-28T16:40:20+00:00",
+          "actor": "codex_local_authority_convergence",
+          "text": "2026-07-28 second-phase no-loss reconciliation is active under Plan 29. Protected dirty authority inventory is 137 meaningful files: 99 exact in clean main, 37 different, one absent; 11 tracked modifications are included. Tracker item state/notes are semantically equal to clean main, and 65 missing historical CHANGELOG events were backfilled without replaying stale state. Shared C:\\w ownership is coordinated path-by-path; physical canonical-root transition remains gated on the exhaustive ledger and Main-owned receipts. No product/runtime/visual completion credit."
+        }
+      ],
+      "evidence": "C:\\MaskFactory_TierA_Backups\\second_phase_preconsolidation_20260728T162424Z (registry sha256 b2882e7cd50a8bd5f560d85846e6409b754a585b5496dd746aab6cf1ac654197); Plan/29_LOCAL_REPOSITORY_DIRECTORY_AND_TRACKER_CONVERGENCE.md; .codex-ops/MFW_EMPTY_NAMESPACE_RETIREMENT_20260728T163459Z.json",
       "blocked_reason": null,
       "created_at": "2026-07-27T01:34:03+00:00",
-      "updated_at": "2026-07-27T01:34:03+00:00",
+      "updated_at": "2026-07-28T16:40:20+00:00",
       "orphaned": false
     },
     "MF-P6-20.02": {
@@ -25321,7 +25327,7 @@
       "phase": "P6",
       "cluster_id": "MF-P6-20",
       "cluster_title": "Canonical product/autonomy source integration",
-      "spec_ref": "28 §§2–5",
+      "spec_ref": "28 §§2–5; 29",
       "description": "Produce one canonical integrated source tree containing product code, autonomy/runtime code, package metadata, configs, schemas, CLIs, services, tests, and operating procedures · Verify: clean diff/secret/schema/import/package checks prove both source lines' required behavior survives · Blocked by: MF-P6-20.01 · HARD BLOCKER",
       "source_file": "24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md",
       "source_line": 15,
@@ -25342,7 +25348,7 @@
       "phase": "P6",
       "cluster_id": "MF-P6-20",
       "cluster_title": "Canonical product/autonomy source integration",
-      "spec_ref": "28 §§2–5",
+      "spec_ref": "28 §§2–5; 29",
       "description": "Classify and repair the complete product test baseline, including completion-policy drift and every external-asset dependency · Verify: each collected test is passing or has a governed explicit environment prerequisite that cannot be misreported as pass; no unexplained collection/runtime failure remains · Blocked by: MF-P6-20.02 · HARD BLOCKER",
       "source_file": "24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md",
       "source_line": 16,
@@ -25363,7 +25369,7 @@
       "phase": "P6",
       "cluster_id": "MF-P6-20",
       "cluster_title": "Canonical product/autonomy source integration",
-      "spec_ref": "28 §§2–5",
+      "spec_ref": "28 §§2–5; 29",
       "description": "Prove clean-export installation, exact-byte runtime closure, focused/integration/full-suite execution, bounded service health, and owned shutdown · Verify: an independent reconstruction receipt binds source, environment, commands, results, processes, ports, and zero leaked resources · Blocked by: MF-P6-20.03 · HARD BLOCKER",
       "source_file": "24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md",
       "source_line": 17,

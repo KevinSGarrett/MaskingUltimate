@@ -87,6 +87,13 @@ Every path must be classified as:
 No reset, mass checkout, mass stage, replacement clone, or replacement
 worktree may be used to hide unresolved ownership.
 
+Plan 29 extends this inventory to every scattered local directory, dirty
+checkout, standalone repository, recovery archive, evidence export, and shared
+`C:\w` path. Each meaningful path must also map to its Plan/Instruction, Item
+IDs, tracker row/state/evidence/limitations, tests, canonical location, and
+rollback authority. A clean nested worktree does not satisfy canonical-source
+integration while the physical project root remains dirty.
+
 ### 4.2 Integrated tree
 
 The canonical tree must include:

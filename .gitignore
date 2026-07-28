@@ -4,6 +4,7 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
+Plan/Tracker/backups/
 
 # Doctor probes and bounded reconciliation scratch are non-authoritative.
 data/.doctor_roundtrip_*

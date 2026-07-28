@@ -14,10 +14,11 @@ independently verifiable disposition.
 The starting discrepancy for this phase is:
 
 - the clean nested `main` worktree is valid and remote-equal, but the physical
-  canonical root still has 7,094 untracked paths;
+  canonical root still has 7,083 untracked paths plus 11 tracked
+  modifications;
 - after excluding caches, bytecode, generated egg metadata, and tracker
-  backups, 136 meaningful source/control files remain: 99 exact in `main`, 36
-  different, and one absent from `main`;
+  backups, 137 unique meaningful source/control files remain: 99 exact in
+  `main`, 37 different, and one absent from `main`;
 - shared `C:\w` still contains approximately 5.03 billion bytes requiring
   git-common-dir ownership, semantic-value, and preservation classification;
 - F: remains below the 50 GiB allocation floor; and
@@ -31,8 +32,9 @@ The verified pre-change rollback authority is:
 - registry SHA-256:
   `b2882e7cd50a8bd5f560d85846e6409b754a585b5496dd746aab6cf1ac654197`;
 - coverage: all 136 meaningful source/control files, all 110 post-baseline
-  files, live status/refs/worktrees/origin heads, and the existing verified
-  baseline checkpoint; and
+  files, the exact tracked patch including the additional tracked
+  `.codex-ops\CURRENT_TASK.md`, live status/refs/worktrees/origin heads, and the
+  existing verified baseline checkpoint; and
 - verification: 11 registered artifacts with zero missing, size-mismatched, or
   hash-mismatched entries.
 
@@ -71,7 +73,7 @@ runtime, visual-authority, campaign, or E2E completion tier.
 
 This phase is complete only when:
 
-1. all 136 meaningful files and any later arrivals have exact semantic and
+1. all 137 meaningful files and any later arrivals have exact semantic and
    preservation dispositions;
 2. every useful capability is present in clean `main` and fully represented in
    Plan, Items, Instructions, tracker/DAG, evidence, and tests;

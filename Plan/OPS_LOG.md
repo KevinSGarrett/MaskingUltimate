@@ -11246,3 +11246,39 @@ artifact must map to governing Plan/Instruction text, Item IDs, tracker
 rows/dependencies/verification/evidence, tests, canonical location, and
 rollback authority. Tracker changes are CLI-only and preserved/superseded
 bytes receive no false implementation or completion credit.
+
+## 2026-07-28 16:42 UTC - Plan, Item, tracker, and history convergence
+
+**Result:** `IN_PROGRESS / NO_FALSE_COMPLETION_CREDIT`.
+
+The corrected source/control universe is 137 unique files: 99 exact, 37
+different, and one absent from clean `main`. Eleven live tracked modifications
+exist; ten overlap the 136-file checkpoint selection and
+`.codex-ops/CURRENT_TASK.md` is the additional file.
+
+Plan 29 now makes physical canonical-root, scattered-directory, Plan/Item/
+Instruction/tracker, shared-path, and rollback convergence binding. Plan 28,
+Instruction 17, the Items master index, and `MF-P6-20.01` carry the same
+requirement. Tracker metadata was rebuilt without adding or orphaning an item.
+`MF-P6-20.01` is honestly `in_progress` at 60%; the remaining shared-directory
+receipts and canonical-root transition prevent completion.
+
+Dirty and current tracker state were compared item-by-item: zero dirty-only
+items, notes, status, percent, evidence, or blocked reasons exist. Sixty-five
+historical JSONL events were absent from the current changelog even though
+their effects were present in item state. Those records were backfilled as
+history only, with zero stale-state replay. The changelog now has 2,108
+records and contains every dirty record.
+
+The eight differing executable/config cohorts are AST/parsed equal, import/
+unused-state cleanup, or superseded by the stronger shared-FIFO GPU authority.
+Focused ontology/strict-VLM verification passed 17 tests and Ruff passed.
+The absent SAM3.1 side-session handoff is archive-only: both cited commits are
+ancestors of `main`, all fourteen listed implementation paths are present, and
+its direct-Pod/retired-worktree instructions are obsolete.
+
+MaskFactory's exact empty historical `C:\w\mfw` namespace was revalidated as
+zero files, zero subdirectories, zero bytes, and no Git metadata, then removed
+non-recursively under
+`.codex-ops/MFW_EMPTY_NAMESPACE_RETIREMENT_20260728T163459Z.json`. Main-owned
+and neutral/foreign shared paths remain under the jointly agreed receipt gates.

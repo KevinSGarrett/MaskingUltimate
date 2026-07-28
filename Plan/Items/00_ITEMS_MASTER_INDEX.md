@@ -1,6 +1,6 @@
 # ITEMS — Master Index (Full End-to-End Completion Checklist)
 
-**What this is:** the complete governed blueprint (`Plan\00–25`, the approved SAM 3.1 handoff, and `Plan\Daz\00–32`) decomposed into every atomic
+**What this is:** the complete governed blueprint (`Plan\00–29`, the approved SAM 3.1 handoff, and `Plan\Daz\00–32`) decomposed into every atomic
 work item required to take the Ultimate Masking System from an empty machine to full completion
 under three claim-scoped profiles. `core_autonomous_runtime` is the required human-free product
 finish line; `independent_real_accuracy` and `scale_daz_maturity` are optional/non-blocking profiles.
@@ -39,7 +39,7 @@ doc-24 core exit). No legacy phase exit is global completion authority.
 | 21_ITEMS_P6_AUTONOMOUS_CORE_AND_CROSS_PROJECT_BRIDGE.md | P6 autonomous core and cross-project ComfyUI bridge | 43 | required human-free runtime completion, exact-output authority, release/adoption bridge, recovery |
 | 22_ITEMS_P0_ADULT_CORPUS_AUTONOMY.md | P0/P4/P5/P7 adult-corpus autonomy | 31 | exact intake lineage, leakage-safe supervision, resumable mask generation/QA/repair, RunPod scale, training and release accounting |
 | 23_ITEMS_P6_SELF_HOSTED_AUTONOMOUS_LLM_OPERATIONS.md | P6 continuous self-hosted autonomy | 28 | CPU supervisor, campaign batching, shared-GPU/fallback routing, engineering and mask work cells, micro-handoff reduction, sustained throughput acceptance |
-| 24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md | P6 whole-product integration and ComfyUI adoption | 12 | canonical product/autonomy tree, clean full suite, evidence reconstruction, mask-safety semantics, immutable release, pinned ComfyUI adoption |
+| 24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md | P6 whole-product integration and ComfyUI adoption | 12 | canonical product/autonomy tree, local-directory/tracker convergence, clean physical root/full suite, evidence reconstruction, mask-safety semantics, immutable release, pinned ComfyUI adoption |
 
 ## ID Scheme & Traceability
 

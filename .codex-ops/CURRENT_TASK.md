@@ -1,16 +1,17 @@
 ﻿# Current Task
 
 Task ID: MASKFACTORY-ULTIMATE-MASKING-E2E-20260727
-Updated UTC: 2026-07-28T15:23:59Z
+Updated UTC: 2026-07-28T16:42:00Z
 
 ## Active blocking phase: second-phase local consolidation
 
 The repository-promotion phase below is complete, but the physical canonical
 root and all discovered work/authority records are not yet fully converged.
 
-- dirty canonical root: 7,094 untracked paths;
-- meaningful source/control set: 136 files (99 exact in `main`, 36 different,
-  one absent);
+- dirty canonical root: 7,083 untracked paths plus 11 tracked modifications;
+- meaningful source/control set: 137 unique files (99 exact in `main`, 37
+  different, one absent); ten tracked files overlap the 136-file archive and
+  `.codex-ops\CURRENT_TASK.md` is the additional file;
 - shared `C:\w`: 5,034,979,803 bytes pending exact owner/disposition mapping;
 - pre-change checkpoint:
   `C:\MaskFactory_TierA_Backups\second_phase_preconsolidation_20260728T162424Z`;
@@ -21,6 +22,15 @@ root and all discovered work/authority records are not yet fully converged.
 - destructive boundary: no dirty-root move, shared-path removal, source
   adoption, branch/ref change, or tracker advancement before exact ownership,
   semantic review, independent coverage, and coordination.
+
+Plan 29 and
+`Plan/LOCAL_AUTHORITY_RECONCILIATION_LEDGER_20260728.md` now govern this
+phase. `MF-P6-20.01` is `in_progress` at 60%. Sixty-five missing historical
+tracker changelog records were restored without stale-state replay; executable
+differences are parsed/AST-equivalent or superseded by current shared-FIFO
+authority; the absent SAM3.1 handoff is archive-only with both cited commits
+already ancestors of `main`. Main-owned `C:\w` receipts and the physical
+canonical-root transition remain open.
 
 Every file/artifact must be bound to a governing Plan section, affected Item
 IDs, tracker rows/dependencies/verification/evidence, canonical location, and
@@ -55,12 +65,12 @@ through `Plan/Tracker/tracker.py`.
   remain no-touch except through separately proven, receipt-backed
   dispositions
 
-The repository mess is normalized without loss. The one-branch local target
+The repository branch topology is normalized without loss. The one-branch local target
 was corrected to two because the second branch is actively checked out by the
 protected dirty recovery source and therefore is not deletion-eligible. The
-post-promotion receipt in this commit closes the normalization phase.
-Reconstruct the live tracker/DAG and resume the earliest dependency-ready real
-product gate; repository hygiene is no longer the blocking phase.
+post-promotion receipt in this commit closes the first normalization phase.
+Plan 29 supersedes the earlier claim that repository hygiene is no longer
+blocking: physical-root and scattered-directory convergence remain active.
 
 ## Objective
 
@@ -74,6 +84,7 @@ Binding authorities:
 
 - `Plan/27_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS_SPEC.md`
 - `Plan/28_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md`
+- `Plan/29_LOCAL_REPOSITORY_DIRECTORY_AND_TRACKER_CONVERGENCE.md`
 - `Plan/Items/23_ITEMS_P6_SELF_HOSTED_AUTONOMOUS_LLM_OPERATIONS.md`
 - `Plan/Items/24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md`
 - `Plan/Instructions/16_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS.md`
@@ -175,9 +186,10 @@ Binding authorities:
 
 ## First next action
 
-Run the complete product validation, evidence-reconstruction, tracker, package,
-pre-commit, and Git-integrity gates from
-`codex/normalize-maskfactory-main-20260728`. Coordinate the exact result with
+Finish the 137-row source/control ledger and jointly receipt the remaining
+shared `C:\w` paths. Then create the exact rollback checkpoint and transition
+`C:\Comfy_UI_Main_Masking` itself to clean local/remote `main` before the final
+complete-product, package, tracker, pre-commit, and Git-integrity gates.
 the Main task, then fast-forward `origin/main` without rewriting history.
 Retire branch names only after the promotion receipt proves their unique work
 merged, patch-equivalent, superseded, or durably archived.

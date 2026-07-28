@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "artifact_type": "maskfactory_empty_shared_namespace_retirement",
+  "created_at_utc": "2026-07-28T16:34:59Z",
+  "target": "C:\\w\\mfw",
+  "resolved_target": "C:\\w\\mfw",
+  "ownership": "MaskFactory historical namespace",
+  "main_coordination": {
+    "thread_id": "019fa6cc-eb76-74c1-8fd1-f062cec56dad",
+    "status": "acknowledged_no_main_claim"
+  },
+  "preconditions": {
+    "direct_and_recursive_child_count": 0,
+    "file_count": 0,
+    "subdirectory_count": 0,
+    "git_metadata_count": 0,
+    "logical_bytes": 0,
+    "resolved_path_exact_match": true
+  },
+  "operation": {
+    "method": "System.IO.Directory.Delete(path, recursive=false)",
+    "recursive": false,
+    "target_only": true
+  },
+  "postconditions": {
+    "path_absent": true,
+    "source_or_evidence_bytes_removed": 0,
+    "other_shared_paths_mutated": false
+  },
+  "masking_main_before_receipt_commit": "be8af5d6bd1ce90f35bf4c885059ccaf0432c6e1"
+}

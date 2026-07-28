@@ -58,7 +58,7 @@ def test_hygiene_detects_tracked_model_and_secret() -> None:
 
 def test_hygiene_accepts_only_hash_pinned_test_secret_shape(monkeypatch) -> None:
     path = "tests/example_secret_shape.py"
-    payload = b"AKIAABCDEFGHIJKLMNOP"
+    payload = b"AKIA" + b"ABCDEFGHIJKLMNOP"
     approved = dict(MODULE.APPROVED_TEST_FIXTURE_SECRET_SHAPES)
     approved[(path, "aws_access_key")] = MODULE.sha256_bytes(payload)
     monkeypatch.setattr(MODULE, "APPROVED_TEST_FIXTURE_SECRET_SHAPES", approved)

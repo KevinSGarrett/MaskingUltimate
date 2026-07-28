@@ -19,6 +19,9 @@ Updated UTC: 2026-07-28T15:23:59Z
 - local branches: 21 -> 2 (`main` plus the branch checked out by the protected
   dirty recovery checkout)
 - worktrees: exactly two; clean promoted `main` and protected dirty recovery
+- original local-directory list: every path explicitly dispositioned in
+  `.codex-ops/LOCAL_DIRECTORY_DISPOSITION_20260728T153321Z.md`; three verified
+  zero-byte directory shells removed
 - destructive boundary: the dirty canonical checkout, Consumer repository,
   recovery archives, VHDX files, foreign Main worktrees, and shared `C:\w`
   remain no-touch except through separately proven, receipt-backed

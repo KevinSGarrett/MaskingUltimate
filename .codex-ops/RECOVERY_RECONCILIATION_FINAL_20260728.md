@@ -12,9 +12,10 @@ runtime/E2E project gates are complete.
 
 - Clean integration worktree:
   `C:\Comfy_UI_Main_Masking\.codex-ops\worktrees\canonical-reconciliation-20260728`
-- Branch: `codex/normalize-maskfactory-main-20260728`
-- Remote: `origin/codex/normalize-maskfactory-main-20260728`
-- The local and remote OIDs must match before this ledger is treated as current.
+- Branch: `main`
+- Remote: `origin/main`
+- Local and remote `main` match. See
+  `.codex-ops/MAIN_PROMOTION_AND_BRANCH_CLEANUP_20260728T152359Z.json`.
 - The original `C:\Comfy_UI_Main_Masking` checkout remains a dirty,
   checkpoint-protected recovery source. Do not run `git clean`, reset it,
   delete it, or treat its untracked files as disposable.
@@ -95,19 +96,19 @@ working-tree bytes were integrated.
 - Never bulk-run `git clean`, `git reset --hard`, `git gc`, `git prune`, or
   filesystem deletion across the canonical checkout or `C:\w`.
 
-## Remaining work
+## Repository-normalization closure
 
-Repository reconciliation is closed for noncanonical Masking worktrees and the
-original dirty checkout has been semantically reconciled without deleting or
-cleaning it. The broader project remains active:
+Repository reconciliation, complete-suite validation, `main` promotion, and
+branch-name normalization are closed. Remote heads are reduced to `main` plus
+six explicit recovery refs; local branches are reduced to `main` plus the
+branch checked out by the protected dirty recovery checkout. The broader
+product remains active:
 
-- run the full collected product suite and evidence/reconstruction gates on the
-  clean normalization branch;
-- fast-forward `main` only after the complete validation and coordination gate;
-- retire only branch names proven merged, patch-equivalent, superseded, or
-  protected by durable archival refs;
 - resolve remaining tracker hard blockers through actual runtime/production
   evidence;
 - recover the F: storage floor without deleting unique recovery or VHD data;
 - fix the versioned Rows333-336 canonicalization contract before adoption;
 - do not claim E2E completion from this cleanup.
+
+The original user-supplied folder list is closed by explicit role in
+`.codex-ops/LOCAL_DIRECTORY_DISPOSITION_20260728T153321Z.md`.

@@ -11200,3 +11200,23 @@ worktree enumeration, full Git fsck, and connectivity-only fsck pass. C: has
 remains below its floor; no F: path was mutated during promotion or cleanup.
 The exact receipt is
 `.codex-ops/MAIN_PROMOTION_AND_BRANCH_CLEANUP_20260728T152359Z.json`.
+
+## 2026-07-28 15:33 UTC - Original local-directory list closed
+
+**Result:** `CLEAN_BY_EXPLICIT_ROLE_NO_UNCLASSIFIED_DELETION`.
+
+Every path in the user's original directory list now has a durable retain or
+remove disposition in
+`.codex-ops/LOCAL_DIRECTORY_DISPOSITION_20260728T153321Z.md`.
+Three exact empty shells were recursively verified as zero files and zero
+bytes, then removed: `C:\MaskFactory_WSL_Backup`,
+`C:\mf25p_4446de85`, and `F:\MaskFactory_RuntimeRelocated`. The two redundant
+snapshot extracts had already been removed under their verification receipt.
+
+All data-bearing roots remain for an explicit reason. The staging-trash root
+contains one 448,462,848-byte tar with SHA-256
+`b7d8c84bfe43f89b7d3088180051d6508f86997b74f3e84c46c6281ca02b73d6`;
+it is retained because no independent exact-byte replacement is proven.
+Recovery roots, non-equivalent VHDX files, active data/offload roots,
+evidence collections, the Consumer repository, shared `C:\w`, and foreign
+Main-owned recovery data were not deleted.

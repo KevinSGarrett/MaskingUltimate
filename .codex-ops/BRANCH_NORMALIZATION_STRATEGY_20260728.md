@@ -2,6 +2,23 @@
 
 Date: 2026-07-28
 
+## Completion outcome
+
+This strategy completed on 2026-07-28. The validated product authority was
+promoted to `origin/main` by non-forced fast-forward. Remote heads were reduced
+from 30 to seven (`main` plus six explicit recovery refs). Local branches were
+reduced from 21 to two (`main` plus the branch checked out by the protected
+dirty recovery checkout). The exact validation plan and post-promotion receipt
+are:
+
+- `.codex-ops/NORMALIZATION_VALIDATION_AND_BRANCH_PLAN_20260728T151802Z.json`
+- `.codex-ops/MAIN_PROMOTION_AND_BRANCH_CLEANUP_20260728T152359Z.json`
+
+The one-local-branch aspiration was corrected because deleting or moving the
+branch checked out by the dirty recovery checkout would violate the no-loss
+boundary. The sections below retain the historical starting state and
+procedure for auditability.
+
 ## Required outcome
 
 Produce one clean, installable, fully tested MaskFactory authority on

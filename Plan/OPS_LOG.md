@@ -10972,6 +10972,39 @@ Evidence: `qa/live_verification/wilson_gap_mvc43_51_20260720T172025Z.json` (self
 Evidence: qa/live_verification/caa_audit_path_advance_20260720T172218Z.json (self_sha256 17e7e38c...); caa_audit_path_advance_latest.json; measured_champions_path_caa_seal_20260720T172218Z.json; autonomous_gold_admission_caa_seal_20260720T172218Z.json; qa/autonomy/corpora/autonomous_verification_caa_solo_20260720T172218Z.json; mvc_envelope_caa_analysis_20260720T171638Z.json.
 
 
+## 2026-07-28 10:42 UTC - No-loss repository reconciliation closure
+
+**Item:** Reconcile MaskFactory Git/worktrees/recovery storage without losing
+dirty source or inflating project completion.
+
+**Result:** `NO_LOSS_CHECKPOINTED_CLEAN_INTEGRATION_AUTHORITY_ESTABLISHED`.
+The clean, pushed integration authority is
+`codex/reconcile-maskfactory-canonical-20260728`. Registered Masking worktrees
+were reduced from 17 to 2; the remaining registrations are the dirty,
+checkpoint-protected canonical recovery checkout and the clean integration
+worktree. Every retired dirty candidate was first protected by the verified
+reconciliation checkpoint or an independent Tier-A archive/readback, received
+an explicit semantic disposition, and passed post-removal protected-ref
+reachability plus connectivity/full fsck.
+
+The b90 operational-certificate source was rejected as superseded and
+security-regressive; its useful precedence tests were adapted to the current
+catalog-bound critic contract and pass 25/25. The a1 repair-controller draft
+was preserved but not adopted because the required evidence schema and focused
+test were absent and no versioned compatibility contract with the current
+durable executor existed. The standalone Consumer is remotely protected.
+
+Tracker structure remains 906 non-orphaned items / 54 unresolved hard blockers
+/ no structural errors. `MF-P6-12.05` is 84% blocked and `MF-P6-12.06` is 79%
+blocked; no completion tier changed. `F:` remains below the storage floor,
+both MaskFactory VHDX backups remain no-touch, and the canonical recovery
+checkout must not be cleaned or reset.
+
+**Evidence:** `.codex-ops/RECOVERY_RECONCILIATION_FINAL_20260728.md`;
+`F:\CodexRecovery\maskfactory_reconciliation_checkpoint_20260728T042648Z`;
+the committed `.codex-ops/*RETIREMENT*.json`, semantic-disposition, backup,
+Consumer-protection, Git-repair, and cleanup receipts.
+
 ## 2026-07-20 17:32 UTC - Gold-volume feed 128→512 + MVC maximize
 **Item:** GOLD FACTORY / tournament sibling feed beyond-128 + MVC pool maximize
 **Command:** `python runtime_artifacts/_expand_gold_volume_corpus_20260720.py --ts 20260720T1715 --max-total 256`; feed-bound batch prove-emit/tournament --emit; `python runtime_artifacts/_seal_feed256_mvc_maximize_20260720.py`

@@ -267,3 +267,25 @@ incomplete status until `MF-P6-19.04` has its real sustained-campaign evidence.
 - Scope: recovery continuation only. This checkpoint does not create runtime
   evidence or change the binding
   `SELF_HOSTED_AUTONOMOUS_LLM_THROUGHPUT_INCOMPLETE` status.
+
+## 2026-07-28 repository-reconciliation authority
+
+- Current concise ledger:
+  `.codex-ops/RECOVERY_RECONCILIATION_FINAL_20260728.md`.
+- Clean integration branch:
+  `codex/reconcile-maskfactory-canonical-20260728`; local and remote must match.
+- Registered Masking worktrees are reduced from 17 to 2: the dirty,
+  checkpoint-protected canonical recovery checkout and the clean integration
+  authority. No noncanonical Masking worktree remains.
+- Primary no-loss checkpoint:
+  `F:\CodexRecovery\maskfactory_reconciliation_checkpoint_20260728T042648Z`,
+  checksum-registry SHA-256
+  `903b960291b049ef26c4c36fa55d568158a0918763aea4a830fce5d1f11f2b0a`.
+- The standalone Consumer is remotely protected. Both MaskFactory VHDX
+  backups remain no-touch. `F:` remains below the 50 GiB floor.
+- Tracker structure remains honest at 906 non-orphaned items and 54 unresolved
+  hard blockers. Consumer static credit is 84%/79%; both items remain blocked
+  and no E2E or production-completion tier changed.
+- Never clean/reset/delete the dirty canonical recovery checkout or bulk-delete
+  `C:\w`. Continue only through bounded semantic cohorts with preservation
+  receipts.

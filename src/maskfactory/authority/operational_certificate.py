@@ -94,9 +94,7 @@ def bind_catalog_critic_quorum(
     except CriticAuthorityError as exc:
         raise OperationalCertificateIssuanceError("critic_catalog_authority_invalid") from exc
     if catalog_quorum["status"] != "eligible":
-        raise OperationalCertificateIssuanceError(
-            f"critic_catalog_{catalog_quorum['reason']}"
-        )
+        raise OperationalCertificateIssuanceError(f"critic_catalog_{catalog_quorum['reason']}")
     certificate_families = tuple(
         sorted({str(certificate["family_id"]) for certificate in critic_role_certificates})
     )

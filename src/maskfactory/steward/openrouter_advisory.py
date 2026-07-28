@@ -313,9 +313,7 @@ class GovernedOpenRouterAdvisory:
 
     def _validate_request(self, request: Mapping[str, Any]) -> None:
         if request.get("schema_version") == LEGACY_REQUEST_SCHEMA:
-            raise OpenRouterAdvisoryError(
-                "legacy advisory request has no immutable parent binding"
-            )
+            raise OpenRouterAdvisoryError("legacy advisory request has no immutable parent binding")
         if request.get("schema_version") != REQUEST_SCHEMA:
             raise OpenRouterAdvisoryError("unsupported advisory request schema")
         for field in (

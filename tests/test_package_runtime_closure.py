@@ -29,10 +29,7 @@ def _require_build_backend_contract(
         )
     )
     assert len(matches) == len(expected)
-    locked = {
-        match.group("name"): match.group("version")
-        for match in matches
-    }
+    locked = {match.group("name"): match.group("version") for match in matches}
     assert locked == expected
     assert re.search(r"^  - wheel=0\.47\.0=", environment_lock, flags=re.MULTILINE)
     assert re.search(r"^      - setuptools==78\.1\.0$", environment_lock, flags=re.MULTILINE)

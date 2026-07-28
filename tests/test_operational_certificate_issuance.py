@@ -554,9 +554,9 @@ def test_issuer_refuses_weak_or_stale_protected_authority(tmp_path: Path) -> Non
     assert "protected_input_authority_too_weak" in caught.value.codes
 
     prepared = _prepare(tmp_path / "stale-certificate")
-    prepared["certificate"]["lineage"]["input_protected_regions"][0]["revocation_checked_at"] = (
-        "2026-07-17T00:10:05Z"
-    )
+    prepared["certificate"]["lineage"]["input_protected_regions"][0][
+        "revocation_checked_at"
+    ] = "2026-07-17T00:10:05Z"
     with pytest.raises(OperationalCertificateIssuanceError) as caught:
         _issue(prepared, decision_time="2026-07-17T00:10:05Z")
     assert "certificate_revocation_fresh_at_use" in caught.value.codes

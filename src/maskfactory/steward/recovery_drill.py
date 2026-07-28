@@ -34,10 +34,7 @@ def _write_text_exclusive(path: Path, value: str) -> None:
 
 
 def _binding(root: Path, job_id: str, payload_sha256: str) -> dict[str, Any]:
-    inputs = {
-        name: file_sha256(root / name)
-        for name in ("prompt.txt", "request.json")
-    }
+    inputs = {name: file_sha256(root / name) for name in ("prompt.txt", "request.json")}
     return seal_binding(
         {
             "schema_version": BINDING_SCHEMA,
@@ -134,9 +131,7 @@ def run_recovery_drill(output_root: Path) -> dict[str, Any]:
 
     terminal_job = "persisted-terminal"
     terminal_root = output_root / terminal_job
-    terminal_binding, terminal_request_sha256 = _prepare_mission(
-        terminal_root, terminal_job
-    )
+    terminal_binding, terminal_request_sha256 = _prepare_mission(terminal_root, terminal_job)
     admitted = ledger.admit(terminal_binding)
     ledger.mark_running(
         _SESSION_ID,
@@ -223,9 +218,7 @@ def run_recovery_drill(output_root: Path) -> dict[str, Any]:
 
     ambiguous_job = "ambiguous-without-terminal"
     ambiguous_root = output_root / ambiguous_job
-    ambiguous_binding, ambiguous_request_sha256 = _prepare_mission(
-        ambiguous_root, ambiguous_job
-    )
+    ambiguous_binding, ambiguous_request_sha256 = _prepare_mission(ambiguous_root, ambiguous_job)
     restarted.admit(ambiguous_binding)
     restarted.mark_running(
         _SESSION_ID,
@@ -286,20 +279,14 @@ def run_recovery_drill(output_root: Path) -> dict[str, Any]:
             "request_sha256": terminal_request_sha256,
             "run1": run1,
             "run2": run2,
-            "terminal_receipt_sha256": file_sha256(
-                terminal_root / "terminal_receipt.json"
-            ),
+            "terminal_receipt_sha256": file_sha256(terminal_root / "terminal_receipt.json"),
             "reconstruction_outcome": terminal_reconciliation["outcome"],
             "reconstructed_state": terminal_reconciliation["mission"]["state"],
             "duplicate_admission_outcome": duplicate_admission["outcome"],
             "resend_blocked": resend_blocked,
             "resend_error": resend_error,
-            "run_count_after_restart": len(
-                restarted_ambiguous.runs(_SESSION_ID, terminal_job)
-            ),
-            "handoff_ready": restarted_ambiguous.handoff_ready(
-                _SESSION_ID, terminal_job
-            ),
+            "run_count_after_restart": len(restarted_ambiguous.runs(_SESSION_ID, terminal_job)),
+            "handoff_ready": restarted_ambiguous.handoff_ready(_SESSION_ID, terminal_job),
         },
         "ambiguous_without_terminal_case": {
             "job_id": ambiguous_job,
@@ -311,17 +298,12 @@ def run_recovery_drill(output_root: Path) -> dict[str, Any]:
             "reconstructed_state": ambiguous_reconciliation["mission"]["state"],
             "resend_blocked": ambiguous_resend_blocked,
             "resend_error": ambiguous_error,
-            "run_count_after_restart": len(
-                restarted_ambiguous.runs(_SESSION_ID, ambiguous_job)
-            ),
-            "handoff_ready": restarted_ambiguous.handoff_ready(
-                _SESSION_ID, ambiguous_job
-            ),
+            "run_count_after_restart": len(restarted_ambiguous.runs(_SESSION_ID, ambiguous_job)),
+            "handoff_ready": restarted_ambiguous.handoff_ready(_SESSION_ID, ambiguous_job),
         },
         "acceptance_gates": {
             "persisted_terminal_adopted_without_reissue": (
-                terminal_reconciliation["outcome"]
-                == "reconciled_terminal_receipt"
+                terminal_reconciliation["outcome"] == "reconciled_terminal_receipt"
                 and terminal_reconciliation["mission"]["state"] == "completed"
                 and duplicate_admission["outcome"] == "reconciled_terminal"
                 and resend_blocked

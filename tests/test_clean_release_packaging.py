@@ -40,7 +40,9 @@ def _wheel_with_closure(
     }
     record_rows = []
     for name, content in members.items():
-        digest = base64.urlsafe_b64encode(hashlib.sha256(content).digest()).rstrip(b"=").decode("ascii")
+        digest = (
+            base64.urlsafe_b64encode(hashlib.sha256(content).digest()).rstrip(b"=").decode("ascii")
+        )
         record_rows.append(f"{name},sha256={digest},{len(content)}")
     record_rows.append("maskfactory-1.0.0.dist-info/RECORD,,")
     if record_override is not None:
@@ -149,11 +151,14 @@ def test_validate_clean_release_manifest_rejects_editable_install(tmp_path: Path
 def test_validate_wheel_runtime_closure_accepts_exact_artifact_contract(tmp_path: Path) -> None:
     wheel_path = _wheel_with_closure(tmp_path)
 
-    assert validate_wheel_runtime_closure(
-        wheel_path,
-        expected_entrypoint="maskfactory.cli:main",
-        expected_requires=("click", "pydantic"),
-    ) == ()
+    assert (
+        validate_wheel_runtime_closure(
+            wheel_path,
+            expected_entrypoint="maskfactory.cli:main",
+            expected_requires=("click", "pydantic"),
+        )
+        == ()
+    )
 
 
 def test_validate_wheel_runtime_closure_rejects_tampered_record(tmp_path: Path) -> None:

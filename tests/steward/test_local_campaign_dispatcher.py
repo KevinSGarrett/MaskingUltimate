@@ -42,9 +42,7 @@ def _add_campaign(
     campaign_id: str,
     source_name: str,
 ) -> Path:
-    original, _mission_roots, _database = _prepare_campaign(
-        tmp_path / source_name
-    )
+    original, _mission_roots, _database = _prepare_campaign(tmp_path / source_name)
     campaign = inbox / campaign_id
     shutil.copytree(original, campaign)
     (campaign / BINDING_NAME).unlink()
@@ -97,12 +95,7 @@ def test_launch_intent_precedes_one_guarded_child_and_replay_does_not_reissue(
 
     def popen(command, **kwargs):
         intent = json.loads(
-            (
-                tmp_path
-                / "state"
-                / "campaign-25"
-                / INTENT_NAME
-            ).read_text(encoding="utf-8")
+            (tmp_path / "state" / "campaign-25" / INTENT_NAME).read_text(encoding="utf-8")
         )
         assert intent["state"] == "prepared"
         launches.append(command)
@@ -158,9 +151,7 @@ def test_dead_guard_without_campaign_terminal_fails_closed_and_never_reissues(
     assert terminal["retry_permitted"] is False
     assert launches == 1
     assert replay == ()
-    assert (
-        tmp_path / "state" / "campaign-25" / DISPATCH_TERMINAL_NAME
-    ).is_file()
+    assert (tmp_path / "state" / "campaign-25" / DISPATCH_TERMINAL_NAME).is_file()
 
 
 def test_crash_before_pid_persist_reconstructs_exact_guard_process(
@@ -177,13 +168,9 @@ def test_crash_before_pid_persist_reconstructs_exact_guard_process(
     dispatcher = _dispatcher(
         tmp_path,
         popen_factory=popen,
-        process_identity_probe=lambda pid: (
-            "recovered-start" if pid == Child.pid else None
-        ),
+        process_identity_probe=lambda pid: ("recovered-start" if pid == Child.pid else None),
         process_discovery=lambda campaign, _guard: (
-            ((Child.pid, "recovered-start"),)
-            if campaign == "campaign-25"
-            else ()
+            ((Child.pid, "recovered-start"),) if campaign == "campaign-25" else ()
         ),
     )
     campaign_root, binding = dispatcher.discover()[0]
@@ -233,9 +220,7 @@ def test_same_identity_on_other_route_blocks_local_launch(tmp_path: Path) -> Non
 
     assert result[0]["state"] == "blocked"
     assert launches == 0
-    assert not (
-        tmp_path / "state" / "campaign-25" / INTENT_NAME
-    ).exists()
+    assert not (tmp_path / "state" / "campaign-25" / INTENT_NAME).exists()
 
 
 def test_existing_later_sorted_active_intent_prevents_new_local_launch(

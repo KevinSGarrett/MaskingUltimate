@@ -481,7 +481,9 @@ class Sam3dBodyV3RunpodBackend:
             or report.get("checkpoint_assets") != expected_assets
             or report.get("source_root_import_injected") != str(self.source_root)
         ):
-            raise Sam3dBodyProcessError("SAM 3D Body V3 source/runtime/checkpoint provenance mismatch")
+            raise Sam3dBodyProcessError(
+                "SAM 3D Body V3 source/runtime/checkpoint provenance mismatch"
+            )
         image = report.get("image")
         if not isinstance(image, Mapping) or image.get("sha256") != _sha256(image_path):
             raise Sam3dBodyProcessError("SAM 3D Body V3 input image SHA-256 mismatch")
@@ -502,7 +504,9 @@ class Sam3dBodyV3RunpodBackend:
             or report.get("authority") != "shadow_geometry_challenger_only"
             or report.get("may_author_gold") is not False
         ):
-            raise Sam3dBodyProcessError("SAM 3D Body V3 determinism or authority evidence is invalid")
+            raise Sam3dBodyProcessError(
+                "SAM 3D Body V3 determinism or authority evidence is invalid"
+            )
         warmup = report.get("warmup")
         if (
             not isinstance(warmup, Mapping)
@@ -533,7 +537,10 @@ class Sam3dBodyV3RunpodBackend:
         ):
             raise Sam3dBodyProcessError("SAM 3D Body V3 measured latency evidence is invalid")
         report_path = output_dir / "repeatability_report.json"
-        if not report_path.is_file() or json.loads(report_path.read_text(encoding="utf-8")) != report:
+        if (
+            not report_path.is_file()
+            or json.loads(report_path.read_text(encoding="utf-8")) != report
+        ):
             raise Sam3dBodyProcessError("SAM 3D Body V3 persisted report mismatch")
         outputs = report.get("measured_outputs")
         geometry_hashes = report.get("measured_geometry_sha256_by_repeat")

@@ -141,10 +141,7 @@ def _normalize_relative_path(value: str, *, field: str) -> str:
 def _validate_scope_roots(scope_roots: Iterable[str]) -> tuple[str, ...]:
     normalized = tuple(
         sorted(
-            {
-                _normalize_relative_path(root, field="scope root").rstrip("/")
-                for root in scope_roots
-            }
+            {_normalize_relative_path(root, field="scope root").rstrip("/") for root in scope_roots}
         )
     )
     if not normalized:
@@ -184,9 +181,7 @@ def _tracked_file_bytes(repo_root: Path, relative_path: str) -> bytes:
             f"{relative_path}: resolved path escapes the repository"
         ) from exc
     if worktree_path.is_symlink() or not worktree_path.is_file():
-        raise RepositoryPacketError(
-            f"{relative_path}: source must be a regular non-symlink file"
-        )
+        raise RepositoryPacketError(f"{relative_path}: source must be a regular non-symlink file")
 
     try:
         tracked = str(
@@ -211,9 +206,7 @@ def _tracked_file_bytes(repo_root: Path, relative_path: str) -> bytes:
             f"{relative_path}: selected source has uncommitted or untracked work"
         )
 
-    committed = bytes(
-        _run_git(repo_root, "show", f"HEAD:{relative_path}", text=False)
-    )
+    committed = bytes(_run_git(repo_root, "show", f"HEAD:{relative_path}", text=False))
     current = worktree_path.read_bytes()
     if current != committed:
         raise RepositoryPacketError(
@@ -272,9 +265,7 @@ def _require_allocation(
         raise RepositoryPacketError("minimum_free_bytes must be non-negative")
     free = disk_usage(parent).free
     if free - expected_bytes < minimum_free_bytes:
-        raise RepositoryPacketError(
-            "packet allocation would violate the local free-space floor"
-        )
+        raise RepositoryPacketError("packet allocation would violate the local free-space floor")
 
 
 def _require_external_destination(destination: Path, repo_root: Path) -> None:
@@ -322,8 +313,7 @@ def build_repository_packet(
     if len(paths) != len(supplied_paths):
         raise RepositoryPacketError("source paths must be unique")
     supplied_tracker_ids = tuple(
-        _validate_identifier(item, field="tracker item ID")
-        for item in tracker_item_ids
+        _validate_identifier(item, field="tracker item ID") for item in tracker_item_ids
     )
     tracker_ids = tuple(sorted(set(supplied_tracker_ids)))
     if not tracker_ids:
@@ -336,21 +326,15 @@ def build_repository_packet(
     total_bytes = 0
     for relative_path in paths:
         if not _path_in_scope(relative_path, scopes):
-            raise RepositoryPacketError(
-                f"{relative_path}: source is outside the declared scope"
-            )
+            raise RepositoryPacketError(f"{relative_path}: source is outside the declared scope")
         if _secret_path(relative_path):
-            raise RepositoryPacketError(
-                f"{relative_path}: secret-like paths are not permitted"
-            )
+            raise RepositoryPacketError(f"{relative_path}: secret-like paths are not permitted")
         data = _tracked_file_bytes(root, relative_path)
         total_bytes += len(data)
         if total_bytes > max_packet_bytes:
             raise RepositoryPacketError("repository packet exceeds its byte cap")
         digest = hashlib.sha256(data).hexdigest()
-        source_rows.append(
-            {"path": relative_path, "bytes": len(data), "sha256": digest}
-        )
+        source_rows.append({"path": relative_path, "bytes": len(data), "sha256": digest})
         source_bytes[relative_path] = data
 
     head = str(_run_git(root, "rev-parse", "HEAD")).strip()
@@ -372,9 +356,9 @@ def build_repository_packet(
             "packet_sha256": ZERO_SHA256,
         }
     )
-    manifest_bytes = json.dumps(
-        manifest, indent=2, sort_keys=True, ensure_ascii=False
-    ).encode("utf-8") + b"\n"
+    manifest_bytes = (
+        json.dumps(manifest, indent=2, sort_keys=True, ensure_ascii=False).encode("utf-8") + b"\n"
+    )
     expected_allocation = total_bytes + len(manifest_bytes)
     if expected_allocation > max_packet_bytes:
         raise RepositoryPacketError("repository packet exceeds its byte cap")
@@ -385,9 +369,7 @@ def build_repository_packet(
         disk_usage=disk_usage,
     )
 
-    temporary = Path(
-        tempfile.mkdtemp(prefix=f".{destination.name}.tmp-", dir=destination.parent)
-    )
+    temporary = Path(tempfile.mkdtemp(prefix=f".{destination.name}.tmp-", dir=destination.parent))
     try:
         files_root = temporary / "files"
         for relative_path, data in source_bytes.items():
@@ -425,9 +407,7 @@ def verify_repository_packet(
     if manifest.get("authority") != _AUTHORITY_CEILING:
         raise RepositoryPacketError("packet authority exceeds the fixed ceiling")
     source_commit = manifest.get("source_commit")
-    if not isinstance(source_commit, str) or not _GIT_OBJECT_ID_RE.fullmatch(
-        source_commit
-    ):
+    if not isinstance(source_commit, str) or not _GIT_OBJECT_ID_RE.fullmatch(source_commit):
         raise RepositoryPacketError("packet source commit is invalid")
     if not isinstance(manifest.get("scope_roots"), list):
         raise RepositoryPacketError("packet scope roots are invalid")
@@ -439,12 +419,7 @@ def verify_repository_packet(
         not isinstance(tracker_ids, list)
         or not tracker_ids
         or tracker_ids
-        != sorted(
-            {
-                _validate_identifier(item, field="tracker item ID")
-                for item in tracker_ids
-            }
-        )
+        != sorted({_validate_identifier(item, field="tracker item ID") for item in tracker_ids})
     ):
         raise RepositoryPacketError("packet tracker item IDs are invalid")
     limits = manifest.get("limits")
@@ -488,9 +463,7 @@ def verify_repository_packet(
             )
         if not isinstance(row.get("bytes"), int) or row["bytes"] < 0:
             raise RepositoryPacketError(f"{relative_path}: invalid byte count")
-        if not isinstance(row.get("sha256"), str) or not _SHA256_RE.fullmatch(
-            row["sha256"]
-        ):
+        if not isinstance(row.get("sha256"), str) or not _SHA256_RE.fullmatch(row["sha256"]):
             raise RepositoryPacketError(f"{relative_path}: invalid SHA-256")
         source = root / "files" / Path(*PurePosixPath(relative_path).parts)
         resolved = source.resolve(strict=True)
@@ -499,9 +472,7 @@ def verify_repository_packet(
         except ValueError as exc:
             raise RepositoryPacketError("packet source escaped its files root") from exc
         if source.is_symlink() or not source.is_file():
-            raise RepositoryPacketError(
-                f"{relative_path}: packet source is not a regular file"
-            )
+            raise RepositoryPacketError(f"{relative_path}: packet source is not a regular file")
         if source.stat().st_size != row["bytes"] or _file_sha256(source) != row["sha256"]:
             raise RepositoryPacketError(f"{relative_path}: packet source hash mismatch")
         _decode_safe_text(source.read_bytes(), path=relative_path)
@@ -526,11 +497,7 @@ def verify_repository_packet(
         MANIFEST_NAME,
         *(f"files/{row['path']}" for row in rows),
     }
-    actual_paths = {
-        path.relative_to(root).as_posix()
-        for path in root.rglob("*")
-        if path.is_file()
-    }
+    actual_paths = {path.relative_to(root).as_posix() for path in root.rglob("*") if path.is_file()}
     if actual_paths != expected_paths:
         raise RepositoryPacketError("packet contains an unexpected path set")
 
@@ -543,10 +510,7 @@ def verify_repository_packet(
             raise RepositoryPacketError("repository packet source commit is stale")
         for row in rows:
             current = _tracked_file_bytes(repository, row["path"])
-            if (
-                len(current) != row["bytes"]
-                or hashlib.sha256(current).hexdigest() != row["sha256"]
-            ):
+            if len(current) != row["bytes"] or hashlib.sha256(current).hexdigest() != row["sha256"]:
                 raise RepositoryPacketError(
                     f"{row['path']}: repository packet source bytes are stale"
                 )
@@ -585,12 +549,11 @@ def create_patch_staging_area(
         "staging_sha256": ZERO_SHA256,
     }
     staging_contract["staging_sha256"] = _canonical_sha256(staging_contract)
-    contract_bytes = json.dumps(
-        staging_contract, indent=2, sort_keys=True, ensure_ascii=False
-    ).encode("utf-8") + b"\n"
-    expected_bytes = sum(row["bytes"] for row in manifest["files"]) + len(
-        contract_bytes
+    contract_bytes = (
+        json.dumps(staging_contract, indent=2, sort_keys=True, ensure_ascii=False).encode("utf-8")
+        + b"\n"
     )
+    expected_bytes = sum(row["bytes"] for row in manifest["files"]) + len(contract_bytes)
     _require_allocation(
         parent=destination.parent,
         expected_bytes=expected_bytes,
@@ -598,9 +561,7 @@ def create_patch_staging_area(
         disk_usage=disk_usage,
     )
 
-    temporary = Path(
-        tempfile.mkdtemp(prefix=f".{destination.name}.tmp-", dir=destination.parent)
-    )
+    temporary = Path(tempfile.mkdtemp(prefix=f".{destination.name}.tmp-", dir=destination.parent))
     try:
         for row in manifest["files"]:
             relative = PurePosixPath(row["path"])
@@ -608,13 +569,8 @@ def create_patch_staging_area(
             output = temporary / "sources" / Path(*relative.parts)
             output.parent.mkdir(parents=True, exist_ok=True)
             output.write_bytes(source.read_bytes())
-            if (
-                output.stat().st_size != row["bytes"]
-                or _file_sha256(output) != row["sha256"]
-            ):
-                raise RepositoryPacketError(
-                    f"{row['path']}: staging source hash mismatch"
-                )
+            if output.stat().st_size != row["bytes"] or _file_sha256(output) != row["sha256"]:
+                raise RepositoryPacketError(f"{row['path']}: staging source hash mismatch")
         (temporary / STAGING_CONTRACT_NAME).write_bytes(contract_bytes)
         if (temporary / ".git").exists():
             raise RepositoryPacketError("staging area must not contain Git metadata")

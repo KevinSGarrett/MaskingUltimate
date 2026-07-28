@@ -7,14 +7,8 @@ from pathlib import Path
 
 import pytest
 
-SCRIPT = (
-    Path(__file__).resolve().parents[2]
-    / "tools"
-    / "run_engineering_campaign_runtime.py"
-)
-SPEC = importlib.util.spec_from_file_location(
-    "engineering_campaign_runtime_cli", SCRIPT
-)
+SCRIPT = Path(__file__).resolve().parents[2] / "tools" / "run_engineering_campaign_runtime.py"
+SPEC = importlib.util.spec_from_file_location("engineering_campaign_runtime_cli", SCRIPT)
 assert SPEC is not None and SPEC.loader is not None
 MODULE = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = MODULE
@@ -29,9 +23,7 @@ def test_run_requires_exact_guarded_child_context(
     campaign_id = "campaign-25"
     payload_sha256 = "a" * 64
 
-    with pytest.raises(
-        MODULE.EngineeringCampaignRuntimeError, match="GUARD_ACTIVE"
-    ):
+    with pytest.raises(MODULE.EngineeringCampaignRuntimeError, match="GUARD_ACTIVE"):
         MODULE._require_guard_context(
             campaign_root=root,
             campaign_id=campaign_id,
@@ -47,15 +39,16 @@ def test_run_requires_exact_guarded_child_context(
     }
     for name, value in values.items():
         monkeypatch.setenv(name, value)
-    assert MODULE._require_guard_context(
-        campaign_root=root,
-        campaign_id=campaign_id,
-        payload_sha256=payload_sha256,
-    ) == values
-
-    monkeypatch.setenv(
-        "MASKFACTORY_SHARED_GPU_GUARD_PAYLOAD_SHA256", "b" * 64
+    assert (
+        MODULE._require_guard_context(
+            campaign_root=root,
+            campaign_id=campaign_id,
+            payload_sha256=payload_sha256,
+        )
+        == values
     )
+
+    monkeypatch.setenv("MASKFACTORY_SHARED_GPU_GUARD_PAYLOAD_SHA256", "b" * 64)
     with pytest.raises(
         MODULE.EngineeringCampaignRuntimeError,
         match="GUARD_PAYLOAD_SHA256",

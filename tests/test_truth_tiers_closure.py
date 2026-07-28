@@ -95,7 +95,11 @@ def test_summary_preserves_weighted_provenance_without_promoting_machine_candida
         policy,
     )
     result_fields = result.as_dict()
-    assert {key: value for key, value in result_fields.items() if key != "effective_training_truth_count"} == {
+    assert {
+        key: value
+        for key, value in result_fields.items()
+        if key != "effective_training_truth_count"
+    } == {
         "human_anchor_gold_count": 1,
         "autonomous_certified_gold_count": 1,
         "weighted_pseudo_label_count": 1,

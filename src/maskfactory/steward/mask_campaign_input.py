@@ -305,11 +305,7 @@ def _load_resources(
                 image.load()
                 size = image.size
                 mode = image.mode
-                if (
-                    row["width"] != size[0]
-                    or row["height"] != size[1]
-                    or row["mode"] != mode
-                ):
+                if row["width"] != size[0] or row["height"] != size[1] or row["mode"] != mode:
                     raise MaskCampaignInputError(
                         "RESOURCE_GEOMETRY_MISMATCH",
                         f"{role} declared media geometry differs from bytes",
@@ -329,9 +325,7 @@ def _load_resources(
                             "SEMANTIC_ABSENCE_CONTRADICTORY",
                             f"{role} semantic absence contradicts mask pixels",
                         )
-                    masks[role] = (
-                        np.asarray(image, dtype=np.uint8) == 255
-                    ).copy()
+                    masks[role] = (np.asarray(image, dtype=np.uint8) == 255).copy()
         except MaskCampaignInputError:
             raise
         except (OSError, ValueError) as exc:
@@ -356,10 +350,7 @@ def _load_resources(
             "RESOURCE_SET_INCOMPLETE",
             "required semantic resource roles are incomplete",
         )
-    if any(
-        (row["width"], row["height"]) != source_size
-        for row in normalized_rows
-    ):
+    if any((row["width"], row["height"]) != source_size for row in normalized_rows):
         raise MaskCampaignInputError(
             "RESOURCE_GEOMETRY_MISMATCH",
             "all semantic resources must match source geometry",

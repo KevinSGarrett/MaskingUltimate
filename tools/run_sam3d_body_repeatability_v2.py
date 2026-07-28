@@ -33,7 +33,6 @@ from tools.run_sam3d_body import (  # noqa: E402
     _sha256,
 )
 
-
 MEASURED_REPEATS = 2
 
 
@@ -184,9 +183,7 @@ def main() -> int:
     from sam_3d_body import SAM3DBodyEstimator, load_sam_3d_body
 
     load_started = time.perf_counter()
-    model, model_cfg = load_sam_3d_body(
-        str(args.checkpoint), device="cuda", mhr_path=str(args.mhr)
-    )
+    model, model_cfg = load_sam_3d_body(str(args.checkpoint), device="cuda", mhr_path=str(args.mhr))
     torch.cuda.synchronize()
     model_load_latency_ms = (time.perf_counter() - load_started) * 1000.0
     estimator = SAM3DBodyEstimator(
@@ -264,7 +261,9 @@ def main() -> int:
     report_path.write_text(json.dumps(report, sort_keys=True, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, sort_keys=True, separators=(",", ":")))
     if not report["deterministic"]:
-        raise RuntimeError("SAM 3D Body v2 measured repeats are not byte-exact; raw outputs retained")
+        raise RuntimeError(
+            "SAM 3D Body v2 measured repeats are not byte-exact; raw outputs retained"
+        )
     return 0
 
 

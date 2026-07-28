@@ -60,14 +60,18 @@ def validate_direct_reference_screening(
 ) -> None:
     """Validate one source-bound direct screen without granting any authority."""
 
-    if set(receipt) != {
-        "authority_boundary",
-        "reference_readiness_binding",
-        "review",
-        "schema_version",
-        "screened_image",
-        "self_sha256",
-    } or receipt.get("schema_version") != SCHEMA_VERSION:
+    if (
+        set(receipt)
+        != {
+            "authority_boundary",
+            "reference_readiness_binding",
+            "review",
+            "schema_version",
+            "screened_image",
+            "self_sha256",
+        }
+        or receipt.get("schema_version") != SCHEMA_VERSION
+    ):
         raise VisualReferenceScreeningError("screening receipt schema is invalid")
     declared = receipt.get("self_sha256")
     sealed = dict(receipt)
@@ -89,10 +93,7 @@ def validate_direct_reference_screening(
     if (
         not required_authority.issubset(authority)
         or not (set(authority) & candidate_fields)
-        or any(
-            authority.get(name) is not False
-            for name in set(authority) & candidate_fields
-        )
+        or any(authority.get(name) is not False for name in set(authority) & candidate_fields)
         or any(authority.get(name) is not False for name in required_authority - {"reason"})
         or not isinstance(authority.get("reason"), str)
         or not authority["reason"]
@@ -135,9 +136,10 @@ def validate_direct_reference_screening(
         or not review["reviewer"]
     ):
         raise VisualReferenceScreeningError("direct review binding is invalid")
-    if review["decision"] == "rejected_for_hand_finger_candidate_selection" and review.get(
-        "reason"
-    ) != "metadata_tag_not_visually_confirmed":
+    if (
+        review["decision"] == "rejected_for_hand_finger_candidate_selection"
+        and review.get("reason") != "metadata_tag_not_visually_confirmed"
+    ):
         raise VisualReferenceScreeningError("rejection reason is invalid")
 
     image = _mapping(receipt["screened_image"], field="screened image")
@@ -150,9 +152,7 @@ def validate_direct_reference_screening(
         "source_group",
     }:
         raise VisualReferenceScreeningError("screened image schema is invalid")
-    relative = _relative_path(
-        image["materialized_relative_path"], field="materialized image path"
-    )
+    relative = _relative_path(image["materialized_relative_path"], field="materialized image path")
     if (
         not isinstance(image.get("bytes"), int)
         or image["bytes"] < 1
@@ -164,8 +164,7 @@ def validate_direct_reference_screening(
         raise VisualReferenceScreeningError("screened image binding is invalid")
     dimensions = _mapping(image["dimensions"], field="image dimensions")
     if set(dimensions) != {"height", "width"} or any(
-        not isinstance(dimensions[name], int) or dimensions[name] < 1
-        for name in dimensions
+        not isinstance(dimensions[name], int) or dimensions[name] < 1 for name in dimensions
     ):
         raise VisualReferenceScreeningError("screened image dimensions are invalid")
     image_path = materialized_root.resolve(strict=True).joinpath(*relative.parts)

@@ -67,9 +67,7 @@ def _fixture(tmp_path: Path) -> tuple[Path, dict]:
     contract = {
         "schema_version": SCHEMA_VERSION,
         "record_id": "mask-record-1",
-        "resources": [
-            _resource(paths[role], role) for role in REQUIRED_RESOURCE_ROLES
-        ],
+        "resources": [_resource(paths[role], role) for role in REQUIRED_RESOURCE_ROLES],
         "semantic_binding": {
             "ontology_sha256": "a" * 64,
             "target_label": "left_hand",
@@ -116,11 +114,14 @@ def test_exact_semantic_resources_and_independent_providers_admit(
     assert len(result["campaign_input"]["providers"]) == 2
     assert result["campaign_input"]["input_sha256"]
     assert result["preparation_sha256"]
-    assert validate_mask_campaign_preparation(
-        result,
-        asset_root=root,
-        contract=contract,
-    ) == result
+    assert (
+        validate_mask_campaign_preparation(
+            result,
+            asset_root=root,
+            contract=contract,
+        )
+        == result
+    )
 
 
 @pytest.mark.parametrize("role", REQUIRED_RESOURCE_ROLES)
@@ -129,9 +130,7 @@ def test_every_missing_semantic_resource_abstains_before_inference(
     role: str,
 ) -> None:
     root, contract = _fixture(tmp_path)
-    contract["resources"] = [
-        row for row in contract["resources"] if row["role"] != role
-    ]
+    contract["resources"] = [row for row in contract["resources"] if row["role"] != role]
 
     result = prepare_mask_campaign_input(asset_root=root, contract=contract)
 
@@ -145,24 +144,33 @@ def test_duplicate_role_hash_mismatch_and_path_escape_abstain(tmp_path: Path) ->
     root, contract = _fixture(tmp_path)
     duplicate = copy.deepcopy(contract)
     duplicate["resources"][-1]["role"] = "neighbor_region"
-    assert prepare_mask_campaign_input(
-        asset_root=root,
-        contract=duplicate,
-    )["reason_code"] == "RESOURCE_ROLE_AMBIGUOUS"
+    assert (
+        prepare_mask_campaign_input(
+            asset_root=root,
+            contract=duplicate,
+        )["reason_code"]
+        == "RESOURCE_ROLE_AMBIGUOUS"
+    )
 
     wrong_hash = copy.deepcopy(contract)
     wrong_hash["resources"][0]["sha256"] = "0" * 64
-    assert prepare_mask_campaign_input(
-        asset_root=root,
-        contract=wrong_hash,
-    )["reason_code"] == "RESOURCE_HASH_MISMATCH"
+    assert (
+        prepare_mask_campaign_input(
+            asset_root=root,
+            contract=wrong_hash,
+        )["reason_code"]
+        == "RESOURCE_HASH_MISMATCH"
+    )
 
     escaped = copy.deepcopy(contract)
     escaped["resources"][0]["path"] = "../source.png"
-    assert prepare_mask_campaign_input(
-        asset_root=root,
-        contract=escaped,
-    )["reason_code"] == "RESOURCE_PATH_ESCAPE"
+    assert (
+        prepare_mask_campaign_input(
+            asset_root=root,
+            contract=escaped,
+        )["reason_code"]
+        == "RESOURCE_PATH_ESCAPE"
+    )
 
 
 def test_geometry_owner_side_neighbor_and_protected_contradictions_abstain(
@@ -171,27 +179,35 @@ def test_geometry_owner_side_neighbor_and_protected_contradictions_abstain(
     root, contract = _fixture(tmp_path)
     _write_mask(root / "owner.png", [(12, 12, 15, 15)])
     contract["resources"] = [
-        _resource(root / row["path"], row["role"])
-        for row in contract["resources"]
+        _resource(root / row["path"], row["role"]) for row in contract["resources"]
     ]
-    assert prepare_mask_campaign_input(
-        asset_root=root,
-        contract=contract,
-    )["reason_code"] == "OWNER_BINDING_MISMATCH"
+    assert (
+        prepare_mask_campaign_input(
+            asset_root=root,
+            contract=contract,
+        )["reason_code"]
+        == "OWNER_BINDING_MISMATCH"
+    )
 
     root, contract = _fixture(tmp_path / "second")
     contract["semantic_binding"]["side"] = "unspecified"
-    assert prepare_mask_campaign_input(
-        asset_root=root,
-        contract=contract,
-    )["reason_code"] == "SIDE_AMBIGUOUS"
+    assert (
+        prepare_mask_campaign_input(
+            asset_root=root,
+            contract=contract,
+        )["reason_code"]
+        == "SIDE_AMBIGUOUS"
+    )
 
     root, contract = _fixture(tmp_path / "third")
     contract["semantic_binding"]["neighbor_labels"] = []
-    assert prepare_mask_campaign_input(
-        asset_root=root,
-        contract=contract,
-    )["reason_code"] == "NEIGHBOR_BINDING_CONTRADICTORY"
+    assert (
+        prepare_mask_campaign_input(
+            asset_root=root,
+            contract=contract,
+        )["reason_code"]
+        == "NEIGHBOR_BINDING_CONTRADICTORY"
+    )
 
     root, contract = _fixture(tmp_path / "fourth")
     _write_mask(root / "protected.png", [])
@@ -204,34 +220,46 @@ def test_geometry_owner_side_neighbor_and_protected_contradictions_abstain(
         for row in contract["resources"]
     ]
     contract["semantic_binding"]["protected_labels"] = []
-    assert prepare_mask_campaign_input(
-        asset_root=root,
-        contract=contract,
-    )["reason_code"] == "PROTECTED_BINDING_MISMATCH"
+    assert (
+        prepare_mask_campaign_input(
+            asset_root=root,
+            contract=contract,
+        )["reason_code"]
+        == "PROTECTED_BINDING_MISMATCH"
+    )
 
 
 def test_provider_count_family_and_capability_are_fail_closed(tmp_path: Path) -> None:
     root, contract = _fixture(tmp_path)
     one = copy.deepcopy(contract)
     one["providers"] = one["providers"][:1]
-    assert prepare_mask_campaign_input(
-        asset_root=root,
-        contract=one,
-    )["reason_code"] == "PROVIDER_SET_INCOMPLETE"
+    assert (
+        prepare_mask_campaign_input(
+            asset_root=root,
+            contract=one,
+        )["reason_code"]
+        == "PROVIDER_SET_INCOMPLETE"
+    )
 
     same_family = copy.deepcopy(contract)
     same_family["providers"][1]["family"] = "sam"
-    assert prepare_mask_campaign_input(
-        asset_root=root,
-        contract=same_family,
-    )["reason_code"] == "PROVIDER_SET_AMBIGUOUS"
+    assert (
+        prepare_mask_campaign_input(
+            asset_root=root,
+            contract=same_family,
+        )["reason_code"]
+        == "PROVIDER_SET_AMBIGUOUS"
+    )
 
     missing_capability = copy.deepcopy(contract)
     missing_capability["providers"][1]["capabilities"] = ["points"]
-    assert prepare_mask_campaign_input(
-        asset_root=root,
-        contract=missing_capability,
-    )["reason_code"] == "PROVIDER_CAPABILITY_MISSING"
+    assert (
+        prepare_mask_campaign_input(
+            asset_root=root,
+            contract=missing_capability,
+        )["reason_code"]
+        == "PROVIDER_CAPABILITY_MISSING"
+    )
 
 
 def test_explicit_empty_neighbor_and_protected_resources_are_unambiguous(
@@ -265,11 +293,13 @@ def test_rehashed_preparation_drift_and_shared_resource_paths_fail_closed(
     result["text_only_acceptance_allowed"] = True
     result["preparation_sha256"] = "0" * 64
     result["preparation_sha256"] = hashlib.sha256(
-        __import__("json").dumps(
+        __import__("json")
+        .dumps(
             result,
             sort_keys=True,
             separators=(",", ":"),
-        ).encode("utf-8")
+        )
+        .encode("utf-8")
     ).hexdigest()
     with pytest.raises(MaskCampaignInputError, match="differs from exact"):
         validate_mask_campaign_preparation(
@@ -279,12 +309,8 @@ def test_rehashed_preparation_drift_and_shared_resource_paths_fail_closed(
         )
 
     root, contract = _fixture(tmp_path / "shared")
-    owner = next(
-        row for row in contract["resources"] if row["role"] == "owner_region"
-    )
-    label = next(
-        row for row in contract["resources"] if row["role"] == "label_region"
-    )
+    owner = next(row for row in contract["resources"] if row["role"] == "owner_region")
+    label = next(row for row in contract["resources"] if row["role"] == "label_region")
     label.update(
         {
             "path": owner["path"],
@@ -292,7 +318,10 @@ def test_rehashed_preparation_drift_and_shared_resource_paths_fail_closed(
             "sha256": owner["sha256"],
         }
     )
-    assert prepare_mask_campaign_input(
-        asset_root=root,
-        contract=contract,
-    )["reason_code"] == "RESOURCE_PATH_AMBIGUOUS"
+    assert (
+        prepare_mask_campaign_input(
+            asset_root=root,
+            contract=contract,
+        )["reason_code"]
+        == "RESOURCE_PATH_AMBIGUOUS"
+    )

@@ -175,45 +175,37 @@ def validate_exception_event(event: Mapping[str, Any]) -> None:
         field="terminal_decision_required",
     )
     if repair_exhausted and not hard_failure:
-        raise ExceptionEscalationError(
-            "internal repair exhaustion requires a hard failure"
-        )
+        raise ExceptionEscalationError("internal repair exhaustion requires a hard failure")
     if category in ROUTINE_CATEGORIES and (
         hard_failure or repair_exhausted or external_authority or terminal_decision
     ):
         raise ExceptionEscalationError(
             "routine category cannot hide a hard failure or authority requirement"
         )
-    if category in {
-        "security_or_credentials",
-        "destructive_or_external_authority",
-        "authority_conflict",
-    } and not external_authority:
-        raise ExceptionEscalationError(
-            f"{category} requires external_authority_required"
-        )
+    if (
+        category
+        in {
+            "security_or_credentials",
+            "destructive_or_external_authority",
+            "authority_conflict",
+        }
+        and not external_authority
+    ):
+        raise ExceptionEscalationError(f"{category} requires external_authority_required")
     if external_authority and category not in {
         "security_or_credentials",
         "destructive_or_external_authority",
         "authority_conflict",
     }:
-        raise ExceptionEscalationError(
-            "external authority fact contradicts the exception category"
-        )
-    if category == "repair_exhaustion" and not (
-        hard_failure and repair_exhausted
-    ):
+        raise ExceptionEscalationError("external authority fact contradicts the exception category")
+    if category == "repair_exhaustion" and not (hard_failure and repair_exhausted):
         raise ExceptionEscalationError(
             "repair_exhaustion requires hard_failure and internal_repair_exhausted"
         )
     if category == "terminal_adoption" and not terminal_decision:
-        raise ExceptionEscalationError(
-            "terminal_adoption requires terminal_decision_required"
-        )
+        raise ExceptionEscalationError("terminal_adoption requires terminal_decision_required")
     if terminal_decision and category != "terminal_adoption":
-        raise ExceptionEscalationError(
-            "terminal decision fact contradicts the exception category"
-        )
+        raise ExceptionEscalationError("terminal decision fact contradicts the exception category")
     _verify_self_hash(
         event,
         field="event_sha256",
@@ -272,9 +264,7 @@ def validate_exception_escalation_replay(
     )
     expected = evaluate_exception_escalation(event)
     if dict(result) != expected:
-        raise ExceptionEscalationError(
-            "exception escalation deterministic replay mismatch"
-        )
+        raise ExceptionEscalationError("exception escalation deterministic replay mismatch")
 
 
 __all__ = [

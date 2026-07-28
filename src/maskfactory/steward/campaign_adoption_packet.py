@@ -75,9 +75,7 @@ def _canonical_bytes(value: object) -> bytes:
             allow_nan=False,
         ).encode("utf-8")
     except (TypeError, ValueError) as exc:
-        raise CampaignAdoptionPacketError(
-            "adoption packet is not canonical JSON"
-        ) from exc
+        raise CampaignAdoptionPacketError("adoption packet is not canonical JSON") from exc
 
 
 def _canonical_sha256(value: object) -> str:
@@ -106,9 +104,7 @@ def _verify_self_hash(value: Mapping[str, Any]) -> None:
     zeroed = deepcopy(dict(value))
     zeroed["packet_sha256"] = ZERO_SHA256
     if _canonical_sha256(zeroed) != declared:
-        raise CampaignAdoptionPacketError(
-            "adoption packet canonical self-hash mismatch"
-        )
+        raise CampaignAdoptionPacketError("adoption packet canonical self-hash mismatch")
 
 
 def _read_json(path: Path) -> dict[str, Any]:
@@ -208,16 +204,10 @@ def _normalize_tracker_proposals(
         percent = row["percent"]
         if status not in TRACKER_STATUSES:
             raise CampaignAdoptionPacketError("tracker proposal status is unsupported")
-        if (
-            not isinstance(percent, int)
-            or isinstance(percent, bool)
-            or not 0 <= percent <= 100
-        ):
+        if not isinstance(percent, int) or isinstance(percent, bool) or not 0 <= percent <= 100:
             raise CampaignAdoptionPacketError("tracker proposal percent is invalid")
         if status == "complete" and (
-            percent != 100
-            or decision != "ADOPT"
-            or terminal_outcome != "SUCCESS"
+            percent != 100 or decision != "ADOPT" or terminal_outcome != "SUCCESS"
         ):
             raise CampaignAdoptionPacketError(
                 "tracker completion proposal overclaims campaign evidence"
@@ -306,14 +296,10 @@ def build_campaign_adoption_packet(
     if decision not in DECISIONS:
         raise CampaignAdoptionPacketError("adoption decision is unsupported")
     if decision == "ADOPT" and terminal["outcome"] != "SUCCESS":
-        raise CampaignAdoptionPacketError(
-            "ADOPT overclaims a non-successful campaign terminal"
-        )
+        raise CampaignAdoptionPacketError("ADOPT overclaims a non-successful campaign terminal")
     normalized_limitations = _strings(limitations, field="limitations")
     if decision in {"PARTIALLY_ADOPT", "REJECT"} and not normalized_limitations:
-        raise CampaignAdoptionPacketError(
-            f"{decision} requires at least one limitation"
-        )
+        raise CampaignAdoptionPacketError(f"{decision} requires at least one limitation")
     normalized_exceptions = _normalize_exceptions(exceptions)
     normalized_tracker = _normalize_tracker_proposals(
         tracker_proposals,
@@ -365,19 +351,18 @@ def build_campaign_adoption_packet(
     if destination.exists():
         raise CampaignAdoptionPacketError("adoption packet root already exists")
     if not destination.parent.is_dir():
-        raise CampaignAdoptionPacketError(
-            "adoption packet parent must already exist"
-        )
-    temporary = Path(
-        tempfile.mkdtemp(prefix=f".{destination.name}.tmp-", dir=destination.parent)
-    )
+        raise CampaignAdoptionPacketError("adoption packet parent must already exist")
+    temporary = Path(tempfile.mkdtemp(prefix=f".{destination.name}.tmp-", dir=destination.parent))
     try:
-        payload = json.dumps(
-            packet,
-            indent=2,
-            sort_keys=True,
-            ensure_ascii=False,
-        ).encode("utf-8") + b"\n"
+        payload = (
+            json.dumps(
+                packet,
+                indent=2,
+                sort_keys=True,
+                ensure_ascii=False,
+            ).encode("utf-8")
+            + b"\n"
+        )
         with (temporary / PACKET_NAME).open("xb") as handle:
             handle.write(payload)
             handle.flush()
@@ -398,15 +383,9 @@ def validate_campaign_adoption_packet(
     """Validate exact packet count, hashes, campaign bindings, and claim level."""
 
     root = packet_root.resolve(strict=True)
-    actual_files = {
-        path.relative_to(root).as_posix()
-        for path in root.rglob("*")
-        if path.is_file()
-    }
+    actual_files = {path.relative_to(root).as_posix() for path in root.rglob("*") if path.is_file()}
     if actual_files != {PACKET_NAME}:
-        raise CampaignAdoptionPacketError(
-            "exactly one consolidated adoption packet is required"
-        )
+        raise CampaignAdoptionPacketError("exactly one consolidated adoption packet is required")
     packet = _read_json(root / PACKET_NAME)
     if set(packet) != _PACKET_FIELDS:
         raise CampaignAdoptionPacketError("adoption packet field set mismatch")
@@ -416,9 +395,7 @@ def validate_campaign_adoption_packet(
         or packet.get("authority") != _AUTHORITY_CEILING
         or packet.get("decision") not in DECISIONS
     ):
-        raise CampaignAdoptionPacketError(
-            "adoption packet schema, decision, or authority mismatch"
-        )
+        raise CampaignAdoptionPacketError("adoption packet schema, decision, or authority mismatch")
     campaign = campaign_root.resolve(strict=True)
     terminal = verify_campaign_terminal(campaign)
     if (
@@ -440,23 +417,15 @@ def validate_campaign_adoption_packet(
     ):
         raise CampaignAdoptionPacketError("adoption packet campaign binding mismatch")
     if packet["decision"] == "ADOPT" and terminal["outcome"] != "SUCCESS":
-        raise CampaignAdoptionPacketError(
-            "ADOPT overclaims a non-successful campaign terminal"
-        )
+        raise CampaignAdoptionPacketError("ADOPT overclaims a non-successful campaign terminal")
     changes, focused_tests = _derive_campaign_evidence(campaign, terminal)
     if packet.get("changes") != changes or packet.get("focused_tests") != focused_tests:
-        raise CampaignAdoptionPacketError(
-            "adoption packet proposal or test evidence mismatch"
-        )
+        raise CampaignAdoptionPacketError("adoption packet proposal or test evidence mismatch")
     limitations = _strings(packet.get("limitations"), field="limitations")
     if packet.get("limitations") != limitations:
-        raise CampaignAdoptionPacketError(
-            "adoption packet limitations are not canonical"
-        )
+        raise CampaignAdoptionPacketError("adoption packet limitations are not canonical")
     if packet["decision"] in {"PARTIALLY_ADOPT", "REJECT"} and not limitations:
-        raise CampaignAdoptionPacketError(
-            f"{packet['decision']} requires at least one limitation"
-        )
+        raise CampaignAdoptionPacketError(f"{packet['decision']} requires at least one limitation")
     if packet.get("exceptions") != _normalize_exceptions(packet.get("exceptions")):
         raise CampaignAdoptionPacketError("adoption packet exceptions are not canonical")
     if packet.get("tracker_proposals") != _normalize_tracker_proposals(
@@ -464,16 +433,12 @@ def validate_campaign_adoption_packet(
         decision=packet["decision"],
         terminal_outcome=terminal["outcome"],
     ):
-        raise CampaignAdoptionPacketError(
-            "adoption packet tracker proposals are not canonical"
-        )
+        raise CampaignAdoptionPacketError("adoption packet tracker proposals are not canonical")
     if packet.get("decision_reason") != _text(
         packet.get("decision_reason"),
         field="decision reason",
     ):
-        raise CampaignAdoptionPacketError(
-            "adoption packet decision reason is not canonical"
-        )
+        raise CampaignAdoptionPacketError("adoption packet decision reason is not canonical")
     return packet
 
 

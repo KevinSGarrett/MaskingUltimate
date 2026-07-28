@@ -31,10 +31,14 @@ def main() -> int:
     parser.add_argument("--per-partition", type=int, default=8)
     args = parser.parse_args()
     candidates = build_lapa_control_candidates(
-        source_root=args.source_root, project_root=args.project_root,
-        provenance_path=args.provenance, inventory_path=args.inventory,
-        remap_path=args.remap, qualification_evidence_path=args.qualification_evidence,
-        source_hash_manifest_path=args.source_hash_manifest, split_dedup_path=args.split_dedup,
+        source_root=args.source_root,
+        project_root=args.project_root,
+        provenance_path=args.provenance,
+        inventory_path=args.inventory,
+        remap_path=args.remap,
+        qualification_evidence_path=args.qualification_evidence,
+        source_hash_manifest_path=args.source_hash_manifest,
+        split_dedup_path=args.split_dedup,
         per_partition=args.per_partition,
     )
     candidate_file_sha256 = publish_immutable_evidence(candidates, args.candidate_output)
@@ -45,14 +49,26 @@ def main() -> int:
             raise ValueError("existing panels bind a different candidate set")
     else:
         report = materialize_lapa_control_panels(
-            source_root=args.source_root, candidate_document=candidates, output_root=args.panel_output
+            source_root=args.source_root,
+            candidate_document=candidates,
+            output_root=args.panel_output,
         )
-    print(json.dumps({
-        "status": "PASS", "candidate_output": str(args.candidate_output.resolve()),
-        "candidate_file_sha256": candidate_file_sha256, "candidate_set_sha256": candidates["self_sha256"],
-        "panel_output": str(args.panel_output.resolve()), "panel_report_sha256": sha256_file(args.panel_output / "report.json"),
-        "record_count": report["record_count"], "panel_count": report["panel_count"], "authority_claimed": False,
-    }, sort_keys=True))
+    print(
+        json.dumps(
+            {
+                "status": "PASS",
+                "candidate_output": str(args.candidate_output.resolve()),
+                "candidate_file_sha256": candidate_file_sha256,
+                "candidate_set_sha256": candidates["self_sha256"],
+                "panel_output": str(args.panel_output.resolve()),
+                "panel_report_sha256": sha256_file(args.panel_output / "report.json"),
+                "record_count": report["record_count"],
+                "panel_count": report["panel_count"],
+                "authority_claimed": False,
+            },
+            sort_keys=True,
+        )
+    )
     return 0
 
 

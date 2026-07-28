@@ -7,15 +7,14 @@ from pathlib import Path
 import pytest
 import yaml
 from PIL import Image
-
 from tools import run_visual_critic_protocol_v3_control_screening as control_screening_runner
 
 from maskfactory.vlm.critic_catalog import canonical_sha256
 from maskfactory.vlm.critic_protocol_v3 import CHECK_KEYS
 from maskfactory.vlm.critic_protocol_v3_control_screening import (
     CriticProtocolV3ControlScreeningError,
-    build_control_screening_execution,
     build_control_judgement_prompt,
+    build_control_screening_execution,
     control_registry_sha256,
     derive_control_screening_verdict,
     parse_control_screening_response,
@@ -32,11 +31,15 @@ def _sha(path: Path) -> str:
 
 def _registry() -> dict:
     return yaml.safe_load(
-        (ROOT / "configs/visual_critic_protocol_v3_session_agent_control_screening.yaml").read_text()
+        (
+            ROOT / "configs/visual_critic_protocol_v3_session_agent_control_screening.yaml"
+        ).read_text()
     )
 
 
-def _record(root: Path, sample_id: str, partition: str, outcome: str, defect: str | None, seed: int) -> dict:
+def _record(
+    root: Path, sample_id: str, partition: str, outcome: str, defect: str | None, seed: int
+) -> dict:
     files, hashes = {}, {}
     for name in PANELS:
         path = root / sample_id / "panels" / f"{name}.png"
@@ -97,8 +100,12 @@ def _response(severity: str, localization: list[int] | None) -> dict:
         "findings": {
             key: {
                 "severity": severity if key == "boundary" else "none",
-                "cited_evidence_panels": ["source", "target_zoom"] if key == "boundary" and severity != "none" else [],
-                "localization_xyxy": localization if key == "boundary" and severity != "none" else None,
+                "cited_evidence_panels": (
+                    ["source", "target_zoom"] if key == "boundary" and severity != "none" else []
+                ),
+                "localization_xyxy": (
+                    localization if key == "boundary" and severity != "none" else None
+                ),
             }
             for key in CHECK_KEYS
         },
@@ -137,7 +144,9 @@ def test_minor_is_a_screening_defect_and_offboard_evidence_abstains() -> None:
     )
     assert result["screening_outcome"] == "screening_defect"
     assert result["authority_claimed"] is False
-    offboard = derive_control_screening_verdict(response=_response("serious", [50, 50, 60, 60]), geometry_wh=[12, 10])
+    offboard = derive_control_screening_verdict(
+        response=_response("serious", [50, 50, 60, 60]), geometry_wh=[12, 10]
+    )
     assert offboard["screening_outcome"] == "abstain"
 
 
@@ -162,14 +171,17 @@ def test_format_repair_projection_preserves_all_semantics_except_none_format() -
     prior = _response("none", None)
     prior["findings"]["anatomy"]["cited_evidence_panels"] = ["source", "contour"]
     repaired = _response("none", None)
-    assert control_screening_runner._format_repair_projection(prior) == control_screening_runner._format_repair_projection(repaired)
+    assert control_screening_runner._format_repair_projection(
+        prior
+    ) == control_screening_runner._format_repair_projection(repaired)
 
     severity_changed = _response("none", None)
     severity_changed["findings"]["boundary"]["severity"] = "minor"
     severity_changed["findings"]["boundary"]["cited_evidence_panels"] = ["source", "contour"]
     severity_changed["findings"]["boundary"]["localization_xyxy"] = [1, 1, 5, 5]
-    assert control_screening_runner._format_repair_projection(prior) != control_screening_runner._format_repair_projection(severity_changed)
-
+    assert control_screening_runner._format_repair_projection(
+        prior
+    ) != control_screening_runner._format_repair_projection(severity_changed)
 
 
 def test_bounded_format_repair_only_closes_terminal_json_and_clears_none_metadata() -> None:
@@ -181,8 +193,8 @@ def test_bounded_format_repair_only_closes_terminal_json_and_clears_none_metadat
         "localization_xyxy": [1, 1, 5, 5],
     }
     raw = json.dumps(prior, separators=(",", ":"), sort_keys=True)
-    parsed, repaired_raw, latency_ms, patch_counts = control_screening_runner._parse_with_bounded_format_repair(
-        raw=raw[:-1]
+    parsed, repaired_raw, latency_ms, patch_counts = (
+        control_screening_runner._parse_with_bounded_format_repair(raw=raw[:-1])
     )
     assert repaired_raw is not None
     assert latency_ms == 0.0

@@ -46,9 +46,7 @@ def _bindings(value: Any, field: str, allow_none: bool) -> dict[str, str | None]
     result: dict[str, str | None] = {}
     for name in REQUIRED_INPUTS:
         current = value[name]
-        result[name] = None if current is None and allow_none else _hash(
-            current, f"{field}.{name}"
-        )
+        result[name] = None if current is None and allow_none else _hash(current, f"{field}.{name}")
     return result
 
 
@@ -92,7 +90,9 @@ def build_serverless_v3_runtime_gate(
     expected = _bindings(expected_input_sha256s, "expected_input_sha256s", False)
     provider = _bindings(provider_binding_sha256s, "provider_binding_sha256s", False)
     if provider != expected:
-        raise ServerlessV3RuntimeGateError("provider binding receipt does not match expected inputs")
+        raise ServerlessV3RuntimeGateError(
+            "provider binding receipt does not match expected inputs"
+        )
     observed = _bindings(preflight["v3_input_sha256s"], "preflight.v3_input_sha256s", True)
     modules = preflight["modules"]
     missing_modules = [
@@ -116,7 +116,9 @@ def build_serverless_v3_runtime_gate(
             "continue_another_cpu_safe_lane_until_explicit_authority_exists_for_an_image_update"
         )
     else:
-        next_action = "repair_and_repeat_the_hash_bound_runtime_preflight_before_protocol_v3_submission"
+        next_action = (
+            "repair_and_repeat_the_hash_bound_runtime_preflight_before_protocol_v3_submission"
+        )
     result: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
         "artifact_type": "maskfactory_serverless_v3_runtime_capability_gate",
@@ -147,10 +149,21 @@ def build_serverless_v3_runtime_gate(
 
 def verify_serverless_v3_runtime_gate(document: Mapping[str, Any]) -> None:
     required = {
-        "schema_version", "artifact_type", *AUTHORITY_FLAGS, "preflight_self_sha256",
-        "expected_input_sha256s", "provider_binding_sha256s", "preflight_input_sha256s",
-        "cuda_available", "missing_required_modules", "internal_bindings_complete",
-        "v3_submission_allowed", "reason_codes", "next_action", "claim_limits", "self_sha256",
+        "schema_version",
+        "artifact_type",
+        *AUTHORITY_FLAGS,
+        "preflight_self_sha256",
+        "expected_input_sha256s",
+        "provider_binding_sha256s",
+        "preflight_input_sha256s",
+        "cuda_available",
+        "missing_required_modules",
+        "internal_bindings_complete",
+        "v3_submission_allowed",
+        "reason_codes",
+        "next_action",
+        "claim_limits",
+        "self_sha256",
     }
     if not isinstance(document, Mapping) or set(document) != required:
         raise ServerlessV3RuntimeGateError("runtime gate fields are incomplete or unknown")
@@ -169,9 +182,8 @@ def verify_serverless_v3_runtime_gate(document: Mapping[str, Any]) -> None:
         raise ServerlessV3RuntimeGateError("runtime gate binding state drift")
     if not isinstance(document["cuda_available"], bool):
         raise ServerlessV3RuntimeGateError("runtime gate CUDA state is invalid")
-    if (
-        not isinstance(document["missing_required_modules"], list)
-        or any(name not in REQUIRED_MODULES for name in document["missing_required_modules"])
+    if not isinstance(document["missing_required_modules"], list) or any(
+        name not in REQUIRED_MODULES for name in document["missing_required_modules"]
     ):
         raise ServerlessV3RuntimeGateError("runtime gate module state is invalid")
     if not isinstance(document["reason_codes"], list) or not all(

@@ -40,12 +40,8 @@ def _build(root: Path, source: Path | None = None):
         asset_id="fixture",
         batch_size=1,
     )
-    (destination / "MIGRATION_MANIFEST.json").write_bytes(
-        result.manifest_path.read_bytes()
-    )
-    (destination / "MIGRATION_INVENTORY.sqlite").write_bytes(
-        result.inventory_path.read_bytes()
-    )
+    (destination / "MIGRATION_MANIFEST.json").write_bytes(result.manifest_path.read_bytes())
+    (destination / "MIGRATION_INVENTORY.sqlite").write_bytes(result.inventory_path.read_bytes())
     return result, destination
 
 
@@ -80,12 +76,8 @@ def test_ephemeral_sqlite_sidecars_are_not_migration_content(
         output_dir=tmp_path / "output",
         asset_id="fixture",
     )
-    (destination / "MIGRATION_MANIFEST.json").write_bytes(
-        result.manifest_path.read_bytes()
-    )
-    (destination / "MIGRATION_INVENTORY.sqlite").write_bytes(
-        result.inventory_path.read_bytes()
-    )
+    (destination / "MIGRATION_MANIFEST.json").write_bytes(result.manifest_path.read_bytes())
+    (destination / "MIGRATION_INVENTORY.sqlite").write_bytes(result.inventory_path.read_bytes())
     verification = verify_corpus_mirror_manifest(
         destination / "MIGRATION_MANIFEST.json",
         destination,
@@ -158,9 +150,7 @@ def test_resume_reuses_unchanged_rows_and_rehashes_changed_rows(
         asset_id="fixture",
         batch_size=1,
     )
-    progress = json.loads(
-        (output / "MIGRATION_PROGRESS.json").read_text(encoding="utf-8")
-    )
+    progress = json.loads((output / "MIGRATION_PROGRESS.json").read_text(encoding="utf-8"))
     assert progress["hashed_file_count"] == 1
     assert progress["reused_file_count"] == 1
     assert second.tree_sha256 != first.tree_sha256
@@ -207,9 +197,7 @@ def test_manifest_self_hash_and_inventory_summary_fail_closed(
 
     _, destination_two = _build(tmp_path / "second")
     inventory = destination_two / "MIGRATION_INVENTORY.sqlite"
-    manifest = json.loads(
-        (destination_two / "MIGRATION_MANIFEST.json").read_text(encoding="utf-8")
-    )
+    manifest = json.loads((destination_two / "MIGRATION_MANIFEST.json").read_text(encoding="utf-8"))
     with sqlite3.connect(inventory) as connection:
         connection.execute("UPDATE metadata SET value='999' WHERE key='entry_count'")
     manifest["inventory"]["raw_sha256"] = sha256_file(inventory)
@@ -253,9 +241,7 @@ def test_inventory_metadata_drift_fails_closed(tmp_path: Path) -> None:
         destination,
     )
     assert verification["checks"]["inventory_metadata_binding"] is False
-    assert "CORPUS_INVENTORY_METADATA_DRIFT" in {
-        issue["code"] for issue in verification["issues"]
-    }
+    assert "CORPUS_INVENTORY_METADATA_DRIFT" in {issue["code"] for issue in verification["issues"]}
 
 
 def test_cli_imports_from_repository_checkout(tmp_path: Path) -> None:

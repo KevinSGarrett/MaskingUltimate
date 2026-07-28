@@ -685,9 +685,7 @@ def _prepare_certification_bundle(
         critic_role_certificates=critic_role_certificates,
         decision_time="2026-07-19T00:00:05Z",
     )
-    certificate["qa_evidence"]["critic_report_sha256"] = critic_quorum_sha256(
-        catalog_bound_critic
-    )
+    certificate["qa_evidence"]["critic_report_sha256"] = critic_quorum_sha256(catalog_bound_critic)
     policy = _policy_report(root, certificate, unstable=unstable_policy)
     certificate = bind_operational_policy_report(certificate, policy)
     veto = _veto_report(certificate, context, fail_veto_qc)

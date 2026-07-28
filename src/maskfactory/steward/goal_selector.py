@@ -23,9 +23,7 @@ PLAN27_ITEM_ORDER = tuple(
 # dependency checks and the guarded runtime still reject an unverified run.
 FIRST_REAL_ENGINEERING_CAMPAIGN = "MF-P6-19.01"
 _FOUNDATION_ITEM_ORDER = tuple(
-    item_id
-    for item_id in PLAN27_ITEM_ORDER
-    if int(item_id.split("-")[2].split(".")[0]) <= 16
+    item_id for item_id in PLAN27_ITEM_ORDER if int(item_id.split("-")[2].split(".")[0]) <= 16
 )
 SELECTION_ITEM_ORDER = (
     *_FOUNDATION_ITEM_ORDER,
@@ -90,9 +88,7 @@ class GoalSelection:
 def parse_dependency_ids(description: str) -> tuple[str, ...]:
     """Parse exact item IDs and same-prefix ``through`` ranges."""
 
-    clause = (
-        description.split("Blocked by:", 1)[1] if "Blocked by:" in description else ""
-    )
+    clause = description.split("Blocked by:", 1)[1] if "Blocked by:" in description else ""
     dependencies = list(_ITEM_ID_RE.findall(clause))
     for match in _RANGE_RE.finditer(clause):
         start_prefix = match.group(1)
@@ -102,9 +98,7 @@ def parse_dependency_ids(description: str) -> tuple[str, ...]:
         if start_prefix != end_prefix or end < start:
             continue
         width = max(len(match.group("start")), len(match.group("end")))
-        dependencies.extend(
-            f"{start_prefix}{number:0{width}d}" for number in range(start, end + 1)
-        )
+        dependencies.extend(f"{start_prefix}{number:0{width}d}" for number in range(start, end + 1))
     return tuple(dict.fromkeys(dependencies))
 
 
@@ -119,9 +113,7 @@ def _campaign_kind(item_id: str) -> str:
         raise GoalSelectionError(f"unsupported Plan-27 cluster: {cluster}") from exc
 
 
-def _dependency_is_done(
-    items: Mapping[str, Mapping[str, object]], item_id: str
-) -> bool:
+def _dependency_is_done(items: Mapping[str, Mapping[str, object]], item_id: str) -> bool:
     dependency = items.get(item_id)
     if dependency is None or dependency.get("orphaned"):
         return False
@@ -168,9 +160,7 @@ def select_next_plan27_work(
             for item_id in left.intersection(right):
                 overlap.add((item_id, left_name, right_name))
     if overlap:
-        details = ", ".join(
-            f"{item_id}:{left}/{right}" for item_id, left, right in sorted(overlap)
-        )
+        details = ", ".join(f"{item_id}:{left}/{right}" for item_id, left, right in sorted(overlap))
         raise GoalSelectionError(f"contradictory durable item states: {details}")
     excluded = frozenset().union(*exclusions.values())
 
@@ -185,13 +175,9 @@ def select_next_plan27_work(
         if not inference_available and item_id in LIVE_INFERENCE_REQUIRED:
             continue
         dependencies = parse_dependency_ids(str(item.get("description") or ""))
-        if not all(
-            _dependency_is_done(items, dependency) for dependency in dependencies
-        ):
+        if not all(_dependency_is_done(items, dependency) for dependency in dependencies):
             continue
-        work_mode = (
-            "live_inference" if item_id in LIVE_INFERENCE_REQUIRED else "cpu_safe"
-        )
+        work_mode = "live_inference" if item_id in LIVE_INFERENCE_REQUIRED else "cpu_safe"
         return GoalSelection(
             item_id=item_id,
             priority_index=PLAN27_ITEM_ORDER.index(item_id),

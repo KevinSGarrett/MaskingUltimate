@@ -243,7 +243,11 @@ def _run_internvl(
 ) -> tuple[str, float, list[int]]:
     import torch
 
-    if isinstance(max_new_tokens, bool) or not isinstance(max_new_tokens, int) or not 1 <= max_new_tokens <= 2048:
+    if (
+        isinstance(max_new_tokens, bool)
+        or not isinstance(max_new_tokens, int)
+        or not 1 <= max_new_tokens <= 2048
+    ):
         raise ValueError("max_new_tokens must be an integer from 1 through 2048")
 
     tensors = []

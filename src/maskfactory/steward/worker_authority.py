@@ -166,9 +166,7 @@ def build_worker_request(
 ) -> dict[str, Any]:
     """Seal an untrusted task beneath the fixed no-tool authority ceiling."""
 
-    if not isinstance(allowed_paths, Sequence) or isinstance(
-        allowed_paths, (str, bytes)
-    ):
+    if not isinstance(allowed_paths, Sequence) or isinstance(allowed_paths, (str, bytes)):
         raise WorkerAuthorityError("allowed paths must be a sequence")
     normalized_paths = tuple(sorted(_relative_path(path) for path in allowed_paths))
     if not normalized_paths or len(normalized_paths) != len(set(normalized_paths)):

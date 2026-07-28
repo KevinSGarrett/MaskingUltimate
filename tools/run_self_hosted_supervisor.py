@@ -126,8 +126,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--local-lease-database",
         type=Path,
         default=Path(
-            "/workspace/.maskfactory/shared_pod_coordination/"
-            "shared_gpu_leases_v1.sqlite"
+            "/workspace/.maskfactory/shared_pod_coordination/" "shared_gpu_leases_v1.sqlite"
         ),
     )
     parser.add_argument(
@@ -168,14 +167,11 @@ def _validate_fallback_admission(args: argparse.Namespace) -> None:
     if args.max_openrouter_workers != 1:
         raise SystemExit("--max-openrouter-workers must be exactly 1")
     work_kinds = tuple(
-        value.strip()
-        for value in args.openrouter_work_kinds.split(",")
-        if value.strip()
+        value.strip() for value in args.openrouter_work_kinds.split(",") if value.strip()
     )
     if len(work_kinds) != 1:
         raise SystemExit(
-            "--openrouter-work-kinds must select exactly one consolidated "
-            "advisory mode"
+            "--openrouter-work-kinds must select exactly one consolidated " "advisory mode"
         )
     for actual, expected, label in (
         (args.serverless_manager, SERVERLESS_MANAGER_PATH, "Serverless manager"),
@@ -215,9 +211,7 @@ def _atomic_json(path: Path, value: dict[str, object]) -> None:
 
 def _append_event(path: Path, value: dict[str, object]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    body = (
-        json.dumps(value, sort_keys=True, separators=(",", ":")) + "\n"
-    ).encode("utf-8")
+    body = (json.dumps(value, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
     descriptor = os.open(
         path,
         os.O_WRONLY | os.O_CREAT | os.O_APPEND,
@@ -314,8 +308,7 @@ def _inbox_totals(inbox_root: Path) -> dict[str, int]:
             if (
                 isinstance(status, dict)
                 and status.get("state") == "route_unavailable"
-                and "terminal reservation already exists"
-                in str(status.get("detail") or "")
+                and "terminal reservation already exists" in str(status.get("detail") or "")
             ):
                 totals["openrouter_duplicate_blocked"] += 1
         elif route == "serverless_overflow":
@@ -324,14 +317,10 @@ def _inbox_totals(inbox_root: Path) -> dict[str, int]:
             if native_ready is True:
                 totals["serverless_completed"] += 1
             elif native_ready is False or (
-                isinstance(terminal, dict)
-                and terminal.get("disposition") == "failed"
+                isinstance(terminal, dict) and terminal.get("disposition") == "failed"
             ):
                 totals["serverless_failed"] += 1
-            elif (
-                isinstance(terminal, dict)
-                and terminal.get("disposition") == "completed"
-            ):
+            elif isinstance(terminal, dict) and terminal.get("disposition") == "completed":
                 totals["serverless_completed"] += 1
     return totals
 
@@ -360,10 +349,7 @@ def _serverless_native_ready(mission_root: Path) -> bool | None:
             report = json.loads(line)
         except json.JSONDecodeError:
             continue
-        if (
-            isinstance(report, dict)
-            and isinstance(report.get("native_box_runtime_ready"), bool)
-        ):
+        if isinstance(report, dict) and isinstance(report.get("native_box_runtime_ready"), bool):
             return report["native_box_runtime_ready"]
     return None
 
@@ -380,9 +366,7 @@ def main() -> int:
         )
     _validate_fallback_admission(args)
     work_kinds = tuple(
-        value.strip()
-        for value in args.openrouter_work_kinds.split(",")
-        if value.strip()
+        value.strip() for value in args.openrouter_work_kinds.split(",") if value.strip()
     )
     stop = threading.Event()
     for signum in (signal.SIGINT, signal.SIGTERM):
@@ -440,17 +424,13 @@ def main() -> int:
             runtime_tool_path=args.local_runtime_tool,
             max_runtime_seconds=args.local_max_runtime_seconds,
         )
-    if (args.local_campaign_source is None) != (
-        args.local_packet_parent is None
-    ):
+    if (args.local_campaign_source is None) != (args.local_packet_parent is None):
         raise SystemExit(
-            "--local-campaign-source and --local-packet-parent must be "
-            "supplied together"
+            "--local-campaign-source and --local-packet-parent must be " "supplied together"
         )
     if args.local_campaign_source is not None and local_dispatcher is None:
         raise SystemExit(
-            "local campaign preparation requires the complete local "
-            "dispatcher configuration"
+            "local campaign preparation requires the complete local " "dispatcher configuration"
         )
     throughput_path = args.state_root / "fallback_throughput.json"
     throughput_events_path = args.state_root / "fallback_throughput_events.jsonl"
@@ -492,26 +472,16 @@ def main() -> int:
                         f"local campaign preparer: {exc}",
                     )
             fallback_ids = dispatcher.pending_ids()
-            local_ids = (
-                local_dispatcher.pending_ids()
-                if local_dispatcher is not None
-                else ()
-            )
+            local_ids = local_dispatcher.pending_ids() if local_dispatcher is not None else ()
             overlap = set(fallback_ids).intersection(local_ids)
-            supervisor.update_queue(
-                tuple(dict.fromkeys((*local_ids, *fallback_ids)))
-            )
+            supervisor.update_queue(tuple(dict.fromkeys((*local_ids, *fallback_ids))))
             if local_dispatcher is not None:
                 try:
                     local_results = local_dispatcher.poll_once(
                         excluded_campaign_ids=tuple(sorted(overlap))
                     )
                     active = next(
-                        (
-                            row
-                            for row in local_results
-                            if row.get("state") == "active"
-                        ),
+                        (row for row in local_results if row.get("state") == "active"),
                         None,
                     )
                     if active is not None:
@@ -520,8 +490,7 @@ def main() -> int:
                             state="active",
                         )
                     elif local_results and any(
-                        row.get("outcome") in {"terminal", "failed_closed"}
-                        for row in local_results
+                        row.get("outcome") in {"terminal", "failed_closed"} for row in local_results
                     ):
                         terminal_result = next(
                             row
@@ -568,8 +537,7 @@ def main() -> int:
             )
             duplicates_blocked = sum(
                 result.get("state") == "route_unavailable"
-                and "terminal reservation already exists"
-                in str(result.get("detail") or "")
+                and "terminal reservation already exists" in str(result.get("detail") or "")
                 for result in dispatch_results
             )
             cumulative["dispatch_terminal"] += terminal_results
@@ -583,13 +551,11 @@ def main() -> int:
             cycle = {
                 "openrouter_candidates": len(openrouter_receipts),
                 "openrouter_created": sum(
-                    receipt.get("created") is True
-                    for receipt in openrouter_receipts
+                    receipt.get("created") is True for receipt in openrouter_receipts
                 ),
                 "serverless_candidates": len(serverless_receipts),
                 "serverless_created": sum(
-                    receipt.get("created") is True
-                    for receipt in serverless_receipts
+                    receipt.get("created") is True for receipt in serverless_receipts
                 ),
                 "dispatch_results": len(dispatch_results),
                 "terminal_results": terminal_results,

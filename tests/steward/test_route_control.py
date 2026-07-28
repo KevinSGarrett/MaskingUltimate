@@ -213,11 +213,7 @@ def bind_parent_child(
         child_role=role,
         mission_id=mission_id,
         session_id=session_id,
-        route=(
-            "serverless_overflow"
-            if role == "serverless_execution"
-            else "openrouter_advisory"
-        ),
+        route=("serverless_overflow" if role == "serverless_execution" else "openrouter_advisory"),
         payload_sha256=payload_sha256,
         owner_token=token,
     )

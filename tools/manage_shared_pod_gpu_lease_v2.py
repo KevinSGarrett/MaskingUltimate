@@ -19,9 +19,7 @@ from typing import Any
 DEFAULT_DATABASE = Path(
     "/workspace/.maskfactory/shared_pod_coordination/shared_gpu_leases_v1.sqlite"
 )
-TERMINAL_STATES = frozenset(
-    {"completed", "failed", "released", "expired"}
-)
+TERMINAL_STATES = frozenset({"completed", "failed", "released", "expired"})
 SHA256_RE = re.compile(r"^[a-f0-9]{64}$")
 
 
@@ -59,9 +57,7 @@ def ensure_owner_token_file(path: Path) -> str:
         if path.stat().st_size > 4096:
             raise SharedGpuLeaseError("owner token file is too large")
         if os.name != "nt" and path.stat().st_mode & 0o077:
-            raise SharedGpuLeaseError(
-                "owner token file permissions are not private"
-            )
+            raise SharedGpuLeaseError("owner token file permissions are not private")
         token = path.read_text(encoding="utf-8").strip()
     except OSError as exc:
         raise SharedGpuLeaseError("owner token file is unreadable") from exc
@@ -162,11 +158,7 @@ def _row(connection: sqlite3.Connection, request_id: str) -> sqlite3.Row:
 
 
 def _public(row: sqlite3.Row) -> dict[str, Any]:
-    result = {
-        key: row[key]
-        for key in row.keys()
-        if key != "owner_token_sha256"
-    }
+    result = {key: row[key] for key in row.keys() if key != "owner_token_sha256"}
     acquired = row["acquired_at"]
     if acquired is not None:
         result["expires_at"] = acquired + row["max_runtime_seconds"]
@@ -254,13 +246,10 @@ def acquire(
         requested = _row(connection, request_id)
         if requested["state"] == "active":
             if requested["owner_token_sha256"] != token_sha256:
-                raise SharedGpuLeaseError(
-                    "active lease is owned by a different token"
-                )
+                raise SharedGpuLeaseError("active lease is owned by a different token")
             if (
                 requested["acquired_at"] is None
-                or observed_at
-                >= requested["acquired_at"] + requested["max_runtime_seconds"]
+                or observed_at >= requested["acquired_at"] + requested["max_runtime_seconds"]
             ):
                 raise SharedGpuLeaseError(
                     "active lease deadline expired; prove and reclaim it "
@@ -296,9 +285,7 @@ def acquire(
             return {
                 "acquired": False,
                 "reason": "WAITING_FOR_FIFO_TURN",
-                "oldest_request_id": (
-                    oldest["request_id"] if oldest is not None else None
-                ),
+                "oldest_request_id": (oldest["request_id"] if oldest is not None else None),
                 **_public(requested),
             }
         connection.execute(
@@ -418,9 +405,7 @@ def withdraw_queued(
             or row["job_id"] != job_id
             or row["payload_sha256"] != payload_sha256
         ):
-            raise SharedGpuLeaseError(
-                "queued withdrawal identity or state does not match"
-            )
+            raise SharedGpuLeaseError("queued withdrawal identity or state does not match")
         connection.execute(
             """
             UPDATE lease_requests
@@ -454,9 +439,7 @@ def reclaim_expired(
     now: float | None = None,
 ) -> dict[str, Any]:
     if not owner_process_dead or not zero_matching_gpu_process or not evidence:
-        raise SharedGpuLeaseError(
-            "reclaim requires dead-owner and zero-matching-GPU-process proof"
-        )
+        raise SharedGpuLeaseError("reclaim requires dead-owner and zero-matching-GPU-process proof")
     observed_at = time.time() if now is None else now
     with _connect(database) as connection:
         connection.execute("BEGIN IMMEDIATE")
@@ -559,9 +542,7 @@ def main() -> int:
     reclaim_parser = subparsers.add_parser("reclaim-expired")
     reclaim_parser.add_argument("--request-id", required=True)
     reclaim_parser.add_argument("--owner-process-dead", action="store_true")
-    reclaim_parser.add_argument(
-        "--zero-matching-gpu-process", action="store_true"
-    )
+    reclaim_parser.add_argument("--zero-matching-gpu-process", action="store_true")
     reclaim_parser.add_argument("--evidence", required=True)
 
     subparsers.add_parser("status")

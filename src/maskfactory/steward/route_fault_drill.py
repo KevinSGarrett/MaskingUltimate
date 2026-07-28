@@ -215,9 +215,7 @@ def _run_route_case(
     environment = dict(os.environ)
     src_root = Path(__file__).resolve().parents[2]
     environment["PYTHONPATH"] = os.pathsep.join(
-        part
-        for part in (str(src_root), environment.get("PYTHONPATH", ""))
-        if part
+        part for part in (str(src_root), environment.get("PYTHONPATH", "")) if part
     )
     command = [
         sys.executable,
@@ -408,10 +406,7 @@ def run_all_route_fault_drill(
             "session_id": SESSION_ID,
             "routes": cases,
             "assertions": {
-                "all_governed_routes_covered": {
-                    case["route"] for case in cases
-                }
-                == set(ROUTES),
+                "all_governed_routes_covered": {case["route"] for case in cases} == set(ROUTES),
                 "owned_process_interruptions_reconstructed_without_duplicate_claim": all(
                     case["initial_generation"] == case["reconstructed_generation"] == 1
                     for case in cases

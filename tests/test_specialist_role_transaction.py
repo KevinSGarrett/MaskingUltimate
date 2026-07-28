@@ -223,9 +223,9 @@ def test_first_role_install_uses_genesis_sentinel_without_force_promote(
 
     packet = fixture["bundle"]["specialist_packets"]["hand_finger_segmentation"]
     packet["rollback_evidence"] = {"incumbent_provider": GENESIS_INCUMBENT_KEY}
-    fixture["bundle"]["certificate"]["role_bindings"][0]["incumbent_provider"] = (
-        GENESIS_INCUMBENT_KEY
-    )
+    fixture["bundle"]["certificate"]["role_bindings"][0][
+        "incumbent_provider"
+    ] = GENESIS_INCUMBENT_KEY
     monkeypatch.setattr(
         matrix_promotion,
         "load_and_verify_matrix_promotion_bundle",
@@ -320,7 +320,7 @@ def test_missing_matrix_bundle_and_stale_signed_identities_cannot_mutate_registr
         )
     fixture["bundle"]["specialist_packets"]["hand_finger_segmentation"]["identity_hashes"][
         "runtime_lock_sha256"
-    ] = "9" * 64
+    ] = ("9" * 64)
     monkeypatch.setattr(
         matrix_promotion,
         "load_and_verify_matrix_promotion_bundle",

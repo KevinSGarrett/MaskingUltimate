@@ -26,16 +26,13 @@ def _catalog_binding() -> dict:
         "catalog_id": catalog["catalog_id"],
         "catalog_sha256": catalog["sha256"],
         "promoted_model_ids": sorted(
-            model["model_id"]
-            for model in catalog["models"]
-            if model["lifecycle"] == "promoted"
+            model["model_id"] for model in catalog["models"] if model["lifecycle"] == "promoted"
         ),
         "promoted_role_assignments": {
             role_id: sorted(
                 model["model_id"]
                 for model in catalog["models"]
-                if model["lifecycle"] == "promoted"
-                and role_id in model["assigned_roles"]
+                if model["lifecycle"] == "promoted" and role_id in model["assigned_roles"]
             )
             for role_id in ("primary_visual_critic", "independent_juror")
         },

@@ -95,14 +95,17 @@ def test_builds_exact_self_hashed_packet_and_non_git_staging(tmp_path: Path) -> 
     }
     zeroed = dict(manifest)
     zeroed["packet_sha256"] = "0" * 64
-    assert manifest["packet_sha256"] == hashlib.sha256(
-        json.dumps(
-            zeroed,
-            sort_keys=True,
-            separators=(",", ":"),
-            ensure_ascii=False,
-        ).encode("utf-8")
-    ).hexdigest()
+    assert (
+        manifest["packet_sha256"]
+        == hashlib.sha256(
+            json.dumps(
+                zeroed,
+                sort_keys=True,
+                separators=(",", ":"),
+                ensure_ascii=False,
+            ).encode("utf-8")
+        ).hexdigest()
+    )
     assert (tmp_path / "staging" / "sources" / "src" / "worker.py").read_bytes() == (
         root / "src" / "worker.py"
     ).read_bytes()

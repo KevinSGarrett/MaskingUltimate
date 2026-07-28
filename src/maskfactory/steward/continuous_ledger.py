@@ -33,9 +33,7 @@ TRANSITIONS = {
     "intent_persisted": frozenset({"queued", "admitted", "recovery_required"}),
     "queued": frozenset({"admitted", "recovery_required"}),
     "admitted": frozenset({"running", "recovery_required"}),
-    "running": frozenset(
-        {"submitted_unknown", "response_persisted", "recovery_required"}
-    ),
+    "running": frozenset({"submitted_unknown", "response_persisted", "recovery_required"}),
     "submitted_unknown": frozenset({"response_persisted", "recovery_required"}),
     "response_persisted": frozenset({"validated", "rejected", "recovery_required"}),
     "validated": frozenset({"accepted", "rejected"}),
@@ -58,9 +56,7 @@ class ContinuousBindingError(ValueError):
 
 def canonical_sha256(value: object) -> str:
     return hashlib.sha256(
-        json.dumps(
-            value, sort_keys=True, separators=(",", ":"), ensure_ascii=False
-        ).encode("utf-8")
+        json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
     ).hexdigest()
 
 
@@ -141,20 +137,13 @@ def validate_continuous_binding(binding: Mapping[str, Any]) -> dict[str, Any]:
             or len(values) != len(set(values))
             or any(not isinstance(value, str) or not value for value in values)
         ):
-            raise ContinuousBindingError(
-                f"{field} must be an array of unique non-empty strings"
-            )
+            raise ContinuousBindingError(f"{field} must be an array of unique non-empty strings")
         normalized[field] = list(values)
     authority = binding["authority_ceiling"]
     if not isinstance(authority, Mapping) or not authority:
         raise ContinuousBindingError("authority_ceiling must be a non-empty object")
-    if any(
-        not isinstance(key, str) or value is not False
-        for key, value in authority.items()
-    ):
-        raise ContinuousBindingError(
-            "authority_ceiling must explicitly deny every power"
-        )
+    if any(not isinstance(key, str) or value is not False for key, value in authority.items()):
+        raise ContinuousBindingError("authority_ceiling must explicitly deny every power")
     normalized["authority_ceiling"] = dict(sorted(authority.items()))
     normalized["binding_sha256"] = _sha256(binding["binding_sha256"], "binding_sha256")
     zeroed = deepcopy(normalized)
@@ -225,9 +214,7 @@ class ContinuousWorkLedger:
     def _row(row: sqlite3.Row | None) -> dict[str, Any] | None:
         return dict(row) if row is not None else None
 
-    def get(
-        self, session_id: str, work_kind: str, work_id: str
-    ) -> dict[str, Any] | None:
+    def get(self, session_id: str, work_kind: str, work_id: str) -> dict[str, Any] | None:
         with self._connect() as connection:
             row = connection.execute(
                 """
@@ -238,9 +225,7 @@ class ContinuousWorkLedger:
             ).fetchone()
         return self._row(row)
 
-    def transitions(
-        self, session_id: str, work_kind: str, work_id: str
-    ) -> list[dict[str, Any]]:
+    def transitions(self, session_id: str, work_kind: str, work_id: str) -> list[dict[str, Any]]:
         with self._connect() as connection:
             rows = connection.execute(
                 """
@@ -424,9 +409,7 @@ class ContinuousWorkLedger:
                         "running transition requires owner PID/token and route"
                     )
             if to_state == "terminal" and not terminal_outcome:
-                raise ContinuousLedgerError(
-                    "terminal transition requires terminal_outcome"
-                )
+                raise ContinuousLedgerError("terminal transition requires terminal_outcome")
             binding = json.loads(record["binding_json"])
             self._append_transition(
                 connection,

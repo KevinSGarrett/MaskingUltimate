@@ -97,9 +97,7 @@ def _verify_embedded_self_hash(
 ) -> str:
     declared = value.get(field)
     if not isinstance(declared, str) or len(declared) != 64:
-        raise EngineeringCampaignRuntimePacketError(
-            f"{field} is missing or invalid"
-        )
+        raise EngineeringCampaignRuntimePacketError(f"{field} is missing or invalid")
     zeroed = deepcopy(dict(value))
     zeroed[field] = ZERO_SHA256
     if canonical_sha256(zeroed) != declared:
@@ -273,9 +271,7 @@ def _validate_handoff(handoff: Mapping[str, Any]) -> dict[str, Any]:
         "authority_claimed",
     }
     if set(handoff) != required:
-        raise EngineeringCampaignRuntimePacketError(
-            "resource handoff field set mismatch"
-        )
+        raise EngineeringCampaignRuntimePacketError("resource handoff field set mismatch")
     ports = handoff.get("ports_open")
     if (
         not isinstance(ports, dict)
@@ -296,9 +292,7 @@ def _validate_handoff(handoff: Mapping[str, Any]) -> dict[str, Any]:
         or handoff.get("owner_token_present") is not False
         or handoff.get("authority_claimed") is not False
     ):
-        raise EngineeringCampaignRuntimePacketError(
-            "resource handoff is not clean"
-        )
+        raise EngineeringCampaignRuntimePacketError("resource handoff is not clean")
     foreign_busy = (
         handoff["compute_app_count"] > 0
         or any(ports.values())
@@ -324,9 +318,7 @@ def _tracker_proposals(
     result: list[dict[str, Any]] = []
     for row in values:
         if set(row) != {"item_id", "status", "percent", "evidence"}:
-            raise EngineeringCampaignRuntimePacketError(
-                "tracker proposal field set mismatch"
-            )
+            raise EngineeringCampaignRuntimePacketError("tracker proposal field set mismatch")
         normalized = {
             "item_id": _text(row["item_id"], field="tracker item"),
             "status": _text(row["status"], field="tracker status"),
@@ -347,9 +339,7 @@ def _tracker_proposals(
             )
         result.append(normalized)
     if len({row["item_id"] for row in result}) != len(result):
-        raise EngineeringCampaignRuntimePacketError(
-            "tracker proposal identities must be unique"
-        )
+        raise EngineeringCampaignRuntimePacketError("tracker proposal identities must be unique")
     return sorted(result, key=lambda row: row["item_id"])
 
 
@@ -379,14 +369,10 @@ def _expected_packet(
     if decision not in DECISIONS:
         raise EngineeringCampaignRuntimePacketError("decision is unsupported")
     if decision == "ADOPT" and terminal["outcome"] != "SUCCESS":
-        raise EngineeringCampaignRuntimePacketError(
-            "ADOPT overclaims a non-successful campaign"
-        )
+        raise EngineeringCampaignRuntimePacketError("ADOPT overclaims a non-successful campaign")
     normalized_limitations = _strings(limitations, field="limitations")
     if decision != "ADOPT" and not normalized_limitations:
-        raise EngineeringCampaignRuntimePacketError(
-            "non-ADOPT decision requires a limitation"
-        )
+        raise EngineeringCampaignRuntimePacketError("non-ADOPT decision requires a limitation")
     grammar = _read_json(grammar_path)
     release = _read_json(release_path)
     counts = _runtime_counts(database_path)
@@ -404,8 +390,7 @@ def _expected_packet(
     if (
         len(mission_outcomes) != CAMPAIGN_SIZE
         or len({row["job_id"] for row in mission_outcomes}) != CAMPAIGN_SIZE
-        or len({row["request_sha256"] for row in mission_outcomes})
-        != CAMPAIGN_SIZE
+        or len({row["request_sha256"] for row in mission_outcomes}) != CAMPAIGN_SIZE
         or any(
             row["state"] != "completed" or row["handoff_ready"] is not True
             for row in mission_outcomes
@@ -433,9 +418,7 @@ def _expected_packet(
                 "raw_sha256": _file_sha256(terminal_path),
                 "self_sha256": terminal["terminal_sha256"],
                 "outcome": terminal["outcome"],
-                "service_generation_count": terminal[
-                    "service_generation_count"
-                ],
+                "service_generation_count": terminal["service_generation_count"],
             },
             "runtime_database": {
                 "path": database_path.name,
@@ -449,13 +432,9 @@ def _expected_packet(
             },
             "guard_execution": {
                 "launcher_path": "run_guarded_campaign_once.sh",
-                "launcher_raw_sha256": _file_sha256(
-                    root / "run_guarded_campaign_once.sh"
-                ),
+                "launcher_raw_sha256": _file_sha256(root / "run_guarded_campaign_once.sh"),
                 "stdout_path": "guarded_campaign_stdout.log",
-                "stdout_raw_sha256": _file_sha256(
-                    root / "guarded_campaign_stdout.log"
-                ),
+                "stdout_raw_sha256": _file_sha256(root / "guarded_campaign_stdout.log"),
             },
             "lease_release": {
                 "path": release_path.name,
@@ -503,16 +482,17 @@ def build_engineering_campaign_runtime_packet(
         raise EngineeringCampaignRuntimePacketError(
             "output root must be an absent child of an existing directory"
         )
-    temporary = Path(
-        tempfile.mkdtemp(prefix=f".{destination.name}.tmp-", dir=destination.parent)
-    )
+    temporary = Path(tempfile.mkdtemp(prefix=f".{destination.name}.tmp-", dir=destination.parent))
     try:
-        payload = json.dumps(
-            packet,
-            indent=2,
-            sort_keys=True,
-            ensure_ascii=False,
-        ).encode("utf-8") + b"\n"
+        payload = (
+            json.dumps(
+                packet,
+                indent=2,
+                sort_keys=True,
+                ensure_ascii=False,
+            ).encode("utf-8")
+            + b"\n"
+        )
         with (temporary / PACKET_NAME).open("xb") as handle:
             handle.write(payload)
             handle.flush()
@@ -540,11 +520,7 @@ def validate_engineering_campaign_runtime_packet(
     """Replay a packet against runtime terminal, ledger, and release evidence."""
 
     root = packet_root.resolve(strict=True)
-    files = {
-        path.relative_to(root).as_posix()
-        for path in root.rglob("*")
-        if path.is_file()
-    }
+    files = {path.relative_to(root).as_posix() for path in root.rglob("*") if path.is_file()}
     if files != {PACKET_NAME}:
         raise EngineeringCampaignRuntimePacketError(
             "exactly one runtime campaign packet is required"
@@ -552,15 +528,11 @@ def validate_engineering_campaign_runtime_packet(
     packet = _read_json(root / PACKET_NAME)
     declared = packet.get("packet_sha256")
     if not isinstance(declared, str) or len(declared) != 64:
-        raise EngineeringCampaignRuntimePacketError(
-            "runtime campaign packet self hash is invalid"
-        )
+        raise EngineeringCampaignRuntimePacketError("runtime campaign packet self hash is invalid")
     zeroed = deepcopy(packet)
     zeroed["packet_sha256"] = ZERO_SHA256
     if canonical_sha256(zeroed) != declared:
-        raise EngineeringCampaignRuntimePacketError(
-            "runtime campaign packet self hash mismatch"
-        )
+        raise EngineeringCampaignRuntimePacketError("runtime campaign packet self hash mismatch")
     expected = _expected_packet(
         campaign_root=campaign_root,
         contract_path=contract_path,

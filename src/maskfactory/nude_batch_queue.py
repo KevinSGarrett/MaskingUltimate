@@ -807,7 +807,9 @@ class NudeBatchQueue:
 
         if not receipts:
             raise NudeBatchQueueError("empty reference strict visual checkpoint")
-        from .nude_reference_strict_visual_review import validate_reference_strict_visual_stage_receipt
+        from .nude_reference_strict_visual_review import (
+            validate_reference_strict_visual_stage_receipt,
+        )
 
         validated = []
         for receipt in receipts:

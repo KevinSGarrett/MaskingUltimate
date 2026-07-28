@@ -10,7 +10,9 @@ from maskfactory.stages.s04_pose import (
 )
 
 
-def test_s04_missing_pose_uses_parsing_only_fallback_and_preserves_review_tag(tmp_path: Path) -> None:
+def test_s04_missing_pose_uses_parsing_only_fallback_and_preserves_review_tag(
+    tmp_path: Path,
+) -> None:
     result = process_pose_candidates(
         [],
         instance_bbox_xyxy=(10.0, 10.0, 30.0, 30.0),

@@ -129,8 +129,7 @@ def test_prepares_exact_tracker_bound_25_mission_campaign(tmp_path: Path) -> Non
     )
     assert binding["mission_count"] == CAMPAIGN_SIZE
     assert [row["job_id"] for row in binding["mission_entries"]] == [
-        f"engineering-{sequence:02d}"
-        for sequence in range(1, CAMPAIGN_SIZE + 1)
+        f"engineering-{sequence:02d}" for sequence in range(1, CAMPAIGN_SIZE + 1)
     ]
     for evidence in preparation["mission_evidence"]:
         mission = campaign_root / "missions" / evidence["mission_id"]
@@ -138,12 +137,9 @@ def test_prepares_exact_tracker_bound_25_mission_campaign(tmp_path: Path) -> Non
         assert request["temperature"] == 0
         assert request["seed"] == 1337
         assert request["chat_template_kwargs"] == {"enable_thinking": False}
-        assert (
-            request["response_format"]["json_schema"]["schema"]["properties"][
-                "authority_claimed"
-            ]
-            == {"const": False}
-        )
+        assert request["response_format"]["json_schema"]["schema"]["properties"][
+            "authority_claimed"
+        ] == {"const": False}
         assert evidence["request_sha256"] == file_sha256(mission / "request.json")
 
 
@@ -190,7 +186,10 @@ def test_repeated_source_set_uses_one_git_packet_snapshot_per_campaign(
     assert preparation["mission_count"] == CAMPAIGN_SIZE
     for sequence in range(1, CAMPAIGN_SIZE + 1):
         manifest = read_json(
-            campaign_root / "missions" / f"engineering-{sequence:02d}" / "repository_packet_manifest.json"
+            campaign_root
+            / "missions"
+            / f"engineering-{sequence:02d}"
+            / "repository_packet_manifest.json"
         )
         assert manifest["packet_sha256"] == preparation["mission_evidence"][0]["packet_sha256"]
 
@@ -212,9 +211,7 @@ def test_reused_packet_source_drift_refuses_campaign_before_binding(
         result = original_copytree(*args, **kwargs)
         if not copied:
             copied = True
-            (repo / "src" / "bounded.py").write_text(
-                "VALUE = 2\n", encoding="utf-8", newline="\n"
-            )
+            (repo / "src" / "bounded.py").write_text("VALUE = 2\n", encoding="utf-8", newline="\n")
         return result
 
     monkeypatch.setattr(engineering_campaign_preparer.shutil, "copytree", drift_after_first_reuse)

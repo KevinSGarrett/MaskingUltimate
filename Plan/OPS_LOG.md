@@ -11369,3 +11369,26 @@ receipt
 `.codex-ops/RECOVERY_ATTRIBUTION_CONTROL_RELEASE_20260728T213455Z.json`
 records the exact remaining product boundaries and requires the receipt commit
 to be pushed non-forced with clean local/remote `main` parity.
+
+## 2026-07-28 21:41 UTC - Section-02 canonical-source acceptance checkpoint
+
+**Result:** `CHECKPOINT_VERIFIED / MF-P6-20.02_ACCEPTANCE_ACTIVE`.
+
+The clean canonical repository and exact Section-02 control/package inputs are
+preserved at
+`C:\MaskFactory_TierA_Backups\section02_acceptance_before_change_20260728T214114Z`.
+The checkpoint contains 14 selected payload files, Git/ref/status state, and
+the exact 427-byte generated-dashboard prechange patch. Its 16-row SHA-256
+manifest reverified with zero size/hash failures; manifest SHA-256 is
+`67e56a07d389b68c2e20f0e34f85c671c5783055c6e8fe0f9788b6c8311382c5`.
+No full repository bundle was created because clean `HEAD` is remotely
+protected and full bundles are prohibited.
+
+Reconstruction found 416 tracked `maskfactory` Python modules, 231 tracked
+JSON schemas, 3,742 tracked files, no tracked model-binary extension, and
+1,277 generated `.pyc` files under `src/tests/tools`. Source-wide Ruff
+currently reports 71 findings and Black would reformat 68 source files. Those
+are real `MF-P6-20.03` baseline debt; Section 02 will not misreport them as a
+pass or perform an unreviewed bulk rewrite. Its own exact Verify clause remains
+clean diff/secret/schema/import/package proof plus the seven required
+acceptance artifacts.

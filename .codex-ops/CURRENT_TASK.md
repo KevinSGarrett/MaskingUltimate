@@ -45,6 +45,13 @@ Post-correction row authority:
 Item IDs, zero duplicates, and zero unresolved bindings. Committed receipt:
 `.codex-ops/HISTORICAL_STASH_AUTHORITY_BINDING_20260728T212749Z.json`.
 
+Section-02 pre-change rollback authority:
+`C:\MaskFactory_TierA_Backups\section02_acceptance_before_change_20260728T214114Z`;
+14 selected authority/package/spec payloads plus Git state and the exact
+generated-dashboard prechange patch; 16 manifest rows; zero readback
+verification failures; `SHA256SUMS.tsv` SHA-256
+`67e56a07d389b68c2e20f0e34f85c671c5783055c6e8fe0f9788b6c8311382c5`.
+
 The bounded correction implementation is committed at
 `611c4e0b0ed8ce01a63343a91d84845b6f1f9f80`. Its terminal receipt is
 `.codex-ops/RECOVERY_ATTRIBUTION_CONTROL_RELEASE_20260728T213455Z.json`.

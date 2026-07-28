@@ -1,0 +1,101 @@
+{
+  "schema": "maskfactory.repository_reconciliation_completion.v1",
+  "created_at_utc": "2026-07-28T10:50:42Z",
+  "result": "PASS",
+  "verdict": "NO_LOSS_CHECKPOINTED_CLEAN_INTEGRATION_AUTHORITY_ESTABLISHED",
+  "validated_integration": {
+    "worktree": "C:\\Comfy_UI_Main_Masking\\.codex-ops\\worktrees\\canonical-reconciliation-20260728",
+    "branch": "codex/reconcile-maskfactory-canonical-20260728",
+    "validated_tree_commit": "2ed2b71874cabea5b412be494e8ea602ce2be158",
+    "local_equals_tracking_ref": true,
+    "local_equals_remote_query": true,
+    "working_tree_dirty_line_count": 0
+  },
+  "scope_outcome": {
+    "registered_masking_worktrees_initial": 17,
+    "registered_masking_worktrees_final": 2,
+    "remaining_worktrees": [
+      "C:\\Comfy_UI_Main_Masking",
+      "C:\\Comfy_UI_Main_Masking\\.codex-ops\\worktrees\\canonical-reconciliation-20260728"
+    ],
+    "noncanonical_masking_worktrees_remaining": 0,
+    "canonical_recovery_checkout_tracked_dirty": 11,
+    "canonical_recovery_checkout_untracked": 7083,
+    "canonical_recovery_checkout_staged": 0,
+    "canonical_recovery_checkout_disposition": "PRESERVED_DIRTY_RECOVERY_SOURCE_DO_NOT_CLEAN_RESET_OR_DELETE"
+  },
+  "rollback_and_preservation": {
+    "checkpoint": "F:\\CodexRecovery\\maskfactory_reconciliation_checkpoint_20260728T042648Z",
+    "sha256sums_sha256": "903b960291b049ef26c4c36fa55d568158a0918763aea4a830fce5d1f11f2b0a",
+    "sha256sums_reverified": true,
+    "git_bundles_verified": 2,
+    "b90_archive_sha256": "deaff618baf23204d0e3090ba8f66f8bd3b3e186782da58e1c33b3534723d76f",
+    "a1_archive_sha256": "65ed830d4999c2876c039286b6f0443e9b170e1c60019a4c16d8787b698ddcf6",
+    "vhdx_deletion_eligible": false
+  },
+  "consumer_protection": {
+    "repository": "C:\\Comfy_UI_Main_MaskFactory_Consumer",
+    "head": "1091a9c8cc01ff554907b97a7e754c6c884cee01",
+    "remote_ref": "codex/recovery-maskfactory-consumer-20260728-1091a9c",
+    "local_equals_remote": true,
+    "working_tree_clean": true
+  },
+  "tracker": {
+    "non_orphaned_items": 906,
+    "unresolved_hard_blockers": 54,
+    "structural_errors": 0,
+    "MF-P6-12.05": {
+      "percent": 84,
+      "status": "blocked"
+    },
+    "MF-P6-12.06": {
+      "percent": 79,
+      "status": "blocked"
+    },
+    "completion_tier_changed_by_cleanup": false
+  },
+  "quality_gate": {
+    "changed_test_modules": 12,
+    "tests_collected": 116,
+    "tests_passed": 111,
+    "tests_skipped_expected": 5,
+    "tests_failed": 0,
+    "changed_python_files_ruff_checked": 49,
+    "ruff": "PASS",
+    "git_diff_check": "PASS",
+    "tracker_validate": "PASS_906_ITEMS_54_HARD_BLOCKERS_NO_STRUCTURAL_ERRORS",
+    "receipt_json_files_parsed": 8,
+    "added_lines_secret_scan": 13155,
+    "secret_pattern_matches": 0,
+    "masking_connectivity_fsck": "PASS",
+    "masking_full_fsck": "PASS",
+    "consumer_connectivity_fsck": "PASS",
+    "consumer_full_fsck": "PASS"
+  },
+  "storage_snapshot": {
+    "c_free_bytes": 61450731520,
+    "f_free_bytes": 13953220608,
+    "c_above_50_gib_floor": true,
+    "f_above_50_gib_floor": false,
+    "f_floor_blocker": "Unique recovery payloads and both non-equivalent VHDX backups remain retained; no safe deletion closes the floor."
+  },
+  "remaining_project_limits": [
+    "Repository cleanup does not establish MaskFactory runtime or E2E completion.",
+    "SELF_HOSTED_AUTONOMOUS_LLM_THROUGHPUT_INCOMPLETE remains binding.",
+    "Main-owned Rows333-336 remains PRESERVED_REMEDIATION_REQUIRED_NOT_ADOPTABLE.",
+    "The canonical dirty recovery checkout requires future bounded semantic cohorts.",
+    "F: remains below the project storage floor."
+  ],
+  "coordination": {
+    "main_thread": "019fa6cc-eb76-74c1-8fd1-f062cec56dad",
+    "ownership_boundary_respected": true,
+    "main_paths_mutated_by_masking_task": false,
+    "shared_paths_mutated_without_exact_confirmation": false
+  },
+  "authority_accounting": {
+    "qwen_openrouter_units": 0,
+    "claude_units": 0,
+    "cursor_units": 0,
+    "codex_units": "all filesystem, preservation, semantic review, implementation, tests, Git, tracker, storage, coordination, and acceptance authority"
+  }
+}

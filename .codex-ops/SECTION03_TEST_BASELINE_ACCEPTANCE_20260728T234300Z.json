@@ -1,0 +1,108 @@
+{
+  "schema_version": "maskfactory.section03_test_baseline_acceptance.v1",
+  "generated_at_utc": "2026-07-28T23:43:00Z",
+  "accepted_item": {
+    "item_id": "MF-P6-20.03",
+    "status": "complete",
+    "percent_complete": 100,
+    "verify_result": "PASS"
+  },
+  "source_under_test": {
+    "commit": "ee306ebd8f0d13ac1d343c2dd18e459795512a5f",
+    "remotely_protected": true
+  },
+  "evidence_and_control_release": {
+    "commit": "6482e08fdb94e6cf6f98d6d8c914da3ba51baaee",
+    "tree": "371d7888f1fd02efe9856274d43b0a0763c2827e",
+    "local_main_equals_origin_main": true
+  },
+  "test_baseline": {
+    "collected": 5154,
+    "passed": 5113,
+    "governed_skip_not_pass": 41,
+    "failures": 0,
+    "errors": 0,
+    "unique_node_ids": 5154,
+    "unexplained_outcomes": 0,
+    "external_prerequisite_contracts": 15,
+    "unknown_skip_semantics": "fail_closed"
+  },
+  "static_baseline": {
+    "ruff": "PASS",
+    "black": "PASS",
+    "pre_commit_all_files": "PASS",
+    "byte_pinned_formatter_exclusions": 5,
+    "byte_pinned_exclusion_hash_failures": 0,
+    "runtime_artifact_formatter_scope": "excluded_exact_evidence_bytes"
+  },
+  "evidence_root": "qa/live_verification/environment_packaging_test_baseline_20260728T232959Z",
+  "evidence_artifacts": {
+    "external_asset_contracts.json": {
+      "bytes": 7654,
+      "sha256": "9b961a38e2696e06e4fa42fbc1be7ac3507ca49077ae595a094b5370f38b8239"
+    },
+    "full_suite_junit.xml": {
+      "bytes": 760111,
+      "sha256": "2d16ee4c5885043bc7df6329666d83642dab1c9ceae9feb6266ab1646b750025"
+    },
+    "independent_validation.json": {
+      "bytes": 1174,
+      "sha256": "796336923c78a4c2044a73211ccbfe90f8c5607df79418003a101a5839002f0f",
+      "self_sha256": "30d8c80eb47f1509a53223a81281a8b319c0cb312ca7abd490b0c8a69b295d94"
+    },
+    "section_03_test_baseline_receipt.json": {
+      "bytes": 1372,
+      "sha256": "0d7ce3b206dcafb8eb4cad4c9ea940092462b72b48a8bd7acd73404d3908cc71",
+      "self_sha256": "b237ba25d0984a1358ed1d471157367e9bca9d331d95f4dd277cbd78c0c8e007"
+    },
+    "static_baseline.json": {
+      "bytes": 2179,
+      "sha256": "80935f4780c77364e55872137705fbb93930f2e769faf225eaeef8bf3a61fe6d"
+    },
+    "test_inventory.json": {
+      "bytes": 1027435,
+      "sha256": "d5847e79ec6d40a9902d0183f600ea8b340b4015d952db786f48c2d01c7e1a09"
+    }
+  },
+  "plan_item_tracker_synchronization": {
+    "plan_control_files_updated": [
+      ".codex-ops/CURRENT_TASK.md",
+      "Plan/20Sections/00_MASTER_INDEX.md",
+      "Plan/Items/24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md",
+      "Plan/OPS_LOG.md",
+      "Plan/SELF_HOSTED_AUTONOMOUS_LLM_PURSUING_GOAL_MESSAGE.md"
+    ],
+    "plan_20sections_sha256s_sha256": "0d98d07b3392f5f2720be73a48d54333fce5f889c533b23b22b63c85879e5ce9",
+    "plan_20sections_hash_failures": 0,
+    "tracker_items": 906,
+    "tracker_structural_errors": 0,
+    "unresolved_hard_blockers": 51,
+    "core_unresolved_dependencies": 32,
+    "core_unresolved_hard_blockers": 20,
+    "downstream_prerequisite_rows_noted_without_status_credit": 12
+  },
+  "repository_terminal_gate": {
+    "status_rows": 0,
+    "local_branches": 1,
+    "worktrees": 1,
+    "stashes": 0,
+    "remote_heads": 7,
+    "connectivity_fsck": "PASS",
+    "full_fsck": "PASS"
+  },
+  "completion_boundaries": {
+    "MF-P6-20.03": "complete",
+    "MF-P6-20.04": "partially_complete_65_no_new_completion_credit",
+    "live_runtime_health_claimed": false,
+    "live_visual_authority_claimed": false,
+    "campaign_completion_claimed": false,
+    "release_or_comfyui_adoption_claimed": false
+  },
+  "next_required_gate": "MF-P6-20.04 authorized bounded service health, exact runtime closure, persistent restore, owned shutdown, and zero leaked processes/ports/children/leases/reservations/GPU work",
+  "advisory_accounting": {
+    "qwen_openrouter_units": 0,
+    "claude_cursor_units": 0,
+    "codex_authority": "all implementation, test, evidence, tracker, Plan, Git, and acceptance decisions"
+  },
+  "self_sha256": "a064bff1c59d1389c1acbe973282d1303ec47c101dcb0c8e0d379315d73746b2"
+}

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "artifact_type": "maskfactory_snapshot_zip_preservation_move_locator",
+  "created_at_utc": "2026-07-28T16:59:08Z",
+  "source_root": "C:\\Comfy_UI_Main_Masking",
+  "target_root": "C:\\MaskFactory_TierA_Backups\\snapshot_zip_preservation_20260728T165908Z",
+  "target_receipt": "C:\\MaskFactory_TierA_Backups\\snapshot_zip_preservation_20260728T165908Z\\move_receipt.json",
+  "main_coordination_thread": "019fa6cc-eb76-74c1-8fd1-f062cec56dad",
+  "main_ownership_conflict": false,
+  "files": [
+    {
+      "name": "MaskFactory_Ultimate_System_Snapshot_20260727T153945Z.zip",
+      "bytes": 217675368,
+      "sha256": "e73bedabd2412107259b736935f41f7201a728fd00ed1c4a5aa833314e5728ee"
+    },
+    {
+      "name": "MaskFactory_Ultimate_System_Snapshot_20260727T153945Z.zip.sha256",
+      "bytes": 123,
+      "sha256": "4512ba8a15ba31399f522cad08332242d6d98b09d8b650c3a0e62ce313e73ce5"
+    }
+  ],
+  "source_paths_absent": true,
+  "target_paths_present_and_matching": true,
+  "archive_listing_exit_code": 0,
+  "archive_listing_entries": 7988,
+  "deleted": false,
+  "content_changed": false
+}

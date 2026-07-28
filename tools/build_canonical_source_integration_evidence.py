@@ -551,6 +551,11 @@ def write_json(path: Path, value: Any) -> None:
     path.write_bytes(canonical_json_bytes(value))
 
 
+def canonical_path_key(path: str | Path) -> str:
+    """Return a separator- and case-normalized absolute path identity."""
+    return os.path.normcase(os.path.normpath(os.path.realpath(os.fspath(path))))
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo", type=Path, required=True)
@@ -567,7 +572,9 @@ def main() -> int:
     output_dir = args.output_dir.resolve()
     if output_dir.exists():
         raise RuntimeError(f"output directory already exists: {output_dir}")
-    if git_text(repo, "rev-parse", "--show-toplevel").lower() != str(repo).lower():
+    if canonical_path_key(git_text(repo, "rev-parse", "--show-toplevel")) != canonical_path_key(
+        repo
+    ):
         raise RuntimeError("repo argument is not the Git top level")
     pre_generation_status = [
         line

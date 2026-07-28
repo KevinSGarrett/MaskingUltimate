@@ -61,3 +61,10 @@ def test_canonical_json_is_stable_and_newline_terminated() -> None:
     second = MODULE.canonical_json_bytes({"a": 1, "b": 2})
     assert first == second
     assert first.endswith(b"\n")
+
+
+def test_canonical_path_key_normalizes_git_separator_spelling(tmp_path: Path) -> None:
+    native = tmp_path / "repo"
+    native.mkdir()
+    git_spelling = str(native).replace("\\", "/")
+    assert MODULE.canonical_path_key(native) == MODULE.canonical_path_key(git_spelling)

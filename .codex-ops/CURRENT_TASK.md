@@ -1,7 +1,7 @@
 ﻿# Current Task
 
 Task ID: MASKFACTORY-ULTIMATE-MASKING-E2E-20260727
-Updated UTC: 2026-07-28T21:34:55Z
+Updated UTC: 2026-07-28T22:11:24Z
 
 ## Active pursuing goal: full attribution and evidence-backed E2E closure
 
@@ -10,9 +10,10 @@ is now corrected: all 4,008 late-stash rows have explicit Plan, Item, tracker,
 evidence, exact stash/main blob, canonical-location, rollback, limitation, and
 completion-effect fields. The live Item catalog and tracker remain
 structurally synchronized at 906 IDs with zero metadata drift. The three
-successor Items were adjudicated honestly: `MF-P6-20.02` is `in_progress` at
-90%, `MF-P6-20.03` is `partially_complete` at 80%, and `MF-P6-20.04` is
-`partially_complete` at 65%; none is falsely complete.
+successor Items were adjudicated honestly: `MF-P6-20.02` now has a
+production-evidence PASS at 100%, while `MF-P6-20.03` remains
+`partially_complete` at 80% and `MF-P6-20.04` remains
+`partially_complete` at 65%; neither successor is falsely complete.
 
 The active goal is therefore to:
 
@@ -23,7 +24,7 @@ The active goal is therefore to:
 3. give all 31 unresolved portfolio hard blockers outside the core profile an
    explicit governed terminal disposition rather than ignoring or bulk-closing
    them; and
-4. finish the exact remaining clauses of `MF-P6-20.02` through `.04`, then
+4. finish the exact remaining clauses of `MF-P6-20.03` and `.04`, then
    qualified visual authority, the real 100-mask and three mixed
    campaigns, evidence reconstruction, immutable release, Main/ComfyUI
    adoption, live E2E, rollback/restart, and final acceptance.
@@ -51,6 +52,15 @@ Section-02 pre-change rollback authority:
 generated-dashboard prechange patch; 16 manifest rows; zero readback
 verification failures; `SHA256SUMS.tsv` SHA-256
 `67e56a07d389b68c2e20f0e34f85c671c5783055c6e8fe0f9788b6c8311382c5`.
+
+Section-02 acceptance authority:
+`qa/live_verification/canonical_source_integration_20260728T220939Z/`;
+source commit `ae6ce3d9561de3293403185f0969e9ff4c3cbe29`; tree
+`b280e334a80d459920c3fbb890b8857e3bdf996e`; all nine acceptance checks
+PASS. This closes only `MF-P6-20.02`; repository-wide Ruff/Black and
+skip/prerequisite classification stay in `.03`, while bounded service
+health, exact runtime closure, restore, owned shutdown, and zero-leak proof
+stay in `.04`.
 
 The bounded correction implementation is committed at
 `611c4e0b0ed8ce01a63343a91d84845b6f1f9f80`. Its terminal receipt is
@@ -279,10 +289,9 @@ Binding authorities:
 
 ## First next action
 
-Produce the exact current-tree acceptance manifest and remaining clean
-diff/secret/schema/import/package proof for `MF-P6-20.02`, then close the
-repository-wide test/skip inventory under `.03` and authorized
-runtime-health/restore/shutdown proof under `.04`. Continue the earliest
+Close the repository-wide test/lint/skip/prerequisite inventory under
+`MF-P6-20.03`, then produce authorized
+runtime-health/restore/shutdown/zero-leak proof under `.04`. Continue the earliest
 dependency-ready core lanes: `MF-P4-11.23`,
 `MF-P4-12.11`, `MF-P6-18.03`, `MF-P6-11.01` coordination, and the Plan-28
 integration chain. Do not rerun accepted `MF-P6-19.01` or `.02`.

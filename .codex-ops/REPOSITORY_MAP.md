@@ -1,12 +1,12 @@
 # MaskFactory repository map
 
-Updated UTC: 2026-07-28T21:34:55Z
+Updated UTC: 2026-07-28T22:11:24Z
 
 ## Live repository and ownership map
 
 | Path | Repository/role | Owner | Mutation rule |
 | --- | --- | --- | --- |
-| `C:\Comfy_UI_Main_Masking` | sole canonical MaskFactory worktree; validated authority-attribution source at `611c4e0b0ed8ce01a63343a91d84845b6f1f9f80`, followed only by its terminal receipt commit | Masking task | normal scoped MaskFactory development; release requires clean local/remote `main` parity |
+| `C:\Comfy_UI_Main_Masking` | sole canonical MaskFactory worktree; Section-02 accepted source at `ae6ce3d9561de3293403185f0969e9ff4c3cbe29` / tree `b280e334a80d459920c3fbb890b8857e3bdf996e` | Masking task | normal scoped MaskFactory development; release requires clean local/remote `main` parity |
 | `C:\Comfy_UI_Main_MaskFactory_Consumer` | standalone isolated Consumer repository, clean at `1091a9c8cc01ff554907b97a7e754c6c884cee01` | Masking task | remotely protected; no rewrite; not canonical MaskFactory source |
 | `F:\CodexRecovery` | MaskFactory recovery/checkpoint authority | Masking task | preserve; F: remains below the 50 GiB allocation floor |
 | `C:\MaskFactory_TierA_Backups` | compact no-loss rollback, semantic-attribution, and restore authority | Masking task | add only storage-guard-admitted scoped checkpoints; verify every manifest |
@@ -75,3 +75,10 @@ The terminal bounded-release receipt is
 It binds the validation gates and requires the resulting receipt commit to be
 pushed non-forced with one branch, one worktree, zero stashes, zero status
 rows, and local `main` equal to `origin/main`.
+
+The accepted canonical-source integration evidence is
+`qa/live_verification/canonical_source_integration_20260728T220939Z/`.
+Its receipt passes all nine `MF-P6-20.02` gates against pushed commit
+`ae6ce3d9561de3293403185f0969e9ff4c3cbe29`; it does not claim the
+repository-wide baseline, live runtime, campaign, visual, release, or
+ComfyUI-adoption successors.

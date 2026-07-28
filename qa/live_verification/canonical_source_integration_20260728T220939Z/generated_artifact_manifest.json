@@ -1,0 +1,23 @@
+{
+  "created_utc": "2026-07-28T22:09:39Z",
+  "generated_patterns": [
+    "__pycache__/",
+    "*.py[cod]",
+    ".pytest_cache/",
+    ".ruff_cache/",
+    ".mypy_cache/",
+    "build/",
+    "dist/",
+    "*.egg-info/"
+  ],
+  "item_id": "MF-P6-20.02",
+  "regeneration_commands": {
+    "build_outputs": "python -I -B -m build --wheel --sdist",
+    "python_bytecode": "not retained; imports and tests use PYTHONDONTWRITEBYTECODE=1",
+    "tracker_dashboard": "python Plan/Tracker/tracker.py report",
+    "tracker_state": "python Plan/Tracker/tracker.py rebuild"
+  },
+  "repository_python_cache_files_before_generation": [],
+  "schema_version": "maskfactory_canonical_source_integration.v1",
+  "status": "PASS"
+}

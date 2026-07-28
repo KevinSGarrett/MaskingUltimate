@@ -75,6 +75,18 @@ must keep all 4,008 row identities unique with no missing or unknown Item ID.
 The matrix is attribution authority, not permission to advance an Item
 without separately satisfying that Item's `Verify:` clause.
 
+`MF-P6-20.02` separately passed its exact Verify clause on 2026-07-28 at
+source commit `ae6ce3d9561de3293403185f0969e9ff4c3cbe29`, tree
+`b280e334a80d459920c3fbb890b8857e3bdf996e`, under
+`qa/live_verification/canonical_source_integration_20260728T220939Z/`.
+The receipt binds the canonical tree and 4,008-row authority registry, clean
+Git archive, all tracked MaskFactory source and installed imports, 231 schema
+meta-validations, wheel/sdist/install/package data, the same-tree 153-file
+deployment config bundle, generated-cache absence, and
+secret/model/dataset hygiene. It does not satisfy the repository-wide
+baseline in `MF-P6-20.03`, live lifecycle proof in `MF-P6-20.04`, or any
+campaign, visual, release, or adoption gate.
+
 ## Full-test procedure
 
 Run tests in tiers:

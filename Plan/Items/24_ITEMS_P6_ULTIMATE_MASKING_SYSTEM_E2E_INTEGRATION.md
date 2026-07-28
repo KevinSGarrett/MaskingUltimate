@@ -41,11 +41,21 @@ Frozen authority and evidence contracts:
     `MF-P4-12.11`, `MF-P5-06.03`, `MF-P5-07.02`, `MF-P6-02.01`,
     `MF-P6-17.04`, and `MF-P6-21.02`; no row silently changes their status.
 - [ ] MF-P6-20.02 Produce one canonical integrated source tree containing product code, autonomy/runtime code, package metadata, configs, schemas, CLIs, services, tests, and operating procedures · Verify: clean diff/secret/schema/import/package checks prove both source lines' required behavior survives · Blocked by: MF-P6-20.01 · HARD BLOCKER
-  - Existing evidence eligible for adjudication: the physical canonical tree,
-    clean export/wheel/install/import receipt, 2,004 row-level canonical-tree
-    bindings, and zero unresolved recovery rows. Completion still requires an
-    exact current-tree manifest plus clean diff/secret/schema/import/package
-    revalidation.
+  - Accepted 2026-07-28 evidence: clean pushed source commit
+    `ae6ce3d9561de3293403185f0969e9ff4c3cbe29`, tree
+    `b280e334a80d459920c3fbb890b8857e3bdf996e`, and
+    `qa/live_verification/canonical_source_integration_20260728T220939Z/section_acceptance_receipt.json`.
+    All nine gates pass: one canonical tree, required historical-path
+    reconciliation, zero required untracked source, zero generated Python
+    caches, source and installed imports, 231 schema meta-validations,
+    wheel/sdist/install/package-data plus the same-tree 153-file deployment
+    config bundle, and secret/model/dataset hygiene. The accepted wheel
+    SHA-256 is
+    `087d09c89f26ed28349315815e33707185a71d8697ad18e7e3b59709991d601d`;
+    the exact 4,008-row authority registry remains bound at SHA-256
+    `a4436d4a17c7d37990e15c47623b3d51899e1ecba9f7db0b4f9507003dc54930`.
+    This completes only `MF-P6-20.02`; it grants no lint-baseline, live
+    runtime, campaign, visual, release, or ComfyUI-adoption credit.
 - [ ] MF-P6-20.03 Classify and repair the complete product test baseline, including completion-policy drift and every external-asset dependency · Verify: each collected test is passing or has a governed explicit environment prerequisite that cannot be misreported as pass; no unexplained collection/runtime failure remains · Blocked by: MF-P6-20.02 · HARD BLOCKER
   - Existing evidence eligible for partial credit: 5,139 collected / 5,098
     passed / 41 governed skips / zero failures plus 296 row-level test-baseline

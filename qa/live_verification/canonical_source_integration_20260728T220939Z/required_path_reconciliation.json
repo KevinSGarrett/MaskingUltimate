@@ -1,0 +1,111 @@
+{
+  "checks": [
+    {
+      "missing_paths": [],
+      "required_paths": [
+        "pyproject.toml"
+      ],
+      "requirement": "package_metadata",
+      "status": "PASS"
+    },
+    {
+      "missing_paths": [],
+      "required_paths": [
+        "src/maskfactory/__init__.py"
+      ],
+      "requirement": "product_package",
+      "status": "PASS"
+    },
+    {
+      "missing_paths": [],
+      "required_paths": [
+        "src/maskfactory/cli.py"
+      ],
+      "requirement": "product_cli",
+      "status": "PASS"
+    },
+    {
+      "missing_paths": [],
+      "required_paths": [
+        "src/maskfactory/models/registry.py"
+      ],
+      "requirement": "model_registry_source",
+      "status": "PASS"
+    },
+    {
+      "missing_paths": [],
+      "required_paths": [
+        "src/maskfactory/models/benchmark.py"
+      ],
+      "requirement": "recovered_benchmark_source",
+      "status": "PASS"
+    },
+    {
+      "missing_paths": [],
+      "required_paths": [
+        "src/maskfactory/autonomy/controller.py"
+      ],
+      "requirement": "autonomy_source",
+      "status": "PASS"
+    },
+    {
+      "missing_paths": [],
+      "required_paths": [
+        "src/maskfactory/steward/supervisor.py"
+      ],
+      "requirement": "steward_source",
+      "status": "PASS"
+    },
+    {
+      "missing_paths": [],
+      "required_paths": [
+        "src/maskfactory/serve/api.py"
+      ],
+      "requirement": "service_source",
+      "status": "PASS"
+    },
+    {
+      "missing_paths": [],
+      "required_paths": [
+        "Plan/Tracker/tracker.py",
+        "Plan/Tracker/tracker.json"
+      ],
+      "requirement": "tracker_authority",
+      "status": "PASS"
+    },
+    {
+      "missing_paths": [],
+      "required_paths": [
+        "Plan/Items/24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md",
+        "Plan/Instructions/18_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION_AND_COMFYUI_ADOPTION.md"
+      ],
+      "requirement": "ultimate_e2e_item_and_instruction",
+      "status": "PASS"
+    },
+    {
+      "missing_paths": [],
+      "required_paths": [
+        ".codex-ops/HISTORICAL_STASH_AUTHORITY_BINDING_20260728T212749Z.json"
+      ],
+      "requirement": "recovery_attribution_receipt",
+      "status": "PASS"
+    },
+    {
+      "missing_paths": [],
+      "required_paths": [],
+      "requirement": "historical_stash_row_authority",
+      "status": "PASS"
+    }
+  ],
+  "commit_oid": "ae6ce3d9561de3293403185f0969e9ff4c3cbe29",
+  "created_utc": "2026-07-28T22:09:39Z",
+  "historical_stash_authority": {
+    "expected_rows": 4008,
+    "path": "C:\\MaskFactory_TierA_Backups\\historical_stashes_20260728T182808Z\\stash_semantic_authority_matrix_v2.json",
+    "sha256": "a4436d4a17c7d37990e15c47623b3d51899e1ecba9f7db0b4f9507003dc54930",
+    "status": "PASS"
+  },
+  "item_id": "MF-P6-20.02",
+  "schema_version": "maskfactory_canonical_source_integration.v1",
+  "status": "PASS"
+}

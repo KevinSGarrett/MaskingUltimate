@@ -1,0 +1,117 @@
+{
+  "acceptance_checks": {
+    "generated_cache_absence": "PASS",
+    "historical_path_reconciliation": "PASS",
+    "isolated_installed_imports": "PASS",
+    "isolated_source_imports": "PASS",
+    "one_canonical_tree": "PASS",
+    "package_build_install_data": "PASS",
+    "schema_meta_validation": "PASS",
+    "secret_model_dataset_hygiene": "PASS",
+    "zero_required_untracked_source": "PASS"
+  },
+  "artifacts": {
+    "canonical_tree_manifest.json": {
+      "bytes": 1252075,
+      "sha256": "0d9cab652d6425f2c696b036be65234a7ae926f3a0f7b656ea45caadb899f2da"
+    },
+    "clean_tree_hash.txt": {
+      "bytes": 94,
+      "sha256": "7a104856cce5b9e30d868eab1459c7bdfda96408c12c7a7e254fb8e8807b6043"
+    },
+    "generated_artifact_manifest.json": {
+      "bytes": 703,
+      "sha256": "55aef1b663cbc3428b45191257aea72e59d66700edc7589cb64c65ab9dfd4ab0"
+    },
+    "module_import_inventory.json": {
+      "bytes": 342242,
+      "sha256": "5f9587f10cb60a6fd1bd6b161c9fdfd74f728895f50ccc382aac5e4311344c0d"
+    },
+    "repo_hygiene_scan.json": {
+      "bytes": 50665,
+      "sha256": "31d719d907b270c742953abfb7e85ba2ca0e758b4377fa7f6ea688b420e09dad"
+    },
+    "required_path_reconciliation.json": {
+      "bytes": 2882,
+      "sha256": "65bcd736fa07c343264c258d6d27fe0c587d91db70977c2f24754447a7c72958"
+    }
+  },
+  "branch": "main",
+  "claim_tier": "PRODUCTION_EVIDENCE_PASS",
+  "created_utc": "2026-07-28T22:09:39Z",
+  "item_id": "MF-P6-20.02",
+  "limitations": [
+    "This receipt proves MF-P6-20.02 canonical source integration only.",
+    "It does not grant runtime health, visual, campaign, release, or ComfyUI adoption credit.",
+    "Repository-wide Ruff/Black debt remains governed by MF-P6-20.03 and is not reported as passing here."
+  ],
+  "package": {
+    "build_command": "python -I -B -m build --wheel --sdist --outdir <temporary-dist> <clean-git-export>",
+    "build_exit_code": 0,
+    "build_frontend": {
+      "failed_candidates": [
+        {
+          "exit_code": 1,
+          "python_command": [
+            "C:\\Users\\kevin\\AppData\\Local\\Programs\\Python\\Python311\\python.exe"
+          ],
+          "stderr_tail": "Traceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\nModuleNotFoundError: No module named 'build'\r\n"
+        }
+      ],
+      "probe": {
+        "interpreter": "C:\\Users\\kevin\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "module": "C:\\Users\\kevin\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\build\\__init__.py",
+        "version": "1.3.0"
+      },
+      "python_command": [
+        "py",
+        "-3.12"
+      ]
+    },
+    "build_stderr_tail": "warning: build_py: byte-compiling is disabled, skipping.\r\n\r\nwarning: install_lib: byte-compiling is disabled, skipping.\r\n\r\nwarning: sdist: standard file not found: should have one of README, README.rst, README.txt, README.md\r\n\r\n",
+    "build_working_directory": "<temporary-parent-outside-clean-export>",
+    "declared_package_data": [
+      "schemas/*.json"
+    ],
+    "deployment_config_bundle": {
+      "file_count": 153,
+      "installation_location": "<temporary-parent>/configs",
+      "logical_bytes": 914303,
+      "manifest_sha256": "6c96d9d229164ae74d7da0becf96c5cba04150187c4021928fddfa25f38c5d2a",
+      "source": "configs/ from the same clean Git archive"
+    },
+    "entry_point_metadata": [
+      "maskfactory-0.0.1.dist-info/entry_points.txt"
+    ],
+    "git_archive_sha256": "38de685a1a7a8c834d5d845fc39662c478437f07e0df9962c3039912559f6694",
+    "install_exit_code": 0,
+    "missing_package_data": [],
+    "sdist": {
+      "bytes": 2792389,
+      "name": "maskfactory-0.0.1.tar.gz",
+      "sha256": "f45181e3a460a7071f0033506354eabe9b478c9b2ec37884fb338b20910e51ee"
+    },
+    "source_schema_count": 227,
+    "status": "PASS",
+    "temporary_export_retained": false,
+    "unexpected_package_data": [],
+    "wheel": {
+      "bytes": 2500515,
+      "entry_count": 739,
+      "name": "maskfactory-0.0.1-py3-none-any.whl",
+      "sha256": "087d09c89f26ed28349315815e33707185a71d8697ad18e7e3b59709991d601d"
+    },
+    "wheel_schema_count": 227
+  },
+  "pre_generation_status_rows": 0,
+  "receipt_commit_rule": "Commit these artifacts and governed tracker update after the validated source commit, push non-forced, then prove local main equals origin/main.",
+  "result": "PASS",
+  "rollback": {
+    "manifest_sha256": "67e56a07d389b68c2e20f0e34f85c671c5783055c6e8fe0f9788b6c8311382c5",
+    "pre_change_checkpoint": "C:\\MaskFactory_TierA_Backups\\section02_acceptance_before_change_20260728T214114Z",
+    "source_commit_remotely_protected_before_tracker_completion": true
+  },
+  "schema_version": "maskfactory_canonical_source_integration.v1",
+  "validated_source_commit": "ae6ce3d9561de3293403185f0969e9ff4c3cbe29",
+  "validated_source_tree": "b280e334a80d459920c3fbb890b8857e3bdf996e"
+}

@@ -840,6 +840,14 @@ def main() -> int:
         and repo_hygiene_scan["status"] == "PASS"
         else "FAIL"
     )
+    source_commit_remotely_protected = (
+        run(
+            ["git", "merge-base", "--is-ancestor", head, "origin/main"],
+            cwd=repo,
+            check=False,
+        ).returncode
+        == 0
+    )
     receipt = {
         "schema_version": SCHEMA_VERSION,
         "created_utc": args.created_utc,
@@ -871,7 +879,9 @@ def main() -> int:
         "rollback": {
             "pre_change_checkpoint": "C:\\MaskFactory_TierA_Backups\\section02_acceptance_before_change_20260728T214114Z",
             "manifest_sha256": "67e56a07d389b68c2e20f0e34f85c671c5783055c6e8fe0f9788b6c8311382c5",
-            "source_commit_remotely_protected_before_tracker_completion": False,
+            "source_commit_remotely_protected_before_tracker_completion": (
+                source_commit_remotely_protected
+            ),
         },
         "receipt_commit_rule": (
             "Commit these artifacts and governed tracker update after the validated "

@@ -11392,3 +11392,37 @@ are real `MF-P6-20.03` baseline debt; Section 02 will not misreport them as a
 pass or perform an unreviewed bulk rewrite. Its own exact Verify clause remains
 clean diff/secret/schema/import/package proof plus the seven required
 acceptance artifacts.
+
+## 2026-07-28 22:11 UTC - Section-02 canonical-source acceptance passed
+
+**Result:** `PRODUCTION_EVIDENCE_PASS / MF-P6-20.02_COMPLETE`.
+
+The acceptance builder validated clean pushed commit
+`ae6ce3d9561de3293403185f0969e9ff4c3cbe29`, tree
+`b280e334a80d459920c3fbb890b8857e3bdf996e`, and emitted the seven required
+artifacts under
+`qa/live_verification/canonical_source_integration_20260728T220939Z/`.
+All nine receipt gates pass: canonical tree, historical path reconciliation,
+zero required untracked source, source imports, installed imports, wheel /
+sdist / install / package-data with a 153-file same-tree deployment config
+bundle, 231 schema meta-validations, generated-cache absence, and
+secret/model/dataset hygiene. Six static demonstration issuer keys and two
+secret-shaped worker-authority test cases are hash-pinned and recorded as
+non-production fixtures; zero unapproved candidates remain.
+
+Accepted wheel SHA-256:
+`087d09c89f26ed28349315815e33707185a71d8697ad18e7e3b59709991d601d`.
+Deployment-config manifest SHA-256:
+`6c96d9d229164ae74d7da0becf96c5cba04150187c4021928fddfa25f38c5d2a`.
+The 4,008-row authority registry remains
+`a4436d4a17c7d37990e15c47623b3d51899e1ecba9f7db0b4f9507003dc54930`.
+Two earlier fail-closed runs exposed and drove fixes for Windows path
+identity, missing build frontend selection, deployed config discovery,
+installed imports, generated cache residue, and a secret-scanner test literal;
+their generated untracked output was hash-inspected and removed rather than
+retained as acceptance evidence.
+
+This completion grants only `MF-P6-20.02`. Source-wide Ruff still reports 71
+findings and Black would reformat 68 files; exact skip/prerequisite
+classification remains `MF-P6-20.03`. Bounded service health, exact runtime
+closure, restore, owned shutdown, and zero-leak proof remain `MF-P6-20.04`.

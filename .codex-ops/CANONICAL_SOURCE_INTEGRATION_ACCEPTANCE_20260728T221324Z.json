@@ -1,0 +1,101 @@
+{
+  "schema_version": "maskfactory_section02_control_release.v1",
+  "created_utc": "2026-07-28T22:13:24Z",
+  "item_id": "MF-P6-20.02",
+  "result": "PASS_PENDING_RECEIPT_COMMIT_AND_PUSH",
+  "validated_source": {
+    "commit_oid": "ae6ce3d9561de3293403185f0969e9ff4c3cbe29",
+    "tree_oid": "b280e334a80d459920c3fbb890b8857e3bdf996e",
+    "branch": "main",
+    "remote_ref": "origin/main",
+    "remotely_protected_before_tracker_completion": true
+  },
+  "acceptance_evidence": {
+    "directory": "qa/live_verification/canonical_source_integration_20260728T220939Z",
+    "receipt": "qa/live_verification/canonical_source_integration_20260728T220939Z/section_acceptance_receipt.json",
+    "receipt_sha256": "0d5a09f77f97e6767e1601007f20452133f9b41daaa6956bcf4580102e74ba4d",
+    "result": "PASS",
+    "claim_tier": "PRODUCTION_EVIDENCE_PASS",
+    "acceptance_check_count": 9,
+    "acceptance_check_failures": 0,
+    "artifact_binding_count": 6,
+    "wheel_sha256": "087d09c89f26ed28349315815e33707185a71d8697ad18e7e3b59709991d601d",
+    "deployment_config_manifest_sha256": "6c96d9d229164ae74d7da0becf96c5cba04150187c4021928fddfa25f38c5d2a",
+    "historical_stash_authority_sha256": "a4436d4a17c7d37990e15c47623b3d51899e1ecba9f7db0b4f9507003dc54930"
+  },
+  "tracker": {
+    "item_status": "complete",
+    "item_percent_complete": 100,
+    "total_items": 906,
+    "unresolved_hard_blockers": 52,
+    "structural_errors": 0,
+    "tracker_json_sha256": "99af32aa563396f2675ef2ea8060be820d238ccc24e6167497ce2f3eb8640d15",
+    "changelog_sha256": "2197313fd38ceb5bc0f3bf3425e0e341652e722df0709902604787a664b0ce01",
+    "dashboard_sha256": "f360c2442cee9fe7b19d452c81c8ac4d85f70244ca5ae9f02631a63b6a1e009c",
+    "phase_p6_sha256": "4928f51bb5b5e9306da0ba23a6c28f4f975466dcc15b62264b9f0e30b9279d6a"
+  },
+  "focused_validation": {
+    "pytest": {
+      "command": "python -B -m pytest -q tests/test_build_canonical_source_integration_evidence.py tests/test_enrich_historical_stash_authority_matrix.py tests/test_tracker_completion_profiles.py",
+      "passed": 30,
+      "failed": 0
+    },
+    "ruff_changed_source": "PASS",
+    "black_changed_source": "PASS",
+    "git_diff_check": "PASS",
+    "artifact_hash_revalidation": "PASS",
+    "tracker_validation": "PASS",
+    "final_quality_gate": "PASS_PENDING_COMMIT_PUSH_PARITY"
+  },
+  "rollback": {
+    "checkpoint": "C:\\MaskFactory_TierA_Backups\\section02_acceptance_before_change_20260728T214114Z",
+    "manifest_sha256": "67e56a07d389b68c2e20f0e34f85c671c5783055c6e8fe0f9788b6c8311382c5",
+    "payload_rows": 16,
+    "verification_failures": 0
+  },
+  "claim_boundaries": {
+    "completed": [
+      "MF-P6-20.02 canonical integrated source tree"
+    ],
+    "not_completed": [
+      "MF-P6-20.03 repository-wide lint/test/skip/prerequisite baseline",
+      "MF-P6-20.04 exact runtime/service-health/restore/shutdown/zero-leak proof",
+      "campaign, visual, release, and ComfyUI adoption successors"
+    ],
+    "source_wide_ruff_findings": 71,
+    "source_files_black_would_reformat": 68
+  },
+  "joint_boundary": {
+    "main_task_final_oid": "a7cba2e28ab81e944cae37c90adfa6d1b50f80c0",
+    "main_joint_receipt_sha256": "6df6a5c8d6090cf2143a3351cb7b23c6d53c292121119cec80dbca3c19bd1246",
+    "main_recovery_release_reopened": false
+  },
+  "authority_accounting": {
+    "qwen_openrouter_advisory_units": 0,
+    "claude_cursor_units": 0,
+    "codex_authority": [
+      "filesystem",
+      "Git",
+      "GitHub",
+      "Plan",
+      "Items",
+      "Instructions",
+      "tracker",
+      "tests",
+      "package",
+      "schema",
+      "acceptance"
+    ]
+  },
+  "terminal_requirements": {
+    "commit_this_receipt_and_all_bound_artifacts": true,
+    "push_main_non_forced": true,
+    "local_main_must_equal_origin_main": true,
+    "local_branch_count": 1,
+    "worktree_count": 1,
+    "stash_count": 0,
+    "status_rows": 0,
+    "connectivity_fsck": "PASS_REQUIRED",
+    "full_fsck": "PASS_REQUIRED"
+  }
+}

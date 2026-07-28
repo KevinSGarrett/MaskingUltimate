@@ -25,15 +25,15 @@ First, finish the finite authority-correction gate:
 5. regenerate and validate the tracker/report/frozen authorities without
    replaying stale state or granting product credit from preservation alone.
 
-Authority-correction progress at 2026-07-28T21:27:49Z: all 4,008 rows now
+Authority-correction progress at 2026-07-28T22:11:24Z: all 4,008 rows now
 pass the required row-level bindings with registry SHA-256
 `a4436d4a17c7d37990e15c47623b3d51899e1ecba9f7db0b4f9507003dc54930`.
-The tracker has been adjudicated without false closure:
-`MF-P6-20.02` is `in_progress` 90%, `.03` is `partially_complete` 80%, and
-`.04` is `partially_complete` 65%. The bounded implementation is committed at
-`611c4e0b0ed8ce01a63343a91d84845b6f1f9f80`; terminal receipt
-`.codex-ops/RECOVERY_ATTRIBUTION_CONTROL_RELEASE_20260728T213455Z.json`
-requires its final commit to be pushed with clean local/remote parity. The
+The tracker has been adjudicated without false closure. `MF-P6-20.02` now
+passes at 100% under
+`qa/live_verification/canonical_source_integration_20260728T220939Z/`,
+validated source `ae6ce3d9561de3293403185f0969e9ff4c3cbe29`, and tree
+`b280e334a80d459920c3fbb890b8857e3bdf996e`. `.03` remains
+`partially_complete` 80% and `.04` remains `partially_complete` 65%. The
 remaining acceptance clauses continue in the product phase below.
 
 Then complete the actual product dependency graph:
@@ -368,10 +368,10 @@ Still incomplete or unproven:
   `18.02`, and `18.04`;
 - the original core runtime/ComfyUI bridge rows still open in
   `MF-P6-11.01` through `11.08` and `MF-P6-12.02` through `12.06`;
-- acceptance-grade adjudication of the canonical integrated source tree under
-  `MF-P6-20.02`; the physical tree, clean diff/secret/package checks, and
-  executable recovery exist, but that row has not yet been formally reviewed
-  against every dual-source behavior requirement;
+- preserve the accepted canonical integrated source-tree authority under
+  `MF-P6-20.02`; its exact clean-tree, required-path, source/installed-import,
+  schema, package/config-bundle, generated-cache, and hygiene gates now pass,
+  without importing that credit into any successor;
 - complete baseline classification under `MF-P6-20.03`; the fresh suite
   collected 5,139 nodes with 5,098 passes, 41 governed skips, and zero
   failures, but every skip/external prerequisite and repository-wide lint

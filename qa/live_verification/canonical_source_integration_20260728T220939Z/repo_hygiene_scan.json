@@ -1,0 +1,1538 @@
+{
+  "commit_oid": "ae6ce3d9561de3293403185f0969e9ff4c3cbe29",
+  "created_utc": "2026-07-28T22:09:39Z",
+  "hygiene": {
+    "approved_test_fixture_secret_shapes": [
+      {
+        "classification": "STATIC_NON_PRODUCTION_TEST_FIXTURE",
+        "path": "qa/autonomous_gold_demonstration_fixtures/abstained_single/issuer.pem",
+        "pattern": "private_key",
+        "sha256": "b1e80344de5339d59b92d899349e48cbd5983e5142ed197e1a3f33e383c82a37"
+      },
+      {
+        "classification": "STATIC_NON_PRODUCTION_TEST_FIXTURE",
+        "path": "qa/autonomous_gold_demonstration_fixtures/accepted_single/issuer.pem",
+        "pattern": "private_key",
+        "sha256": "b1e80344de5339d59b92d899349e48cbd5983e5142ed197e1a3f33e383c82a37"
+      },
+      {
+        "classification": "STATIC_NON_PRODUCTION_TEST_FIXTURE",
+        "path": "qa/autonomous_gold_demonstration_fixtures/repaired_multi/issuer.pem",
+        "pattern": "private_key",
+        "sha256": "b1e80344de5339d59b92d899349e48cbd5983e5142ed197e1a3f33e383c82a37"
+      },
+      {
+        "classification": "STATIC_NON_PRODUCTION_TEST_FIXTURE",
+        "path": "qa/autonomous_gold_demonstration_fixtures/revoked_multi/issuer.pem",
+        "pattern": "private_key",
+        "sha256": "b1e80344de5339d59b92d899349e48cbd5983e5142ed197e1a3f33e383c82a37"
+      },
+      {
+        "classification": "STATIC_NON_PRODUCTION_TEST_FIXTURE",
+        "path": "qa/autonomous_gold_demonstration_fixtures/veto_duo/issuer.pem",
+        "pattern": "private_key",
+        "sha256": "b1e80344de5339d59b92d899349e48cbd5983e5142ed197e1a3f33e383c82a37"
+      },
+      {
+        "classification": "STATIC_NON_PRODUCTION_TEST_FIXTURE",
+        "path": "qa/autonomous_gold_demonstration_fixtures/veto_solo/issuer.pem",
+        "pattern": "private_key",
+        "sha256": "b1e80344de5339d59b92d899349e48cbd5983e5142ed197e1a3f33e383c82a37"
+      },
+      {
+        "classification": "STATIC_NON_PRODUCTION_TEST_FIXTURE",
+        "path": "tests/steward/test_worker_authority.py",
+        "pattern": "aws_access_key",
+        "sha256": "349b920221f696ce812a5fe61e099c1af837687d29e78a8f134c4af44cdb1cb3"
+      },
+      {
+        "classification": "STATIC_NON_PRODUCTION_TEST_FIXTURE",
+        "path": "tests/steward/test_worker_authority.py",
+        "pattern": "private_key",
+        "sha256": "349b920221f696ce812a5fe61e099c1af837687d29e78a8f134c4af44cdb1cb3"
+      }
+    ],
+    "generated_python_cache_files": [],
+    "high_confidence_secret_candidates": [],
+    "pre_generation_status_rows": [],
+    "status": "PASS",
+    "tracked_dataset_payloads": [],
+    "tracked_environment_files": [],
+    "tracked_model_binaries": [],
+    "tracked_runtime_evidence": {
+      "classification": "TRACKED_ACCEPTANCE_EVIDENCE_NOT_RUNTIME_AUTHORITY",
+      "extension_counts": {
+        ".dvc": 1,
+        ".json": 154,
+        ".log": 10,
+        ".pid": 6,
+        ".png": 47,
+        ".ps1": 1,
+        ".py": 132,
+        ".sh": 2,
+        ".sqlite": 4,
+        ".txt": 27,
+        "<none>": 2
+      },
+      "file_count": 386,
+      "limitation": "Tracked evidence does not prove current runtime health and cannot advance MF-P6-20.04 without its independent lifecycle receipt.",
+      "logical_bytes": 103554372
+    }
+  },
+  "item_id": "MF-P6-20.02",
+  "package_validation": {
+    "build_command": "python -I -B -m build --wheel --sdist --outdir <temporary-dist> <clean-git-export>",
+    "build_exit_code": 0,
+    "build_frontend": {
+      "failed_candidates": [
+        {
+          "exit_code": 1,
+          "python_command": [
+            "C:\\Users\\kevin\\AppData\\Local\\Programs\\Python\\Python311\\python.exe"
+          ],
+          "stderr_tail": "Traceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\nModuleNotFoundError: No module named 'build'\r\n"
+        }
+      ],
+      "probe": {
+        "interpreter": "C:\\Users\\kevin\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "module": "C:\\Users\\kevin\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\build\\__init__.py",
+        "version": "1.3.0"
+      },
+      "python_command": [
+        "py",
+        "-3.12"
+      ]
+    },
+    "build_stderr_tail": "warning: build_py: byte-compiling is disabled, skipping.\r\n\r\nwarning: install_lib: byte-compiling is disabled, skipping.\r\n\r\nwarning: sdist: standard file not found: should have one of README, README.rst, README.txt, README.md\r\n\r\n",
+    "build_working_directory": "<temporary-parent-outside-clean-export>",
+    "declared_package_data": [
+      "schemas/*.json"
+    ],
+    "deployment_config_bundle": {
+      "file_count": 153,
+      "installation_location": "<temporary-parent>/configs",
+      "logical_bytes": 914303,
+      "manifest_sha256": "6c96d9d229164ae74d7da0becf96c5cba04150187c4021928fddfa25f38c5d2a",
+      "source": "configs/ from the same clean Git archive"
+    },
+    "entry_point_metadata": [
+      "maskfactory-0.0.1.dist-info/entry_points.txt"
+    ],
+    "git_archive_sha256": "38de685a1a7a8c834d5d845fc39662c478437f07e0df9962c3039912559f6694",
+    "install_exit_code": 0,
+    "missing_package_data": [],
+    "sdist": {
+      "bytes": 2792389,
+      "name": "maskfactory-0.0.1.tar.gz",
+      "sha256": "f45181e3a460a7071f0033506354eabe9b478c9b2ec37884fb338b20910e51ee"
+    },
+    "source_schema_count": 227,
+    "status": "PASS",
+    "temporary_export_retained": false,
+    "unexpected_package_data": [],
+    "wheel": {
+      "bytes": 2500515,
+      "entry_count": 739,
+      "name": "maskfactory-0.0.1-py3-none-any.whl",
+      "sha256": "087d09c89f26ed28349315815e33707185a71d8697ad18e7e3b59709991d601d"
+    },
+    "wheel_schema_count": 227
+  },
+  "schema_validation": {
+    "failed": 0,
+    "passed": 231,
+    "rows": [
+      {
+        "error": null,
+        "path": "Plan/Daz/Asset_Manifest/schemas/asset_manifest.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "Plan/Tracker/completion_track_registry.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "configs/self_hosted_autonomy_acceptance_v1.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "configs/self_hosted_autonomy_campaign_telemetry_v1.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/acquisition_plan.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/autonomous_gold_demonstration_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/autonomous_gold_per_record_qa_vector.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/autonomous_gold_qa_threshold_calibration.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/autonomous_gold_qa_threshold_resolution.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/autonomy_lifecycle.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/autonomy_metrics.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/autonomy_metrics_inputs.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/autonomy_multi_person_risk_buckets.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/autonomy_risk_buckets.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/autonomy_stability.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/bridge_adoption_receipt_matrix_decision.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/bridge_artifact_binding_decision.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/bridge_consumer_invalidation_decision.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/bridge_crosswalk.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/bridge_error_decision.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/bridge_failure_control_evidence.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/bridge_final_release_handoff_evidence.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/bridge_identity_decision.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/bridge_journal_reconstruction_evidence.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/bridge_recovery_evidence.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/bridge_transform_roundtrip_evidence.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/bridge_use_eligibility_decision.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/civitai_workflow_intake_static_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/cloud_teacher_static_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/completion_bundle_input.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/completion_bundle_policy.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/completion_bundle_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/completion_profile.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/coverage_matrix.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/coverage_matrix_v2.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/crop_transform.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/cross_project_qualification_evidence.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/currency_review.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/custom_segmenter_benchmark_margins.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/custom_segmenter_champion_rollback.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/custom_segmenter_champion_transaction.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/custom_segmenter_tournament_policy.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/custom_segmenter_tournament_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/custom_segmenter_tournament_runs.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_acceptance_certificate.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_acquisition_capacity.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_adapted_package_qc_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_alerts.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_asset_compatibility_graph.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_asset_identity_snapshot.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_asset_pool_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_asset_quarantine.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_asset_smoke_certificate.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_asset_smoke_plan.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_asset_smoke_result.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_backup.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_candidate_batch_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_candidate_selection_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_character_appearance_selection.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_character_foundation_selection.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_character_profile_batch_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_character_variation_profile.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_clean_restart_static_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_cms_snapshot.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_concentration_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_coverage_alpha_contract.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_coverage_alpha_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_coverage_planner_static_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_coverage_vocabulary_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_dim_manifest_snapshot.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_duo_recipe_selection.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_engineering_fixture_set.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_failure_campaign_policy.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_failure_campaign_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_filesystem_inventory_snapshot.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_geometry_coordinates.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_geometry_pass_contract.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_geometry_pass_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_instance_pass_contract.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_instance_pass_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_material_protected_contract.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_material_protected_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_monitoring_snapshot.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_multi_person_identity_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_multi_person_relationship_record.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_ontology_snapshot.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_ontology_v2_snapshot.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_operating_profile.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_ops_static_contracts_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_p_index_assignment.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_package_derivation_contract.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_package_derivation_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_part_pass_contract.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_part_pass_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_paths.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_planner_feedback_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_pristine_rgb_fixture_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_pristine_rgb_request.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_procedural_primitive_bundle.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_real_deficit_signal_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_reconstruction_manifest_set.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_recovery.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_relationship_pass_contract.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_relationship_pass_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_render_pass_execution_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_render_pass_plan.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_repair_history.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_repair_request.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_resolved_scene_recipe.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_resolved_scene_state.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_retention.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_runtime.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_s00_adapter_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_same_state_replay_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_scene_formation_selection.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_scene_preflight_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_scene_recipe.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_solo_pose_selection.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_training_policy.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_validation_result.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_validation_set_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_validation_static_contracts_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_worker.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_worker_mode_decision_static_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/daz_worker_result.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/docker_serve_contract_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/docker_train_contract_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/external_adapter_conformance_evidence.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/external_supervision_holdout_ablation_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/external_supervision_identity_evidence.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/external_supervision_qualification_evidence.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/external_supervision_source_hash_manifest.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/external_supervision_split_dedup_evidence.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/failure_mining_static_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/failure_queue.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/feedback_intake_evidence.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/geometry_variant_benchmark_cases.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/geometry_variant_benchmark_policy.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/geometry_variant_benchmark_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/horizon_go_no_go_static_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/interactive_provider_promotion_certificate.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/interactive_provider_rollback.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/interactive_provider_transaction.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/leaderboard.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/main_consumer_conformance_evidence.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/manifest.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/manifest_synthetic_v1.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/manifest_synthetic_v2.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/manifest_v2.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/mask_acquisition_receipt.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/mask_acquisition_request.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/mask_authority_invalidation_event.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/mask_bridge_error.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/mask_bridge_event.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/mask_bridge_semantic_invariant_profile.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/mask_repair_feedback.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/maskfactory_adoption_receipt.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/maskfactory_capability_decision.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/maskfactory_capability_snapshot.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/maskfactory_clean_release_manifest.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/maskfactory_consumer_requirements.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/maskfactory_consumer_requirements_admission.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/maskfactory_integration_release_evidence.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/maskfactory_qualification_bundle.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/maskfactory_release_publication_evidence.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/maskfactory_release_snapshot.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/matrix_promotion_certificate.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/mediapipe_vote_ablation_cases.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/mediapipe_vote_ablation_policy.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/mediapipe_vote_ablation_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/mode_a_package_read_evidence.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/mode_a_vertical_slice_evidence.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/mode_b_localhost_client_response.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/mode_b_vertical_slice_evidence.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/model_registry.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/multi_person_family_availability_policy.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/multi_person_lifecycle_route.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/multi_person_mode_a_vertical_slice_evidence.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/multi_person_static_contracts_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/multi_person_tournament_evidence.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/multi_person_tournament_execution.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/operational_authority_decision.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/operational_autonomy_certificate.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/operational_invalidation_event.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/operational_policy_evidence.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/ops_bootstrap_static_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/ops_static_contracts_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/pose_variant_benchmark_cases.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/pose_variant_benchmark_policy.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/pose_variant_benchmark_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/provider_benchmark_matrix_manifest.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/provider_benchmark_matrix_observations.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/provider_benchmark_matrix_policy.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/provider_benchmark_matrix_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/qa_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/qwen_challenger_benchmark_cases.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/qwen_challenger_benchmark_policy.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/qwen_challenger_benchmark_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/receipt_arbitration_conformance_evidence.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/residual_blocker_inventory_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/retraining_operations_input.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/retraining_operations_policy.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/retraining_operations_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/runpod_autonomous_mission.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/runpod_autonomous_mission_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/runpod_development_patch_bundle.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/runpod_work_cell_handlers.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/sam31_repair_orchestration.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/sam31_shadow_candidate_package.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/sam31_shadow_orchestration.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/sam31_visual_exemplar.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/selective_autonomy_e2e_static_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/selective_autonomy_targets_static_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/serving_provenance.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/serving_route.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/serving_static_contracts_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/serving_workflow_execution_input.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/serving_workflow_performance_policy.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/serving_workflow_performance_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/serving_workflow_preflight_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/shadow_teacher_judgment.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/silhouette_variant_benchmark_cases.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/silhouette_variant_benchmark_policy.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/silhouette_variant_benchmark_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/specialist_benchmark_margins.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/specialist_champion_rollback.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/specialist_champion_transaction.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/specialist_evidence_package.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/specialist_static_contracts_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/training_static_gates_report.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      },
+      {
+        "error": null,
+        "path": "src/maskfactory/schemas/visual_critic_catalog.schema.json",
+        "status": "PASS",
+        "validator": "Draft202012Validator"
+      }
+    ],
+    "schema_count": 231,
+    "status": "PASS"
+  },
+  "schema_version": "maskfactory_canonical_source_integration.v1",
+  "status": "PASS",
+  "tree_oid": "b280e334a80d459920c3fbb890b8857e3bdf996e"
+}

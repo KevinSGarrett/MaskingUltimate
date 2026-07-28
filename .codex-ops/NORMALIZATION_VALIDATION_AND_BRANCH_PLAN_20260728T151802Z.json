@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-07-28T15:18:02Z",
+  "repository": "https://github.com/KevinSGarrett/MaskingUltimate.git",
+  "worktree": "C:\\Comfy_UI_Main_Masking\\.codex-ops\\worktrees\\canonical-reconciliation-20260728",
+  "branch": "codex/normalize-maskfactory-main-20260728",
+  "validated_implementation_commit": "dc99078b23838249dd383bee89de49c9b9ec6c27",
+  "validated_remote_commit": "dc99078b23838249dd383bee89de49c9b9ec6c27",
+  "pre_promotion_main": "d6a3c0e00d01536504f737aff84891cf8bd4efb3",
+  "pre_promotion_divergence": {
+    "main_unique": 0,
+    "normalization_unique": 909,
+    "main_is_ancestor": true
+  },
+  "validation": {
+    "complete_suite": {
+      "command": "python -m pytest -q",
+      "collected_nodeids": 5148,
+      "exit_code": 0,
+      "result": "PASS",
+      "warnings": "Six Pillow getdata deprecation warnings; no test failure."
+    },
+    "changed_python_ruff": "PASS",
+    "compileall_src_tools": "PASS",
+    "tracker_validate": {
+      "result": "PASS",
+      "non_orphaned_items": 906,
+      "unresolved_hard_blockers": 54,
+      "structural_problems": 0
+    },
+    "tracker_report": "PASS",
+    "clean_export": {
+      "tracked_and_current_files": 3709,
+      "source_bytes": 201820247,
+      "wheel_sha256": "cd00467ae0fa73ef67f9172469d118ac2e790547d9410b8a91cf24c052237bb6",
+      "wheel_install": "PASS",
+      "installed_import": "PASS",
+      "tracker_validate": "PASS",
+      "focused_suite": "PASS",
+      "temporary_export_removed": true
+    },
+    "diff_check": "PASS",
+    "changed_diff_secret_pattern_matches": 0,
+    "git_fsck_full_no_dangling": "PASS",
+    "git_fsck_connectivity_only_no_dangling": "PASS",
+    "pre_commit": {
+      "all_non_black_hooks": "PASS",
+      "black": "SKIPPED_IMMUTABLE_HASH_GOVERNANCE_CONFLICT",
+      "reason": "Black rewrites seven source/test files whose validated bytes participate in immutable source-hash contracts. Its attempted worktree-only rewrite was restored exactly from the staged validated bytes before commit."
+    }
+  },
+  "registered_masking_worktrees": {
+    "count": 2,
+    "protected_dirty_recovery_checkout": "C:\\Comfy_UI_Main_Masking",
+    "clean_normalization_worktree": "C:\\Comfy_UI_Main_Masking\\.codex-ops\\worktrees\\canonical-reconciliation-20260728"
+  },
+  "remote_branch_plan": {
+    "count_after_recovery_mirrors_before_cleanup": 30,
+    "expected_count_after_cleanup": 7,
+    "retain": [
+      "main",
+      "codex/recovery-main-before-maskfactory-normalization-20260728-d6a3c0e",
+      "codex/recovery-maskfactory-20260728-61b4ffe",
+      "codex/recovery-maskfactory-consumer-20260728-1091a9c",
+      "codex/recovery-maskfactory-detached-base-20260728-093b9b1",
+      "codex/recovery-historical-agent-20260728-8550209",
+      "codex/recovery-runpod-overflow-20260728-966b95a"
+    ],
+    "unique_topic_recovery_mirrors": [
+      {
+        "topic": "agent/maskfactory-build-progress-20260711",
+        "recovery": "codex/recovery-historical-agent-20260728-8550209",
+        "oid": "8550209f2607369ab3e32053be86f2fa40a7db90",
+        "mirror_verified": true
+      },
+      {
+        "topic": "codex/runpod-serverless-overflow-20260724",
+        "recovery": "codex/recovery-runpod-overflow-20260728-966b95a",
+        "oid": "966b95a3c36fb0ed9d6c236c97d97cc4fd6a352d",
+        "mirror_verified": true
+      }
+    ],
+    "delete_only_after_main_equals_receipt_commit": [
+      "agent/maskfactory-build-progress-20260711",
+      "codex/autonomous-gold-modernization",
+      "codex/climb3-sibling-consumer-seal",
+      "codex/fallback-dispatcher-podbase-20260726",
+      "codex/fallback-throughput-live-20260726",
+      "codex/fallback-throughput-live-20260726-v2",
+      "codex/mask-autonomy-bridge-plan",
+      "codex/maskfactory-plan-modernization",
+      "codex/maskfactory-real-campaign-20260726",
+      "codex/maskfactory-real-campaign-telemetry-20260726",
+      "codex/maskfactory-runtime-implementation",
+      "codex/maskfactory-runtime-packet-20260726",
+      "codex/mf-p4-11-23-reference-readiness-20260727",
+      "codex/normalize-maskfactory-main-20260728",
+      "codex/pm-mask-plan27-contract-20260726T1147Z",
+      "codex/pm-mask-plan27-registry-20260726T1236Z",
+      "codex/pm-mask-plan27-selector-20260726T1336Z",
+      "codex/pm-mask-plan27-supervisor-20260726T1439Z",
+      "codex/pm-mask-shared-gpu-guard-20260726T0736Z",
+      "codex/reconcile-maskfactory-20260728",
+      "codex/reconcile-maskfactory-canonical-20260728",
+      "codex/runpod-autonomous-work-cell",
+      "codex/runpod-serverless-overflow-20260724"
+    ]
+  },
+  "local_branch_plan": {
+    "pre_cleanup_count": 21,
+    "expected_post_cleanup_count": 1,
+    "retain": [
+      "main"
+    ],
+    "rule": "Delete a local branch only after promoted main contains it, or after its exact unique OID is verified at a retained remote recovery ref. Switch the clean worktree to main before deleting the normalization branch."
+  },
+  "promotion_rule": "Fetch and require origin/main to remain d6a3c0e00d01536504f737aff84891cf8bd4efb3, require the receipt-bearing normalization commit to descend from it, then push without force. Re-fetch and require origin/main to equal the pushed commit before any topic deletion.",
+  "coordination": {
+    "main_thread": "019fa6cc-eb76-74c1-8fd1-f062cec56dad",
+    "acknowledgement": "NO_MAIN_OWNERSHIP_OR_DEPENDENCY_CONFLICT",
+    "shared_paths_mutated": false,
+    "consumer_mutated": false,
+    "maskfactory_recovery_paths_mutated": false
+  },
+  "authority_units": {
+    "qwen_openrouter": 0,
+    "claude_cursor": 0,
+    "codex": "all filesystem, Git, validation, tracker, branch-classification, and promotion authority"
+  },
+  "status": "VALIDATED_READY_FOR_RECEIPT_COMMIT_AND_NON_FORCED_MAIN_PROMOTION"
+}

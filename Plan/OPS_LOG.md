@@ -11143,3 +11143,35 @@ and Climb4 reconciliation—remain byte-exact in the primary checkpoint and
 dirty recovery source. Their seven missing durable receipts are now also
 present on the normalization branch. This log entry is their canonical
 reconciliation pointer; it does not reinterpret historical runtime claims.
+
+## 2026-07-28 15:18 UTC - Normalization validation and branch disposition
+
+**Result:** `VALIDATED_READY_FOR_RECEIPT_COMMIT_AND_NON_FORCED_MAIN_PROMOTION`.
+
+The clean normalization implementation is pushed at
+`dc99078b23838249dd383bee89de49c9b9ec6c27`, 909 commits ahead and zero
+behind unchanged `origin/main` `d6a3c0e00d01536504f737aff84891cf8bd4efb3`.
+The 5,148-node complete suite reached 100% with exit code zero. Changed-file
+Ruff, compileall, tracker validation/report, clean-export wheel
+build/install/import/focused tests, diff/credential checks, and full plus
+connectivity Git fsck all pass. Tracker authority remains honest at 906 items,
+54 unresolved hard blockers, and no structural problems.
+
+The Black pre-commit hook is explicitly skipped, not silently credited: it
+rewrites seven source/test files participating in immutable source-byte
+contracts. Its attempted worktree-only rewrite was restored exactly from the
+staged validated bytes. Every other pre-commit hook passes.
+
+Remote classification found 20 topic refs already contained in normalization,
+two topic lines with unique commits, four existing recovery authorities, the
+normalization branch, and `main`. The two unique topics are now mirrored
+exactly at `codex/recovery-historical-agent-20260728-8550209` and
+`codex/recovery-runpod-overflow-20260728-966b95a`. After receipt-bearing
+promotion, remote cleanup is bounded to the 23 topic names in
+`.codex-ops/NORMALIZATION_VALIDATION_AND_BRANCH_PLAN_20260728T151802Z.json`;
+the expected remote end state is `main` plus six explicit recovery refs.
+Local cleanup is similarly bounded from 21 branch names to `main` only.
+
+The coordinating Main task confirmed no ownership or dependency conflict.
+No Main checkout/worktree, shared `C:\w`, `F:\Codex_Recovery`, Consumer,
+MaskFactory recovery archive, or VHDX path was modified.

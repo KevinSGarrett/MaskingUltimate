@@ -1,0 +1,60 @@
+{
+  "schema": "maskfactory.worktree_retirement_receipt.v1",
+  "created_at_utc": "2026-07-28T10:33:27Z",
+  "retired_path": "C:\\w\\mfw\\b90c7f19654319e1",
+  "repository": "C:\\Comfy_UI_Main_Masking",
+  "git_common_dir": "C:\\Comfy_UI_Main_Masking\\.git",
+  "source_head": "093b9b1d74fb21ec5653d9dae395af878a8f0909",
+  "preconditions": {
+    "main_coordination": "CONFIRMED_NO_OWNERSHIP_OR_DEPENDENCY_CONFLICT",
+    "active_git_or_ssh_process": false,
+    "tracked_patch_sha256": "54d0f18a28b93daf5ee2f08a6831e7bbd9bd0b7091d8524da60179023b3538af",
+    "tracked_patch_exactly_matched_checkpoint": true,
+    "untracked_file_count": 4,
+    "untracked_archive_readback": "4_OF_4_EXACT_SHA256_MATCH",
+    "tier_a_backup": "C:\\MaskFactory_TierA_Backups\\b90_operational_certificate_20260728T102900Z",
+    "tier_a_backup_receipt_sha256": "f8f1aecabab303f2241370ee650429992d454453e8fac3fe6b1d56c589a76ec0",
+    "original_checkpoint": "F:\\CodexRecovery\\maskfactory_reconciliation_checkpoint_20260728T042648Z"
+  },
+  "semantic_disposition": {
+    "older_source_changes": "REJECTED_SUPERSEDED_SECURITY_REGRESSION",
+    "adapted_test_intent": "COMMITTED_AND_PUSHED",
+    "adapted_test_commit": "329d8306e02007cde1b3c5cfa2bab6adc10f4a73",
+    "adapted_test_result": "25 passed"
+  },
+  "operation": "git worktree remove --force -- C:\\w\\mfw\\b90c7f19654319e1",
+  "logical_bytes_retired": 24447786,
+  "storage_measurement": {
+    "c_free_before": 61426728960,
+    "c_free_after": 61409042432,
+    "measured_delta": -17686528,
+    "interpretation": "Concurrent allocation obscured the small worktree recovery; no positive free-space claim is made."
+  },
+  "postconditions": {
+    "path_absent": true,
+    "registration_absent": true,
+    "masking_worktree_count_before": 4,
+    "masking_worktree_count_after": 3,
+    "source_head_reachable_ref_count": 2,
+    "source_head_reachable_refs": [
+      "refs/codex/snapshots/eight-cursor-mask-mask8s_e0f53b6f",
+      "refs/remotes/origin/codex/recovery-maskfactory-detached-base-20260728-093b9b1"
+    ],
+    "git_fsck_connectivity_only_no_dangling": "PASS",
+    "git_fsck_full_no_dangling": "PASS"
+  },
+  "untouched_boundaries": [
+    "C:\\Comfy_UI_Main",
+    "all other C:\\w paths",
+    "C:\\Comfy_UI_Main_MaskFactory_Consumer",
+    "F:\\Codex_Recovery",
+    "F:\\CodexRecovery",
+    "MaskFactory VHDX backups"
+  ],
+  "authority_accounting": {
+    "qwen_openrouter_units": 0,
+    "claude_units": 0,
+    "cursor_units": 0,
+    "codex_units": "preservation, semantic disposition, exact removal, Git integrity, receipt, commit, push"
+  }
+}

@@ -5,12 +5,7 @@ import sys
 import types
 from pathlib import Path
 
-
-SCRIPT = (
-    Path(__file__).resolve().parents[1]
-    / "tools"
-    / "reconcile_untracked_gpu_process.py"
-)
+SCRIPT = Path(__file__).resolve().parents[1] / "tools" / "reconcile_untracked_gpu_process.py"
 SPEC = importlib.util.spec_from_file_location("maskfactory_gpu_reconciler", SCRIPT)
 assert SPEC is not None and SPEC.loader is not None
 MODULE = importlib.util.module_from_spec(SPEC)

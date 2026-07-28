@@ -10,7 +10,6 @@ from maskfactory.autonomy.serverless_v3_runtime_gate import (
     canonical_sha256,
 )
 
-
 EXPECTED = {
     "deferred_queue": "a" * 64,
     "execution": "b" * 64,

@@ -56,7 +56,7 @@
     "environment_path": "/workspace/maskfactory/runtime_artifacts/sam3d_body_runpod_env",
     "python": "3.11.10",
     "runner": "tools/run_sam3d_body_repeatability_v2.py",
-    "runner_sha256": "6d412a3165053d8fb908d94e2000548ed212a08a071b07267886c8375ea3c82b",
+    "runner_sha256": "037a935d681fef98b9811b3f049465a609e8c6e3ddf4ab1cf0ed46f9d8b2f695",
     "torch": "2.10.0+cu128"
   },
   "schema_version": "1.0.0",

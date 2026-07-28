@@ -7,13 +7,11 @@ import argparse
 import hashlib
 import importlib.util
 import json
-import os
 import subprocess
 import time
 from pathlib import Path
 from types import ModuleType
 from typing import Any, Callable
-
 
 MASKFACTORY_SESSION_ID = "019f91d1-ea20-7d81-83ff-03d393eaa1f5"
 COMFYUI_SESSION_ID = "019f9200-4805-7632-83d3-ee9ae614c603"
@@ -21,8 +19,7 @@ DEFAULT_DATABASE = Path(
     "/workspace/.maskfactory/shared_pod_coordination/shared_gpu_leases_v1.sqlite"
 )
 DEFAULT_MANAGER = Path(
-    "/workspace/.maskfactory/shared_pod_coordination/tools/"
-    "manage_shared_pod_gpu_lease_v2.py"
+    "/workspace/.maskfactory/shared_pod_coordination/tools/" "manage_shared_pod_gpu_lease_v2.py"
 )
 COORDINATION_FAILURE = 70
 FALLBACK_REQUIRED = 75
@@ -69,18 +66,14 @@ def query_gpu_compute_pids() -> list[int]:
         text=True,
         timeout=15,
     )
-    return [
-        int(line.strip())
-        for line in result.stdout.splitlines()
-        if line.strip().isdigit()
-    ]
+    return [int(line.strip()) for line in result.stdout.splitlines() if line.strip().isdigit()]
 
 
 def _parent_pid(pid: int) -> int | None:
     try:
-        for line in Path(f"/proc/{pid}/status").read_text(
-            encoding="utf-8", errors="replace"
-        ).splitlines():
+        for line in (
+            Path(f"/proc/{pid}/status").read_text(encoding="utf-8", errors="replace").splitlines()
+        ):
             if line.startswith("PPid:"):
                 value = int(line.split(":", 1)[1].strip())
                 return value if value > 0 else None
@@ -164,9 +157,7 @@ def reconcile(
     token_file = Path(f"/tmp/gpu-reconciler-{session_id}.token")
     owner_token = manager.ensure_owner_token_file(token_file)
     lineage = ",".join(str(pid) for pid in sorted(pids))
-    payload_sha256 = hashlib.sha256(
-        f"{session_id}:{lineage}".encode("utf-8")
-    ).hexdigest()
+    payload_sha256 = hashlib.sha256(f"{session_id}:{lineage}".encode("utf-8")).hexdigest()
     queued = manager.enqueue(
         database=database,
         session_id=session_id,

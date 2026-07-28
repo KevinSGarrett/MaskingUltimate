@@ -39,7 +39,7 @@
     "v1_runtime_lock": "env/sam3d_body_runtime.lock.json",
     "v1_runtime_lock_sha256": "61a8d53e5a08309ca5cf2c879a7bed509ff81422283b5ea31133d6859e4987a3",
     "v2_runner": "tools/run_sam3d_body_repeatability_v2.py",
-    "v2_runner_sha256": "6d412a3165053d8fb908d94e2000548ed212a08a071b07267886c8375ea3c82b",
+    "v2_runner_sha256": "037a935d681fef98b9811b3f049465a609e8c6e3ddf4ab1cf0ed46f9d8b2f695",
     "v2_startup_failure_receipt": "runtime_artifacts/sam3d_body_repeatability_v2_requalification_20260725T150338Z/V2_STARTUP_FAILURE_RECEIPT.json",
     "v2_startup_failure_receipt_sha256": "444feeaadc1da51b0ed07b427e4cf85437a9cec048df4721556d690743af849d"
   },

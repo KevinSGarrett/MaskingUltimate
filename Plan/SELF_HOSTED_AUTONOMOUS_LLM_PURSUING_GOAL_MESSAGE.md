@@ -2,14 +2,15 @@
 
 Updated authority: 2026-07-28
 
-## 0A. Active terminal recovery pass: stash/reflog and physical authority convergence
+## 0A. Completed foundation: stash/reflog and physical authority convergence
 
 The branch/worktree/directory consolidation passed, but the terminal audit
 found five live historical stashes and one generated pre-commit cache that
-were outside the earlier path ledger. This foundation is reopened until the
-recovered functional cohort, exhaustive stash matrix, Plan/Item/Instruction/
-Tracker bindings, complete tests, clean export, zero-residue status, final
-receipt, and local/remote parity all pass.
+were outside the earlier path ledger. The recovered functional cohort,
+exhaustive stash matrix, Plan/Item/Instruction/Tracker bindings, complete
+tests, clean export, zero-residue status, receipt, and local/remote parity now
+close this foundation. The pursuing goal continues with the remaining honest
+product/runtime/visual/campaign/release/ComfyUI-adoption blockers.
 
 Current phase state:
 
@@ -21,6 +22,8 @@ Current phase state:
 - five stash merge/index/untracked-parent states are independently preserved
   in a verified 27,007,381-byte incremental bundle before live stash
   retirement;
+- the validated recovery source commit is
+  `bc4c36ff98ebc4cc9b706ba58a10ef559d0497ee`;
 - the 65 missing historical tracker events were restored without stale-state
   replay;
 - 33,308 hash-listed dirty-root files, 3,679 empty directories, and 28
@@ -35,7 +38,19 @@ Current phase state:
   the exact empty parent was removed non-recursively under joint authority; and
 - F: remains below the 50 GiB allocation floor, so retained recovery/runtime/
   VHDX authorities remain explicit external authorities and no new large local
-  allocation is allowed.
+  allocation is allowed;
+- a fresh full collection has 5,139 nodes: 5,098 passes, 41 governed skips,
+  zero failures, and six Pillow deprecation warnings;
+- the exact clean export builds, installs without dependencies, and imports;
+  its source archive SHA-256 is
+  `4d6aa42fb0a2d8c921822c20657995d530c50fa7a4a806cf9b71591931f9ec7f`
+  and wheel SHA-256 is
+  `644f0aa34a466a11ff607d201d9d4344b994544dbf2b5588f5d82c9e7941c026`;
+  and
+- full Git integrity passed; exact removal of 13 Git-reported temporary
+  objects recovered 93,260,117 bytes and left zero reported garbage; and
+- the local pre-commit hook no longer forces generated cache data into the
+  repository; its original configuration is preserved in Tier-A.
 
 The verified pre-change rollback authority is:
 
@@ -104,7 +119,7 @@ This phase is complete only when:
 8. storage constraints and any retained recovery/VHD/data/evidence roots are
    explicit external authorities, not unreviewed clutter.
 
-## 0B. Repository branch normalization: complete; terminal source recovery active
+## 0B. Repository branch normalization and terminal source recovery: complete
 
 The lossless repository-normalization and `main`-promotion phase completed on
 2026-07-28. Its immutable validation/branch plan is
@@ -117,7 +132,8 @@ Current verified state:
 - the integrated product authority was validated at
   `752c0ebfbe97d080ed5ae16fed6f0bd885ff69dd` and promoted to `origin/main`
   through a non-forced fast-forward;
-- the 5,148-node complete suite, changed-file Ruff, compileall, tracker,
+- the fresh 5,139-node complete collection (5,098 passes, 41 governed skips,
+  zero failures), changed-file Ruff, compileall, tracker,
   clean-export install/import/focused tests, diff/credential, and
   full/connectivity Git-integrity gates pass;
 - remote heads are reduced from 30 to seven: `main` plus six explicit recovery
@@ -125,8 +141,7 @@ Current verified state:
 - local branches are reduced from 21 to one: `main`;
 - exactly one Masking worktree remains at the physical canonical root;
 - five late historical stashes are now independently bundled and retired,
-  and the generated pre-commit cache is absent; final push parity remains the
-  terminal gate for this recovery pass; and
+  and the generated pre-commit cache is absent; and
 - Consumer, recovery archives, VHDX files, Main-owned paths, and shared
   `C:\w` were not mutated.
 

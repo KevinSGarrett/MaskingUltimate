@@ -222,3 +222,19 @@ then removed after exact non-reparse/no-process validation: 3,575 files,
 552 child directories, and 83,803,840 logical bytes. The terminal receipt
 must prove zero stashes, zero temporary recovery refs, zero cache residue,
 and a clean physical canonical checkout.
+
+The governed commit hook recreated that cache once. The final repeated
+no-process/non-reparse retirement removed 3,576 files and 83,803,951 logical
+bytes, leaving no cache path. The local hook's explicit repository-local
+`PRE_COMMIT_HOME` override was removed to prevent recurrence; its original
+bytes and rollback instructions are preserved in the historical-stash Tier-A
+checkpoint. The validated recovery source commit is
+`bc4c36ff98ebc4cc9b706ba58a10ef559d0497ee`. A fresh complete collection
+produced 5,098 passes, 41 governed skips, zero failures, and six warnings from
+5,139 collected nodes. The exact clean export built a 2,500,515-byte wheel at
+SHA-256
+`644f0aa34a466a11ff607d201d9d4344b994544dbf2b5588f5d82c9e7941c026`
+and passed isolated install/import. Full fsck passed before exact retirement
+of 13 Git-reported `tmp_obj_*` files / 93,260,117 bytes; Git then reported
+zero garbage. These gates close this repository/local-authority phase without
+granting product/runtime/visual/campaign completion credit.

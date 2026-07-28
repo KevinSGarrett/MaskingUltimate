@@ -1,0 +1,277 @@
+{
+  "schema_version": "maskfactory_second_phase_local_convergence_final.v1",
+  "created_utc": "2026-07-28T19:21:34Z",
+  "scope": "No-loss repository, physical-root, scattered-directory, historical-stash, Plan, Items, Instructions, and Tracker convergence for MaskFactory.",
+  "result": "PASS",
+  "validated_executable_source_commit": "bc4c36ff98ebc4cc9b706ba58a10ef559d0497ee",
+  "final_receipt_commit_rule": "This receipt and control-only closure delta are committed after the validated executable source commit. Completion requires the resulting main commit to be pushed non-forced and local main to equal origin/main.",
+  "completion_authority": {
+    "completed_item": "MF-P6-20.01",
+    "tracker_items": 906,
+    "unresolved_hard_blockers_after_closure": 53,
+    "tracker_structural_errors": 0,
+    "completion_boundary": "Repository/local-authority foundation only. No MF-P6-20.02+, product-runtime, visual-authority, campaign, release, or ComfyUI-adoption completion credit."
+  },
+  "historical_stashes": {
+    "accidental_mass_deletion_commit": "f60690db85d8b8fe362e3ac406a5584d792f837f",
+    "stashes_before": 5,
+    "stashes_after": 0,
+    "temporary_recovery_refs_after": 0,
+    "checkpoint_root": "C:\\MaskFactory_TierA_Backups\\historical_stashes_20260728T182808Z",
+    "bundle": {
+      "path": "C:\\MaskFactory_TierA_Backups\\historical_stashes_20260728T182808Z\\maskfactory_historical_stashes_incremental.bundle",
+      "bytes": 27007381,
+      "sha256": "f4fb70e328a171d7e9896130decac4fd7701b0238712d8a30b5f7232dfbc6398",
+      "git_bundle_verify": "PASS",
+      "covered_stash_refs": 5
+    },
+    "path_matrix": {
+      "path": "C:\\MaskFactory_TierA_Backups\\historical_stashes_20260728T182808Z\\stash_path_matrix.json",
+      "rows": 4008,
+      "sha256": "ca838138dec5571570194139d214d6be1490548f20b9af7715fc7ab671abbd11"
+    },
+    "semantic_matrix": {
+      "path": "C:\\MaskFactory_TierA_Backups\\historical_stashes_20260728T182808Z\\stash_semantic_disposition_matrix.json",
+      "rows": 4008,
+      "unresolved": 0,
+      "sha256": "4fcd20a9f49600f7fdf3dd8528e48f427ba5857b14cf26091ecb1202138d7b65",
+      "summary_sha256": "2d085c8652589d9b5a61c0c9c3fe24b3c03a39c370c552a3218fdc0fce574de5"
+    },
+    "disposition_counts": {
+      "already_exact_in_current_main": 1976,
+      "adopted_exact_from_verified_stash": 18,
+      "stash_rows_adopted_as_six_semantic_ports": 9,
+      "adopted_to_canonical_tool_path": 1,
+      "historical_bytes_in_main_history_superseded": 379,
+      "historical_controls_archived": 12,
+      "historical_evidence_archived": 808,
+      "historical_runtime_artifacts_archived": 753,
+      "precommit_cache_rows": 27,
+      "other_non_source_archived": 15,
+      "incomplete_prototypes_preserved_not_adopted": 3,
+      "runpod_shared_lease_policy_superseded": 2,
+      "consumer_or_main_scaffolds_superseded": 5
+    }
+  },
+  "generated_cache_retirement": {
+    "path": "C:\\Comfy_UI_Main_Masking\\.pre-commit-home-climb4",
+    "first_retirement_files": 3575,
+    "first_retirement_directories": 552,
+    "first_retirement_logical_bytes": 83803840,
+    "commit_hook_recreated_cache_once": true,
+    "final_retirement_files": 3576,
+    "final_retirement_directories": 552,
+    "final_retirement_logical_bytes": 83803951,
+    "final_path_present": false,
+    "reparse_point": false,
+    "process_owner_count": 0,
+    "recurrence_prevention": {
+      "action": "Removed only the local hook's PRE_COMMIT_HOME override so the unchanged hook uses the normal user cache outside the repository.",
+      "original_hook_sha256": "d1b8265b4b476690740a1b8bd6351d71c24fd8c489a0b453f2c800d2d3ca58e1",
+      "updated_hook_sha256": "6589ad630e8bad4bf6dc8c38d53f1915d8333e0d6b8b79e4a989c2206b8df43d",
+      "backup_path": "C:\\MaskFactory_TierA_Backups\\historical_stashes_20260728T182808Z\\pre_commit_hook_before_cache_relocation_20260728T192700Z.txt",
+      "backup_sha256": "82294b00946139e5ba3070220e808613d2ef1e0e64ebb2ec96e469e0fb085d0a",
+      "hook_checks_preserved": true
+    }
+  },
+  "git_temporary_object_retirement": {
+    "pattern": "C:\\Comfy_UI_Main_Masking\\.git\\objects\\??\\tmp_obj_*",
+    "full_fsck_before": "PASS",
+    "files": 13,
+    "logical_bytes": 93260117,
+    "per_file_registry_sha256": "763305789e51216c3744bf969511d054060b4181e951553e2687cf35117742c2",
+    "process_owner_count": 0,
+    "remaining_files": 0,
+    "git_count_objects_garbage_files": 0,
+    "git_count_objects_garbage_bytes": 0
+  },
+  "validation": {
+    "complete_pytest": {
+      "command": "python -m pytest -q",
+      "collected": 5139,
+      "passed": 5098,
+      "governed_skips": 41,
+      "failed": 0,
+      "warnings": 6,
+      "warning_class": "Pillow deprecation warnings",
+      "exit_code": 0
+    },
+    "focused_recovered_cohort": {
+      "passed": 44,
+      "failed": 0
+    },
+    "ruff_changed_scope": "PASS",
+    "powershell_parse": "PASS",
+    "yaml_parse": "PASS",
+    "cli_help": "PASS",
+    "docker_serve_static_contract": {
+      "result": "STATIC_PASS",
+      "production_build_or_health_claimed": false,
+      "receipt_path": "C:\\MaskFactory_TierA_Backups\\historical_stashes_20260728T182808Z\\docker_serve_contract_recovery_validation.json",
+      "receipt_sha256": "d66da107135645b9df8a872aa5a703df5091c1e75cb2c0398a9afa48011f0702"
+    },
+    "clean_export": {
+      "source_commit": "bc4c36ff98ebc4cc9b706ba58a10ef559d0497ee",
+      "source_archive_sha256": "4d6aa42fb0a2d8c921822c20657995d530c50fa7a4a806cf9b71591931f9ec7f",
+      "wheel_name": "maskfactory-0.0.1-py3-none-any.whl",
+      "wheel_bytes": 2500515,
+      "wheel_sha256": "644f0aa34a466a11ff607d201d9d4344b994544dbf2b5588f5d82c9e7941c026",
+      "isolated_no_dependency_install": "PASS",
+      "isolated_import": "PASS",
+      "temporary_validation_tree_retired_files": 7226,
+      "temporary_validation_tree_retired_directories": 728,
+      "temporary_validation_tree_retired_bytes": 466360389,
+      "temporary_validation_tree_present": false
+    },
+    "credential_scan_changed_scope": "PASS_ZERO_MATCHES",
+    "diff_check": "PASS",
+    "tracker_rebuild": "906 kept, 0 new, 0 orphaned",
+    "tracker_report": "PASS",
+    "tracker_validate": "PASS_ZERO_STRUCTURAL_ERRORS"
+  },
+  "physical_and_git_topology_expected_after_receipt_commit": {
+    "canonical_root": "C:\\Comfy_UI_Main_Masking",
+    "branch": "main",
+    "local_branches": 1,
+    "registered_worktrees": 1,
+    "stashes": 0,
+    "remote_heads": 7,
+    "shared_cw_present": false,
+    "hook_cache_present": false,
+    "working_tree_status_rows": 0,
+    "local_main_equals_origin_main": true,
+    "connectivity_fsck": "PASS_REQUIRED_POST_COMMIT",
+    "full_fsck": "PASS_REQUIRED_POST_COMMIT"
+  },
+  "original_user_path_dispositions": [
+    {
+      "path": "F:\\MaskFactory_WSL_VHD_BACKUPS",
+      "physical_state": "ABSENT",
+      "disposition": "verified empty shell retired; VHD authorities remain in their receipt-bound retained locations"
+    },
+    {
+      "path": "F:\\CodexRecovery",
+      "physical_state": "RETAINED",
+      "disposition": "MaskFactory recovery authority"
+    },
+    {
+      "path": "F:\\Codex_Recovery",
+      "physical_state": "RETAINED",
+      "disposition": "Main-owned recovery authority; no-touch"
+    },
+    {
+      "path": "F:\\MaskFactory_DataRelocated",
+      "physical_state": "RETAINED",
+      "disposition": "data/packages and dirty-work recovery authority"
+    },
+    {
+      "path": "F:\\Codex_Audit_Staging_Trash_20260722",
+      "physical_state": "RETAINED",
+      "disposition": "receipt-classified audit staging authority"
+    },
+    {
+      "path": "F:\\MaskFactory_Offload_20260714",
+      "physical_state": "RETAINED",
+      "disposition": "runtime/model/WSL/Docker offload authority"
+    },
+    {
+      "path": "F:\\MaskFactory_RuntimeRelocated",
+      "physical_state": "ABSENT",
+      "disposition": "verified empty shell retired"
+    },
+    {
+      "path": "C:\\w",
+      "physical_state": "ABSENT",
+      "disposition": "both repositories reconciled all children; empty shared parent removed non-recursively"
+    },
+    {
+      "path": "C:\\Comfy_UI_Main_MaskFactory_Consumer",
+      "physical_state": "RETAINED_CLEAN",
+      "disposition": "intentional standalone Consumer repository, remotely protected",
+      "head": "1091a9c8cc01ff554907b97a7e754c6c884cee01"
+    },
+    {
+      "path": "C:\\Comfy_UI_Main_Masking",
+      "physical_state": "RETAINED_CLEAN_CANONICAL",
+      "disposition": "sole MaskFactory worktree on main"
+    },
+    {
+      "path": "C:\\MaskFactory_ExternalSupervision",
+      "physical_state": "RETAINED",
+      "disposition": "evidence collection, not an unmerged source tree"
+    },
+    {
+      "path": "C:\\MaskFactory_FailureCampaigns",
+      "physical_state": "RETAINED",
+      "disposition": "evidence collection, not an unmerged source tree"
+    },
+    {
+      "path": "C:\\MaskFactory_Reviews",
+      "physical_state": "RETAINED",
+      "disposition": "review evidence collection, not an unmerged source tree"
+    },
+    {
+      "path": "C:\\MaskFactory_TierA_Backups",
+      "physical_state": "RETAINED",
+      "disposition": "verified rollback and recovery authority"
+    },
+    {
+      "path": "C:\\MaskFactory_TierA_RestoreTests",
+      "physical_state": "RETAINED",
+      "disposition": "restore-test authority; terminal clean-export temporary tree retired"
+    },
+    {
+      "path": "C:\\MaskFactory_WSL_Backup",
+      "physical_state": "ABSENT",
+      "disposition": "verified empty shell retired"
+    },
+    {
+      "path": "C:\\mf25p_4446de85",
+      "physical_state": "ABSENT",
+      "disposition": "verified empty shell retired"
+    },
+    {
+      "path": "C:\\mf25p_af493b78",
+      "physical_state": "RETAINED",
+      "disposition": "small campaign scratch/evidence authority"
+    },
+    {
+      "path": "C:\\mfsnap_20260727T153945Z",
+      "physical_state": "ABSENT",
+      "disposition": "verified redundant extracted snapshot retired; compact snapshot authority retained"
+    },
+    {
+      "path": "C:\\mfsnap_verify_20260727T153945Z",
+      "physical_state": "ABSENT",
+      "disposition": "verified redundant extracted snapshot retired; compact snapshot authority retained"
+    }
+  ],
+  "directory_authority": {
+    "detailed_ledger": ".codex-ops/LOCAL_DIRECTORY_DISPOSITION_20260728T153321Z.md",
+    "detailed_ledger_sha256": "466c56bd9b8dd8d0fc2b3f0c4a26fc92fff44f63430b75b4d69f22ecb40aa068",
+    "physical_root_receipt": ".codex-ops/PHYSICAL_CANONICAL_ROOT_CONVERGENCE_20260728T172153Z.json",
+    "physical_root_receipt_sha256": "d0f9d386a79551cb1b7205fb9b94d847d821df44f4a282ac43523de9f3e92fa2",
+    "opaque_retirement_receipt": ".codex-ops/OPAQUE_NESTED_DIRECTORY_RETIREMENT_20260728T172153Z.json",
+    "opaque_retirement_receipt_sha256": "64f0b20fa35e9598ae4de9195b50f2c5b67d8624f2f38cb33f5a5f0a9fc76b91"
+  },
+  "main_repository_coordination": {
+    "task_id": "019fa6cc-eb76-74c1-8fd1-f062cec56dad",
+    "clean_main_oid": "ee2717ab4d8985182e73b0a79c131b2076443952",
+    "shared_cw_terminal_receipt": ".codex-ops/SHARED_CW_SECOND_PHASE_FINAL_20260728T171508Z.json",
+    "shared_cw_terminal_receipt_sha256": "9a332e7fab8f0da346f2ca7cafa3152c12158fd8437e964083bb4bcf0c17a599",
+    "ownership_conflicts_remaining": 0
+  },
+  "storage": {
+    "c_free_bytes_observed": 74510553088,
+    "f_free_bytes_observed": 15389822976,
+    "c_above_50_gib_floor": true,
+    "f_above_50_gib_floor": false,
+    "f_low_space_policy": "Retained F: recovery/runtime/data/VHD authorities are not deletion-eligible merely to close the floor."
+  },
+  "advisory_accounting": {
+    "qwen_openrouter_units": 0,
+    "claude_units": 0,
+    "cursor_units": 0,
+    "codex_authority": "all filesystem, Git, source, semantic review, Plan, Items, Instructions, Tracker, testing, validation, and coordination decisions"
+  }
+}

@@ -181,8 +181,9 @@ implementation is already canonical.
 requires scattered-directory, Plan/Item/Instruction/tracker, physical-root,
 and rollback convergence. `tracker.py rebuild` preserved 906 items with zero
 new or orphaned rows. After physical/root/shared-path convergence and the
-5,148-node suite passed, `tracker.py set` closed only this repository-
-reconciliation row at 100%. `tracker.py report` and `tracker.py validate` pass
+fresh 5,139-node collection produced 5,098 passes, 41 governed skips, and zero
+failures, `tracker.py set` closed only this repository-reconciliation row at
+100%. `tracker.py report` and `tracker.py validate` pass
 with 906 non-orphaned items, 53 unresolved hard blockers, and zero structural
 problems. No successor product/runtime/visual/campaign row advanced.
 
@@ -305,6 +306,21 @@ Ruff, YAML/PowerShell parsing, CLI help, and the fail-closed Docker contract
 tool pass. Tracker row `MF-P6-20.01` was reopened during this work and may be
 closed again only after complete-suite, export, clean-status, push-parity,
 and terminal-receipt gates pass.
+
+Those gates passed for executable source commit
+`bc4c36ff98ebc4cc9b706ba58a10ef559d0497ee`. The fresh full collection
+produced 5,098 passes, 41 governed skips, zero failures, and six warnings from
+5,139 nodes. Its clean archive SHA-256 is
+`4d6aa42fb0a2d8c921822c20657995d530c50fa7a4a806cf9b71591931f9ec7f`;
+the 2,500,515-byte wheel SHA-256 is
+`644f0aa34a466a11ff607d201d9d4344b994544dbf2b5588f5d82c9e7941c026`,
+and isolated no-dependency install/import passed. The hook cache was removed
+again after its governed one-time recreation, leaving zero residue. The
+hook's repository-local `PRE_COMMIT_HOME` override was removed and the
+original hook was preserved in Tier-A, preventing recurrence without
+weakening any hook. Full Git
+integrity passed before removal of exactly 13 reported temporary object files
+(93,260,117 bytes); Git now reports zero garbage.
 
 ## Physical canonical root
 

@@ -1,21 +1,23 @@
 ﻿# Current Task
 
 Task ID: MASKFACTORY-ULTIMATE-MASKING-E2E-20260727
-Updated UTC: 2026-07-28T18:45:00Z
+Updated UTC: 2026-07-28T19:21:34Z
 
-## Active terminal phase: late stash/reflog source recovery
+## Completed foundation: local/repository/stash authority convergence
 
 The repository-promotion, physical-root, and shared-directory transitions are
 complete. A terminal audit then found five historical Git stashes and one
 generated pre-commit cache that were not included in the earlier branch and
-worktree counts. `MF-P6-20.01` is therefore reopened until the useful
-accidental-mass-deletion residuals are adopted and revalidated, every stash
-path is receipt-bound, the live stashes/cache are absent, and final
-local/remote parity is proven.
+worktree counts. Those late authorities are now independently bundled,
+semantically reconciled, adopted or explicitly archived, tested, retired, and
+bound to the final convergence receipt. `MF-P6-20.01` is complete without
+advancing any product/runtime/visual successor.
 
-- physical canonical root: clean `main`, one registered worktree, zero status
-  rows, local/remote equality at
-  `f54519796a48920e59f529759a8c3687292ce34e` before this receipt commit;
+- physical canonical root: clean `main`, one registered worktree, one local
+  branch, zero stashes, zero temporary stash recovery refs, and zero generated
+  hook-cache residue;
+- validated recovered-source commit:
+  `bc4c36ff98ebc4cc9b706ba58a10ef559d0497ee`;
 - meaningful source/control set: 137 unique files, all dispositioned with zero
   unresolved rows;
 - retired verified dirty-root residue: 33,308 hash-listed files, 3,679 empty
@@ -44,10 +46,24 @@ local/remote parity is proven.
 - stash semantic matrix: 4,008 rows, zero unresolved, SHA-256
   `4fcd20a9f49600f7fdf3dd8528e48f427ba5857b14cf26091ecb1202138d7b65`;
 - live stash/cache state: five stashes retired after bundle/fsck gates;
-  `.pre-commit-home-climb4` retired as 3,575 generated files /
-  83,803,840 logical bytes after no-process/non-reparse proof; and
-- recovered source status: 18 exact file adoptions and six semantic ports are
-  in focused validation; incomplete/stale prototypes remain archive-only.
+  `.pre-commit-home-climb4` was retired, recreated once by the governed commit
+  hook, and finally retired as 3,576 generated files / 83,803,951 logical
+  bytes after repeated no-process/non-reparse proof; the local hook's
+  repository-local `PRE_COMMIT_HOME` override was then removed so subsequent
+  commits use the normal user cache outside the checkout, with the original
+  hook preserved in the stash Tier-A checkpoint;
+- recovered source status: 18 exact file adoptions and six semantic ports
+  passed focused validation; incomplete/stale prototypes remain archive-only;
+- complete suite: 5,139 nodes collected, 5,098 passed, 41 governed skips, zero
+  failures, and six Pillow deprecation warnings;
+- clean export: source archive SHA-256
+  `4d6aa42fb0a2d8c921822c20657995d530c50fa7a4a806cf9b71591931f9ec7f`;
+  wheel SHA-256
+  `644f0aa34a466a11ff607d201d9d4344b994544dbf2b5588f5d82c9e7941c026`;
+  isolated no-dependency install/import passed; and
+- Git object hygiene: full fsck passed before exact removal of 13
+  `tmp_obj_*` files / 93,260,117 bytes; `git count-objects` now reports zero
+  garbage.
 
 Plan 29 and
 `Plan/LOCAL_AUTHORITY_RECONCILIATION_LEDGER_20260728.md` now govern this
@@ -74,7 +90,8 @@ through `Plan/Tracker/tracker.py`.
   `752c0ebfbe97d080ed5ae16fed6f0bd885ff69dd`
 - current clean local/remote `main` after receipt and directory-ledger commits:
   `55859a98147b18384ab5d8aa2a0757e13dfc69aa`
-- validation: the 5,148-node complete suite, changed-file Ruff, tracker
+- validation: the fresh 5,139-node complete collection (5,098 passes, 41
+  governed skips, zero failures), changed-file Ruff, tracker
   validate/report, clean-export wheel build/install/import/focused suite,
   diff/credential checks, and full/connectivity Git fsck all pass
 - pre-commit: every hook except Black passes; Black is deliberately skipped

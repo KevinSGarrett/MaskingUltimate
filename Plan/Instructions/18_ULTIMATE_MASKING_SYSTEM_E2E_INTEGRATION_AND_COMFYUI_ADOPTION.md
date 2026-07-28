@@ -53,6 +53,17 @@ Frozen authority and campaign evidence contracts:
 8. Do not mark `MF-P6-20.01` or `20.02` complete until the inventory and
    integrated tree are independently reviewable.
 
+The 2026-07-28 repository/local-authority foundation closed `MF-P6-20.01`
+only. Its executable recovery source is
+`bc4c36ff98ebc4cc9b706ba58a10ef559d0497ee`; five historical stashes are
+independently bundled and semantically dispositioned across 4,008 rows; 18
+paths were adopted exactly and six current-main files received bounded
+semantic ports. The fresh complete collection recorded 5,139 nodes, 5,098
+passes, 41 governed skips, and zero failures. The exact clean wheel SHA-256 is
+`644f0aa34a466a11ff607d201d9d4344b994544dbf2b5588f5d82c9e7941c026`.
+This closure grants no `MF-P6-20.02+`, runtime, campaign, visual, release, or
+ComfyUI-adoption credit.
+
 ## Full-test procedure
 
 Run tests in tiers:

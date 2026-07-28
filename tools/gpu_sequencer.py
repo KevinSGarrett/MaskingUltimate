@@ -1,8 +1,8 @@
-"""GPU telemetry probe with all resource-governance behavior retired.
+"""Non-authoritative GPU telemetry probe.
 
-The selected RunPod executes directly. VRAM readings and process listings are
-diagnostic observations only. This tool has no planning, waiting, reservation,
-checkout, sequencing, reclamation, or veto command.
+VRAM readings and process listings are diagnostic observations only. This tool
+never authorizes a GPU launch. Every Pod-local GPU child must instead execute
+through ``tools/run_with_shared_pod_gpu_lease.py``.
 """
 
 from __future__ import annotations
@@ -70,14 +70,14 @@ class ComputeApp:
 
 @dataclass
 class SequenceDecision:
-    """Legacy-shaped telemetry result; never an admission verdict."""
+    """Legacy-shaped telemetry result that always requires the shared lease."""
 
     consumer: str
     required_mib: int
     safety_mib: int
     free_mib: int | None
     lock_state: str
-    decision: str = "run_now"
+    decision: str = "lease_required"
     reasons: list[str] = field(default_factory=list)
     foreign_holders: list[dict[str, Any]] = field(default_factory=list)
 
@@ -232,7 +232,7 @@ def decide(
     safety_mib: int = DEFAULT_SAFETY_MIB,
     lock_path: Path = DEFAULT_GPU_LOCK_PATH,
 ) -> SequenceDecision:
-    """Return direct execution with optional telemetry; never gate on GPU state."""
+    """Return telemetry plus a fail-closed shared-lease requirement."""
     del required_mib, safety_mib
     required = 0
     safety = 0
@@ -246,22 +246,24 @@ def decide(
         required_mib=required,
         safety_mib=safety,
         free_mib=int(gpus[0]["free_mib"]) if gpus else None,
-        lock_state="retired",
+        lock_state="shared_fifo_required",
         foreign_holders=foreign,
     )
 
     if not snapshot.get("nvidia_smi_available") or not gpus:
-        decision.decision = "run_now"
+        decision.decision = "lease_required"
         decision.reasons.append(
-            "GPU telemetry unavailable; observation is non-authoritative and does not gate execution"
+            "GPU telemetry unavailable; use tools/run_with_shared_pod_gpu_lease.py"
         )
         return decision
 
     free = int(gpus[0]["free_mib"])
     decision.reasons.append(f"free={free} MiB; telemetry only")
 
-    decision.decision = "run_now"
-    decision.reasons.append("VRAM and process observations are telemetry only")
+    decision.decision = "lease_required"
+    decision.reasons.append(
+        "VRAM and process observations are telemetry only; the shared FIFO lease is mandatory"
+    )
     return decision
 
 

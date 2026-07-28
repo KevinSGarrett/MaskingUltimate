@@ -34,13 +34,34 @@ Until the real 25-mission campaign, governed 100-mask campaign, interruption
 and routing drills, and three consecutive target-meeting campaigns pass,
 report `SELF_HOSTED_AUTONOMOUS_LLM_THROUGHPUT_INCOMPLETE`.
 
+### Self-hosted autonomy last-mile gate
+
+`MF-P6-19.01` (the real 25-mission campaign) and `MF-P6-19.02`
+(interruption/all-route recovery) have accepted terminal evidence and must not
+be repeated. Satisfy the dependency-ready prerequisites for `MF-P6-19.03`, run
+its one governed 100-mask campaign with exact outcome/visual/QA/promotion
+accounting, then run the three consecutive mixed campaigns and final immutable
+operating packet required by `MF-P6-19.04`. Serverless and OpenRouter remain
+reconciled child routes of those parent campaigns, never detached evidence
+factories.
+
+When Pod-local admission is unavailable, capacity is proven only by material,
+source-and-parent-bound child work on the verified execution host and terminal
+reconciliation; historical jobs, idle ledgers, and micro-handoffs do not
+qualify. No runtime item advances on static fixtures alone. Report fixtures as
+`STATIC_PASS_CONTROL_PLANE_ONLY`. Do not create successor packets without a
+material immutable-contract change or replacement clones/worktrees to evade
+checkout reconciliation. Acceptance counts real model requests, accepted
+artifacts, terminal reconciliation, and release—not commit, test, schema,
+manifest, or receipt volume.
+
 ---
 
 STANDING ORDERS — MaskFactory continuous autonomous build
 (Session must obey these for the rest of this chat. Re-read mid-flight. Side-chat guidance does not auto-apply.)
 
 MISSION
-Build the real MaskFactory product end-to-end: masks, packages, autonomous certification/repair/abstain, live local runtime (Docker CVAT/Nuclio/Ollama), bridge contracts, and honest tracker truth. Maximize real product progress per hour. Do not optimize for looking busy.
+Build the real MaskFactory product end-to-end: masks, packages, autonomous certification/repair/abstain, persistent RunPod execution, bridge contracts, and honest tracker truth. Local Docker/CVAT/Nuclio/Ollama is optional diagnostic integration and may be operated only when Kevin explicitly requests that exact local action in the current turn. Maximize real product progress per hour. Do not optimize for looking busy.
 
 AUTHORITY
 - Live tracker = status authority (`Plan/Tracker/tracker.py`), not plan prose, checkboxes, or memory.
@@ -88,18 +109,19 @@ Declare target tier before edits. Never report a lower tier as a higher tier.
 Claim vocabulary ONLY: PLANNED, IN_PROGRESS, RECONSTRUCTED, STATIC_PASS, HARD_QA_PASS_BOUNDED, RUNTIME_PASS_BOUNDED, RUNTIME_BLOCKED, VISUAL_QA_PASS_BOUNDED, VISUAL_CRITIC_BLOCKED, PRODUCTION_EVIDENCE_PASS, AWAITING_MAIN, HOLD, BLOCKED, COMPLETE, EC2_DEFERRED, AUDIO_QA_N_A_CORE.
 Forbidden without matching evidence: “done/green/production-ready/fully working/visual QA pass/doctor green/gold”.
 
-SELF-HOSTED LLM / OLLAMA (MUST USE WHEN VISUAL/VLM IN SCOPE)
-- Endpoint: loopback only `http://127.0.0.1:11434` (live-probe; do not skip because of stale memory).
-- Use for Tier 4 panel criticism (P-PART / P-IMAGE), `tools/smoke_ollama_vlm.py`, doctor `ollama_image`, governed `maskfactory vlmqa` paths — not as a substitute for HARD_QA.
-- If Ollama down/wrong models: mark VISUAL_CRITIC_BLOCKED with exact evidence; continue HARD_QA + other lanes; repair Ollama/Docker yourself when in autonomous scope.
-- Prefer governed Docker/Ollama models required by P0-05 / doctor registry over casual native leftovers. Determinism: temperature=0, seed=1337 where spec requires.
+SELF-HOSTED VISION AUTHORITY (MUST USE WHEN VISUAL/VLM IN SCOPE)
+- Production endpoint: private loopback service on the selected RunPod, bound to exact registry-selected model/runtime hashes. Local Ollama is optional diagnostic integration only.
+- Use for Tier 4 panel criticism (P-PART / P-IMAGE) and governed VLM-QA paths—not as a substitute for HARD_QA.
+- If the qualified endpoint/models are unavailable, mark `VISUAL_CRITIC_BLOCKED` with exact evidence and continue HARD_QA plus other lanes. Do not substitute unqualified local models.
+- Model presence is not authority. Positive-and-negative calibration and role qualification are mandatory. Determinism: temperature=0, seed=1337 where the spec requires.
 - Do not use cloud LLMs for MaskFactory VLM QA. Do not treat LLM chatter as certification.
 
-DOCKER (FIRST-CLASS, AUTONOMOUS)
-When engine is up: start/repair/smoke CVAT 2.24 (`localhost:8080`), Nuclio/`pth-sam2`, Ollama, GPU container proofs yourself — no permission asks.
-Production CVAT = v2.24:8080 only (not cvat269:18080).
-Fixture/FakeCvat/producer_partial ≠ live CVAT complete.
-If Desktop truly down: host-only lanes continue; Docker items blocked with typed evidence.
+LOCAL DOCKER / WSL / GPU (OPTIONAL, EXPLICIT REQUEST ONLY)
+Do not probe, start, restart, repair, update, pull, build, or execute local
+Docker Desktop, WSL, CVAT, Nuclio/SAM2, Ollama, or GPU work unless Kevin
+explicitly requests that exact local operation in the current turn. Optional
+local integration evidence cannot replace persistent RunPod production proof.
+Fixture/FakeCvat/producer_partial still does not equal live runtime completion.
 
 TRACKER HYGIENE (CONTINUOUS, NOT STALE)
 - Edit `tracker.json` ONLY via `tracker.py` (never hand-patch).
@@ -294,6 +316,9 @@ See `Plan/Instructions/13_SELF_HOSTED_STRICT_VLM_GATE.md` and updates in `00_STA
 ## Agent bootstrap (every new session)
 
 1. Read **this entire file** (including **CONTINUOUS UNTIL E2E COMPLETE (NO STOP)** and **SELF-HOSTED STRICT VLM GATE**).
-2. Live-probe Docker + Ollama per `Plan/DOCKER_RUNTIME_AND_SESSION_USE.md` (and RunPod notes if on pod).
+2. Read `Plan/DOCKER_RUNTIME_AND_SESSION_USE.md`; verify the selected RunPod,
+   persistent-volume paths, and shared GPU lease authority. Do not probe or
+   operate the local Docker/WSL/Ollama stack without Kevin's exact current-turn
+   request.
 3. `cd Plan/Tracker` → `python tracker.py report` + `python tracker.py next -n 10`.
 4. Execute the continuous loop — no Kevin permission asks; **do not stop** until E2E complete; stop only for true `NEEDS KEVIN`, then switch to all other unblocked lanes. Ensure durable `nohup` pod/host jobs so agent death ≠ climb death.

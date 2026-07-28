@@ -1,0 +1,35 @@
+{
+  "generated_at": "2026-07-27",
+  "review_sources": {
+    "plan_zip": "/mnt/data/Plan(2).zip",
+    "snapshot_zip": "/mnt/data/MaskFactory_Ultimate_System_Snapshot_20260727T153945Z.zip",
+    "snapshot_source_root": "C:\\Comfy_UI_Main_Masking",
+    "snapshot_git_head": "2c04e1a7f5adf5f6948af01423f67a867206e8c2",
+    "snapshot_git_branch": "codex/maskfactory-runtime-implementation",
+    "github_repo": "KevinSGarrett/MaskingUltimate",
+    "github_main_observed_head": "d6a3c0e00d01536504f737aff84891cf8bd4efb3"
+  },
+  "review_metrics": {
+    "tracker_total": 906,
+    "complete": 621,
+    "unresolved": 285,
+    "hard_blockers_unresolved": 54,
+    "explicit_user_authority_unresolved": 51
+  },
+  "fresh_snapshot_test_collection": {
+    "result": "FAIL",
+    "reason": "ModuleNotFoundError: maskfactory.models",
+    "affected_collection_files": [
+      "tests/test_ontology.py",
+      "tests/test_package_runtime_closure.py",
+      "tests/test_review_resolution.py"
+    ]
+  },
+  "coverage_validation": {
+    "unresolved_items": 285,
+    "mapped_items": 285,
+    "unique_mapped_items": 285,
+    "unassigned": 0,
+    "multiply_assigned": 0
+  }
+}

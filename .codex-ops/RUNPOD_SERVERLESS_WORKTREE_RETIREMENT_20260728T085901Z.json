@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-07-28T08:59:01Z",
+  "repository": "C:\\Comfy_UI_Main_Masking",
+  "removed_worktree": "C:\\w\\active\\runpod-serverless-overflow-20260724",
+  "ownership": "Masking",
+  "git_common_dir": "C:\\Comfy_UI_Main_Masking\\.git",
+  "classification": "ADOPTED_AND_REMOTELY_PRESERVED",
+  "source_head": "966b95a3c36fb0ed9d6c236c97d97cc4fd6a352d",
+  "source_remote_ref": "origin/codex/runpod-serverless-overflow-20260724",
+  "tracked_patch_empty": true,
+  "untracked_files": [
+    {
+      "path": "deploy/runpod_serverless/broker/src/maskfactory/__init__.py",
+      "sha256": "fc23a75170dc14a90cef05314bb0fb2cee2eedde2b4341aeb1df8a6624ca16c8",
+      "adopted_commit": "9fb728ee142d941f281687874b2c8429b407c065"
+    },
+    {
+      "path": "deploy/runpod_serverless/broker/src/maskfactory/autonomy/__init__.py",
+      "sha256": "40ffd6534f6a5a9947091e8b795f13a92718abdf86d83a95ec0de5468159260d",
+      "adopted_commit": "9fb728ee142d941f281687874b2c8429b407c065"
+    }
+  ],
+  "checkpoint": {
+    "path": "F:\\CodexRecovery\\maskfactory_reconciliation_checkpoint_20260728T042648Z",
+    "registry_sha256": "903b960291b049ef26c4c36fa55d568158a0918763aea4a830fce5d1f11f2b0a",
+    "head_status_and_untracked_manifest_present": true
+  },
+  "pre_remove_bytes": 64372581,
+  "worktree_count_before": 11,
+  "worktree_count_after": 10,
+  "post_conditions": {
+    "path_absent": true,
+    "registration_absent": true,
+    "source_head_remote_reachable": true,
+    "connectivity_fsck_passed": true,
+    "full_fsck_passed": true
+  },
+  "shared_path_confirmation": {
+    "main_thread": "019fa6cc-eb76-74c1-8fd1-f062cec56dad",
+    "no_main_ownership_conflict_confirmed": true,
+    "scope": "this worktree only"
+  }
+}

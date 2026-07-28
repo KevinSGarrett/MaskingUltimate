@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-07-28T09:48:29Z",
+  "repository": "C:\\Comfy_UI_Main_Masking",
+  "removed_worktree": "C:\\w\\mf-climb3-sibling-commit",
+  "ownership": "Masking",
+  "git_common_dir": "C:\\Comfy_UI_Main_Masking\\.git",
+  "classification": "SUPERSEDED_EXACTLY_PRESERVED_TRACKER_DELTA_ADOPTED",
+  "source_head": "f0526e14408999a611ce81f87ea1e7147115e4d4",
+  "source_head_remote_reachable": true,
+  "checkpoint": {
+    "status_line_count": 18,
+    "status_exact_line_match": true,
+    "combined_patch_bytes": 136673,
+    "combined_patch_sha256": "0687bff5d5a9b7d69006c38b06be71b1ee333bdf30e6eca21c9cf1b15c92aa44",
+    "live_patch_exact_match": true
+  },
+  "semantic_disposition": {
+    "older_scaffold_tool_adopted": false,
+    "older_evidence_adopted": false,
+    "tracker_delta_adopted": true,
+    "tracker_items": {
+      "MF-P6-12.05": {
+        "before_percent": 83,
+        "after_percent": 84,
+        "status": "blocked"
+      },
+      "MF-P6-12.06": {
+        "before_percent": 78,
+        "after_percent": 79,
+        "status": "blocked"
+      }
+    },
+    "consumer_protection_ref": "refs/heads/codex/recovery-maskfactory-consumer-20260728-1091a9c"
+  },
+  "pre_remove_bytes": 37086191,
+  "worktree_count_before": 6,
+  "worktree_count_after": 5,
+  "post_conditions": {
+    "path_absent": true,
+    "registration_absent": true,
+    "source_head_remote_reachable": true,
+    "connectivity_fsck_passed": true,
+    "full_fsck_passed": true,
+    "tracker_validation_non_orphaned_items": 906,
+    "tracker_unresolved_hard_blockers": 54,
+    "tracker_structural_errors": 0,
+    "reconciliation_local_remote_head": "9fb728ee142d941f281687874b2c8429b407c065"
+  },
+  "shared_path_confirmation": {
+    "main_thread": "019fa6cc-eb76-74c1-8fd1-f062cec56dad",
+    "no_main_ownership_conflict_confirmed": true,
+    "main_rejected_scaffold_tool": true,
+    "scope": "this worktree only"
+  }
+}

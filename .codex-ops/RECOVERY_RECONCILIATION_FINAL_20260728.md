@@ -2,7 +2,7 @@
 
 Updated: 2026-07-28 UTC
 
-Verdict: `NO_LOSS_CHECKPOINTED_CLEAN_INTEGRATION_AUTHORITY_ESTABLISHED`
+Verdict: `NO_LOSS_CHECKPOINTED_DIRTY_ROOT_SEMANTICALLY_RECONCILED`
 
 This document is the concise repository-reconciliation authority. It does not
 claim that the original canonical checkout is clean or that MaskFactory's
@@ -12,8 +12,8 @@ runtime/E2E project gates are complete.
 
 - Clean integration worktree:
   `C:\Comfy_UI_Main_Masking\.codex-ops\worktrees\canonical-reconciliation-20260728`
-- Branch: `codex/reconcile-maskfactory-canonical-20260728`
-- Remote: `origin/codex/reconcile-maskfactory-canonical-20260728`
+- Branch: `codex/normalize-maskfactory-main-20260728`
+- Remote: `origin/codex/normalize-maskfactory-main-20260728`
 - The local and remote OIDs must match before this ledger is treated as current.
 - The original `C:\Comfy_UI_Main_Masking` checkout remains a dirty,
   checkpoint-protected recovery source. Do not run `git clean`, reset it,
@@ -97,11 +97,15 @@ working-tree bytes were integrated.
 
 ## Remaining work
 
-Repository reconciliation is closed for noncanonical Masking worktrees, but the
-broader project remains active:
+Repository reconciliation is closed for noncanonical Masking worktrees and the
+original dirty checkout has been semantically reconciled without deleting or
+cleaning it. The broader project remains active:
 
-- preserve and later semantically reconcile the original canonical dirty
-  checkout in bounded cohorts;
+- run the full collected product suite and evidence/reconstruction gates on the
+  clean normalization branch;
+- fast-forward `main` only after the complete validation and coordination gate;
+- retire only branch names proven merged, patch-equivalent, superseded, or
+  protected by durable archival refs;
 - resolve remaining tracker hard blockers through actual runtime/production
   evidence;
 - recover the F: storage floor without deleting unique recovery or VHD data;

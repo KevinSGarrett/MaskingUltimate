@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-07-28T09:08:05Z",
+  "repository": "C:\\Comfy_UI_Main_Masking",
+  "removed_worktree": "C:\\w\\mfw\\ee1e72be733d51c3",
+  "ownership": "Masking",
+  "git_common_dir": "C:\\Comfy_UI_Main_Masking\\.git",
+  "classification": "SUPERSEDED_AND_EXACTLY_PRESERVED",
+  "source_head": "d11d71896994020033b70cdd1212127ed9d79522",
+  "source_head_remote_reachable": true,
+  "tracked_patch_empty": true,
+  "untracked_files": [
+    {
+      "path": "src/maskfactory/external_supervision_qualification.py",
+      "sha256": "d25bcbdf2fc1fa786b780dc5ed33e744da04d95dc07ccfa08ab3e7c8756b7b3c"
+    },
+    {
+      "path": "tests/test_external_supervision_qualification.py",
+      "sha256": "eaf1f1757a8ad541c7b0c0ad50604b50332fbb090cce9d576590b636f37b7371"
+    }
+  ],
+  "checkpoint": {
+    "path": "F:\\CodexRecovery\\maskfactory_reconciliation_checkpoint_20260728T042648Z",
+    "archive": "worktree_untracked_source\\w_mfw_ee1e72be733d51c3.tar",
+    "archive_bytes": 13824,
+    "archive_sha256": "d0604145604a541ebd873669289854b434db61d51e6d5f8b8e1bcfb4baaf7314",
+    "live_members_match_archive": true
+  },
+  "semantic_comparison": {
+    "candidate_tests_passed": 6,
+    "reconciliation_tests_passed": 17,
+    "candidate_ruff_passed": true,
+    "reconciliation_ruff_passed": true,
+    "older_behavior_adopted": false,
+    "reason": "The pushed reconciliation implementation adds sealed and bound evidence bundles, canonical-gate drift detection, path confinement, artifact hash verification, immutable publication, and registered schemas."
+  },
+  "pre_remove_bytes": 18573364,
+  "worktree_count_before": 10,
+  "worktree_count_after": 9,
+  "post_conditions": {
+    "path_absent": true,
+    "registration_absent": true,
+    "source_head_remote_reachable": true,
+    "connectivity_fsck_passed": true,
+    "full_fsck_passed": true,
+    "reconciliation_local_remote_head": "9fb728ee142d941f281687874b2c8429b407c065"
+  },
+  "shared_path_confirmation": {
+    "main_thread": "019fa6cc-eb76-74c1-8fd1-f062cec56dad",
+    "no_main_ownership_conflict_confirmed": true,
+    "scope": "this worktree only"
+  }
+}

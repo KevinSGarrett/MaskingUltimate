@@ -106,11 +106,12 @@ Ignore index = 255 everywhere (uncertainty zones from `ambiguous_do_not_use` par
 
 ## 5. Training Infrastructure (RunPod production)
 
-- Production training runs directly on the selected RunPod with persistent,
-  hash-verified inputs and outputs. GPU/VRAM admission, reservation, checkout,
-  capacity scheduling, and `runs\gpu.lock` refusal are retired.
+- Production training runs on the selected RunPod with persistent,
+  hash-verified inputs and outputs. Every Pod-local GPU child uses
+  `tools/run_with_shared_pod_gpu_lease.py`; `runs\gpu.lock` is only an
+  internal critical-section lock and cannot replace the shared FIFO lease.
 - GPU utilization and memory may be recorded as diagnostics, but cannot
-  authorize, queue, delay, or block a run. AWS is never a compute target.
+  replace shared-lease authority. AWS is never a compute target.
 - Determinism: seed 1337, `cudnn.deterministic=true` for release runs (speed runs may relax; the
   leaderboard entry records which).
 - Every run: `runs\<run_id>\{run.json, config.yaml, git_sha, dataset_ref, ckpts\, tb\, eval\}`;

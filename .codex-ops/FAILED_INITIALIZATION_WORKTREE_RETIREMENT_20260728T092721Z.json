@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-07-28T09:27:21Z",
+  "repository": "C:\\Comfy_UI_Main_Masking",
+  "removed_worktree": "C:\\w\\mfw\\1ac23a6ca8655227",
+  "ownership": "Masking",
+  "git_common_dir": "C:\\Comfy_UI_Main_Masking\\.git",
+  "classification": "FAILED_INITIALIZATION_EXACTLY_PRESERVED_NO_UNIQUE_WORK",
+  "source_head": "093b9b1d74fb21ec5653d9dae395af878a8f0909",
+  "source_remote_ref": "origin/codex/recovery-maskfactory-detached-base-20260728-093b9b1",
+  "lock_reason": "initializing",
+  "staged_deletion_count": 1564,
+  "other_staged_change_count": 0,
+  "status_line_count": 1759,
+  "checkpoint_status_exact_line_match": true,
+  "checkpoint_patch": {
+    "bytes": 18291910,
+    "sha256": "66c462c9cf772cefad69f0fb6edd15f1f89c2dd8b60d86b43ff1cd7ebc775c3c",
+    "live_patch_exact_match": true
+  },
+  "present_file_analysis": {
+    "non_git_files": 196,
+    "exact_base_blobs": 195,
+    "zero_byte_initialization_artifacts": 1,
+    "unique_source_bytes": false
+  },
+  "checkpoint_selected_source_tar": {
+    "bytes": 4213760,
+    "sha256": "4fb6eee426b3768b7cf1061ca8840dbd0f4cca6ed8a37d3d92338d400557c4a1"
+  },
+  "pre_remove_bytes": 4834967,
+  "worktree_count_before": 8,
+  "worktree_count_after": 7,
+  "post_conditions": {
+    "unlock_succeeded": true,
+    "path_absent": true,
+    "registration_absent": true,
+    "source_head_remote_reachable": true,
+    "connectivity_fsck_passed": true,
+    "full_fsck_passed": true,
+    "reconciliation_local_remote_head": "9fb728ee142d941f281687874b2c8429b407c065"
+  },
+  "shared_path_confirmation": {
+    "main_thread": "019fa6cc-eb76-74c1-8fd1-f062cec56dad",
+    "no_main_ownership_conflict_confirmed": true,
+    "scope": "this worktree only"
+  }
+}

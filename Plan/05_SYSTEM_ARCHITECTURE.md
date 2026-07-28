@@ -67,7 +67,7 @@ multi-instance architecture; nothing else in this diagram changes.
 | Docker Desktop (WSL2 backend) | CVAT + Postgres/Redis + nuclio serverless SAM2 interactor + Ollama container | Isolated services, one `docker compose up` |
 | Native Windows | ComfyUI + MaskFactory node pack; File Explorer access to `C:\Comfy_UI_Main_Masking\` | Kevin's existing ComfyUI stays untouched |
 
-Shared filesystem: `C:\Comfy_UI_Main_Masking\` ≡ `/mnt/c/Comfy_UI_Main_Masking/` (WSL2) ≡ bind-mounts into containers. One tree, three views. Production GPU work executes directly on the selected RunPod.
+Shared filesystem: `C:\Comfy_UI_Main_Masking\` ≡ `/mnt/c/Comfy_UI_Main_Masking/` (WSL2) ≡ bind-mounts into containers. One tree, three views. Production GPU work executes on the selected RunPod through the shared guarded launcher.
 
 ## 3. Module Boundaries (`src\maskfactory\`)
 
@@ -112,14 +112,16 @@ surface patch, (hands) landmark polygons, (clothing lanes) material parse. Metho
 
 ## 5. RunPod GPU execution
 
-- The intended RunPod executes directly. There is no GPU/VRAM admission,
-  reservation, checkout, capacity lease, scheduler veto, or file-lock gate.
-- Model residency, batching, and unload behavior are workload implementation
-  details, not resource-governance prerequisites.
+- Every Pod-local GPU child executes through
+  `tools/run_with_shared_pod_gpu_lease.py`. The shared FIFO lease is acquired
+  before launch, heartbeated for the complete child lifetime, and terminally
+  released.
+- Model residency, batching, and unload behavior remain workload
+  implementation details; they do not replace the shared lease.
 - GPU utilization and peak memory may be measured as diagnostic evidence, but
-  observations never authorize, queue, delay, or refuse a workload.
+  observations never replace lease authority.
 - A real OOM or runtime failure is recorded as that workload's typed failure;
-  it does not create a global capacity policy or lower quality thresholds.
+  it does not lower quality thresholds or authorize preemption.
 
 ## 6. Concurrency, Logging, Errors
 

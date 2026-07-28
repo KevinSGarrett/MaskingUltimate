@@ -22,9 +22,10 @@ because the work is done or because context/time is running out.
    local Ollama, a local runtime doctor, or local GPU probes during bootstrap.
    Never start, restart, repair, update, pull, build, or execute those local
    components unless Kevin explicitly requests that exact operation in the
-   current turn. GPU/VRAM admission, reservation, checkout, capacity scheduling,
-   and file-lock governance are disabled; do not consult them before executing
-   on the selected pod.
+   current turn. Before any Pod-local GPU child, use
+   `tools/run_with_shared_pod_gpu_lease.py` and retain the FIFO lease for the
+   complete child lifetime. A queued or denied lease means Serverless,
+   OpenRouter advisory, or CPU-safe work—not direct execution.
 4. **Proof-tier honesty.** Before marking bridge/core items complete, re-read
    `02` §11. P6-11/12 producer fixture work is `STATIC_PASS` +
    `AWAITING_MAIN` until real Main adoption/runtime evidence exists. Record
@@ -61,8 +62,9 @@ because the work is done or because context/time is running out.
    Re-read Standing Orders § SELF-HOSTED STRICT VLM GATE and
    `13_SELF_HOSTED_STRICT_VLM_GATE.md`. Confirm the RunPod private endpoint plus
    the evidence-qualified primary and independent-family juror from doc 25. Do not promote MVC/CAA
-   without panel+STRICT-VLM evidence. On RunPod, serialize with hand climb
-   VRAM; unload VLMs after critic bursts. NEVER EC2; no cloud VLM for MF QA.
+   without panel+STRICT-VLM evidence. On RunPod, serialize through the shared
+   FIFO lease and apply the selected model-lifecycle policy after each critic
+   child. NEVER EC2; no cloud VLM for MF QA.
 10. **NO-STOP orientation.** Re-read Standing Orders § CONTINUOUS UNTIL E2E
     COMPLETE (NO STOP) and `02` §13. This session does **not** end with idle
     wait for Kevin. Plan the continuous chain: after each wave, immediate next
@@ -145,7 +147,7 @@ UNTIL E2E COMPLETE (NO STOP)).
    state.
 2. `python tracker.py validate` — confirm no missing-evidence or
    missing-blocked-reason drift crept in, and that the item count still
-   matches expectations (827, unless `Plan\Items\*.md` was deliberately
+   matches expectations (906, unless `Plan\Items\*.md` was deliberately
    edited and rebuilt).
 3. If you're stopping mid-item, leave a clean handoff:
    `python tracker.py set <id> --status in_progress --percent <N> --note

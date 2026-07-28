@@ -28,9 +28,12 @@ else is yours to execute.
 probe, start, restart, repair, update, pull, build, or execute MaskFactory work
 through local Docker Desktop, WSL, CVAT, Nuclio/SAM2, Ollama, or the local GPU
 unless Kevin explicitly requests that exact local operation in the current
-turn. Production execution belongs on persistent RunPod storage under the
-the selected RunPod directly without GPU/VRAM governance. If RunPod is unavailable, continue CPU-only implementation
-and block only the affected runtime item; never substitute the laptop.
+turn. Production execution belongs on persistent RunPod storage. Every
+Pod-local GPU launch must go through
+`tools/run_with_shared_pod_gpu_lease.py`; a lease refusal routes work to the
+governed Serverless broker, eligible OpenRouter advisory, or a CPU-safe lane.
+If RunPod is unavailable, continue CPU-only implementation and block only the
+affected runtime item; never substitute the laptop.
 
 ## 2. Spec Fidelity — Build To The Document, Not To Memory
 
@@ -186,7 +189,8 @@ if the qualified RunPod critics/models are unavailable or `--skip-vlm` is attemp
 hard QC BLOCK and never alone mints gold. qwen-only rubber stamps are
 forbidden. Follow `13_SELF_HOSTED_STRICT_VLM_GATE.md` and Standing Orders
 § SELF-HOSTED STRICT VLM GATE. NEVER EC2; no cloud LLMs for MF VLM QA.
-Serialize critic bursts with hand workers (unload VLMs after).
+Acquire and retain the shared FIFO GPU lease for every critic child lifetime;
+release it terminally and follow the selected model lifecycle policy.
 
 ## 13. Continuous Until E2E Complete (NO STOP)
 

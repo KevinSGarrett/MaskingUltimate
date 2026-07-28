@@ -1,7 +1,7 @@
 ﻿# Current Task
 
 Task ID: MASKFACTORY-ULTIMATE-MASKING-E2E-20260727
-Updated UTC: 2026-07-28T11:15:00Z
+Updated UTC: 2026-07-28T11:50:00Z
 
 ## Current blocking phase
 
@@ -9,8 +9,10 @@ Normalize the repository and promote one complete, validated product authority
 to `main` without losing dirty, divergent, or historical work.
 
 - `origin/main`: `d6a3c0e00d01536504f737aff84891cf8bd4efb3`
-- clean reconciliation authority:
-  `4316297024734d8741370905ad185a7fcccfeb8f`
+- normalization branch:
+  `codex/normalize-maskfactory-main-20260728`
+- dirty-root reconciliation parent:
+  `f036d3f1e83bd64ab3660591a2fa9adbc4c78da8`
 - topology: `main` is 0 ahead / 621 behind reconciliation and is its ancestor
 - inventory: 20 local branches, 26 remote branches, two registered Masking
   worktrees
@@ -19,9 +21,12 @@ to `main` without losing dirty, divergent, or historical work.
   remain no-touch except through separately proven, receipt-backed
   dispositions
 
-The clean reconciliation line is necessary but not sufficient. It must absorb
-the non-superseded full-product content from the fallback/serverless lines and
-the relevant historical candidate cohort before `main` is fast-forwarded.
+The product, fallback/serverless, and historical capability lines are now
+integrated or explicitly dispositioned. The original dirty checkout is
+checkpoint-preserved and semantically reconciled; no executable source remains
+absent. The next blocking gate is the complete product validation suite,
+evidence reconstruction, Git integrity, and coordinated non-forced
+fast-forward of `main`.
 
 ## Objective
 
@@ -136,12 +141,12 @@ Binding authorities:
 
 ## First next action
 
-Complete the receipt-backed repository-normalization phase in
-`.codex-ops/BRANCH_NORMALIZATION_STRATEGY_20260728.md`. Create verified
-rollback refs, integrate and validate the complete product on a dedicated
-normalization branch, reconcile the protected dirty checkout, and only then
-fast-forward `origin/main`. Retire branches only after their unique work is
-merged or durably archived and dispositioned.
+Run the complete product validation, evidence-reconstruction, tracker, package,
+pre-commit, and Git-integrity gates from
+`codex/normalize-maskfactory-main-20260728`. Coordinate the exact result with
+the Main task, then fast-forward `origin/main` without rewriting history.
+Retire branch names only after the promotion receipt proves their unique work
+merged, patch-equivalent, superseded, or durably archived.
 
 After that blocking phase, `MF-P6-19.01` is tracker-complete with the accepted
 25-mission campaign packet

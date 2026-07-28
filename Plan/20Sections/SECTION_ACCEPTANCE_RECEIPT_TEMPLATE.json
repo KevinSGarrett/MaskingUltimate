@@ -1,0 +1,104 @@
+{
+  "$schema": "maskingultimate.section_acceptance_receipt.v1",
+  "section_id": null,
+  "section_title": "",
+  "acceptance_decision": "ACCEPT|REJECT|PARTIAL_NOT_ACCEPTED",
+  "canonical_source": {
+    "commit": "",
+    "tree": "",
+    "branch": "",
+    "clean": false,
+    "source_manifest_sha256": ""
+  },
+  "inputs": [
+    {
+      "path_or_uri": "",
+      "sha256": "",
+      "authority": "",
+      "purpose": ""
+    }
+  ],
+  "tracker_items": [
+    {
+      "item_id": "",
+      "before_status": "",
+      "after_status": "",
+      "verification_clause_passed": false,
+      "evidence_refs": []
+    }
+  ],
+  "implementation_commits": [],
+  "tests": [
+    {
+      "tier": "T0|T1|T2|T3|T4|T5",
+      "command": "",
+      "environment_sha256": "",
+      "exit_code": null,
+      "collected": null,
+      "passed": null,
+      "failed": null,
+      "skipped": null,
+      "junit_sha256": "",
+      "limitations": []
+    }
+  ],
+  "live_acceptance": [
+    {
+      "scenario": "",
+      "real_input_count": null,
+      "terminal_count": null,
+      "result": "PASS|FAIL|NOT_APPLICABLE",
+      "evidence_sha256": ""
+    }
+  ],
+  "integration_checks": [
+    {
+      "component_a": "",
+      "component_b": "",
+      "scenario": "",
+      "result": "PASS|FAIL",
+      "evidence_sha256": ""
+    }
+  ],
+  "negative_fault_checks": [
+    {
+      "scenario": "",
+      "expected": "",
+      "observed": "",
+      "result": "PASS|FAIL"
+    }
+  ],
+  "resource_reconciliation": {
+    "processes_released": false,
+    "ports_released": false,
+    "gpu_leases_released": false,
+    "reservations_released": false,
+    "duplicates": null,
+    "unknown_terminal_records": null
+  },
+  "rollback": {
+    "command": "",
+    "result": "PASS|FAIL|NOT_APPLICABLE",
+    "evidence_sha256": ""
+  },
+  "known_limitations": [],
+  "claims_not_made": [],
+  "proof_artifacts": [
+    {
+      "path": "",
+      "sha256": ""
+    }
+  ],
+  "independent_reviewer": {
+    "identity": "",
+    "reviewed_at_utc": "",
+    "decision": "ACCEPT|REJECT",
+    "notes": ""
+  },
+  "tracker_report_hashes": {
+    "tracker_json_sha256": "",
+    "dashboard_sha256": "",
+    "phase_report_sha256": "",
+    "profile_report_sha256": ""
+  }
+}

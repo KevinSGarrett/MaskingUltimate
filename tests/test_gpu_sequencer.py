@@ -38,7 +38,9 @@ def test_parse_smi_apps_flags_foreign_comfyui_holder() -> None:
     assert cursor.used_mib is None
 
 
-def test_decide_does_not_gate_on_foreign_process_or_vram_shortage(tmp_path: Path) -> None:
+def test_decide_requires_shared_lease_despite_foreign_process_or_vram_shortage(
+    tmp_path: Path,
+) -> None:
     snapshot = {
         "nvidia_smi_available": True,
         "gpus": [
@@ -54,11 +56,11 @@ def test_decide_does_not_gate_on_foreign_process_or_vram_shortage(tmp_path: Path
         ],
     }
     decision = seq.decide("ollama-vlm", snapshot, lock_path=tmp_path / "gpu.lock")
-    assert decision.decision == "run_now"
+    assert decision.decision == "lease_required"
     assert decision.foreign_holders
 
 
-def test_decide_run_now_when_headroom_and_lock_absent(tmp_path: Path) -> None:
+def test_decide_requires_shared_lease_when_headroom_and_lock_absent(tmp_path: Path) -> None:
     snapshot = {
         "nvidia_smi_available": True,
         "gpus": [
@@ -67,7 +69,7 @@ def test_decide_run_now_when_headroom_and_lock_absent(tmp_path: Path) -> None:
         "compute_apps": [],
     }
     decision = seq.decide("ollama-vlm", snapshot, lock_path=tmp_path / "gpu.lock")
-    assert decision.decision == "run_now"
+    assert decision.decision == "lease_required"
 
 
 def test_decide_ignores_other_lock_owner(tmp_path: Path) -> None:
@@ -85,13 +87,13 @@ def test_decide_ignores_other_lock_owner(tmp_path: Path) -> None:
         "compute_apps": [],
     }
     decision = seq.decide("ollama-vlm", snapshot, lock_path=lock_path)
-    assert decision.decision == "run_now"
+    assert decision.decision == "lease_required"
 
 
-def test_decide_missing_telemetry_does_not_create_admission_gate(tmp_path: Path) -> None:
+def test_decide_missing_telemetry_fails_closed_to_shared_lease(tmp_path: Path) -> None:
     snapshot = {"nvidia_smi_available": False, "gpus": [], "compute_apps": []}
     decision = seq.decide("pipeline", snapshot, lock_path=tmp_path / "gpu.lock")
-    assert decision.decision == "run_now"
+    assert decision.decision == "lease_required"
 
 
 def test_reclaim_method_maps_consumers_to_recipes() -> None:
@@ -132,7 +134,7 @@ def test_sequence_handoff_never_reclaims_or_waits(monkeypatch, tmp_path: Path) -
         released.append(consumer)
         return seq.ReclaimResult(consumer=consumer, method="ollama_unload", target="m", status="ok")
 
-    run_now_snapshot = {
+    telemetry_snapshot = {
         "probed_at": "now",
         "nvidia_smi_available": True,
         "gpus": [
@@ -141,10 +143,10 @@ def test_sequence_handoff_never_reclaims_or_waits(monkeypatch, tmp_path: Path) -
         "compute_apps": [],
     }
     monkeypatch.setattr(seq, "release_consumer", fake_release)
-    monkeypatch.setattr(seq, "probe_gpu", lambda consumer="": run_now_snapshot)
+    monkeypatch.setattr(seq, "probe_gpu", lambda consumer="": telemetry_snapshot)
 
     payload = seq.sequence_handoff("nuclio-sam2", lock_path=tmp_path / "gpu.lock", timeout_s=1)
 
     assert released == []
-    assert payload["decision"]["decision"] == "run_now"
+    assert payload["decision"]["decision"] == "lease_required"
     assert payload["consumer"] == "nuclio-sam2"

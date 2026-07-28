@@ -91,9 +91,10 @@ assets from AWS to RunPod.
    partial download, interrupted transfer, or root-overlay file as durable.
 5. A multi-GPU critic role requires a separately measured deployment; it does
    not become available merely because the model is cataloged.
-6. Select the intended RunPod directly. GPU/VRAM admission, reservation,
-   checkout, capacity leases, schedulers, preflights, and file-lock gates are
-   disabled. Runtime memory and utilization observations are telemetry only.
+6. Select the intended RunPod and launch every GPU child through
+   `tools/run_with_shared_pod_gpu_lease.py`. The shared FIFO lease is held for
+   the complete child lifetime and terminally released. Runtime memory and
+   utilization observations are telemetry and cannot replace lease authority.
 
 ## 4. Read-only AWS inventory and governed migration
 

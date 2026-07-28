@@ -804,7 +804,7 @@ def main() -> int:
             "configs/vlm.yaml governance (may_author_masks=false, may_approve_gold=false)",
             "src/maskfactory/vlm/strict_gate.py",
             "src/maskfactory/autonomy/visual_defect_policy.py",
-            "direct selected-RunPod execution; GPU/VRAM telemetry has no authority",
+            "selected-RunPod execution through tools/run_with_shared_pod_gpu_lease.py",
         ],
         "honesty_rules": [
             "NOT a draft-corpus VISUAL_QA_REVIEWED_WITH_DEFECTS seal",

@@ -109,7 +109,8 @@ No changes to Kevin's existing install; the node pack (doc 13) is a folder copie
 3. WSL2 I/O on `/mnt/c` is slow for many small files → pipeline writes hot intermediates to
    `~/mfwork` (ext4) and syncs packages to `/mnt/c/...` at stage end (`io.workdir` config).
 4. Docker Desktop + WSL GPU is legacy local integration only. Production GPU
-   work runs directly on the selected RunPod without GPU/VRAM governance.
+   work runs on the selected RunPod through
+   `tools/run_with_shared_pod_gpu_lease.py`.
 5. PNG strictness: Pillow must save mode `L`, `optimize=False`; `png_strict.py` is the single
    writer used by all code — direct `cv2.imwrite` for masks is banned by lint rule.
 6. Laptop thermals: long batches at 100% GPU → set `pipeline.yaml: gpu_cooldown_sec: 3` between

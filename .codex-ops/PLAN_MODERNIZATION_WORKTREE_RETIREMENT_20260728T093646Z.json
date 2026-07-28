@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-07-28T09:36:46Z",
+  "repository": "C:\\Comfy_UI_Main_Masking",
+  "removed_worktree": "C:\\w\\maskfactory-plan-modernization",
+  "ownership": "Masking",
+  "git_common_dir": "C:\\Comfy_UI_Main_Masking\\.git",
+  "classification": "RUNTIME_EVIDENCE_EXACTLY_PRESERVED_PLAN_NOTE_ADOPTED",
+  "source_head": "0dad835d034df395158f3bd26302e6a638adb600",
+  "source_head_remote_reachable": true,
+  "checkpoint_status_line_count": 3233,
+  "checkpoint_status_exact_line_match": true,
+  "checkpoint_tracked_patch": {
+    "bytes": 1334,
+    "sha256": "67b29dbac762aeaf27f01d2d221c220b3824aaf52e6253c292e2931ad123034e",
+    "live_patch_exact_match": true,
+    "ops_note_adopted": true,
+    "generated_dashboard_timestamp_adopted": false
+  },
+  "untracked_path_count": 3231,
+  "primary_preservation": {
+    "path": "F:\\MaskFactory_DataRelocated\\local_dirty_backups\\maskfactory_dirty_snapshot_20260723_144103\\plan_modernization\\dirty_files.tar",
+    "bytes": 2896076800,
+    "sha256": "5c31cfa268c51e31c5ab42c55e9fe5d6117be808317f34b3de7ff20e61c20dfd",
+    "exact_regular_file_matches": 3229,
+    "covered_hardlinks": 1
+  },
+  "gap_preservation": {
+    "path": "C:\\MaskFactory_TierA_Backups\\plan_modernization_gap_20260728T093034Z",
+    "member": "runtime_artifacts/agent_handoffs/scope_packets/20260723T205500-0500_maskfactory-critic-protocol-v3-implementation-design.json",
+    "member_bytes": 3801,
+    "member_sha256": "3df6ddd8a4471f6f458eb4d8d8043d3aade2d56c62900d0808362fd549833a5a",
+    "archive_bytes": 5632,
+    "archive_sha256": "61dcdcecb6723f5f504cee8760daf84bb53b5e6476427b82a5a4680a5d7f9634",
+    "readback_exact_match": true
+  },
+  "pre_remove_bytes": 3500727800,
+  "worktree_count_before": 7,
+  "worktree_count_after": 6,
+  "post_conditions": {
+    "path_absent": true,
+    "registration_absent": true,
+    "source_head_remote_reachable": true,
+    "primary_archive_preserved": true,
+    "gap_archive_preserved": true,
+    "connectivity_fsck_passed": true,
+    "full_fsck_passed": true,
+    "reconciliation_local_remote_head": "9fb728ee142d941f281687874b2c8429b407c065",
+    "c_free_gib_observed": 59.212,
+    "f_free_gib_observed": 14.055
+  },
+  "shared_path_confirmation": {
+    "main_thread": "019fa6cc-eb76-74c1-8fd1-f062cec56dad",
+    "no_main_ownership_conflict_confirmed": true,
+    "scope": "this worktree only"
+  }
+}

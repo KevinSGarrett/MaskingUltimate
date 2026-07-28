@@ -11104,3 +11104,42 @@ reachable by its remote branch and namespaced recovery ref. Branch-name
 retirement remains gated on validated `main` promotion and a final archival
 receipt. Evidence:
 `.codex-ops/HISTORICAL_AGENT_DISPOSITION_20260728T114200Z.json`.
+
+## 2026-07-28 11:50 UTC - Dirty canonical checkout reconciled without deletion
+
+**Result:** PASS /
+`CHECKPOINT_PRESERVED_SEMANTICALLY_RECONCILED_NOT_CLEANED_IN_PLACE`.
+
+The original dirty checkout remains untouched as a recovery source at
+`61b4ffed850ab9570253acde5704a5bf44d4f7b6`. Its 6,987-path checkpoint
+baseline remains protected by
+`F:\CodexRecovery\maskfactory_reconciliation_checkpoint_20260728T042648Z`;
+6,984 baseline paths remain present, and the three absent directory markers
+are worktrees retired through earlier receipt-backed Git procedures. The 99
+post-checkpoint paths are reconciliation receipts, tracker backups, the clean
+integration registration, and 87 bounded Climb4 scratch paths—not missing
+product source.
+
+The 32-file `Plan/20Sections` package passed its 30-entry SHA-256/size
+registry, strict JSON parsing, safe ZIP-path validation, and 31/31
+ZIP-to-filesystem byte comparison before exact adoption. Seven previously
+dirty-root-only retirement/protection receipts were imported byte-for-byte and
+JSON-validated. Of the bounded source/control candidates, no executable path
+was absent after adoption: exact matches were retained; apparent Python
+differences were formatting/import/unused-variable cleanup or current hardened
+implementations; focused validation passed 28 tests.
+
+The dirty authority text also exposed a real policy contradiction: scattered
+Plan and tracker sources still described direct Pod GPU execution with
+admission disabled. Current standing orders require the shared FIFO lease.
+The architecture, runtime, VLM, training, adult-corpus, DAZ, Items, tracker,
+session controls, and GPU telemetry compatibility tool now fail closed to
+`tools/run_with_shared_pod_gpu_lease.py`. Tracker state remains 906 items, 54
+hard blockers, and zero structural errors; no completion tier was raised.
+
+Earlier dirty-root OPS sections—including the 2026-07-21 runtime waves and the
+2026-07-28 checkpoint, pack repair, worktree retirements, Consumer protection,
+and Climb4 reconciliation—remain byte-exact in the primary checkpoint and
+dirty recovery source. Their seven missing durable receipts are now also
+present on the normalization branch. This log entry is their canonical
+reconciliation pointer; it does not reinterpret historical runtime claims.

@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-07-28T09:39:45Z",
+  "consumer_repository": "C:\\Comfy_UI_Main_MaskFactory_Consumer",
+  "consumer_branch": "master",
+  "local_head": "1091a9c8cc01ff554907b97a7e754c6c884cee01",
+  "commit_count": 7,
+  "working_tree_clean_before": true,
+  "working_tree_clean_after": true,
+  "remote": {
+    "name": "maskfactory-recovery",
+    "fetch_url": "https://github.com/KevinSGarrett/MaskingUltimate.git",
+    "push_url": "https://github.com/KevinSGarrett/MaskingUltimate.git",
+    "ref": "refs/heads/codex/recovery-maskfactory-consumer-20260728-1091a9c",
+    "ref_absent_before_push": true,
+    "remote_oid_after_push": "1091a9c8cc01ff554907b97a7e754c6c884cee01",
+    "local_remote_parity": true
+  },
+  "checkpoint": {
+    "path": "F:\\CodexRecovery\\maskfactory_reconciliation_checkpoint_20260728T042648Z",
+    "all_refs_bundle_present": true
+  },
+  "validation": {
+    "connectivity_fsck_passed": true,
+    "full_fsck_passed": true,
+    "files_changed": false,
+    "history_rewritten": false,
+    "branch_renamed": false,
+    "merge_performed": false
+  },
+  "coordination": {
+    "main_thread": "019fa6cc-eb76-74c1-8fd1-f062cec56dad",
+    "no_main_dependency_conflict_confirmed": true
+  }
+}

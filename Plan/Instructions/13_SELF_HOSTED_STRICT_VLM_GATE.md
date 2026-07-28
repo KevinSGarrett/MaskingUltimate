@@ -76,13 +76,15 @@ Any dimension `fail` ⇒ overall fail ⇒ abstain/reject/repair — **not gold**
 
 1. Live-probe the governed self-hosted endpoint and confirm the exact registry-selected role models,
    artifact hashes, runtime, and lifecycle state. Model presence alone is not qualification.
-2. GPU/VRAM telemetry may be sampled for diagnostics, but it does not admit,
-   delay, serialize, reserve, check out, or refuse the visual wave. Do not kill
-   unrelated healthy processes.
+2. Launch every Pod-local GPU critic only through
+   `tools/run_with_shared_pod_gpu_lease.py`. The shared FIFO lease admits and
+   serializes the child; a queued or denied lease routes the session to
+   Serverless, eligible OpenRouter advisory, or CPU-safe work. Do not kill or
+   preempt unrelated processes.
 3. Render panels (source/mask/overlay). Do not claim visual QA from mask PNG decode alone.
 4. Run STRICT critic burst; seal evidence under `qa/live_verification/` with model id, prompt hash, response, panel hashes.
-5. Apply only the mission's model-lifecycle policy; never unload a model as
-   GPU/VRAM governance or as a prerequisite for another workload.
+5. Apply the mission's model-lifecycle policy, terminally release the shared
+   lease, and preserve exact child/lease evidence.
 6. Update tracker via `tracker.py` only; append OPS_LOG + DECISIONS_LOG.
 
 ### Example commands

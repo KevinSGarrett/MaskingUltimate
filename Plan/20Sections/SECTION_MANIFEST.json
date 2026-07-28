@@ -1,0 +1,1125 @@
+{
+  "schema_version": "maskingultimate.20_section_plan.v1",
+  "generated_at": "2026-07-27",
+  "source_snapshot_head": "2c04e1a7f5adf5f6948af01423f67a867206e8c2",
+  "tracker_total": 906,
+  "unresolved_total": 285,
+  "sections": [
+    {
+      "section_id": 1,
+      "title": "Recovery Freeze, Authority, and Git/Tracker Reconciliation",
+      "slug": "authority_git_tracker_reconciliation",
+      "depends_on": [],
+      "enables": [
+        2,
+        3
+      ],
+      "tracker_item_count": 1,
+      "tracker_item_ids": [
+        "MF-P6-20.01"
+      ],
+      "status_counts": {
+        "open": 1
+      },
+      "hard_blocker_count": 1,
+      "explicit_user_authority_item_ids": [],
+      "goal": "Establish one indisputable source-of-truth baseline before any additional feature work, preserving every local, staged, untracked, GitHub, and accepted runtime artifact without destructive reconciliation.",
+      "required_proof_artifacts": [
+        "source_line_inventory.json",
+        "path_ownership_matrix.csv",
+        "git_ancestry_report.md",
+        "conflict_decisions.jsonl",
+        "backup_hash_manifest.tsv",
+        "reconciliation_validation.junit.xml",
+        "section_acceptance_receipt.json"
+      ],
+      "work_packet_path": "sections/SECTION_01_AUTHORITY_GIT_TRACKER_RECONCILIATION.md"
+    },
+    {
+      "section_id": 2,
+      "title": "Canonical Integrated Source Tree and Repository Hygiene",
+      "slug": "canonical_integrated_source_tree",
+      "depends_on": [
+        1
+      ],
+      "enables": [
+        3
+      ],
+      "tracker_item_count": 1,
+      "tracker_item_ids": [
+        "MF-P6-20.02"
+      ],
+      "status_counts": {
+        "open": 1
+      },
+      "hard_blocker_count": 1,
+      "explicit_user_authority_item_ids": [],
+      "goal": "Produce one complete, source-controlled tree containing the full MaskFactory product and the accepted autonomy/runtime implementation, with no dependency on stale pycache, another checkout, chat state, or untracked source.",
+      "required_proof_artifacts": [
+        "canonical_tree_manifest.json",
+        "required_path_reconciliation.json",
+        "module_import_inventory.json",
+        "generated_artifact_manifest.json",
+        "repo_hygiene_scan.json",
+        "clean_tree_hash.txt",
+        "section_acceptance_receipt.json"
+      ],
+      "work_packet_path": "sections/SECTION_02_CANONICAL_INTEGRATED_SOURCE_TREE.md"
+    },
+    {
+      "section_id": 3,
+      "title": "Reproducible Environment, Packaging, Clean Export, and Full Test Baseline",
+      "slug": "environment_packaging_full_test_baseline",
+      "depends_on": [
+        2
+      ],
+      "enables": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "tracker_item_count": 4,
+      "tracker_item_ids": [
+        "MF-P0-EXIT",
+        "MF-P0-17.25",
+        "MF-P6-20.03",
+        "MF-P6-20.04"
+      ],
+      "status_counts": {
+        "partially_complete": 2,
+        "open": 2
+      },
+      "hard_blocker_count": 2,
+      "explicit_user_authority_item_ids": [],
+      "goal": "Make the canonical tree independently installable and testable on authorized Windows/WSL/RunPod environments, classify every external prerequisite honestly, and establish the first trustworthy full-product baseline.",
+      "required_proof_artifacts": [
+        "environment_lock_manifest.json",
+        "external_asset_contracts.json",
+        "test_inventory.json",
+        "full_suite_junit.xml",
+        "clean_export_reconstruction_receipt.json",
+        "service_lifecycle_evidence.json",
+        "runpod_restore_receipt.json",
+        "section_acceptance_receipt.json"
+      ],
+      "work_packet_path": "sections/SECTION_03_ENVIRONMENT_PACKAGING_FULL_TEST_BASELINE.md"
+    },
+    {
+      "section_id": 4,
+      "title": "Governed Source Ingestion, Provenance, Reference Corpus, and Leakage Control",
+      "slug": "source_provenance_reference_leakage",
+      "depends_on": [
+        3
+      ],
+      "enables": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        17,
+        18,
+        19
+      ],
+      "tracker_item_count": 9,
+      "tracker_item_ids": [
+        "MF-P1-12.09",
+        "MF-P1-12.10",
+        "MF-P2-09.09",
+        "MF-P9-13.06",
+        "MF-P9-13.07",
+        "MF-P9-13.08",
+        "MF-P9-14.06",
+        "MF-P9-14.09",
+        "MF-P9-14.10"
+      ],
+      "status_counts": {
+        "partially_complete": 6,
+        "blocked": 2,
+        "in_progress": 1
+      },
+      "hard_blocker_count": 0,
+      "explicit_user_authority_item_ids": [
+        "MF-P2-09.09"
+      ],
+      "goal": "Create the governed real-image and external-supervision foundation needed for calibration, training, benchmarks, and later DAZ gap targeting without allowing references, prompts, boxes, or unqualified masks to become truth.",
+      "required_proof_artifacts": [
+        "source_registry.jsonl",
+        "provenance_audit.json",
+        "reference_inventory_seal.json",
+        "leakage_duplicate_report.json",
+        "external_supervision_qualification.json",
+        "v2_authority_pilot_report.json",
+        "section_acceptance_receipt.json"
+      ],
+      "work_packet_path": "sections/SECTION_04_SOURCE_PROVENANCE_REFERENCE_LEAKAGE.md"
+    },
+    {
+      "section_id": 5,
+      "title": "Human-Anchor Gold Factory, CVAT Review, and Measured Baselines",
+      "slug": "human_anchor_gold_cvat_baselines",
+      "depends_on": [
+        3,
+        4
+      ],
+      "enables": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        17,
+        19
+      ],
+      "tracker_item_count": 8,
+      "tracker_item_ids": [
+        "MF-P1-08.02",
+        "MF-P1-08.03",
+        "MF-P1-08.04",
+        "MF-P1-08.05",
+        "MF-P1-09.05",
+        "MF-P1-EXIT",
+        "MF-P2-08.02",
+        "MF-P2-08.03"
+      ],
+      "status_counts": {
+        "blocked": 8
+      },
+      "hard_blocker_count": 0,
+      "explicit_user_authority_item_ids": [
+        "MF-P1-08.02",
+        "MF-P1-08.03",
+        "MF-P1-08.04",
+        "MF-P1-08.05",
+        "MF-P1-09.05",
+        "MF-P1-EXIT",
+        "MF-P2-08.02",
+        "MF-P2-08.03"
+      ],
+      "goal": "Create the minimum real human-authoritative gold and timing foundation that unlocks calibration, objective scoring, training, and headline claims.",
+      "required_proof_artifacts": [
+        "human_anchor_manifest.json",
+        "cvat_review_receipts/",
+        "human_gold_package_index.json",
+        "review_time_baseline.json",
+        "draft_pipeline_baseline.json",
+        "backup_restore_receipt.json",
+        "section_acceptance_receipt.json"
+      ],
+      "work_packet_path": "sections/SECTION_05_HUMAN_ANCHOR_GOLD_CVAT_BASELINES.md"
+    },
+    {
+      "section_id": 6,
+      "title": "Provider Runtime Catalog, Model Installation, and Role Qualification",
+      "slug": "provider_runtime_role_qualification",
+      "depends_on": [
+        3,
+        4,
+        5
+      ],
+      "enables": [
+        7,
+        8,
+        9,
+        10,
+        12,
+        15,
+        17,
+        18
+      ],
+      "tracker_item_count": 8,
+      "tracker_item_ids": [
+        "MF-P0-17.13",
+        "MF-P2-11.04",
+        "MF-P2-11.07",
+        "MF-P2-11.10",
+        "MF-P2-11.13",
+        "MF-P2-11.14",
+        "MF-P2-11.15",
+        "MF-P2-11.18"
+      ],
+      "status_counts": {
+        "partially_complete": 5,
+        "in_progress": 2,
+        "open": 1
+      },
+      "hard_blocker_count": 1,
+      "explicit_user_authority_item_ids": [],
+      "goal": "Make every active discovery, segmentation, pose, geometry, boundary, and challenger provider reproducible, isolated, benchmarkable, and rollback-safe.",
+      "required_proof_artifacts": [
+        "provider_catalog.json",
+        "provider_environment_locks/",
+        "model_hash_manifest.json",
+        "provider_benchmark_matrix.json",
+        "provider_qualification_certificates/",
+        "rollback_receipts/",
+        "section_acceptance_receipt.json"
+      ],
+      "work_packet_path": "sections/SECTION_06_PROVIDER_RUNTIME_ROLE_QUALIFICATION.md"
+    },
+    {
+      "section_id": 7,
+      "title": "Single-Person Draft Pipeline and Deterministic Auto-QA",
+      "slug": "single_person_draft_pipeline",
+      "depends_on": [
+        5,
+        6
+      ],
+      "enables": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        15,
+        17
+      ],
+      "tracker_item_count": 3,
+      "tracker_item_ids": [
+        "MF-P2-08.01",
+        "MF-P2-08.04",
+        "MF-P2-EXIT"
+      ],
+      "status_counts": {
+        "blocked": 3
+      },
+      "hard_blocker_count": 0,
+      "explicit_user_authority_item_ids": [
+        "MF-P2-08.01",
+        "MF-P2-08.04",
+        "MF-P2-EXIT"
+      ],
+      "goal": "Prove one deterministic command can take governed single-person images through complete indexed draft generation and objective comparison to human gold while reducing measured human work.",
+      "required_proof_artifacts": [
+        "draft25_input_manifest.json",
+        "draft25_run_receipt.json",
+        "fresh_image_D1_receipt.json",
+        "draft_vs_gold_metrics.json",
+        "human_work_reduction_report.json",
+        "stage_hash_inventory.json",
+        "section_acceptance_receipt.json"
+      ],
+      "work_packet_path": "sections/SECTION_07_SINGLE_PERSON_DRAFT_PIPELINE.md"
+    },
+    {
+      "section_id": 8,
+      "title": "Ontology, Truth-Tier, and Quantitative QA Authority",
+      "slug": "ontology_truth_qa_authority",
+      "depends_on": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "enables": [
+        9,
+        10,
+        11,
+        12,
+        14,
+        15,
+        17,
+        18,
+        19,
+        20
+      ],
+      "tracker_item_count": 1,
+      "tracker_item_ids": [
+        "MF-P4-12.11"
+      ],
+      "status_counts": {
+        "partially_complete": 1
+      },
+      "hard_blocker_count": 1,
+      "explicit_user_authority_item_ids": [],
+      "goal": "Turn the current candidate per-label/per-context QA registry into an empirically calibrated, immutable authority that resolves every enabled ontology label and fails closed on missing, stale, or globally collapsed rules.",
+      "required_proof_artifacts": [
+        "qualified_qa_registry.json",
+        "calibration_manifest.json",
+        "qualification_holdout_report.json",
+        "qa_vector_runtime_binding.json",
+        "registry_negative_tests.junit.xml",
+        "section_acceptance_receipt.json"
+      ],
+      "work_packet_path": "sections/SECTION_08_ONTOLOGY_TRUTH_QA_AUTHORITY.md"
+    },
+    {
+      "section_id": 9,
+      "title": "Specialist Anatomy, Clothing, Hair, Pose, and Geometry Lanes",
+      "slug": "specialist_lanes",
+      "depends_on": [
+        6,
+        7,
+        8
+      ],
+      "enables": [
+        10,
+        11,
+        12,
+        15,
+        17
+      ],
+      "tracker_item_count": 9,
+      "tracker_item_ids": [
+        "MF-P3-08.01",
+        "MF-P3-08.02",
+        "MF-P3-08.03",
+        "MF-P3-08.04",
+        "MF-P3-08.05",
+        "MF-P3-08.06",
+        "MF-P3-08.08",
+        "MF-P3-08.09",
+        "MF-P3-08.10"
+      ],
+      "status_counts": {
+        "partially_complete": 9
+      },
+      "hard_blocker_count": 1,
+      "explicit_user_authority_item_ids": [],
+      "goal": "Finish and qualify role-specific specialist lanes for hard anatomy, boundaries, pose, geometry, clothing, accessories, repeated instances, and independent votes without allowing unmeasured model substitution.",
+      "required_proof_artifacts": [
+        "specialist_benchmark_manifest.json",
+        "specialist_metrics.json",
+        "vote_ablation_report.json",
+        "specialist_role_decisions.json",
+        "specialist_rollback_receipts/",
+        "section_acceptance_receipt.json"
+      ],
+      "work_packet_path": "sections/SECTION_09_SPECIALIST_LANES.md"
+    },
+    {
+      "section_id": 10,
+      "title": "Visual Critic Committee, Repair, Certification, Revocation, and 66-Class Safety",
+      "slug": "visual_critic_repair_certification",
+      "depends_on": [
+        5,
+        8,
+        9
+      ],
+      "enables": [
+        11,
+        12,
+        14,
+        15,
+        16,
+        17,
+        19,
+        20
+      ],
+      "tracker_item_count": 35,
+      "tracker_item_ids": [
+        "MF-P4-01.06",
+        "MF-P4-04.03",
+        "MF-P4-05.01",
+        "MF-P4-05.04",
+        "MF-P4-06.04",
+        "MF-P4-06.05",
+        "MF-P4-07.04",
+        "MF-P4-08.08",
+        "MF-P4-09.06",
+        "MF-P4-09.07",
+        "MF-P4-10.08",
+        "MF-P4-10.09",
+        "MF-P4-10.12",
+        "MF-P4-11.25",
+        "MF-P4-11.26",
+        "MF-P4-11.11",
+        "MF-P4-11.15",
+        "MF-P4-11.18",
+        "MF-P4-11.19",
+        "MF-P4-11.23",
+        "MF-P4-12.01",
+        "MF-P4-12.02",
+        "MF-P4-12.03",
+        "MF-P4-12.04",
+        "MF-P4-12.05",
+        "MF-P4-12.06",
+        "MF-P4-12.07",
+        "MF-P4-12.08",
+        "MF-P4-12.09",
+        "MF-P4-12.10",
+        "MF-P4-EXIT",
+        "MF-P6-17.03",
+        "MF-P6-17.04",
+        "MF-P6-21.02",
+        "MF-P6-21.03"
+      ],
+      "status_counts": {
+        "blocked": 14,
+        "partially_complete": 14,
+        "in_progress": 4,
+        "open": 3
+      },
+      "hard_blocker_count": 18,
+      "explicit_user_authority_item_ids": [
+        "MF-P4-01.06",
+        "MF-P4-04.03",
+        "MF-P4-05.01",
+        "MF-P4-05.04",
+        "MF-P4-06.04",
+        "MF-P4-06.05",
+        "MF-P4-07.04",
+        "MF-P4-08.08",
+        "MF-P4-09.06",
+        "MF-P4-10.08",
+        "MF-P4-11.15",
+        "MF-P4-EXIT"
+      ],
+      "goal": "Establish qualified primary and independent-family visual authority, fail-closed disagreement, bounded repair, exact terminal accounting, and real certificate/revocation behavior across every active class and risk stratum.",
+      "required_proof_artifacts": [
+        "visual_regression_66_manifest.json",
+        "critic_qualification_primary.json",
+        "critic_qualification_juror.json",
+        "visual_gate_report.json",
+        "repair_accounting.json",
+        "certificate_revocation_demo.json",
+        "corpus_coverage_report.json",
+        "section_acceptance_receipt.json"
+      ],
+      "work_packet_path": "sections/SECTION_10_VISUAL_CRITIC_REPAIR_CERTIFICATION.md"
+    },
+    {
+      "section_id": 11,
+      "title": "Certified Dataset Build, DVC, Active Learning, and Scale",
+      "slug": "dataset_dvc_active_learning_scale",
+      "depends_on": [
+        5,
+        7,
+        10
+      ],
+      "enables": [
+        12,
+        14,
+        17,
+        19
+      ],
+      "tracker_item_count": 13,
+      "tracker_item_ids": [
+        "MF-P3-07.01",
+        "MF-P3-07.02",
+        "MF-P3-07.03",
+        "MF-P3-07.04",
+        "MF-P3-EXIT",
+        "MF-P5-01.06",
+        "MF-P7-01.01",
+        "MF-P7-01.02",
+        "MF-P7-01.03",
+        "MF-P7-01.04",
+        "MF-P5-11.01",
+        "MF-P5-11.08",
+        "MF-P5-11.09"
+      ],
+      "status_counts": {
+        "blocked": 8,
+        "open": 4,
+        "deferred": 1
+      },
+      "hard_blocker_count": 2,
+      "explicit_user_authority_item_ids": [
+        "MF-P3-07.01",
+        "MF-P3-07.03",
+        "MF-P3-07.04",
+        "MF-P7-01.01"
+      ],
+      "goal": "Convert qualified truth into immutable, reproducible datasets; close the 100-certified sprint; scale coverage deliberately; and publish the residual real-data gap that governs later training and DAZ work.",
+      "required_proof_artifacts": [
+        "certified_package_reconciliation.json",
+        "dataset_card_bodyparts_v1.json",
+        "dvc_push_restore_receipt.json",
+        "coverage_matrix.json",
+        "human_labor_metrics.json",
+        "hard_case_priority_report.json",
+        "residual_real_data_gap_report.json",
+        "section_acceptance_receipt.json"
+      ],
+      "work_packet_path": "sections/SECTION_11_DATASET_DVC_ACTIVE_LEARNING_SCALE.md"
+    },
+    {
+      "section_id": 12,
+      "title": "Custom Training, Leaderboard, Champion Promotion, and Ontology-v2 Activation",
+      "slug": "training_champions_v2_activation",
+      "depends_on": [
+        6,
+        8,
+        10,
+        11
+      ],
+      "enables": [
+        13,
+        14,
+        15,
+        16,
+        17,
+        19,
+        20
+      ],
+      "tracker_item_count": 34,
+      "tracker_item_ids": [
+        "MF-P1-10.05",
+        "MF-P5-03.02",
+        "MF-P5-03.03",
+        "MF-P5-03.04",
+        "MF-P5-04.02",
+        "MF-P5-05.03",
+        "MF-P5-05.04",
+        "MF-P5-05.05",
+        "MF-P5-06.01",
+        "MF-P5-06.03",
+        "MF-P5-07.02",
+        "MF-P5-07.03",
+        "MF-P5-07.04",
+        "MF-P5-08.01",
+        "MF-P5-08.02",
+        "MF-P5-08.03",
+        "MF-P5-09.08",
+        "MF-P5-09.09",
+        "MF-P5-09.10",
+        "MF-P5-10.07",
+        "MF-P5-10.08",
+        "MF-P5-10.11",
+        "MF-P5-10.12",
+        "MF-P5-EXIT",
+        "MF-P5-11.03",
+        "MF-P5-11.04",
+        "MF-P5-11.05",
+        "MF-P5-11.06",
+        "MF-P5-11.07",
+        "MF-P5-11.10",
+        "MF-P7-02.02",
+        "MF-P7-06.05",
+        "MF-P7-06.06",
+        "MF-P7-07.06"
+      ],
+      "status_counts": {
+        "partially_complete": 6,
+        "blocked": 19,
+        "deferred": 2,
+        "open": 7
+      },
+      "hard_blocker_count": 7,
+      "explicit_user_authority_item_ids": [
+        "MF-P5-05.04",
+        "MF-P5-05.05",
+        "MF-P5-07.02",
+        "MF-P5-07.03",
+        "MF-P5-07.04",
+        "MF-P5-09.08",
+        "MF-P5-10.12",
+        "MF-P5-EXIT"
+      ],
+      "goal": "Train and objectively select body, clothing, hand, anatomy-aware, and optional challengers; promote only image-disjoint human-holdout winners; prove rollback; and activate ontology v2 atomically only after every gate passes.",
+      "required_proof_artifacts": [
+        "training_run_manifests/",
+        "leaderboard_frozen.jsonl",
+        "champion_promotion_receipts/",
+        "champion_rollback_receipts/",
+        "post_swap_regression.json",
+        "ontology_v2_activation_bundle.json",
+        "ontology_v1_rollback_receipt.json",
+        "section_acceptance_receipt.json"
+      ],
+      "work_packet_path": "sections/SECTION_12_TRAINING_CHAMPIONS_V2_ACTIVATION.md"
+    },
+    {
+      "section_id": 13,
+      "title": "Autonomous Steward, Routing, GPU Coordination, and Exception-Only Control",
+      "slug": "autonomous_steward_control_plane",
+      "depends_on": [
+        3,
+        10,
+        12
+      ],
+      "enables": [
+        14,
+        15,
+        16,
+        20
+      ],
+      "tracker_item_count": 3,
+      "tracker_item_ids": [
+        "MF-P6-18.01",
+        "MF-P6-18.02",
+        "MF-P7-08.02"
+      ],
+      "status_counts": {
+        "in_progress": 2,
+        "open": 1
+      },
+      "hard_blocker_count": 1,
+      "explicit_user_authority_item_ids": [],
+      "goal": "Finish the integrated tracker-selection-to-terminal-packet supervisor and durable RunPod queue so routine work no longer depends on per-step Codex handoffs or unsafe dual submission.",
+      "required_proof_artifacts": [
+        "supervisor_e2e_25_fake_runtime.json",
+        "route_decision_ledger.jsonl",
+        "typed_escalation_report.json",
+        "runpod_queue_recovery_report.json",
+        "lease_release_reconciliation.json",
+        "section_acceptance_receipt.json"
+      ],
+      "work_packet_path": "sections/SECTION_13_AUTONOMOUS_STEWARD_CONTROL_PLANE.md"
+    },
+    {
+      "section_id": 14,
+      "title": "Real Campaign Qualification, Evidence Reconstruction, and Throughput Acceptance",
+      "slug": "real_campaigns_throughput_evidence",
+      "depends_on": [
+        10,
+        11,
+        12,
+        13
+      ],
+      "enables": [
+        15,
+        16,
+        17,
+        20
+      ],
+      "tracker_item_count": 8,
+      "tracker_item_ids": [
+        "MF-P6-18.03",
+        "MF-P6-18.04",
+        "MF-P6-19.03",
+        "MF-P6-19.04",
+        "MF-P6-21.01",
+        "MF-P6-21.04",
+        "MF-P7-07.05",
+        "MF-P7-08.03"
+      ],
+      "status_counts": {
+        "in_progress": 2,
+        "open": 5,
+        "partially_complete": 1
+      },
+      "hard_blocker_count": 6,
+      "explicit_user_authority_item_ids": [],
+      "goal": "Run the remaining real mask and mixed campaigns, measure autonomy and Codex reduction honestly, reconcile every terminal outcome, preserve previously accepted campaigns, and close the Plan-27 throughput gate.",
+      "required_proof_artifacts": [
+        "completion_evidence_locator.jsonl",
+        "campaign_100_mask_packet.json",
+        "mixed_campaign_1.json",
+        "mixed_campaign_2.json",
+        "mixed_campaign_3.json",
+        "autonomy_telemetry_report.json",
+        "record_81910_reconciliation.json",
+        "plan27_acceptance_packet.json",
+        "section_acceptance_receipt.json"
+      ],
+      "work_packet_path": "sections/SECTION_14_REAL_CAMPAIGNS_THROUGHPUT_EVIDENCE.md"
+    },
+    {
+      "section_id": 15,
+      "title": "Serving API, Model Registry, Mode A/B ComfyUI Nodes, and Local Runtime",
+      "slug": "serving_api_comfyui_local_runtime",
+      "depends_on": [
+        6,
+        10,
+        12,
+        14
+      ],
+      "enables": [
+        16,
+        17,
+        20
+      ],
+      "tracker_item_count": 11,
+      "tracker_item_ids": [
+        "MF-P6-01.07",
+        "MF-P6-02.01",
+        "MF-P6-02.03",
+        "MF-P6-02.05",
+        "MF-P6-03.02",
+        "MF-P6-03.03",
+        "MF-P6-05.07",
+        "MF-P6-06.03",
+        "MF-P6-06.07",
+        "MF-P6-06.08",
+        "MF-P6-EXIT"
+      ],
+      "status_counts": {
+        "blocked": 8,
+        "partially_complete": 3
+      },
+      "hard_blocker_count": 0,
+      "explicit_user_authority_item_ids": [
+        "MF-P6-01.07",
+        "MF-P6-02.01",
+        "MF-P6-02.05",
+        "MF-P6-03.03"
+      ],
+      "goal": "Deliver the complete local MaskFactory serving and ComfyUI integration surface against promoted champions, with read-only package behavior, typed fallback, measured latency, unseen-input workflows, v2 compatibility, and rollback.",
+      "required_proof_artifacts": [
+        "service_api_contract_receipt.json",
+        "model_residency_manifest.json",
+        "latency_vram_report.json",
+        "mode_a_workflow_receipt.json",
+        "mode_b_unseen_workflow_receipt.json",
+        "read_only_audit.json",
+        "service_rollback_receipt.json",
+        "section_acceptance_receipt.json"
+      ],
+      "work_packet_path": "sections/SECTION_15_SERVING_API_COMFYUI_LOCAL_RUNTIME.md"
+    },
+    {
+      "section_id": 16,
+      "title": "Cross-Project Comfy_UI_Main Bridge, Adoption Semantics, Feedback, and Recovery",
+      "slug": "cross_project_main_bridge",
+      "depends_on": [
+        14,
+        15
+      ],
+      "enables": [
+        20
+      ],
+      "tracker_item_count": 13,
+      "tracker_item_ids": [
+        "MF-P6-11.01",
+        "MF-P6-11.02",
+        "MF-P6-11.03",
+        "MF-P6-11.04",
+        "MF-P6-11.05",
+        "MF-P6-11.06",
+        "MF-P6-11.07",
+        "MF-P6-11.08",
+        "MF-P6-12.02",
+        "MF-P6-12.03",
+        "MF-P6-12.04",
+        "MF-P6-12.05",
+        "MF-P6-12.06"
+      ],
+      "status_counts": {
+        "blocked": 13
+      },
+      "hard_blocker_count": 3,
+      "explicit_user_authority_item_ids": [],
+      "goal": "Complete the external consumer adapter and two-way release/adoption/feedback/recovery contract between MaskFactory and `C:\\Comfy_UI_Main` without allowing dirty bytes, unsigned packages, or ambiguous receipts to confer authority.",
+      "required_proof_artifacts": [
+        "bridge_contract_freeze.json",
+        "main_adapter_test_receipt.json",
+        "mode_a_cross_project_receipt.json",
+        "mode_b_cross_project_receipt.json",
+        "feedback_journal_recovery_report.json",
+        "cross_project_qualification_packet.json",
+        "core_bridge_handoff_receipt.json",
+        "section_acceptance_receipt.json"
+      ],
+      "work_packet_path": "sections/SECTION_16_CROSS_PROJECT_MAIN_BRIDGE.md"
+    },
+    {
+      "section_id": 17,
+      "title": "Real Multi-Person and Multi-Character Masking",
+      "slug": "real_multi_person_masking",
+      "depends_on": [
+        10,
+        12,
+        15
+      ],
+      "enables": [
+        18,
+        19,
+        20
+      ],
+      "tracker_item_count": 10,
+      "tracker_item_ids": [
+        "MF-P8-10.01",
+        "MF-P8-10.02",
+        "MF-P8-10.03",
+        "MF-P8-10.04",
+        "MF-P8-10.05",
+        "MF-P8-10.06",
+        "MF-P8-11.03",
+        "MF-P8-11.07",
+        "MF-P8-11.08",
+        "MF-P8-EXIT"
+      ],
+      "status_counts": {
+        "blocked": 9,
+        "partially_complete": 1
+      },
+      "hard_blocker_count": 0,
+      "explicit_user_authority_item_ids": [
+        "MF-P8-10.01",
+        "MF-P8-10.02",
+        "MF-P8-10.04",
+        "MF-P8-10.05",
+        "MF-P8-11.07",
+        "MF-P8-EXIT"
+      ],
+      "goal": "Prove the activated system on 10\u201320 governed real 2\u20134-person images with exact instance ownership, certificate-covered acceptance, residual routing, blinded audits, zero cross-instance bleed, and rollback.",
+      "required_proof_artifacts": [
+        "real_multiperson_input_manifest.json",
+        "instance_relationship_manifest.json",
+        "multiperson_e2e_receipt.json",
+        "blinded_audit_report.json",
+        "D11_G9_metrics.json",
+        "multiperson_rollback_receipt.json",
+        "section_acceptance_receipt.json"
+      ],
+      "work_packet_path": "sections/SECTION_17_REAL_MULTI_PERSON_MASKING.md"
+    },
+    {
+      "section_id": 18,
+      "title": "DAZ Runtime, Assets, Genesis 9 Mapping, Deterministic Scenes, and Exact Passes",
+      "slug": "daz_foundation_exact_truth",
+      "depends_on": [
+        3,
+        4,
+        8,
+        17
+      ],
+      "enables": [
+        19,
+        20
+      ],
+      "tracker_item_count": 65,
+      "tracker_item_ids": [
+        "MF-P9-03.02",
+        "MF-P9-03.03",
+        "MF-P9-03.04",
+        "MF-P9-03.09",
+        "MF-P9-03.10",
+        "MF-P9-03.11",
+        "MF-P9-04.03",
+        "MF-P9-04.04",
+        "MF-P9-04.05",
+        "MF-P9-04.06",
+        "MF-P9-04.07",
+        "MF-P9-04.08",
+        "MF-P9-04.09",
+        "MF-P9-04.10",
+        "MF-P9-04.11",
+        "MF-P9-05.01",
+        "MF-P9-05.03",
+        "MF-P9-05.04",
+        "MF-P9-05.05",
+        "MF-P9-05.06",
+        "MF-P9-05.07",
+        "MF-P9-05.08",
+        "MF-P9-05.09",
+        "MF-P9-05.10",
+        "MF-P9-05.11",
+        "MF-P9-05.12",
+        "MF-P9-06.01",
+        "MF-P9-06.02",
+        "MF-P9-06.03",
+        "MF-P9-06.04",
+        "MF-P9-06.05",
+        "MF-P9-06.06",
+        "MF-P9-06.07",
+        "MF-P9-06.08",
+        "MF-P9-06.09",
+        "MF-P9-06.10",
+        "MF-P9-07.01",
+        "MF-P9-07.02",
+        "MF-P9-07.03",
+        "MF-P9-07.04",
+        "MF-P9-07.05",
+        "MF-P9-07.06",
+        "MF-P9-07.07",
+        "MF-P9-07.08",
+        "MF-P9-07.09",
+        "MF-P9-07.10",
+        "MF-P9-08.01",
+        "MF-P9-08.02",
+        "MF-P9-08.03",
+        "MF-P9-08.04",
+        "MF-P9-08.05",
+        "MF-P9-08.07",
+        "MF-P9-08.08",
+        "MF-P9-08.09",
+        "MF-P9-08.10",
+        "MF-P9-09.01",
+        "MF-P9-09.02",
+        "MF-P9-09.03",
+        "MF-P9-09.04",
+        "MF-P9-09.05",
+        "MF-P9-09.06",
+        "MF-P9-09.07",
+        "MF-P9-09.08",
+        "MF-P9-09.09",
+        "MF-P9-09.10"
+      ],
+      "status_counts": {
+        "partially_complete": 48,
+        "open": 17
+      },
+      "hard_blocker_count": 0,
+      "explicit_user_authority_item_ids": [],
+      "goal": "Move the DAZ subsystem from mostly static/contract evidence to real, reproducible DAZ execution that produces exact single- and multi-person synthetic truth packages with deterministic mapping, render passes, validators, and pilots.",
+      "required_proof_artifacts": [
+        "daz_runtime_snapshot.json",
+        "daz_asset_registry.json",
+        "genesis9_mapping_bundle.json",
+        "scene_determinism_report.json",
+        "render_pass_replay_report.json",
+        "daz_validation_certificate_report.json",
+        "solo100_pilot_receipt.json",
+        "multiperson_daz_pilot_receipt.json",
+        "section_acceptance_receipt.json"
+      ],
+      "work_packet_path": "sections/SECTION_18_DAZ_FOUNDATION_EXACT_TRUTH.md"
+    },
+    {
+      "section_id": 19,
+      "title": "DAZ Corpus Scale, Training Mixtures, Operations, Currency, and Near-Perfect Targets",
+      "slug": "daz_scale_mixtures_operations_targets",
+      "depends_on": [
+        11,
+        12,
+        17,
+        18
+      ],
+      "enables": [
+        20
+      ],
+      "tracker_item_count": 43,
+      "tracker_item_ids": [
+        "MF-P9-10.01",
+        "MF-P9-10.02",
+        "MF-P9-10.03",
+        "MF-P9-10.04",
+        "MF-P9-10.05",
+        "MF-P9-10.06",
+        "MF-P9-10.07",
+        "MF-P9-10.08",
+        "MF-P9-10.09",
+        "MF-P9-10.10",
+        "MF-P9-10.11",
+        "MF-P9-11.03",
+        "MF-P9-11.04",
+        "MF-P9-11.05",
+        "MF-P9-11.06",
+        "MF-P9-11.07",
+        "MF-P9-11.08",
+        "MF-P9-11.09",
+        "MF-P9-12.01",
+        "MF-P9-12.02",
+        "MF-P9-12.03",
+        "MF-P9-12.04",
+        "MF-P9-12.05",
+        "MF-P9-12.06",
+        "MF-P9-12.07",
+        "MF-P9-12.08",
+        "MF-P9-12.09",
+        "MF-P9-15.01",
+        "MF-P9-15.02",
+        "MF-P9-15.03",
+        "MF-P9-15.08",
+        "MF-P7-03.01",
+        "MF-P7-03.03",
+        "MF-P7-03.06",
+        "MF-P7-EXIT",
+        "MF-P7-07.01",
+        "MF-P7-07.03",
+        "MF-P7-07.07",
+        "MF-P7-07.08",
+        "MF-P7-07.11",
+        "MF-P7-07.12",
+        "MF-P7-07.13",
+        "MF-P7-07.14"
+      ],
+      "status_counts": {
+        "partially_complete": 23,
+        "open": 14,
+        "blocked": 6
+      },
+      "hard_blocker_count": 6,
+      "explicit_user_authority_item_ids": [
+        "MF-P7-03.01",
+        "MF-P7-03.03",
+        "MF-P7-03.06",
+        "MF-P7-EXIT",
+        "MF-P7-07.07"
+      ],
+      "goal": "Use DAZ only where the immutable real-data residual-gap report justifies it, prove matched real-only versus mixture value, run resilient unattended operations, maintain current model/assets, and measure optional near-perfect/headline outcomes honestly.",
+      "required_proof_artifacts": [
+        "daz_gap_admission_receipt.json",
+        "daz_1k_corpus_card.json",
+        "daz_10k_corpus_card.json",
+        "mixture_ablation_report.json",
+        "daz_disable_rollback_receipt.json",
+        "seven_day_soak_report.json",
+        "disaster_recovery_report.json",
+        "currency_asset_audit.json",
+        "unseen20_headline_report.json",
+        "near_perfect_go_no_go.json",
+        "section_acceptance_receipt.json"
+      ],
+      "work_packet_path": "sections/SECTION_19_DAZ_SCALE_MIXTURES_OPERATIONS_TARGETS.md"
+    },
+    {
+      "section_id": 20,
+      "title": "Immutable Release, Pinned ComfyUI Adoption, Final E2E Proof, Rollback, and Tracker Closure",
+      "slug": "immutable_release_final_adoption_closure",
+      "depends_on": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "enables": [],
+      "tracker_item_count": 6,
+      "tracker_item_ids": [
+        "MF-P6-22.01",
+        "MF-P6-22.02",
+        "MF-P6-22.03",
+        "MF-P6-22.04",
+        "MF-P7-07.09",
+        "MF-P9-EXIT"
+      ],
+      "status_counts": {
+        "open": 5,
+        "partially_complete": 1
+      },
+      "hard_blocker_count": 4,
+      "explicit_user_authority_item_ids": [],
+      "goal": "Assemble one immutable MaskFactory release, pin it into the external ComfyUI project, run live accept/failure/abstain/restart/invalidation/rollback scenarios, independently reconstruct the whole system, and close only claims whose exact gates passed.",
+      "required_proof_artifacts": [
+        "maskfactory_release_manifest.json",
+        "release_archives_sha256.tsv",
+        "cross_session_adoption_packet.json",
+        "comfyui_live_adoption_matrix.json",
+        "final_clean_suite_junit.xml",
+        "final_reconstruction_receipt.json",
+        "final_rollback_receipt.json",
+        "tracker_profile_closure_report.json",
+        "ultimate_masking_system_acceptance_packet.json",
+        "section_acceptance_receipt.json"
+      ],
+      "work_packet_path": "sections/SECTION_20_IMMUTABLE_RELEASE_FINAL_ADOPTION_CLOSURE.md"
+    }
+  ]
+}

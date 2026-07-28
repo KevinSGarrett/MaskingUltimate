@@ -57,6 +57,7 @@ can build the entire system from these 27 documents without asking a single desi
 | 24 | 24_AUTONOMOUS_CORE_COMPLETION_AND_COMFYUI_BRIDGE.md | Required human-free completion profile, exact-output operational authority, MaskFactory↔ComfyUI runtime/release bridge, optional claim profiles, and recovery qualification |
 | 25 | 25_SELF_HOSTED_VISUAL_AUTHORITY_AND_RUNPOD_MIGRATION_SPEC.md | Evidence-qualified visual critics, multi-proposal disagreement/repair, positive-control calibration, persistent RunPod execution, and optional read-only legacy-source recovery |
 | 26 | 26_ADULT_CORPUS_AUTONOMOUS_BATCH_INGESTION_SPEC.md | Adopted 16-dataset adult-corpus registry, lane-separated external supervision, resumable 256-record processing, real-data-first hierarchical teacher-student learning, reference-domain pretraining, hard-case mining, temporal extension, targeted DAZ activation, strict per-record QA, RunPod synchronization, training, and release integration |
+| 27 | 27_SELF_HOSTED_AUTONOMOUS_LLM_CONTINUOUS_OPERATIONS_SPEC.md | Continuous CPU supervision, durable campaign batching, shared-GPU and governed fallback routing, autonomous engineering and mask work cells, micro-handoff elimination, throughput telemetry, and sustained acceptance |
 
 ---
 
@@ -112,3 +113,4 @@ The legacy portfolio/research profile is complete when all of the following are 
 - **Adding a new label later:** doc 02 §9 (ontology change procedure). Never edit labels ad hoc.
 - **Adult-anatomy ontology v2:** doc 18 plus `Plan\OntologyV2\IMPLEMENTATION_CHECKLIST.md`; the active v1 map must not change until the migration gate passes.
 - **Self-hosted visual authority and RunPod persistence:** doc 25 plus Instructions 13–14; model names never outrank measured positive-and-negative calibration evidence. AWS is retired from active operation and appears only in narrowly scoped read-only legacy-source recovery.
+- **Self-hosted autonomous LLM throughput:** doc 27 plus Instruction 16 and Items 23; a bounded steward is foundation evidence, not completion. Required acceptance is sustained campaign throughput with measured Codex and handoff reduction.

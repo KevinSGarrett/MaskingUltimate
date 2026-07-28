@@ -151,7 +151,8 @@ Foundation invariants:
 - one hidden process-per-job generation worker initially;
 - generation default-disabled until activation passes;
 - no automatic purchase or account login;
-- direct selected-RunPod execution with no GPU/VRAM admission lease;
+- selected-RunPod execution through `tools/run_with_shared_pod_gpu_lease.py`
+  for every Pod-local GPU child, with terminal lease release;
 - atomic recipe/result protocol, job-private partial output, heartbeat/watchdog/quarantine, and
   `worker_result.json` written last; and
 - one-command stop/rollback with unchanged normal behavior while disabled.

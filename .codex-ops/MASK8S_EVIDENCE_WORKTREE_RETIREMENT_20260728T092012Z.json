@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-07-28T09:20:12Z",
+  "repository": "C:\\Comfy_UI_Main_Masking",
+  "removed_worktree": "C:\\w\\mask8s_e0f53b6f",
+  "ownership": "Masking",
+  "git_common_dir": "C:\\Comfy_UI_Main_Masking\\.git",
+  "classification": "EVIDENCE_ONLY_EXACTLY_PRESERVED",
+  "source_head": "093b9b1d74fb21ec5653d9dae395af878a8f0909",
+  "source_remote_ref": "origin/codex/recovery-maskfactory-detached-base-20260728-093b9b1",
+  "tracked_patch_empty": true,
+  "untracked_json_count": 20,
+  "untracked_json_bytes": 49396,
+  "tier_a_protection": {
+    "path": "C:\\MaskFactory_TierA_Backups\\mask8s_scope_packets_20260728T091535Z",
+    "archive": "mask8s_scope_packets.tar",
+    "archive_bytes": 67584,
+    "archive_sha256": "a0943f6b30222d1a4cbff20b3060ea69ed97add11a9b161b03968834262076c1",
+    "readback_member_count": 20,
+    "readback_exact_member_matches": 20
+  },
+  "pre_remove_bytes": 17507542,
+  "worktree_count_before": 9,
+  "worktree_count_after": 8,
+  "post_conditions": {
+    "path_absent": true,
+    "registration_absent": true,
+    "source_head_remote_reachable": true,
+    "connectivity_fsck_passed": true,
+    "full_fsck_passed": true,
+    "reconciliation_local_remote_head": "9fb728ee142d941f281687874b2c8429b407c065"
+  },
+  "shared_path_confirmation": {
+    "main_thread": "019fa6cc-eb76-74c1-8fd1-f062cec56dad",
+    "no_main_ownership_conflict_confirmed": true,
+    "scope": "this worktree only"
+  }
+}

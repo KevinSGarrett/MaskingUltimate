@@ -1,0 +1,131 @@
+{
+  "schema_version": "maskfactory.dirty_canonical_reconciliation.v1",
+  "recorded_at": "2026-07-28T11:50:00Z",
+  "disposition": "CHECKPOINT_PRESERVED_SEMANTICALLY_RECONCILED_NOT_CLEANED_IN_PLACE",
+  "dirty_checkout": {
+    "path": "C:\\Comfy_UI_Main_Masking",
+    "head": "61b4ffed850ab9570253acde5704a5bf44d4f7b6",
+    "tracked_modifications": 11,
+    "staged_paths": 0,
+    "untracked_paths": 7083,
+    "mutation_performed": false,
+    "clean_reset_delete_forbidden": true
+  },
+  "primary_checkpoint": {
+    "path": "F:\\CodexRecovery\\maskfactory_reconciliation_checkpoint_20260728T042648Z",
+    "sha_registry_digest": "903b960291b049ef26c4c36fa55d568158a0918763aea4a830fce5d1f11f2b0a",
+    "baseline_untracked_paths": 6987,
+    "baseline_paths_still_present": 6984,
+    "absent_directory_markers": [
+      ".codex-ops/worktrees/fallback-dispatcher-e2e-20260726/",
+      ".codex-ops/worktrees/fallback-dispatcher-podbase-20260726/",
+      ".wt_climb4/"
+    ],
+    "absent_marker_disposition": "receipt_backed_git_worktree_retirements",
+    "post_checkpoint_paths": 99,
+    "post_checkpoint_climb4_scratch_paths": 87
+  },
+  "source_control_reconciliation": {
+    "bounded_candidates": 103,
+    "byte_exact_in_normalization_before_reconciliation": 55,
+    "different_candidates_reviewed": 10,
+    "absent_candidates_before_reconciliation": 38,
+    "absent_breakdown": {
+      "plan_20sections_package": 32,
+      "generated_egg_info": 6
+    },
+    "absent_executable_source_after_reconciliation": 0,
+    "differing_executable_paths": [
+      {
+        "path": "src/maskfactory/ontology_v2_resolution_preflight.py",
+        "disposition": "SEMANTICALLY_IDENTICAL_FORMATTED"
+      },
+      {
+        "path": "src/maskfactory/vlm/strict_gate.py",
+        "disposition": "NORMALIZED_REMOVES_UNUSED_VARIABLE_AND_EXCEPTION_BINDING"
+      },
+      {
+        "path": "tests/test_ontology_v2_resolution_preflight.py",
+        "disposition": "IMPORT_ORDER_ONLY"
+      },
+      {
+        "path": "tools/run_tournament_ollama_critic_router.py",
+        "disposition": "SEMANTICALLY_IDENTICAL_FORMATTED"
+      },
+      {
+        "path": "tools/smoke_strict_vlm_gate.py",
+        "disposition": "NORMALIZED_REMOVES_UNUSED_NUMPY_IMPORT"
+      }
+    ],
+    "tracked_tournament_yaml_semantically_equal": true,
+    "tracked_tournament_runner_ast_equal": true,
+    "tracked_tracker_json_semantically_equal_before_governance_rebuild": true
+  },
+  "plan_20sections_adoption": {
+    "source": "C:\\Comfy_UI_Main_Masking\\Plan\\20Sections",
+    "destination": "Plan\\20Sections",
+    "files": 32,
+    "bytes": 965454,
+    "sha256sum_entries": 30,
+    "sha256sum_failures": 0,
+    "json_files": 4,
+    "json_failures": 0,
+    "zip_entries": 31,
+    "zip_unsafe_paths": 0,
+    "zip_duplicate_names": 0,
+    "zip_to_filesystem_content_failures": 0,
+    "zip_sha256": "26e0b32ffd931af4fa51d3fdfca75071c82033171a4699a5278fab5c5ca48626",
+    "authority_note": "immutable_2026_07_27_plan_snapshot_does_not_override_current_standing_orders"
+  },
+  "imported_receipts": [
+    {
+      "path": ".codex-ops/EXTERNAL_SUPERVISION_WORKTREE_RETIREMENT_20260728T090805Z.json",
+      "sha256": "b9a5eb81aae2c1b99f9925d5d7339e029c6a02701f2ace38e6ce3dd8b7870024"
+    },
+    {
+      "path": ".codex-ops/FAILED_INITIALIZATION_WORKTREE_RETIREMENT_20260728T092721Z.json",
+      "sha256": "168ea32cacdaf0d3c7b80d8ade03b05a90f7d03d952a539da1e1dad0fa769eee"
+    },
+    {
+      "path": ".codex-ops/MASK8S_EVIDENCE_WORKTREE_RETIREMENT_20260728T092012Z.json",
+      "sha256": "f963f8de843ba07acf9b2292e521ed8ab8e26cf29d869ea5e86d0ef3a0a55944"
+    },
+    {
+      "path": ".codex-ops/MASKFACTORY_CONSUMER_REMOTE_PROTECTION_20260728T093945Z.json",
+      "sha256": "e99f52f7b0bb6d57e464a59f0401589a0d8d38c33ad0e933e6ca8b636c28ee18"
+    },
+    {
+      "path": ".codex-ops/PLAN_MODERNIZATION_WORKTREE_RETIREMENT_20260728T093646Z.json",
+      "sha256": "b5980917975a318711bde8577ff6045817b1e49ad5f37f158ad0089d0950dba2"
+    },
+    {
+      "path": ".codex-ops/RUNPOD_SERVERLESS_WORKTREE_RETIREMENT_20260728T085901Z.json",
+      "sha256": "6ce9482511c2cada9c76c23fd59214369c00306d9eb6ce8c97573cdbeafd731f"
+    },
+    {
+      "path": ".codex-ops/SIBLING_CLIMB3_WORKTREE_RETIREMENT_20260728T094829Z.json",
+      "sha256": "2cc6ee7941dc9679047938676111808f6fcb6a3aa162e8cbf8e0d852702feed8"
+    }
+  ],
+  "governance_reconciliation": {
+    "contradiction": "direct_selected_pod_execution_without_admission_versus_binding_shared_fifo_lease",
+    "current_rule": "every_pod_local_gpu_child_uses_tools_run_with_shared_pod_gpu_lease_py",
+    "tracker_items_rebuilt": 906,
+    "tracker_hard_blockers": 54,
+    "tracker_structural_errors": 0,
+    "completion_tiers_raised": false,
+    "historical_append_only_notes_preserved_with_superseding_notes": [
+      "MF-P4-01.01",
+      "MF-P5-03.02"
+    ]
+  },
+  "validation": {
+    "focused_tests_passed": 28,
+    "python_compileall": "PASS",
+    "receipt_json_validation": "PASS",
+    "tracker_validate": "PASS",
+    "tracker_report": "PASS"
+  },
+  "normalization_parent_oid": "f036d3f1e83bd64ab3660591a2fa9adbc4c78da8",
+  "next_gate": "commit_push_then_full_repository_validation"
+}

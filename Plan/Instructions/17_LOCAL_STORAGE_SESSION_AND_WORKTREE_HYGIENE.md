@@ -42,6 +42,11 @@ The policy is `configs/local_workspace_hygiene_v1.json`.
 The CPU supervisor may continue useful work while allocation is blocked. The
 gate prevents storage growth; it is not a reason to idle.
 
+Do not create a replacement clone or worktree to escape a dirty checkout.
+Resolve ownership path-by-path in the existing checkout. A new isolated tree
+is allowed only for an actual execution requirement after the allocation gate
+passes; it is never a substitute for reconciliation.
+
 ## 3. Recovery checkpoint format
 
 Preserve:
@@ -83,3 +88,7 @@ for explicit inspection.
 
 No status text may claim a Google Drive fallback merely because one was
 planned; it must reference a successful byte/hash round-trip.
+
+Outside a documented storage/recovery blocker, hygiene and bookkeeping together
+must stay within 10% of active self-hosted-autonomy effort. Cleanup is a safety
+control, not a progress substitute, and cannot advance runtime acceptance.

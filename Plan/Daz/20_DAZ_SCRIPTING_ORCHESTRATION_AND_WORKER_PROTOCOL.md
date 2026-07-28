@@ -72,7 +72,9 @@ Within one SQLite transaction:
 3. mark `leased` with worker ID, PID placeholder, acquired/expires timestamps, attempt number;
 4. create atomic lease JSON;
 5. reserve expected disk bytes;
-6. launch the render phase directly; no GPU/VRAM lease or checkout exists.
+6. launch any Pod-local GPU render child through
+   `tools/run_with_shared_pod_gpu_lease.py`; CPU-only or explicitly requested
+   local diagnostics remain outside that lease.
 
 ### Heartbeat
 
@@ -309,12 +311,14 @@ Unexpected dialog behavior:
 5. preserve partial recipe/log;
 6. retry only after a known technical suppression or asset change.
 
-## 19. GPU/VRAM governance retirement
+## 19. GPU/VRAM governance
 
-DAZ RGB/ID rendering uses no GPU/VRAM admission, reservation, checkout,
-scheduler, capacity lease, or file-lock gate. Runtime utilization and memory
-measurements are diagnostic only. A real OOM becomes a typed workload failure;
-it cannot weaken annotation resolution, semantics, or quality requirements.
+Every Pod-local DAZ GPU child uses the shared FIFO lease through
+`tools/run_with_shared_pod_gpu_lease.py`; the lease is heartbeated for the
+complete child lifetime and terminally released. Runtime utilization and memory
+measurements are diagnostic and cannot replace lease authority. A real OOM
+becomes a typed workload failure; it cannot weaken annotation resolution,
+semantics, or quality requirements or authorize foreign-process preemption.
 
 ## 20. Persistent worker acceptance
 

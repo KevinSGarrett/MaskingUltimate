@@ -32,8 +32,11 @@ verdict alone can never make that change.
 | Text LLM (local) | qwen2.5:7b-instruct | Ollama | Manifest lint, correction-instruction drafting |
 | Cloud teachers (optional) | Gemini / OpenAI / Anthropic | Provider APIs, disabled by default | Per-image-opt-in shadow review and bounded correction proposals under doc 19. They never approve gold or overwrite a mask. |
 
-GPU/VRAM resource governance is disabled. VLM execution targets the selected
-RunPod directly; utilization and memory are telemetry only.
+Every Pod-local VLM GPU child must be launched through
+`tools/run_with_shared_pod_gpu_lease.py`. The shared FIFO lease is admission
+authority for the complete child lifetime; utilization and memory telemetry do
+not replace it. A queued or denied lease routes work to the governed Serverless
+broker, eligible advisory reasoning, or a CPU-safe lane.
 
 ## 2. Inputs Per Review
 

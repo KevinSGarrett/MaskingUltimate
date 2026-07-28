@@ -1,7 +1,7 @@
 {
   "meta": {
     "schema_version": "1.0.0",
-    "generated_at": "2026-07-27T01:34:03+00:00",
+    "generated_at": "2026-07-28T11:48:30+00:00",
     "generator": "tracker.py rebuild",
     "total_items": 906,
     "total_tracked_including_orphaned": 906
@@ -5694,7 +5694,7 @@
       "cluster_id": "MF-P4-01",
       "cluster_title": "S11 VLM QA runner",
       "spec_ref": "10 §1–4",
-      "description": "`vlm\\client.py`: Ollama API client (127.0.0.1:11434) · production review runs directly on selected RunPod with no GPU/VRAM admission or exclusive-slot governance",
+      "description": "`vlm\\client.py`: Ollama API client (127.0.0.1:11434) · every production RunPod GPU review child uses `tools/run_with_shared_pod_gpu_lease.py` and the shared FIFO lease",
       "source_file": "05_ITEMS_P4_VLM_QA_ACTIVE_LEARNING.md",
       "source_line": 11,
       "is_exit_gate": false,
@@ -5712,12 +5712,17 @@
           "ts": "2026-07-23T06:19:57+00:00",
           "actor": "ai_agent",
           "text": "2026-07-23: production visual review is direct RunPod execution. Coordinator leases, exclusive GPU slots, gpu.lock, VRAM headroom, and peak-VRAM thresholds have no admission or role-qualification authority; utilization/peak memory remain telemetry only."
+        },
+        {
+          "ts": "2026-07-28T11:46:36+00:00",
+          "actor": "codex",
+          "text": "2026-07-28 repository normalization: the 2026-07-23 direct-execution/no-admission note is superseded by current standing orders. Every Pod-local GPU review child must use tools/run_with_shared_pod_gpu_lease.py and the shared FIFO lease for its complete lifetime; queued or denied work routes to governed Serverless, eligible OpenRouter advisory, or CPU-safe work. Existing completion evidence remains capability evidence only and does not authorize lease bypass."
         }
       ],
       "evidence": "Existing Ollama/exclusive-slot implementation remains covered. qa/live_verification/vlmqa_run_cli_20260712.json adds live command proof: 13 careful routes, zero fabricated verdicts, exit 1, CVAT tasks stable 9->9; 55 focused and 640 full tests pass.",
       "blocked_reason": null,
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-23T06:19:57+00:00",
+      "updated_at": "2026-07-28T11:46:36+00:00",
       "orphaned": false
     },
     "MF-P4-01.02": {
@@ -7060,7 +7065,7 @@
       "cluster_id": "MF-P5-03",
       "cluster_title": "Train 6.1 body-part segmenter",
       "spec_ref": "12 §5/§6.1",
-      "description": "Train SegFormer-B3 directly on RunPod · eval per-part IoU + boundary-F on val every 4k",
+      "description": "Train SegFormer-B3 on RunPod through `tools/run_with_shared_pod_gpu_lease.py` · eval per-part IoU + boundary-F on val every 4k",
       "source_file": "06_ITEMS_P5_TRAINING.md",
       "source_line": 28,
       "is_exit_gate": false,
@@ -7093,12 +7098,17 @@
           "ts": "2026-07-23T06:19:57+00:00",
           "actor": "ai_agent",
           "text": "2026-07-23: all GPU/VRAM admission and qualification gates are retired. Training executes directly on selected RunPod when its data/authority prerequisites exist; OOM is a typed runtime outcome, and GPU/VRAM telemetry cannot block or promote the run."
+        },
+        {
+          "ts": "2026-07-28T11:48:31+00:00",
+          "actor": "codex",
+          "text": "2026-07-28 repository normalization: the 2026-07-23 note that retired all GPU admission is superseded. Every Pod-local training GPU child must use tools/run_with_shared_pod_gpu_lease.py and the shared FIFO lease for its complete lifetime; runs/gpu.lock and telemetry cannot replace lease authority. Existing blocked status and production prerequisites are unchanged."
         }
       ],
       "evidence": null,
       "blocked_reason": "The real SegFormer-B3 run requires bodyparts@v1 with at least 200 certified training packages; CUDA and OpenMMLab are ready, but certified count is 0 and initial human-anchor calibration still needs Kevin.",
       "created_at": "2026-07-10T01:55:22+00:00",
-      "updated_at": "2026-07-23T06:19:57+00:00",
+      "updated_at": "2026-07-28T11:48:31+00:00",
       "orphaned": false
     },
     "MF-P5-03.03": {
@@ -7722,7 +7732,7 @@
       "cluster_id": "MF-P5-08",
       "cluster_title": "Conditional / optional models",
       "spec_ref": "12 §6.4–6.5/§5",
-      "description": "(Optional) RunPod scale runbook executed once: validate persistent inputs · train directly on the selected pod · persist/hash outputs and evidence",
+      "description": "(Optional) RunPod scale runbook executed once: validate persistent inputs · train through the shared guarded launcher on the selected pod · persist/hash outputs and evidence",
       "source_file": "06_ITEMS_P5_TRAINING.md",
       "source_line": 61,
       "is_exit_gate": false,

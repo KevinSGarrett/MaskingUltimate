@@ -11,9 +11,10 @@ RunPod is the production location for MaskFactory masking, provider inference,
 strict visual review, repair, training, benchmarking, qualification, corpus
 processing, champion promotion, and runtime verification. Production data,
 models, panels, intermediate results, and released-package staging reside on
-persistent RunPod storage. The selected pod executes directly; GPU/VRAM
-coordinators, admission checks, reservations, checkouts, schedulers, sequencers,
-capacity leases, and file-lock gates have no authority.
+persistent RunPod storage. Every Pod-local GPU child executes through
+`tools/run_with_shared_pod_gpu_lease.py`; the shared FIFO lease is acquired
+before launch, heartbeated for the complete child lifetime, and terminally
+released. Telemetry, `runs/gpu.lock`, and local sequencers cannot replace it.
 
 The laptop is limited to CPU-only source editing, unit/schema/contract tests,
 tracker and queue bookkeeping, deterministic hash/package verification, and

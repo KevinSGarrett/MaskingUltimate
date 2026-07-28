@@ -1462,3 +1462,30 @@ roles, certification, autonomous gold, or training truth, and deterministic
 hard blocks remain absolute.
 
 **Approved by:** Kevin, explicit adoption in the 2026-07-23R pursuing goal.
+
+## 2026-07-28 — Shared Pod GPU lease restored as mandatory authority
+
+**Item(s) affected:** MF-P4-01.01, MF-P5-03.02, every RunPod-local GPU
+provider, critic, training, rendering, tournament, and repair child.
+
+**Prior state:** A 2026-07-23 decision and several derived specs retired
+GPU/VRAM admission and described direct selected-Pod execution. Later binding
+standing orders, the shared-manager contract, and the repository intake gate
+superseded that policy but the older wording remained scattered through Plan,
+Items, tracker notes, and a compatibility telemetry tool.
+
+**Decision:** Every Pod-local GPU child must execute through
+`tools/run_with_shared_pod_gpu_lease.py`. It must acquire the shared FIFO lease,
+heartbeat for the complete child lifetime, and terminally release it.
+`runs/gpu.lock`, utilization telemetry, a local sequencer, or model-lifecycle
+policy cannot replace the shared lease. A queued or denied lease routes the
+session to the governed Serverless broker, eligible OpenRouter advisory, or a
+CPU-safe lane. Never kill or preempt another session's process.
+
+**Reconciliation:** Current architecture, runtime, VLM, training, adult-corpus,
+DAZ, Item, tracker, and session-control sources now state the same rule.
+Historical append-only notes and immutable Plan snapshots remain preserved as
+history, with explicit superseding tracker notes.
+
+**Approved by:** Kevin's binding repository intake gate and current standing
+orders; Codex reconciliation of contradictory derived controls.

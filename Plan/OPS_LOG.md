@@ -11068,3 +11068,18 @@ structural errors; and the 420-test steward plus GPU-lease cohort passed
 This is not a `main` promotion gate. Serverless post-split paths, historical
 candidate paths, the dirty canonical checkout, and the complete product suite
 remain outstanding.
+
+## 2026-07-28 11:27 UTC - Serverless split semantically dispositioned
+
+**Result:** PASS / `PATCH_EQUIVALENT_WITH_CURRENT_HARDENING`. All 24 paths
+changed after the serverless line split are present in normalization: 21 have
+exact blobs and three are newer hardened versions. The newer trio adds
+cancel-before-provider-submit release, its regression test, provider-free
+execution-host preflight, and conservative ledger fallback for the bounded
+billing-403 case. The focused serverless cohort passed 31/31.
+
+No whole-tree ours merge was used. The serverless tip remains protected by its
+existing remote branch and the normalization recovery namespace. It is not
+eligible for branch-name retirement until `main` promotion and the final
+archival receipt. Evidence:
+`.codex-ops/SERVERLESS_SPLIT_DISPOSITION_20260728T112700Z.json`.

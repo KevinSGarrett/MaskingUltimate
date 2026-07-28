@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "artifact_type": "maskfactory_serverless_split_disposition",
+  "created_at_utc": "2026-07-28T11:27:00Z",
+  "normalization_head_before_receipt": "82cab2168f835648a49bb200c5493805bfd9b3b3",
+  "common_predecessor": "0dad835d034df395158f3bd26302e6a638adb600",
+  "serverless_tip": "966b95a3c36fb0ed9d6c236c97d97cc4fd6a352d",
+  "serverless_post_split_paths": 24,
+  "exact_in_normalization": 21,
+  "different_in_normalization": 3,
+  "absent_in_normalization": 0,
+  "disposition": "PATCH_EQUIVALENT_WITH_CURRENT_HARDENING",
+  "different_paths": [
+    {
+      "path": "src/maskfactory/autonomy/serverless_overflow.py",
+      "serverless_blob": "9825540ea1a58ae35153868b6e89bbd2759822b8",
+      "normalization_blob": "65f1785f018bb24348c23e5ccbee021aa1838028",
+      "reason": "normalization additionally releases a reservation locally when no provider job id exists"
+    },
+    {
+      "path": "tests/test_runpod_serverless_overflow.py",
+      "serverless_blob": "892c453c004baab7e19f32b954594257c095c8ef",
+      "normalization_blob": "c94ca6e5b33049cce1dfe38c999905d680852310",
+      "reason": "normalization additionally proves cancel-before-provider-submit releases local reservations without a provider call"
+    },
+    {
+      "path": "tools/manage_runpod_serverless_overflow.py",
+      "serverless_blob": "c5e5010eb6918f70e2f883f4807d37831e08b216",
+      "normalization_blob": "5296f9d62ec099834cd826f024ae010d02699452",
+      "reason": "normalization additionally provides provider-free execution-host preflight and conservative ledger fallback for the bounded billing-403 case"
+    }
+  ],
+  "validation": {
+    "focused_tests": [
+      "tests/test_manage_runpod_serverless_overflow.py",
+      "tests/test_runpod_serverless_overflow.py",
+      "tests/steward/test_serverless_broker.py"
+    ],
+    "passed": 31,
+    "failed": 0
+  },
+  "history_policy": {
+    "whole_tree_ours_merge_performed": false,
+    "serverless_tip_locally_pinned": "refs/codex-recovery/normalization-20260728/serverless-product",
+    "serverless_tip_remote_protected": "refs/heads/codex/runpod-serverless-overflow-20260724",
+    "branch_deletion_authorized_now": false,
+    "eligible_after_main_promotion_and_archival_receipt": true
+  }
+}

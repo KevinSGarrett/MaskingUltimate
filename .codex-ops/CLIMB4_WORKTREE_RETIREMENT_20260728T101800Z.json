@@ -1,0 +1,62 @@
+{
+  "artifact_type": "maskfactory_climb4_worktree_retirement_receipt",
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-07-28T10:18:00Z",
+  "target": "C:\\Comfy_UI_Main_Masking\\.wt_climb4",
+  "owner": "Masking",
+  "main_coordination_confirmed": true,
+  "preconditions": {
+    "git_common_dir": "C:\\Comfy_UI_Main_Masking\\.git",
+    "head": "6b1ad4ef965be08f7db13411f7d206d26d68f788",
+    "head_remote_reachable": true,
+    "active_git_ssh_processes": 0,
+    "index_locks": 0,
+    "status_lines": 154,
+    "status_exactly_matches_checkpoint": true,
+    "tracked_patch_bytes": 407794,
+    "tracked_patch_sha256": "993e684ab2e587e92dada308ee95f94e559f603ab1810656ce78a103cefe86ea",
+    "tracked_patch_exactly_matches_checkpoint": true,
+    "complete_untracked_archive_readback_verified": true
+  },
+  "preservation": {
+    "checkpoint": "F:\\CodexRecovery\\maskfactory_reconciliation_checkpoint_20260728T042648Z",
+    "checkpoint_digest_sha256": "903b960291b049ef26c4c36fa55d568158a0918763aea4a830fce5d1f11f2b0a",
+    "tier_a_root": "C:\\MaskFactory_TierA_Backups\\climb4_all_untracked_20260728T101500Z",
+    "untracked_count": 106,
+    "untracked_bytes": 545479,
+    "untracked_tar_sha256": "9c675ef549c147196d1255d69cb54c4beeb0f045493ffe68c2772cbaeaab2517",
+    "untracked_manifest_sha256": "d9d7bc8d94540a5903011afba367b2fbe74fed838bfb0b35898ace856e9567c0",
+    "untracked_backup_receipt_sha256": "54cb309d0f1fb2fef05964dbd64a8a6a965eb9e93cbecfa6062506f17325de40",
+    "readback_mismatch_count": 0,
+    "archive_retained": true
+  },
+  "semantic_disposition_receipt": {
+    "path": ".codex-ops/CLIMB4_RESIDUAL_DISPOSITION_20260728T101354Z.json",
+    "sha256": "8d805b14ddc3580eb0a61cf1a49ef4bb6f458bcc596d5048963d2e6137d41aa1",
+    "integration_oid_before_retirement": "c6dfdd7a966e16d3f5f159e235cf60444ff807e7"
+  },
+  "operation": {
+    "command_class": "git worktree remove --force",
+    "exact_target_only": true,
+    "path_absent": true,
+    "registration_absent": true,
+    "registered_worktrees_before": 5,
+    "registered_worktrees_after": 4,
+    "measured_removed_bytes": 1259790046
+  },
+  "postconditions": {
+    "remote_refs_containing_head": 21,
+    "connectivity_fsck_exit": 0,
+    "full_fsck_exit": 0,
+    "c_free_bytes": 61374763008,
+    "c_free_gib": 57.16
+  },
+  "not_touched": [
+    "C:\\Comfy_UI_Main",
+    "shared C:\\w worktrees",
+    "C:\\Comfy_UI_Main_MaskFactory_Consumer",
+    "F:\\",
+    "remaining Masking worktrees"
+  ],
+  "recovery_rule": "Retain the checkpoint and Tier-A archive/readback until project promotion and final recovery acceptance are complete."
+}

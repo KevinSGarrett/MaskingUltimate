@@ -11035,3 +11035,18 @@ retirement.
 `903b960291b049ef26c4c36fa55d568158a0918763aea4a830fce5d1f11f2b0a`).
 No dirty checkout, worktree, recovery archive, VHDX, branch, or shared path was
 removed in this audit phase.
+
+## 2026-07-28 11:04 UTC - Normalization rollback refs published
+
+**Result:** PASS. The old `main` OID `d6a3c0e0` is protected locally and at
+`origin/codex/recovery-main-before-maskfactory-normalization-20260728-d6a3c0e`.
+The reconciliation, fallback-product, serverless-product, historical-agent,
+plan-modernization, and autonomous-work-cell tips are pinned under
+`refs/codex-recovery/normalization-20260728/*`; their source branch tips are
+already remote-published.
+
+The primary dirty-checkout checkpoint registry was re-hashed at
+`903b960291b049ef26c4c36fa55d568158a0918763aea4a830fce5d1f11f2b0a`.
+Git connectivity passed, no active Git/SSH process was observed, and no new
+full-repository bundle was created. Receipt:
+`.codex-ops/NORMALIZATION_ROLLBACK_REFS_20260728T110431Z.json`.

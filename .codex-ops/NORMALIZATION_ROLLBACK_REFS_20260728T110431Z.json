@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "artifact_type": "maskfactory_normalization_rollback_refs",
+  "created_at_utc": "2026-07-28T11:04:31Z",
+  "repository": "C:\\Comfy_UI_Main_Masking",
+  "integration_worktree": "C:\\Comfy_UI_Main_Masking\\.codex-ops\\worktrees\\canonical-reconciliation-20260728",
+  "old_main": {
+    "oid": "d6a3c0e00d01536504f737aff84891cf8bd4efb3",
+    "local_ref": "refs/codex-recovery/normalization-20260728/original-main",
+    "remote_ref": "refs/heads/codex/recovery-main-before-maskfactory-normalization-20260728-d6a3c0e",
+    "remote_verified_exact": true
+  },
+  "normalization_inputs": [
+    {
+      "role": "clean_reconciliation_base",
+      "oid": "03ba98f26d154b88ac4112e1bf1135c2d08c405d",
+      "local_ref": "refs/codex-recovery/normalization-20260728/reconciliation-base",
+      "remote_ref": "refs/heads/codex/reconcile-maskfactory-canonical-20260728"
+    },
+    {
+      "role": "maximal_fallback_product",
+      "oid": "7d66ca27781d899a43eb644c0378bcf1478045a7",
+      "local_ref": "refs/codex-recovery/normalization-20260728/fallback-product",
+      "remote_ref": "refs/heads/codex/fallback-dispatcher-podbase-20260726"
+    },
+    {
+      "role": "divergent_serverless_product",
+      "oid": "966b95a3c36fb0ed9d6c236c97d97cc4fd6a352d",
+      "local_ref": "refs/codex-recovery/normalization-20260728/serverless-product",
+      "remote_ref": "refs/heads/codex/runpod-serverless-overflow-20260724"
+    },
+    {
+      "role": "historical_agent_product_reservoir",
+      "oid": "8550209f2607369ab3e32053be86f2fa40a7db90",
+      "local_ref": "refs/codex-recovery/normalization-20260728/historical-agent",
+      "remote_ref": "refs/heads/agent/maskfactory-build-progress-20260711"
+    },
+    {
+      "role": "plan_modernization_predecessor",
+      "oid": "0dad835d034df395158f3bd26302e6a638adb600",
+      "local_ref": "refs/codex-recovery/normalization-20260728/plan-modernization",
+      "remote_ref": "refs/heads/codex/maskfactory-plan-modernization"
+    },
+    {
+      "role": "autonomous_work_cell_predecessor",
+      "oid": "1e05a624a4de43c758040bb6a1df7f7e27cea4c9",
+      "local_ref": "refs/codex-recovery/normalization-20260728/autonomous-work-cell",
+      "remote_ref": "refs/heads/codex/runpod-autonomous-work-cell"
+    }
+  ],
+  "dirty_canonical_checkout": {
+    "path": "C:\\Comfy_UI_Main_Masking",
+    "head": "61b4ffed850ab9570253acde5704a5bf44d4f7b6",
+    "remote_recovery_ref": "refs/heads/codex/recovery-maskfactory-20260728-61b4ffe",
+    "primary_checkpoint": "F:\\CodexRecovery\\maskfactory_reconciliation_checkpoint_20260728T042648Z",
+    "checkpoint_registry_sha256": "903b960291b049ef26c4c36fa55d568158a0918763aea4a830fce5d1f11f2b0a",
+    "checkpoint_registry_reverified": true,
+    "must_not_clean_reset_or_delete": true
+  },
+  "pre_mutation_gates": {
+    "active_git_or_ssh_processes_observed": false,
+    "git_connectivity_passed": true,
+    "c_free_bytes": 61496098816,
+    "f_free_bytes": 13952696320,
+    "f_below_allocation_floor": true,
+    "new_full_repository_bundle_created": false
+  },
+  "authorization_boundary": {
+    "force_push_permitted": false,
+    "branch_deletion_permitted_by_this_receipt": false,
+    "main_promotion_permitted_before_full_validation": false,
+    "shared_or_main_project_paths_modified": false
+  }
+}

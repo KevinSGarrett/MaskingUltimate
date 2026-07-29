@@ -22,7 +22,7 @@
     },
     {
       "path": "Plan/SELF_HOSTED_AUTONOMOUS_LLM_PURSUING_GOAL_MESSAGE.md",
-      "sha256": "49d14904afa5c7c493785522bf688d8919a3886e5854e9c672b10305de4eb92c"
+      "sha256": "24611c6d232bc8c93fe5f3b216bb39af44ac70ec38ce01bc3cb7a52ef0c82cd8"
     },
     {
       "path": "Plan/Items/23_ITEMS_P6_SELF_HOSTED_AUTONOMOUS_LLM_OPERATIONS.md",
@@ -30,7 +30,7 @@
     },
     {
       "path": "Plan/Items/24_ITEMS_P6_ULTIMATE_MASKING_SYSTEM_E2E_INTEGRATION.md",
-      "sha256": "867c66f0506439f9f6e46b82fcaf38250eda5a6a7eabfca4ffd69af3204dc18d"
+      "sha256": "9008c5a25ff2d3437271b8a42168900d6dfe74a3e63a301558da2f335d3db29b"
     }
   ],
   "schema_files": [
@@ -85,5 +85,5 @@
     "MF-P6-22.03",
     "MF-P6-22.04"
   ],
-  "registry_sha256": "d1004a6bbd5a06ba00f28263df07330aec8c35ea7d453584730c2c34f3797ca5"
+  "registry_sha256": "67514ac187cfe44f5dd1c2be1fde0ebc51ff2cae240186f1131366f384bb261f"
 }
